@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.258 2005-04-04 11:28:10 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.259 2005-04-04 17:29:30 decoyduck Exp $ */
 
 // International English language file
 
@@ -932,7 +932,7 @@ $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
 $lang['usernameandpasswdrequired'] = "A username and password is required";
-$lang['welcometolight'] = "Welcome to Diet Beehive!";
+$lang['lightmode'] = "light mode";
 $lang['pleasereenterpasswd'] = "Please reenter your password and try again.";
 $lang['rememberpasswds'] = "Remember passwords";
 $lang['rememberpassword'] = "Remember password";

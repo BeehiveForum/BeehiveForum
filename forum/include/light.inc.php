@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.81 2005-03-27 13:02:57 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.82 2005-04-04 17:29:23 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -45,7 +45,7 @@ function light_html_draw_top ($title = false)
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
-    echo "<title>$title</title>\n";
+    echo "<title>$title {$lang['lightmode']}</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\"/>\n";
 
     $stylesheet = html_get_style_sheet();
@@ -67,7 +67,9 @@ function light_draw_logon_form()
 {
     $lang = load_language_file();
 
-    echo "<p>{$lang['welcometolight']}</p>\n";
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+    echo "<h2>$forum_name {$lang['lightmode']}</h2>\n";
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
 
     echo "<p>{$lang['username']}: ";

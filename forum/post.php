@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.249 2005-03-29 21:48:36 decoyduck Exp $ */
+/* $Id: post.php,v 1.250 2005-04-04 17:29:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -272,19 +272,20 @@ if (isset($_POST['t_sig_html'])) {
         $sig_html = 2;
     }
 
-        $fetched_sig = false;
+    $fetched_sig = false;
 
 } else {
-        // Fetch the current user's sig
-        user_get_sig($uid, $t_sig, $t_sig_html);
 
-        if ($t_sig_html != "N") {
-                $sig_html = 2;
-        }
+    // Fetch the current user's sig
+    user_get_sig($uid, $t_sig, $t_sig_html);
 
-        $t_sig = tidy_html($t_sig, false);
+    if ($t_sig_html != "N") {
+        $sig_html = 2;
+    }
 
-        $fetched_sig = true;
+    $t_sig = tidy_html($t_sig, false);
+
+    $fetched_sig = true;
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {

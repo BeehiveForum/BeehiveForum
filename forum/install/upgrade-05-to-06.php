@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.44 2005-04-03 22:28:24 rowan_hill Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.45 2005-04-04 17:29:33 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -74,12 +74,20 @@ if (db_num_rows($result) > 0) {
     }
 }
 
-$sql = "DROP TABLE IF EXISTS DEDUPE";
+$remove_tables = array('GROUPS', 'GROUP_PERMS', 'GROUP_USERS',
+                       'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
+                       'SEARCH_KEYWORDS', 'SEARCH_MATCH', 'SEARCH_POSTS',
+                       'USER_TRACK', 'VISITOR_LOG');
 
-if (!$result = db_query($sql, $db_install)) {
+foreach ($remove_tables as $forum_table) {
 
-    $valid = false;
-    return;
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_{$forum_table}";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 $sql = "CREATE TABLE USER_TRACK (";
@@ -89,14 +97,6 @@ $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
 $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_FILES";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -117,14 +117,6 @@ $sql.= "  PRIMARY KEY  (ID),";
 $sql.= "  KEY AID (AID),";
 $sql.= "  KEY HASH (HASH)";
 $sql.= ") TYPE=MYISAM";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_IDS";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -237,7 +229,33 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "CREATE TABLE VISITOR_LOG (";
+$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY (VID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    // Globalise the VISITOR_LOG table
+
+    $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
+    $sql.= "SELECT $forum_fid, UID, LAST_LOGON ";
+    $sql.= "FROM {$forum_webtag}_VISITOR_LOG";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     // Admin log has changed to be more simplified
 
@@ -947,7 +965,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "ALTER TABLE {$forum_webtag}_USER_PROFILE ADD PRIVACY TINYINT(3) UNSIGNED NOT NULL DEFAULT '0';";
 
     if (!$result = db_query($sql, $db_install)) {
@@ -955,7 +973,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-    
+
     $sql = "ALTER TABLE {$forum_webtag}_POLL ADD QUESTION VARCHAR(64) DEFAULT NULL;";
 
     if (!$result = db_query($sql, $db_install)) {

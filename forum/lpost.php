@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.16 2003-09-09 11:07:57 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.17 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");

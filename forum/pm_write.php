@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.25 2003-09-15 18:34:47 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.26 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -84,7 +84,7 @@ if (isset($mid)) {
     }else {
         html_draw_top();
         pm_error_refuse();
-        // html_draw_bottom();
+        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
         exit;
     }
 }
@@ -307,6 +307,6 @@ if (isset($mid)) {
     draw_pm_message($pm_data);
 }
 
-// html_draw_bottom ();
+// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 
 ?>

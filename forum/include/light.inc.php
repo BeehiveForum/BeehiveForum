@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.15 2003-09-09 11:07:58 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.16 2003-09-15 19:04:31 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 

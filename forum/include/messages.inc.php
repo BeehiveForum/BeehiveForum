@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.168 2003-09-10 17:27:55 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.169 2003-09-15 19:04:31 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 

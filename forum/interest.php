@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.16 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: interest.php,v 1.17 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING

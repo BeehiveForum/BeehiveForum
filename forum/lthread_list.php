@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.18 2003-09-15 17:02:43 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.19 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -384,23 +384,6 @@ if (bh_session_get_value('UID') != 0) {
     echo "    </form>\n";
 
 }
-
-/* echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-echo "<tr>\n";
-echo "  <td class=\"smalltext\" colspan=\"2\">Navigate:</td>\n";
-echo "</tr>\n";
-echo "<tr>\n";
-echo "  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-echo "  <td class=\"smalltext\">\n";
-echo "    <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-echo form_input_text('msg', '1.1', 10). "\n        ";
-echo form_submit("go","Go!"). "\n";
-echo "    </form>\n";
-echo "  </td>\n";
-echo "</tr>\n";
-echo "</table>\n";
-
-*/
 
 light_html_draw_bottom();
 

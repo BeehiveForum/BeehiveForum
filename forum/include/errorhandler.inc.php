@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.24 2003-09-15 18:34:48 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.25 2003-09-15 19:04:31 decoyduck Exp $ */
 
 // Error Handler
 
@@ -220,7 +220,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "</form>\n";
             echo "</div>\n";
 
-            // html_draw_bottom();
+            // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
             exit;
 
         }

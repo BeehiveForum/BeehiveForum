@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.94 2003-09-15 18:34:47 decoyduck Exp $ */
+/* $Id: logon.php,v 1.95 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -75,7 +75,7 @@ if (bh_session_check()) {
     }
 
     echo "</div>\n";
-    // html_draw_bottom();
+    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
     exit;
 
 }
@@ -145,7 +145,7 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
         form_quick_button("./index.php", $lang['continue'], "", "", "_top");
     }
 
-    // html_draw_bottom();
+    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
     exit;
 
   }
@@ -284,7 +284,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
               form_quick_button("./index.php", $lang['continue'], "", "", "_top");
           }
 
-          // html_draw_bottom();
+          // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
           exit;
 
       }
@@ -307,7 +307,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
       echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
       echo form_quick_button("./index.php", $lang['back'], 0, 0, "_top");
-      // html_draw_bottom();
+      // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
       exit;
 
     }
@@ -513,6 +513,6 @@ echo "  <h2>{$lang['usingaPDA']}</h2>\n";
 echo "  <p class=\"smalltext\"><a href=\"llogon.php\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
 echo "</div>\n";
 
-// html_draw_bottom();
+// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 
 ?>

@@ -115,10 +115,19 @@ if($msg_count > 0){
             $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
         }
         
-        if($threaddata['POLL_FLAG'] == 'Y' && $message['PID'] == 1) {
+        if($threaddata['POLL_FLAG'] == 'Y') {
         
-          poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true);
-          $last_pid = $message['PID'];
+          if ($message['PID'] == 1) {
+        
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true);
+            $last_pid = $message['PID'];
+            
+          }else {
+          
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true);
+            $last_pid = $message['PID'];
+            
+          }
           
         }else {
         

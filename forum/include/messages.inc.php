@@ -218,6 +218,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
     }else if($in_list) {
+        if ($is_poll) {
+          echo "<img src=\"".style_image('poll.png')."\" alt=\"This is a poll\" align=\"middle\"> Poll ";
+        }
         echo $message['PID'] . " of " . $msg_count;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.15 2004-01-01 12:36:07 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.16 2004-01-16 19:51:54 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -35,6 +35,7 @@ $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 // Common words --------------------------------------------------------
 
 $lang['add'] = "Izadd";
+$lang['advanced'] = "Advanced";
 $lang['remove'] = "Remizove";
 $lang['go'] = "Gizo";
 $lang['folder'] = "Fo'da";

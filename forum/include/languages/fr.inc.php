@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.14 2004-01-01 12:36:07 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.15 2004-01-16 19:51:54 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -37,6 +37,7 @@ $lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
 // Common words --------------------------------------------------------
 
 $lang['add'] = "Ajouter";
+$lang['advanced'] = "Advanced";
 $lang['remove'] = "Enlever";
 $lang['go'] = "Valider";
 $lang['folder'] = "Dossier";

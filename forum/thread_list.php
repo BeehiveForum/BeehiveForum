@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.160 2004-01-15 19:20:29 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.161 2004-01-16 19:51:55 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -117,37 +117,37 @@ if (isset($HTTP_GET_VARS['start_from']) && is_numeric($HTTP_GET_VARS['start_form
 // Output XHTML header
 html_draw_top();
 
-// Drop out of PHP to start the HTML table
-?>
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "function change_current_thread (thread_id) {\n";
+echo "    if (current_thread > 0){\n";
+echo "        document[\"t\" + current_thread].src = \"", style_image('bullet.png'), "\";\n";
+echo "    }\n";
+echo "    document[\"t\" + thread_id].src = \"", style_image('current_thread.png'), "\";\n";
+echo "    current_thread = thread_id;\n";
+echo "    return true;\n";
+echo "}\n\n";
+echo "// -->\n";
+echo "</script>\n\n";
+echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\" colspan=\"2\">\n";
+echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
 
-<script language="JavaScript" type="text/javascript">
-// Func to change the little icon next to each discussion title
-function change_current_thread (thread_id) {
-    if (current_thread > 0){
-        document["t" + current_thread].src = "<?php echo style_image('bullet.png'); ?>";
-    }
-    document["t" + thread_id].src = "<?php echo style_image('current_thread.png'); ?>";
-    current_thread = thread_id;
-    return true;
+if ($pm_new_count = pm_new_check(false)) {
+    echo "      <img src=\"", style_image('pmnewmessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"./pm.php\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['new']}]</span><br />\n";
+}else {
+    echo "      <img src=\"", style_image('pmnomessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"./pm.php\" target=\"main\">{$lang['pminbox']}</a><br />\n";
 }
-// -->
-</script>
-
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr>
-    <td class="postbody" colspan="2">
-      <img src="<?php echo style_image('post.png'); ?>" height="15" alt="" />&nbsp;<a href="./post.php" target="main"><?php echo $lang['newdiscussion']; ?></a><br />
-      <img src="<?php echo style_image('poll.png'); ?>" height="15" alt="" />&nbsp;<a href="./create_poll.php" target="main"><?php echo $lang['createpoll']; ?></a><br />
-      <img src="<?php echo style_image('search.png'); ?>" height="15" alt="" />&nbsp;<a href="./search.php" target="right"><?php echo $lang['search']; ?></a><br />
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-<?
-
+    
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td colspan=\"2\">&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td colspan=\"2\">\n";
 echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
 
 if (bh_session_get_value('UID') == 0) {
@@ -578,7 +578,7 @@ echo "</table>\n";
 
 if (bh_session_get_value('UID') != 0) {
 
-    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['markasread']}:</td>\n";
     echo "  </tr>\n";
@@ -604,7 +604,7 @@ if (bh_session_get_value('UID') != 0) {
     echo "</table>\n";
 }
 
-echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
 echo "  </tr>\n";
@@ -614,6 +614,21 @@ echo "    <td class=\"smalltext\">\n";
 echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
 echo "        ", form_input_text('msg', '1.1', 10). "\n";
 echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['search']} (<a href=\"search.php\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "    <td class=\"smalltext\">\n";
+echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
+echo "        ", form_input_text("search_string", "", 20). "\n";
+echo "        ", form_submit("submit", $lang['find']). "\n";
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.37 2003-09-30 21:21:39 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.38 2004-01-16 19:51:55 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -33,6 +33,19 @@ require_once("./include/lang.inc.php");
 function search_execute($argarray, &$urlquery, &$error)
 {
     global $search_min_word_length;
+    
+    // Ensure the bare minimum of variables are set
+    
+    if (!isset($argarray['method'])) $argarray['method'] = 1;    
+    if (!isset($argarray['date_from'])) $argarray['date_from'] = 7;
+    if (!isset($argarray['date_to'])) $argarray['date_to'] = 2;
+    if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;    
+    if (!isset($argarray['sstart'])) $argarray['sstart'] = 0;        
+    if (!isset($argarray['fid'])) $argarray['fid'] = 0;
+    if (!isset($argarray['to_other'])) $argarray['to_other'] = "";
+    if (!isset($argarray['from_other'])) $argarray['from_other'] = "";
+    if (!isset($argarray['to_uid'])) $argarray['to_uid'] = 0;
+    if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;    
 
     $db_search_execute = db_connect();
 
@@ -43,7 +56,7 @@ function search_execute($argarray, &$urlquery, &$error)
     $searchsql.= "LEFT JOIN ". forum_table("POST_CONTENT"). " POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
     $searchsql.= "WHERE ";
 
-    if ($argarray['fid'] > 0) {
+    if (isset($argarray['fid']) && $argarray['fid'] > 0) {
         $folders = "THREAD.FID = ". $argarray['fid'];
     }else{
         $folders = "THREAD.FID in (". threads_get_available_folders(). ")";
@@ -62,9 +75,9 @@ function search_execute($argarray, &$urlquery, &$error)
         $argarray['me_only'] = "N";
     }
 
-    if (empty($argarray['to_other']) && $argarray['to_uid'] > 0) {
+    if (isset($argarray['to_other']) && empty($argarray['to_other']) && isset($argarray['to_uid']) && $argarray['to_uid'] > 0) {
         $fromtouser = "AND POST.TO_UID = ". $argarray['to_uid'];
-    }elseif (!empty($argarray['to_other'])) {
+    }elseif (isset($argarray['to_other']) && !empty($argarray['to_other'])) {
         $touid = user_get_uid($argarray['to_other']);
         if ($touid['UID'] > -1) {
             $fromtouser = "AND POST.TO_UID = ". $touid['UID'];
@@ -74,9 +87,9 @@ function search_execute($argarray, &$urlquery, &$error)
         }
     }
 
-    if (empty($argarray['from_other']) && $argarray['from_uid'] > 0) {
+    if (isset($argarray['from_other']) && empty($argarray['from_other']) && isset($argarray['from_uid']) && $argarray['from_uid'] > 0) {
         $fromtouser.= " AND POST.FROM_UID = ". $argarray['from_uid'];
-    }elseif (!empty($argarray['from_other'])) {
+    }elseif (isset($argarray['from_other']) && !empty($argarray['from_other'])) {
         $fromuid = user_get_uid($argarray['from_other']);
         if ($fromuid['UID'] > -1) {
             $fromtouser.= " AND POST.FROM_UID = ". $fromuid['UID'];

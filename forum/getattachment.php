@@ -74,7 +74,6 @@ if (isset($HTTP_GET_VARS['hash'])) {
 
         header("Content-Type: application/x-ms-download");
         header("Content-disposition:$attachment filename=". basename($attachmentdetails['FILENAME']));
-        //header("Content-Transfer-Encoding: binary");
         readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
         header("Content-Length: ". ob_get_length());
         exit;
@@ -83,7 +82,6 @@ if (isset($HTTP_GET_VARS['hash'])) {
 
         header("Content-Type: ". $attachmentdetails['MIMETYPE']);
         header("Content-disposition: filename=". basename($attachmentdetails['FILENAME']));
-        //header("Content-Transfer-Encoding: binary");
         readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
         header("Content-Length: ". ob_get_length());
         exit;

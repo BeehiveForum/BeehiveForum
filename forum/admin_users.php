@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.58 2004-03-18 23:42:30 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.59 2004-03-19 23:06:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -113,7 +113,7 @@ if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
 }
 
 if (isset($HTTP_GET_VARS['usersearch']) && strlen(trim($HTTP_GET_VARS['usersearch'])) > 0) {
-    $usersearch = $HTTP_GET_VARS['usersearch'];
+    $usersearch = trim($HTTP_GET_VARS['usersearch']);
 }else {
     $usersearch = "";
 }
@@ -303,7 +303,7 @@ if (sizeof($user_array) == 20) {
     }
 }
 
-echo "<form action=\"admin_users.php?webtag={$webtag['WEBTAG']}\" method=\"post\">\n";
+echo "<form action=\"admin_users.php?webtag={$webtag['WEBTAG']}\" method=\"get\">\n";
 echo "  ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.41 2004-03-19 15:38:32 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.42 2004-03-19 23:06:52 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -967,7 +967,7 @@ $lang['forthcomingbirthdays'] = "Prochains Anniversaires";
 
 // Start page (start_main.php) -----------------------------------------
 
-$lang['editstartpage'] = "You can edit this page from the admin interface";
+$lang['editstartpage_help'] = "You can edit this page from the admin interface";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

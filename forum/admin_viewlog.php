@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.39 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.40 2004-03-19 23:06:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -295,29 +295,43 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
-echo "  </table>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>";
+echo "    </tr>\n";
+echo "    <tr>\n";
 
 if (sizeof($admin_log_array) == 20) {
     if ($start < 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "      <td align=\"center\">";
+        echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "      </td>\n";
     }elseif ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "      <td align=\"center\">";
+        echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;\n";
+        echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;\n";
+        echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "      </td>\n";        
     }
 }else {
     if ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+        echo "      <td align=\"center\">";    
+        echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;\n";
+        echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+        echo "      </td>\n";
     }
 }
 
 if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && $admin_log_array) {
-    echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-    echo form_submit('clear',$lang['clearlog']);
-    echo "</form>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">\n";
+    echo "        <form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+    echo "          ", form_submit('clear',$lang['clearlog']), "\n";
+    echo "        </form>\n";
+    echo "      </td>";
+    echo "    </tr>\n";    
 }
 
+echo "  </table>\n";
 echo "</div>\n";
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.62 2004-03-17 23:41:47 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.63 2004-03-19 23:06:52 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -214,7 +214,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
             $top_user = db_fetch_array($result);
             $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
         }
     }
 
@@ -249,7 +249,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
         $fmt_username = format_user_name($logon,$nickname);
 
         if($fmt_uid != $default_uid && $fmt_uid != 0){
-            $html .= "<option value=\"$fmt_uid\">".$fmt_username."</option>\n";
+            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
         }
     }
 
@@ -276,7 +276,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
 
             $top_user = db_fetch_array($result);
             $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
         }
     }
 
@@ -309,8 +309,8 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
         $fmt_uid = $row['UID'];
         $fmt_username = format_user_name($logon,$nickname);
 
-        if($fmt_uid != $default_uid && $fmt_uid != 0){
-            $html .= "<option value=\"$fmt_uid\">".$fmt_username."</option>\n";
+        if ($fmt_uid != $default_uid && $fmt_uid != 0) {
+            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
         }
     }
 

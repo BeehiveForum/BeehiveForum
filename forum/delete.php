@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.54 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: delete.php,v 1.55 2004-03-22 12:21:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,7 +139,7 @@ if ($valid) {
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['postdelsuccessfully']}</p>";
-            form_quick_button("./discussion.php", $lang['back'], array("msg", "webtag"), array($msg, $webtag['WEBTAG']), "_self");
+            form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
             echo "</div>";
             html_draw_bottom();
             exit;

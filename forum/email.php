@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.37 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: email.php,v 1.38 2004-03-22 12:21:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,7 +122,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "<p>{$lang['msgfail']}</p>";
         }
         
-        form_quick_button("user_profile.php", $lang['continue'], array("webtag", "uid"), array($webtag['WEBTAG'], $HTTP_POST_VARS['t_to_uid']));
+        form_quick_button("./user_profile.php", $lang['continue'], "uid", $to_uid);
         html_draw_bottom();
         exit;
     }

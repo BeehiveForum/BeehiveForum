@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.37 2004-03-17 17:20:35 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.38 2004-03-22 12:21:16 decoyduck Exp $ */
 
 function post_update($tid, $pid, $content)
 {
@@ -30,16 +30,13 @@ function post_update($tid, $pid, $content)
     $db_post_update = db_connect();
 
     $content  = addslashes($content);
-    $edit_uid = bh_session_get_value('UID');
-    
+   
     $webtag = get_webtag();
 
     $sql = "UPDATE {$webtag['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+    $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-    $result = db_query($sql, $db_post_update);
-
-    return (db_affected_rows($db_post_update) > 0);
+    return db_query($sql, $db_post_update);
 }
 
 function post_add_edit_text($tid, $pid)
@@ -54,9 +51,7 @@ function post_add_edit_text($tid, $pid)
     $sql = "UPDATE {$webtag['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    $result = db_query($sql, $db_post_add_edit_text);
-    
-    return (db_affected_rows($db_post_add_edit_text) > 0);
+    return db_query($sql, $db_post_add_edit_text);
 }
 
 function post_delete($tid, $pid)
@@ -90,7 +85,7 @@ function edit_refuse($tid, $pid)
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['nopermissiontoedit']}</p>";
-    form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
+    form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid");
     echo "</div>";
 }
 

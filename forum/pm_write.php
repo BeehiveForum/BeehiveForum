@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.51 2004-03-18 23:42:31 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.52 2004-03-22 12:21:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -221,7 +221,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     header_redirect($uri);
 }
 
-html_draw_top("openprofile.js", "basetarget=_blank");
+html_draw_top("openprofile.js", "post.js", "basetarget=_blank");
 draw_header_pm();
 
 // Attachment Unique ID

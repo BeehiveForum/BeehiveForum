@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.22 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.23 2004-03-22 12:21:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -60,7 +60,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "<p class=\"smalltext\">{$lang['passwdresetexp_1']}<br />\n";
             echo "{$lang['passwdresetexp_2']}</p>\n";
 
-            form_quick_button('logon.php', 'Back');
+            form_quick_button('./logon.php', 'Back');
 
             html_draw_bottom();
             exit;

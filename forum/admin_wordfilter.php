@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.33 2004-03-20 19:21:30 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.34 2004-03-22 12:21:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,7 +120,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
         echo "<p>{$lang['forumsettingsupdated']}</p>";
 
-        form_quick_button("./admin_wordfilter.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+        form_quick_button("./admin_wordfilter.php", $lang['continue'], false, false, "_top");
 
         html_draw_bottom();
         exit;

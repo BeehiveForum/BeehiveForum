@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.76 2004-03-21 19:10:58 tribalonline Exp $ */
+/* $Id: register.php,v 1.77 2004-03-22 12:21:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -59,9 +59,9 @@ if (bh_session_get_value('UID')) {
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
     
     if (isset($final_uri)) {
-        form_quick_button("./index.php". $lang['continue'], array("final_uri", "webtag"), array($final_uri, $webtag['WEBTAG']), "_top");
+        form_quick_button("./index.php". $lang['continue'], "final_uri", $final_uri, "_top");
     }else {
-        form_quick_button("./index.php". $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+        form_quick_button("./index.php". $lang['continue'], false, false, "_top");
     }
     
     echo "</div>\n";
@@ -304,9 +304,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
           echo "<p>{$lang['userrecordcreated']}</p>\n";
           
           if (isset($final_uri)) {
-              form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode($final_uri), $webtag['WEBTAG']), "_top");
+              form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
           }else {
-              form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+              form_quick_button("./index.php", $lang['continue'], false, false, "_top");
           }
           
           echo "</div>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.59 2003-08-31 17:01:30 hodcroftcj Exp $ */
+/* $Id: html.inc.php,v 1.60 2003-09-09 15:16:28 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -211,6 +211,14 @@ function html_draw_top()
 
 function html_draw_bottom ()
 {
+    global $HTTP_SERVER_VARS, $show_page_info;
+
+    if (basename($HTTP_SERVER_VARS['PHP_SELF']) != "nav.php" && $show_page_info) {
+        echo "<p class=\"info-text\">[&nbsp;Script Execution time:&nbsp;<!-- bh_script_time //-->&nbsp;]   ";
+        echo "[&nbsp;<!-- bh_query_count //-->&nbsp;queries&nbsp;used&nbsp;]  ";
+        echo "[&nbsp;<!-- bh_content_encoding //-->&nbsp;]</p>\n";
+    }
+
     echo "</body>\n";
     echo "</html>\n";
 }

@@ -21,7 +21,7 @@ frame           {
                 margin: 0px;
                 padding: 0px;
                 }
-		
+
 .navpage        {
                 font-size: 10px;
                 font-weight: bold;
@@ -30,7 +30,7 @@ frame           {
                 color: #FFFFFF;
 		background-color: #568000;
                 }
-                
+
 .navpage A	{
 		color: #FFFFFF;
 		text-decoration: none;
@@ -338,7 +338,7 @@ A		{
           background-color: #D42AD4
 }
 
-.highlight { 
+.highlight {
           background-color: #A5D149
 }
 
@@ -402,3 +402,9 @@ A		{
 		margin:1;
 		float:left;
 }
+
+.info-text  {
+                color: #7F7F7F;
+                font-size: 9px;
+                text-align: center;
+            }

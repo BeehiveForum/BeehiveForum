@@ -337,7 +337,7 @@ A		{
           background-color: #D42AD4
 }
 
-.highlight { 
+.highlight {
           background-color: #FFC846
 }
 
@@ -401,3 +401,9 @@ A		{
 		margin:1;
 		float:left;
 }
+
+.info-text  {
+                color: #7F7F7F;
+                font-size: 9px;
+                text-align: center;
+            }

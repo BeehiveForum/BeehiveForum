@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.72 2005-04-03 17:38:11 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.73 2005-04-03 22:28:22 rowan_hill Exp $ */
+
+/**
+* Functions relating to permissions
+*/
+
+/**
+*/
 
 function perm_is_moderator($fid = 0)
 {

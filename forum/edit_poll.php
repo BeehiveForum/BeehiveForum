@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.93 2005-03-29 21:48:36 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.94 2005-04-03 22:28:21 rowan_hill Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -174,11 +174,16 @@ if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_
 
 if (isset($_POST['preview']) || isset($_POST['submit'])) {
 
+    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+    }else {
+        $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
+        $valid = false;
+    }
     if (isset($_POST['question']) && strlen(trim(_stripslashes($_POST['question']))) > 0) {
         $t_question = trim(_stripslashes($_POST['question']));
     }else {
-        $error_html = "<h2>{$lang['mustspecifypollquestion']}</h2>";
-        $valid = false;
+        $t_question = $t_threadtitle;
     }
 
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
@@ -477,7 +482,7 @@ if ($valid && isset($_POST['preview'])) {
         $hardedit = true;
     }
 
-    poll_edit($tid, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $hardedit);
+    poll_edit($tid, $t_threadtitle, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $hardedit);
     post_add_edit_text($tid, 1);
 
     if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
@@ -576,11 +581,19 @@ echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("t_msg", $edit_msg), "\n";
 echo "  <p>{$lang['editpollwarning']}</p>\n";
 echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+
+echo "    <tr>\n";
+echo "      <td><h2>{$lang['threadtitle']}</h2></td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : thread_get_title($tid), 30, 64), "&nbsp;", form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "</td>\n";
+echo "    </tr>\n";
+
 echo "    <tr>\n";
 echo "      <td><h2>{$lang['pollquestion']}</h2></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : thread_get_title($tid), 30, 64), "</td>\n";
+echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : _htmlentities($polldata['QUESTION']), 30, 64), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
@@ -666,13 +679,16 @@ for ($i = 0; $i < $answer_count; $i++) {
 
     if (isset($t_answers[$i])) {
 
-        echo "                        <td>", form_input_text("answers[$i]", _htmlentities(clean_emoticons($t_answers[$i])), 40, 255), "</td>\n";
+	//I have no idea what clean_emoticons is, or where it lives, but it's gone missing, so I've just chopped it out for now.
+        //echo "                        <td>", form_input_text("answers[$i]", _htmlentities(clean_emoticons($t_answers[$i])), 40, 255), "</td>\n";
+        echo "                        <td>", form_input_text("answers[$i]", _htmlentities($t_answers[$i]), 40, 255), "</td>\n";
 
     }else {
 
         if (isset($pollresults['OPTION_NAME'][$i])) {
 
-            $pollresults['OPTION_NAME'][$i] = clean_emoticons($pollresults['OPTION_NAME'][$i]);
+            //$pollresults['OPTION_NAME'][$i] = clean_emoticons($pollresults['OPTION_NAME'][$i]);
+            $pollresults['OPTION_NAME'][$i] = $pollresults['OPTION_NAME'][$i];
 
             if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
 

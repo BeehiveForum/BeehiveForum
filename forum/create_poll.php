@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.151 2005-03-29 21:48:34 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.152 2005-04-03 22:28:20 rowan_hill Exp $ */
+
+/**
+* Displays and processes the Create Poll page
+*/
+
+/**
+*/
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -253,11 +260,16 @@ if (isset($_POST['cancel'])) {
         $t_post_html = 'N';
     }
 
+    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
+        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
+    }else {
+        $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
+        $valid = false;
+    }
     if (isset($_POST['question']) && strlen(trim(_stripslashes($_POST['question']))) > 0) {
         $t_question = trim(_stripslashes($_POST['question']));
     }else {
-        $error_html = "<h2>{$lang['mustenterpollquestion']}</h2>";
-        $valid = false;
+        $t_question = $t_threadtitle;
     }
 
     if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
@@ -525,7 +537,7 @@ if ($valid && isset($_POST['submit'])) {
 
             // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
-            $t_tid = post_create_thread($t_fid, $uid, $t_question, 'Y', 'N');
+            $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, 'Y', 'N');
             $t_pid = post_create($t_fid, $t_tid, 0, $uid, $uid, 0, '');
 
             if ($t_poll_type == 2) {
@@ -533,7 +545,7 @@ if ($valid && isset($_POST['submit'])) {
                 $t_poll_vote_type = 1;
             }
 
-            poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type);
+            poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_question);
 
             if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
 
@@ -719,10 +731,16 @@ echo "    <tr>\n";
 echo "      <td>", $folder_dropdown, "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
+echo "      <td><h2>{$lang['threadtitle']}</h2></td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 30, 64), "&nbsp;", form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
 echo "      <td><h2>{$lang['pollquestion']}</h2></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : '', 30, 64), "&nbsp;", form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "</td>\n";
+echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : '', 30, 64), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.110 2005-03-29 18:25:55 decoyduck Exp $ */
+/* $Id: register.php,v 1.111 2005-04-03 22:28:22 rowan_hill Exp $ */
+
+/**
+* Displays and processes registration forms
+*/
+
+/**
+*/
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -47,6 +54,7 @@ $forum_settings = forum_get_settings();
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
+include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");

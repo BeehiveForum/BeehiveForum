@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.49 2005-04-01 13:17:14 rowan_hill Exp $ */
+/* $Id: new-install.php,v 1.50 2005-04-03 22:28:23 rowan_hill Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -443,6 +443,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE {$forum_webtag}_POLL (";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  QUESTION VARCHAR(64) DEFAULT NULL,";
 $sql.= "  CLOSES DATETIME DEFAULT NULL,";
 $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
 $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";

@@ -21,13 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.146 2005-03-31 00:46:49 rowan_hill Exp $ */
+/* $Id: poll.inc.php,v 1.147 2005-04-03 22:28:23 rowan_hill Exp $ */
+
+/**
+* Poll related functions
+*/
+
+/**
+*/
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 
-function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type)
+function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $question)
 {
     $db_poll_create = db_connect();
 
@@ -45,11 +52,13 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
     if (!is_numeric($option_type)) $option_type = 0;
+    
+    $question  = addslashes(_htmlentities($question));
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE) ";
-    $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type', '$option_type')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION) ";
+    $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type', '$option_type', '$question')";
 
     if (db_query($sql, $db_poll_create)) {
 
@@ -73,7 +82,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     }
 }
 
-function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $hardedit)
+function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $hardedit)
 {
     $db_poll_edit = db_connect();
 
@@ -88,11 +97,11 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
 
     $edit_uid = bh_session_get_value('UID');
 
-    $poll_question = addslashes($poll_question);
+    $thread_title = addslashes($thread_title);
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$poll_question' WHERE TID = $tid";
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$thread_title' WHERE TID = $tid";
     $result = db_query($sql, $db_poll_edit);
 
     if ($hardedit) {
@@ -103,7 +112,8 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
 
     $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
     $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
-    $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type' ";
+    $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type', ";
+    $sql.= "QUESTION = '$poll_question' ";
 
     if ($closes) {
 
@@ -150,7 +160,7 @@ function poll_get($tid)
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER.RELATIONSHIP, ";
     $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, POLL.OPTIONTYPE,";
-    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, ";
+    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.QUESTION, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
     $sql.= "THREAD.FID FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
@@ -336,6 +346,12 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
     $user_poll_data = poll_get_user_vote($tid);
+    
+    if (isset($polldata['QUESTION']) && trim(_stripslashes($polldata['QUESTION']) != "")) {
+        $question = $polldata['QUESTION'];
+    } else {
+        $question = thread_get_title($tid);
+    }
 
     $totalvotes  = 0;
     $optioncount = 0;
@@ -350,7 +366,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "        <table width=\"450\">\n";
     $polldata['CONTENT'].= "          <tr>\n";
-    $polldata['CONTENT'].= "            <td><h2>". thread_get_title($tid). "</h2></td>\n";
+    $polldata['CONTENT'].= "            <td><h2>". $question. "</h2></td>\n";
     $polldata['CONTENT'].= "          </tr>\n";
 
     $poll_group_count = 1;

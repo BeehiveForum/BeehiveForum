@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.42 2003-12-02 22:02:23 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.43 2003-12-18 21:25:52 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -180,7 +180,7 @@ foreach ($user_profile_array as $profile_entry) {
     }else {
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $profile_entry['NAME'] . "</td>\n";
-        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(_stripslashes($profile_entry['ENTRY'])) : "", "</td>\n";
+        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(format_url2link(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";
         echo "                </tr>\n";
     }
 }

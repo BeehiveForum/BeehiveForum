@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.14 2005-02-04 19:35:35 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.15 2005-02-06 00:38:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -304,37 +304,37 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"2\">{$lang['notindictionary']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_input_text("word_display", $dictionary->get_current_word(), 32, false, "class=\"dictionary_word_display\" disabled=\"disabled\""), form_input_hidden("word", $dictionary->get_current_word()), "</td>\n";
+echo "                  <td colspan=\"2\">", form_input_text("word_display", $dictionary->get_current_word(), 32, false, "disabled=\"disabled\"", "dictionary_word_display"), form_input_hidden("word", $dictionary->get_current_word()), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['changeto']}:</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, "class=\"dictionary_change_to\""), "</td>\n";
+echo "                  <td width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, false, "dictionary_change_to"), "</td>\n";
 echo "                  <td rowspan=\"2\" width=\"130\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"120\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("ignore", $lang['ignore'], "class=\"dictionary_button\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("ignore", $lang['ignore'], false, "dictionary_button"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("ignoreall", $lang['ignoreall'], "class=\"dictionary_button\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("ignoreall", $lang['ignoreall'], false, "dictionary_button"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("change", $lang['change'], "class=\"dictionary_button\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("change", $lang['change'], false, "dictionary_button"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("changeall", $lang['changeall'], "class=\"dictionary_button\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("changeall", $lang['changeall'], false, "dictionary_button"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("add", $lang['add'], "class=\"dictionary_button\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("add", $lang['add'], false, "dictionary_button"), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"270\">\n";
-echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions_array(), false, $dictionary->get_best_suggestion(), "size=\"10\" class=\"dictionary_best_selection\" onchange=\"changeword(this)\""), "\n";
+echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions_array(), false, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeword(this)\"", "dictionary_best_selection"), "\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.101 2005-02-04 19:35:36 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.102 2005-02-06 00:38:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -569,7 +569,7 @@ echo "        <tr>\n";
 echo "          <td><h2>{$lang['subject']}:</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, "class=\"thread_title\""), "</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, false, "thread_title"), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><h2>{$lang['to']}:</h2></td>\n";
@@ -580,9 +580,9 @@ if ($friends_array = pm_user_get_friends()) {
     echo "        <tr>\n";
     echo "          <td>\n";
     echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
-    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "class=\"to_uid_dropdown\" onclick=\"checkToRadio(0)\""), "<br />\n";
+    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "<br />\n";
     echo "            ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
-    echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" class=\"recipient_dropdown\" onclick=\"checkToRadio(1)\""), "\n";
+    echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_dropdown"), "\n";
     echo "          </td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
@@ -592,7 +592,7 @@ if ($friends_array = pm_user_get_friends()) {
 }else {
 
     echo "        <tr>\n";
-    echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" class=\"recipient_dropdown\""), "</td>\n";
+    echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_dropdown"), "</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"addRecipient()\""), "&nbsp;&nbsp;</td>\n";

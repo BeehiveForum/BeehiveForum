@@ -23,10 +23,26 @@ USA
 
 // Error Handler
 
+// redefine the user error constants
+
+define("FATAL", E_USER_ERROR);
+define("ERROR", E_USER_WARNING);
+define("WARNING", E_USER_NOTICE);
+
+// set the error reporting level
+
+error_reporting(FATAL | ERROR | WARNING);
+
+// Required include files.
+
+require_once("./include/config.inc.php");
+require_once("./include/html.inc.php");
+require_once("./include/form.inc.php");
+
 function error_handler($errno, $errstr, $errfile, $errline)
 {
 
-    global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS;
+    global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS, $gzip_compress_output;
 
     $getvars = "";
     foreach ($HTTP_GET_VARS as $key => $value) {
@@ -120,10 +136,10 @@ function error_handler($errno, $errstr, $errfile, $errline)
       echo "          <td class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
       echo "        </tr>\n";
       echo "        <tr>\n";
-      echo "          <td>";
+      echo "          <td>\n";
 
       foreach ($HTTP_POST_VARS as $key => $value) {
-        echo form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
+        echo "            ", form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
       }
 
       echo "          </td>\n";
@@ -176,30 +192,30 @@ function error_handler($errno, $errstr, $errfile, $errline)
       echo "          <td><h2>Error Message for server admins and developers:</h2></td>\n";
       echo "        </tr>\n";
       echo "        <tr>\n";
-      echo "          <td class=\"postbody\">";
+      echo "          <td class=\"postbody\">\n";
 
       switch ($errno) {
 
         case FATAL:
-          echo "<p><b>FATAL</b> [$errno] $errstr</p>\n";
-          echo "<p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          echo "            <p><b>FATAL</b> [$errno] $errstr</p>\n";
+          echo "            <p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
         case ERROR:
-          echo "<b>ERROR</b> [$errno] $errstr<br />\n";
-          echo "<p>Error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          echo "            <b>ERROR</b> [$errno] $errstr<br />\n";
+          echo "            <p>Error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
         case WARNING:
-          echo "<b>WARNING</b> [$errno] $errstr<br />\n";
-          echo "<p>Warning in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          echo "            <b>WARNING</b> [$errno] $errstr<br />\n";
+          echo "            <p>Warning in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
         default:
-          echo "<b>Unknown error</b> [$errno] $errstr<br />\n";
-          echo "<p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          echo "            <b>Unknown error</b> [$errno] $errstr<br />\n";
+          echo "            <p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
       }
 
-      echo "<p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
-      echo "</td>\n";
+      echo "            <p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
+      echo "          </td>\n";
       echo "        </tr>\n";
       echo "      </table>\n";
       echo "    </td>\n";
@@ -215,13 +231,8 @@ function error_handler($errno, $errstr, $errfile, $errline)
 
 }
 
-define("FATAL", E_USER_ERROR);
-define("ERROR", E_USER_WARNING);
-define("WARNING", E_USER_NOTICE);
+// set to the user defined error handler
 
-error_reporting(E_ALL);
-
-//error_reporting(FATAL | ERROR | WARNING);
-//set_error_handler('error_handler');
+$old_error_handler = set_error_handler("error_handler");
 
 ?>

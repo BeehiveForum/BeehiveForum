@@ -27,7 +27,7 @@ USA
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
-require_once("./include/form.inc.php"); // Form functions
+require_once("./include/form.inc.php"); // Form drawing functions
 
 // Check that required variables are set
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
@@ -44,7 +44,8 @@ if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
     }
 } else {
     $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    if (!isset($HTTP_GET_VARS['mode'])) { 
+    if (isset($mark_all_read)) threads_mark_all_read();
+    if (!isset($HTTP_GET_VARS['mode'])) {
         if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
             $mode = 1;
         } else {
@@ -89,7 +90,7 @@ function change_current_thread (thread_id) {
 
 			echo "<form name=\"f_mode\" method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
             echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\"");
-            echo form_submit("go","Go");
+            echo form_submit("go","Go!");
 
 			/*Old code
 			echo "<select name=\"mode\" class=\"thread_list_mode\" onChange=\"submit();\">\n";
@@ -297,7 +298,7 @@ while (list($key1, $folder) = each($folder_order)) {
 	echo "</td></tr>\n";
 	if (is_array($thread_info)) reset($thread_info);
 }
-
+echo "<tr><td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
 echo "</table>\n";
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";

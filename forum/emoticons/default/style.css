@@ -42,6 +42,17 @@
 	display: none;
 }
 
+.e_cringe { /* >.< */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/cringe.png");
+    background-repeat: no-repeat;
+}
+.e_cringe span {
+	display: none;
+}
+
 .e_tongue { /* :P :-P */
 	padding-left: 19px;
     height: 19px;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.78 2004-08-16 22:07:14 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.79 2004-10-08 10:35:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,8 +162,8 @@ echo "            <td><h2>&nbsp;", format_user_name($user_profile['LOGON'], $use
 
 if (bh_session_get_value('UID') > 0) {
 
-    if ($user_profile['RELATIONSHIP'] & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-    if ($user_profile['RELATIONSHIP'] & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
 }
 
 echo "</h2></td>\n";
@@ -295,7 +295,7 @@ if (bh_session_get_value('UID') != 0) {
 
     if ($uid != bh_session_get_value('UID')) {
 
-        if ($user_profile['RELATIONSHIP'] & USER_FRIEND) {
+        if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
 
             $setrel = 0;
             $text = $lang['removefromfriends'];
@@ -310,7 +310,7 @@ if (bh_session_get_value('UID') != 0) {
         echo "                  <td><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
 
-        if ($user_profile['RELATIONSHIP'] & USER_IGNORED) {
+        if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
 
             $setrel = 0;
             $text = $lang['stopignoringuser'];

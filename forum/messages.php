@@ -86,12 +86,7 @@ messages_start_panel();
 
 messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
 messages_interest_form($tid, $pid);
-
-if (isset($HTTP_GET_VARS['fontsize'])) {
-    message_fontsize_form($HTTP_GET_VARS['fontsize'], $tid, $pid);
-} else {
-    message_fontsize_form(10, $tid, $pid);
-}
+message_fontsize_form($HTTP_GET_VARS['fontsize'], $tid, $pid);
 
 if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
     messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);

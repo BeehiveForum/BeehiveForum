@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.46 2004-05-15 14:43:42 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.47 2004-05-20 16:14:08 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -630,7 +630,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.GID = '$uid') ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
     $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = FOLDER.FID) ";
     $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 OR GROUP_PERMS.PERM IS NULL) ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.122 2004-08-12 22:53:16 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.123 2004-08-18 00:27:58 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -342,7 +342,7 @@ function html_draw_top()
 
         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
         echo "<!--\n\n";
-        echo "top.document.body.rows='60,' + $fontsize * 2 + ',*';\n";
+        echo "top.document.body.rows='60,' + ". max($fontsize* 2, 22) ."+ ',*';\n";
         echo "top.frames['main'].frames['left'].location.reload();\n";
         echo "top.frames['fnav'].location.reload();\n\n";
         echo "//-->\n";

@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.76 2004-06-03 10:24:44 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.77 2004-06-13 11:49:07 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
 
-function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "", $access_allowed = USER_PERM_THREAD_ACCESS)
+function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "")
 {
     $db_folder_draw_dropdown = db_connect();
 
@@ -39,6 +39,8 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     $folders['FIDS'] = array();
     $folders['TITLES'] = array();
+
+    $access_allowed = USER_PERM_THREAD_CREATE;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";

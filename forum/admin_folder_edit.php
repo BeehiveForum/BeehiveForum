@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.14 2004-05-25 14:11:24 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.15 2004-06-13 11:49:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -242,7 +242,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['moveposts']}
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['movepoststofolder']}:</td>\n";
-echo "                  <td>", folder_draw_dropdown($folder_data['FID'], "move", "", FOLDER_ALLOW_ALL_THREAD, "", USER_PERM_THREAD_CREATE), "&nbsp;", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
+echo "                  <td>", folder_draw_dropdown($folder_data['FID'], "move"), "&nbsp;", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

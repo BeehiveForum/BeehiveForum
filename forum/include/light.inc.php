@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.49 2004-06-04 16:45:50 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.50 2004-06-13 11:49:07 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -633,7 +633,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     $folders['TITLES'] = array();
 
     $allowed_types = FOLDER_ALLOW_NORMAL_THREAD;
-    $access_allowed = USER_PERM_THREAD_ACCESS;
+    $access_allowed = USER_PERM_THREAD_CREATE;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";

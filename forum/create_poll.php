@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.83 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.84 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -658,7 +658,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
     if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-      echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('attachments.php?webtag={$webtag['WEBTAG']}&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+      echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '{$webtag['WEBTAG']}')\"");
       echo form_input_hidden("aid", $aid);
 
     }

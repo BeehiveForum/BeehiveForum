@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.97 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: edit.php,v 1.98 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -557,7 +557,7 @@ echo form_input_hidden("t_to_uid", $to_uid);
 echo form_input_hidden("t_from_uid", $from_uid);
 
 echo "<h2>".$lang['to'].":</h2>\n";
-echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $from_uid . ")\" target=\"_self\">";
+echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($from_uid, '{$webtag['WEBTAG']}')\" target=\"_self\">";
 echo _stripslashes(format_user_name($preview_message['FLOGON'], $preview_message['FNICK']));
 echo "</a>\n";
 
@@ -641,11 +641,11 @@ if ($edit_type == "html") {
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
     echo form_input_hidden('aid', $aid);
 }else {
     $aid = md5(uniqid(rand()));
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
     echo form_input_hidden('aid', $aid);
 }
 

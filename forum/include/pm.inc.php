@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.48 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.49 2004-03-18 23:42:31 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -299,7 +299,7 @@ function draw_pm_message($pm_elements_array)
     if (isset($pm_elements_array['FOLDER']) && $pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
         echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
         echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['FROM_UID'] . ")\" target=\"_self\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
         echo format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']), "</a>";
         echo "</span></td>\n";
     }else {
@@ -308,11 +308,11 @@ function draw_pm_message($pm_elements_array)
 
         if (is_array($pm_elements_array['TO_UID'])) {
             for ($i = 0; $i < sizeof($pm_elements_array['TO_UID']); $i++) {
-                echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['TO_UID'][$i] . ")\" target=\"_self\">";
+                echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
                 echo format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]), "</a>&nbsp;";
             }
         }else {
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['TO_UID'] . ")\" target=\"_self\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
             echo format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']), "</a>";
         }
 

@@ -25,8 +25,8 @@ function closeAttachWin () {
 	}
 }
 
-function launchAttachWin (aid) {
-	attachwin = window.open('attachments.php?aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+function launchAttachWin (aid, webtag) {
+	attachwin = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
 }
 
 function clearFocus() {

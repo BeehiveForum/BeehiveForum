@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.51 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.52 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -584,11 +584,11 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
   echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
   if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
     echo form_input_hidden('aid', $aid);
   }else {
     $aid = md5(uniqid(rand()));
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
     echo form_input_hidden('aid', $aid);
   }
 

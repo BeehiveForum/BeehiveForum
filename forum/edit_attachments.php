@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.46 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.47 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -275,7 +275,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
       echo "<form method=\"post\" action=\"edit_attachments.php?webtag={$webtag['WEBTAG']}\">\n";
       echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
       echo "  <tr>\n";
-      echo "    <td><p align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}')\""), "</p></td>\n";
+      echo "    <td><p align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '{$webtag['WEBTAG']}')\""), "</p></td>\n";
       echo "  </tr>\n";
       echo "</table>\n";
       echo "</form>\n";    

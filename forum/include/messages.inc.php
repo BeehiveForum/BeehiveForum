@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.250 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.251 2004-03-18 23:42:31 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -243,7 +243,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if ($message['FROM_UID'] > -1) {
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
         echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
     }else {
         echo format_user_name($message['FLOGON'], $message['FNICK']) . "</span>";
@@ -282,7 +282,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
@@ -943,7 +943,7 @@ function messages_forum_stats($tid, $pid)
 
                     for ($i = 0; $i < sizeof($user_stats['USERS']); $i++) {
             
-                        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']})\" target=\"_self\">";
+                        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
                         echo str_replace(" ", "&nbsp;", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME'])), "</a>";
                         if ($i < (sizeof($user_stats['USERS']) - 1)) echo ", ";
                     }
@@ -1024,7 +1024,7 @@ function messages_forum_stats($tid, $pid)
 
             if ($newest_member = get_newest_user()) {
 
-                echo "              {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']})\" target=\"_self\">", format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), "</a>.\n";
+                echo "              {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">", format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), "</a>.\n";
             }
 
             echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.55 2004-08-10 18:43:47 rowan_hill Exp $ */
+/* $Id: lthread_list.php,v 1.56 2004-08-22 17:30:29 rowan_hill Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -53,6 +53,7 @@ include_once("./include/light.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/threads.inc.php");
+include_once("./include/word_filter.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
@@ -292,7 +293,7 @@ if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<p><a href=\"lthrea
 
 while (list($key1, $folder_number) = each($folder_order)) {
 
-    echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE'] . "</a></h3>";
+    echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number. "\">". apply_wordfilter($folder_info[$folder_number]['TITLE']) . "</a></h3>";
 
     if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
@@ -348,7 +349,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     // work out how long ago the thread was posted and format the time to display
                     $thread_time = format_time($thread['modified']);
 
-                    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
+                    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".apply_wordfilter($thread['title'])."</a> ";
                     if ($thread['interest'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                     if ($thread['interest'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                     if ($thread['poll_flag'] == 'Y') echo "(P) ";

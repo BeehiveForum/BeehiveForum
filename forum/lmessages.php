@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.42 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.43 2004-08-22 17:30:29 rowan_hill Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -144,7 +144,7 @@ $show_sigs = false; // explicitly set sigs not to show in light mode
 
 $msg_count = count($messages);
 
-light_messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+light_messages_top(apply_wordfilter($foldertitle), apply_wordfilter(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
 
 if ($msg_count > 0) {
     $first_msg = $messages[0]['PID'];

@@ -48,6 +48,14 @@ if (!$attachments_enabled) {
   exit;
 }
 
+if (!isset($HTTP_GET_VARS['aid'])) {
+  html_draw_top();
+  echo "<h1>Invalid Operation</h1>\n";
+  echo "<h2>AID not specified. To use the attachments a unique AID must be specified in the URL Query by the referring page.</h2>\n";
+  html_draw_bottom();
+  exit;
+}
+
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
         html_guest_error();
         exit;

@@ -66,7 +66,7 @@ if(isset($HTTP_GET_VARS['uid'])){
     $uid = $HTTP_POST_VARS['uid'];
 } else {
     echo "<h1>Invalid Operation</h1>\n";
-    echo "<p>No user specified for editing.</p>\n";
+    echo "<p>No post specified for editing.</p>\n";
     html_draw_bottom();
     exit;
 }

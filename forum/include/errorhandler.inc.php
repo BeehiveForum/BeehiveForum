@@ -215,11 +215,11 @@ function error_handler($errno, $errstr, $errfile, $errline)
 
 }
 
-define ("FATAL", E_USER_ERROR);
-define ("ERROR", E_USER_WARNING);
-define ("WARNING", E_USER_NOTICE);
+define("FATAL", E_USER_ERROR);
+define("ERROR", E_USER_WARNING);
+define("WARNING", E_USER_NOTICE);
 
-error_reporting (FATAL | ERROR | WARNING);
+error_reporting(FATAL | ERROR | WARNING);
 set_error_handler('error_handler');
 
 ?>

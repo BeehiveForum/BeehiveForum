@@ -26,19 +26,24 @@ USA
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
+require_once("./include/perm.inc.php"); // Permissions functions
+require_once("./include/forum.inc.php"); // Forum functions
 
 function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
 	$db = db_connect();
 
+    $tbl_post = forum_table("POST");
+    
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
 	$sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
 	$sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.CONTENT, ";
 	$sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
 	$sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK ";
-	$sql .= "from POST left join USER FUSER on (POST.from_uid = FUSER.uid) ";
-	$sql .= "left join USER TUSER on (POST.to_uid = TUSER.uid) ";
+	$sql .= "from " . forum_table("POST") . " POST ";
+	$sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
+	$sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
 	$sql .= "where POST.TID = $tid ";
 	$sql .= "and POST.PID >= $pid ";
 	$sql .= "order by POST.PID ";
@@ -86,8 +91,12 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true)
 {
-    //echo "<p>" . $message['REPLY_TO_PID'] . "</p>";
-    global $HTTP_SERVER_VARS;
+    if(!isset($message['CONTENT']) || $message['CONTENT'] == ""){
+        message_display_deleted($tid,$message['PID']);
+        return;
+    }
+
+    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
 
     if($in_list){
         echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a>";
@@ -129,9 +138,24 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td></tr>\n";
     if($in_list){
         echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\">";
-        echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a></p></td></tr>";
+        echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a>";
+        if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_admin()){
+            echo "<a href=\"delete.php?msg=$tid.".$message['PID']."\" target=\"main\">Delete</a>";
+            echo "<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"main\">Edit</a>";
+        }
+        echo "</p></td></tr>";
     }
     echo "</table>\n";
+    echo "</td></tr></table></div>\n";
+}
+
+function message_display_deleted($tid,$pid)
+{
+    echo "<div align=\"center\">";
+    echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
+    echo "<table class=\"posthead\" width=\"100%\" border=\"0\"><tr><td>\n";
+    echo "Message ${tid}.${pid} was deleted\n";
+    echo "</td></tr></table>\n";
     echo "</td></tr></table></div>\n";
 }
 
@@ -214,8 +238,8 @@ function mess_nav_range($from,$to)
 function message_get_user($tid,$pid)
 {
     $db = db_connect();
-    
-    $sql = "select from_uid from POST where tid = $tid and pid = $pid";
+
+    $sql = "select from_uid from " . forum_table("POST") . " where tid = $tid and pid = $pid";
 
     $result = db_query($sql,$db);
 
@@ -234,20 +258,20 @@ function message_get_user($tid,$pid)
 function messages_update_read($tid,$pid,$uid)
 {
     $db = db_connect();
-    
-    $sql = "select LAST_READ from USER_THREAD where UID = $uid and TID = $tid";
+
+    $sql = "select LAST_READ from " . forum_table("USER_THREAD") . " where UID = $uid and TID = $tid";
 
     $result = db_query($sql,$db);
-    
+
     if(db_num_rows($result)){
         $fa = db_fetch_array($result);
         if($pid > $fa['LAST_READ']){
-            $sql = "update USER_THREAD set LAST_READ = $pid  where UID = $uid and TID = $tid";
+            $sql = "update " . forum_table("USER_THREAD") . " set LAST_READ = $pid  where UID = $uid and TID = $tid";
             //echo "<p>$sql</p>";
             db_query($sql,$db);
         }
     } else {
-        $sql = "insert into USER_THREAD (UID,TID,LAST_READ,INTEREST) ";
+        $sql = "insert into " . forum_table("USER_THREAD") . " (UID,TID,LAST_READ,INTEREST) ";
         $sql .= "values ($uid, $tid, $pid, 0)";
         db_query($sql,$db);
     }
@@ -257,11 +281,12 @@ function messages_update_read($tid,$pid,$uid)
 function messages_get_most_recent($uid)
 {
     $return = "1.1";
-    
+
     $db = db_connect();
 
     $sql = "select THREAD.TID, THREAD.MODIFIED, USER_THREAD.LAST_READ ";
-    $sql .= "from THREAD left join USER_THREAD on (USER_THREAD.TID = THREAD.TID and USER_THREAD.UID = $uid) ";
+    $sql .= "from " . forum_table("THREAD") . " THREAD ";
+    $sql .= "left join " . forum_table("USER_THREAD") . " USER_THREAD on (USER_THREAD.TID = THREAD.TID and USER_THREAD.UID = $uid) ";
     $sql .= "order by THREAD.MODIFIED DESC LIMIT 0,1";
 
     $result = db_query($sql,$db);

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+require_once("./include/forum.inc.php");
+
 define("BH_SESS_HASH","change this string if you like");
 
 function bh_session_check()
@@ -48,7 +50,8 @@ function bh_session_check()
 function bh_session_init($uid)
 {
     $sql = "select USER.STATUS, USER_PREFS.POSTS_PER_PAGE ";
-    $sql .= "from USER left join USER_PREFS on (USER.UID = USER_PREFS.UID) ";
+    $sql .= "from " . forum_table("USER") . " USER ";
+    $sql .= "left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
     $sql .= "where USER.UID = $uid";
 
     $db = db_connect();

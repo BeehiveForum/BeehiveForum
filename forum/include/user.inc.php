@@ -17,17 +17,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
 require_once("./include/db.inc.php");
+require_once("./include/forum.inc.php");
 
 function user_exists($logon)
 {
     $db = db_connect();
 
-    $sql = "SELECT uid FROM USER WHERE logon = \"$logon\"";
+    $sql = "SELECT uid FROM " . forum_table("USER") . " WHERE logon = \"$logon\"";
 
     $result = db_query($sql,$db);
 
@@ -42,7 +43,7 @@ function user_create($logon,$password,$nickname,$email)
 {
     $md5pass = md5($password);
 
-    $sql = "INSERT INTO USER (logon,passwd,nickname,email) ";
+    $sql = "INSERT INTO " . forum_table("USER") . " (logon,passwd,nickname,email) ";
     $sql .= "VALUES (\"$logon\",\"$md5pass\",\"$nickname\",\"$email\")";
 
     $db = db_connect();
@@ -63,7 +64,7 @@ function user_update($uid,$password,$nickname,$email)
         $bit = "PASSWORD = \"" . md5($password) . "\", ";
     }
 
-    $sql = "update USER set " . $bit . "NICKNAME = \"$nickname\", EMAIL = \"$email\"";
+    $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"$nickname\", EMAIL = \"$email\"";
     $sql .= " WHERE UID = $uid";
 
     $db = db_connect();
@@ -78,7 +79,7 @@ function user_logon($logon,$password)
 {
     $md5pass = md5($password);
 
-    $sql = "SELECT uid FROM USER ";
+    $sql = "SELECT uid FROM " . forum_table("USER") . " ";
     $sql .= "WHERE logon = \"$logon\" ";
     $sql .= "AND passwd = \"$md5pass\"";
 
@@ -101,7 +102,7 @@ function user_get($uid)
 {
     $db = db_connect();
 
-    $sql = "select * from USER where uid = $uid";
+    $sql = "select * from " . forum_table("USER") . " where uid = $uid";
 
     $result = db_query($sql,$db);
 
@@ -116,11 +117,31 @@ function user_get($uid)
     return $fa;
 }
 
+function user_get_logon($uid)
+{
+    $db = db_connect();
+
+    $sql = "select LOGON from " . forum_table("USER") . " where uid = $uid";
+
+    $result = db_query($sql,$db);
+
+    if(!db_num_rows($result)){
+        $logon = "UNKNOWN";
+    } else {
+        $fa = db_fetch_array($result);
+        $logon = $fa['LOGON'];
+    }
+
+    db_disconnect($db);
+
+    return $logon;
+}
+
 function user_get_sig($uid,&$content,&$html)
 {
     $db = db_connect();
 
-    $sql = "select content, html from USER_SIG where uid = $uid";
+    $sql = "select content, html from " . forum_table("USER_SIG") . " where uid = $uid";
 
     $result = db_query($sql,$db);
 
@@ -142,7 +163,7 @@ function user_get_prefs($uid)
 {
     $db = db_connect();
 
-    $sql = "select * from USER_PREFS where uid = $uid";
+    $sql = "select * from " . forum_table("USER_PREFS") . " where uid = $uid";
 
     $result = db_query($sql,$db);
 
@@ -163,7 +184,7 @@ function user_insert_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 
     $db = db_connect();
 
-    $sql = "insert into USER_PREFS (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
+    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
     $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE)";
     $sql .= " values ($uid, \"$firstname\", \"$lastname\", \"$homepage_url\", \"$pic_url\",";
     $sql .= " \"$email_notify\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page)";
@@ -181,7 +202,7 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 
     $db = db_connect();
 
-    $sql = "update USER_PREFS set";
+    $sql = "update " . forum_table("USER_PREFS") . " set";
     $sql .= " FIRSTNAME = \"$firstname\", LASTNAME = \"$lastname\",";
     $sql .= " HOMEPAGE_URL = \"$homepage_url\", PIC_URL = \"$pic_url\",";
     $sql .= " EMAIL_NOTIFY = \"$email_notify\", TIMEZONE = $timezone, DL_SAVING = \"$dl_saving\",";
@@ -200,7 +221,7 @@ function user_insert_sig($uid,$content,$html){
     $content = mysql_escape_string($content);
     $db = db_connect();
 
-    $sql = "insert into USER_SIG (UID, CONTENT, HTML)";
+    $sql = "insert into " . forum_table("USER_SIG") . " (UID, CONTENT, HTML)";
     $sql .= " values ($uid, \"$content\", \"$html\")";
 
     $result = db_query($sql,$db);
@@ -215,7 +236,7 @@ function user_update_sig($uid,$content,$html){
     $content = mysql_escape_string($content);
     $db = db_connect();
 
-    $sql = "update USER_SIG set";
+    $sql = "update " . forum_table("USER_SIG") . " set";
     $sql .= " CONTENT = \"$content\", HTML = \"$html\"";
     $sql .= " where UID = $uid";
 

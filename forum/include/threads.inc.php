@@ -24,11 +24,12 @@ USA
 // Included functions for displaying threads in the left frameset.
 
 require_once("./include/db.inc.php");
+require_once("./include/forum.inc.php");
 
 function threads_get_folders()
 {
 	$db = db_connect();
-	$query = "SELECT DISTINCT FID, TITLE FROM FOLDER ORDER BY FID";
+	$query = "select distinct FID, TITLE from " . forum_table("FOLDER") . " order by FID";
 	$result = db_query($query, $db);
 
 	if (!db_num_rows($result)) {
@@ -38,7 +39,7 @@ function threads_get_folders()
 			$folder_titles[$query_data['FID']] = $query_data['TITLE'];
 		}
 	}
-	
+
 	return $folder_titles;
 	db_disconnect($db);
 }
@@ -46,43 +47,43 @@ function threads_get_folders()
 function threads_get_all($uid) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
 	$db = db_connect();
-	
+
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
 	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
-	$sql .= "FROM FOLDER, THREAD ";
-	$sql .= "LEFT JOIN USER_THREAD ON ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
+	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
-	
+
 	$resource_id = db_query($sql, $db);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
 	db_disconnect($db);
-	
+
 }
 
 function threads_get_unread($uid) // get unread messages for $uid
 {
 	$db = db_connect();
-	
+
 	// Formulate query
 	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
-	$sql .= "FROM FOLDER, THREAD ";
-	$sql .= "LEFT JOIN USER_THREAD ON ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
+	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
-	
+
 	$resource_id = db_query($sql, $db);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
 	db_disconnect($db);
-	
+
 }
 
 function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
@@ -90,7 +91,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 	// If the user has clicked on a folder header, we want that folder to be first in the list
 	global $HTTP_GET_VARS;
 	if (isset($HTTP_GET_VARS['folder'])) $folder_order[] = $HTTP_GET_VARS['folder'];
-	
+
 	// Loop through the results and construct an array to return
 	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
 		$thread = db_fetch_array($resource_id);
@@ -172,7 +173,7 @@ function threads_display_list($thread_info, $folder_order) // Displays the threa
 function thread_get_title($tid)
 {
    $db = db_connect();
-   $sql = "SELECT THREAD.title FROM THREAD WHERE tid = $tid";
+   $sql = "SELECT THREAD.title FROM " . forum_table("THREAD") . " WHERE tid = $tid";
    $resource_id = db_query($sql,$db);
    if(!db_num_rows($resource_id)){
      $threadtitle = "The Unknown Thread";
@@ -187,7 +188,7 @@ function thread_get_title($tid)
 function thread_get($tid)
 {
    $db = db_connect();
-   $sql = "SELECT * FROM THREAD WHERE tid = $tid";
+   $sql = "SELECT * FROM " . forum_table("THREAD") . " WHERE tid = $tid";
    $resource_id = db_query($sql,$db);
    if(!db_num_rows($resource_id)){
      $threaddata = false;
@@ -201,7 +202,7 @@ function thread_get($tid)
 function threads_get_folder_msgs()
 {
 	$db = db_connect();
-	$sql = "SELECT fid, COUNT(fid) AS total FROM THREAD GROUP BY FID";
+	$sql = "SELECT fid, COUNT(fid) AS total FROM " . forum_table("THREAD") . " GROUP BY fid";
 	$resource_id = db_query($sql, $db);
 	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
 		$folder = db_fetch_array($resource_id);

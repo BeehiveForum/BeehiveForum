@@ -23,20 +23,22 @@ USA
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
+require_once("./include/forum.inc.php");
 
 function post_create($tid,$reply_pid,$fuid,$tuid,$content)
 {
     $db = db_connect();
     $content = mysql_escape_string($content);
-    
-    $sql = "insert into POST (tid,reply_to_pid,from_uid,to_uid,created,content) ";
+
+    $sql = "insert into " . forum_table("POST");
+    $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED,CONTENT) ";
     $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW(),\"$content\")";
 
     $result = db_query($sql,$db);
 
     if($result){
         $new_uid = db_insert_id($db);
-        $sql = "update THREAD set length = length + 1, modified = NOW() ";
+        $sql = "update " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
         $sql .= "where tid = $tid";
         $result = db_query($sql,$db);
     } else {
@@ -51,10 +53,11 @@ function post_create($tid,$reply_pid,$fuid,$tuid,$content)
 function post_create_thread($fid,$title)
 {
     $title = mysql_escape_string(htmlentities($title));
-    
+
     $db = db_connect();
 
-    $sql = "insert into THREAD (fid,title,length,poll_flag,modified) ";
+    $sql = "insert into " . forum_table("THREAD");
+    $sql .= " (FID,TITLE,LENGTH,POLL_FLAG,MODIFIED) ";
     $sql .= "values ($fid,\"$title\",0,\"N\",NOW())";
 
     $result = db_query($sql,$db);
@@ -85,55 +88,33 @@ function post_draw_to_dropdown($default_uid)
     $html = "<select name=\"t_to_uid\">";
     $db = db_connect();
 
-    if($default_uid){
-        $sql = "select uid, logon, nickname FROM USER where uid = $default_uid";
-
-       $result = db_query($sql,$db);
-
-       if($row = db_fetch_array($result)){
-           if(isset($row['logon'])){
-               $logon = $row['logon'];
-           } else {
-             $logon = "";
-           }
-            if(isset($row['nickname'])){
-                $nickname = $row['nickname'];
-            } else {
-                $nickname = "";
-            }
-
-            $fmt_uid = $row['uid'];
-            $fmt_username = format_user_name($logon,$nickname);
-
-            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>";
-        }
-    }
-
     $html .= "<option value=\"0\">ALL</option>";
 
-    $sql = "select uid, logon, nickname FROM USER";
+    $sql = "select UID, LOGON, NICKNAME from " . forum_table("USER");
 
     $result = db_query($sql,$db);
 
-    $i = 0;
     while($row = db_fetch_array($result)){
-        if($row['uid'] != $default_uid){
-            if(isset($row['logon'])){
-                $logon = $row['logon'];
-            } else {
-                $logon = "";
-            }
-            if(isset($row['nickname'])){
-                $nickname = $row['nickname'];
-            } else {
-                $nickname = "";
-            }
+        if(isset($row['LOGON'])){
+           $logon = $row['LOGON'];
+        } else {
+         $logon = "";
+        }
+        if(isset($row['NICKNAME'])){
+            $nickname = $row['NICKNAME'];
+        } else {
+            $nickname = "";
+        }
 
-            $fmt_uid = $row['uid'];
-            $fmt_username = format_user_name($logon,$nickname);
+        $fmt_uid = $row['UID'];
+        $fmt_username = format_user_name($logon,$nickname);
 
+        if($fmt_uid == $default_uid){
+            $html .= "<option value=\"$fmt_uid\" selected>$fmt_username</option>";
+        } else {
             $html .= "<option value=\"$fmt_uid\">$fmt_username</option>";
         }
+        $html .= ">$fmt_username</option>";
     }
 
     db_disconnect($db);
@@ -142,7 +123,7 @@ function post_draw_to_dropdown($default_uid)
     return $html;
 }
 
-function is_valid_html($html)
+/* function is_valid_html($html)
 {
     $html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
 
@@ -184,6 +165,6 @@ function is_valid_html($html)
         }
     }
     return $valid;
-}
+} */
 
 ?>

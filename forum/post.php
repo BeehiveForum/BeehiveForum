@@ -99,6 +99,8 @@ if($valid){
         $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
         if($t_post_html != "Y"){
             $preview_message['CONTENT'] = make_html($t_content);
+        } else {
+            $preview_message['CONTENT'] = $t_content;
         }
         if($t_sig){
             if($t_sig_html != "Y"){
@@ -125,7 +127,7 @@ if($valid){
                 if($t_sig_html != "Y"){
                     $t_sig = make_html($t_sig);
                 }
-                $t_content .= "<span class=\"sig\">$t_sig</span>";
+                $t_content .= "\n<div class=\"sig\">$t_sig</div>";
             }
             $new_pid = post_create($t_tid,$t_rpid,$HTTP_COOKIE_VARS['bh_sess_uid'],$HTTP_POST_VARS['t_to_uid'],$t_content);
             if($new_pid > -1){

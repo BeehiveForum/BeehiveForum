@@ -21,45 +21,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Author: Mark Rendle
+
+require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 
-function folder_draw_dropdown($default_fid)
+function post_update($tid,$pid,$content)
 {
-    $html = "<select name=\"t_fid\">";
+    if(!($tid && $pid)){
+        return false;
+    }
     $db = db_connect();
 
-    $sql = "select FID, TITLE from " . forum_table("FOLDER");
+    $content = mysql_escape_string($content);
 
+    $sql = "update " . forum_table("POST") . " set CONTENT = \"$content\" ";
+    $sql .= "where TID = $tid and PID = $pid";
+    
     $result = db_query($sql,$db);
-
-    $i = 0;
-    while($row = db_fetch_array($result)){
-        $html .= "<option value=\"" . $row['FID'] . "\"";
-        if($row['FID'] = $default_fid){
-            $html .= " selected";
-        }
-        $html .= ">" . $row['TITLE'] . "</option>";
-    }
+    
+    $return = ($result) ? true : false;
 
     db_disconnect($db);
-
-    $html .= "</select>";
-    return $html;
-}
-
-function folder_get_title($fid)
-{
-   $db = db_connect();
-   $sql = "select FOLDER.TITLE from " . forum_table("FOLDER") . " where FID = $fid";
-   $resource_id = db_query($sql,$db);
-   if(!db_num_rows($resource_id)){
-     $foldertitle = "The Unknown Folder";
-   } else {
-     $data = db_fetch_array($resource_id);
-     $foldertitle = $data['TITLE'];
-   }
-   db_disconnect($db);
-   return $foldertitle;
+    
+    return $return;
 }
 
 ?>

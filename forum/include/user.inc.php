@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.202 2004-10-19 19:31:42 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.203 2004-10-21 21:28:19 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -348,6 +348,8 @@ function user_get_prefs($uid)
                            'ALLOW_EMAIL'          => 'Y',
                            'ALLOW_PM'             => 'Y',
                            'POST_PAGE'            => '0');
+
+    $forum_prefs = array();
 
     // 2. The user's global prefs, in USER_PREFS:
 

@@ -71,7 +71,7 @@ function _html_draw_top1($title = false)
 
     echo "<link rel=\"stylesheet\" href=\"", $stylesheet, "\" type=\"text/css\" />\n";
 
-    if ($HTTP_COOKIE_VARS['bh_sess_fontsize'] != '10') {
+    if (!empty($HTTP_COOKIE_VARS['bh_sess_fontsize']) && $HTTP_COOKIE_VARS['bh_sess_fontsize'] != '10') {
         echo "<link rel=\"stylesheet\" href=\"fontsize.php\" type=\"text/css\" />\n";
     }
 

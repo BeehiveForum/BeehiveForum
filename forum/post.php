@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.128 2003-09-09 03:25:54 tribalonline Exp $ */
+/* $Id: post.php,v 1.129 2003-09-09 03:51:45 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -664,7 +664,7 @@ if ($content_html_changes == true) {
 
     echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
     echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
-    echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
+    echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
 
     echo form_input_hidden("old_t_content", htmlentities($old_t_content));
     echo form_input_hidden("current_t_content", "correct");
@@ -714,7 +714,7 @@ if ($sig_html_changes == true) {
 
     echo form_radio("sig_code", "correct", $lang['correctedcode'], true, "onClick=\"showSig('correct');\"")."\n";
     echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
-    echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
+    echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
 
     echo form_input_hidden("old_t_sig", htmlentities($old_t_sig));
     echo form_input_hidden("current_t_sig", "correct");

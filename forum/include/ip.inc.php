@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.13 2003-09-16 12:34:43 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.14 2003-09-24 08:35:56 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -117,7 +117,7 @@ function get_ip_address()
         }
     }elseif (isset($HTTP_SERVER_VARS['HTTP_VIA'])) {
         if (isset($HTTP_SERVER_VARS['HTTP_CLIENT_IP'])) {
-            if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_COMING_FROM'], $matches)) {
+            if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_CLIENT_IP'], $matches)) {
                 if (strstr($HTTP_SERVER_VARS['HTTP_VIA'], "-R")) {
                     return join('.', array_reverse(explode('.', $matches[0])));
                 }else {

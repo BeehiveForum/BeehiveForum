@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.75 2004-04-30 21:10:49 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.76 2004-05-05 20:05:58 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -346,6 +346,14 @@ $lang['defaultforum'] = "Default Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum";
 $lang['failedtocreateforum_1'] = "Failed to create forum";
 $lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
+$lang['moveposts'] = "Move Posts";
+$lang['movepoststofolder'] = "Move posts to folder";
+$lang['allowfoldertocontain'] = "Allow folder to contain";
+$lang['mustenterfoldername'] = "You must enter a folder name";
+$lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
+$lang['successfullyaddedfolder'] = "Successfully Added Folder";
+$lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
+$lang['currentpasswd'] = "Current Password";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

@@ -38,35 +38,26 @@ header_no_cache();
 
 html_draw_top('Nav', 'navpage');
 
-?>
-        <a href="start.php" target="main">Start</a>&nbsp;|&nbsp;
-        <a href="discussion.php" target="main">Messages</a>&nbsp;|&nbsp;
-<?php
+echo "<a href=\"start.php\" target=\"main\">Start</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"discussion.php\" target=\"main\">Messages</a>&nbsp;|&nbsp;\n";
 
-if ($show_links) echo "<a href=\"links.php\" target=\"main\">Links</a>&nbsp;|&nbsp;";
+if ($show_links) {
+    echo "<a href=\"links.php\" target=\"main\">Links</a>&nbsp;|&nbsp;\n";
+}
 
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
-
-?>
-        <a href="prefs.php" target="main">Preferences</a>&nbsp;|&nbsp;
-        <a href="profile.php" target="main">Profile</a>&nbsp;|&nbsp;
-
-<?php
-
+    echo "<a href=\"prefs.php\" target=\"main\">Preferences</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"profile.php\" target=\"main\">Profile</a>&nbsp;|&nbsp;\n";
 }
 
-if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)) {
-
-?>
-        <a href="admin.php" target="main">Admin</a>&nbsp;|&nbsp;
-<?php
-
+if (isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)) {
+    echo "<a href=\"admin.php\" target=\"main\">Admin</a>&nbsp;|&nbsp;\n";
 }
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-  echo "<a href=\"logout.php\" target=\"_top\">Login</a>\n";
-} else {
-  echo "<a href=\"logout.php\" target=\"main\">Logout</a>\n";
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+    echo "<a href=\"logout.php\" target=\"_top\">Login</a>\n";
+}else {
+    echo "<a href=\"logout.php\" target=\"main\">Logout</a>\n";
 }
 
 html_draw_bottom();

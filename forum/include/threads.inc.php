@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.158 2005-01-26 22:42:23 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.159 2005-02-04 00:21:56 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -881,7 +881,7 @@ function threads_draw_discussions_dropdown($mode)
     if (bh_session_get_value('UID') == 0) {
 
         $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
-        echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""), "\n";
+        return form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\"");
 
     }else {
 
@@ -890,7 +890,7 @@ function threads_draw_discussions_dropdown($mode)
                         $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
                         $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
 
-        echo form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\""), "\n";
+        return form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\"");
 
     }
 }

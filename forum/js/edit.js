@@ -25,8 +25,8 @@ function closeAttachWin () {
     }
 }
 
-function launchAttachEditWin (aid, webtag) {
-    attachwin = window.open('edit_attachments.php?aid=' + aid + '&webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+function launchAttachEditWin (uid, aid, webtag) {
+    attachwin = window.open('edit_attachments.php?uid=' + uid + '&aid=' + aid + '&webtag=' + webtag + '&popup=1', 'edit_attachments', 'width=660, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
 }
 
 function checkToRadio(num) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.157 2005-02-01 23:15:29 decoyduck Exp $ */
+/* $Id: edit.php,v 1.158 2005-02-04 00:21:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -489,7 +489,7 @@ if (isset($_POST['preview'])) {
             $t_content_tmp = $t_content;
         }
 
-        $updated = post_update($tid, $pid, $t_content_tmp);
+        $updated = post_update($t_fid, $tid, $pid, $t_content_tmp);
 
         if ($updated) {
 
@@ -705,8 +705,6 @@ if (isset($_POST['preview'])) {
            html_draw_bottom();
            exit;
     }
-
-    unset($editmessage);
 }
 
 echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
@@ -862,7 +860,7 @@ echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"c
 
 if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$from_uid', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);
 }
 

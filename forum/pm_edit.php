@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.59 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.60 2005-02-04 00:21:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -81,7 +81,14 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
+// Get the user's UID
+
+$uid = bh_session_get_value('UID');
+
+// Guests can't access PMs
+
+if ($uid == 0) {
+
     html_guest_error();
     exit;
 }
@@ -90,11 +97,9 @@ if (bh_session_get_value('UID') == 0) {
 
 $page_prefs = bh_session_get_post_page_prefs();
 
-
 // Prune old messages for the current user
 
 pm_user_prune_folders();
-
 
 // Get the Message ID (MID)
 
@@ -108,6 +113,15 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
     html_draw_bottom();
     exit;
+}
+
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+
+    $aid = $_POST['aid'];
+
+}else if (!$aid = get_attachment_id($tid, $pid)) {
+
+    $aid = md5(uniqid(rand()));
 }
 
 // User clicked cancel
@@ -247,8 +261,9 @@ if ($valid && isset($_POST['preview'])) {
 
         $t_subject = _htmlentities($t_subject);
 
-        if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-            if (get_num_attachments($_POST['aid']) > 0) pm_save_attachment_id($mid, $_POST['aid']);
+        if (forum_get_setting('attachments_enabled', 'Y', false)) {
+
+            if (get_num_attachments($aid) > 0) pm_save_attachment_id($mid, $aid);
         }
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
@@ -266,35 +281,41 @@ if ($valid && isset($_POST['preview'])) {
     }
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
+
     if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
         $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
     }
+
     if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
         $t_content = trim(_stripslashes($_POST['t_content']));
         $post->setContent($t_content);
         $t_content = $post->getContent();
     }
+
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
         $to_radio = $_POST['to_radio'];
     }else {
         $to_radio = 1;
     }
+
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
         $t_to_uid = $_POST['t_to_uid'];
     }else {
         $t_to_uid = 0;
     }
+
     if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
-                $t_recipient_list = $_POST['t_recipient_list'];
-        }
 
-        $page_prefs ^= POST_EMOTICONS_DISPLAY;
+        $t_recipient_list = $_POST['t_recipient_list'];
+    }
 
-        user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+    $page_prefs ^= POST_EMOTICONS_DISPLAY;
 
-        $pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX);
+    user_update_prefs($uid, array('POST_PAGE' => $page_prefs));
 
-        $fix_html = false;
+    $pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX);
+
+    $fix_html = false;
 
 } else {
 
@@ -392,7 +413,6 @@ echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])), "</a></td>\n";
 echo "        </tr>\n";
-
 echo "        <tr>\n";
 echo "          <td>&nbsp;</td>\n";
 echo "        </tr>\n";
@@ -495,14 +515,8 @@ echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="clos
 
 if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-    if ($aid = get_pm_attachment_id($mid)) {
-        echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
-        echo form_input_hidden('aid', $aid);
-    }else {
-        $aid = md5(uniqid(rand()));
-        echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
-        echo form_input_hidden('aid', $aid);
-    }
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$uid', '$aid', '$webtag');\"");
+    echo form_input_hidden('aid', $aid);
 }
 
 echo "          </td>\n";

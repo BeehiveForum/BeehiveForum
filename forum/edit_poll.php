@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.88 2005-01-19 21:49:28 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.89 2005-02-04 00:21:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,8 +139,11 @@ if (isset($_POST['cancel'])) {
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+
     $aid = $_POST['aid'];
-}else{
+
+}else if (!$aid = get_attachment_id($tid, $pid)) {
+
     $aid = md5(uniqid(rand()));
 }
 
@@ -546,6 +549,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
 
     if (bh_session_get_value('UID') != $polldata['FROM_UID'] && !perm_is_moderator($t_fid)) {
+
         edit_refuse($tid, $pid);
         exit;
     }
@@ -844,12 +848,9 @@ echo "  </table>\n";
 
 echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
-if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
-}else {
-    $aid = md5(uniqid(rand()));
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
+if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('{$polldata['FROM_UID']}', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);
 }
 

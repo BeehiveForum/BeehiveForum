@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.60 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.61 2005-02-04 00:21:53 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -126,25 +126,8 @@ light_html_draw_top();
 
 echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
 echo "  ", form_input_hidden("webtag", $webtag), "\n";
-
-if ($uid == 0) {
-
-  $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
-  echo light_form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode). "\n        ";
-
-}else {
-
-  $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
-                  $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
-                  $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                  $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['unreadtoday']);
-
-  echo light_form_dropdown_array("mode",range(0,16),$labels,$mode). "\n        ";
-
-}
-
-echo light_form_submit("go",$lang['goexcmark']). "\n";
-
+echo "  ", light_threads_draw_discussions_dropdown($mode), "\n";
+echo "  ", light_form_submit("go",$lang['goexcmark']), "\n";
 echo "</form>\n";
 
 // The tricky bit - displaying the right threads for whatever mode is selected
@@ -198,13 +181,16 @@ if (isset($folder)) {
         case 14: // Unread started by friend
             list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, USER_FRIEND);
             break;
-        case 15: // Polls
+        case 15: // Started by me
+            list($thread_info, $folder_order) = threads_get_started_by_me($uid);
+            break;
+        case 16: // Polls
             list($thread_info, $folder_order) = threads_get_polls($uid);
             break;
-        case 16: // Sticky threads
+        case 17: // Sticky threads
             list($thread_info, $folder_order) = threads_get_sticky($uid);
             break;
-        case 17: // Most unread posts
+        case 18: // Most unread posts
             list($thread_info, $folder_order) = threads_get_longest_unread($uid);
             break;
         default: // Default to all threads

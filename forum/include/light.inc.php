@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.67 2005-01-30 17:27:50 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.68 2005-02-04 00:21:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -511,23 +511,40 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-            $attachments_array = get_attachments($message['FROM_UID'], $aid);
 
-            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+            if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
                 // Draw the attachment header at the bottom of the post
 
-                echo "<p><b>{$lang['attachments']}:</b><br />\n";
+                if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
-                foreach($attachments_array as $attachment) {
+                    echo "<p><b>{$lang['attachments']}:</b><br />\n";
 
-                    if ($attachment_link = light_attachment_make_link($attachment)) {
+                    foreach($attachments_array as $attachment) {
 
-                        echo $attachment_link, "<br />\n";
+                        if ($attachment_link = light_attachment_make_link($attachment)) {
+
+                            echo $attachment_link, "<br />\n";
+                        }
                     }
+
+                    echo "</p>\n";
                 }
 
-                echo "</p>\n";
+                if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                    echo "<p><b>{$lang['imageattachments']}:</b><br />\n";
+
+                    foreach($image_attachments_array as $key => $attachment) {
+
+                        if ($attachment_link = light_attachment_make_link($attachment)) {
+
+                            echo $attachment_link, "&nbsp;\n";
+                        }
+                    }
+
+                    echo "</p>\n";
+                }
             }
         }
 
@@ -777,6 +794,27 @@ function light_attachment_make_link($attachment)
     $attachment_link.= "<a href=\"$href\" target=\"_blank\">{$attachment['filename']}</a>";
 
     return $attachment_link;
+}
+
+function light_threads_draw_discussions_dropdown($mode)
+{
+    $lang = load_language_file();
+
+    if (bh_session_get_value('UID') == 0) {
+
+        $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
+        return light_form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\"");
+
+    }else {
+
+        $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
+                        $lang['unreadtoday'],$lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
+                        $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
+                        $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
+
+        return light_form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\"");
+
+    }
 }
 
 ?>

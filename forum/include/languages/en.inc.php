@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.216 2005-01-30 17:22:00 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.217 2005-02-04 00:21:57 decoyduck Exp $ */
 
 // International English language file
 
@@ -82,6 +82,7 @@ $lang['splat'] = "Splat";
 $lang['with'] = "with";
 $lang['attachment'] = "Attachment";
 $lang['attachments'] = "Attachments";
+$lang['imageattachments'] = "Image Attachments";
 $lang['filename'] = "Filename";
 $lang['dimensions'] = "Dimensions";
 $lang['downloaded'] = "Downloaded";
@@ -889,6 +890,7 @@ $lang['until'] = "Until 00:00 UTC";
 $lang['stickyuntil'] = "Sticky until";
 $lang['approvalrequired'] = "Approval Required";
 $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
+$lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['approvepost'] = "Approve post for display";
 
 // Navigation strip (nav.php) ------------------------------------------

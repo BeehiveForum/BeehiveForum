@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.1 2005-01-28 23:50:30 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.2 2005-02-04 00:21:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -271,7 +271,7 @@ echo "<div align=\"center\">\n";
 echo "  <form name=\"f_approve\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden('webtag', $webtag), "\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
-echo "    <p>", form_submit("submit", $lang['approve']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
+echo "    <p>", form_submit("approve", $lang['approve']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
 echo "  </form>\n";
 echo "</div>\n";
 

@@ -64,6 +64,8 @@ if(isset($HTTP_GET_VARS['folder'])){
     $mode = 0;
 }
 
+if(!isset($HTTP_GET_VARS['start_from'])) { $start_from = 0; } else { $start_from = $HTTP_GET_VARS['start_from']; }
+
 // Output XHTML header
 html_draw_top();
 
@@ -96,7 +98,6 @@ function change_current_thread (thread_id) {
 	<tr>
 		<td>
 			<?
-			// Calls the desired mode (and hides non-available modes from guest users)
 			$labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
 			                "2 Days Back","7 Days Back","High Interest","Unread High Interest",
 			                "I've recently seen","I've ignored","I've subscribed to");
@@ -104,61 +105,6 @@ function change_current_thread (thread_id) {
 			echo "<form name=\"f_mode\" method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
             echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\"");
             echo form_submit("go","Go!");
-
-			/*Old code
-			echo "<select name=\"mode\" class=\"thread_list_mode\" onChange=\"submit();\">\n";
-
-			echo "<option ";
-			if ($mode == 0) echo "selected ";
-			echo "value=\"0\">All Discussions</option>\n";
-
-            if ($user) {
-                echo "<option ";
-			    if ($mode == 1) echo "selected ";
-			    echo "value=\"1\">Unread Discussions</option>\n";
-
-                echo "<option ";
-			    if ($mode == 2) echo "selected ";
-			    echo "value=\"2\">Unread \"To: Me\"</option>\n";
-            }
-
-			echo "<option ";
-			if ($mode == 3) echo "selected ";
-			echo "value=\"3\">Today's Discussions</option>\n";
-
-			echo "<option ";
-			if ($mode == 4) echo "selected ";
-			echo "value=\"4\">2 Days Back</option>\n";
-
-			echo "<option ";
-			if ($mode == 5) echo "selected ";
-			echo "value=\"5\">7 Days Back</option>\n";
-
-            if ($user) {
-    			echo "<option ";
-    			if ($mode == 6) echo "selected ";
-    			echo "value=\"6\">High Interest</option>\n";
-    
-                echo "<option ";
-    			if ($mode == 7) echo "selected ";
-    			echo "value=\"7\">Unread High Interest</option>\n";
-    
-    			echo "<option ";
-    			if ($mode == 8) echo "selected ";
-    			echo "value=\"8\">I've Recently Seen</option>\n";
-    
-    			echo "<option ";
-    			if ($mode == 9) echo "selected ";
-    			echo "value=\"9\">I've Ignored</option>\n";
-    
-    			echo "<option ";
-    			if ($mode == 10) echo "selected ";
-    			echo "value=\"10\">I've Subscribed To</option>\n";
-            } 
-
-			?>
-			</select><input type="submit" value="Go!" class="thread_list_mode" />
-			*/
             ?>
 			</form>
 		</td>
@@ -168,11 +114,11 @@ function change_current_thread (thread_id) {
 // The tricky bit - displaying the right threads for whatever mode is selected
 
 if(isset($folder)){
-	list($thread_info, $folder_order) = threads_get_folder($user,$folder);
+	list($thread_info, $folder_order) = threads_get_folder($user,$folder,$start_from);
 } else {
     switch ($mode) {
     	case 0: // All discussions
-    		list($thread_info, $folder_order) = threads_get_all($user);
+    		list($thread_info, $folder_order) = threads_get_all($user, $start_from);
     		break;
     	case 1; // Unread discussions
     		list($thread_info, $folder_order) = threads_get_unread($user);
@@ -266,24 +212,27 @@ if (!$thread_info) {
     echo "</tr>\n<tr>\n<td>&nbsp;</td>\n<tr>\n";
 }
 
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr>\n";
+
 // Iterate through the information we've just got and display it in the right order
-while (list($key1, $folder) = each($folder_order)) {
+while (list($key1, $folder_number) = each($folder_order)) {
 	echo "<tr>\n";
 	echo "<td class=\"foldername\">\n";
 	echo "<img src=\"./images/folder.png\" alt=\"folder\" />\n";
-	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder. "\">".$folder_info[$folder]."</a>";
+	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">".$folder_info[$folder_number]."</a>";
 	echo "</td>\n";
 	echo "</tr>\n";
-	if (is_array($thread_info)) {	
+	if (is_array($thread_info)) {
 		echo "<tr>\n";
 		echo "<td class=\"threads\" style=\"border-bottom: 0;\">\n";
-		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\" class=\"folderinfo\">".$folder_msgs[$folder]." threads</a>\n";
-		echo "<a href=\"post.php?fid=".$folder."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
+		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." threads</a>\n";
+		echo "<a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
 		echo "</td></tr>\n";
+        if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<tr><td class=\"threads\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">Previous 50 threads</a></td></tr>\n";
 		echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
 		echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 		while (list($key2, $thread) = each($thread_info)) {
-			if ($thread['fid'] == $folder) {
+			if ($thread['fid'] == $folder_number) {
 				echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
 				
                                 if ($thread['last_read'] == 0) {
@@ -293,7 +242,7 @@ while (list($key1, $folder) = each($folder_order)) {
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
 						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\"  />";
-					} else {
+					} else {                                                                                                                                                                            
 						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\" />";
 					}				
 
@@ -323,7 +272,7 @@ while (list($key1, $folder) = each($folder_order)) {
 				// work out how long ago the thread was posted and format the time to display
 				$thread_time = format_time($thread['modified']);
 				$thread_author = thread_get_author($thread['tid']);
-				
+
 				echo "&nbsp;</td><td valign\"top\">";
 				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". $thread_author ."';return true\" onmouseOut=\"window.status='';return true\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a>&nbsp;";
 				if ($thread['interest'] == 1) echo "<img src=\"./images/high_interest.png\" alt=\"High Interest\" align=\"middle\">&nbsp;";
@@ -335,17 +284,30 @@ while (list($key1, $folder) = each($folder_order)) {
 			}
 		}
 		echo "</table>\n";
-		
-	}else{
+        if (isset($folder) && $folder_number == $folder) {
+            $more_threads = $folder_msgs[$folder] - $start_from - 50;
+            if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td class=\"threads\" style=\"border-top: 0;\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next $more_threads threads</td></tr>\n";
+            if ($more_threads > 50) echo "<tr><td class=\"threads\" style=\"border-top: 0;\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next 50 threads</td></tr>\n";
+        }
+    } else {
 		echo "<tr>\n";
 		echo "<td class=\"threads\">\n";
-		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\" class=\"folderinfo\">".$folder_msgs[$folder]." msgs</a>\n";
-		echo "<a href=\"post.php?fid=".$folder."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
+		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." msgs</a>\n";
+		echo "<a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
 		echo "</td></tr>\n";
 		echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
 	}
 	echo "</td></tr>\n";
 	if (is_array($thread_info)) reset($thread_info);
+}
+if ($mode == 0 && !isset($folder)) {
+    $total_threads = 0;
+    while (list($fid, $num_threads) = each($folder_msgs)) {
+        $total_threads += $num_threads;
+    }
+    $more_threads = $total_threads - $start_from - 50;
+  if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
+  if ($more_threads > 50) echo "<tr><td><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</td></tr>\n";
 }
 echo "<tr>\n<td>&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
 echo "</table>\n";

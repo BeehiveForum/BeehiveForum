@@ -79,7 +79,7 @@ function threads_get_folders()
 	return $folder_titles;
 }
 
-function threads_get_all($uid, $start = 0, $number = 50) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
     $folders = threads_get_available_folders();
 	$db_threads_get_all = db_connect();
@@ -94,7 +94,7 @@ function threads_get_all($uid, $start = 0, $number = 50) // get "all" threads (i
 	$sql .= "WHERE THREAD.fid in ($folders) ";
 	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
-	$sql .= "LIMIT $start, $number";
+	$sql .= "LIMIT $start, 50";
 
 	$resource_id = db_query($sql, $db_threads_get_all);
 	list($threads, $folder_order) = threads_process_list($resource_id);
@@ -242,7 +242,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
 }
 
-function threads_get_folder($uid,$fid, $start = 0, $number = 50)
+function threads_get_folder($uid,$fid, $start = 0)
 {
 //  $folders = threads_get_available_folders();
 	$db_threads_get_folder = db_connect();
@@ -257,7 +257,7 @@ function threads_get_folder($uid,$fid, $start = 0, $number = 50)
 //	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
 	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
-	$sql .= "LIMIT $start, $number";
+	$sql .= "LIMIT $start, 50";
 
 	$resource_id = db_query($sql, $db_threads_get_folder);
 	list($threads, $folder_order) = threads_process_list($resource_id);

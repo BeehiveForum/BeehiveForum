@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.58 2003-08-10 22:09:19 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.59 2003-08-10 22:26:44 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -489,7 +489,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">{$lang['polltypewarning']}</td>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
           }
@@ -531,7 +531,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">{$lang['polltypewarning']}</td>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\" class=\"postbody\">{$lang['polltypewarning']}</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
           }

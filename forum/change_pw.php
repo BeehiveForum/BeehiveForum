@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.27 2004-03-22 12:21:15 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.28 2004-03-27 21:56:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -42,6 +42,7 @@ include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/logon.inc.php");
 include_once("./include/user.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {

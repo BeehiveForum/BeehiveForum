@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.168 2004-03-27 19:47:01 decoyduck Exp $ */
+/* $Id: post.php,v 1.169 2004-03-27 21:56:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,6 +50,7 @@ include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/htmltools.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/poll.inc.php");
 include_once("./include/post.inc.php");

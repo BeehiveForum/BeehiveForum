@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.29 2004-03-27 19:47:00 decoyduck Exp $ */
+/* $Id: interest.php,v 1.30 2004-03-27 21:56:18 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -36,6 +36,7 @@ include_once("./include/errorhandler.inc.php");
 include_once("./include/db.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
+include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.30 2004-03-15 21:33:28 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.31 2004-03-16 19:22:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -69,36 +69,20 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
 html_draw_top();
 
-if (isset($HTTP_POST_VARS['save'])) {
+if (isset($HTTP_POST_VARS['submit'])) {
 
     $content = _stripslashes($HTTP_POST_VARS['content']);
-    $content = str_replace(chr(13), '', $content);
-
-    if (substr($content, 0, 51) != "<?php include_once(\"./include/gzipenc.inc.php\"); ?>") {
-      $content = "<?php include_once(\"./include/gzipenc.inc.php\"); ?>\n". $content;
-    }
-
-    $fp = fopen('./start_main.php', 'w');
-    fwrite($fp, $content);
-    fclose($fp);
-
-    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"start_main.php?webtag={$webtag['WEBTAG']}\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
-
+    save_start_page($content);
+    
+    $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
+    $status_text.= "<a href=\"start_main.php?webtag={$webtag['WEBTAG']}\" target=\"_blank\">";
+    $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
+    
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
 }else{
 
-    if (file_exists('./start_main.php')) {
-
-        $content = implode('', file('./start_main.php'));
-        $content = str_replace(chr(13), '', $content);
-
-    }else {
-
-        $content = "";
-
-    }
-
+    $content = load_start_page();
 }
 
 echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";

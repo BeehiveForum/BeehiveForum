@@ -94,7 +94,6 @@ function get_active_users()
     $db_get_active_users = db_connect();
     
     $webtag = get_webtag();
-    $forum_webtag = get_webtag();
     
     $session_stamp = time() - intval($forum_settings['active_sess_cutoff']);
 

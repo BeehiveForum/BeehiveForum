@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.119 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: logon.php,v 1.120 2004-03-16 19:22:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -252,9 +252,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
                 if (isset($final_uri)) {
-                    form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag), "_top");
+                    form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
                 }else {
-                    form_quick_button("./index.php", $lang['continue'], "webtag", $webtag, "_top");
+                    form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
                 }
 
                 echo "</div>\n";
@@ -281,9 +281,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
 
             if (isset($final_uri)) {
-                form_quick_button("./index.php", $lang['back'], array("final_uri", "webtag"), array(rawurlencode($final_uri), $webtag), "_top");
+                form_quick_button("./index.php", $lang['back'], array("final_uri", "webtag"), array(rawurlencode($final_uri), $webtag['WEBTAG']), "_top");
             }else {
-                form_quick_button("./index.php", $lang['back'], "webtag", $webtag, "_top");
+                form_quick_button("./index.php", $lang['back'], "webtag", $webtag['WEBTAG'], "_top");
             }
             
             echo "<hr width=\"350\" />\n";

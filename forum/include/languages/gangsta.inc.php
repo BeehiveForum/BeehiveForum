@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.34 2004-03-14 19:44:12 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.35 2004-03-16 19:22:50 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -897,6 +897,10 @@ $lang['startreading'] = "Break some off";
 $lang['threadoptions'] = "Thrizead Optizions";
 $lang['showmorevisitors'] = "Show mo' Homies";
 $lang['forthcomingbirthdays'] = "Fizorthcizoming Bizirthdizays";
+
+// Start page (start_main.php) -----------------------------------------
+
+$lang['editstartpage'] = "You can edit this page from the admin interface";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.83 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.84 2004-03-16 19:22:50 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -35,13 +35,12 @@ function bh_session_check()
 {
     global $HTTP_COOKIE_VARS, $forum_settings;
     
-    //ip_check();
+    ip_check();
 
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
     
     $webtag = get_webtag();
-    $forum_webtag = get_webtag();
 
     // Current server time.
 
@@ -56,9 +55,10 @@ function bh_session_check()
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
-	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER.STATUS, ";
+	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
 	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
 	$sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+	$sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
         $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
@@ -112,7 +112,7 @@ function bh_session_check()
                         
                             $result = db_query($sql, $db_bh_session_check);
                             
-                            $sql = "DELETE FROM VISITOR_LOG WHERE UID = '$uid'";
+                            $sql = "DELETE FROM VISITOR_LOG WHERE UID = '{$user_sess['UID']}'";
                             $result = db_query($sql, $db_bh_session_init);
     
                             $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
@@ -179,7 +179,6 @@ function bh_session_init($uid)
     $ipaddress = get_ip_address();
     
     $webtag = get_webtag();
-    $forum_webtag = get_webtag();
     
     $session_stamp = time() - intval($forum_settings['session_cutoff']);
 

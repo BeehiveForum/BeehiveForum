@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.246 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.247 2004-03-16 19:22:50 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -466,7 +466,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag={$webtag['WEBTAG']}&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
 
-                if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($forum_settings['post_edit_time'] * HOUR_IN_SECONDS)) || $forum_settings['post_edit_time'] == 0) && $allow_post_editing)) {
+                if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($forum_settings['post_edit_time'] * HOUR_IN_SECONDS)) || $forum_settings['post_edit_time'] == 0) && (strtoupper($forum_settings['allow_post_editing']) == "Y"))) {
                     if ($is_poll && $message['PID'] == 1) {
                         if (!poll_is_closed($tid) || perm_is_moderator()) {
 

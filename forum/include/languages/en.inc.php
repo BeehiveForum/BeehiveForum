@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.81 2004-03-14 19:44:12 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.82 2004-03-16 19:22:50 decoyduck Exp $ */
 
 // International English language file
 
@@ -891,6 +891,10 @@ $lang['startreading'] = "Start Reading";
 $lang['threadoptions'] = "Thread Options";
 $lang['showmorevisitors'] = "Show More Visitors";
 $lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
+
+// Start page (start_main.php) -----------------------------------------
+
+$lang['editstartpage'] = "You can edit this page from the admin interface";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

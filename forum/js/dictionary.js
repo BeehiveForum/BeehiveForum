@@ -30,25 +30,6 @@ function changeword(obj) {
 
 }
 
-function openSpellCheck(webtag, obj_id) {
-    
-    var form_obj;
-    var content;
-
-    if (document.getElementById) {
-        form_obj = eval("document.getElementById('" + obj_id + "')");
-    }else if (document.all) {
-        form_obj = eval("document.all." + obj_id);
-    }else if (document.layer) {
-        form_obj = eval("document." + obj_id);
-    }else {
-        return false;
-    }
-
-    content = form_obj.value;
-    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + obj_id + '&content=' + content, 'spellcheck','width=450, height=550, scrollbars=1');
-}
-
 function updateFormObj(obj_id, content) {
 
     var form_obj;

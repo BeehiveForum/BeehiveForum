@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.229 2004-11-27 01:33:45 tribalonline Exp $ */
+/* $Id: post.php,v 1.230 2004-11-28 17:47:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -903,8 +903,6 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && (perm_check_folder_p
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);
 }
-
-echo "&nbsp;".form_button('dictionary', $lang['spellcheck'], 'onclick="openSpellCheck(\''.$webtag.'\',\'t_content\'); return false;"');
 
 if ($allow_sig == true) {
 

@@ -59,7 +59,7 @@ if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
         $lid = $HTTP_POST_VARS['lid'];
     } elseif ($HTTP_POST_VARS['type'] == "comment") {
         if ($HTTP_POST_VARS['comment'] != "") {
-            $comment = addslashes(_htmlspecialchars($HTTP_POST_VARS['comment']));
+            $comment = addslashes(_htmlentities($HTTP_POST_VARS['comment']));
             links_add_comment($HTTP_POST_VARS['lid'], bh_session_get_value('UID'), $comment);
             $error = "<b>Your comment was added.</b>";
         } else {
@@ -74,7 +74,7 @@ if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
                 header_redirect("./links.php");
                 exit;
             } else {
-                links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(_htmlspecialchars($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(_htmlspecialchars($HTTP_POST_VARS['description'])));
+                links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(_htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(_htmlentities($HTTP_POST_VARS['description'])));
                 $lid = $HTTP_POST_VARS['lid'];
             }
 	    if (isset($HTTP_POST_VARS['hide']) && $HTTP_POST_VARS['hide'] == "confirm") {

@@ -383,7 +383,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
       <td><h2>Poll Question</h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?>&nbsp;<?php echo form_submit("submit", "Post"); ?></td>
+      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?>&nbsp;<?php echo form_submit("submit", "Post"); ?></td>
     </tr>
     <tr>
       <td>&nbsp;</td>
@@ -427,7 +427,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
 
                     echo "<tr>\n";
                     echo "  <td>", $i + 1, ". </td>\n";
-                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? _htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 255), "</td>\n";
+                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? _htmlentities(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 255), "</td>\n";
                     echo "</tr>\n";
 
                   }
@@ -517,10 +517,10 @@ if (isset($HTTP_GET_VARS['fid'])) {
             <td>Do you want to include an additional post after the poll?</td>
           </tr>
           <tr>
-            <td><?php echo form_textarea("t_message_text", _htmlspecialchars($t_message_text), 15, 75); ?></td>
+            <td><?php echo form_textarea("t_message_text", _htmlentities($t_message_text), 15, 75); ?></td>
           </tr>
           <tr>
-            <td>Signature:<br /><?php echo form_textarea("t_sig", _htmlspecialchars($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>
+            <td>Signature:<br /><?php echo form_textarea("t_sig", _htmlentities($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>
           </tr>
           <tr>
             <td><?php echo form_checkbox("t_message_html", "Y", "Message Contain HTML (not including signature)", (isset($HTTP_POST_VARS['t_message_html']) && $HTTP_POST_VARS['t_message_html'] == "Y")); ?></td>

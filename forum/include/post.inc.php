@@ -83,7 +83,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
 function post_create_thread($fid, $title, $poll = 'N')
 {
-    $title = addslashes(_htmlspecialchars($title));
+    $title = addslashes(_htmlentities($title));
 
     $db_post_create_thread = db_connect();
 
@@ -105,7 +105,7 @@ function post_create_thread($fid, $title, $poll = 'N')
 function make_html($text)
 {
     $html = _stripslashes($text);
-    $html = _htmlspecialchars($html);
+    $html = _htmlentities($html, true);
     $html = format_url2link($html);
     $html = nl2br($html);
 

@@ -39,7 +39,7 @@ function light_html_draw_top ($title = false)
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
         echo "\t<head>\n";
         echo "\t\t<title>$title</title>\n";
-        echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
+        echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n";
         echo "\t</head>\n";
         echo "\t<body>\n";
 }

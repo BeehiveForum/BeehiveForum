@@ -29,7 +29,7 @@ function user_profile_create($uid,$piid,$entry)
     $db_user_profile_create = db_connect();
     $entry = addslashes($entry);
     $sql = "insert into " . forum_table("USER_PROFILE") . " (UID,PIID,ENTRY) ";
-    $sql.= "values ($uid,$piid,\"". _htmlspecialchars($entry). "\")";
+    $sql.= "values ($uid,$piid,\"". _htmlentities($entry). "\")";
     $result = db_query($sql, $db_user_profile_create);
     return $result;
 }
@@ -39,7 +39,7 @@ function user_profile_update($uid,$piid,$entry)
     $db_user_profile_update = db_connect();
     $entry = addslashes($entry);
     $sql = "update " . forum_table("USER_PROFILE") . " ";
-    $sql.= "set ENTRY = \"". _htmlspecialchars($entry) ."\" ";
+    $sql.= "set ENTRY = \"". _htmlentities($entry) ."\" ";
     $sql.= "where UID = $uid ";
     $sql.= "and PIID = $piid";
     $result = db_query($sql, $db_user_profile_update);

@@ -47,7 +47,7 @@ if (!file_exists($top_html)) {
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title><?php echo $forum_name; ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="<?php echo $stylesheet; ?>" type="text/css" />
 </head>
 <?php

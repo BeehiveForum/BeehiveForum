@@ -143,38 +143,29 @@ function timestamp_amend_bst($timestamp)
 
 }
 
-// Cut down version of PHP's own htmlspecialchars that *only*
-// converts ", < and > (quote, open and close brackets) to
-// their HTML entities. This is needed so Beehive can remain
-// Cyrillic (plus other) character set compatible, even if the
-// PHP version and/or server OS isn't.
+// Lazy htmlentities function which ensures the use of UTF-8
+// encoding for all character code sets.
 
-function _htmlspecialchars($text)
+function _htmlentities($text)
 {
-
-    $search  = array("/\"/i", "/</i", "/>/i");
-    $replace = array("&quot;", "&lt;", "&gt;");
-
-    $retval = preg_replace($search, $replace, $text);
-
-    return $retval;
-
+    return htmlentities($text, ENT_COMPAT, "UTF-8");
 }
 
-// Reverses Beehive's _htmlspecialchars function.
-// Converts the entities &quot;, &lt; and &gt; back to
-// ", < and > (quote, open and close brackets)
+// Lazy reversal of _htmlentities
+// (borrowed from: http://uk.php.net/manual/en/function.html-entity-decode.php)
 
-function _htmlspecialchars_reverse($text)
+function _htmlentities_reverse($text)
 {
+    $trans_tbl = get_html_translation_table (HTML_ENTITIES);
+    $trans_tbl = array_flip ($trans_tbl);
+    return strtr ($string, $trans_tbl);
+}
 
-    $search  = array("'&(quot|#34);'i", "'&(lt|#60);'i", "'&(gt|#62);'i");
-    $replace = array("\"", "<", ">");
-
-    $retval = preg_replace($search, $replace, $text);
-
-    return $retval;
-
+function unhtmlentities ($string)
+{
+    $trans_tbl = get_html_translation_table (HTML_ENTITIES);
+    $trans_tbl = array_flip ($trans_tbl);
+    return strtr ($string, $trans_tbl);
 }
 
 // Checks for Magic Quotes and perform stripslashes if nessecary

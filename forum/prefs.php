@@ -62,7 +62,7 @@ if ($dir = @opendir('styles')) {
       if (@file_exists("./styles/$file/desc.txt")) {
         if ($fp = fopen("./styles/$file/desc.txt", "r")) {
           $available_styles[] = $file;
-          $style_names[] = _htmlspecialchars(fread($fp, filesize("styles/$file/desc.txt")));
+          $style_names[] = _htmlentities(fread($fp, filesize("styles/$file/desc.txt")));
           fclose($fp);
         }else {
           $available_styles[] = $file;
@@ -346,7 +346,7 @@ if(!empty($error_html)) {
         <td class="subhead" colspan="2">Signature</td>
       </tr>
       <tr>
-        <td colspan="2"><?php echo form_textarea("sig_content", _htmlspecialchars(_stripslashes($user_sig['CONTENT'])), 4, 60); ?></td>
+        <td colspan="2"><?php echo form_textarea("sig_content", _htmlentities(_stripslashes($user_sig['CONTENT'])), 4, 60); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

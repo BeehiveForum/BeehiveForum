@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.111 2004-09-13 12:34:12 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.112 2004-09-13 14:43:23 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -1077,10 +1077,12 @@ $lang['userrelationships'] = "Rapports d'utilisateur";
 $lang['friends'] = "Friends";
 $lang['ignoredusers'] = "Ignored Users";
 $lang['ignoredsignatures'] = "Ignored Signatures";
+$lang['ignoredcompletely'] = "Ignored Completely";
 $lang['relationship'] = "Relation";
 $lang['friend_exp'] = "Les postes de l'utilisateur ont marqué avec un &quot;Friend&quot; icon.";
 $lang['normal_exp'] = "Les postes de l'utilisateur apparaissent comme normal.";
 $lang['ignore_exp'] = "Les postes de l'utilisateur sont cachées.";
+$lang['ignore_completely_exp'] = "Threads and posts to or from user will appear deleted.";
 $lang['display'] = "Exposition";
 $lang['displaysig_exp'] = "La signature de l'utilisateur est affiché sur leurs postes.";
 $lang['hidesig_exp'] = "La signature de l'utilisateur est cachée sur leurs postes.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.131 2004-09-13 12:34:12 tribalonline Exp $ */
+/* $Id: x-hacker.inc.php,v 1.132 2004-09-13 14:43:23 tribalonline Exp $ */
 
 // International English language file
 
@@ -1093,6 +1093,7 @@ $lang['userrelationships'] = "U5eR r3L4tiOnsh1pS";
 $lang['friends'] = "PhR13NDS";
 $lang['ignoredusers'] = "iGn0r3D u5ers";
 $lang['ignoredsignatures'] = "IgnOr3D \$i9n4+ures";
+$lang['ignore_completely_exp'] = "c0/\/\pl373Ly 1gn0r3D.";
 $lang['relationship'] = "r3L4TI0NSh1p";
 $lang['friend_exp'] = "USeR'S p0s+s M4rkeD WItH 4 &QUo+;FRiend&qU0+; 1con.";
 $lang['normal_exp'] = "us3R'S P0\$+\$ 4pPe4R A\$ NOrmal.";

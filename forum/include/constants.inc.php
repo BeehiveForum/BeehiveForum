@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.37 2004-09-07 01:50:48 tribalonline Exp $ */
+/* $Id: constants.inc.php,v 1.38 2004-09-13 14:43:22 tribalonline Exp $ */
 
 // Beehive Version
 
@@ -59,6 +59,7 @@ define("USER_PERM_SIGNATURE", 4096);
 define("USER_FRIEND", 1);
 define("USER_IGNORED", 2);
 define("USER_IGNORED_SIG", 4);
+define("USER_IGNORED_COMPLETELY", 8);
 
 // Constants for error handler
 

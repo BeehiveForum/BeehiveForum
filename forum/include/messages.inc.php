@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.295 2004-08-26 19:14:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.296 2004-09-13 14:43:22 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -181,6 +181,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     if (!isset($message['TO_RELATIONSHIP'])) {
         $message['TO_RELATIONSHIP'] = 0;
+    }
+
+    if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
+    {
+    	message_display_deleted($tid, $message['PID']);
+    	return;
     }
 
     // Check for words that should be filtered ---------------------------------
@@ -828,20 +834,23 @@ function messages_get_most_recent($uid, $fid = false)
 
             if (!isset($row['RELATIONSHIP'])) $row['RELATIONSHIP'] = 0;
 
-            if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
+            if(!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
+            {
+				if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
 
-                if (isset($row['LAST_READ'])) {
+					if (isset($row['LAST_READ'])) {
 
-                    if ($row['LAST_READ'] < $row['LENGTH']) {
-                        $row['LAST_READ']++;
-                    }
+						if ($row['LAST_READ'] < $row['LENGTH']) {
+							$row['LAST_READ']++;
+						}
 
-                    return "{$row['TID']}.{$row['LAST_READ']}";
+						return "{$row['TID']}.{$row['LAST_READ']}";
 
-                }else {
-                    return "{$row['TID']}.1";
-                }
-            }
+					}else {
+						return "{$row['TID']}.1";
+					}
+				}
+			}
         }
     }
 
@@ -889,20 +898,23 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
             if (!isset($row['RELATIONSHIP'])) $row['RELATIONSHIP'] = 0;
 
-            if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
+            if(!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
+            {
+				if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
 
-                if (isset($row['LAST_READ'])) {
+					if (isset($row['LAST_READ'])) {
 
-                    if ($row['LAST_READ'] < $row['LENGTH']) {
-                        $row['LAST_READ']++;
-                    }
+						if ($row['LAST_READ'] < $row['LENGTH']) {
+							$row['LAST_READ']++;
+						}
 
-                    return "{$row['TID']}.{$row['LAST_READ']}";
+						return "{$row['TID']}.{$row['LAST_READ']}";
 
-                }else {
-                    return "{$row['TID']}.1";
-                }
-            }
+					}else {
+						return "{$row['TID']}.1";
+					}
+				}
+			}
         }
     }
 

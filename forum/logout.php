@@ -41,27 +41,57 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 }
 
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+	bh_session_end();
 
-  bh_session_end();
+	if(isset($final_uri)){
+		$uri = "./logon.php?final_uri=".urlencode($final_uri);
+	} else {
+		$uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+	}
 
-  $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
-  header_redirect($uri);
+	header_redirect($uri);
   
 }
 
 require_once("./include/config.inc.php");
 
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<title><?= $forum_name ?></title>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link rel="stylesheet" href="./styles/style.css" type="text/css">
-	</head>
-	<frameset rows="20,*" border="0">
-          <frame src="./nav.php" name="nav" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
-          <frame src="./user_logout.php" name="logout" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
-        </frameset>	
+require_once("./include/html.inc.php");
+require_once("./include/user.inc.php");
+require_once("./include/constants.inc.php");
+require_once("./include/session.inc.php");
+require_once("./include/form.inc.php");
 
-</html>
+$logged_off = false;
+
+// Where are we going after we've logged on?
+if(isset($HTTP_POST_VARS['submit'])){
+    bh_session_end();
+	header_redirect("./start.php");
+    $logged_off = true;
+}
+
+
+html_draw_top();
+
+echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"POST\">\n";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
+echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
+echo "Log out:\n";
+echo "</td></tr></table>\n";
+echo "<table class=\"posthead\" width=\"100%\">\n";
+if($logged_off){
+    echo "<tr><td>You have logged out.</td></tr>\n";
+    echo "<tr><td>&nbsp;</td></tr>";
+} else {
+    echo "<tr><td>You are currently logged in as ". user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']). "</td></tr>\n";
+    echo "<tr><td>&nbsp;</td></tr>";
+    echo "<tr><td align=\"center\">".form_submit("submit","Log out");
+}
+echo "</td></tr></table>\n";
+echo "</td></tr></table>\n";
+echo "</form></div>\n";
+
+html_draw_bottom();
+
+?>

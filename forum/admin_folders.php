@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.34 2003-08-20 02:20:43 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.35 2003-09-15 18:34:44 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -58,7 +58,7 @@ html_draw_top();
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -171,6 +171,6 @@ echo "  <p>", form_input_hidden("t_count", sizeof($folder_array)), form_submit('
 echo "</form>";
 echo "</div>\n";
 
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

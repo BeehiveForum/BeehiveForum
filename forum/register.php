@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.52 2003-09-15 17:02:43 decoyduck Exp $ */
+/* $Id: register.php,v 1.53 2003-09-15 18:34:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -52,7 +52,7 @@ if (bh_session_get_value('UID')) {
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
     echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
     echo "</div>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -288,7 +288,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
           echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), "Continue", 0, 0, "_top");
           echo "</div>\n";
 
-          html_draw_bottom();
+          // html_draw_bottom();
           exit;
 
       } else {
@@ -484,6 +484,6 @@ if (strlen($error_html) > 0) {
 </div>
 <?php
 
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.136 2003-11-17 16:01:43 decoyduck Exp $ */
+/* $Id: post.php,v 1.137 2003-11-20 19:40:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -249,7 +249,7 @@ if ($valid) {
     }
 }
 
-if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['mid'])) {
+if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
 
     $replyto = $HTTP_GET_VARS['replyto'];
     list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);

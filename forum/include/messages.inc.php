@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.195 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.196 2003-11-20 19:40:51 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -935,7 +935,7 @@ function messages_forum_stats($tid, $pid)
                         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                         echo "          <tr>\n";
                         echo "            <td width=\"35\">&nbsp;</td>\n";
-                        echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodis']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ".", ","), "</b></td>\n";
+                        echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodwas']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ".", ","), "</b> {$lang['on']} ", format_time($most_posts['MOST_POSTS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
                         echo "            <td width=\"35\">&nbsp;</td>\n";
                         echo "          </tr>\n";
                         echo "        </table>\n";
@@ -971,7 +971,7 @@ function messages_forum_stats($tid, $pid)
                    echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                    echo "          <tr>\n";
                    echo "            <td width=\"35\">&nbsp;</td>\n";
-                   echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> on ", date("M jS Y, g:i A", $most_users['MOST_USERS_DATE']), "</td>\n";
+                   echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> {$lang['on']} ", format_time($most_users['MOST_USERS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
                    echo "            <td width=\"35\">&nbsp;</td>\n";
                    echo "          </tr>\n";
                 }

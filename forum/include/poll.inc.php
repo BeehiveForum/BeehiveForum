@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.130 2004-08-08 21:41:27 rowan_hill Exp $ */
+/* $Id: poll.inc.php,v 1.131 2004-08-08 21:52:11 rowan_hill Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -1416,11 +1416,6 @@ function poll_table_graph($tid)
 
       $poll_previous_uid = $polltableresults['UID'][$i];
     }
-    
-    echo "<pre>\n";
-    echo $polltableresults['OPTION_ID'][$uid_keys[0]];
-    print_r($group1);
-    echo "</pre>\n";
 
     unset($poll_previous_uid);
 

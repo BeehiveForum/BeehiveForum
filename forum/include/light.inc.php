@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.65 2004-12-22 19:27:51 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.66 2005-01-30 00:23:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -521,34 +521,10 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
                 foreach($attachments_array as $attachment) {
 
-                    if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                        echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
-                    }else {
-                        echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
+                    if ($attachment_link = light_attachment_make_link($attachment)) {
+
+                        echo $attachment_link, "<br />\n";
                     }
-
-                    if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'lpost.php') {
-                        echo " target=\"_blank\"";
-                    }else {
-                        echo " target=\"_self\"";
-                    }
-
-                    echo " title=\"";
-
-                    if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
-                        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-                    }
-
-                    echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
-                    echo "{$lang['downloaded']}: ". $attachment['downloads'];
-
-                    if ($attachment['downloads'] == 1) {
-                        echo " {$lang['time']}";
-                    }else {
-                        echo " {$lang['times']}";
-                    }
-
-                    echo "\">{$attachment['filename']}</a><br />";
                 }
 
                 echo "</p>\n";
@@ -780,6 +756,20 @@ function light_html_message_type_error()
     light_html_draw_top();
     echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
     light_html_draw_bottom();
+}
+
+function light_attachment_make_link($attachment)
+{
+    if (!is_array($attachment)) return false;
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
+    if (!isset($attachment['hash']) || !is_md5($attachment['hash'])) return false;
+    if (!isset($attachment['filename'])) return false;
+
+    $webtag = get_webtag($webtag_search);
+
+    return "<a href=\"get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}\">{$attachment['filename']}</a>";
 }
 
 ?>

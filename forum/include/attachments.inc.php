@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.79 2004-12-27 16:19:57 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.80 2005-01-30 00:23:32 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -382,7 +382,7 @@ function get_pm_attachment_id($mid)
     }
 }
 
-function get_message_link($aid)
+function get_message_link($aid, $get_pm_link = true)
 {
     $db_get_message_link = db_connect();
 
@@ -403,7 +403,7 @@ function get_message_link($aid)
         $row = db_fetch_array($result);
         return "./messages.php?webtag={$row['WEBTAG']}&amp;msg={$row['TID']}.{$row['PID']}";
 
-    }else{
+    }else if ($get_pm_link) {
 
         $sql = "SELECT MID FROM PM_ATTACHMENT_IDS WHERE AID = '$aid'";
         $result = db_query($sql, $db_get_message_link);
@@ -474,6 +474,76 @@ function attachment_embed_check($content)
     $content_check = preg_replace('/\&amp;\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
 
     return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/ ", $content_check);
+}
+
+function attachment_make_link($attachment)
+{
+    if (!is_array($attachment)) return false;
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
+    if (!isset($attachment['aid']) || !is_md5($attachment['aid'])) return false;
+    if (!isset($attachment['hash']) || !is_md5($attachment['hash'])) return false;
+    if (!isset($attachment['filename'])) return false;
+    if (!isset($attachment['filesize'])) return false;
+    if (!isset($attachment['downloads'])) return false;
+
+    $webtag = get_webtag($webtag_search);
+
+    $lang = load_language_file();
+
+    $attachment_path = "$attachment_dir/";
+    $attachment_path.= md5($attachment['aid']);
+    $attachment_path.= rawurldecode($attachment['filename']);
+
+    if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+
+        $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
+
+    }else {
+
+        $href = "get_attachment.php/{$attachment['hash']}/";
+        $href.= rawurlencode($attachment['filename']);
+        $href.= "?webtag=$webtag";
+    }
+
+    $title = "";
+
+    if (strlen($attachment['filename']) > 16) {
+
+        $title.= "{$lang['filename']}: {$attachment['filename']}, ";
+
+        $attachment['filename'] = substr($attachment['filename'], 0, 16);
+        $attachment['filename'].= "&hellip;";
+    }
+
+    if (@$imageinfo = getimagesize($attachment_path)) {
+
+        $title.= "{$lang['dimensions']}: {$imageinfo[0]}x{$imageinfo[1]}, ";
+    }
+
+    $title.= "{$lang['size']}: ";
+    $title.= format_file_size($attachment['filesize']);
+    $title.= ", ";
+
+    if ($attachment['downloads'] == 1) {
+
+        $title.= "{$lang['downloaded']}: {$attachment['downloads']} {$lang['time']}";
+
+    }else {
+
+        $title.= "{$lang['downloaded']}: {$attachment['downloads']} {$lang['times']}";
+    }
+
+    $attachment_link = "<img src=\"";
+    $attachment_link.= style_image('attach.png');
+    $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
+    $attachment_link.= "alt=\"{$lang['attachment']}\" ";
+    $attachment_link.= "title=\"{$lang['attachment']}\" />";
+    $attachment_link.= "<a href=\"$href\" title=\"$title\" ";
+    $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
+
+    return $attachment_link;
 }
 
 ?>

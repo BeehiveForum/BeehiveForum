@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.318 2005-01-28 23:50:30 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.319 2005-01-30 00:23:32 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -551,36 +551,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                 foreach($attachments_array as $attachment) {
 
-                    echo "                  <img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
-
-                    if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-
-                        echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}\"";
-
-                    }else {
-
-                        echo "<a href=\"get_attachment.php/{$attachment['hash']}/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
-                    }
-
-                    echo " title=\"";
-
-                    if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
-
-                        echo "{$lang['dimensions']}: {$imageinfo[0]}x{$imageinfo[1]}, ";
-                    }
-
-                    echo "{$lang['size']}: ", format_file_size($attachment['filesize']), ", ";
-
-                    if ($attachment['downloads'] == 1) {
-
-                        echo "{$lang['downloaded']}: {$attachment['downloads']} {$lang['time']}";
-
-                    }else {
-
-                        echo "{$lang['downloaded']}: {$attachment['downloads']} {$lang['times']}";
-                    }
-
-                    echo "\" target=\"_blank\">{$attachment['filename']}</a><br />\n";
+                    echo attachment_make_link($attachment), "<br />\n";
                 }
 
                 echo "                </td>\n";

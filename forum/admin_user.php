@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.122 2005-01-28 23:50:30 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.123 2005-01-30 00:23:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -678,56 +678,27 @@ if (isset($_POST['t_delete_posts'])) {
 
         foreach($attachments_array as $attachment) {
 
-            echo "                            <tr>\n";
-            echo "                              <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
+            if ($attachment_link = attachment_make_link($attachment)) {
 
-            if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\" title=\"";
-            }else {
-                echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\" title=\"";
-            }
+                echo "                            <tr>\n";
+                echo "                              <td valign=\"top\" width=\"300\" class=\"postbody\">$attachment_link</td>\n";
 
-            if (strlen($attachment['filename']) > 16) {
-                echo "{$lang['filename']}: ". $attachment['filename']. ", ";
-            }
+                if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'], false)) {
 
-            if (@$imageinfo = getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
-                echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-            }
-
-            echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
-            echo "{$lang['downloaded']}: ". $attachment['downloads'];
-
-            if ($attachment['downloads'] == 1) {
-                echo " {$lang['time']}";
-            }else {
-                echo " {$lang['times']}";
-            }
-
-            echo "\">";
-
-            if (strlen($attachment['filename']) > 16) {
-                echo substr($attachment['filename'], 0, 16). "&hellip;</a></td>\n";
-            }else{
-                echo $attachment['filename']. "</a></td>\n";
-            }
-
-            if ($messagelink = get_message_link($attachment['aid'])) {
-                if (strstr($messagelink, 'messages.php')) {
                     echo "                              <td valign=\"top\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\"><a href=\"", $messagelink, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+
                 }else {
+
                     echo "                              <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
                 }
-            }else {
-                echo "                              <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-            }
 
-            echo "                              <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
-            echo "                              <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
-            echo "                                ", form_input_hidden('hash', $attachment['hash']), "\n";
-            echo "                                ", form_submit('del', $lang['delete']), "\n";
-            echo "                              </td>\n";
-            echo "                            </tr>\n";
+                echo "                              <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
+                echo "                              <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
+                echo "                                ", form_input_hidden('hash', $attachment['hash']), "\n";
+                echo "                                ", form_submit('del', $lang['delete']), "\n";
+                echo "                              </td>\n";
+                echo "                            </tr>\n";
+            }
         }
 
         echo "                          </table>\n";

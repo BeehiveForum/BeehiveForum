@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.81 2005-01-26 21:33:16 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.82 2005-01-30 00:23:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -142,6 +142,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 // attachments.
 
 if (($uid != bh_session_get_value('UID')) && !(perm_is_moderator($t_fid))) {
+
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -154,6 +155,7 @@ $total_attachment_size = 0;
 // Make sure the attachments directory exists
 
 if (@!is_dir('attachments')) {
+
     mkdir('attachments', 0755);
     chmod('attachments', 0777);
 }
@@ -202,9 +204,12 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
 echo "                </tr>\n";
 
-if ($aid) {
+if (is_md5($aid)) {
+
     $attachments_array = get_attachments($uid, $aid);
+
 }else {
+
     $attachments_array = get_users_attachments($uid);
 }
 
@@ -212,48 +217,18 @@ if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
     foreach ($attachments_array as $key => $attachment) {
 
-        if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
+        if ($attachment_link = attachment_make_link($attachment)) {
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
+            echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-            if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\" title=\"";
+            if (is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
+
+                echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+
             }else {
-                echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\" title=\"";
-            }
 
-            if (strlen($attachment['filename']) > 16) {
-                echo "{$lang['filename']}: ". $attachment['filename']. ", ";
-            }
-
-            if (@$imageinfo = getimagesize("$attachment_dir/". md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
-                echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-            }
-
-            echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
-            echo "{$lang['downloaded']}: ". $attachment['downloads'];
-
-            if ($attachment['downloads'] == 1) {
-                echo " {$lang['time']}";
-            }else {
-                echo " {$lang['times']}";
-            }
-
-            echo "\">";
-
-            if (strlen($attachment['filename']) > 16) {
-                echo substr($attachment['filename'], 0, 16). "&hellip;</a></td>\n";
-            }else{
-                echo $attachment['filename']. "</a></td>\n";
-            }
-
-            if (!$aid) {
-                if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
-                    echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
-                }else {
-                    echo "                  <td>&nbsp;</td>\n";
-                }
+                echo "                  <td>&nbsp;</td>\n";
             }
 
             echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
@@ -326,7 +301,7 @@ if ($popup) {
     echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
     echo form_input_hidden('webtag', $webtag), "\n";
 
-    if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
+    if (is_md5($aid)) echo form_input_hidden('aid', $aid), "\n";
 
     echo "        ", form_submit('close', $lang['close']), "&nbsp;\n";;
 }

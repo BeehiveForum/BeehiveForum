@@ -136,18 +136,25 @@ if(isset($HTTP_POST_VARS['submit'])) {
       if($new_uid > -1) {
 
           bh_session_init($new_uid);
+          
+          $usernames[] = $HTTP_POST_VARS['logon'];
+          $passwords[] = $HTTP_POST_VARS['password'];
 
-          if($HTTP_POST_VARS['remember_user'] == "Y") {
-
-            setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
-            setcookie('bh_remember_password', $HTTP_POST_VARS['pw'], time() + YEAR_IN_SECONDS, '/');
-
-          }else {
-
-            setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
-            setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
-
+          for ($i = 0; $i < sizeof($usernames); $i++) {
+            setcookie("bh_remember_user[$i]", $usernames[$i], time() + YEAR_IN_SECONDS, '/');
           }
+
+          if(@$HTTP_POST_VARS['remember_user'] == "Y") {
+          
+            for ($i = 0; $i < sizeof($usernames); $i++) {
+              setcookie("bh_remember_password[$i]", $passwords[$i], time() + YEAR_IN_SECONDS, '/');
+            }
+            
+          }else {
+        
+            setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
+          
+          } 
 
           html_draw_top();
 
@@ -210,7 +217,7 @@ if (isset($error_html)) echo $error_html;
           </tr>
           <tr>
             <td>&nbsp;</td>
-            <td><?php echo form_checkbox("remember_user", "Y", "Remember me", ($HTTP_POST_VARS['remember_user'] == "Y")); ?></td>
+            <td><?php echo form_checkbox("remember_user", "Y", "Remember password", ($HTTP_POST_VARS['remember_user'] == "Y")); ?></td>
           </tr>
         </table>
         <table class="posthead" width="100%">

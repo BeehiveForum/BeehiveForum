@@ -20,14 +20,14 @@ frame           {
                 margin: 0px 0px 0px 0px;
                 padding: 0px 0px 0px 0px;
                 }
-		
+
 .navpage        {
                 font-size: 10px;
                 font-weight: bold;
                 margin: 4px 1px 1px 4px;
                 text-decoration: none;
                 }
-                
+
 .navpage A	{
 		color: #000000;
 		text-decoration: none;
@@ -334,7 +334,7 @@ A		{
           background-color: #D42AD4
 }
 
-.highlight { 
+.highlight {
           background-color: #C8D7E6
 }
 

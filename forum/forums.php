@@ -42,13 +42,19 @@ include_once("./include/myforums.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
+// Load the user session. We don't need to check if
+// the user should be logged in as we want all visitors
+// to be able to see this page.
+
+$user_sess = bh_session_check();
+
 // Load the wordfilter for the current user
 
 $user_wordfilter = load_wordfilter();
 
 html_draw_top("basetarget=_top");
 
-if ($user_sess = bh_session_check()) {
+if ($user_sess && bh_session_get_value('UID') <> 0) {
 
     $forums_array = get_my_forums();
 
@@ -105,10 +111,6 @@ if ($user_sess = bh_session_check()) {
     echo "  <tr>\n";
     echo "    <td class=\"posthead\">\n";
     echo "      <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" class=\"posthead\">\n";
-    echo "        <tr class=\"subhead\">\n";
-    echo "          <td colspan=\"3\">Available Forums:</td>\n";
-    echo "          <td>Last Visited</td>\n";
-    echo "        </tr>\n";
     echo "        <tr class=\"subhead\">\n";
     echo "          <td colspan=\"3\">Available Forums:</td>\n";
     echo "          <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.153 2004-04-06 10:01:02 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.154 2004-04-06 19:57:37 decoyduck Exp $ */
 
 function user_count()
 {
@@ -241,7 +241,7 @@ function user_get($uid, $hash = false)
 
     if (!is_numeric($uid)) return false;
     
-    if (!$table_data = get_table_prefix()) return false;
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER.*, USER_STATUS.STATUS FROM USER USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID) ";
@@ -268,7 +268,7 @@ function user_get_logon($uid)
 
     if (!is_numeric($uid)) return false;
     
-    if (!$table_data = get_table_prefix()) return "";
+    $table_data = get_table_prefix();
 
     $sql = "SELECT LOGON FROM USER WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_logon);

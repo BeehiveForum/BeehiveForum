@@ -139,6 +139,15 @@ $attachments_enabled = true;
 
 $attachment_dir = 'attachments';
 
+// Beehive includes the ability to show attachments
+// as deleted in the messages they once belonged to.
+// If you would like to make use of this functionality
+// then change this setting to true.
+//
+// Default: Disabled.
+
+$attachments_show_deleted = false;
+
 // ---------------------------------------------------------------------
 
 // User Accounts -------------------------------------------------------

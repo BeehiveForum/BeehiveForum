@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.225 2004-02-13 13:20:26 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.226 2004-02-20 18:36:03 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -212,7 +212,9 @@ function message_filter($content)
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
-    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang;
+    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang, $attachments_show_deleted;
+    
+    if (!isset($attachments_show_deleted)) $attachments_show_deleted = false;
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
@@ -406,51 +408,73 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if (is_array($attachments)) {
 
-                echo "<tr><td>&nbsp;</td></tr>\n";
-                echo "<tr><td class=\"postbody\" align=\"left\">\n";
-                echo "<b>{$lang['attachments']}:</b><br />\n";
-
+                // If attachment file has been deleted don't show it, unless
+                // $attachments_show_deleted has been set to TRUE in config.inc.php
+                
+                $visible_attachments = array();
+                
                 for ($i = 0; $i < sizeof($attachments); $i++) {
-
-                    echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
-                    
-                    if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
-
-                        echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\"";
-
-                        if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
-                            echo " target=\"_blank\"";
-                        }else {
-                            echo " target=\"_self\"";
-                        }
-
-                        echo " title=\"";
-
-                        if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-                            echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-                        }
-
-                        echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
-                        echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
-
-                        if ($attachments[$i]['downloads'] == 1) {
-                            echo " {$lang['time']}";
-                        }else {
-                            echo " {$lang['times']}";
-                        }
-
-                        echo "\">{$attachments[$i]['filename']}</a><br />";
-
-                    }else {
-                    
-                        echo "{$attachments[$i]['filename']} - <b>{$lang['deleted']}</b><br />";
+                    if (isset($attachments[$i]['deleted']) && !$attachments[$i]['deleted']) {
+                        $visible_attachments[] = $attachments[$i];
+                    }elseif ($attachments_show_deleted) {
+                        $visible_attachments[] = $attachments[$i];
                     }
                 }
+                
+                // Now we go through the visible attachment list and echo
+                // out the links to them at the bottom of the message.
+                
+                if (is_array($visible_attachments) && sizeof($visible_attachments) > 0) {
+                    
+                    // Draw the attachment header at the bottom of the post
+                
+                    echo "<tr><td>&nbsp;</td></tr>\n";
+                    echo "<tr><td class=\"postbody\" align=\"left\">\n";
+                    echo "<b>{$lang['attachments']}:</b><br />\n";                
+                
+                    for ($i = 0; $i < sizeof($visible_attachments); $i++) {
+                    
+                        echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";                    
 
-                echo "</td></tr>\n";
+                        // If the attachment has been deleted then we don't include a link to it.
+                        
+                        if (isset($visible_attachments[$i]['deleted']) && $visible_attachments[$i]['deleted']) {
+                        
+                            echo "{$attachments[$i]['filename']} - <b>{$lang['deleted']}</b><br />";
+                           
+                        }else {
+                            
+                            echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\"";
 
+                            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                                echo " target=\"_blank\"";
+                            }else {
+                                echo " target=\"_self\"";
+                            }
+
+                            echo " title=\"";
+
+                            if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+                                echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                            }
+ 
+                            echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+                            echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+
+                            if ($attachments[$i]['downloads'] == 1) {
+                                echo " {$lang['time']}";
+                            }else {
+                                echo " {$lang['times']}";
+                            }
+
+                            echo "\">{$attachments[$i]['filename']}</a><br />";
+
+                        }
+                    }
+
+                    echo "</td></tr>\n";
+                }
             }
-
         }
 
         echo "</table>\n";

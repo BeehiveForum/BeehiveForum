@@ -74,7 +74,7 @@ class TextAreaHTML {
         $str.= $this->_tb_img($lang['numberedlist'], "add_tag('list', true, null, true);", "numbered_list_button.png");
         $str.= $this->_tb_img($lang['list'], "add_tag('list', null, null, true);", "list_button.png");
         $str.= $this->_tb_img($lang['indenttext'], "add_tag('blockquote', null, null, true);", "block_quote_button.png");
-        $str.= $this->_tb_img($lang['code'], "add_tag('code', null, null, true);", "code_button.png");
+        $str.= $this->_tb_img($lang['code'], "add_tag('code', 'language', '', true);", "code_button.png");
         $str.= $this->_tb_img($lang['quote'], "add_tag('quote', 'source', '', true);", "quote_button.png");
         $str.= $this->_tb_img($lang['spoiler'], "add_tag('spoiler', null, null, true);", "spoiler_button.png");
         $str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);", "horizontal_rule_button.png");

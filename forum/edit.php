@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.76 2003-12-07 23:41:10 tribalonline Exp $ */
-
-// Enable the error handler
-require_once("./include/errorhandler.inc.php");
+/* $Id: edit.php,v 1.77 2003-12-22 22:41:22 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
 
 //Check logged in status
 require_once("./include/session.inc.php");

@@ -21,15 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.33 2003-11-27 19:36:06 decoyduck Exp $ */
-
-// Enable the error handler
-require_once("./include/errorhandler.inc.php");
+/* $Id: pollresults.php,v 1.34 2003-12-22 22:41:22 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
-// Author: Matt Beale
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
 
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");

@@ -23,13 +23,13 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.140 2003-12-07 21:29:36 decoyduck Exp $ */
-
-// Enable the error handler
-require_once("./include/errorhandler.inc.php");
+/* $Id: post.php,v 1.141 2003-12-22 22:41:22 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
 
 //Check logged in status
 

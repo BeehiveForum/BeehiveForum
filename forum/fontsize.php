@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fontsize.php,v 1.11 2003-12-09 22:31:16 decoyduck Exp $ */
+/* $Id: fontsize.php,v 1.12 2003-12-22 22:41:22 decoyduck Exp $ */
+
+// style.php : handles site styles with user preferences
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
-
-// style.php : handles site styles with user preferences
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.45 2004-04-17 18:41:00 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.46 2004-04-19 20:44:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -46,9 +46,9 @@ include_once("./include/session.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -66,7 +66,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -110,7 +110,7 @@ if ($webtag) {
 if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
 
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\"><a href=\"admin_forums.php\" target=\"right\">{$lang['manageforums']}</a></td>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['forumsettings']}</a></td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.57 2004-04-19 20:29:12 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.58 2004-04-19 20:44:16 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -708,6 +708,8 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,";
         $sql.= "  USE_WORD_FILTER CHAR(1) DEFAULT NULL,";
         $sql.= "  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,";
+        $sql.= "  ALLOW_EMAIL CHAR(1) DEFAULT NULL,";
+        $sql.= "  ALLOW_PM CHAR(1) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID,UID)";
         $sql.= ") TYPE=MYISAM;";
 

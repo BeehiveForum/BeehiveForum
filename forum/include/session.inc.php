@@ -222,7 +222,12 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
+
+    // Delete the cookie data and ensure the MD5 check is invalidated by randomly generating a new one.
+
     setcookie("bh_sess_uid","",-3600);
+    setcookie("bh_sess_logon","",-3600);
+    setcookie("bh_sess_passwd","",-3600);
     setcookie("bh_sess_ustatus","",-3600);
     setcookie("bh_sess_ppp","",-3600);
     setcookie("bh_sess_tz","",-3600);
@@ -231,7 +236,9 @@ function bh_session_end()
     setcookie("bh_sess_fontsize","",-3600);
     setcookie("bh_sess_style","",-3600);
     setcookie("bh_sess_sig","",-3600);
-    setcookie("bh_sess_check","",-3600);
+    setcookie("bh_sess_sp","",-3600);
+    setcookie("bh_sess_check", md5(uniqid(rand())));
+
 }
 
 // IIS does not support the REQUEST_URI server var, so we will make one for it

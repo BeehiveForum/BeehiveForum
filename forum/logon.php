@@ -32,8 +32,6 @@ require_once("./include/format.inc.php");
 
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
-}else {
-    $final_uri = "./start.php";
 }
 
 if (strstr($final_uri, 'logout.php')) {
@@ -132,10 +130,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       }
 
+      $user_prefs = user_get_prefs($luid);
+
       if (!strstr($final_uri, 'discussion.php')) {
-        if ($HTTP_COOKIE_VARS['bh_sess_sp'] == 1) {
+        if ($user_prefs['START_PAGE'] == 1) {
           $final_uri = "./discussion.php";
-        }
+        }else {
+	  $final_uri = "./start.php";
+	}
       }
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS

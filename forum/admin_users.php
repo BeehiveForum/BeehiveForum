@@ -59,15 +59,17 @@ echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=UID\">UID</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=LOGON\">Logon</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=NICKNAME\">Nickname</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=STATUS\">Status</a></td>\n";
+echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=UID"; if ($HTTP_GET_VARS['sort'] == 'UID') echo '%20DESC'; echo "\">UID</a></td>\n";
+echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=LOGON"; if ($HTTP_GET_VARS['sort'] == 'LOGON') echo '%20DESC'; echo "\">Logon</a></td>\n";
+echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=NICKNAME"; if ($HTTP_GET_VARS['sort'] == 'NICKNAME') echo '%20DESC'; echo "\">Nickname</a></td>\n";
+echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=STATUS"; if ($HTTP_GET_VARS['sort'] == 'STATUS') echo '%20DESC'; echo "\">Status</a></td>\n";
+echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=LAST_LOGON"; if ($HTTP_GET_VARS['sort'] == 'LAST_LOGON') echo '%20DESC'; echo "\">Last Logon</a></td>\n";
+echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=LOGON_FROM"; if ($HTTP_GET_VARS['sort'] == 'LOGON_FROM') echo '%20DESC'; echo "\">IP Address</a></td>\n";
 echo "        </tr>\n";
 
 $db = db_connect();
 
-$sql = "select UID, LOGON, NICKNAME, STATUS from " . forum_table("USER") . " where UID > 0 order by ";
+$sql = "select UID, LOGON, NICKNAME, STATUS, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM from " . forum_table("USER") . " where UID > 0 order by ";
 
 if (isset($HTTP_GET_VARS['sort'])) {
   if ($HTTP_GET_VARS['sort'] == 'STATUS') {
@@ -108,6 +110,8 @@ for($i=0; $i < $result_count; $i++){
       echo "&nbsp;</td>\n";
     }
 
+    echo "          <td class=\"posthead\">", format_time($row['LAST_LOGON'], 1), "</td>\n";
+    echo "          <td class=\"posthead\">", $row['LOGON_FROM'], "</td>\n";
     echo "        </tr>\n";
 
 }

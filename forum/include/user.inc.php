@@ -278,7 +278,7 @@ function user_get_prefs($uid)
         $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'HOMEPAGE_URL' => '',
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
                     'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
-					'STYLE' => '', 'VIEW_SIGS' => '');
+		    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '');
     } else {
         $fa = db_fetch_array($result);
     }

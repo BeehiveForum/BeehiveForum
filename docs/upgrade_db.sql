@@ -1,3 +1,10 @@
+# Beehive Forum Database Creation
+# version 0.1 to 0.2 Upgrade
+# http://beehiveforum.sourceforge.net/
+#
+# Generation Time: Aug 27, 2002 at 05:16 PM
+# --------------------------------------------------------#
+
 INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('GUEST', MD5('guest'), 'Guest', 'guest@email.com', 0, NOW());
 
 DROP TABLE IF EXISTS POLL;
@@ -21,9 +28,5 @@ CREATE TABLE POLL (
   KEY TID (TID)
 ) TYPE=MyISAM;
 
-ALTER TABLE USER_PREFS
-ADD STYLE varchar(255) default NULL,
-ADD KEY STYLE (STYLE)
-
-ALTER TABLE POST
-MODIFY CREATED datetime NOT NULL
+ALTER TABLE USER_PREFS ADD STYLE VARCHAR(255), ADD INDEX (STYLE);
+ALTER TABLE POST CHANGE CREATED CREATED DATETIME DEFAULT NULL;

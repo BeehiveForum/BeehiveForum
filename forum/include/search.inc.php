@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.114 2005-03-24 18:55:33 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.115 2005-03-24 20:29:19 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -76,7 +76,6 @@ function search_execute($argarray, &$urlquery, &$error)
     $select_sql = "SELECT SEARCH_POSTS.FID, SEARCH_POSTS.TID, SEARCH_POSTS.PID, ";
     $select_sql.= "SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, SEARCH_POSTS.TO_UID, ";
     $select_sql.= "UNIX_TIMESTAMP(SEARCH_POSTS.CREATED) AS CREATED ";
-    $select_sql.= "FROM SEARCH_POSTS SEARCH_POSTS ";
 
     // Joins that we need for the search. Only join the keywords table
     // if we're doing a keyword search. Searching by user can be done
@@ -108,6 +107,8 @@ function search_execute($argarray, &$urlquery, &$error)
     if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
         if ($user_uid = user_get_uid($argarray['username'])) {
+
+            $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
 
             if ($argarray['user_include'] == 1) {
 
@@ -152,10 +153,14 @@ function search_execute($argarray, &$urlquery, &$error)
 
         if (sizeof($keywords_array) > 0) {
 
+            $from_sql = "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
+
             $join_sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ";
-            $join_sql.= "ON (SEARCH_MATCH.TID = SEARCH_POSTS.TID AND SEARCH_MATCH.PID = SEARCH_POSTS.PID) ";
-            $join_sql.= "LEFT JOIN SEARCH_KEYWORDS SEARCH_KEYWORDS ";
-            $join_sql.= "ON (SEARCH_KEYWORDS.WID = SEARCH_MATCH.WID) ";
+            $join_sql.= "ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
+            $join_sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ";
+            $join_sql.= "ON (SEARCH_POSTS.FORUM = SEARCH_MATCH.FORUM ";
+            $join_sql.= "AND SEARCH_POSTS.TID = SEARCH_MATCH.TID ";
+            $join_sql.= "AND SEARCH_POSTS.PID = SEARCH_MATCH.PID) ";
 
             if ($argarray['method'] == 1) { // AND
 
@@ -199,7 +204,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $limit_sql = "LIMIT {$argarray['sstart']}, 20";
 
-    $sql = preg_replace("/ +/", " ", "$select_sql $join_sql $where_sql $group_sql $order_sql");
+    $sql = preg_replace("/ +/", " ", "$select_sql $from_sql $join_sql $where_sql $group_sql $order_sql");
     $result = db_query($sql, $db_search_execute);
 
     $uriquery = "";

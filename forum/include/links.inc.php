@@ -26,12 +26,12 @@ require_once("./include/gzipenc.inc.php");
 
 // Functions for the links database
 
-require_once("db.inc.php");
-require_once("forum.inc.php");
-require_once("header.inc.php");
-require_once("html.inc.php");
-require_once("form.inc.php");
-require_once("format.inc.php");
+require_once('./include/db.inc.php');
+require_once('./include/forum.inc.php');
+require_once('./include/header.inc.php');
+require_once('./include/html.inc.php');
+require_once('./include/form.inc.php');
+require_once('./include/format.inc.php');
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {

@@ -159,12 +159,18 @@ if (sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) {
 
 if (isset($error_html)) echo $error_html;
 
-if(isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
+if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
     $logon = $HTTP_COOKIE_VARS['bh_remember_user'];
     $password = $HTTP_COOKIE_VARS['bh_remember_password'];
 } else {
     $logon = "";
     $password = "";
+}
+
+if (isset($HTTP_GET_VARS['other'])) {
+  $otherlogon = true;
+}else {
+  $otherlogon = false;  
 }
    
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
@@ -174,7 +180,7 @@ echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
 echo "</tr>\n</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
 
-if (sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) {
+if ((sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) && $otherlogon == false) {
 
   echo "<tr>\n";
   echo "<td align=\"right\">User Name:</td>\n";
@@ -186,7 +192,7 @@ if (sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) {
     echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
   }
     
-  echo "</td>\n";
+  echo "&nbsp;". form_button("other", "Other", "onclick=\"self.location.href='". get_request_uri(). "&other=true';\""). "</td>\n";
   echo "</tr>\n";
   echo "<tr>\n";
   echo "<td align=\"right\">Password:</td>\n";
@@ -206,9 +212,10 @@ if (sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) {
   
 }
 
-echo "<tr><td>&nbsp;</td><td align=\"right\">\n";
+echo "<tr><td>&nbsp;</td><td>\n";
 echo form_checkbox("remember_user","Y","Remember password",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")));
 echo "</td></tr>\n";
+echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
 echo "</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
 echo "<tr><td align=\"center\">";

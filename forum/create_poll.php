@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.114 2004-05-26 11:27:45 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.115 2004-06-03 16:42:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -230,6 +230,16 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
+    if ($valid && $_POST['polltype'] == 2 && sizeof(array_unique($_POST['answer_groups']))  != 2) {
+        $error_html = "<h2>{$lang['tablepollmusthave2groups']}</h2>";
+        $valid = false;
+    }
+
+    if ($valid && $_POST['polltype'] == 2 && $_POST['changevote'] == 2) {
+        $error_html = "<h2>{$lang['nomultivotetabulars']}</h2>";
+        $valid = false;
+    }
+
     if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
 
         $t_message_text = trim($_POST['t_message_text']);
@@ -321,6 +331,10 @@ if ($valid && isset($_POST['submit'])) {
 
         $t_tid = post_create_thread($t_fid, $_POST['question'], 'Y', 'N');
         $t_pid = post_create($t_tid, 0, bh_session_get_value('UID'), 0, '');
+
+        if ($_POST['polltype'] == 2) {
+            $_POST['pollvotetype'] = 1;
+        }
 
         poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
 
@@ -422,7 +436,9 @@ if ($valid && isset($_POST['preview'])) {
 
     if ($_POST['polltype'] == 1) {
         $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
-    }else {
+    }elseif ($_POST['polltype'] == 2) {
+        $polldata['CONTENT'] .= poll_preview_graph_table($pollresults);
+    } else {
         $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
     }
 
@@ -435,7 +451,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    <td>";
     $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td class=\"postbody\">";
+    $polldata['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
 
     if ($_POST['changevote'] == 1) {
         $polldata['CONTENT'].= $lang['abletochangevote'];
@@ -593,8 +609,9 @@ echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <table border=\"0\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"50%\">", form_radio('polltype', '0', $lang['horizgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 0 : true), "</td>\n";
-echo "                  <td width=\"50%\">", form_radio('polltype', '1', $lang['vertgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 1 : false), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('polltype', '0', $lang['horizgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 0 : true), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('polltype', '1', $lang['vertgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 1 : false), "</td>\n";
+echo "                  <td>", form_radio('polltype', '2', $lang['tablegraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 2 : false), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.65 2004-05-30 20:24:41 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.66 2004-06-03 16:42:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -141,7 +141,7 @@ if (isset($_GET['viewstyle']) && is_numeric($_GET['viewstyle'])) {
 
 echo "<br />\n";
 
-if ($polldata['VOTETYPE'] == 1) {
+if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
 
     echo "<table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
     echo "  <tr>\n";
@@ -166,7 +166,7 @@ echo "        </tr>\n";
 
 if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator() || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < gmmktime())) {
 
-  if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
+  if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
     echo "        <tr>\n";
     echo "          <td colspan=\"2\">\n";
@@ -181,6 +181,14 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
       echo "        <tr>\n";
       echo "          <td>\n";
       echo poll_horizontal_graph($tid);
+      echo "          </td>\n";
+      echo "        </tr>\n";
+      
+    }elseif ($polldata['POLLTYPE'] == 2) {
+
+      echo "        <tr>\n";
+      echo "          <td>\n";
+      echo poll_table_graph($tid);
       echo "          </td>\n";
       echo "        </tr>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.85 2004-05-25 22:09:12 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.86 2004-06-03 16:46:46 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -961,6 +961,10 @@ $lang['editpoll'] = "Editer le Sondage";
 $lang['results'] = "Résultats";
 $lang['resultdetails'] = "Le résultat Détaille";
 $lang['changevote'] = "Vote de changement";
+$lang['mustvoteforallgroups'] = "You must vote in every group.";
+$lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";
+$lang['nomultivotetabulars'] = "Tabular format polls cannot be multi-vote";
+$lang['tablegraph'] = "Tabular format";
 
 // Profiles (profile.php) ----------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.29 2005-03-14 13:27:20 decoyduck Exp $ */
+/* $Id: install.php,v 1.30 2005-03-25 20:45:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -145,6 +145,18 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
         }else {
             $admin_email = "";
         }
+    }
+
+    if (isset($_POST['remove_conflicts']) && $_POST['remove_conflicts'] == 'Y') {
+        $remove_conflicts = true;
+    }else {
+        $remove_conflicts = false;
+    }
+
+    if (isset($_POST['skip_dictionary']) && $_POST['skip_dictionary'] == 'Y') {
+        $skip_dictionary = true;
+    }else {
+        $skip_dictionary = false;
     }
 
     if ($valid) {
@@ -335,8 +347,11 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
             }else {
 
-                $error_html.="<h2>Could not complete installation. Error was: ". db_error($db_install). "</h2>\n";
-                $valid = false;
+                if (($errno = db_errno($db_install)) > 0) {
+
+                    $error_html.="<h2>Could not complete installation. Error was: ". db_error($db_install). "</h2>\n";
+                    $valid = false;
+                }
             }
 
         }elseif ($valid) {
@@ -528,15 +543,21 @@ echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
 
 if (!defined('BEEHIVE_INSTALLED')) {
 
-    echo "<p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
-    echo "<p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
+    echo "<div align=\"center\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td width=\"500\">\n";
+    echo "        <p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
+    echo "        <p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 
     if (isset($error_html)) {
         echo $error_html;
         echo "<br />\n";
     }
 
-    echo "<div align=\"center\">\n";
     echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
@@ -559,8 +580,8 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                <tr>\n";
     echo "                  <td width=\"250\">&nbsp;</td>\n";
     echo "                  <td width=\"250\" valign=\"top\">\n";
-    echo "                    <p>For new installs or upgrades from 0.4 to 0.5 please enter the WEBTAG you want to use for the default forum.</p>\n";
-    echo "                    <p>For upgrades from 0.5 and above the Default Forum Webtag is ignored and all forums are upgraded.</p>\n";
+    echo "                    <p>For new installs please enter the WEBTAG you want to use for the default forum.</p>\n";
+    echo "                    <p>For upgrades the Default Forum Webtag is ignored and all forums are upgraded.</p>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
@@ -637,6 +658,33 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Confirm Password:</td>\n";
     echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td width=\"500\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">Advanced Options</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" /><label for=\"remove_conflicts\">Automatically remove tables that conflict with BeehiveForum's own.</label></span></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" /><label for=\"skip_dictionary\">Skip dictionary setup (recommended only if install fails to complete).</label></span></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td colspan=\"2\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.7 2005-03-24 20:29:19 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.8 2005-03-25 20:45:43 decoyduck Exp $ */
 
 function db_connect()
 {
@@ -100,9 +100,9 @@ function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
     return false;
 }
 
-function db_insert_id($result)
+function db_insert_id($connection_id)
 {
-    if ($insert_id = @mysqli_insert_id($result)) {
+    if ($insert_id = @mysqli_insert_id($connection_id)) {
         return $insert_id;
     }
 
@@ -111,22 +111,25 @@ function db_insert_id($result)
 
 function db_trigger_error($sql, $connection_id)
 {
-    $errstr = db_error($connection_id);
-    trigger_error("<p>$errstr</p>\n<p>$sql</p>", E_USER_ERROR);
+    if (error_reporting()) {
+
+        $errstr = db_error($connection_id);
+        trigger_error("<p>$errstr</p>\n<p>$sql</p>", E_USER_ERROR);
+    }
 }
 
-function db_error($result)
+function db_error($connection_id)
 {
-    if ($errstr = @mysqli_error($result)) {
+    if ($errstr = @mysqli_error($connection_id)) {
         return $errstr;
     }
 
     return "Unknown Error";
 }
 
-function db_errno($result)
+function db_errno($connection_id)
 {
-    if ($errno = @mysqli_errno($result)) {
+    if ($errno = @mysqli_errno($connection_id)) {
         return $errno;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.247 2005-03-21 14:33:04 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.248 2005-03-25 20:45:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -789,7 +789,7 @@ $lang['pwchangeemail_2'] = "has been changed.";
 $lang['pwchangeemail_3'] = "It has been changed to:";
 $lang['pwchangeemail_4'] = "And was changed by:";
 $lang['pwchangeemail_5'] = "If you have received this email in error or were not expecting";
-$lang['pwchangeemail_6'] = "a change to your password please contact an administrator on";
+$lang['pwchangeemail_6'] = "a change to your password please contact the forum owner or a moderator on";
 $lang['pwchangeemail_7'] = "immediatly to correct it.";
 
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
@@ -1529,7 +1529,7 @@ $lang['add'] = "Add";
 $lang['suggest'] = "Suggest";
 $lang['ok'] = "OK";
 $lang['cancel'] = "Cancel";
-
+$lang['dictionarynotinstalled'] = "No dictionary has been installed. Please contact the forum owner to remedy this.";
 
 // Permissions keys ----------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.159 2005-03-02 19:22:16 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.160 2005-03-05 21:09:55 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -62,7 +62,7 @@ function bh_session_check($show_session_fail = true)
 
         if ($table_data = get_table_prefix()) {
 
-            $fid = $table_data['FID'];
+            $forum_fid = $table_data['FID'];
 
             $sql = "SELECT USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, ";
             $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
@@ -70,22 +70,27 @@ function bh_session_check($show_session_fail = true)
             $sql.= "SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
             $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-            $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-            $sql.= "ON (GROUP_USERS.UID = SESSIONS.UID) ";
-            $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-            $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
+            $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = SESSIONS.UID) ";
+            $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+            $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
             $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
             $sql.= "GROUP BY USER.UID";
 
         }else {
 
-            $fid = 0;
+            $forum_fid = 0;
 
             $sql = "SELECT USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, ";
+            $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
+            $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
             $sql.= "SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
             $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+            $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = SESSIONS.UID) ";
+            $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+            $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0)) ";
             $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
+            $sql.= "GROUP BY USER.UID";
         }
 
         $result = db_query($sql, $db_bh_session_check);
@@ -124,7 +129,7 @@ function bh_session_check($show_session_fail = true)
             // If the user isn't currently in the same forum
             // we should make it look like they've visited it.
 
-            if ($user_sess['FID'] != $fid) {
+            if ($user_sess['FID'] != $forum_fid) {
 
                 bh_update_visitor_log($user_sess['UID']);
             }
@@ -135,7 +140,7 @@ function bh_session_check($show_session_fail = true)
             if (($current_time - $user_sess['TIME']) > 300) {
 
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
-                $sql.= "FID = '$fid', IPADDRESS = '$ipaddress' ";
+                $sql.= "FID = '$forum_fid', IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
@@ -208,9 +213,9 @@ function bh_session_check($show_session_fail = true)
         // from a single IP address.
 
         if ($table_data = get_table_prefix()) {
-            $fid = $table_data['FID'];
+            $forum_fid = $table_data['FID'];
         }else {
-            $fid = 0;
+            $forum_fid = 0;
         }
 
         $sql = "SELECT * FROM SESSIONS WHERE UID = '0' ";
@@ -346,9 +351,9 @@ function bh_session_init($uid, $update_visitor_log = true)
     $ipaddress = get_ip_address();
 
     if ($table_data = get_table_prefix()) {
-        $fid = $table_data['FID'];
+        $forum_fid = $table_data['FID'];
     }else {
-        $fid = 0;
+        $forum_fid = 0;
     }
 
     $forum_settings = get_forum_settings();

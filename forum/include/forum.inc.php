@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.113 2005-03-04 22:54:07 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.114 2005-03-05 21:09:45 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -538,39 +538,6 @@ function forum_create($webtag, $forum_name, $access)
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        // Create GROUP_PERMS table
-
-        $sql = "CREATE TABLE {$webtag}_GROUP_PERMS (";
-        $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (GID, FID)";
-        $sql.= ") TYPE=MYISAM";
-
-        if (!$result = db_query($sql, $db_forum_create)) return false;
-
-        // Create GROUP_USERS table
-
-        $sql = "CREATE TABLE {$webtag}_GROUP_USERS (";
-        $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (GID,UID)";
-        $sql.= ") TYPE=MYISAM";
-
-        if (!$result = db_query($sql, $db_forum_create)) return false;
-
-        // Create GROUPS table
-
-        $sql = "CREATE TABLE {$webtag}_GROUPS (";
-        $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (GID)";
-        $sql.= ") TYPE=MYISAM";
-
-        if (!$result = db_query($sql, $db_forum_create)) return false;
-
         // Create LINKS table
 
         $sql = "CREATE TABLE {$webtag}_LINKS (";
@@ -859,6 +826,16 @@ function forum_create($webtag, $forum_name, $access)
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
+        // Save Webtag
+
+        $sql = "INSERT INTO FORUMS (WEBTAG, ACCESS_LEVEL) VALUES ('$webtag', $access)";
+
+        if (!$result = db_query($sql, $db_forum_create)) return false;
+
+        // Get the new FID so we can save the settings
+
+        $forum_fid = db_insert_id($db_forum_create);
+
         // Create General Folder
 
         $sql = "INSERT INTO {$webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
@@ -885,28 +862,31 @@ function forum_create($webtag, $forum_name, $access)
 
         // Create folder permissions
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (0, 0, 14588);";
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES (0, '$forum_fid', 0, 14588);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
         // Create user permissions (current user)
 
-        $sql = "INSERT INTO {$webtag}_GROUPS (GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-        $sql.= "VALUES (NULL, NULL, 1);";
+        $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+        $sql.= "VALUES ('$forum_fid', NULL, NULL, 1);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
         $new_gid = db_insert_id($db_forum_create);
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($new_gid, 0, 1792);";
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES ('$new_gid', '$forum_fid', 0, 1792);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        $sql = "INSERT INTO {$webtag}_GROUP_USERS VALUES ($new_gid, $uid);";
+        $sql = "INSERT INTO GROUP_USERS VALUES ($new_gid, $uid);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($new_gid, 1, 6652);";
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES ('$new_gid', '$forum_fid', 1, 6652);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -916,27 +896,17 @@ function forum_create($webtag, $forum_name, $access)
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        // Save Webtag
-
-        $sql = "INSERT INTO FORUMS (WEBTAG, ACCESS_LEVEL) VALUES ('$webtag', $access)";
-
-        if (!$result = db_query($sql, $db_forum_create)) return false;
-
-        // Get the new FID so we can save the settings
-
-        $new_fid = db_insert_id($db_forum_create);
-
         // Store Forum Name
 
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$new_fid', 'forum_name', '$forum_name')";
+        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$forum_fid', 'forum_name', '$forum_name')";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES($uid, $new_fid, 1)";
+        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$uid', '$forum_fid', 1)";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        return $new_fid;
+        return $forum_fid;
     }
 
     return false;

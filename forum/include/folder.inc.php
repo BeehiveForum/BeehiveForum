@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.88 2004-12-10 14:17:28 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.89 2005-03-05 21:09:44 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -34,6 +34,8 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return "";
+
+    $forum_fid = $table_data['FID'];
 
     if (!is_numeric($allowed_types)) return "";
 
@@ -48,12 +50,11 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
-    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
@@ -131,6 +132,8 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
 
     if (!$table_data = get_table_prefix()) return 0;
 
+    $forum_fid = $table_data['FID'];
+
     $sql = "SELECT MAX(POSITION) + 1 AS NEW_POS FROM {$table_data['PREFIX']}FOLDER";
     $result = db_query($sql, $db_folder_create);
 
@@ -145,8 +148,8 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
 
     $new_fid = db_insert_id($db_folder_create);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
-    $sql.= "VALUES ('0', '$new_fid', '$permissions')";
+    $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+    $sql.= "VALUES ('0', '$forum_fid', '$new_fid', '$permissions')";
 
     return db_query($sql, $db_folder_create);
 }
@@ -174,6 +177,8 @@ function folder_update($fid, $folder_data)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $folder_data = array_merge(folder_get($fid), $folder_data);
 
     foreach($folder_data as $key => $value) {
@@ -194,13 +199,13 @@ function folder_update($fid, $folder_data)
 
     $result = db_query($sql, $db_folder_update);
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}GROUP_PERMS ";
-    $sql.= "WHERE FID = '$fid' AND GID = '0'";
+    $sql = "DELETE FROM GROUP_PERMS WHERE FID = '$fid' ";
+    $sql.= "AND FORUM = '$forum_fid' AND GID = '0'";
 
     $result = db_query($sql, $db_folder_update);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
-    $sql.= "VALUES ('0', '$fid', '{$folder_data['PERM']}')";
+    $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+    $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}')";
 
     return db_query($sql, $db_folder_update);
 }
@@ -227,6 +232,8 @@ function folder_get_available()
     if (!$table_data = get_table_prefix()) return '0';
     if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
+    $forum_fid = $table_data['FID'];
+
     $access_allowed = USER_PERM_POST_READ;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
@@ -235,12 +242,11 @@ function folder_get_available()
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
-    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
@@ -281,6 +287,8 @@ function folder_get_all()
 
     if (!$table_data = get_table_prefix()) return array();
 
+    $forum_fid = $table_data['FID'];
+
     if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
@@ -290,8 +298,8 @@ function folder_get_all()
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
-    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.POSITION";
 
@@ -319,14 +327,16 @@ function folder_get($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM, ";
     $sql.= "COUNT(THREAD.FID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = 0) ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND GROUP_PERMS.GID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
 
     $result = db_query($sql, $db_folder_get);

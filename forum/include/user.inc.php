@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.228 2005-02-23 15:26:57 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.229 2005-03-05 21:09:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -183,19 +183,25 @@ function user_logon($logon, $password, $md5hash = false)
 
     if ($table_data = get_table_prefix()) {
 
+        $forum_fid = $table_data['FID'];
+
         $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, ";
         $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-        $sql.= "ON (GROUP_USERS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-        $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
+        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+        $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+        $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
         $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$md5pass' ";
         $sql.= "GROUP BY USER.UID";
 
     }else {
 
-        $sql = "SELECT USER.UID, 0 AS STATUS FROM USER USER ";
-        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$md5pass'";
+        $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, ";
+        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER ";
+        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+        $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+        $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0)) ";
+        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$md5pass' ";
+        $sql.= "GROUP BY USER.UID";
     }
 
     $result = db_query($sql, $db_user_logon);

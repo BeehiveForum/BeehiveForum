@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.185 2004-08-02 00:32:30 tribalonline Exp $ */
+/* $Id: user.inc.php,v 1.186 2004-08-08 12:03:38 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -148,23 +148,23 @@ function user_update_forums($uid, $forums_array)
         if (is_numeric($forum['allowed']) && is_numeric($forum['fid'])) {
 
             $sql = "SELECT UID FROM USER_FORUM ";
-	    $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
-
-	    $result = db_query($sql, $db_user_update_forums);
-
-	    if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
-	        $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
-
-	    }else {
-
-	        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-		$sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
-	    }
+            $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
 
             $result = db_query($sql, $db_user_update_forums);
-	}
+
+            if (db_num_rows($result) > 0) {
+
+                $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
+                $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
+
+            }else {
+
+                $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+                $sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
+            }
+
+            $result = db_query($sql, $db_user_update_forums);
+        }
     }
 }
 
@@ -319,7 +319,7 @@ function user_get_prefs($uid)
                          'PM_NOTIFY' => 'Y', 'PM_NOTIFY_EMAIL' => 'Y', 'DOB_DISPLAY' => 'Y', 'ANON_LOGON' => 'N',
                          'SHOW_STATS' => 'Y',  'IMAGES_TO_LINKS' => 'N', 'USE_WORD_FILTER' => 'N',
                          'USE_ADMIN_FILTER' => 'N', 'EMOTICONS' => '', 'ALLOW_EMAIL' => 'Y', 'ALLOW_PM' => 'Y',
-						 'POST_PAGE' => '0');
+                                                 'POST_PAGE' => '0');
 
     if (!$table_data = get_table_prefix()) return $prefs_array;
 
@@ -356,7 +356,7 @@ function user_update_prefs($uid, $prefs_array)
     if (empty($prefs_array['TIMEZONE']))       $prefs_array['TIMEZONE']       = 0;
     if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 20;
     if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
-	if (empty($prefs_array['POST_PAGE']))	   $prefs_array['POST_PAGE']	  = 0;
+        if (empty($prefs_array['POST_PAGE']))      $prefs_array['POST_PAGE']      = 0;
 
     if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = forum_get_setting('default_style');
     if (!ereg("([[:alnum:]]+)", $prefs_array['EMOTICONS'])) $prefs_array['EMOTICONS'] = forum_get_setting('default_emoticons');
@@ -549,7 +549,7 @@ function user_get_forthcoming_birthdays()
         while ($row = db_fetch_array($result)) {
             $birthdays[] = $row;
         }
-	return $birthdays;
+        return $birthdays;
     }else {
         return false;
     }
@@ -758,11 +758,11 @@ function users_search_recent($usersearch, $offset)
     $result = db_query($sql, $db_users_search_recent);
 
     if (db_num_rows($result)) {
-	while ($row = db_fetch_array($result)) {
-	    if (!isset($user_search_array[$row['UID']])) {
-	        $user_search_array[$row['UID']] = $row;
-	    }
-	}
+        while ($row = db_fetch_array($result)) {
+            if (!isset($user_search_array[$row['UID']])) {
+                $user_search_array[$row['UID']] = $row;
+            }
+        }
     }
 
     return array('user_count' => $user_search_count,
@@ -865,11 +865,11 @@ function user_get_relationships($uid, $offset = 0)
     $result = db_query($sql, $db_user_get_relationships);
 
     if (db_num_rows($result)) {
-	while ($row = db_fetch_array($result)) {
-	    if (!isset($user_search_array[$row['UID']])) {
-	        $user_get_peers_array[$row['UID']] = $row;
-	    }
-	}
+        while ($row = db_fetch_array($result)) {
+            if (!isset($user_search_array[$row['UID']])) {
+                $user_get_peers_array[$row['UID']] = $row;
+            }
+        }
     }
 
     return array('user_count' => $user_get_peers_count,

@@ -86,10 +86,10 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 								} else if (substr($html_parts[$j], 0, 4) == "code") {
 									$open_code++;
 								}
-								$tmpcode .= htmlspecialchars("<".$html_parts[$j].">");
+								$tmpcode .= _htmlentities("<".$html_parts[$j].">");
 
 							} else {
-								$tmpcode .= $html_parts[$j];
+								$tmpcode .= _htmlentities($html_parts[$j]);
 							}
 						}
 						if ($tmpcode != "<closed>") {

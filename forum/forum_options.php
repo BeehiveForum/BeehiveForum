@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.68 2005-01-31 15:44:09 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.69 2005-02-17 23:14:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -257,6 +257,11 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['SHOW_THUMBS'] = false;
     }
 
+    if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
+        $user_prefs['ENABLE_WIKI_WORDS'] = "Y";
+    }else {
+        $user_prefs['ENABLE_WIKI_WORDS'] = "N";
+    }
 
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = "Y";
@@ -269,7 +274,6 @@ if (isset($_POST['submit'])) {
     } else {
         $user_prefs_global['SHOW_STATS'] = false;
     }
-
 
     if (isset($_POST['posts_per_page'])) {
         $user_prefs['POSTS_PER_PAGE'] = trim(_stripslashes($_POST['posts_per_page']));
@@ -532,6 +536,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("show_thumbs_enabled", "Y", array("{$lang['show']} ", form_dropdown_array("show_thumbs", array(1 => 1, 2 => 2, 3 => 3), array(1 => $lang['smallsized'], 2 => $lang['mediumsized'], 3 => $lang['largesized']), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " {$lang['thumbnailsforimageattachments']}"), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_global", "Y", $lang['setforallforums'], $user_prefs['SHOW_THUMBS_GLOBAL']), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("enable_wiki_words", "Y", $lang['enablewikiintegration'], (isset($user_prefs['ENABLE_WIKI_WORDS']) && $user_prefs['ENABLE_WIKI_WORDS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("ENABLE_WIKI_WORDS_GLOBAL", "Y", $lang['setforallforums'], $user_prefs['ENABLE_WIKI_WORDS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.36 2005-03-28 00:16:05 tribalonline Exp $ */
+/* $Id: display_emoticons.php,v 1.37 2005-04-04 02:32:54 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -155,6 +155,19 @@ if (in_array($pack, $emot_sets_keys)) {
     $path = "emoticons/{$emot_forum}";
 }else {
     $path = "emoticons/{$emot_sets_keys[0]}";
+}
+
+if (@file_exists("$path/definitions.php")) {
+    include ("$path/definitions.php");
+}
+
+krsort($emoticon);
+reset($emoticon);
+
+$emoticon_text = array();
+
+foreach ($emoticon as $k => $v) {
+    $emoticon_text[$v][] = $k;
 }
 
 echo "                <td>\n";

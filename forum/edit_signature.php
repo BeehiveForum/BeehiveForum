@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.51 2005-03-28 19:43:30 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.52 2005-04-04 02:32:56 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -165,7 +165,7 @@ user_get_sig(bh_session_get_value('UID'), $user_sig['SIG_CONTENT'], $user_sig['S
 
 // Start Output Here
 
-html_draw_top("onUnload=clearFocus()", "dictionary.js". "htmltools.js");
+html_draw_top("onUnload=clearFocus()", "dictionary.js", "htmltools.js");
 
 if (isset($_POST['preview'])) {
 

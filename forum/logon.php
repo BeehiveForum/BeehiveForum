@@ -1,4 +1,10 @@
-<?php session_start();
+<?php 
+if(isset($sess_uid)){
+    unset($sess_uid);
+}
+
+session_start();
+
 session_register("sess_uid");
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");

@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.78 2004-12-21 23:15:16 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.79 2005-01-06 20:01:13 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/server.inc.php");
 
 function email_sendnotification($tuid, $msg, $fuid)
 {
@@ -335,19 +336,6 @@ function email_get_language($to_uid)
 
     require("./include/languages/{$default_language}.inc.php");
     return $lang;
-}
-
-function server_os_mswin()
-{
-    if (defined('PHP_OS')) {
-
-        if (stristr(PHP_OS, 'WIN') && !stristr(PHP_OS, 'DARWIN')) {
-
-            return true;
-        }
-    }
-
-    return false;
 }
 
 function check_mail_variables()

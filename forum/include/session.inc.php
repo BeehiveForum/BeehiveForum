@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.39 2003-08-02 18:42:38 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.40 2003-08-05 03:11:21 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -133,19 +133,17 @@ function bh_session_end()
 // IIS does not support the REQUEST_URI server var, so we will make one for it
 function get_request_uri()
 {
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $HTTP_GET_VARS;
 
-    if(isset($HTTP_SERVER_VARS['REQUEST_URI'])){
-        $return = $HTTP_SERVER_VARS['REQUEST_URI'];
-    } else {
-        global $HTTP_GET_VARS;
-        $return = $HTTP_SERVER_VARS['PHP_SELF']."?";
-        foreach($HTTP_GET_VARS as $key => $value){
-            $return .= "$key=".rawurlencode($value)."&";
+    if (isset($HTTP_SERVER_VARS['REQUEST_URI'])) {
+        return $HTTP_SERVER_VARS['REQUEST_URI'];
+    }else {
+        $request_uri = $HTTP_SERVER_VARS['PHP_SELF']. "?";
+        foreach ($HTTP_GET_VARS as $key => $value) {
+            $request_uri.= "{$key}=". rawurlencode($value). "&";
         }
+        return $request_uri;
     }
-
-    return $return;
 }
 
 ?>

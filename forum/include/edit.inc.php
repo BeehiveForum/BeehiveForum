@@ -21,67 +21,58 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.23 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: edit.inc.php,v 1.24 2003-08-05 03:11:21 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/lang.inc.php");
 
-function post_update($tid,$pid,$content)
+function post_update($tid, $pid, $content)
 {
-    if(!($tid && $pid)){
-        return false;
-    }
+    if (!($tid && $pid)) return false;
+
     $db_post_update = db_connect();
+    $content = _addslashes($content);
 
-    $content = addslashes($content);
-
-    $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = \"$content\" ";
-    $sql .= "where TID = $tid and PID = $pid";
-
+    $sql = "UPDATE " . forum_table("POST_CONTENT") . " SET CONTENT = '$content' ";
+    $sql.= "WHERE TID = $tid AND PID = $pid";
     $result = db_query($sql,$db_post_update);
 
-    $return = ($result) ? true : false;
-
-    return $return;
+    return (db_affected_rows($db_post_update) > 0);
 }
 
 function post_delete($tid, $pid)
 {
-    if(!($tid && $pid)) return false;
+    if (!($tid && $pid)) return false;
 
     $db_post_delete = db_connect();
 
     if (thread_is_poll($tid) && $pid == 1) {
-
-      $sql = "update " . forum_table("THREAD") . " set POLL_FLAG = 'N' where TID = $tid";
-      $result = db_query($sql, $db_post_delete);
-
+        $sql = "UPDATE ". forum_table("THREAD"). " SET POLL_FLAG = 'N' WHERE TID = $tid";
+        $result = db_query($sql, $db_post_delete);
     }
 
-    $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = NULL ";
-    $sql .= "where TID = $tid and PID = $pid";
+    $sql = "UPDATE ". forum_table("POST_CONTENT"). " SET CONTENT = NULL ";
+    $sql.= "WHERE TID = $tid AND PID = $pid";
 
     $result = db_query($sql, $db_post_delete);
 
-    $sql = "delete from ". forum_table("THREAD"). " where TID = $tid and LENGTH = 1";
+    $sql = "DELETE FROM ". forum_table("THREAD"). " WHERE TID = $tid AND LENGTH = 1";
     $result = db_query($sql, $db_post_delete);
 
-    $return = ($result) ? true : false;
-
-    return $return;
+    return (db_affected_rows($db_post_delete) > 0);
 }
 
 function edit_refuse($tid, $pid)
 {
     global $lang;
+
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['nopermissiontoedit']}</p>";
     echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
     echo "</div>";
-
 }
 
 ?>

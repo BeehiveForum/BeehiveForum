@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.7 2003-08-01 21:06:03 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.8 2003-08-05 03:11:21 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -87,7 +87,7 @@ function admin_get_word_filter()
     $filter_array = array();
 
     while($row = db_fetch_array($result)) {
-      $filter_array[] = $row['FILTER'];
+        $filter_array[] = $row['FILTER'];
     }
 
     return $filter_array;

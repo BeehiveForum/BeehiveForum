@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.11 2003-07-30 21:48:36 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.12 2003-08-05 03:11:21 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -36,16 +36,16 @@ function user_profile_create($uid,$piid,$entry)
     return $result;
 }
 
-function user_profile_update($uid,$piid,$entry)
+function user_profile_update($uid, $piid, $entry)
 {
     $db_user_profile_update = db_connect();
-    $entry = addslashes($entry);
-    $sql = "update " . forum_table("USER_PROFILE") . " ";
-    $sql.= "set ENTRY = \"". _htmlentities($entry) ."\" ";
-    $sql.= "where UID = $uid ";
-    $sql.= "and PIID = $piid";
-    $result = db_query($sql, $db_user_profile_update);
-    return $result;
+
+    $entry = _addslashes(_htmlentities($entry));
+
+    $sql = "UPDATE " . forum_table("USER_PROFILE") . " ";
+    $sql.= "SET ENTRY = '$entry', WHERE UID = $uid AND PIID = $piid";
+
+    return db_query($sql, $db_user_profile_update);
 }
 
 function user_get_profile_entries($uid, $psid)
@@ -70,7 +70,7 @@ function user_get_profile_image($uid)
 {
     $db_user_get_profile_image = db_connect();
 
-    $sql = "select PIC_URL from ". forum_table("USER_PREFS"). " where UID = $uid";
+    $sql = "SELECT PIC_URL from ". forum_table("USER_PREFS"). " WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_profile_image);
 
     $row = db_fetch_array($result);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.54 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.55 2003-08-05 03:11:21 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -74,30 +74,34 @@ function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $
 
     // Rename the thread
 
-    $sql = "update ".forum_table("THREAD")." set TITLE = \"$poll_question\" where TID = $tid";
+    $sql = "UPDATE ".forum_table("THREAD")." SET TITLE = '$poll_question' WHERE TID = $tid";
     $result = db_query($sql, $db_poll_edit);
 
     // Delete the recorded user votes for this poll
 
-    $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where TID = '$tid'";
+    $sql = "DELETE FROM ". forum_table("USER_POLL_VOTES"). " WHERE TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
 
     // Update the Poll settings
 
     if ($closes) {
-      $closes = "from_unixtime($closes)";
+      $closes = "FROM_UNIXTIME($closes)";
     }else {
       $closes = 'NULL';
     }
 
-    $sql = "update ". forum_table("POLL"). " set CHANGEVOTE = '$change_vote', POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results' ";
+    $sql = "UPDATE ". forum_table("POLL"). " SET CHANGEVOTE = '$change_vote', ";
+    $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results' ";
+
     if ($closes && $closes > 0) $sql.= ", CLOSES = $closes ";
-    $sql.= "where TID = '$tid'";
+
+    $sql.= "WHERE TID = '$tid'";
+
     $result = db_query($sql, $db_poll_edit);
 
     // Delete the available options for the poll
 
-    $sql = "delete from ". forum_table("POLL_VOTES"). " where TID = '$tid'";
+    $sql = "DELETE FROM ". forum_table("POLL_VOTES"). " WHERE TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
 
     // Insert the new poll options
@@ -106,8 +110,8 @@ function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $
 
       if (strlen(trim($option_name)) > 0) {
 
-        $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
-        $sql.= "values ('$tid', '". addslashes($option_name). "')";
+        $sql = "INSERT INTO ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
+        $sql.= "VALUES ('$tid', '". addslashes($option_name). "')";
 
         $result = db_query($sql, $db_poll_edit);
 
@@ -116,7 +120,6 @@ function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $
     }
 
 }
-
 
 function poll_get($tid)
 {

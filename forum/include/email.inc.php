@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.30 2003-08-01 20:37:08 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.31 2003-08-05 03:11:21 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -210,7 +210,7 @@ function email_send_pw_reminder($logon)
     $db_email_send_pw_reminder = db_connect();
     $logon = _addslashes($logon);
 
-    $sql = "select UID, PASSWD, EMAIL from ". forum_table("USER") ." where LOGON = \"$logon\"";
+    $sql = "select UID, PASSWD, EMAIL from ". forum_table("USER") ." where LOGON '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);
 
     if (db_num_rows($result)) {

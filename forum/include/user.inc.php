@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.80 2003-08-04 22:44:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.81 2003-08-05 03:11:21 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -34,18 +34,16 @@ function user_exists($logon)
 {
     $db_user_exists = db_connect();
 
-    $sql = "SELECT uid FROM " . forum_table("USER") . " WHERE logon = \"$logon\"";
+    $logon = _addslashes($logon);
 
+    $sql = "SELECT uid FROM " . forum_table("USER") . " WHERE logon = '$logon'";
     $result = db_query($sql, $db_user_exists);
 
-    $exists = (db_num_rows($result)>0);
-
-    return $exists;
+    return (db_num_rows($result) > 0);
 }
 
 function user_create($logon, $password, $nickname, $email)
 {
-
     global $HTTP_SERVER_VARS;
 
     $md5pass = md5($password);
@@ -57,24 +55,27 @@ function user_create($logon, $password, $nickname, $email)
 
     $db_user_create = db_connect();
     $result = db_query($sql, $db_user_create);
-    if($result){
+
+    if ($result) {
         $new_uid = db_insert_id($db_user_create);
-    } else {
+    }else {
         $new_uid = -1;
     }
+
     return $new_uid;
 }
 
 function user_update($uid, $nickname, $email)
 {
-
-    $sql = "UPDATE ". forum_table("USER"). " set NICKNAME = \"". _htmlentities($nickname). "\", ";
-    $sql.= "EMAIL = \"". _htmlentities($email). "\" WHERE UID = $uid";
-
     $db_user_update = db_connect();
-    $result = db_query($sql, $db_user_update);
 
-    return $result;
+    $nickname = _addslashes(_htmlentities($nickname));
+    $email = _addslashes(_htmlentities($nickname));
+
+    $sql = "UPDATE ". forum_table("USER"). " SET NICKNAME = '$nickname', ";
+    $sql.= "EMAIL = '$email' WHERE UID = $uid";
+
+    return db_query($sql, $db_user_update);
 }
 
 function user_change_pw($uid, $password, $hash = false)

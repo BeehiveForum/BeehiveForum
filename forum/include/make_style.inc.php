@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.6 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: make_style.inc.php,v 1.7 2003-08-05 03:11:21 decoyduck Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -124,7 +124,7 @@ function randSort()
 // background colour and uses the data to chooses between white
 // or black for the font colour of the supplied.
 
-function contrastFont($hex, $debug = false) {
+function contrastFont($hex) {
 
     list ($r, $g, $b) = hexToDec($hex);
     $rgb = array((double)$r / 255, (double)$g / 255, (double)$b / 255);
@@ -154,32 +154,24 @@ function contrastFont($hex, $debug = false) {
         }
 
         $hue /= 6;
-        if ($hue < 0) $hue+=1;
+        if ($hue < 0) $hue += 1;
 
     }
 
     if ($sat > 0.8 && (($rgb[2] * 255) == $b && $r < 128 && $g < 128)) {
-      $text_colour = "FFFFFF";
+        $text_colour = "FFFFFF";
     }elseif ($sat > 0.8) {
-      if ($lum < 0.4) {
-        $text_colour = "FFFFFF";
-      }else {
-        $text_colour = "000000";
-      }
+        if ($lum < 0.4) {
+            $text_colour = "FFFFFF";
+        }else {
+            $text_colour = "000000";
+        }
     }else {
-      if ($lum < 0.6) {
-        $text_colour = "FFFFFF";
-      }else {
-        $text_colour = "000000";
-      }
-    }
-
-    if ($debug) {
-      $return = "<span style=\"background-color: #$hex; color: #$text_colour\">". strtoupper($hex). "</span><br />\n";
-      $return.= "hue: $hue<br />\nsat: $sat<br />\nlum: $lum<br />\nfont: $text_colour<br />\n";
-      $return.= "r: $r<br />\nb: $b<br />\ng: $g<br />\n";
-      $return.= "max: ". $rgb[2]. "<br />\nmin: ". $rgb[0]. "<br />\n";
-      return $return;
+        if ($lum < 0.6) {
+            $text_colour = "FFFFFF";
+        }else {
+            $text_colour = "000000";
+        }
     }
 
     return $text_colour;

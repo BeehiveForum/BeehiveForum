@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.72 2004-05-25 22:09:11 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.73 2004-05-26 11:27:46 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
 
-function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "", $access_allowed = USER_PERM_THREAD_CREATE)
+function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "", $access_allowed = USER_PERM_THREAD_ACCESS)
 {
     $db_folder_draw_dropdown = db_connect();
 
@@ -46,10 +46,12 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID <> 0) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUPS GROUPS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID AND GROUPS.AUTO_GROUP = 1) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
     $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
     $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
@@ -62,12 +64,12 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
         while($row = db_fetch_array($result, MYSQL_ASSOC)) {
 
-            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) > 0)) {
+            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
 
                 $folders['FIDS'][] = $row['FID'];
                 $folders['TITLES'][] = $row['TITLE'];
 
-            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_STATUS'] & $access_allowed) > 0)) {
+            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_STATUS'] & $access_allowed) == $access_allowed)) {
 
                 $folders['FIDS'][] = $row['FID'];
                 $folders['TITLES'][] = $row['TITLE'];
@@ -218,10 +220,12 @@ function folder_get_available()
 
     $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_USERS.GID = GROUP_PERMS.GID) ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUPS GROUPS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID AND GROUPS.AUTO_GROUP = 1) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 AND GROUP_PERMS.PERM IS NOT NULL) ";
     $sql.= "OR (FOLDER.PERM & $access_allowed > 0 AND FOLDER.PERM IS NOT NULL AND GROUP_PERMS.PERM IS NULL) ";
     $sql.= "OR (FOLDER.PERM IS NULL AND GROUP_PERMS.PERM IS NULL) ";
@@ -256,10 +260,12 @@ function folder_get_all()
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID <> 0) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUPS GROUPS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID AND GROUPS.AUTO_GROUP = 1) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
     $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
     $sql.= "GROUP BY FOLDER.FID ";

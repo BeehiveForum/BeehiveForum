@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.33 2004-05-25 22:09:11 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.34 2004-05-26 11:27:46 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -100,10 +100,12 @@ function perm_check_folder_permissions($fid, $access_level)
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
     $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUPS GROUPS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID AND GROUPS.AUTO_GROUP = 1) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
     $sql.= "ON (FOLDER_PERMS.FID = '$fid' AND FOLDER_PERMS.GID = 0) ";
-    $sql.= "WHERE GROUP_PERMS.FID = '$fid' AND GROUP_PERMS.GID <> 0 ";
+    $sql.= "WHERE GROUP_PERMS.FID = '$fid' AND GROUP_PERMS.GID = GROUP_USERS.GID";
 
     $result = db_query($sql, $db_perm_check_folder_permissions);
 
@@ -111,11 +113,11 @@ function perm_check_folder_permissions($fid, $access_level)
 
     if ($row['USER_PERM_COUNT'] > 0) {
 
-        return ($row['USER_STATUS'] & $access_level) > 0;
+        return ($row['USER_STATUS'] & $access_level) == $access_level;
 
     }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
-        return ($row['FOLDER_STATUS'] & $access_level) > 0;
+        return ($row['FOLDER_STATUS'] & $access_level) == $access_level;
     }
 
     return true;
@@ -520,8 +522,13 @@ function perm_update_user_folder_perms($uid, $gid, $fid, $perm)
 
     if (!perm_is_group($gid) && perm_user_in_group($uid, $gid)) {
 
-        $sql = "UPDATE {$table_data['PREFIX']}GROUP_PERMS ";
-        $sql.= "SET PERM = '$perm' WHERE GID = '$gid' AND FID = '$fid'";
+        $sql = "DELETE FROM {$table_data['PREFIX']}GROUP_PERMS ";
+        $sql.= "WHERE GID = '$gid' AND FID = '$fid'";
+
+        $result = db_query($sql, $db_perm_update_user_folder_perms);
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS ";
+        $sql.= "(GID, FID, PERM) VALUES ('$gid', '$fid', '$perm')";
 
         return db_query($sql, $db_perm_update_user_folder_perms);
     }

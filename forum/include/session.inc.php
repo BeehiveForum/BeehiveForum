@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.71 2004-01-15 20:22:53 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.72 2004-01-19 20:56:29 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -100,8 +100,6 @@ function bh_session_check()
                     // then 5 minutes we should update it.
 
 		    if ($current_time - $user_sess['TIME'] > 60) {
-
-                        $session_stamp = time() - $session_cutoff;
                         
                         // Update the session
                         
@@ -111,7 +109,9 @@ function bh_session_check()
 
                         db_query($sql, $db_bh_session_check);
 
-  			// Delete expires sessions
+  			// Delete expires sessions 			
+
+                        $session_stamp = time() - $session_cutoff;  			
 
                         $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE ";
                         $sql.= "TIME < FROM_UNIXTIME($session_stamp)";

@@ -409,7 +409,7 @@ Gangsta
 4.1 Coding
 ==========
 
-Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Mike Franklin / Ben Sekulowicz
+Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Mike Franklin / Ben Sekulowicz / Andrew Holgate
 
 
 4.2 Design/CSS
@@ -435,7 +435,7 @@ X-Hacker - Matt Beale.
 4.5 Contributions
 =================
 
-Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Lots of other people
+Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Peter Boughton / Lots of other people
 
 
 4.6 Directors

@@ -428,7 +428,7 @@ function user_get_dob($uid)
 {
     $prefs = user_get_prefs($uid);
     if ($prefs['DOB_DISPLAY'] == 2 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
-        return format_date($prefs['DOB']);
+        return format_birthday($prefs['DOB']);
     } else {
         return false;
     }

@@ -251,7 +251,7 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
       if (isset($HTTP_COOKIE_VARS['bh_remember_password'][$i])) {
         echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
       }else {
-        echo form_input_hidden('password'. $i, '');
+        echo form_input_hidden('password'. $i, str_repeat(chr(255), 4));
       }
     }
     

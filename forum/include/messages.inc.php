@@ -182,7 +182,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['TO_RELATIONSHIP'] = 0;
     }
 
-    if((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text) {
+    if((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
         $message['CONTENT'].= "...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">View full message.</a>";
     }

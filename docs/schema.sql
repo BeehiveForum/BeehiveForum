@@ -37,39 +37,32 @@ INSERT INTO FOLDER VALUES (1, 'General', 0);
 # --------------------------------------------------------
 
 #
-# Table structure for table `POLL`
+# Table structure for table `poll`
 #
 
 CREATE TABLE POLL (
   TID mediumint(8) unsigned NOT NULL default '0',
-  O1 varchar(255) default NULL,
-  O1_VOTES mediumint(8) unsigned default '0',
-  O2 varchar(255) default NULL,
-  O2_VOTES mediumint(8) unsigned default '0',
-  O3 varchar(255) default NULL,
-  O3_VOTES mediumint(8) unsigned default '0',
-  O4 varchar(255) default NULL,
-  O4_VOTES mediumint(8) unsigned default '0',
-  O5 varchar(255) default NULL,
-  O5_VOTES mediumint(8) unsigned default '0',
   CLOSES datetime default NULL,
   CHANGEVOTE tinyint(1) NOT NULL default '1',
   POLLTYPE tinyint(1) NOT NULL default '0',
   SHOWRESULTS tinyint(1) NOT NULL default '1',
-  KEY TID (TID)
+  PRIMARY KEY  (TID)
 ) TYPE=MyISAM;
+
+
 # --------------------------------------------------------
 
 #
-# Table structure for table `POLL_VOTES`
+# Table structure for table `poll_votes`
 #
 
 CREATE TABLE POLL_VOTES (
   TID mediumint(8) unsigned NOT NULL default '0',
-  UID mediumint(8) unsigned NOT NULL default '0',
-  VOTE tinyint(3) unsigned NOT NULL default '0',
-  TSTAMP timestamp(14) NOT NULL
+  OPTION_ID mediumint(8) unsigned NOT NULL default '0',
+  OPTION_NAME char(255) NOT NULL default '',
+  VOTES mediumint(8) unsigned NOT NULL default '0'
 ) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -280,6 +273,19 @@ CREATE TABLE USER_PREFS (
   KEY STYLE (STYLE),
   KEY UID (UID)
 ) TYPE=MyISAM;
+#---------------------------------------------------------
+
+#
+# Table structure for table `user_poll_votes`
+#
+
+CREATE TABLE USER_POLL_VOTES (
+  TID mediumint(8) unsigned NOT NULL default '0',
+  UID mediumint(8) unsigned NOT NULL default '0',
+  OPTION_ID mediumint(8) unsigned NOT NULL default '0',
+  TSTAMP timestamp(14) NOT NULL
+) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #

@@ -29,7 +29,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/search.inc.php");
@@ -80,7 +80,7 @@ if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
 }
 
 // Base Query - The same for all searches
-  
+
 $basesql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
 $basesql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST_CONTENT.CONTENT ";
 $basesql.= "FROM ". forum_table("THREAD"). " THREAD ";
@@ -96,18 +96,18 @@ if (isset($HTTP_GET_VARS['sstart'])) search_construct_query($HTTP_GET_VARS, $sea
 if (isset($searchsql)) {
 
   html_draw_top();
-  
+
   echo "<img src=\"".style_image('post.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
   echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
-  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";  
-  
+  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";
+
   echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
 
   if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
     $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
     echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
-  
+
   }else {
 
     $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
@@ -115,28 +115,28 @@ if (isset($searchsql)) {
                     "I've recently seen","I've ignored","I've subscribed to");
 
     echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
-  
-  }  
-  
-  echo form_submit("go","Go!"). "\n";  
-  
+
+  }
+
+  echo form_submit("go","Go!"). "\n";
+
   echo "<br /><br />\n";
   echo "<h1>Search Results</h1>";
 
   $db  = db_connect();
   $sql = $basesql.$searchsql;
-  
+
   if (isset($HTTP_GET_VARS['sstart'])) {
     $sstart = $HTTP_GET_VARS['sstart'];
   }else {
     $sstart = 0;
   }
-  
+
   $result = db_query($sql, $db);
-  $numRows = mysql_num_rows($result);  
-  
+  $numRows = mysql_num_rows($result);
+
   echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\">&nbsp;Found: ", $numRows, " matches<br />\n";
-  
+
   if (($numRows > 50) && (($sstart + 50) < $numRows)) {
     if ($numRows - ($sstart + 50) > 50) {
       echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a>\n";
@@ -146,52 +146,52 @@ if (isset($searchsql)) {
   }elseif ($numRows > 50) {
     echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">Prev 50</a>\n";
   }
-  
+
   echo "<br /><br />\n";
-  
+
   for ($i = $sstart; $i < $sstart + 50; $i++) {
-  
+
     if (db_data_seek($result, $i)) {
-    
+
       $row = db_fetch_array($result);
-      
+
       $message = messages_get($row['TID'], $row['PID']);
-      
+      $threaddata = thread_get($row['TID']);
+
       if (thread_is_poll($row['TID'])) {
-      
-        $threaddata = thread_get($row['TID']);
+
         $message['CONTENT'] = strip_tags(_stripslashes($threaddata['TITLE']));
-        
+
       }else {
-      
-        $message['CONTENT'] = message_get_content($row['TID'], $row['PID']);
-        $message['CONTENT'] = strip_tags($message['CONTENT']);
-        
+
+        $message['CONTENT'] = strip_tags(_stripslashes($threaddata['TITLE'])). '<br />';
+        $message['CONTENT'].= strip_tags(message_get_content($row['TID'], $row['PID']));
+
       }
-           
+
       if (strlen($message['CONTENT']) > 50) {
-          
+
         $message['CONTENT'] = substr($message['CONTENT'], 0, 50);
         $schar = strrpos($message['CONTENT'], ' ');
-        
+
         // trunicate the search result at the last space in the first 50 chars.
-        
+
         if (schar > 0) {
           $message['CONTENT'] = substr($message['CONTENT'], 0, $schar);
         }else {
           $message['CONTENT'] = substr($message['CONTENT'], 0, 47). "...";
         }
-        
+
       }
-      
+
       echo ($i + 1). ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
       echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span><br /><br />\n";
-             
+
     }
-    
+
   }
-  
-  
+
+
   if (($numRows > 50) && (($sstart + 50) < $numRows)) {
     if ($numRows - ($sstart + 50) > 50) {
       echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a>\n";
@@ -201,10 +201,10 @@ if (isset($searchsql)) {
   }elseif ($numRows > 50) {
     echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">Prev 50</a>\n";
   }
-  
+
   html_draw_bottom();
   exit;
-  
+
 }
 
 html_draw_top();
@@ -222,7 +222,7 @@ html_draw_top();
   </tr>
   <tr>
     <td class="postbody" colspan="2">&nbsp;</td>
-  </tr>   
+  </tr>
   <tr>
     <td class="postbody" colspan="2">Additional Criteria</td>
   </tr>
@@ -265,4 +265,4 @@ html_draw_top();
 
 html_draw_bottom();
 
-?>   
+?>

@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.52 2004-06-25 22:14:06 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.53 2004-08-22 17:30:29 rowan_hill Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/word_filter.inc.php");
 
 function light_html_draw_top ($title = false)
 {
@@ -391,7 +392,15 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if(!isset($message['TO_RELATIONSHIP'])) {
         $message['TO_RELATIONSHIP'] = 0;
     }
+    
+    // Check for words that should be filtered ---------------------------------
 
+    $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
+
+    if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
+        $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+    }
+    
     if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";

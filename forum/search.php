@@ -142,29 +142,43 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 if (isset($searchsql)) {
 
-  echo "<img src=\"".style_image('post.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
-  echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
-  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";
-
-  echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
+  echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+  echo "  <tr>\n";
+  echo "    <td class=\"postbody\" colspan=\"2\">\n";
+  echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
+  echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
+  echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">Search</a><br />\n";
+  echo "    </td>\n";
+  echo "  </tr>\n";
+  echo "  <tr>\n";
+  echo "    <td colspan=\"2\">&nbsp;</td>\n";
+  echo "  </tr>\n";
+  echo "  <tr>\n";
+  echo "    <td colspan=\"2\">\n";
+  echo "      <form name=\"f_mode\" method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
 
   if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
     $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
-    echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
+    echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n";
 
   }else {
 
     $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
                     "2 Days Back","7 Days Back","High Interest","Unread High Interest",
-                    "I've recently seen","I've ignored","I've subscribed to");
+                    "I've recently seen","I've ignored","I've subscribed to","Started by Friend",
+                    "Unread std by Friend");
 
-    echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+    echo form_dropdown_array("mode", range(0, 12), $labels, $mode, "onchange=\"submit()\""), "\n";
 
   }
 
-  echo form_submit("go","Go!"). "\n";
+  echo form_submit("go", "Go!"), "\n";
   echo "      </form>\n";
+  echo "    </td>\n";
+  echo "  </tr>\n";
+  echo "</table>\n";
+
   echo "<h1>Search Results</h1>\n";
 
   $db  = db_connect();
@@ -230,8 +244,8 @@ if (isset($searchsql)) {
 
     }
 
-    echo "<li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />\n";
-    if (strlen($message['CONTENT']) > 0) echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />\n";
+    echo "  <li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
+    if (strlen($message['CONTENT']) > 0) echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
     echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
 
   }

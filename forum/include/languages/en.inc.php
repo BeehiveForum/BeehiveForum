@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.221 2005-02-07 17:04:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.222 2005-02-08 12:43:07 decoyduck Exp $ */
 
 // International English language file
 
@@ -462,24 +462,22 @@ $lang['allowsearchenginespidering'] = "Allow search engines to spider post conte
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
 
-$lang['top10postersin'] = "Top 10 posters in";
-$lang['top10postersforthisweek'] = "Top 10 posters for this week";
-$lang['top10postersfortoday'] = "Top 10 posters for today";
-$lang['top10postersforthishour'] = "Top 10 posters for this hour";
-
+$lang['top10postersforperiod'] = "Top 10 posters for period";
 $lang['postingstats'] = "Posting Stats";
 $lang['nodata'] = "No data";
 $lang['totalposts'] = "Total posts";
 
-$lang['percentofthismonthsposts'] = "Percent of this months posts";
-$lang['percentofthisweeksposts'] = "Percent of this weeks posts";
-$lang['percentoftodaysposts'] = "Percent of todays posts";
-$lang['percentofthishoursposts'] = "Percent of this hours posts";
+$lang['percentofthisperiodsposts'] = "Percent of this periods posts";
+$lang['totalpostsforthisperiod'] = "Total posts for this period";
 
-$lang['totalpoststhismonth'] = "Total posts this month";
-$lang['totalpoststhisweek'] = "Total posts this week";
-$lang['totalpoststoday'] = "Total posts today";
-$lang['totalpoststhishour'] = "Total posts this hour";
+$lang['mustchooseastartday'] = "Must choose a start day";
+$lang['mustchooseastartmonth'] = "Must choose a start month";
+$lang['mustchooseastartyear'] = "Must choose a start year";
+$lang['mustchooseaendday'] = "Must choose a end day";
+$lang['mustchooseaendmonth'] = "Must choose a end month";
+$lang['mustchooseaendyear'] = "Must choose a end year";
+
+$lang['startperiodisaheadofendperiod'] = "Start period is ahead of end period";
 
 $lang['bancontrols'] = "Ban Controls";
 $lang['bannedipaddresses'] = "Banned IP Addresses";

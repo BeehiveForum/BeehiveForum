@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.68 2005-02-06 00:38:50 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.69 2005-02-08 12:43:07 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -417,7 +417,7 @@ function form_input_hidden_array($name, $value)
 // Creates a dropdown selectors for dates
 // including seperate fields for day, month and year.
 
-function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
+function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $start_year = 0)
 {
     $lang = load_language_file();
 
@@ -431,11 +431,22 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently
 
-    $years = range(date('Y'), 2037);
-    array_unshift($years, " ");
+    if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
 
-    $years_values = range(date('Y'), 2037);
-    array_unshift($years_values, " ");
+        $years = range($start_year, 2037);
+        array_unshift($years, " ");
+
+        $years_values = range($start_year, 2037);
+        array_unshift($years_values, " ");
+
+    }else {
+
+        $years = range(date('Y'), 2037);
+        array_unshift($years, " ");
+
+        $years_values = range(date('Y'), 2037);
+        array_unshift($years_values, " ");
+    }
 
     $output = form_dropdown_array("{$prefix}day", range(0,31), $days, $day);
     $output.= "&nbsp;";

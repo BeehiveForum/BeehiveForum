@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.15 2005-02-07 17:05:04 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.16 2005-02-08 12:43:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -288,6 +288,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
     $sql.= "  PRIMARY KEY (TID, PID),";
     $sql.= "  KEY TO_UID (TO_UID),";
+    $sql.= "  KEY FROM_UID (FROM_UID),";
     $sql.= "  KEY IPADDRESS (IPADDRESS),";
     $sql.= "  KEY CREATED (CREATED)";
     $sql.= ") TYPE = MYISAM";

@@ -19,10 +19,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: openprofile.js,v 1.4 2003-11-11 19:10:27 decoyduck Exp $ */
+/* $Id: openprofile.js,v 1.5 2003-11-27 16:06:39 decoyduck Exp $ */
 
 function openProfile(uid) {
-  window.open('user_profile.php?uid=' + uid, uid,'width=550, height=450, toolbars=no');
+  window.open('user_profile.php?uid=' + uid, uid,'width=580, height=450, toolbars=no');
 }
 
 function launchAttachProfileWin() {

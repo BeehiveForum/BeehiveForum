@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.70 2004-06-25 14:33:58 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.71 2004-06-30 20:08:47 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -30,7 +30,7 @@ function search_execute($argarray, &$urlquery, &$error)
 {
     // Ensure the bare minimum of variables are set
 
-    if (!isset($argarray['method'])) $argarray['method'] = 1;
+    if (!isset($argarray['method'])) $argarray['method'] = 2;
     if (!isset($argarray['date_from'])) $argarray['date_from'] = 7;
     if (!isset($argarray['date_to'])) $argarray['date_to'] = 2;
     if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.80 2004-06-25 14:55:56 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.81 2004-06-30 20:08:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -112,17 +112,19 @@ if (bh_session_get_value('UID') == 0) {
 // Get the Message ID (MID) if any.
 
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
-    $replyto = $_GET['replyto'];
+    $t_rmid = $_GET['replyto'];
 }elseif (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
-    $replyto = $_POST['replyto'];
+    $t_rmid = $_POST['replyto'];
+}else {
+    $t_rmid = 0;
 }
 
 // User clicked cancel
 
 if (isset($_POST['cancel'])) {
 
-    if (isset($replyto)) {
-        $uri = "./pm.php?webtag=$webtag&mid=$replyto";
+    if (isset($t_rmid) && $t_rmid > 0) {
+        $uri = "./pm.php?webtag=$webtag&mid=$t_rmid";
     }else {
         $uri = "./pm.php?webtag=$webtag";
     }
@@ -132,11 +134,11 @@ if (isset($_POST['cancel'])) {
 
 // Check the MID to see if it is valid and accessible.
 
-if (isset($replyto)) {
+if (isset($t_rmid) && $t_rmid > 0) {
 
-    $t_recipient_list = pm_get_user($replyto);
+    $t_recipient_list = pm_get_user($t_rmid);
 
-    if ($pm_data = pm_single_get($replyto, PM_FOLDER_INBOX)) {
+    if ($pm_data = pm_single_get($t_rmid, PM_FOLDER_INBOX)) {
 
         if (!isset($_POST['t_subject']) || trim($_POST['t_subject']) == "") {
 
@@ -312,7 +314,7 @@ if ($valid && isset($_POST['submit'])) {
 
         if (isset($to_radio) && $to_radio == 0) {
 
-            if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+            if ($new_mid = pm_send_message($t_to_uid, $t_rmid, $t_subject, $t_content)) {
                 if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
 		email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
             }else {
@@ -324,7 +326,7 @@ if ($valid && isset($_POST['submit'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+                if ($new_mid = pm_send_message($t_to_uid, $t_rmid, $t_subject, $t_content)) {
                     if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
 		    email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
                 }else {
@@ -550,7 +552,7 @@ if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
-if (isset($replyto)) echo form_input_hidden("replyto", $replyto), "\n";
+if (isset($t_rmid)) echo form_input_hidden("replyto", $t_rmid), "\n";
 
 if (isset($pm_data) && is_array($pm_data)) {
 

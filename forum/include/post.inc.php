@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.116 2005-03-27 01:47:41 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.117 2005-03-27 13:02:58 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -98,6 +98,7 @@ function post_approve($tid, $pid)
     if (!is_numeric($pid)) return false;
 
     $db_post_approve = db_connect();
+
     $approve_uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
@@ -385,6 +386,7 @@ function get_user_posts($uid)
 function check_ddkey($ddkey)
 {
     $db_check_ddkey = db_connect();
+
     $uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
@@ -458,7 +460,7 @@ class MessageText {
     // is also enabled, hence we're (for the mean while) going to
     // stick with PHP/4.x's old var modifiers, because for now
     // it is going to be more compatible with our 'audience'
-    
+
     var $html = "";
     var $text = "";
     var $original_text = "";

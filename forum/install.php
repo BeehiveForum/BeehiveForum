@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.30 2005-03-25 20:45:43 decoyduck Exp $ */
+/* $Id: install.php,v 1.31 2005-03-27 13:02:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -509,7 +509,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
 }elseif (isset($_POST['finish_install'])) {
 
-    if (isset($_POST['delete_install_files']) && $_POST['delete_install_files'] == 'Y') {
+    if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
 
         install_remove_files();
     }

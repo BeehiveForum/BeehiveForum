@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.144 2005-03-19 17:53:34 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.145 2005-03-27 13:02:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -87,6 +87,7 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
     if (!is_numeric($option_type)) $option_type = 0;
 
     $edit_uid = bh_session_get_value('UID');
+
     $poll_question = addslashes($poll_question);
 
     if (!$table_data = get_table_prefix()) return false;

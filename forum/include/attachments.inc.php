@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.93 2005-03-26 18:16:45 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.94 2005-03-27 13:02:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");
@@ -561,9 +561,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
     $lang = load_language_file();
 
-    $user_show_thumbs = bh_session_get_value('SHOW_THUMBS');
-
-    if ($user_show_thumbs > 0) {
+    if (($user_show_thumbs = bh_session_get_value('SHOW_THUMBS')) > 0) {
 
         $thumbnail_size = array(1 => 50, 2 => 100, 3 => 150);
         $thumbnail_max_size = isset($thumbnail_size[$user_show_thumbs])

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.9 2004-11-14 16:11:31 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.10 2004-12-20 19:24:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,6 +162,14 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
+if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch']))) > 0) {
+    $usersearch = trim(_stripslashes($_GET['usersearch']));
+}else if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
+    $usersearch = trim(_stripslashes($_POST['usersearch']));
+}else {
+    $usersearch = "";
+}
+
 $user_perms = perm_get_user_permissions(bh_session_get_value('UID'));
 $group_permissions = perm_get_group_permissions($gid);
 
@@ -253,7 +261,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_main, $group_users_array['user_count'], 20), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid&usersearch=$usersearch&search_page=$search_page", $start_main, $group_users_array['user_count'], 20, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
@@ -267,9 +275,7 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 
-if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
-
-    $usersearch = trim(_stripslashes($_POST['usersearch']));
+if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
     echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
@@ -322,7 +328,7 @@ if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch'
         echo "      <td>&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>&nbsp;</td>\n";
@@ -371,5 +377,6 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
+
 
 ?>

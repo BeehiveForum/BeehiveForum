@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.142 2004-12-19 13:20:32 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.143 2004-12-20 19:24:21 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -564,7 +564,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
         if ($current_page > 1) {
 
             $prev_page = (($current_page - 1) > 0) ? ($current_page - 1) : 1;
-            echo "<a href=\"{$uri}&amp;page={$prev_page}\" target=\"_self\">&laquo;</a> ";
+            echo "<a href=\"{$uri}&amp;{$page_var}={$prev_page}\" target=\"_self\">&laquo;</a> ";
         }
 
         for ($page = $start_page; $page <= $end_page; $page++) {
@@ -584,12 +584,12 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
         if ($end_page < $page_count) {
 
-            echo " &hellip; <a href=\"{$uri}&amp;page={$page_count}\" target=\"_self\">Last &raquo;</a> ";
+            echo " &hellip; <a href=\"{$uri}&amp;{$page_var}={$page_count}\" target=\"_self\">Last &raquo;</a> ";
         }
 
     }else {
 
-        echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\"><b>[1]</b></a> ";
+        echo "<a href=\"{$uri}&amp;{$page_var}=1\" target=\"_self\"><b>[1]</b></a> ";
     }
 
     echo "</span>";

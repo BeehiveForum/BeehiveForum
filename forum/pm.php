@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.61 2004-06-25 14:55:56 decoyduck Exp $ */
+/* $Id: pm.php,v 1.62 2004-07-22 19:41:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -259,7 +259,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         if ($mid == $message['MID']) {
             echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" height=\"15\" title=\"Current Message\" alt=\"\"/>";
         }else {
-            if (($message['TYPE'] == PM_UNREAD) || ($message['TYPE'] == PM_NEW)) {
+            if (($message['TYPE'] == PM_UNREAD)) {
                 echo "<img src=\"".style_image('pmunread.png')."\" align=\"middle\" height=\"15\" title=\"Unread Message\" alt=\"\" />";
             }else {
                 echo "<img src=\"".style_image('pmread.png')."\" align=\"middle\" height=\"15\" title=\"Read Message\" alt=\"\" />";
@@ -275,7 +275,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
         }
 
-        if (($folder == PM_FOLDER_OUTBOX) && (($message['TYPE'] == PM_NEW) || ($message['TYPE'] == PM_UNREAD))) {
+        if (($folder == PM_FOLDER_OUTBOX) && ($message['TYPE'] == PM_UNREAD)) {
             echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&amp;mid={$message['MID']}\">Edit</a>]</span>";
         }
 

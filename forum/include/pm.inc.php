@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.80 2004-07-07 19:04:37 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.81 2004-07-22 19:41:56 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -166,7 +166,7 @@ function pm_get_inbox($offset)
     }
 
     return array('message_count' => $message_count,
-	         'message_array' => $pm_get_inbox_array);
+                 'message_array' => $pm_get_inbox_array);
 }
 
 function pm_get_outbox($offset)
@@ -211,7 +211,7 @@ function pm_get_outbox($offset)
     }
 
     return array('message_count' => $message_count,
-	         'message_array' => $pm_get_outbox_array);
+                 'message_array' => $pm_get_outbox_array);
 }
 
 function pm_get_sent($offset)
@@ -256,7 +256,7 @@ function pm_get_sent($offset)
     }
 
     return array('message_count' => $message_count,
-	         'message_array' => $pm_get_outbox_array);
+                 'message_array' => $pm_get_outbox_array);
 }
 
 function pm_get_saveditems($offset)
@@ -303,7 +303,7 @@ function pm_get_saveditems($offset)
     }
 
     return array('message_count' => $message_count,
-	         'message_array' => $pm_get_saveditems_array);
+                 'message_array' => $pm_get_saveditems_array);
 }
 
 function pm_get_free_space($uid = false)
@@ -332,7 +332,7 @@ function pm_get_free_space($uid = false)
 
     $row = db_fetch_array($result);
 
-    if (isset($row['PM_USED_SPACE'])) return ($max_pm_size - $row['PM_USED_SPACE']);
+    if (isset($row['PM_USED_SPACE'])) return ($max_pm_space - $row['PM_USED_SPACE']);
 
     return $max_pm_size;
 }
@@ -398,11 +398,35 @@ function pm_user_get_friends()
     }
 }
 
-function pm_single_get($mid, $folder, $uid = false)
+function pm_get_subject($mid, $tuid)
+{
+    $db_pm_get_subject = db_connect();
+
+    if (!is_numeric($mid)) return false;
+    if (!is_numeric($tuid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT PM.SUBJECT FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "WHERE MID = '$mid' AND TO_UID = '$tuid'";
+
+    $result = db_query($sql, $db_pm_get_subject);
+
+    if (db_num_rows($result) > 0) {
+
+        $row = db_fetch_array($result);
+        return $row['SUBJECT'];
+    }
+
+    return false;
+}
+
+function pm_single_get($mid, $folder)
 {
     $db_pm_list_get = db_connect();
 
-    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+    $uid = bh_session_get_value('UID');
+
     if (!is_numeric($mid)) return false;
     if (!is_numeric($folder)) return false;
 
@@ -447,7 +471,7 @@ function pm_single_get($mid, $folder, $uid = false)
         // Check to see if we should add a sent item before delete
         // ------------------------------------------------------------
 
-        if (($db_pm_list_get_row['TO_UID'] == $uid) && (($db_pm_list_get_row['TYPE'] == PM_NEW) || ($db_pm_list_get_row['TYPE'] == PM_UNREAD))) {
+        if (($db_pm_list_get_row['TO_UID'] == $uid) && ($db_pm_list_get_row['TYPE'] == PM_UNREAD)) {
             pm_markasread($db_pm_list_get_row['MID']);
             pm_add_sentitem($db_pm_list_get_row['MID']);
         }
@@ -597,7 +621,7 @@ function draw_pm_message($pm_elements_array)
 
         }else {
 
-	    echo "&nbsp;";
+            echo "&nbsp;";
         }
 
     }else {
@@ -671,9 +695,8 @@ function pm_send_message($tuid, $trmid, $subject, $content)
     // Insert the main PM Data into the database
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}PM";
-    $sql.= " (TYPE, REPLY_TO_MID, TO_UID, FROM_UID, SUBJECT, CREATED) ";
-    $sql.= "VALUES (". PM_NEW. ", '$trmid', '$tuid', '$fuid', '$subject', NOW())";
+    $sql = "INSERT INTO {$table_data['PREFIX']}PM (TYPE, REPLY_TO_MID, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
+    $sql.= "VALUES (". PM_UNREAD. ", '$trmid', '$tuid', '$fuid', '$subject', NOW(), 0)";
 
     $result = db_query($sql, $db_pm_send_message);
 
@@ -754,7 +777,7 @@ function pm_delete_message($mid)
     // Add the Sent Item
     // ------------------------------------------------------------
 
-    if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
+    if (($db_delete_pm_row['TO_UID'] == $uid) && ($db_delete_pm_row['TYPE'] == PM_UNREAD)) {
         pm_markasread($mid);
         pm_add_sentitem($mid);
     }
@@ -797,7 +820,7 @@ function pm_archive_message($mid)
 
     $db_pm_archive_message_row = db_fetch_array($result);
 
-    if (($db_pm_archive_message_row['TO_UID'] == $uid) && (($db_pm_archive_message_row['TYPE'] == PM_NEW) || ($db_pm_archive_message_row['TYPE'] == PM_UNREAD))) {
+    if (($db_pm_archive_message_row['TO_UID'] == $uid) && ($db_pm_archive_message_row['TYPE'] == PM_UNREAD)) {
         pm_markasread($mid);
         pm_add_sentitem($mid);
     }
@@ -807,7 +830,7 @@ function pm_archive_message($mid)
     // ------------------------------------------------------------
 
     $sql = "UPDATE {$table_data['PREFIX']}PM SET TYPE = ". PM_SAVED_IN. " ";
-    $sql.= "WHERE MID = '$mid' AND (TYPE = ". PM_NEW. " OR TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
+    $sql.= "WHERE MID = '$mid' AND (TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
     $sql.= "AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_archive_message);
@@ -866,7 +889,7 @@ function pm_get_unread_count()
     // ------------------------------------------------------------
 
     $sql = "SELECT MID FROM {$table_data['PREFIX']}PM ";
-    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
+    $sql.= "WHERE TYPE = ". PM_UNREAD. " AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_get_unread_count);
     return db_num_rows($result);

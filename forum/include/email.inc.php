@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.68 2004-06-29 16:02:38 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.69 2004-07-22 19:41:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -53,9 +53,9 @@ function email_sendnotification($tuid, $msg, $fuid)
 
         $mailto = db_fetch_array($result);
 
-	// Validate the email address before we continue.
+        // Validate the email address before we continue.
 
-	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
         if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != '') {
 
@@ -140,9 +140,9 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $mailto = db_fetch_array($result);
 
-	// Validate the email address before we continue.
+        // Validate the email address before we continue.
 
-	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
         $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
         $resultfrom = db_query($sql, $db_email_sendsubscription);
@@ -216,9 +216,9 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
         $mailto = db_fetch_array($result);
 
-	// Validate the email address before we continue.
+        // Validate the email address before we continue.
 
-	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
         if ($mailto['PM_NOTIFY_EMAIL'] == 'Y' && $mailto['EMAIL'] != '') {
 
@@ -226,7 +226,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
-            $pm_message = pm_single_get($mid, PM_FOLDER_INBOX, $tuid);
+            if (!$pm_subject = pm_get_subject($mid, $tuid)) return false;
 
              // get the right language for the email
             $lang = email_get_language($tuid);
@@ -238,7 +238,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
             $message.= " {$lang['pmnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['pmnotification_2']}:  ". _htmlentities_decode(_stripslashes($pm_message['SUBJECT'])). "\n\n";
+            $message.= "{$lang['pmnotification_2']}:  ". _htmlentities_decode(_stripslashes($pm_subject)). "\n\n";
             $message.= "{$lang['pmnotification_3']}:\n";
             $message.= "http://". $_SERVER['HTTP_HOST'];
 
@@ -292,11 +292,11 @@ function email_send_pw_reminder($logon)
 
         $mailto = db_fetch_array($result);
 
-	// Validate the email address before we continue.
+        // Validate the email address before we continue.
 
-	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
-	if (isset($mailto['UID']) && isset($mailto['EMAIL']) && isset($mailto['PASSWD'])) {
+        if (isset($mailto['UID']) && isset($mailto['EMAIL']) && isset($mailto['PASSWD'])) {
 
             // get the right language for the email
             $lang = email_get_language($mailto['UID']);
@@ -306,7 +306,7 @@ function email_send_pw_reminder($logon)
 
             $subject = "{$lang['passwdresetrequest']} - $forum_name";
 
-	    $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
+            $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
             $message.= "{$lang['forgotpwemail_3']}:\n\n";
             $message.= "http://". $_SERVER['HTTP_HOST'];
 
@@ -328,7 +328,7 @@ function email_send_pw_reminder($logon)
             }
 
             if (mail($recipient, $subject, $message, $header)) return true;
-	}
+        }
     }
 
     return false;

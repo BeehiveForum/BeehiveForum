@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.54 2004-07-17 10:51:37 hodcroftcj Exp $ */
+/* $Id: db.inc.php,v 1.55 2004-07-22 19:41:56 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -33,12 +33,12 @@ include_once("./include/constants.inc.php");
 
 function db_connect ()
 {
-	// If the PHP MySQL extension isn't loaded, we're not going anywhere
-	if (!extension_loaded("mysql")) {
-	    trigger_error("The PHP MySQL extension is not loaded!", FATAL);
-	}
+        // If the PHP MySQL extension isn't loaded, we're not going anywhere
+        if (!extension_loaded("mysql")) {
+            trigger_error("The PHP MySQL extension is not loaded!", FATAL);
+        }
 
-	global $db_server, $db_username, $db_password, $db_database, $show_friendly_errors;
+        global $db_server, $db_username, $db_password, $db_database, $show_friendly_errors;
     static $connection_id = false;
 
     if (!$connection_id) {
@@ -50,9 +50,9 @@ function db_connect ()
         }
 
         if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
-	    trigger_error(BH_DB_CONNECT_ERROR, FATAL);
-	}else {
-	    trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
+            trigger_error(BH_DB_CONNECT_ERROR, FATAL);
+        }else {
+            trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
         }
     }
 
@@ -90,7 +90,7 @@ function db_unbuffered_query ($sql, $connection_id)
         }else {
             $mysql_error = mysql_error($connection_id);
             trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
-	}
+        }
     }else {
         db_query($sql, $connection_id);
     }
@@ -150,7 +150,7 @@ function db_fetch_mysql_version()
         if (!$row = db_fetch_array($result)) {
 
             $sql = "SHOW VARIABLES LIKE 'version'";
-	    $result = @db_query($sql, $db_fetch_mysql_version);
+            $result = @db_query($sql, $db_fetch_mysql_version);
 
             $row = db_fetch_array($result);
         }
@@ -169,7 +169,7 @@ function db_fetch_mysql_version()
             $version_array[2] = 0;
         }
 
-	$mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+        $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
     }
 
     return $mysql_version;

@@ -141,7 +141,7 @@ presented with a directory that looks a bit like this:
 |  |  |
 |  |  |- install
 |  |  |  |- config.inc.php
-|  |  |  |- install.php
+|  |  |  |- new-install.php
 |  |  |  |- ...
 |  |  |
 |  |  |- js
@@ -428,7 +428,7 @@ to a seperate directory, remember to also upload the files you backed-up in 1.4.
 ============================
 
 Once you've backed up your database/files and uploaded the new files, you will
-need to run the upgrade script, located as /install/install.php in your forum
+need to run the upgrade script, located at install.php in your forum
 directory:
 
 http://www.mysite.com/forumtemp/install.php

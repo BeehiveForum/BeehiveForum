@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.30 2004-03-01 22:58:04 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.31 2004-03-03 22:43:26 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -323,7 +323,7 @@ $lang['uploadfailed'] = "Télécharger Echoué";
 $lang['errorfilesizeis0'] = "L'erreur: Filesize doit être plus grand que 0 octets";
 $lang['complete'] = "Complet";
 $lang['uploadattachment'] = "Télécharger un fichier pour l'attachement à le message";
-$lang['enterfilenametoupload'] = "Entrer le nom de fichier pour télécharger";
+$lang['enterfilenamestoupload'] = "Entrer le nom(s) de fichier pour télécharger";
 $lang['nowpress'] = "Maintenant la presse";
 $lang['ifdoneattachingfiles'] = "Si vous êtes fait de fichier attachant, la presse";
 $lang['attachmentsforthismessage'] = "Les attachements pour ce message";

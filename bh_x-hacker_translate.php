@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.4 2003-07-27 12:42:01 hodcroftcj Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.5 2003-08-31 16:21:05 hodcroftcj Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -104,8 +104,8 @@ function translate($string) {
                     $i++;
                 }
 
-                if ($char == "s" && rn(10) > 7) $char = "$";
-                if ($char == "s" && rn(10) > 2) $char = "5";
+                if ($char == "s" && rn(10) > 7) $char = "\\$";
+                if ($char == "s" && rn(10) > 7) $char = "5";
                 if ($char == "t" && rn(10) > 5) $char = "+";
                 if ($char == "v" && rn(10) > 10) $char = "\/";
                 if ($char == "w" && rn(10) > 10) $char = "\/\/";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.32 2003-08-30 00:16:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.33 2003-08-31 16:21:07 hodcroftcj Exp $ */
 
 // International English language file
 
@@ -359,6 +359,30 @@ $lang['entercontentformessage'] = "Enter some content for the message";
 $lang['msgsentfrombeehiveforumby'] = "This message was sent from a Beehive Forum by";
 $lang['subject'] = "Subject";
 $lang['send'] = "Send";
+$lang['msgnotificationemail_1'] = "posted a message to you on";
+$lang['msgnotificationemail_2'] = "The subject is";
+$lang['msgnotificationemail_3'] = "To read that message and others in the same discussion, go to";
+$lang['msgnotificationemail_4'] = "Note: If you do not wish to receive email notifications of Forum messages";
+$lang['msgnotificationemail_5'] = "posted to you, go to";
+$lang['msgnotificationemail_6'] = "click";
+$lang['msgnotificationemail_7'] = "on Preferences, unselect the Email Notification checkbox and press Submit.";
+$lang['msgnotification_subject'] = "Message Notification from";
+$lang['subnotification_1'] = "posted a message in a thread you";
+$lang['subnotification_2'] = "have subscribed to on";
+$lang['subnotification_3'] = "The subject is";
+$lang['subnotification_4'] = "To read that message and others in the same discussion, go to";
+$lang['subnotification_5'] = "Note: If you do not wish to receive email notifications of new messages";
+$lang['subnotification_6'] = "in this thread, go to";
+$lang['subnotification_7'] = "and adjust your Interest level at the end of the page.";
+$lang['subnotification_subject'] = "Subscription Notification from";
+$lang['pmnotification_1'] = "posted a PM to you on";
+$lang['pmnotification_2'] = "The subject is";
+$lang['pmnotification_3'] = "To read the message go to";
+$lang['pmnotification_4'] = "Note: If you do not wish to receive email notifications of PM messages";
+$lang['pmnotification_5'] = "posted to you, go to";
+$lang['pmnotification_6'] = "click";
+$lang['pmnotification_7'] = "on Preferences, unselect the PM Email Notification checkbox and press Submit.";
+$lang['pmnotification_subject'] = "PM Notification from";
 
 // Error handler (errorhandler.inc.php) --------------------------------
 
@@ -367,7 +391,6 @@ $lang['retry'] = "Retry";
 $lang['multipleerroronpost'] = "This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.";
 $lang['replymsgnumber'] = "Reply Message Number";
 $lang['errormsgfordevs'] = "Error Message for server admins and developers";
-
 
 // Forgotten passwords (forgot_pw.php) ---------------------------------
 
@@ -531,6 +554,8 @@ $lang['reopenforposting'] = "Reopen for posting";
 $lang['closeforposting'] = "Close for posting";
 $lang['makesticky'] = "Make sticky";
 $lang['makenonsticky'] = "Make non-sticky";
+$lang['until'] = "Until 00:00 UTC";
+$lang['stickyuntil'] = "Sticky until";
 
 // Navigation strip (nav.php) ------------------------------------------
 
@@ -629,7 +654,7 @@ $lang['pollvotetype'] = "Poll Voting Type";
 $lang['pollvotesexp'] = "How should the poll be conducted?";
 $lang['pollvoteanon'] = "Anonymously";
 $lang['pollvotepub'] = "Public ballot";
-$lang['pollresultnote'] = "<b>Note:</b> Choosing '{$lang['pollvotepub']}' will overide the poll result type.";
+$lang['pollresultnote'] = "<b>Note:</b> Choosing 'Public ballot' will overide the poll result type.";
 $lang['horizgraph'] = "Horizontal graph";
 $lang['vertgraph'] = "Vertical graph";
 $lang['publicviewable'] = "Public ballot";

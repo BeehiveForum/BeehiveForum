@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.163 2003-08-30 01:58:43 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.164 2003-08-31 16:21:07 hodcroftcj Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -609,7 +609,7 @@ function messages_interest_form($tid,$pid)
     echo "</div>\n";
 }
 
-function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false)
+function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false, $sticky_until = false)
 {
     global $HTTP_SERVER_VARS, $lang;
 
@@ -631,12 +631,28 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     } else {
         echo "&nbsp;".form_submit("close",$lang['closeforposting']);
     }
+    
+    echo "</p>\n";
 
+    echo "<p>";
     if ($sticky) {
-            echo "&nbsp;".form_submit("nonsticky",$lang['makenonsticky']). "</p>\n";
+            echo "&nbsp;".form_submit("nonsticky",$lang['makenonsticky']);
+            if ($sticky_until) echo "&nbsp;{$lang['stickyuntil']} ".format_time($sticky_until, false);
     } else {
-            echo "&nbsp;".form_submit("sticky",$lang['makesticky']). "</p>\n";
+            echo "&nbsp;".form_submit("sticky",$lang['makesticky']);
+            if ($sticky_until) {
+                $year = date("Y", $sticky_until);
+                $month = date("n", $sticky_until);
+                $day = date("j", $sticky_until);
+            } else {
+                $year = 0;
+                $month = 0;
+                $day = 0;
+            }
+            echo "&nbsp;{$lang['until']}&nbsp;".form_date_dropdowns($year, $month, $day, "sticky_");
     }
+
+    echo "</p>\n";
 
     echo form_input_hidden("t_tid",$tid);
     echo form_input_hidden("t_pid",$pid);

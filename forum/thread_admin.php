@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.21 2003-08-20 02:20:43 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.22 2003-08-31 16:21:06 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -88,7 +88,11 @@ if (isset($HTTP_POST_VARS['move'])) {
 
 }else if (isset($HTTP_POST_VARS['sticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
 
-    thread_set_sticky($HTTP_POST_VARS['t_tid'], true);
+    $day = isset($HTTP_POST_VARS['sticky_day']) && is_numeric($HTTP_POST_VARS['sticky_day']) ? $HTTP_POST_VARS['sticky_day'] : 0;
+    $month = isset($HTTP_POST_VARS['sticky_month']) && is_numeric($HTTP_POST_VARS['sticky_month']) ? $HTTP_POST_VARS['sticky_month'] : 0;
+    $year = isset($HTTP_POST_VARS['sticky_year']) && is_numeric($HTTP_POST_VARS['sticky_year']) ? $HTTP_POST_VARS['sticky_year'] : 0;
+    $sticky_until = $day || $month || $year ? mktime(0, 0, 0, $month, $day, $year) : false;
+    thread_set_sticky($HTTP_POST_VARS['t_tid'], true, $sticky_until);
     admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 25);
 
 }else if(isset($HTTP_POST_VARS['nonsticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.31 2003-08-30 00:16:23 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.32 2003-08-31 16:21:07 hodcroftcj Exp $ */
 
 // form.inc.php : form item functions
 
@@ -186,6 +186,8 @@ function form_quick_button($href,$label,$var = 0,$value = 0,$target = "_self")
     echo form_submit("submit",$label)."</form>";
 }
 
+// create the date of birth dropdowns for prefs. $show_blank controls whether to show a blank option in each box for backwards
+// compatibility with 0.3 and below, where the DOB was not required information
 function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 {
     global $lang;
@@ -227,6 +229,24 @@ function form_input_hidden_array($name, $value)
     }
 
     return $return;
+}
+
+function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = "")
+{
+	global $lang;
+
+    $days   = array_merge(" ", range(1,31));
+    $months = array(" ", $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
+    $years = array_merge(" ", range(date('Y'), 2037)); // the end of 2037 is more or less the maximum time that can be represented as a UNIX timestamp currently
+    $years_values = array_merge(0, range(date('Y'), 2037));
+
+    $output  = form_dropdown_array($prefix."day", range(0,31), $days, $day);
+    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output .= form_dropdown_array($prefix."month", range(0, 12), $months, $month);
+    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output .= form_dropdown_array($prefix."year", $years_values, $years, $year);
+    
+    return $output;
 }
 
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.124 2003-09-03 15:31:34 decoyduck Exp $ */
+/* $Id: post.php,v 1.125 2003-09-03 17:20:27 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -158,7 +158,7 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
         $t_content = $HTTP_POST_VARS['t_content'];
 
         if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && isset($t_post_html) && $t_post_html) {
-            $error_html = "<h2>You are not allowed to embed attachments in your posts.</h2>\n";
+            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
 
@@ -172,7 +172,7 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
 
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig) && isset($t_sig_html) && $t_sig_html != "N") {
-        $error_html = "<h2>You are not allowed to embed attachments in your signature.</h2>\n";
+        $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
         $valid = false;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.24 2003-09-02 19:40:38 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.25 2003-09-03 17:20:27 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -123,7 +123,15 @@ echo "        </tr>\n";
 
 if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-  if ($polldata['VOTETYPE'] == 0) {
+  if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
+
+    echo "        <tr>\n";
+    echo "          <td colspan=\"2\">\n";
+    echo poll_public_ballot($tid, $horizontal_bar_width, $totalvotes);
+    echo "          </td>\n";
+    echo "        </tr>\n";
+
+  }else {
 
     if ($polldata['POLLTYPE'] == 0) {
 
@@ -142,14 +150,6 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
       echo "        </tr>\n";
 
     }
-
-  }else {
-
-    echo "        <tr>\n";
-    echo "          <td colspan=\"2\">\n";
-    echo poll_public_ballot($tid, $horizontal_bar_width, $totalvotes);
-    echo "          </td>\n";
-    echo "        </tr>\n";
   }
 
 }else {

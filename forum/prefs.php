@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.71 2003-09-01 18:04:35 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.72 2003-09-03 17:20:27 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -266,7 +266,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig_content) && $t_sig_html != "N") {
-        $error_html.= "<h2>You are not allowed to embed attachments in your signature.</h2>\n";
+        $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
         $valid = false;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.68 2003-09-03 16:19:26 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.69 2003-09-03 17:20:30 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -501,7 +501,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            if ($polldata['VOTETYPE'] == 1) {
+            if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
               $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
@@ -529,7 +529,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           }
 
-          if ($polldata['VOTETYPE'] == 1) {
+          if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
             $polldata['CONTENT'].= "        <tr>\n";
             $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
@@ -550,7 +550,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            if ($polldata['VOTETYPE'] == 1) {
+            if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
               $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
@@ -571,7 +571,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
 
-          if ($polldata['VOTETYPE'] == 1) {
+          if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
             $polldata['CONTENT'].= "        <tr>\n";
             $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.48 2003-09-02 20:47:52 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.49 2003-09-03 17:20:26 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -100,6 +100,43 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $valid = false;
   }
 
+  if ($valid && $HTTP_POST_VARS['pollvotetype'] == 1 && $HTTP_POST_VARS['changevote']  == 2) {
+    $error_html = "<h2>{$lang['cannotcreatemultivotepublicballot']}</h2>";
+    $valid = false;
+  }
+
+  if (isset($HTTP_POST_VARS['t_message_html']) && $HTTP_POST_VARS['t_message_html'] == "Y") {
+    $t_message_html = "Y";
+  }else {
+    $t_message_html = "N";
+  }
+
+  if (isset($HTTP_POST_VARS['t_sig_html']) && $HTTP_POST_VARS['t_sig_html'] == "Y") {
+    $t_sig_html = "Y";
+  }else {
+    $t_sig_html = "N";
+  }
+
+  if ($valid && isset($HTTP_POST_VARS['t_message_text']) && strlen(trim($HTTP_POST_VARS['t_message_text'])) > 0) {
+    $t_message_text = trim($HTTP_POST_VARS['t_message_text']);
+    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_message_text) && $t_message_html == "Y") {
+      $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+      $valid = false;
+    }
+  }else {
+    $t_message_text = "";
+  }
+
+  if ($valid && isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+    $t_sig = trim($HTTP_POST_VARS['t_message_text']);
+    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig) && $t_sig_html == "Y") {
+      $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
+      $valid = false;
+    }
+  }else {
+    $t_sig = "";
+  }
+
   $answer_group_check = array();
 
   for ($i = 0; $i < sizeof($HTTP_POST_VARS['answer_groups']); $i++) {
@@ -112,14 +149,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $error_html = "<h2>{$lang['groupcountmustbelessthananswercount']}</h2>";
     $valid = false;
   }
-
-  $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-  $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
-  $t_message_text = (isset($HTTP_POST_VARS['t_message_text'])) ? $HTTP_POST_VARS['t_message_text'] : "";
-
 }
-
-$t_message_html = (isset($HTTP_POST_VARS['t_message_html'])) ? $HTTP_POST_VARS['t_message_html'] : "";
 
 if ($valid) {
 

@@ -124,6 +124,7 @@ function delete_attachment($uid, $aid, $filename) {
 function get_free_attachment_space($uid) {
 
     global $HTTP_SERVER_VARS, $attachment_dir;
+    $used_attachment_space = 0;
 
     $db = db_connect();
     

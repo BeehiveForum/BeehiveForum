@@ -31,47 +31,54 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
   global $HTTP_COOKIE_VARS;
 
   if ($argarray['fid'] > 0) {
-    $folders = "THREAD.FID = ". $argarray['fid'];
+      $folders = "THREAD.FID = ". $argarray['fid'];
   }else{
-    $folders = "THREAD.FID in (". threads_get_available_folders(). ")";
+      $folders = "THREAD.FID in (". threads_get_available_folders(). ")";
   }
   
-  $daterange.= search_date_range($argarray['date_from'], $argarray['date_to']);
+  $daterange = search_date_range($argarray['date_from'], $argarray['date_to']);
+  $fromtouser = "";
+  
+    if(!isset($argarray['me_only'])){
+        $argarray['me_only'] = "N";
+    }
 
   if (empty($argarray['to_other']) && $argarray['to_uid'] > 0) {
-    $fromtouser = "AND POST.TO_UID = ". $argarray['to_uid'];
+      $fromtouser = "AND POST.TO_UID = ". $argarray['to_uid'];
   }elseif (!empty($argarray['to_other'])) {
-    $touid = user_get_uid($argarray['to_other']);
-    if ($touid > -1) $fromtouser = "AND POST.TO_UID = ". $touid;    
+      $touid = user_get_uid($argarray['to_other']);
+      if ($touid > -1) $fromtouser = "AND POST.TO_UID = ". $touid;
   }
 
   if (empty($argarray['from_other']) && $argarray['from_uid'] > 0) {
     $fromtouser.= " AND POST.FROM_UID = ". $argarray['from_uid'];
   }elseif (!empty($argarray['from_other'])) {
     $fromuid = user_get_uid($argarray['from_other']);
-    if ($fromuid > -1) $fromtouser.= " AND POST.FROM_UID = ". $fromuid;      
-  }  
-  
+    if ($fromuid > -1) $fromtouser.= " AND POST.FROM_UID = ". $fromuid;
+  }
+
   if (!empty($argarray['search_string'])) {
-  
+
     if ($argarray['method'] == 1) { // AND
-  
+
       $keywords = explode(' ', $argarray['search_string']);
-      
+
+      $threadtitle = "";
       foreach($keywords as $word) {
-        $threadtitle.= "THREAD.TITLE LIKE '%$word%' AND ";
+          $threadtitle.= "THREAD.TITLE LIKE '%$word%' AND ";
       }
-      
+
+      $postcontent = "";
       foreach($keywords as $word) {
         $postcontent.= "POST_CONTENT.CONTENT LIKE '%$word%' AND ";
       }
-      
+
       $threadtitle = substr($threadtitle, 0, -5);
       $postcontent = substr($postcontent, 0, -5);
-      
-      if ($argarray['me_only'] == 'Y') {
-        
-        $searchsql.= " (". $folders. " AND ". $threadtitle. " AND (POST.TO_UID = ". 
+
+      if (@$argarray['me_only'] == 'Y') {
+
+        $searchsql.= " (". $folders. " AND ". $threadtitle. " AND (POST.TO_UID = ".
         $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".
         $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") OR (". $postcontent.
         " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'].

@@ -77,10 +77,10 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 		$messages[$i]['FROM_UID'] = $message['FROM_UID'];
 		$messages[$i]['TO_UID'] = $message['TO_UID'];
 		$messages[$i]['CREATED'] = $message['CREATED'];
-		$messages[$i]['VIEWED'] = $message['VIEWED'];
+		$messages[$i]['VIEWED'] = @$message['VIEWED'];
 		//$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
-		$messages[$i]['CONTENT'] = $message['CONTENT'];
-		$messages[$i]['RELATIONSHIP'] = $message['RELATIONSHIP'];
+		$messages[$i]['CONTENT'] = @$message['CONTENT'];
+		$messages[$i]['RELATIONSHIP'] = @$message['RELATIONSHIP'];
 		$messages[$i]['FNICK'] = $message['FNICK'];
 		$messages[$i]['FLOGON'] = $message['FLOGON'];
 		if(isset($message['TNICK'])){
@@ -117,6 +117,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!isset($message['CONTENT']) || $message['CONTENT'] == ""){
         message_display_deleted($tid,$message['PID']);
         return;
+    }
+    
+    if(!isset($message['RELATIONSHIP'])){
+        $message['RELATIONSHIP'] = 0;
     }
 
 	$content_length = strlen($message['CONTENT']);
@@ -450,7 +454,7 @@ function messages_get_most_recent($uid)
 
     if(db_num_rows($result)){
         $fa = db_fetch_array($result);
-        if($fa['LAST_READ']){
+        if(isset($fa['LAST_READ'])){
             $return = $fa['TID'] . "." . $fa['LAST_READ'];
         } else {
             $return = $fa['TID'] . ".1";

@@ -46,6 +46,41 @@ require_once("./include/thread.inc.php");
 require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
 
+// Check that required variables are set
+if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
+    $user = 0; // default to UID 0 if no other UID specified
+    if (!isset($HTTP_GET_VARS['mode'])) {
+        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
+            $mode = 0;
+        }else{
+            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        }
+    } else {
+        // non-logged in users can only display "All" threads or those in the past x days, since the other options would be impossible
+        if ($HTTP_GET_VARS['mode'] == 0 || $HTTP_GET_VARS['mode'] == 3 || $HTTP_GET_VARS['mode'] == 4 || $HTTP_GET_VARS['mode'] == 5) {
+            $mode = $HTTP_GET_VARS['mode'];
+        } else {
+            $mode = 0;
+        }
+    }
+} else {
+    $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    if (isset($mark_all_read)) threads_mark_all_read();
+    if (!isset($HTTP_GET_VARS['mode'])) {
+        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
+            if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
+                $mode = 1;
+            } else {
+                $mode = 0;
+            }
+        }else {
+            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        }
+    } else {
+        $mode = $HTTP_GET_VARS['mode'];
+    }
+}
+
 // Base Query - The same for all searches
   
 $basesql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";

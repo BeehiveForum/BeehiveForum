@@ -28,7 +28,7 @@ require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
 
 $uid = $HTTP_GET_VARS['uid'];
-$psid = $HTTP_GET_VARS['psid'];
+$psid = @$HTTP_GET_VARS['psid'];
 
 if(!$uid){
     html_draw_top();

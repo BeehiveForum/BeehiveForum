@@ -101,7 +101,7 @@ for($i=0;$i<$result_count;$i++){
     $row = db_fetch_array($result);
 
     $new = isset($row['CHECK_PIID']) ? "N" : "Y";
-    $row['ENTRY'] = stripslashes($row['ENTRY']);
+    $row['ENTRY'] = isset($row['ENTRY']) ? stripslashes($row['ENTRY']) : "";
 
     if($row['PSID'] != $last_psid){
         if($last_psid > -1){

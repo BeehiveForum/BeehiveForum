@@ -86,10 +86,14 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				$close_pos = false;
 			}
 		}
-		$html_parts[count($html_parts)] .= $html;
+        if(isset($html_parts[count($html_parts)])){
+    		$html_parts[count($html_parts)] .= $html;
+        } else {
+    		$html_parts[count($html_parts)] = $html;
+        }
 		//$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
 
-		$opentags = array();
+		$opentags = array("table"=>0);
 		$last_tag = array();
 		$single_tags = array("br","img","hr","!--","area");
 		$no_nest = array("p");
@@ -162,7 +166,11 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$i -= 2;
 
 					} else if(!in_array($tag, $single_tags)){
-						$opentags[$tag]++;
+                        if(isset($opentags[$tag])){
+    						$opentags[$tag]++;
+                        } else {
+    						$opentags[$tag] = 1;
+                        }
 						array_push($last_tag, $tag);
 
 						// make sure certain tags can't nest within themselves, e.g. <p><p>
@@ -195,6 +203,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 			}
 		}
 		// reconstruct the HTML
+		$ret_text = "";
 		for($i=0; $i<count($html_parts); $i++){
 			if($i%2){
 				$ret_text .= "<$html_parts[$i]>";

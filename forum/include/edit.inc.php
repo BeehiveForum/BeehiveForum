@@ -51,8 +51,6 @@ function post_delete($tid,$pid)
 
     $db_post_delete = db_connect();
 
-    $content = mysql_escape_string($content);
-
     $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = NULL ";
     $sql .= "where TID = $tid and PID = $pid";
     

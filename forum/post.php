@@ -62,9 +62,12 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 }
 
 $valid = true;
-$t_post_html = $HTTP_POST_VARS['t_post_html'];
 
-if(substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
+$newthread = false;
+
+$t_post_html = @$HTTP_POST_VARS['t_post_html'];
+
+if(substr(@$HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
 
   $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
 	
@@ -160,6 +163,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
         $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
     }else{
         $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
+        $ddkey = $HTTP_POST_VARS['t_dedupe'];
     }
     
     db_query($sql,$db);
@@ -226,9 +230,9 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
         echo "Message posted successfully\n";
         
         if ($newthread) {
-          echo "<br /><a href=\"discussion.php?msg=$t_tid.1\">Return to messages</a>\n";
+            echo "<br /><a href=\"discussion.php?msg=$t_tid.1\">Return to messages</a>\n";
         }else{
-          echo "<br /><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a>\n";
+            echo "<br /><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a>\n";
         }
         
         echo "</p></div>\n";
@@ -340,7 +344,7 @@ if(!$newthread) {
     
 }
 
-if(!$t_sig) {
+if(!isset($t_sig) || !$t_sig) {
     $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$t_sig,$t_sig_html);
 }else{
     $has_sig = true;
@@ -367,6 +371,10 @@ echo "//-->\n";
 echo "</script>\n";
 echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
 
+if(!isset($t_threadtitle)){
+    $t_threadtitle = "";
+}
+
 if($newthread) {
 
     echo "<table>\n";
@@ -387,12 +395,16 @@ if($newthread) {
 }
 
 if($t_post_html != "Y") {
-	$t_content = stripslashes($t_content);
+    $t_content = isset($t_content) ? stripslashes($t_content) : "";
 }
 if(isset($t_sig)) {
 	if($t_sig_html != "Y") {
 		$t_sig = stripslashes($t_sig);
 	}
+}
+
+if(!isset($t_to_uid)){
+    $t_to_uid = 0;
 }
 
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";

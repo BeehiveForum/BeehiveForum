@@ -494,7 +494,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit','Post', 'onclick="if (typeof attachwin == \'object\' and !attachwin.closed) attachwin.close();"');
+echo form_submit('submit','Post', 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
 echo "&nbsp;".form_submit('preview', 'Preview');
 echo "&nbsp;".form_submit('cancel', 'Cancel');
 

@@ -21,14 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.2 2003-11-02 12:49:21 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.3 2003-11-02 16:18:33 decoyduck Exp $ */
 
 // Gangsta language file
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "UTF-8";
-$lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
+$lang['_charset'] = "UTF-8"; // ISO Charset code
+$lang['_isocode'] = "en";    // ISO-639 language code
+$lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 
 
 // Common words --------------------------------------------------------

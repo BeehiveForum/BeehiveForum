@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.177 2003-09-21 14:25:27 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.178 2003-09-21 14:32:50 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -803,6 +803,8 @@ function messages_forum_stats()
     global $session_cutoff;
 
     $db_messages_forum_stats = db_connect();
+
+    $uid = bh_session_get_value("UID");
     $show_stats = bh_session_get_value("SHOW_STATS");
 
     $session_stamp = time() - $session_cutoff;
@@ -929,9 +931,14 @@ function messages_forum_stats()
     echo "    <tr>\n";
     echo "      <td class=\"subhead\">&nbsp;Forum stats:</td>\n";
 
-    if ($show_stats == 1) {
+    if ($show_stats == 1 || $uid == 0) {
 
-        echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./user_stats.php?show_stats=0\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\"></a></td>\n";
+        if ($uid != 0) {
+            echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./user_stats.php?show_stats=0\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\"></a></td>\n";
+        }else {
+            echo "      <td class=\"subhead\">&nbsp;</td>\n";
+        }
+
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>\n";

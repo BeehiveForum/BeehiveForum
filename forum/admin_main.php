@@ -41,25 +41,20 @@ require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
 
+html_draw_top();
+
 if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
-    html_draw_top();
     echo "<h1>Access Denied</h1>\n";
     echo "<p>You do not have permission to use this section.</p>";
     html_draw_bottom();
     exit;
 }
 
+echo "<h1>Forum Admin</h1>\n";
+echo "<p>Use the menu on the left to manage things in your forum</p>\n";
+echo "<p><b>Users</b> allows you to set user permissions, including appointing Editors and gagging people</p>\n";
+echo "<p>Use <b>Folders</b> to add new folders or change the names of existing ones</p>\n";
+
+html_draw_bottom();
+
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link rel="stylesheet" href="styles.php?<?php echo md5(uniqid(rand())); ?>" type="text/css">
-	</head>
-	<body>
-        <h1>Forum Admin</h1>
-        <p>Use the menu on the left to manage things in your forum</p>
-        <p><b>Users</b> allows you to set user permissions, including appointing Editors and gagging people</p>
-        <p>Use <b>Folders</b> to add new folders or change the names of existing ones</p>
-    </body>
-</html>

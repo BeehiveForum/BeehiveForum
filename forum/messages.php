@@ -150,6 +150,24 @@ $show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
 
 $msg_count = count($messages);
 
+$highlight = array();
+
+if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
+    $highlight = explode(' ', $HTTP_GET_VARS['search_string']);
+}
+
+if (sizeof($highlight) > 0) {
+    $thread_parts = preg_split('/([<|>])/', $threaddata['TITLE'], -1, PREG_SPLIT_DELIM_CAPTURE);
+    foreach ($highlight as $word) {
+        for ($i = 0; $i < sizeof($thread_parts); $i++) {
+            if (!($i % 4)) {
+                $thread_parts[$i] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $thread_parts[$i]);
+            }
+        }
+    }
+    $threaddata['TITLE'] = implode('', $thread_parts);
+}
+
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
@@ -172,12 +190,6 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
-
-$highlight = array();
-
-if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
-    $highlight = explode(' ', $HTTP_GET_VARS['search_string']);
-}
 
 if($msg_count > 0) {
 

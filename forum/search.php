@@ -194,13 +194,13 @@ if (isset($searchsql)) {
 
     if (thread_is_poll($row['TID'])) {
 
-      $message['TITLE']   = strip_tags(_stripslashes($threaddata['TITLE']));
+      $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
       $message['CONTENT'] = '';
 
     }else {
 
-      $message['TITLE']   = strip_tags(_stripslashes($threaddata['TITLE']));
-      $message['CONTENT'] = strip_tags(message_get_content($row['TID'], $row['PID']));
+      $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
+      $message['CONTENT'] = trim(strip_tags(message_get_content($row['TID'], $row['PID'])));
 
     }
 
@@ -232,7 +232,7 @@ if (isset($searchsql)) {
 
     echo "<li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />\n";
     if (strlen($message['CONTENT']) > 0) echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />\n";
-    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
+    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
 
   }
 

@@ -107,6 +107,7 @@ $lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";
 $lang['me_caps'] = "ME";
+$lang['by'] = "by";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -561,7 +562,7 @@ $lang['peoplevoted'] = "people voted.";
 $lang['peoplehavevoted'] = "people have voted.";
 $lang['pollhasended'] = "Poll has ended";
 $lang['yourvotewas'] = "Your vote was";
-$lang['youvotedforoption'] = "You voted for option #";
+$lang['youvotedforoption'] = "You voted for option";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";
 $lang['editpoll'] = "Edit Poll";
 $lang['results'] = "Results";

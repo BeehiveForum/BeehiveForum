@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.148 2004-02-01 17:44:21 decoyduck Exp $ */
+/* $Id: post.php,v 1.149 2004-02-02 23:21:39 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -75,8 +75,10 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
     $uri = "./discussion.php";
 
-    if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid'])) {
-        $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
+    if (isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid']) && is_numeric($HTTP_POST_VARS['t_rpid']) ) {
+        $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
+    }elseif (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_POST_VARS['replyto'])) {
+        $uri.= "?msg={$HTTP_GET_VARS['replyto']}";
     }
 
     header_redirect($uri);

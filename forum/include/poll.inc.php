@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.75 2003-11-09 14:13:12 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.76 2003-11-27 13:29:06 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -32,17 +32,24 @@ require_once("./include/lang.inc.php");
 
 function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type)
 {
-
     $db_poll_create = db_connect();
 
-    if ($closes) {
-      $closes = "from_unixtime($closes)";
+    if (is_numeric($closes)) {
+        $closes = "FROM_UNIXTIME('$closes')";
     }else {
-      $closes = 'NULL';
+        $closes = 'NULL';
     }
 
-    $sql = "insert into ". forum_table("POLL"). " (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
-    $sql.= "values ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type')";
+    if (!is_numeric($tid)) return false;
+    if (!is_array($poll_options)) return false;
+    if (!is_array($answer_groups)) return false;
+    if (!is_numeric($change_vote)) $change_vote = 1;
+    if (!is_numeric($poll_type)) $poll_type = 0;
+    if (!is_numeric($show_results)) $show_results = 1;
+    if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
+
+    $sql = "INSERT INTO ". forum_table("POLL"). " (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
+    $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type')";
 
     if (db_query($sql, $db_poll_create)) {
 
@@ -53,8 +60,8 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
           $option_name  = addslashes($poll_options[$i]);
           $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
-          $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME, GROUP_ID) ";
-          $sql.= "values ('$tid', '$option_name', '$option_group')";
+          $sql = "INSERT INTO ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME, GROUP_ID) ";
+          $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
 
           $result = db_query($sql, $db_poll_create);
 
@@ -72,8 +79,17 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
 
 function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type)
 {
-
     $db_poll_edit = db_connect();
+
+    if (!is_numeric($tid)) return false;
+    if (!is_array($poll_options)) return false;
+    if (!is_array($answer_groups)) return false;
+    if (!is_numeric($change_vote)) $change_vote = 1;
+    if (!is_numeric($poll_type)) $poll_type = 0;
+    if (!is_numeric($show_results)) $show_results = 1;
+    if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
+
+    $poll_question = addslashes($poll_question);
 
     // Rename the thread
 
@@ -130,6 +146,8 @@ function poll_get($tid)
 {
     $uid = bh_session_get_value('UID');
 
+    if (!is_numeric($tid)) return false;
+
     $db_poll_get = db_connect();
 
     $sql = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
@@ -144,7 +162,7 @@ function poll_get($tid)
     $sql.= "left join ". forum_table("POLL"). " POLL on (POST.TID = POLL.TID) ";
     $sql.= "left join ". forum_table("USER_PEER") . " USER_PEER ";
     $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";
-    $sql.= "where POST.TID = $tid and POST.PID = 1";
+    $sql.= "where POST.TID = '$tid' and POST.PID = 1";
 
     $result = db_query($sql, $db_poll_get);
     $polldata = db_fetch_array($result);
@@ -164,11 +182,12 @@ function poll_get($tid)
 
 function poll_get_votes($tid)
 {
-
     $db_poll_get_votes = db_connect();
 
+    if (!is_numeric($tid)) return false;
+
     $sql = "SELECT OPTION_ID, OPTION_NAME, GROUP_ID, VOTES ";
-    $sql.= "FROM ". forum_table('POLL_VOTES'). " WHERE TID = $tid ";
+    $sql.= "FROM ". forum_table('POLL_VOTES'). " WHERE TID = '$tid' ";
 
     $result = db_query($sql, $db_poll_get_votes);
 
@@ -199,9 +218,12 @@ function poll_get_user_votes($tid, $viewstyle)
 {
     $db_poll_get_user_vote_hashes = db_connect();
 
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($viewstyle)) $viewstyle = 0;
+
     $sql = "SELECT UP.UID, UP.OPTION_ID FROM ". forum_table("USER_POLL_VOTES"). " UP ";
     $sql.= "LEFT JOIN ". forum_table("POLL"). " POLL ON (UP.TID = POLL.TID) ";
-    $sql.= "WHERE UP.TID = $tid AND POLL.VOTETYPE = 1";
+    $sql.= "WHERE UP.TID = '$tid' AND POLL.VOTETYPE = 1";
 
     $result = db_query($sql, $db_poll_get_user_vote_hashes);
 
@@ -221,6 +243,8 @@ function poll_get_user_votes($tid, $viewstyle)
 function poll_get_user_vote($tid)
 {
     $uid = bh_session_get_value('UID');
+
+    if (!is_numeric($tid)) return false;
 
     $polldata = poll_get($tid);
     if ($polldata['CHANGEVOTE'] == 2) return POLL_MULTIVOTE;
@@ -1166,8 +1190,9 @@ function poll_confirm_close($tid)
 
 function poll_close($tid)
 {
-
     $db_poll_close = db_connect();
+
+    if (!is_numeric($tid)) return false;
 
     $sql = "select FROM_UID from ". forum_table("POST"). " where TID = $tid and PID = 1";
     $result = db_query($sql, $db_poll_close);
@@ -1189,8 +1214,9 @@ function poll_close($tid)
 
 function poll_is_closed($tid)
 {
-
     $db_poll_is_closed = db_connect();
+
+    if (!is_numeric($tid)) return false;
 
     $sql = "select CLOSES from ". forum_table("POLL"). " where TID = $tid";
     $result = db_query($sql, $db_poll_is_closed);
@@ -1207,6 +1233,9 @@ function poll_is_closed($tid)
 function poll_vote($tid, $vote_array)
 {
     $uid = bh_session_get_value('UID');
+
+    if (!is_numeric($tid)) return false;
+    if (!is_array($vote_array)) return false;
 
     $db_poll_vote = db_connect();
 
@@ -1251,8 +1280,9 @@ function poll_vote($tid, $vote_array)
 
 function poll_delete_vote($tid)
 {
-
     $db_poll_delete_vote = db_connect();
+
+    if (!is_numeric($tid)) return false;
 
     $uid = bh_session_get_value('UID');
 
@@ -1261,11 +1291,11 @@ function poll_delete_vote($tid)
 
     if (db_num_rows($result) > 0) {
 
-      while($userpollvote = db_fetch_array($result)) {
+        while($userpollvote = db_fetch_array($result)) {
 
-        $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES - 1 where OPTION_ID = ". $userpollvote['OPTION_ID']. " and TID = $tid";
-        db_query($sql, $db_poll_delete_vote);
-      }
+            $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES - 1 where OPTION_ID = ". $userpollvote['OPTION_ID']. " and TID = $tid";
+            db_query($sql, $db_poll_delete_vote);
+        }
 
       $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)";
       $result = db_query($sql, $db_poll_delete_vote);
@@ -1276,8 +1306,9 @@ function poll_delete_vote($tid)
 
 function thread_is_poll($tid)
 {
-
     $db_thread_is_poll = db_connect();
+
+    if (!is_numeric($tid)) return false;
 
     $sql = "select CLOSES from ". forum_table("POLL"). " where TID = $tid";
     $result = db_query($sql, $db_thread_is_poll);

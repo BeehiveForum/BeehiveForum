@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.17 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.18 2003-11-27 13:29:06 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -30,8 +30,9 @@ function profile_section_get_name($psid)
 {
    $db_profile_section_get_name = db_connect();
 
-   $sql = "SELECT PS.NAME FROM ".forum_table("PROFILE_SECTION")." PS WHERE PS.PSID = $psid";
+   if (!is_numeric($psid)) return "The Unknown Section";
 
+   $sql = "SELECT PS.NAME FROM ".forum_table("PROFILE_SECTION")." PS WHERE PS.PSID = $psid";
    $resource_id = db_query($sql, $db_profile_section_get_name);
 
    if (!db_num_rows($resource_id)) {
@@ -48,10 +49,12 @@ function profile_section_create($name, $position)
 {
     $db_profile_section_create = db_connect();
 
+    if (!is_numeric($position)) $position = 0;
+
     $name = addslashes($name);
 
-    $sql = "insert into " . forum_table("PROFILE_SECTION") . " (NAME, POSITION) ";
-    $sql.= "values ('$name', $position)";
+    $sql = "INSERT INTO " . forum_table("PROFILE_SECTION") . " (NAME, POSITION) ";
+    $sql.= "VALUES ('$name', '$position')";
 
     $result = db_query($sql, $db_profile_section_create);
 
@@ -68,9 +71,14 @@ function profile_section_update($psid, $position, $name)
 {
     $db_profile_section_update = db_connect();
 
+    if (!is_numeric($psid)) return false;
+    if (!is_numeric($position)) $position = 0;
+
+    $name = addslashes($name);
+
     $sql = "UPDATE " . forum_table("PROFILE_SECTION") . " ";
-    $sql.= "SET NAME = '$name', POSITION = $position ";
-    $sql.= "WHERE PSID = $psid";
+    $sql.= "SET NAME = '$name', POSITION = '$position' ";
+    $sql.= "WHERE PSID = '$psid'";
 
     $result = db_query($sql, $db_profile_section_update);
 
@@ -102,6 +110,8 @@ function profile_items_get($psid)
 {
     $db_profile_items_get = db_connect();
 
+    if (!is_numeric($psid)) return false;
+
     $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, PROFILE_ITEM.TYPE ";
     $sql.= "FROM " . forum_table("PROFILE_ITEM") . " PROFILE_ITEM ";
     $sql.= "WHERE PROFILE_ITEM.PSID = $psid ";
@@ -124,6 +134,10 @@ function profile_item_create($psid, $name, $position, $type)
 {
     $db_profile_item_create = db_connect();
 
+    if (!is_numeric($psid)) return false;
+    if (!is_numeric($position)) $position = 0;
+    if (!is_numeric($type)) $type = 0;
+
     $name = addslashes($name);
 
     $sql = "insert into ". forum_table("PROFILE_ITEM"). " (PSID, NAME, TYPE, POSITION) ";
@@ -145,6 +159,11 @@ function profile_item_update($piid, $psid, $position, $type, $name)
 {
     $db_profile_item_update = db_connect();
 
+    if (!is_numeric($piid)) return false;
+    if (!is_numeric($psid)) return false;
+    if (!is_numeric($position)) $position = 0;
+    if (!is_numeric($type)) $type = 0;
+
     $name = addslashes($name);
 
     $sql = "UPDATE " . forum_table("PROFILE_ITEM") . " ";
@@ -160,15 +179,19 @@ function profile_section_delete($psid)
 {
     $db_profile_section_delete = db_connect();
 
-    $sql = "delete from ". forum_table("PROFILE_SECTION"). " where PSID = $psid";
-    return db_query($sql, $db);
+    if (!is_numeric($psid)) return false;
+
+    $sql = "DELETE FROM ". forum_table("PROFILE_SECTION"). " WHERE PSID = '$psid'";
+    return db_query($sql, $db_profile_section_delete);
 }
 
 function profile_item_delete($piid)
 {
     $db_profile_item_delete = db_connect();
 
-    $sql = "delete from ". forum_table("PROFILE_ITEM"). " where PIID = $piid";
+    if (!is_numeric($piid)) return false;
+
+    $sql = "DELETE FROM ". forum_table("PROFILE_ITEM"). " WHERE PIID = '$piid'";
     return db_query($sql, $db_profile_item_delete);
 }
 
@@ -178,15 +201,16 @@ function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="
     $db_profile_section_dropdown = db_connect();
 
     $sql = "select PSID, NAME from " . forum_table("PROFILE_SECTION");
-
     $result = db_query($sql, $db_profile_section_dropdown);
 
-    $i = 0;
-    while($row = db_fetch_array($result)){
+    while ($row = db_fetch_array($result)) {
+
         $html .= "<option value=\"" . $row['PSID'] . "\"";
-        if($row['PSID'] == $default_psid){
+
+        if ($row['PSID'] == $default_psid) {
             $html .= " selected=\"selected\"";
         }
+
         $html .= ">" . $row['NAME'] . "</option>";
     }
 
@@ -198,13 +222,15 @@ function profile_get_user_values($uid)
 {
     $db_profile_get_user_values = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";
     $sql.= "USER_PROFILE.PIID AS CHECK_PIID, USER_PROFILE.ENTRY ";
     $sql.= "FROM ". forum_table("PROFILE_SECTION"). " PROFILE_SECTION, ";
     $sql.= forum_table("PROFILE_ITEM"). " PROFILE_ITEM ";
     $sql.= "LEFT JOIN ". forum_table("USER_PROFILE"). " USER_PROFILE ";
-    $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = $uid) ";
+    $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid') ";
     $sql.= "WHERE PROFILE_ITEM.PSID = PROFILE_SECTION.PSID ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID, ";
     $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";

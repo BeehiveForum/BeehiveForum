@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.21 2003-09-04 16:02:53 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.22 2003-11-27 13:29:06 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -37,13 +37,14 @@ function pm_markasread($mid)
     $db_pm_markasread = db_connect();
     $uid = bh_session_get_value('UID');
 
+    if (!is_numeric($mid)) return false;
+
     // ------------------------------------------------------------
     // Update the row so it appears as read to the receipient
     // ------------------------------------------------------------
 
-    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_READ. " WHERE MID = $mid AND TO_UID = $uid";
+    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_READ. " WHERE MID = '$mid' AND TO_UID = '$uid'";
     $result = db_query($sql, $db_pm_markasread);
-
 }
 
 function pm_edit_refuse()
@@ -72,11 +73,13 @@ function pm_add_sentitem($mid)
     $db_pm_add_sentitem = db_connect();
     $uid = bh_session_get_value('UID');
 
+    if (!is_numeric($mid)) return false;
+
     $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT, AT.AID ";
     $sql.= "FROM ". forum_table("PM"). " PM ";
     $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
-    $sql.= "WHERE PM.MID = $mid GROUP BY PM.MID";
+    $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID";
 
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_row = db_fetch_array($result);
@@ -115,9 +118,7 @@ function pm_add_sentitem($mid)
         $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";
 
         $result = db_query($sql, $db_pm_add_sentitem);
-
     }
-
 }
 
 function pm_list_get($folder)
@@ -126,6 +127,8 @@ function pm_list_get($folder)
 
     $db_pm_list_get = db_connect();
     $uid = bh_session_get_value('UID');
+
+    if (!is_numeric($folder)) return false;
 
     // ------------------------------------------------------------
     // Get a list of messages in the specified folder
@@ -141,12 +144,12 @@ function pm_list_get($folder)
     $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) WHERE ";
 
     if (($folder == PM_FOLDER_INBOX)) {
-        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = $uid ";
+        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = '$uid' ";
     }elseif (($folder == PM_FOLDER_SENT) || ($folder == PM_FOLDER_OUTBOX)) {
-        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = $uid ";
+        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = '$uid' ";
     }elseif ($folder == PM_FOLDER_SAVED) {
-        $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = $uid) OR ";
-        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid)";
+        $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
+        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
     }
 
     $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC";
@@ -162,6 +165,8 @@ function pm_list_get($folder)
 function pm_get_user($mid)
 {
     $db_pm_get_user = db_connect();
+
+    if (!is_numeric($mid)) return false;
 
     $sql = "SELECT LOGON FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("PM"). " PM ON (PM.FROM_UID = USER.UID) ";
@@ -185,6 +190,8 @@ function pm_draw_to_dropdown($default_uid)
     $html.= "<option value=\"0\">&lt;select recipient&gt;</option>\n";
 
     $db_post_draw_to_dropdown = db_connect();
+
+    if (!is_numeric($default_uid)) $default_uid = 0;
 
     if ($default_uid != 0) {
         if ($top_user = user_get($default_uid)) {
@@ -214,7 +221,10 @@ function pm_draw_to_dropdown($default_uid)
 function pm_single_get($mid, $folder, $uid = false)
 {
     $db_pm_list_get = db_connect();
-    if (!$uid) $uid = bh_session_get_value('UID');
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+    if (!is_numeric($mid)) return false;
+    if (!is_numeric($folder)) return false;
 
     // ------------------------------------------------------------
     // Fetch the single message as specified by the MID
@@ -227,15 +237,15 @@ function pm_single_get($mid, $folder, $uid = false)
     $sql.= "LEFT JOIN ". forum_table("USER"). " FUSER ON (FUSER.UID = PM.FROM_UID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
-    $sql.= "WHERE PM.MID = $mid ";
+    $sql.= "WHERE PM.MID = '$mid' ";
 
     if (($folder == PM_FOLDER_INBOX)) {
-        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = $uid ";
+        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = '$uid' ";
     }elseif (($folder == PM_FOLDER_SENT) || ($folder == PM_FOLDER_OUTBOX)) {
-        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = $uid ";
+        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = '$uid' ";
     }elseif ($folder == PM_FOLDER_SAVED) {
-        $sql.= " AND ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = $uid) OR ";
-        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid)) ";
+        $sql.= " AND ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
+        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')) ";
     }
 
     $sql.= "GROUP BY PM.MID LIMIT 0,1";
@@ -402,8 +412,11 @@ function pm_save_attachment_id($mid, $aid)
     // Save the attachment ID for the PM
     // ------------------------------------------------------------
 
+    if (!is_numeric($mid)) return false;
+    if (!is_md5($aid)) return false;
+
     $db_pm_save_attachment_id = db_connect();
-    $sql = "INSERT INTO ". forum_table("PM_ATTACHMENT_IDS"). " (MID, AID) values ($mid, '$aid')";
+    $sql = "INSERT INTO ". forum_table("PM_ATTACHMENT_IDS"). " (MID, AID) values ('$mid', '$aid')";
 
     $result = db_query($sql, $db_pm_save_attachment_id);
     return $result;
@@ -412,6 +425,8 @@ function pm_save_attachment_id($mid, $aid)
 function pm_send_message($tuid, $subject, $content)
 {
     $db_pm_send_message = db_connect();
+
+    if (!is_numeric($tuid)) return false;
 
     $subject = addslashes($subject);
     $content = addslashes($content);
@@ -422,9 +437,9 @@ function pm_send_message($tuid, $subject, $content)
     // Insert the main PM Data into the database
     // ------------------------------------------------------------
 
-    $sql = "insert into ". forum_table("PM");
+    $sql = "INSERT INTO ". forum_table("PM");
     $sql.= " (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED) ";
-    $sql.= "values (". PM_NEW. ", '$tuid', '$fuid', '$subject', NOW())";
+    $sql.= "VALUES (". PM_NEW. ", '$tuid', '$fuid', '$subject', NOW())";
 
     $result = db_query($sql, $db_pm_send_message);
 
@@ -436,8 +451,8 @@ function pm_send_message($tuid, $subject, $content)
       // Insert the PM Content into the database
       // ------------------------------------------------------------
 
-      $sql = "insert into ". forum_table("PM_CONTENT"). " (MID, CONTENT) ";
-      $sql.= "values ('$new_mid', '$content')";
+      $sql = "INSERT INTO ". forum_table("PM_CONTENT"). " (MID, CONTENT) ";
+      $sql.= "VALUES ('$new_mid', '$content')";
 
       if (db_query($sql, $db_pm_send_message)) {
           return  $new_mid;
@@ -452,6 +467,8 @@ function pm_edit_message($mid, $subject, $content)
 {
     $db_pm_edit_messages = db_connect();
 
+    if (!is_numeric($mid)) return false;
+
     $subject = addslashes($subject);
     $content = addslashes($content);
 
@@ -459,14 +476,14 @@ function pm_edit_message($mid, $subject, $content)
     // Update the subject text
     // ------------------------------------------------------------
 
-    $sql = "UPDATE ". forum_table("PM"). " SET SUBJECT = '$subject' WHERE MID = $mid";
+    $sql = "UPDATE ". forum_table("PM"). " SET SUBJECT = '$subject' WHERE MID = '$mid'";
     $result_subject = db_query($sql, $db_pm_edit_messages);
 
     // ------------------------------------------------------------
     // Update the content
     // ------------------------------------------------------------
 
-    $sql = "UPDATE ". forum_table("PM_CONTENT"). " SET CONTENT = '$content' WHERE MID = $mid";
+    $sql = "UPDATE ". forum_table("PM_CONTENT"). " SET CONTENT = '$content' WHERE MID = '$mid'";
     $result_content = db_query($sql, $db_pm_edit_messages);
 
     return ($result_subject && $result_content);
@@ -476,6 +493,9 @@ function pm_edit_message($mid, $subject, $content)
 function pm_delete_message($mid)
 {
     $db_delete_pm = db_connect();
+
+    if (!is_numeric($mid)) return false;
+
     $uid = bh_session_get_value('UID');
 
     // ------------------------------------------------------------
@@ -487,7 +507,7 @@ function pm_delete_message($mid)
     $sql.= "FROM ". forum_table("PM"). " PM ";
     $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
     $sql.= "LEFT JOIN ". forum_table("POST_ATTACHMENT_FILES"). " PAF ON (PAF.AID = AT.AID) ";
-    $sql.= "WHERE PM.MID = $mid GROUP BY PM.MID LIMIT 0,1";
+    $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_delete_pm);
     $db_delete_pm_row = db_fetch_array($result);
@@ -509,10 +529,10 @@ function pm_delete_message($mid)
         delete_attachment($db_delete_pm_row['FROM_UID'], $db_delete_pm_row['AID'], $db_delete_pm_row['FILENAME']);
     }
 
-    $sql = "DELETE FROM ". forum_table('PM'). " WHERE MID = $mid";
+    $sql = "DELETE FROM ". forum_table('PM'). " WHERE MID = '$mid'";
     $result = db_query($sql, $db_delete_pm);
 
-    $sql = "DELETE FROM ". forum_table("PM_CONTENT"). " WHERE MID = $mid";
+    $sql = "DELETE FROM ". forum_table("PM_CONTENT"). " WHERE MID = '$mid'";
     return db_query($sql, $db_delete_pm);
 
 }
@@ -520,6 +540,9 @@ function pm_delete_message($mid)
 function pm_archive_message($mid)
 {
     $db_pm_archive_message = db_connect();
+
+    if (!is_numeric($mid)) return false;
+
     $uid = bh_session_get_value('UID');
 
     // ------------------------------------------------------------
@@ -527,7 +550,7 @@ function pm_archive_message($mid)
     // his Sent Items folder.
     // ------------------------------------------------------------
 
-    $sql = "SELECT PM.TYPE FROM ". forum_table("PM"). " PM WHERE PM.MID = $mid";
+    $sql = "SELECT PM.TYPE FROM ". forum_table("PM"). " PM WHERE PM.MID = '$mid'";
     $result = db_query($sql, $db_pm_archive_message);
     $db_pm_archive_message_row = db_fetch_array($result);
 
@@ -540,8 +563,8 @@ function pm_archive_message($mid)
     // ------------------------------------------------------------
 
     $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_SAVED_IN. " ";
-    $sql.= "WHERE MID = $mid AND (TYPE = ". PM_NEW. " OR TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
-    $sql.= "AND TO_UID = $uid";
+    $sql.= "WHERE MID = '$mid' AND (TYPE = ". PM_NEW. " OR TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
+    $sql.= "AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_archive_message);
 
@@ -550,7 +573,7 @@ function pm_archive_message($mid)
     // ------------------------------------------------------------
 
     $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_SAVED_OUT. " ";
-    $sql.= "WHERE MID = $mid AND TYPE = ". PM_SENT. " AND FROM_UID = $uid";
+    $sql.= "WHERE MID = '$mid' AND TYPE = ". PM_SENT. " AND FROM_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_archive_message);
 }
@@ -565,7 +588,7 @@ function pm_new_check()
     // ------------------------------------------------------------
 
     $sql = "SELECT MID FROM ". forum_table("PM"). " ";
-    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = $uid";
+    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
 
@@ -578,7 +601,7 @@ function pm_new_check()
     // ------------------------------------------------------------
 
     $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_UNREAD. " ";
-    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = $uid";
+    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
 

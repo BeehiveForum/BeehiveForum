@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.47 2003-09-09 03:25:56 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.48 2003-11-27 13:29:06 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -32,9 +32,14 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
     $db_post_create = db_connect();
     $content = addslashes($content);
 
-    $sql = "insert into " . forum_table("POST");
+    if (!is_numeric($tid)) return -1;
+    if (!is_numeric($reply_pid)) return -1;
+    if (!is_numeric($fuid)) return -1;
+    if (!is_numeric($tuid)) return -1;
+
+    $sql = "INSERT INTO " . forum_table("POST");
     $sql.= " (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED) ";
-    $sql.= "values ($tid, $reply_pid, $fuid, $tuid, NOW())";
+    $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW())";
 
     $result = db_query($sql,$db_post_create);
 
@@ -56,11 +61,6 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
         }else {
 
-            // Not sure about removing the post.
-
-            //$sql = "delete " . forum_table("POST") . " where tid = $tid and pid = $new_pid";
-            //$result = db_query($sql, $db_post_create);
-
             $new_pid = -1;
 
         }
@@ -74,17 +74,26 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
 function post_save_attachment_id($tid, $pid, $aid)
 {
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+    if (!is_md5($aid)) return false;
 
     $db_post_save_attachment_id = db_connect();
-    $sql = "insert into ". forum_table("POST_ATTACHMENT_IDS"). " (TID, PID, AID) values ($tid, $pid, '$aid')";
 
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_IDS"). " (TID, PID, AID) values ($tid, $pid, '$aid')";
     $result = db_query($sql, $db_post_save_attachment_id);
+
     return $result;
 }
 
 function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = false)
 {
+    if (!is_numeric($fid)) return -1;
+
     $title  = addslashes(_htmlentities($title));
+
+    $poll = ($poll = 'Y') ? 'Y' : 'N';
+    $sticky = ($sticky = 'Y') ? 'Y' : 'N';
     $closed = $closed ? "NOW()" : "NULL";
 
     $db_post_create_thread = db_connect();
@@ -119,14 +128,19 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
-    if(isset($default_uid) && $default_uid != 0){
-        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
-            $result = db_query($top_sql,$db_post_draw_to_dropdown);
-            if(db_num_rows($result)>0){
-                    $top_user = db_fetch_array($result);
-                    $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-                    $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
-            }
+    if (!is_numeric($default_uid)) $default_uid = 0;
+
+    if (isset($default_uid) && $default_uid != 0){ 
+
+        $top_sql = "SELECT LOGON, NICKNAME FROM ". forum_table("USER"). " where UID = '$default_uid'";
+        $result = db_query($top_sql,$db_post_draw_to_dropdown);
+
+        if (db_num_rows($result) > 0) {
+
+            $top_user = db_fetch_array($result);
+            $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+        }
     }
 
     if ($show_all) {
@@ -171,14 +185,19 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid_recent\" style=\"width: 190px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
-    if(isset($default_uid) && $default_uid != 0){
-        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
-            $result = db_query($top_sql,$db_post_draw_to_dropdown);
-            if(db_num_rows($result)>0){
-                    $top_user = db_fetch_array($result);
-                    $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-                    $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
-            }
+    if (!is_numeric($default_uid)) $default_uid = 0;
+
+    if (isset($default_uid) && $default_uid != 0) {
+
+        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '$default_uid'";
+        $result = db_query($top_sql,$db_post_draw_to_dropdown);
+
+        if (db_num_rows($result) > 0) {
+
+            $top_user = db_fetch_array($result);
+            $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
+        }
     }
 
     if ($show_all) {
@@ -223,24 +242,30 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid_in_thread\" style=\"width: 190px\" onClick=\"checkToRadio(0)\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
-    if(isset($default_uid) && $default_uid != 0){
-        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
-            $result = db_query($top_sql,$db_post_draw_to_dropdown);
-            if(db_num_rows($result)>0){
-                    $top_user = db_fetch_array($result);
-                    $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-                    $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
-            }
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($default_uid)) $default_uid = 0;
+
+    if (isset($default_uid) && $default_uid != 0) {
+        
+        $top_sql = "SELECT LOGON, NICKNAME FROM ". forum_table("USER"). " WHERE UID = '$default_uid'";
+        $result = db_query($top_sql,$db_post_draw_to_dropdown);
+
+        if (db_num_rows($result) > 0) {
+
+            $top_user = db_fetch_array($result);
+            $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
+        }
     }
 
     if ($show_all) {
         $html .= "<option value=\"0\">ALL</option>\n";
     }
 
-	$sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
-	$sql.= "FROM ".forum_table("POST")." P ";
-	$sql.= "LEFT JOIN ".forum_table("USER")." U ON (P.FROM_UID = U.UID) ";
-	$sql.= "WHERE P.TID = $tid ";
+    $sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
+    $sql.= "FROM ".forum_table("POST")." P ";
+    $sql.= "LEFT JOIN ".forum_table("USER")." U ON (P.FROM_UID = U.UID) ";
+    $sql.= "WHERE P.TID = '$tid' ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
@@ -275,6 +300,8 @@ function get_user_posts($uid)
 {
     $db_get_user_posts = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
     $result = db_query($sql, $db_get_user_posts);
 
@@ -294,13 +321,13 @@ function check_ddkey($ddkey)
     $db_check_ddkey = db_connect();
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT DDKEY FROM ". forum_table("DEDUPE"). " WHERE UID = $uid";
+    $sql = "SELECT DDKEY FROM ". forum_table("DEDUPE"). " WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_ddkey);
 
     if (db_num_rows($result)) {
 
         list($ddkey_check) = db_fetch_array($result);
-        $sql = "UPDATE ". forum_table("DEDUPE"). " SET DDKEY = '$ddkey' WHERE UID = $uid";
+        $sql = "UPDATE ". forum_table("DEDUPE"). " SET DDKEY = '$ddkey' WHERE UID = '$uid'";
         $result = db_query($sql, $db_check_ddkey);
 
     }else{
@@ -308,7 +335,7 @@ function check_ddkey($ddkey)
         $ddkey_check = "";
 
         $sql = "INSERT INTO ". forum_table("DEDUPE"). " (UID, DDKEY) ";
-        $sql.= "VALUES ($uid, '$ddkey')";
+        $sql.= "VALUES ('$uid', '$ddkey')";
         $result = db_query($sql, $db_check_ddkey);
     }
 

@@ -252,7 +252,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
     }else if($in_list) {
         if ($is_poll) {
-          echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"This is a poll\" align=\"middle\"> Poll ";
+          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"This is a poll. Click to view results.\" align=\"middle\"></a> Poll ";
         }
         echo $message['PID'] . " of " . $msg_count;
     }

@@ -474,7 +474,7 @@ function poll_delete_vote($tid)
 
     $db_poll_delete_vote = db_connect();
     
-    $sql = "select VOTE from ". forum_table("POLL_VOTES"). " where UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $sql = "select VOTE from ". forum_table("POLL_VOTES"). " where TID = $tid and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
     $result = db_query($sql, $db_poll_delete_vote);
     
     if (db_num_rows($result) > 0) {

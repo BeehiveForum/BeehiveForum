@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.83 2004-05-04 17:10:19 decoyduck Exp $ */
+/* $Id: search.php,v 1.84 2004-05-06 18:34:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -249,7 +249,7 @@ echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />
 echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a><br />\n";
 
 if ($pm_new_count = pm_new_check(false)) {
-    echo "      <img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['new']}]</span><br />\n";
+    echo "      <img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['new']}]</span><br />\n";
 }else {
     echo "      <img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a><br />\n";
 }

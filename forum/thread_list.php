@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.205 2004-05-04 17:10:19 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.206 2004-05-06 18:34:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -189,7 +189,7 @@ echo "  </tr>\n";
 
 if ($pm_new_count = pm_get_unread_count()) {
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['unread']}]</span></td>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
     echo "  </tr>\n";
 }else {
     echo "  <tr>\n";

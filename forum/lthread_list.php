@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.15 2003-08-07 16:06:12 hodcroftcj Exp $ */
+/* $Id: lthread_list.php,v 1.16 2003-08-29 00:09:27 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -80,7 +80,7 @@ if (isset($HTTP_GET_VARS['folder'])) {
     $mode = 0;
 }
 
-setcookie('bh_thread_mode', $mode);
+bh_setcookie('bh_thread_mode', $mode, 0);
 
 if(!isset($HTTP_GET_VARS['start_from'])) { $start_from = 0; } else { $start_from = $HTTP_GET_VARS['start_from']; }
 
@@ -162,7 +162,7 @@ if(isset($folder)){
             break;
         case 15: // Most unread posts
             list($thread_info, $folder_order) = threads_get_longest_unread($user);
-            break;    
+            break;
     }
 }
 

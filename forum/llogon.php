@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.8 2003-08-07 16:06:12 hodcroftcj Exp $ */
+/* $Id: llogon.php,v 1.9 2003-08-29 00:09:27 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -61,7 +61,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if ($luid > -1) {
 
-      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
+      bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
       if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
 

@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.3 2004-05-09 12:32:43 decoyduck Exp $ */
+/* $Id: install.php,v 1.4 2004-05-09 14:50:58 decoyduck Exp $ */
 
+include_once("../include/config.inc.php");
 include_once("../include/constants.inc.php");
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
     $valid = true;
     $config_saved = false;
@@ -191,7 +192,7 @@ if (isset($_POST['submit'])) {
 
                         // Constant that says we're installed.
 
-                        $config_file = str_replace('// {BEEHIVE_INSTALLED=1}', "define('BEEHIVE_INSTALLED', 1);", $config_file);
+                        $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
 
                         if ($fp = fopen("../include/config.inc.php", "w")) {
 
@@ -335,7 +336,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-}elseif (isset($_POST['download_config'])) {
+}elseif (isset($_POST['download_config']) && !defined('BEEHIVE_INSTALLED')) {
 
     $config_file = implode("", file("config.inc.php"));
 
@@ -366,7 +367,7 @@ if (isset($_POST['submit'])) {
 
         // Constant that says we're installed.
 
-        $config_file = str_replace('// {BEEHIVE_INSTALLED=1}', "define('BEEHIVE_INSTALLED', 1);", $config_file);
+        $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
 
         header("Content-Type: text/plain; name=\"config.inc.php\"");
         header("Content-disposition: attachment; filename=\"config.inc.php\"");
@@ -385,7 +386,7 @@ if (isset($_POST['submit'])) {
 
         // Constant that says we're installed.
 
-        $config_file = str_replace('// {BEEHIVE_INSTALLED=1}', "define('BEEHIVE_INSTALLED', 1);", $config_file);
+        $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -478,135 +479,168 @@ echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />
 echo "</head>\n";
 
 echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation (Doesn't work 100% yet!)</h2>\n";
-echo "<p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
-echo "<p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
 
-if (isset($error_html)) {
-    echo $error_html;
+if (!defined('BEEHIVE_INSTALLED')) {
+
+    echo "<p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
+    echo "<p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
+
+    if (isset($error_html)) {
+        echo $error_html;
+        echo "<br />\n";
+    }
+
+    echo "<div align=\"center\">\n";
+    echo "<form method=\"post\" action=\"install.php\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td width=\"250\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">Basic Configuration</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Choose Installation Method:</td>\n";
+    echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" autocomplete=\"off\" dir=\"ltr\"><option value=\"install\" selected=\"selected\">New Install</option><option value=\"upgrade\">Upgrade</option></select></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" autocomplete=\"off\" value=\"default\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">&nbsp;</td>\n";
+    echo "                  <td width=\"250\">(not applicable during upgrade)</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td width=\"250\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">MySQL Database Configuration</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Hostname:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Database Name:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Username:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Password:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Confirm Password:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td width=\"250\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">Admin Account</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Admin Username:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Admin Password:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Confirm Password:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"250\">Admin Email Address:</td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td width=\"250\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" autocomplete=\"off\" class=\"button\" /></td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+
+}else {
+
     echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"500\">\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\" class=\"subhead\">Installation Already Complete</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>Your BeehiveForum would appear to be already installed, but you have not removed the install folder. You must delete the 'install' directory before your Beehive Forum can be used.</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</div>\n";
+    echo "</body>\n";
+    echo "</html>\n";
 }
-
-echo "<div align=\"center\">\n";
-echo "<form method=\"post\" action=\"install.php\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "    <tr>\n";
-echo "      <td width=\"250\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">Basic Configuration</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Choose Installation Method:</td>\n";
-echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" autocomplete=\"off\" dir=\"ltr\"><option value=\"install\" selected=\"selected\">New Install</option><option value=\"upgrade\">Upgrade</option></select></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";
-echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" autocomplete=\"off\" value=\"default\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">&nbsp;</td>\n";
-echo "                  <td width=\"250\">(not applicable during upgrade)</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "    <tr>\n";
-echo "      <td width=\"250\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">MySQL Database Configuration</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Hostname:</td>\n";
-echo "                  <td width=\"250\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Database Name:</td>\n";
-echo "                  <td width=\"250\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Username:</td>\n";
-echo "                  <td width=\"250\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Password:</td>\n";
-echo "                  <td width=\"250\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Confirm Password:</td>\n";
-echo "                  <td width=\"250\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "    <tr>\n";
-echo "      <td width=\"250\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">Admin Account</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Admin Username:</td>\n";
-echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Admin Password:</td>\n";
-echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Confirm Password:</td>\n";
-echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Admin Email Address:</td>\n";
-echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td width=\"250\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" autocomplete=\"off\" class=\"button\" /></td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
-echo "</div>\n";
-echo "</body>\n";
-echo "</html>\n";
 
 ?>

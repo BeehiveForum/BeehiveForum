@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.132 2004-04-13 00:27:28 decoyduck Exp $ */
+/* $Id: messages.php,v 1.133 2004-04-13 00:57:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -219,11 +219,7 @@ if (sizeof($highlight) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">";
-
-messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
-
-echo "    </td>\n";
+echo "    <td align=\"left\">", messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
 
 if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
@@ -245,6 +241,14 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 }
 
 echo "  </tr>\n";
+
+if (isset($HTTP_GET_VARS['markasread'])) {
+
+    echo "  <tr>\n";
+    echo "    <td><h2>{$lang['threareadstatusupdated']}</h2></td>\n";
+    echo "  </tr>\n";
+}
+
 echo "</table>\n";
 echo "</div>\n";
 

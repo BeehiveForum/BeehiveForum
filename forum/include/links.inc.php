@@ -248,16 +248,22 @@ function links_add_comment($lid, $uid, $comment)
 function links_get_comments($lid)
 {
     $db_links_get_comments = db_connect();
+
     $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
     $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT ";
     $sql .= "FROM " . forum_table("LINKS_COMMENT") . " LINKS_COMMENT JOIN " . forum_table("USER") . " USER ";
     $sql .= "WHERE USER.UID = LINKS_COMMENT.UID AND LINKS_COMMENT.LID = $lid ORDER BY CREATED ASC";
+
     $result_id = db_query($sql, $db_links_get_comments);
-    if ($result_id) {
+
+    if (db_num_rows($result_id)) {
+
         while ($row = db_fetch_array($result_id)) {
             $comments[] = $row;
         }
+
         return $comments;
+
     } else {
         return false;
     }

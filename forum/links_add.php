@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -102,11 +102,11 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
 
 if ($mode == "link") {
     html_draw_top();
-    
+
     if (!isset($uri)) $uri = "http://";
     if (!isset($name)) $name = "";
     if (!isset($description)) $description = "";
-    
+
     echo "<h1>Links: Add a link</h1>\n";
     echo "<p>Adding link in: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
     if ($error) echo "<h2>$error</h2>\n";
@@ -137,7 +137,7 @@ if ($mode == "folder") {
     echo form_input_hidden("mode", "folder") . "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
     echo "<table class=\"posthead\" cellpadding=\"2\" cellspacing=\"0\">\n";
-    echo "<tr><td align=\"right\">Name:</td><td>" . form_input_text("name", $name, 60, 64) . "</td></tr>\n";
+    echo "<tr><td align=\"right\">Name:</td><td>" . form_input_text("name", isset($name) ? $name : '', 60, 64) . "</td></tr>\n";
     echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", "Cancel") . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table>\n";

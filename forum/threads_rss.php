@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.6 2004-04-30 15:48:42 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.7 2004-05-09 00:57:49 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -30,6 +30,12 @@ include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
+
+// Installation checking functions
+include_once("./include/install.inc.php");
+
+// Check that Beehive is installed correctly
+check_install();
 
 // Multiple forum support
 include_once("./include/forum.inc.php");

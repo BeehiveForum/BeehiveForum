@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.17 2004-01-26 19:40:19 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.18 2004-03-05 21:45:30 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -39,36 +39,74 @@ require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-    if (isset($HTTP_POST_VARS['uid']) && isset($HTTP_POST_VARS['pw']) && isset($HTTP_POST_VARS['cpw']) && isset($HTTP_POST_VARS['key'])) {
+    $valid = true;
+    $error_html = "";
 
-        if ($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']) {
+    if (isset($HTTP_POST_VARS['uid'])) {
+    
+        if (isset($HTTP_POST_VARS['key']) && is_md5($HTTP_POST_VARS['key'])) {
+        
+            if (isset($HTTP_POST_VARS['pw']) && isset($HTTP_POST_VARS['cpw'])) {
 
-	    if (user_change_pw($HTTP_POST_VARS['uid'], $HTTP_POST_VARS['pw'], $HTTP_POST_VARS['key'])) {
+                if (trim($HTTP_POST_VARS['pw']) == trim($HTTP_POST_VARS['cpw'])) {
+        
+                    if (_htmlentities(trim($HTTP_POST_VARS['pw'])) != trim($HTTP_POST_VARS['pw'])) {
+                        $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+                        $valid = false;
+                    }
+       
+                    if (!preg_match("/^[a-z0-9_-]+$/i", trim($HTTP_POST_VARS['pw']))) {
+                        $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+                        $valid = false;
+                    }      
+      
+                    if (strlen(trim($HTTP_POST_VARS['pw'])) < 6) {
+                        $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+                        $valid = false;
+                    }
+            
+                    if ($valid) {
 
-                html_draw_top();
+                        if (user_change_pw($HTTP_POST_VARS['uid'], trim($HTTP_POST_VARS['pw']), $HTTP_POST_VARS['key'])) {
 
-                echo "<h1>{$lang['passwdchanged']}</h1>";
-		echo "<br />\n";
-                echo "<div align=\"center\">\n";
-                echo "<p>{$lang['passedchangedexp']}</p>\n";
+                            html_draw_top();
+ 
+                            echo "<h1>{$lang['passwdchanged']}</h1>";
+                            echo "<br />\n";
+                            echo "<div align=\"center\">\n";
+                            echo "<p>{$lang['passedchangedexp']}</p>\n";
 
-		form_quick_button("./index.php", $lang['continue'], "", "", "_top");
+                            form_quick_button("./index.php", $lang['continue'], "", "", "_top");
 
-		echo "</div>\n";
+                            echo "</div>\n";
 
-                html_draw_bottom();
-                exit;
+                            html_draw_bottom();
+                            exit;
+
+                        }else {
+                            $error_html = "<h2>{$lang['updatefailed']}.</h2>";
+                            $valid = false;
+                        }
+                    }
+
+                }else {
+                    $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
+                    $valid = false;
+                }
 
             }else {
-                $error_html = "<h2>{$lang['updatefailed']}.</h2>";
+                $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
+                $valid = false;
             }
-
+    
         }else {
-            $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
-        }
+            $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
+            $valid = false;
+        }            
 
     }else {
         $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
+        $valid = false;
     }
 }
 

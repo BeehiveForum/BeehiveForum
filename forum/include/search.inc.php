@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.109 2005-03-19 21:12:39 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.110 2005-03-20 11:15:21 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -93,16 +93,16 @@ function search_execute($argarray, &$urlquery, &$error)
 
             if ($argarray['user_include'] == 1) {
 
-                $sql.= "AND SEARCH_MATCH.FROM_UID = '{$user_uid['UID']}'";
+                $sql.= "AND SEARCH_MATCH.FROM_UID = '{$user_uid['UID']}' ";
 
             }elseif ($argarray['user_include'] == 2) {
 
-                $sql.= "AND SEARCH_MATCH.TO_UID = '{$user_uid['UID']}'";
+                $sql.= "AND SEARCH_MATCH.TO_UID = '{$user_uid['UID']}' ";
 
             }else {
 
                 $sql.= "AND (SEARCH_MATCH.FROM_UID = '{$user_uid['UID']}' ";
-                $sql.= "OR SEARCH_MATCH.TO_UID = '{$user_uid['UID']}')";
+                $sql.= "OR SEARCH_MATCH.TO_UID = '{$user_uid['UID']}') ";
             }
 
         }else {
@@ -136,15 +136,15 @@ function search_execute($argarray, &$urlquery, &$error)
 
             if ($argarray['method'] == 1) { // AND
 
-                $sql.= "AND (SEARCH_KEYWORDS.WORD = '";
+                $sql.= "AND SEARCH_KEYWORDS.WORD = '";
                 $sql.= implode("' AND SEARCH_KEYWORDS.WORD = '", $keywords_array);
-                $sql.= "') ";
+                $sql.= "' ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
-                $sql.= "AND (SEARCH_KEYWORDS.WORD = '";
+                $sql.= "AND SEARCH_KEYWORDS.WORD = '";
                 $sql.= implode("' OR SEARCH_KEYWORDS.WORD = '", $keywords_array);
-                $sql.= "') ";
+                $sql.= "' ";
             }
 
         }elseif (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.3 2004-03-10 21:42:48 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.4 2004-03-11 15:09:36 tribalonline Exp $ */
 
 // Loads the user's word filter into an array.
 // Saves having to query the database every time
@@ -44,19 +44,22 @@ function load_wordfilter()
     while($row = db_fetch_array($result)) {
     
         if ($row['PREG_EXPR'] == 1) {
+			if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $row['MATCH_TEXT'])) {
+				$row['MATCH_TEXT'] = "/".$row['MATCH_TEXT']."/i";
+			}
             $pattern_array[] = _stripslashes($row['MATCH_TEXT']);
-        }else {
+        } else {
             $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT']), "/"). "/i";
         }
             
         if (strlen(trim($row['REPLACE_TEXT'])) > 0) {
-            $replace_array[] = _stripslashes($row['REPLACE_TEXT']);
-        }else {
-            if ($row['PREG_EXPR'] == 1) {
-	        $replace_array[] = "****";
-	    }else {
-	        $replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
-            }
+			$replace_array[] = _stripslashes($row['REPLACE_TEXT']);
+        } else {
+			if ($row['PREG_EXPR'] == 1) {
+				$replace_array[] = "****";
+			} else {
+				$replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
+			}
         }
     }
     

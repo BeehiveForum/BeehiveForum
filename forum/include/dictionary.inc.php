@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.14 2005-02-25 13:41:42 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.15 2005-02-25 14:18:42 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -39,7 +39,9 @@ class dictionary {
 
     var $check_complete;
 
-    function dictionary($content, $ignored_words, $current_word, $obj_id) {
+    var $offset_match;
+
+    function dictionary($content, $ignored_words, $current_word, $obj_id, $offset_match) {
 
         $this->ignored_words_array = array();
         $this->suggestions_array = array();
@@ -53,6 +55,8 @@ class dictionary {
         $this->obj_id = $obj_id;
 
         $this->check_complete = false;
+
+        $this->offset_match = $offset_match;
     }
 
     function get_obj_id()
@@ -67,7 +71,7 @@ class dictionary {
 
     function get_ignored_words()
     {
-        return implode("", $this->ignored_words_array);
+        return trim(implode(" ", $this->ignored_words_array));
     }
 
     function get_current_word_index()
@@ -85,6 +89,11 @@ class dictionary {
     {
         if (sizeof($this->suggestions_array) < 1) $this->word_get_suggestions();
         return $this->suggestions_array;
+    }
+
+    function get_offset_match()
+    {
+        return $this->offset_match;
     }
 
     function is_check_complete()
@@ -113,10 +122,23 @@ class dictionary {
 
         $uid = bh_session_get_value('UID');
 
-        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-        $sql.= "VALUES ('$word', '$metaphone', '$uid')";
+        // Check to see if the word does actually exist
 
-        return db_query($sql, $db_dictionary_add_custom_word);
+        $sql = "SELECT * FROM DICTIONARY WHERE WORD LIKE '$word' ";
+        $sql.= "AND (UID = 0 OR UID = '$uid') ";
+        $sql.= "LIMIT 0, 1";
+
+        $result = db_query($sql, $db_dictionary_add_custom_word);
+
+        if (db_num_rows($result) < 1) {
+
+            $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+            $sql.= "VALUES ('$word', '$metaphone', '$uid')";
+
+            return db_query($sql, $db_dictionary_add_custom_word);
+        }
+
+        return false;
     }
 
     function correct_current_word($change_to)
@@ -182,6 +204,10 @@ class dictionary {
         $word = addslashes($this->get_current_word());
         $metaphone = addslashes($this->word_get_metaphone());
 
+        // The offset of the metaphone results
+
+        $offset = $this->offset_match;
+
         // The current user's UID
 
         $uid = bh_session_get_value('UID');
@@ -189,7 +215,8 @@ class dictionary {
         // Exact match
 
         $sql = "SELECT * FROM DICTIONARY WHERE WORD LIKE '$word' ";
-        $sql.= "AND (UID = 0 OR UID = '$uid')";
+        $sql.= "AND (UID = 0 OR UID = '$uid') ";
+        $sql.= "LIMIT 0, 1";
 
         $result = db_query($sql, $db_dictionary_word_get_suggestions);
 
@@ -200,13 +227,24 @@ class dictionary {
         // Metaphone match (English pronounciation match)
 
         $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
-        $sql.= "AND (UID = 0 OR UID = '$uid')";
+        $sql.= "AND (UID = 0 OR UID = '$uid') ";
+        $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
         $result = db_query($sql, $db_dictionary_word_get_suggestions);
 
-        while($row = db_fetch_array($result)) {
+        if (db_num_rows($result) > 0) {
 
-            $this->suggestions_array[] = $row['WORD'];
+            while($row = db_fetch_array($result)) {
+
+                $this->suggestions_array[] = $row['WORD'];
+            }
+
+        }else {
+
+            if ($this->offset_match == 0) return false;
+
+            $this->offset_match = 0;
+            return $this->word_get_suggestions();
         }
 
         if (sizeof($this->suggestions_array) > 0) return $this->suggestions_array;
@@ -220,9 +258,16 @@ class dictionary {
         return "";
     }
 
+    function get_more_suggestions()
+    {
+        $this->offset_match += 10;
+        $this->word_get_suggestions();
+    }
+
     function find_next_word()
     {
         $this->current_word++;
+        $this->offset_match = 0;
 
         if ($this->current_word > (sizeof($this->content_array) - 1)) {
 

@@ -133,7 +133,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
         }
     }
 
-    return $messages;
+    return isset($messages) ? $messages : false;
 }
 
 function message_get_content($tid,$pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.15 2004-08-14 15:12:02 hodcroftcj Exp $ */
+/* $Id: install_script.php,v 1.16 2004-08-14 20:24:06 tribalonline Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -754,7 +754,7 @@ if(!$result = mysql_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM, ACCESS_LEVEL) ";
-$sql.= "VALUES ('DEFAULT', 1, 0);";
+$sql.= "VALUES ('{$forum_webtag}', 1, 0);";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;

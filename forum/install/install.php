@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.9 2004-08-02 18:59:56 rowan_hill Exp $ */
+/* $Id: install.php,v 1.10 2004-08-14 20:24:06 tribalonline Exp $ */
 
 if (@file_exists("../include/config.inc.php")) {
     include_once("../include/config.inc.php");
@@ -200,7 +200,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                         echo "<form method=\"post\" action=\"../index.php\">\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
-                        echo "      <td width=\"250\">\n";
+                        echo "      <td width=\"500\">\n";
                         echo "        <table class=\"box\" width=\"100%\">\n";
                         echo "          <tr>\n";
                         echo "            <td class=\"posthead\">\n";
@@ -233,7 +233,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
                         echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "  <tr>\n";
-                        echo "    <td width=\"250\">\n";
+                        echo "    <td width=\"500\">\n";
                         echo "      <table class=\"box\" width=\"100%\">\n";
                         echo "        <tr>\n";
                         echo "          <td class=\"posthead\">\n";
@@ -259,7 +259,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                         echo "    </td>\n";
                         echo "  </tr>\n";
                         echo "  <tr>\n";
-                        echo "    <td width=\"250\">&nbsp;</td>\n";
+                        echo "    <td width=\"500\">&nbsp;</td>\n";
                         echo "  </tr>\n";
                         echo "  <tr>\n";
                         echo "    <td align=\"center\">\n";
@@ -377,7 +377,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         echo "<div align=\"center\">\n";
         echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "  <tr>\n";
-        echo "    <td width=\"250\">\n";
+        echo "    <td width=\"500\">\n";
         echo "      <table class=\"box\" width=\"100%\">\n";
         echo "        <tr>\n";
         echo "          <td class=\"posthead\">\n";
@@ -428,7 +428,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         echo "<form method=\"post\" action=\"../index.php\">\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
-        echo "      <td width=\"250\">&nbsp;</td>\n";
+        echo "      <td width=\"500\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Continue\" autocomplete=\"off\" class=\"button\" /></td>\n";
@@ -468,7 +468,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "<form method=\"post\" action=\"install.php\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td width=\"250\">\n";
+    echo "      <td width=\"500\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
@@ -501,7 +501,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td width=\"250\">\n";
+    echo "      <td width=\"500\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
@@ -542,7 +542,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td width=\"250\">\n";
+    echo "      <td width=\"500\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
@@ -589,7 +589,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table class=\"box\">\n";

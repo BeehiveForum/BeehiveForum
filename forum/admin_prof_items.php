@@ -52,11 +52,15 @@ require_once("./include/lang.inc.php");
 
 html_draw_top();
 
-if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
+if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
+}
+
+if (isset($HTTP_POST_VARS['cancel'])) {
+    header_redirect('./admin_prof_sect.php');
 }
 
 $db = db_connect();
@@ -82,19 +86,18 @@ if(isset($HTTP_GET_VARS['psid'])){
 
 if(isset($HTTP_POST_VARS['submit'])) {
 
-  if ($HTTP_POST_VARS['submit'] == $lang['submit']) {
+  if ($HTTP_POST_VARS['submit'] == $lang['save']) {
 
     for($i = 0; $i < $HTTP_POST_VARS['t_count']; $i++) {
 
-        if($HTTP_POST_VARS['t_name_'.$i] != $HTTP_POST_VARS['t_old_name_'.$i] || $HTTP_POST_VARS['t_move_'.$i] != $psid){
+        if (($HTTP_POST_VARS["t_name_$i"] != $HTTP_POST_VARS["t_old_name_$i"]) || ($HTTP_POST_VARS["t_move_$i"] != $psid)) {
             $new_name = (trim($HTTP_POST_VARS['t_name_'.$i]) != "") ? $HTTP_POST_VARS['t_name_'.$i] : $HTTP_POST_VARS['t_old_name_'.$i];
-            profile_item_update($HTTP_POST_VARS['t_piid_'.$i],$HTTP_POST_VARS['t_move_'.$i],$new_name);
+            profile_item_update($HTTP_POST_VARS["t_piid_$i"], $HTTP_POST_VARS["t_move_$i"], $new_name);
             admin_addlog(0, 0, 0, 0, $psid, $HTTP_POST_VARS['t_piid_'.$i], 13);
         }
-
     }
 
-    if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != $lang['newitem']){
+    if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != $lang['newitem']) {
         $new_piid = profile_item_create($psid,$HTTP_POST_VARS['t_name_new']);
         admin_addlog(0, 0, 0, 0, $psid, $new_piid, 14);
     }
@@ -113,10 +116,10 @@ if(isset($HTTP_POST_VARS['submit'])) {
 echo "<h1>{$lang['manageprofileitems']}<br />{$lang['section']}: ".profile_section_get_name($psid)."</h1>\n";
 echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 echo "<div align=\"center\">\n";
-echo "<table width=\"96%\" class=\"box\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"posthead\">\n";
-echo "      <form name=\"f_items\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
+echo "<form name=\"f_items\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
+echo "  <table width=\"96%\" class=\"box\">\n";
+echo "    <tr>\n";
+echo "      <td class=\"posthead\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
@@ -125,26 +128,17 @@ echo "            <td class=\"subhead\" align=\"left\">{$lang['moveto']}</td>\n"
 echo "            <td class=\"subhead\" align=\"left\">{$lang['deleteitem']}</td>\n";
 echo "          </tr>\n";
 
-$sql = "select PROFILE_ITEM.PIID, PROFILE_ITEM.NAME ";
-$sql.= "from " . forum_table("PROFILE_ITEM") . " PROFILE_ITEM ";
-$sql.= "where PROFILE_ITEM.PSID = $psid ";
-$sql.= "order by PROFILE_ITEM.PIID";
+if ($profile_items = profile_items_get($psid)) {
 
-$result = db_query($sql,$db);
+    for($i = 0; $i < sizeof($profile_items); $i++) {
 
-$result_count = db_num_rows($result);
-
-for($i=0;$i<$result_count;$i++){
-
-    $row = db_fetch_array($result);
-
-    echo "          <tr>\n";
-    echo "            <td valign=\"top\" align=\"left\">", $row['PIID'], form_input_hidden("t_piid_$i",$row['PIID']), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i", $row['NAME']), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid,"t_move","_$i"), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\" width=\"100\">", form_input_hidden("t_psid", $psid), form_input_hidden("piid", $row['PIID']). form_submit("submit", $lang['delete']), "</td>\n";
-    echo "          </tr>\n";
-
+        echo "          <tr>\n";
+        echo "            <td valign=\"top\" align=\"left\">", $profile_items[$i]['PIID'], form_input_hidden("t_piid_$i", $profile_items[$i]['PIID']), "</td>\n";
+        echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i", $profile_items[$i]['NAME'], 64, 64), form_input_hidden("t_old_name_$i", $profile_items[$i]['NAME']), "</td>\n";
+        echo "            <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid, "t_move", "_$i"), "</td>\n";
+        echo "            <td valign=\"top\" align=\"left\" width=\"100\">", form_input_hidden("t_psid", $psid), form_input_hidden("piid", $profile_items[$i]['PIID']). form_submit("submit", $lang['delete']), "</td>\n";
+        echo "          </tr>\n";
+    }
 }
 
 // Draw a row for a new section to be created
@@ -157,14 +151,12 @@ echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td colspan=\"4\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td colspan=\"4\" align=\"right\">", form_input_hidden("t_psid",$psid), form_input_hidden("t_count",$result_count), form_submit(), "</td>\n";
-echo "          </tr>\n";
 echo "        </table>\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <p>", form_input_hidden("t_psid", $psid), form_input_hidden("t_count", sizeof($profile_items)), form_submit('submit', 'Save'), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("cancel", $lang['cancel']), "</p>\n";
+echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

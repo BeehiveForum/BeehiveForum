@@ -56,7 +56,7 @@ function profile_section_create($name)
     return $new_psid;
 }
 
-function profile_section_update($psid,$name)
+function profile_section_update($psid, $name)
 {
     $db_profile_section_update = db_connect();
     $sql = "update " . forum_table("PROFILE_SECTION") . " ";
@@ -64,6 +64,28 @@ function profile_section_update($psid,$name)
     $sql.= "where PSID = $psid";
     $result = db_query($sql, $db_profile_section_update);
     return $result;
+}
+
+function profile_items_get($psid)
+{
+    $db_profile_items_get = db_connect();
+
+    $sql = "select PROFILE_ITEM.PIID, PROFILE_ITEM.NAME ";
+    $sql.= "from " . forum_table("PROFILE_ITEM") . " PROFILE_ITEM ";
+    $sql.= "where PROFILE_ITEM.PSID = $psid ";
+    $sql.= "order by PROFILE_ITEM.PIID";
+
+    $result = db_query($sql, $db_profile_items_get);
+
+    if (db_num_rows($result)) {
+        $profile_items_get = array();
+        while($row = db_fetch_array($result)) {
+            $profile_items_get[] = $row;
+        }
+        return $profile_items_get;
+    }else {
+        return false;
+    }
 }
 
 function profile_item_create($psid,$name)
@@ -85,14 +107,17 @@ function profile_item_create($psid,$name)
 
 }
 
-function profile_item_update($piid,$psid,$name)
+function profile_item_update($piid, $psid, $name)
 {
     $db_profile_item_update = db_connect();
+
     $sql = "update " . forum_table("PROFILE_ITEM") . " ";
     $sql.= "set PSID = $psid, ";
     $sql.= "NAME = \"$name\" ";
     $sql.= "where PIID = $piid";
+
     $result = db_query($sql, $db_profile_item_update);
+
     return $result;
 }
 

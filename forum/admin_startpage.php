@@ -111,7 +111,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('save', $lang['save']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_reset(), "\n";
+echo "<p>", form_submit('save', $lang['save']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_reset(), "</p>\n";
 echo "</form>\n";
 
 html_draw_bottom();

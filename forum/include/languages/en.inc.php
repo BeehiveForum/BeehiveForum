@@ -118,6 +118,7 @@ $lang['all'] = "All";
 $lang['me_caps'] = "ME";
 $lang['by'] = "by";
 $lang['permissions'] = "Permissions";
+$lang['position'] = "Position";
 $lang['or'] = "or";
 
 // Admin interface (admin*.php) ----------------------------------------

@@ -72,17 +72,21 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
 
-  if (get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']) < filesize($HTTP_POST_FILES['userfile']['tmp_name'])) {
+  if (!empty($HTTP_POST_FILES['userfile']['tmp_name'])) {
 
-    echo "<p>Sorry, you do not have enough free attachment space. Please free some space and try again.</p>";
-    unlink($HTTP_POST_FILES['userfile']['tmp_name']);
+    if (get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']) < filesize($HTTP_POST_FILES['userfile']['tmp_name'])) {
+
+      echo "<p>Sorry, you do not have enough free attachment space. Please free some space and try again.</p>";
+      unlink($HTTP_POST_FILES['userfile']['tmp_name']);
     
-  }else {
+    }else {
     
-    move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid. '/'. md5($aid. $HTTP_POST_FILES['userfile']['name']));
-    add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name'], $HTTP_POST_FILES['userfile']['type']);
-    echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";    
+      move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid. '/'. md5($aid. $HTTP_POST_FILES['userfile']['name']));
+      add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name'], $HTTP_POST_FILES['userfile']['type']);
+      echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";    
   
+    }
+    
   }
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Move') {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.5 2004-12-05 17:58:07 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.6 2004-12-05 22:10:16 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -669,12 +669,6 @@ $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  PM_AUTO_PRUNE CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  PM_AUTO_PRUNE_LENGTH CHAR(3) NOT NULL DEFAULT '60',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
 $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
 $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";

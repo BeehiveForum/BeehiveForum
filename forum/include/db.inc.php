@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.61 2004-12-05 17:58:05 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.62 2004-12-05 22:10:16 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -268,6 +268,21 @@ function db_error($result)
     }
 
     return "Error unknown";
+}
+
+function db_errno($result)
+{
+    if (@extension_loaded('mysql')) {
+
+        return mysql_errno($result);
+    }
+
+    if (@extension_loaded('mysqli')) {
+
+        return mysqli_errno($result);
+    }
+
+    return 0;
 }
 
 // Return the MySQL Server Version.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.54 2004-11-24 18:27:22 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.55 2004-12-05 22:10:16 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -123,6 +123,10 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             die;
 
         }else {
+
+            $db_error_handler = db_connect();
+
+            if (db_errno($db_error_handler) == DB_ER_NO_SUCH_TABLE) install_incomplete();
 
             echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";

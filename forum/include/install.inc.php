@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.14 2004-11-26 16:31:42 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.15 2004-12-05 22:10:16 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -97,6 +97,59 @@ function check_install()
         echo "</html>\n";
         exit;
     }
+}
+
+function install_incomplete()
+{
+    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+    echo "<head>\n";
+    echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+    echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
+    echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+    echo "</head>\n";
+    echo "<h1>BeehiveForum Installation Error</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"500\">\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>Your BeehiveForum is not installed correctly. Click the install button below to start the installation.</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <form method=\"get\" action=\"./install.php\">\n";
+    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "      <tr>\n";
+    echo "        <td width=\"500\">&nbsp;</td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" class=\"button\" /></td>\n";
+    echo "      </tr>\n";
+    echo "    </table>\n";
+    echo "  </form>\n";
+    echo "</div>\n";
+    echo "</body>\n";
+    echo "</html>\n";
+    exit;
 }
 
 function install_get_webtags()

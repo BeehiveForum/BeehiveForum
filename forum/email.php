@@ -101,9 +101,11 @@ html_draw_top("Email ".$to_user['LOGON']);
 
 echo "<h1>Email ".$to_user['LOGON']."</h1>\n";
 
-if($error){
+if(isset($error)){
     echo $error;
 }
+if (!isset($subject)) $subject = "";
+if (!isset($message)) $message = "";
 
 echo "<div align=\"center\">";
 echo "<form name=\"f_email\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\" method=\"POST\">\n";

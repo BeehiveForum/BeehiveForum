@@ -41,14 +41,16 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $sql = "select UID, PASSWD, EMAIL from ". forum_table("USER") ." where LOGON = \"$logon\"";
         $result = db_query($sql,$conn);
 
-        if($fa = db_fetch_array($result)){
-            if(isset($fa['UID']) && isset($fa['EMAIL'])){
+        if($fa = db_fetch_array($result)) {
+
+            if(isset($fa['UID']) && isset($fa['EMAIL'])) {
+
                 $msg = "You requested this e-mail from $forum_name because you have forgotten your password.\n\n";
                 $msg.= "Click the link below (or copy and paste it into your browser) to reset your password:\n\n";
                 $msg.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
                 
                 if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
-                  $msg. dirname($HTTP_SERVER_VARS['PHP_SELF']);
+                  $msg.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
                 }
                 
                 $msg.= "/change_pw.php?u={$fa['UID']}&h={$fa['PASSWD']}";
@@ -71,8 +73,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
             }
         }
     }
+
     $error_html = "<h2>A valid username is required</h2>";
 }
+
+if (!isset($logon)) $logon = "";
 
 html_draw_top();
 
@@ -91,7 +96,7 @@ echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Forgot Password</td>\n
 echo "</tr>\n</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
 echo "<tr>\n<td align=\"right\">User Name:</td>\n";
-echo "<td>".form_input_text("logon",$logon)."</td></tr>\n";
+echo "<td>".form_input_text("logon", $logon)."</td></tr>\n";
 echo "</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
 echo "<tr><td align=\"center\">";

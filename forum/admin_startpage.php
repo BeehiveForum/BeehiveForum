@@ -67,8 +67,16 @@ if (isset($HTTP_POST_VARS['save'])) {
 
 }else{
 
-    $content = implode(file('./start_main.php'));
-    $content = str_replace(chr(13), '', $content);
+    if (file_exists('./start_main.php')) {
+
+        $content = implode('', file('./start_main.php'));
+        $content = str_replace(chr(13), '', $content);
+
+    }else {
+
+        $content = "";
+
+    }
 
 }
 

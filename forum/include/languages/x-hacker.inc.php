@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.70 2004-03-19 15:38:32 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.71 2004-03-21 18:58:25 tribalonline Exp $ */
 
 // International English language file
 
@@ -331,7 +331,9 @@ $lang['word_filter_help_3'] = "<b>pRE9</b> 4llOws j00 t0 USe PerL ReGUL@r 3XPrE\
 $lang['mustsupplyforumname'] = "J00 MU\$+ \$uPPLy A PHORUM N4M3";
 $lang['mustsupplyforumemail'] = "j00 MUsT SUPPLy @ F0rUM 3m@1l 4dDR3\$s";
 $lang['mustchoosedefaultstyle'] = "J00 mUST CHO0\$3 4 DEPH4uLt PHOrUm S+Yle";
+$lang['mustchoosedefaultemoticons'] = "You must choose default forum emoticons";
 $lang['unknownstylename'] = "UnKn0WN Style n@M3";
+$lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['unknownlanguage'] = "UnkNoWN L4Ngu4G3";
 $lang['mustchoosedefaultlang'] = "J00 MuST CHOOse 4 DEF@uL+ FOruM L4nGu4GE";
 $lang['activesessiongreaterthansession'] = "@C+1VE s35\$I0N TIm30U+ CAnN0T 83 9R3@TEr TH4N \$3\$\$i0N +iM3OUt";
@@ -341,6 +343,7 @@ $lang['mainsettings'] = "M4iN sEt+1N9S";
 $lang['forumname'] = "phoruM n@M3";
 $lang['forumemail'] = "F0rum 3m@iL";
 $lang['defaultstyle'] = "DEpH4UlT 5+ylE";
+$lang['defaultemoticons'] = "Default Emoticons";
 $lang['defaultlanguage'] = "DePH4Ul+ L4NGU@9e";
 $lang['errorhandler'] = "3RR0R HANdLer";
 $lang['showfriendlyerrors'] = "Show pHRI3NDlY 3RR0r Me\$5@9ES";
@@ -778,6 +781,7 @@ $lang['timezonefromGMT'] = "+IMEz0Ne";
 $lang['postsperpage'] = "poSt5 p3r p4G3";
 $lang['fontsize'] = "Fon+ \$iZe";
 $lang['forumstyle'] = "PHOrUm s+YLe";
+$lang['forumemoticons'] = "Forum emoticons";
 $lang['startpage'] = "5+4Rt P493";
 $lang['containsHTML'] = "C0nT@inS hTmL";
 $lang['preferredlang'] = "PR3pH3rr3D L@N9U4GE";

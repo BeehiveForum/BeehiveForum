@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.144 2004-03-21 09:38:01 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.145 2004-03-21 18:58:24 tribalonline Exp $ */
 
 function user_count()
 {
@@ -377,7 +377,7 @@ function user_get_prefs($uid)
                          'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
                          'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '', 'ANON_LOGON' => '',
                          'SHOW_STATS' => '',  'IMAGES_TO_LINKS' => '', 'USE_WORD_FILTER' => '',
-                         'USE_ADMIN_FILTER' => '');    
+                         'USE_ADMIN_FILTER' => '', 'EMOTICONS' => '');    
 
     if (db_num_rows($result) > 0) {
         $prefs_array = array_merge($prefs_array, db_fetch_array($result, MYSQL_ASSOC));
@@ -411,11 +411,12 @@ function user_update_prefs($uid, $prefs_array)
     if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
     
     if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = forum_get_setting('default_style');
+    if (!ereg("([[:alnum:]]+)", $prefs_array['EMOTICONS'])) $prefs_array['EMOTICONS'] = forum_get_setting('default_emoticons');
 
     $sql = "INSERT INTO {$webtag['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
     $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, ";
-    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER) ";
+    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS) ";
     $sql.= "VALUES ($uid, '{$prefs_array['FIRSTNAME']}', '{$prefs_array['LASTNAME']}', '{$prefs_array['DOB']}', ";
     $sql.= "'{$prefs_array['HOMEPAGE_URL']}', '{$prefs_array['PIC_URL']}', '{$prefs_array['EMAIL_NOTIFY']}', ";
     $sql.= "'{$prefs_array['TIMEZONE']}', '{$prefs_array['DL_SAVING']}', '{$prefs_array['MARK_AS_OF_INT']}', ";
@@ -423,7 +424,7 @@ function user_update_prefs($uid, $prefs_array)
     $sql.= "'{$prefs_array['VIEW_SIGS']}', '{$prefs_array['START_PAGE']}', '{$prefs_array['LANGUAGE']}', ";
     $sql.= "'{$prefs_array['PM_NOTIFY']}', '{$prefs_array['PM_NOTIFY_EMAIL']}', '{$prefs_array['DOB_DISPLAY']}', ";
     $sql.= "'{$prefs_array['ANON_LOGON']}', '{$prefs_array['SHOW_STATS']}', '{$prefs_array['IMAGES_TO_LINKS']}', ";
-    $sql.= "'{$prefs_array['USE_WORD_FILTER']}', '{$prefs_array['USE_ADMIN_FILTER']}')";
+    $sql.= "'{$prefs_array['USE_WORD_FILTER']}', '{$prefs_array['USE_ADMIN_FILTER']}', '{$prefs_array['EMOTICONS']}')";
     
     $result = db_query($sql, $db_user_update_prefs);
 

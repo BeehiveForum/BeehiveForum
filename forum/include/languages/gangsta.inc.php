@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.41 2004-03-20 19:21:30 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.42 2004-03-21 18:58:24 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -261,7 +261,9 @@ $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expres
 $lang['mustsupplyforumname'] = "You must supply a forum name";
 $lang['mustsupplyforumemail'] = "You must supply a forum email address";
 $lang['mustchoosedefaultstyle'] = "You must choose a default forum style";
+$lang['mustchoosedefaultemoticons'] = "You must choose default forum emoticons";
 $lang['unknownstylename'] = "Unknown style name";
+$lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['unknownlanguage'] = "Unknown language";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
@@ -271,6 +273,7 @@ $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";
 $lang['forumemail'] = "Forum Email";
 $lang['defaultstyle'] = "Default Style";
+$lang['defaultemoticons'] = "Default Emoticons";
 $lang['defaultlanguage'] = "Default Language";
 $lang['errorhandler'] = "Error Handler";
 $lang['showfriendlyerrors'] = "Show Friendly Error Messages";
@@ -787,6 +790,7 @@ $lang['timezonefromGMT'] = "Yo tizimezizone";
 $lang['postsperpage'] = "Pizosts pizer pizage";
 $lang['fontsize'] = "Fizont sizize";
 $lang['forumstyle'] = "Fizorizum stizyle";
+$lang['forumemoticons'] = "Fizorizum emizotizicons";
 $lang['startpage'] = "Crib";
 $lang['containsHTML'] = "Cizontizains fly-ass code";
 $lang['preferredlang'] = "Whizat yo speak";

@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.51 2003-09-22 18:45:36 decoyduck Exp $
+# $Id: schema.sql,v 1.52 2003-09-29 09:32:58 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -464,6 +464,7 @@ CREATE TABLE USER_PEER (
 CREATE TABLE USER_POLL_VOTES (
   ID mediumint(8) unsigned NOT NULL auto_increment,
   TID mediumint(8) unsigned NOT NULL default '0',
+  UID mediumint(8) unsigned NOT NULL default '0',
   PTUID varchar(32) NOT NULL default '',
   OPTION_ID mediumint(8) unsigned NOT NULL default '0',
   TSTAMP timestamp(14) NOT NULL,

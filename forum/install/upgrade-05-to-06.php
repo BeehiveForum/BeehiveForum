@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.24 2005-03-05 21:55:44 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.25 2005-03-05 21:59:16 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -65,6 +65,12 @@ if (db_num_rows($result) > 0) {
 
             $forum_webtag_array[$row['FID']] = $row['WEBTAG'];
         }
+
+    }else {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
     }
 }
 

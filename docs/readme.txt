@@ -299,7 +299,7 @@ system.
 
 4.1 Coding
 ==========
-Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Michael Franklin / Ben Sekulowicz
+Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Mike Franklin / Ben Sekulowicz
 
 
 4.2 Design/CSS

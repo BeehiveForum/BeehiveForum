@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.43 2003-07-28 12:57:05 hodcroftcj Exp $ */
+/* $Id: format.inc.php,v 1.44 2003-08-02 23:37:34 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -201,6 +201,38 @@ function _addslashes($string)
 
 }
 
+// Case insensitive / multi-dimensional replacement for array_search.
+
+function _array_search($needle, $haystack)
+{
+    foreach ($haystack as $key => $value) {
+        if (is_array($value)) {
+            return _array_search($needle, $value);
+        }else {
+            if (strtolower($needle) == strtolower($value)) {
+                return $key;
+            }
+        }
+    }
+    return false;
+}
+
+// Case insensitive / multi-dimensional replacement for in_array.
+
+function _in_array($needle, $haystack)
+{
+    foreach ($haystack as $key => $value) {
+        if (is_array($value)) {
+            return _in_array($needle, $value);
+        }else {
+            if (strtolower($needle) == strtolower($value)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 function get_local_time()
 {
     if (bh_session_get_value('DL_SAVING')) {
@@ -208,22 +240,22 @@ function get_local_time()
     } else {
         $local_time = time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
     }
-    
+
     return $local_time;
 }
 
 function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
 {
-	$local_time = get_local_time();
+    $local_time = get_local_time();
     $todays_date = date("j", $local_time);
     $todays_month = date("n", $local_time);
     $todays_year = date("Y", $local_time);
-    
+
     $birthday = explode("-", $dob);
 
     $age = $todays_year - $birthday[0];
     if (($todays_month < $birthday[1]) || (($todays_month == $birthday[1]) && ($todays_date < $birthday[2])) ) $age -= 1;
-    
+
     return $age;
 }
 
@@ -238,7 +270,7 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
     } else {
         $year = date("Y", $local_time) + 1;
     }
-    
+
     return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
 }
 ?>

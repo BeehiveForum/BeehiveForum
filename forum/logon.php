@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.88 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: logon.php,v 1.89 2003-08-02 23:37:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -195,7 +195,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         // Check to see if Form Data already exists in cookie
 
-        if (!in_array($logon, $username_array)) {
+        if (!_in_array($logon, $username_array)) {
 
           array_unshift($username_array, $logon);
 
@@ -209,7 +209,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         }else {
 
-          if (($key = array_search($logon, $username_array)) !== false) {
+          if (($key = _array_search($logon, $username_array)) !== false) {
 
             // Remove the existing values
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_logout.php,v 1.10 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: user_logout.php,v 1.11 2003-08-02 23:37:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -39,11 +39,10 @@ require_once("./include/lang.inc.php");
 $logged_off = false;
 
 // Where are we going after we've logged on?
-if(isset($HTTP_POST_VARS['submit'])){
+if (isset($HTTP_POST_VARS['submit'])) {
     bh_session_end();
     $logged_off = true;
 }
-
 
 html_draw_top();
 
@@ -54,7 +53,7 @@ echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
 echo "{$lang['logout']}:\n";
 echo "</td></tr></table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
-if($logged_off){
+if ($logged_off) {
     echo "<tr><td>{$lang['youhaveloggedout']}.</td></tr>\n";
     echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>";
 } else {
@@ -67,4 +66,5 @@ echo "</td></tr></table>\n";
 echo "</form></div>\n";
 
 html_draw_bottom();
+
 ?>

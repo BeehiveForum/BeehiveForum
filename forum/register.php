@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.46 2003-07-29 16:26:43 hodcroftcj Exp $ */
+/* $Id: register.php,v 1.47 2003-08-02 23:37:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -45,11 +45,11 @@ if(isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }
 
-if(bh_session_get_value('UID')){
+if (bh_session_get_value('UID')) {
 
     html_draw_top();
     echo "<div align=\"center\">\n";
-    echo "<p>{$lang['userID']} ", bh_session_get_value('UID'), " {$lang['alreadyloggedin']}.</p>\n";
+    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
     echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
     echo "</div>\n";
     html_draw_bottom();
@@ -221,7 +221,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           // Check to see if Form Data already exists in cookie
 
-          if (!in_array($logon, $username_array)) {
+          if (!_in_array($logon, $username_array)) {
 
             array_unshift($username_array, $logon);
 
@@ -235,13 +235,21 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           }else {
 
-            if (($key = array_search($logon, $username_array)) !== false) {
+            if (($key = _array_search($logon, $username_array)) !== false) {
+
+              // Remove the existing values
 
               $uncookie = array_splice($username_array, $key, 1);
               $pwcookie = array_splice($password_array, $key, 1);
               $phcookie = array_splice($passhash_array, $key, 1);
 
-              array_unshift($username_array, $uncookie[0]);
+              // Push the username to the top of the array
+
+              array_unshift($username_array, $logon);
+
+              // Check to see if the password box was ticked
+              // and push the password and passhash on to
+              // their arrays if applicable.
 
               if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
                 if (isset($pwcookie[0]) && isset($phcookie[0])) {
@@ -255,9 +263,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
                 array_unshift($password_array, str_repeat(chr(255), 4));
                 array_unshift($passhash_array, str_repeat(chr(255), 4));
               }
-
             }
-
           }
 
           // Set the cookies
@@ -269,6 +275,13 @@ if(isset($HTTP_POST_VARS['submit'])) {
             setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
 
           }
+
+          // set / update the cookie that remembers if the user
+          // has any logon form data.
+
+          setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
+
+          exit;
 
           html_draw_top();
 
@@ -320,7 +333,7 @@ $timezones = array("GMT -12h", "GMT -11h", "GMT -10h", "GMT -9h30m", "GMT -9h", 
                    "GMT", "GMT +1h", "GMT +2h", "GMT +3h",  "GMT +3h30m","GMT +4h", "GMT +4h30m", "GMT +5h",
                    "GMT +5h30m", "GMT +6h", "GMT +6h30m", "GMT +7h", "GMT +8h", "GMT +9h", "GMT +9h30m",
                    "GMT +10h", "GMT +10h30m", "GMT +11h", "GMT +11h30m", "GMT +12h", "GMT +13h", "GMT +14h");
-                   
+
 $timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
                         6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
 
@@ -357,6 +370,10 @@ if (strlen($error_html) > 0) {
             <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes(trim($HTTP_POST_VARS['email'])) : ''), 35, 80); ?></td>
           </tr>
           <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['dateofbirth']; ?>:</td>
+            <td><?php echo form_dob_dropdowns((isset($HTTP_POST_VARS['dob_year']) ? $HTTP_POST_VARS['dob_year'] : 0), (isset($HTTP_POST_VARS['dob_month']) ? $HTTP_POST_VARS['dob_month'] : 0), (isset($HTTP_POST_VARS['dob_day']) ? $HTTP_POST_VARS['dob_day'] : 0), true); ?></td>
+          </tr>
+          <tr>
             <td class="posthead">&nbsp;<?php echo $lang['passwd']; ?>:</td>
             <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 35, 32,"password"); ?></td>
           </tr>
@@ -381,10 +398,6 @@ if (strlen($error_html) > 0) {
           <tr>
             <td class="posthead">&nbsp;<?php echo $lang['lastname']; ?>:</td>
             <td><?php echo form_field("lastname", (isset($HTTP_POST_VARS['lastname']) ? _stripslashes(trim($HTTP_POST_VARS['lastname'])) : ''), 35, 32); ?></td>
-          </tr>
-          <tr>
-            <td class="posthead">&nbsp;<?php echo $lang['dateofbirth']; ?>:</td>
-            <td><?php echo form_dob_dropdowns((isset($HTTP_POST_VARS['dob_year']) ? $HTTP_POST_VARS['dob_year'] : 0), (isset($HTTP_POST_VARS['dob_month']) ? $HTTP_POST_VARS['dob_month'] : 0), (isset($HTTP_POST_VARS['dob_day']) ? $HTTP_POST_VARS['dob_day'] : 0), true); ?></td>
           </tr>
           <tr>
             <td class="posthead" valign="top">&nbsp;<?php echo $lang['signature']; ?>:</td>

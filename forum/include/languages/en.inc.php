@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.27 2003-08-02 13:46:38 hodcroftcj Exp $ */
+/* $Id: en.inc.php,v 1.28 2003-08-02 23:37:34 decoyduck Exp $ */
 
 // International English language file
 
@@ -127,6 +127,7 @@ $lang['type'] = "Type";
 $lang['print'] = "Print";
 $lang['sticky'] = "Sticky";
 $lang['polls'] = "Polls";
+$lang['user'] = "User";
 
 // Admin interface (admin*.php) ----------------------------------------
 

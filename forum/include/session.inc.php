@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.167 2005-03-26 18:16:46 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.168 2005-03-31 19:35:05 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -182,6 +182,18 @@ function bh_session_check($show_session_fail = true)
                     $webtag = get_webtag($webtag_search);
 
                     echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
+
+                    $top_html = html_get_top_page();
+
+                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                    echo "<!--\n\n";
+                    echo "if (top.document.body.rows) {\n\n";
+                    echo "    top.frames['ftop'].location.replace('$top_html');\n";
+                    echo "    top.frames['fnav'].location.reload();\n";
+                    echo "}\n\n";
+                    echo "-->\n";
+                    echo "</script>";
+
                     echo "<div align=\"center\">\n";
                     echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
 

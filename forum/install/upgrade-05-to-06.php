@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.17 2005-02-09 21:45:35 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.18 2005-02-12 19:07:12 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-06.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
     header("Location: ../install.php");
     exit;
 
-}else if (!isset($_SERVER['PHP_SELF'])) {
+}else if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     echo "To install BeehiveForums 0.5 please visit install.php in your browser";
     exit;
@@ -290,7 +290,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY TO_UID (TO_UID),";
     $sql.= "  KEY FROM_UID (FROM_UID),";
     $sql.= "  KEY IPADDRESS (IPADDRESS),";
-    $sql.= "  KEY CREATED (CREATED)";
+    $sql.= "  KEY CREATED (CREATED),";
+    $sql.= "  KEY FROM_UID (FROM_UID)";
     $sql.= ") TYPE = MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {
@@ -342,20 +343,18 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     // Reformat the USER_POLL_VOTES table to be less resource intensive
-    // Unfortunatly this means purging the results because I don't think
-    // it would make sense to try and reverse the MD5 hashing in the
-    // PTUID, at least not with modern servers ;)
+    // While we're here we'll clean up the data in the table because
+    // 0.4 and 0.5 had problems where you could vote for the same poll
+    // option multiple times.
 
-    $sql = "DELETE FROM {$forum_webtag}_USER_POLL_VOTES";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES DROP PTUID";
+    $sql = "CREATE TABLE {$forum_webtag}_USER_POLL_VOTES_NEW (";
+    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+    $sql.= "  PRIMARY KEY (ID)";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -364,7 +363,39 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES DROP PRIMARY KEY, ADD PRIMARY KEY (ID)";
+    $sql = "INSERT INTO {$forum_webtag}_USER_POLL_VOTES_NEW (TID, UID, OPTION_ID, TSTAMP) ";
+    $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES ";
+    $sql.= "WHERE UID > 0";
+
+    if ($result = db_query($sql, $db_install)) {
+
+        $sql = "SELECT MAX(UID) AS NUM_USERS FROM USER";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+            $valid = false;
+            return;
+        }
+
+        list($num_users) = db_fetch_array($result, DB_RESULT_NUM);
+
+        for ($uid = 1; $uid <= $num_users; $uid++) {
+
+            $sql = "INSERT INTO {$forum_webtag}_USER_POLL_VOTES_NEW (TID, UID, OPTION_ID, TSTAMP) ";
+            $sql.= "SELECT TID, $uid, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES ";
+            $sql.= "WHERE PTUID = MD5(CONCAT(TID, '.', $uid)) AND UID = 0";
+
+            if (!$result = db_query($sql, $db_install)) {
+
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
+        }
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES_NEW RENAME {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = db_query($sql, $db_install)) {
 

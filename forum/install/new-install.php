@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.23 2005-02-09 21:45:35 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.24 2005-02-12 19:07:12 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -30,7 +30,7 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-instal
     header("Location: ../install.php");
     exit;
 
-}else if (!isset($_SERVER['PHP_SELF'])) {
+}else if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     echo "To install BeehiveForums 0.5 please visit install.php in your browser";
     exit;
@@ -360,7 +360,8 @@ $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (MID),";
-$sql.= "  KEY TO_UID (TO_UID)";
+$sql.= "  KEY TO_UID (TO_UID),";
+$sql.= "  KEY TYPE (TYPE)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -448,7 +449,8 @@ $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (PID, TID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS),";
-$sql.= "  KEY CREATED (CREATED)";
+$sql.= "  KEY CREATED (CREATED),";
+$sql.= "  KEY FROM_UID (FROM_UID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.63 2004-05-17 15:57:00 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.64 2004-05-17 17:22:33 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -40,7 +40,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON ((GROUP_PERMS.GID = GROUP_USERS.GID OR GROUP_PERMS.GID = -1) AND GROUP_PERMS.FID = FOLDER.FID) ";
+    $sql.= "ON ((GROUP_PERMS.GID = GROUP_USERS.GID OR GROUP_PERMS.GID = 0) AND GROUP_PERMS.FID = FOLDER.FID) ";
     $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 OR GROUP_PERMS.PERM IS NULL) ";
     $sql.= "AND (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
     $sql.= "ORDER BY GROUP_PERMS.GID DESC ";
@@ -50,26 +50,43 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
 function folder_get_title($fid)
 {
-   $db_folder_get_title = db_connect();
+    $db_folder_get_title = db_connect();
 
-   if (!is_numeric($fid)) return "The Unknown Folder";
+    if (!is_numeric($fid)) return "The Unknown Folder";
 
-   if (!$table_data = get_table_prefix()) return "The Unknown Folder";
+    if (!$table_data = get_table_prefix()) return "The Unknown Folder";
 
-   $sql = "SELECT FOLDER.TITLE FROM {$table_data['PREFIX']}FOLDER FOLDER WHERE FID = $fid";
-   $result = db_query($sql, $db_folder_get_title);
+    $sql = "SELECT FOLDER.TITLE FROM {$table_data['PREFIX']}FOLDER FOLDER WHERE FID = $fid";
+    $result = db_query($sql, $db_folder_get_title);
 
-   if (!db_num_rows($result)) {
-     $foldertitle = "The Unknown Folder";
-   }else {
-     $data = db_fetch_array($result);
-     $foldertitle = $data['TITLE'];
-   }
+    if (!db_num_rows($result)) {
+        $foldertitle = "The Unknown Folder";
+    }else {
+        $data = db_fetch_array($result);
+        $foldertitle = $data['TITLE'];
+    }
 
-   return $foldertitle;
+    return $foldertitle;
 }
 
-function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
+function folder_get_permissions($fid)
+{
+    $db_folder_get_permissions = db_connect();
+
+    if (!is_numeric($fid)) return 0;
+
+    if (!$table_data = get_table_prefix()) return 0;
+
+    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM DEFAULT_GROUP_PERMS GROUP_PERMS ";
+    $sql.= "WHERE GROUP_PERMS.FID = $fid AND GROUP_PERMS.GID = 0";
+
+    $result = db_query($sql, $db_folder_get_permissions);
+    $row = db_fetch_array($result);
+
+    return $row['STATUS'];
+}
+
+function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $permissions = 0)
 {
     $db_folder_create = db_connect();
 
@@ -77,6 +94,7 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
     $description = addslashes($description);
 
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
+    if (!is_numeric($permissions)) $permissions = 0;
 
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -91,12 +109,18 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
     $result = db_query($sql, $db_folder_create);
 
     if ($result) {
+
         $new_fid = db_insert_id($db_folder_create);
-    }else {
-        $new_fid = 0;
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
+        $sql.= "VALUES (0, '$new_fid', $permissions)";
+
+        $result = db_query($sql, $db_folder_create);
+
+        return $new_fid;
     }
 
-    return $new_fid;
+    return false;
 }
 
 function folder_delete($fid)
@@ -136,8 +160,16 @@ function folder_update($fid, $folder_data)
     if (!isset($folder_data['POSITION']) || !is_numeric($folder_data['POSITION'])) $folder_data['POSITION'] = 0;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_data['TITLE']}', ";
-    $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = {$folder_data['ALLOWED_TYPES']}, ";
-    $sql.= "POSITION = {$folder_data['POSITION']} WHERE FID = $fid";
+    $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
+    $sql.= "POSITION = '{$folder_data['POSITION']}' WHERE FID = $fid";
+
+    $result = db_query($sql, $db_folder_update);
+
+    $sql = "DELETE FROM {$table_data['PREFIX']}GROUP_PERMS WHERE GID = 0 AND FID = '$fid'";
+    $result = db_query($sql, $db_folder_update);
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
+    $sql.= "VALUES (0, '$fid', '{$folder_data['PERMS']}')";
 
     return db_query($sql, $db_folder_update);
 }

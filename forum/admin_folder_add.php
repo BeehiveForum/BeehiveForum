@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.6 2004-05-17 15:56:59 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.7 2004-05-17 17:22:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,9 +139,21 @@ if (isset($_POST['submit'])) {
         $t_allowed_types = FOLDER_ALLOW_ALL_THREAD;
     }
 
+    $t_post_read     = (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
+    $t_post_create   = (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
+    $t_thread_create = (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
+    $t_post_edit     = (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
+    $t_post_delete   = (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
+    $t_post_attach   = (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
+
+    // We need a double / float here because we're storing a high bit value
+
+    $t_permissions = (double)$t_post_read | $t_post_create | $t_thread_create;
+    $t_permissions = (double)$t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
+
     if ($valid) {
 
-        $new_fid = folder_create($t_name, $t_description, $t_allowed_types);
+        $new_fid = folder_create($t_name, $t_description, $t_allowed_types, $t_permissions);
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
 
         $add_success = rawurlencode(_stripslashes($t_name));
@@ -155,7 +167,13 @@ $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lan
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
 echo "<h1>{$lang['admin']} : {$lang['managefolders']} : {$lang['addnewfolder']}</h1>\n";
-echo "<br />\n";
+
+if (isset($error_html) && strlen($error_html) > 0) {
+    echo $error_html;
+}else {
+    echo "<br />\n";
+}
+
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_add.php\" method=\"post\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -190,7 +208,28 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['permissions']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['permissions']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>\n";
+echo "                    <table class=\"posthead\" width=\"80%\">\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, "Read Posts", false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, "Reply to threads", false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, "Create new threads", false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, "Edit Posts", false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, "Delete Posts", false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, "Upload Attachments", false), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

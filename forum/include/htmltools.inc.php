@@ -27,7 +27,7 @@ function tools_button ($title, $on_click, $image_name) {
 	return "<img src=\"".style_image($image_name)."\" onClick=\"".$on_click."\" title=\"".$title."\" width=\"18\" height=\"18\" class=\"tools_up\" onMouseOver=\"m_ov(this);\" onMouseOut=\"m_ou(this);\" onMouseDown=\"m_d(this);\" onMouseUp=\"m_u(this);\">";
 }
 
-function tools_html() {
+function tools_html($custom_html = "") {
 	global $lang;
 	echo "<div id=\"toolbar\" class=\"tools\">\n";
 	echo tools_button($lang['bold'], "add_tag('b');", "bold_button.png");
@@ -74,7 +74,8 @@ function tools_html() {
 		echo "<option value=\"#4B0082\" style=\"color: #4B0082;\">".$lang['indigo']."</option>\n";
 		echo "<option value=\"#EE82EE\" style=\"color: #EE82EE;\">".$lang['violet']."</option>\n";
 		echo "<option value=\"#FFFFFF\" style=\"color: #FFFFFF; background-color: #000000;\">".$lang['white']."</option>\n";
-	echo "</select></div>\n";
+	echo "</select>\n";
+	echo $custom_html."</div>\n";
 }
 
 function tools_junk() {

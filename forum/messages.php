@@ -112,17 +112,17 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 }elseif (isset($HTTP_POST_VARS['pollclose'])) {
 
   if (isset($HTTP_POST_VARS['confirm_pollclose'])) {
-  
+
     poll_close($HTTP_POST_VARS['tid']);
     header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
-    
+
   }else {
-  
+
     html_draw_top_script();
     poll_confirm_close($HTTP_POST_VARS['tid']);
     html_draw_bottom();
     exit;
-    
+
   }
 
 }elseif (isset($HTTP_POST_VARS['pollchangevote'])) {
@@ -161,7 +161,7 @@ messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTER
 echo "    </td>\n";
 
 if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
- 
+
   if ($userpollvote = poll_user_has_voted($tid)) {
     echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to change vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You voted for option #", $userpollvote, "</td>\n";
   }else {
@@ -180,7 +180,7 @@ if($msg_count > 0) {
     foreach($messages as $message) {
 
         if (isset($message['RELATIONSHIP'])) {
-        
+
           if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
           }else {
@@ -221,8 +221,10 @@ unset($messages, $message);
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;
     echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
-    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "Keep reading", "msg", "$tid.$npid");
+    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "Keep reading >>", "msg", "$tid.$npid");
     echo "</td></tr></table>\n";
+}else {
+    echo "<p>&nbsp;</p>\n";
 }
 
 messages_start_panel();
@@ -241,9 +243,9 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 		messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
 	}
 }
-messages_end_panel();
 
 draw_beehive_bar();
+messages_end_panel();
 html_draw_bottom();
 
 if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0){

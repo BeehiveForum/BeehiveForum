@@ -238,7 +238,7 @@ function user_get_uid($logon)
 
     $db_user_get_uid = db_connect();
 
-    $sql = "select UID from ". forum_table("USER"). " where LOGON = '$logon'";
+    $sql = "SELECT UID FROM ". forum_table("USER"). " WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
 
     if (!db_num_rows($result)) {
@@ -254,15 +254,15 @@ function user_get_sig($uid, &$content, &$html)
 {
     $db_user_get_sig = db_connect();
 
-    $sql = "select content, html from " . forum_table("USER_SIG") . " where uid = $uid";
+    $sql = "SELECT CONTENT, HTML FROM " . forum_table("USER_SIG") . " WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_sig);
 
     if(!db_num_rows($result)){
         $ret = false;
     } else {
         $fa = db_fetch_array($result);
-        $content = $fa['content'];
-        $html = $fa['html'];
+        $content = $fa['CONTENT'];
+        $html = $fa['HTML'];
         $ret = true;
     }
 

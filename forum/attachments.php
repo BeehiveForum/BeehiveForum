@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.54 2004-03-04 20:30:35 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.55 2004-03-04 20:50:27 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -86,13 +86,17 @@ if (substr($attachment_dir, -1) == '/') $attachment_dir = substr($attachment_dir
 // Make sure the attachments directory exists
 
 if (!is_dir($attachment_dir)) {
-  mkdir($attachment_dir, 0755);
-  chmod($attachment_dir, 0777);
+    mkdir($attachment_dir, 0755);
+    chmod($attachment_dir, 0777);
 }
 
 // Default File Input Box count
 
 $filecount = 1;
+
+// User's UID
+
+$uid = bh_session_get_value('UID');
 
 // Arrays to hold the success and error messages
 
@@ -103,37 +107,51 @@ $upload_failure = array();
 
 if (isset($HTTP_POST_VARS['upload'])) {
 
+    $aid = $HTTP_GET_VARS['aid'];
+
     if (isset($HTTP_POST_FILES['userfile']) && is_array($HTTP_POST_FILES['userfile'])) {
     
         for ($i = 0; $i < sizeof($HTTP_POST_FILES['userfile']); $i++) {
         
             if (isset($HTTP_POST_FILES['userfile']['tmp_name'][$i]) && strlen(trim($HTTP_POST_FILES['userfile']['tmp_name'][$i])) > 0) {
+            
+                $filesize = $HTTP_POST_FILES['userfile']['size'][$i];
+                $tempfile = $HTTP_POST_FILES['userfile']['tmp_name'][$i];
+                $filetype = $HTTP_POST_FILES['userfile']['type'][$i];
+                
+                $filename = _stripslashes(trim($HTTP_POST_FILES['userfile']['name'][$i]));
+                
+                if ($users_free_space < $filesize) {
 
-                if ($users_free_space < $HTTP_POST_FILES['userfile']['size'][$i]) {
+                    $upload_failure[] = $filename;
 
-                    $upload_failure[] = $HTTP_POST_FILES['userfile']['name'][$i];
-
-                    if (@file_exists($HTTP_POST_FILES['userfile']['tmp_name'][$i])) {
-                        unlink($HTTP_POST_FILES['userfile']['tmp_name'][$i]);
+                    if (@file_exists($tempfile)) {
+                        unlink($tempfile);
                     }
 
                 }else {
                     
                     $uniqfileid = md5(uniqid(rand()));
+                    
+                    $filehash = md5("{$aid}{$uniqfileid}{$filename}");
+                    $filepath = "$attachment_dir/$filehash";
+                    
+                    echo "<p>$tempfile</p>\n";
+                    echo "<p>$filepath</p>\n";
 
-                    if (@move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'][$i], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. $uniqfileid. _stripslashes($HTTP_POST_FILES['userfile']['name'][$i])))) {
+                    if (@move_uploaded_file($tempfile, $filepath)) {
 
-                        add_attachment(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'], $uniqfileid, rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'][$i])), $HTTP_POST_FILES['userfile']['type'][$i]);
-                        $users_free_space -= $HTTP_POST_FILES['userfile']['size'][$i];
-                        $upload_success[] = $HTTP_POST_FILES['userfile']['name'][$i];
+                        add_attachment($uid, $aid, $uniqfileid, $filename, $filetype);
+                        $users_free_space -= $filesize;
+                        $upload_success[]  = $filename;
 
                     }else {
 
-                        if (@file_exists($HTTP_POST_FILES['userfile']['tmp_name'][$i])) {
-                            unlink($HTTP_POST_FILES['userfile']['tmp_name'][$i]);
+                        if (@file_exists($tempfile)) {
+                            unlink($tempfile);
                         }
                         
-                        $upload_failure[] = $HTTP_POST_FILES['userfile']['name'][$i];
+                        $upload_failure[] = $filename;
                     }
                 }
             }

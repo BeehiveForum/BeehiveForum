@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.3 2004-05-19 21:17:35 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.4 2004-05-21 23:25:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -113,6 +113,12 @@ if (isset($_POST['addnew'])) {
     header_redirect("./admin_user_groups_add.php?webtag=$webtag");
 }
 
+if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
+
+    list($gid) = array_keys($_POST['edit_users']);
+    header_redirect("./admin_user_groups_edit_users.php?gid=$gid");
+}
+
 html_draw_top('admin.js');
 
 if (!(perm_has_admin_access())) {
@@ -127,7 +133,7 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_user_groups.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -136,6 +142,9 @@ echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\">&nbsp;{$lang['groups']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['description']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
 if ($user_groups_array = perm_get_user_groups()) {
@@ -144,6 +153,9 @@ if ($user_groups_array = perm_get_user_groups()) {
 
         echo "                <tr>\n";
         echo "                  <td>&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                  <td>&nbsp;{$user_group['GROUP_DESC']}</td>\n";
+        echo "                  <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
+        echo "                  <td align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
         echo "                </tr>\n";
     }
 

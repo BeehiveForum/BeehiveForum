@@ -29,12 +29,21 @@ function bh_check_gzip()
 {
     global $HTTP_SERVER_VARS, $gzip_compress_output;
 
+    // check that no headers have already been sent
+    // and that gzip compression is actually enabled.
+
     if (headers_sent() || $gzip_compress_output == false) {
         return false;
     }
 
+    // determine which gzip encoding the client asked for
+    // (x-gzip = IE; gzip = everything else).
+
     if (strpos($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
     if (strpos($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";
+
+    // if everything else false prevent
+    // compression just to be safe.
 
     return false;
 }
@@ -43,37 +52,61 @@ function bh_gzhandler($contents)
 {
     global $gzip_compress_level;
 
+    // check the compression level variable
+    if (!isset($gzip_compress_level)) $gzip_compress_level = 1;
     if ($gzip_compress_level > 9) $gzip_compress_level = 9;
     if ($gzip_compress_level < 1) $gzip_compress_level = 1;
 
+    // check that the encoding is possible.
+    // and fetch the client's encoding method.
     if ($encoding = bh_check_gzip()) {
 
+        // for debugging: add a HTML comment to the bottom of the page.
         $contents.= "<!-- bh_gzhandler: $encoding enabled (level: $gzip_compress_level) //-->\n";
 
-        $gzcontent = gzcompress($contents, $gzip_compress_level);
-        $size      = strlen($contents);
-        $crc32     = crc32($contents);
+        // do the compression
+        if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
-        header("Etag: VT$crc32");
-        header("Content-Encoding: $encoding");
+            // generate the error checking bits
+            $size      = strlen($contents);
+            $crc32     = crc32($contents);
 
-        $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
-        $ret.= substr($gzcontent, 0, strlen($gzcontent) - 4);
-        $ret.= pack('V', $crc32);
-        $ret.= pack('V', $size);
+            // send the headers to the client
+            header("Etag: VT$crc32");
+            header("Content-Encoding: $encoding");
 
-        return $ret;
+            // construct the gzip output with gz headers and error checking bits
+            $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+            $ret.= substr($gz_contents, 0, strlen($gz_contents) - 4);
+            $ret.= pack('V', $crc32);
+            $ret.= pack('V', $size);
+
+            // return the compressed text to PHP.
+            return $ret;
+
+        }else {
+
+            // compression failed so add additional
+            // debug message and return uncompressed string
+            $contents.= "<!-- bh_gzhander: failed during compression //-->\n";
+            return $contents;
+
+        }
 
     }else {
 
+        // for debugging: add a HTML comment to the bottom of the page.
         $contents.= "<!-- bh_gzhandler: compression disabled //-->\n";
+
+        // return the text uncompressed as the client
+        // doesn't support it or it has been disabled
+        // in config.inc.php.
         return $contents;
 
     }
-
-
 }
 
+// Enabled the gzip handler
 ob_start("bh_gzhandler");
 
 ?>

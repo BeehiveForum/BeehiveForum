@@ -23,13 +23,21 @@ USA
 
 // Error Handler
 
-// Required include files.
-
 require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/form.inc.php");
 
-function error_handler($errno, $errstr, $errfile, $errline)
+// Redefine the user error constants
+define("FATAL", E_USER_ERROR);
+define("ERROR", E_USER_WARNING);
+define("WARNING", E_USER_NOTICE);
+
+// Set the error reporting level
+error_reporting(FATAL | ERROR | WARNING);
+
+// Beehive Error Handler Function
+
+function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
     global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS;
 
@@ -46,8 +54,8 @@ function error_handler($errno, $errstr, $errfile, $errline)
 
     srand((double)microtime()*1000000);
 
-    //ob_end_clean();
-    //ob_start("bh_gzhandler");
+    ob_end_clean();
+    ob_start("bh_gzhandler");
 
     if (defined("BEEHIVEMODE_LIGHT")) {
 
@@ -85,20 +93,22 @@ function error_handler($errno, $errstr, $errfile, $errline)
             echo "<p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
         case ERROR:
-            echo "<b>ERROR</b> [$errno] $errstr<br />\n";
+            echo "<p><b>ERROR</b> [$errno] $errstr</p>\n";
             echo "<p>Error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
         case WARNING:
-            echo "<b>WARNING</b> [$errno] $errstr<br />\n";
+            echo "<p><b>WARNING</b> [$errno] $errstr</p>\n";
             echo "<p>Warning in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
         default:
-            echo "<b>Unknown error</b> [$errno] $errstr<br />\n";
+            echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
             echo "<p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
       }
 
+      echo "<p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
       echo "</form>\n";
+
       light_html_draw_bottom();
       exit;
 
@@ -181,15 +191,15 @@ function error_handler($errno, $errstr, $errfile, $errline)
           echo "            <p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
         case ERROR:
-          echo "            <b>ERROR</b> [$errno] $errstr<br />\n";
+          echo "            <p><b>ERROR</b> [$errno] $errstr</p>\n";
           echo "            <p>Error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
         case WARNING:
-          echo "            <b>WARNING</b> [$errno] $errstr<br />\n";
+          echo "            <p><b>WARNING</b> [$errno] $errstr</p>\n";
           echo "            <p>Warning in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
         default:
-          echo "            <b>Unknown error</b> [$errno] $errstr<br />\n";
+          echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
           echo "            <p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
           break;
       }
@@ -208,21 +218,9 @@ function error_handler($errno, $errstr, $errfile, $errline)
       exit;
 
     }
-
 }
 
-// redefine the user error constants
-
-define("FATAL", E_USER_ERROR);
-define("ERROR", E_USER_WARNING);
-define("WARNING", E_USER_NOTICE);
-
-// set the error reporting level
-
-error_reporting(FATAL | ERROR | WARNING);
-
 // set to the user defined error handler
-
-$old_error_handler = set_error_handler("error_handler");
+set_error_handler("bh_error_handler");
 
 ?>

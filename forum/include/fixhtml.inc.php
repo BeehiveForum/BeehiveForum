@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.87 2004-08-15 00:35:29 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.88 2004-09-13 15:31:54 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -575,6 +575,10 @@ function clean_attributes ($tag)
 					$attrib_value = clean_styles($attrib_value);
 				}
 
+				if($tag_name == 'img' && $tmp_attrib == "src=") {
+					$attrib_value = preg_replace("/\s*javascript\s*:/i", "", $attrib_value);
+				}
+
 				$tmp_attrib .= "\"".$attrib_value."\"";
 
 				$split_tag[$i] = $tmp_attrib;
@@ -750,7 +754,8 @@ function clean_emoticons($html)
 
 function clean_styles ($style)
 {
-	$style = preg_replace("/position\s*:\s*absolute\s*;?/", "", $style);
+	$style = preg_replace("/position\s*:\s*absolute\s*;?/i", "", $style);
+	$style = preg_replace("/background\s*:\s*url\s*\(\s*javascript\s*:/i", "background:url(", $style);
 	return $style;
 }
 

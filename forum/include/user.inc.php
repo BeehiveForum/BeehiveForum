@@ -21,13 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.71 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: user.inc.php,v 1.72 2003-07-28 20:20:14 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/format.inc.php");
+require_once("./include/ip.inc.php");
 
 function user_exists($logon)
 {
@@ -49,11 +50,7 @@ function user_create($logon,$password,$nickname,$email)
 
     $md5pass = md5($password);
 
-    if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
-      $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
-    }else {
-      $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
-    }
+    $ipaddress = get_ip_address();
 
     $sql = "INSERT INTO " . forum_table("USER") . " (LOGON, PASSWD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$ipaddress')";
@@ -183,7 +180,6 @@ function user_logon($logon, $password, $md5hash = false)
 
 function user_check_logon($uid, $logon, $md5pass)
 {
-
     if ($uid > 0) {
 
       $db_user_check_logon = db_connect();
@@ -209,7 +205,6 @@ function user_check_logon($uid, $logon, $md5pass)
       return true;
 
     }
-
 }
 
 function user_get($uid)
@@ -335,7 +330,8 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
     return $result;
 }
 
-function user_update_sig($uid,$content,$html){
+function user_update_sig($uid,$content,$html)
+{
 
     $content = addslashes($content);
     $db_user_update_sig = db_connect();
@@ -351,7 +347,8 @@ function user_update_sig($uid,$content,$html){
     return $result;
 }
 
-function user_update_global_sig($uid,$value){
+function user_update_global_sig($uid,$value)
+{
 
     $db_user_update_global_sig = db_connect();
 
@@ -363,11 +360,12 @@ function user_update_global_sig($uid,$value){
     return $result;
 }
 
-function user_get_global_sig($uid){
+function user_get_global_sig($uid)
+{
 
     $db_user_update_global_sig = db_connect();
 
-        $sql = "select VIEW_SIGS from " . forum_table("USER_PREFS") . " where uid = $uid";
+    $sql = "select VIEW_SIGS from " . forum_table("USER_PREFS") . " where uid = $uid";
 
     $result = db_query($sql, $db_user_update_global_sig);
 
@@ -376,7 +374,7 @@ function user_get_global_sig($uid){
         return $fa['VIEW_SIGS'];
     }
 
-        return "";
+    return "";
 }
 
 function user_get_post_count($uid)

@@ -306,6 +306,7 @@ CREATE TABLE PROFILE_ITEM (
   PIID mediumint(8) unsigned NOT NULL auto_increment,
   PSID mediumint(8) unsigned default NULL,
   NAME varchar(64) default NULL,
+  TYPE tinyint(3) unsigned default 0,
   POSITION mediumint(8) unsigned default 0,
   PRIMARY KEY  (PIID)
 ) TYPE=MyISAM;

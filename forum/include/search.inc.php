@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.28 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: search.inc.php,v 1.29 2003-07-28 20:20:14 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -400,14 +400,15 @@ function folder_search_dropdown()
 
 function search_draw_user_dropdown($name)
 {
-
     global $lang;
-    $db_search_draw_user_dropdown = db_connect();
 
-    $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
-    $sql.= "from ".forum_table("USER")." U WHERE U.UID > 0 AND U.UID <> ". bh_session_get_value('UID'). " ";
-    $sql.= "order by U.LAST_LOGON desc ";
-    $sql.= "limit 0, 20";
+    $db_search_draw_user_dropdown = db_connect();
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM ".forum_table("USER")." U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST') ";
+    $sql.= "AND U.UID <> $uid ORDER BY U.LAST_LOGON DESC ";
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_search_draw_user_dropdown);
 

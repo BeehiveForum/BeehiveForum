@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.141 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: post.php,v 1.142 2004-01-03 18:55:25 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -380,7 +380,10 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                     thread_set_sticky($t_tid, false);
                 }
             }
-
+            
+            if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
+                post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);            
+            }
         }
 
         if ($t_tid > 0) {
@@ -408,26 +411,23 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
             }
         }
 
-    }else{
+    }else {
 
         $new_pid = 0;
 
         if ($newthread) {
 
-            $t_tid = 0;
+            $t_tid  = 0;
             $t_rpid = 0;
 
-        }else{
+        }else {
 
-            $t_tid = $HTTP_POST_VARS['t_tid'];
-            $t_rpid = $HTTP_POST_VARS['t_rpid'];
-
+            $t_tid  = (isset($HTTP_POST_VARS['t_tid'])) ? $HTTP_POST_VARS['t_tid'] : 0;
+            $t_rpid = (isset($HTTP_POST_VARS['t_rpid'])) ? $HTTP_POST_VARS['t_rpid'] : 0;
         }
     }
 
     if ($new_pid > -1) {
-
-        if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);
 
         if ($t_tid > 0 && $t_rpid > 0) {
 

@@ -22,13 +22,20 @@ USA
 ======================================================================*/
 
 require_once("./include/header.inc.php");
+require_once("./include/config.inc.php");
 
-function _html_draw_top1($title)
+function _html_draw_top1($title = false)
 {
 
-        global $HTTP_COOKIE_VARS;
-        
-        header_no_cache(); // Hopefully this will stop Opera from caching the PHP pages, but I doubt it.
+    global $HTTP_COOKIE_VARS, $forum_name;
+
+    if(!$title){
+        $title = $forum_name;
+    }
+    
+    $fontsize = isset($HTTP_COOKIE_VARS['bh_sess_fontsize']) ? $HTTP_COOKIE_VARS['bh_sess_fontsize'] : 9;
+
+    header_no_cache(); // Hopefully this will stop Opera from caching the PHP pages, but I doubt it.
 
 	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
@@ -65,23 +72,23 @@ function _html_draw_post_top2()
 }
 
 
-function html_draw_top($title = "Beehive Forum")
+function html_draw_top($title = false)
 {
     _html_draw_top1($title);
     _html_draw_top2();
 }
 
-function html_draw_top_script($title = "Beehive Forum")
+function html_draw_top_script($title = false)
 {
     _html_draw_top1($title);
     _html_draw_top_script();
     _html_draw_top2();
 }
 
-function html_draw_top_post_script($title = "Beehive Forum")
+function html_draw_top_post_script($title = false)
 {
     _html_draw_top1($title);
-    _html_draw_top_script();    
+    _html_draw_top_script();
     _html_draw_post_top2();
 }
 

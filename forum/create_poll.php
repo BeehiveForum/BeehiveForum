@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.118 2004-06-15 20:49:30 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.119 2004-07-07 18:11:31 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -244,11 +244,6 @@ if (isset($_POST['cancel'])) {
 
         $t_message_text = trim(_stripslashes($_POST['t_message_text']));
 
-        if (strlen($t_message_text) >= 65535) {
-            $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
-            $valid = false;
-        }
-
         if (attachment_embed_check($t_message_text) && $t_message_html == "Y") {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
@@ -258,11 +253,6 @@ if (isset($_POST['cancel'])) {
     if (isset($_POST['t_sig'])) {
 
         $t_sig = trim(_stripslashes($_POST['t_sig']));
-
-        if (strlen($t_sig) >= 65535) {
-            $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-            $valid = false;
-        }
 
         if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
             $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
@@ -292,6 +282,15 @@ $sig = new MessageText($sig_html, $t_sig);
 
 $t_message_text = $post->getContent();
 $t_sig = $sig->getContent();
+
+if (strlen($t_message_text) >= 65535) {
+	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
+	$valid = false;
+}
+if (strlen($t_sig) >= 65535) {
+	$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+	$valid = false;
+}
 
 if ($valid && isset($_POST['submit'])) {
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.204 2004-07-07 17:21:05 tribalonline Exp $ */
+/* $Id: post.php,v 1.205 2004-07-07 18:11:31 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -244,11 +244,6 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
-        if (strlen($t_content) >= 65535) {
-            $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-            $valid = false;
-        }
-
         if ($post_html && attachment_embed_check($t_content)) {
 
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
@@ -265,11 +260,6 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         $t_sig = trim(_stripslashes($_POST['t_sig']));
 
-        if (strlen($t_sig) >= 65535) {
-            $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-            $valid = false;
-        }
-
         if ($sig_html && attachment_embed_check($t_sig)) {
             $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
             $valid = false;
@@ -285,6 +275,15 @@ $sig = new MessageText($sig_html, $t_sig);
 
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();
+
+if (strlen($t_content) >= 65535) {
+	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+	$valid = false;
+}
+if (strlen($t_sig) >= 65535) {
+	$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+	$valid = false;
+}
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.35 2004-08-14 15:11:44 hodcroftcj Exp $ */
+/* $Id: edit_email.php,v 1.36 2004-08-15 11:40:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -114,15 +114,15 @@ if (bh_session_get_value('UID') == 0) {
 
 if (isset($_POST['submit'])) {
 
-	$user_prefs = array();
+        $user_prefs = array();
     $user_prefs_global = array();
 
-	if (isset($_POST['allow_email']) && $_POST['allow_email'] == "Y") {
+        if (isset($_POST['allow_email']) && $_POST['allow_email'] == "Y") {
         $user_prefs['ALLOW_EMAIL'] = "Y";
     }else {
         $user_prefs['ALLOW_EMAIL'] = "N";
     }
-    
+
     if (isset($_POST['allow_email_global'])) {
         $user_prefs_global['ALLOW_EMAIL'] = ($_POST['allow_email_global'] == "Y") ? true : false;
     } else {
@@ -134,7 +134,7 @@ if (isset($_POST['submit'])) {
     }else {
         $user_prefs['ALLOW_PM'] = "N";
     }
-    
+
     if (isset($_POST['allow_pm_global'])) {
         $user_prefs_global['ALLOW_PM'] = ($_POST['allow_pm_global'] == "Y") ? true : false;
     } else {
@@ -146,7 +146,7 @@ if (isset($_POST['submit'])) {
     }else {
         $user_prefs['EMAIL_NOTIFY'] = "N";
     }
-    
+
     if (isset($_POST['email_notify_global'])) {
         $user_prefs_global['EMAIL_NOTIFY'] = ($_POST['email_notify_global'] == "Y") ? true : false;
     } else {
@@ -158,7 +158,7 @@ if (isset($_POST['submit'])) {
     }else {
         $user_prefs['PM_NOTIFY_EMAIL'] = "N";
     }
-    
+
     if (isset($_POST['pm_notify_email_global'])) {
         $user_prefs_global['PM_NOTIFY_EMAIL'] = ($_POST['pm_notify_email_global'] == "Y") ? true : false;
     } else {
@@ -170,7 +170,7 @@ if (isset($_POST['submit'])) {
     }else {
         $user_prefs['ANON_LOGON'] = 0;
     }
-    
+
     if (isset($_POST['anon_logon_global'])) {
         $user_prefs_global['ANON_LOGON'] = ($_POST['anon_logon_global'] == "Y") ? true : false;
     } else {
@@ -182,28 +182,28 @@ if (isset($_POST['submit'])) {
     }else {
         $user_prefs['DOB_DISPLAY'] = 0;
     }
-    
+
     if (isset($_POST['dob_display_global'])) {
         $user_prefs_global['DOB_DISPLAY'] = ($_POST['dob_display_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['DOB_DISPLAY'] = false;
     }
 
-	// User's UID for updating with.
+        // User's UID for updating with.
 
     $uid = bh_session_get_value('UID');
 
     // Update USER_PREFS
 
-	user_update_prefs($uid, $user_prefs, $user_prefs_global);
+        user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
     // Reinitialize the User's Session to save them having to logout and back in
 
     bh_session_init($uid);
 
     // IIS bug prevents redirect at same time as setting cookies.
-	
-	header_redirect_cookie("./edit_email.php?webtag=$webtag&updated=true");
+
+        header_redirect_cookie("./edit_email.php?webtag=$webtag&updated=true");
 
 }
 
@@ -234,17 +234,17 @@ echo "      <td>\n";
 echo "        <table class=\"box\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "              <table class=\"posthead\" width=\"550\">\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['emailsettings']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "					<td>".form_checkbox("email_notify_global","Y",$lang['setforallforums'],$user_prefs['EMAIL_NOTIFY_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("email_notify_global", "Y", $lang['setforallforums'], $user_prefs['EMAIL_NOTIFY_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "					<td>".form_checkbox("pm_notify_email_global","Y",$lang['setforallforums'],$user_prefs['PM_NOTIFY_EMAIL_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_email_global", "Y", $lang['setforallforums'], $user_prefs['PM_NOTIFY_EMAIL_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -264,7 +264,7 @@ echo "      <td>\n";
 echo "        <table class=\"box\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "              <table class=\"posthead\" width=\"550\">\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['privacysettings']}</td>\n";
 echo "                </tr>\n";
@@ -277,19 +277,19 @@ if (isset($user_prefs['DOB_DISPLAY'])) {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), 0), "</td>\n";
 }
 
-echo "					<td>".form_checkbox("dob_display_global","Y",$lang['setforallforums'],$user_prefs['DOB_DISPLAY_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("dob_display_global","Y",$lang['setforallforums'],$user_prefs['DOB_DISPLAY_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_checkbox("allow_email", "Y", $lang['allowemails'], (isset($user_prefs['ALLOW_EMAIL']) && $user_prefs['ALLOW_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "					<td>".form_checkbox("allow_email_global","Y",$lang['setforallforums'],$user_prefs['ALLOW_EMAIL_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_email_global","Y",$lang['setforallforums'],$user_prefs['ALLOW_EMAIL_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_checkbox("allow_pm", "Y", $lang['allowpersonalmessages'], (isset($user_prefs['ALLOW_PM']) && $user_prefs['ALLOW_PM'] == "Y") ? true : false), "</td>\n";
-echo "					<td>".form_checkbox("allow_pm_global","Y",$lang['setforallforums'],$user_prefs['ALLOW_PM_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_pm_global","Y",$lang['setforallforums'],$user_prefs['ALLOW_PM_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
-echo "					<td>".form_checkbox("anon_logon_global","Y",$lang['setforallforums'],$user_prefs['ANON_LOGON_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("anon_logon_global","Y",$lang['setforallforums'],$user_prefs['ANON_LOGON_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.42 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.43 2004-08-15 11:40:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -169,7 +169,7 @@ if ($profile_values = profile_get_user_values($uid)) {
             $field_values = explode(';', $field_values);
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" width=\"200\">", $field_name, form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
+            echo "                  <td valign=\"top\">", $field_name, form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
             echo "                  <td valign=\"top\">";
 
             if ($profile_values[$i]['TYPE'] == PROFILE_ITEM_RADIO) {
@@ -183,7 +183,7 @@ if ($profile_values = profile_get_user_values($uid)) {
         }elseif ($profile_values[$i]['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" width=\"200\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
+            echo "                  <td valign=\"top\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
             echo "                  <td valign=\"top\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 42), "&nbsp;&nbsp;</td>\n";
             echo "                </tr>\n";
 
@@ -192,7 +192,7 @@ if ($profile_values = profile_get_user_values($uid)) {
             $text_width = array(45, 30, 10);
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" width=\"200\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
+            echo "                  <td valign=\"top\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
             echo "                  <td valign=\"top\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), "&nbsp;&nbsp;</td>\n";
             echo "                </tr>\n";
 

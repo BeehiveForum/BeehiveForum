@@ -55,7 +55,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 								break;
 
 							} else {
-								$tmpcode .= htmlspecialchars("<".$html_parts[$j].">");
+								$tmpcode .= _htmlspecialchars("<".$html_parts[$j].">");
 							}
 						} else {
 							$tmpcode .= $html_parts[$j];

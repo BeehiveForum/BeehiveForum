@@ -143,12 +143,24 @@ function timestamp_amend_bst($timestamp)
 
 }
 
-// Performs the reverse of htmlspecialchars
+// Performs the reverse of _htmlspecialchars
 
-function htmlspecialchars_reverse($text)
+function _htmlspecialchars($text)
 {
 
-    $search = array ("'&(quote|#34);'i", "'&(amp|#38);'i", "'&(lt|#60);'i", "'&(gt|#62);'i",
+    $search  = array("/\"/i", "/</i", "/>/i");
+    $replace = array("&quot;", "&lt;", "&gt;");
+
+    $retval = preg_replace($search, $replace, $text);
+
+    return $retval;
+
+}
+
+function _htmlspecialchars_reverse($text)
+{
+
+    $search = array ("'&(quot|#34);'i", "'&(amp|#38);'i", "'&(lt|#60);'i", "'&(gt|#62);'i",
                      "'&(nbsp|#160);'i", "'&(iexcl|#161);'i", "'&(cent|#162);'i", "'&(pound|#163);'i",
                      "'&(copy|#169);'i");
 

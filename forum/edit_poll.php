@@ -110,7 +110,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    <td>\n";
   $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
   $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td><h2>". (isset($HTTP_POST_VARS['question']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid)). "</h2></td>\n";
+  $polldata['CONTENT'].= "          <td><h2>". (isset($HTTP_POST_VARS['question']) ? _htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid)). "</h2></td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -348,7 +348,7 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
       <td><h2>Poll Question</h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid), 30, 64); ?></td>
+      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid), 30, 64); ?></td>
     </tr>
     <tr>
       <td>&nbsp;</td>
@@ -405,10 +405,10 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
                     echo "  <td>";
 
                     if (isset($HTTP_POST_VARS['answers'][$i])) {
-                      echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 255);
+                      echo form_input_text("answers[$i]", _htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 255);
                     }else {
                       if (isset($pollresults[$i]['OPTION_NAME'])) {
-                        echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($pollresults[$i]['OPTION_NAME'])), 40, 255);
+                        echo form_input_text("answers[$i]", _htmlspecialchars(_stripslashes($pollresults[$i]['OPTION_NAME'])), 40, 255);
                       }else {
                         echo form_input_text("answers[$i]", '', 40, 255);
                       }

@@ -51,6 +51,11 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
     $sql.= "and PROFILE.UID = PREFS.UID";
 
     $result = db_query($sql, $db_email_sendnotification);
+    
+    // Get the message title
+    
+    list($tid, $pid) = explode('.', $msg);
+    $thread = thread_get($tid);
 
     if(db_num_rows($result)){
 
@@ -60,16 +65,17 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
 
     	if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != ''){
 
-            // Hold recipients UID to exclude from Subscriber mailing later
-            $xuid = $tuid;
-
+                // Hold recipients UID to exclude from Subscriber mailing later
+                $xuid = $tuid;
+                
         	// Construct the notification body and headers. These are half-inched from Delphi's
        		// own notifications. Will need amendments later on to use the Forum's name rather
        		// than 'Beehiveforum'.
 
        		$message = strtoupper($mailfrom['LOGON']). " posted a message to you on Beehive Forum\n\n";
+       		$message.= "The subject is:  ". $thread['TITLE']. "\n\n";
        		$message.= "To read that message and others in the same discussion, go to:\n";
-       		$message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n\n";
+       		$message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg\n\n";
        		$message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
        		$message.= "Note: If you do not wish to receive email notifications of Forum messages\n";
        		$message.= "posted to you, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, click\n";
@@ -110,12 +116,13 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
         if($mailto['UID'] != $fuid && $mailto['UID'] != $xuid){
         	// Construct the notification body and headers. These are half-inched from Delphi's
        		// own notifications. Will need amendments later on to use the Forum's name rather
-       		// than 'Beehiveforum'.
-
+       		// than 'Beehiveforum'
+       		
        		$message = strtoupper($mailfrom['LOGON']). " posted a message in\n";
        		$message.= "a thread you have subscribed to on Beehive Forum\n\n";
+       		$message.= "The subject is:  ". $thread['TITLE']. "\n\n";       		
        		$message.= "To read that message and others in the same discussion, go to:\n";
-       		$message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n\n";
+       		$message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg\n\n";
        		$message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
        		$message.= "Note: If you do not wish to receive email notifications of new messages\n";
        		$message.= "in this thread, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";

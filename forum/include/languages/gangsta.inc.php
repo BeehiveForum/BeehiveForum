@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.4 2003-11-04 19:11:26 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.5 2003-11-07 20:04:18 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -547,6 +547,7 @@ $lang['backtothreadlist'] = "Bizack to tha thrizead list";
 $lang['postdoesnotexist'] = "That post is gone, bro!";
 $lang['clicktochangevote'] = "Click to chizange yo vizote";
 $lang['youvotedforoption'] = "You vizoted fo' option";
+$lang['youvotedforoptions'] = "You vizoted fo' optionz";
 $lang['clicktovote'] = "Cizlick to vizote";
 $lang['youhavenotvoted'] = "You ain't vizoted";
 $lang['viewresults'] = "Vieizw tha Rizesults";

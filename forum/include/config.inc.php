@@ -76,6 +76,8 @@ $cookie_domain = ""; // Specifies the domain name that the cookies set
                      //          an invalid or incorrect value will
                      //          make it impossible for you to use
                      //          your forum.
+		     //
+		     // NOTE:    This setting has no effect on localhost.
 
 // Forum options -------------------------------------------------------
 

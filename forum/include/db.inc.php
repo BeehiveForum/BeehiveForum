@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.57 2004-10-29 19:54:16 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.58 2004-11-04 18:43:37 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -190,17 +190,17 @@ function db_affected_rows($connection_id)
     trigger_error("Could not obtain affected row count. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
 }
 
-function db_fetch_array ($resource_id)
+function db_fetch_array ($resource_id, $result_type = DB_RESULT_BOTH)
 {
     if (@extension_loaded('mysql')) {
 
-        $results = mysql_fetch_array($resource_id);
+        $results = mysql_fetch_array($resource_id, $result_type);
         return $results;
     }
 
     if (@extension_loaded('mysqli')) {
 
-       $results = mysqli_fetch_array($resource_id);
+       $results = mysqli_fetch_array($resource_id, $result_type);
        return $results;
     }
 

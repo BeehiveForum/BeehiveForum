@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.30 2004-08-04 23:46:35 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.31 2004-11-04 18:43:37 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -113,7 +113,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = messages_get_most_recent($uid);
 }
 
-if (isset($_GET['show_stats']) && $uid > 0) {
+if (isset($_GET['show_stats']) && is_numeric($_GET['show_stats']) && $uid > 0) {
 
     $user_prefs = user_get_prefs(bh_session_get_value('UID'));
     $user_prefs['SHOW_STATS'] = $_GET['show_stats'];

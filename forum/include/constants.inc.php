@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.40 2004-10-27 19:59:41 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.41 2004-11-04 18:43:37 decoyduck Exp $ */
 
 // Beehive Version
 
@@ -32,6 +32,12 @@ define("BEEHIVE_VERSION", "0.5-RC4");
 define("YEAR_IN_SECONDS", 31536000);
 define("DAY_IN_SECONDS", 86400);
 define("HOUR_IN_SECONDS", 3600);
+
+// Constants for database row selection
+
+define("DB_RESULT_ASSOC", 1);
+define("DB_RESULT_NUM",   2);
+define("DB_RESULT_BOTH",  3);
 
 // Constants for user permissions
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.32 2004-04-11 21:13:12 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.33 2004-04-13 17:57:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -198,9 +198,11 @@ if (strlen($usersearch) > 0) {
     echo "          <td class=\"subhead\" align=\"left\">{$lang['searchresults']}</td>\n";
     echo "        </tr>\n";
 
-    if ($user_search_array = admin_user_search($usersearch)) {
+    $user_search_array = admin_user_search($usersearch);
 
-        foreach ($user_search_array as $user_search) {
+    if (sizeof($user_search_array['user_array']) > 0) {
+
+        foreach ($user_search_array['user_array'] as $user_search) {
             echo "        <tr>\n";
             echo "          <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</td>\n";
             echo "        </tr>\n";

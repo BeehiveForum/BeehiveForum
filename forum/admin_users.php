@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.68 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.69 2004-04-13 17:57:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -246,14 +246,14 @@ if ($sort_by == 'SESSIONS.SESSID' && $sort_dir == 'ASC') {
 echo "                 </tr>\n";
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
-    $user_array = admin_user_search($usersearch, $sort_by, $sort_dir, $start, false);
+    $admin_user_array = admin_user_search($usersearch, $sort_by, $sort_dir, $start, false);
 }else {
-    $user_array = admin_user_get_all($sort_by, $sort_dir, $start, false);
+    $admin_user_array = admin_user_get_all($sort_by, $sort_dir, $start, false);
 }
 
-if (sizeof($user_array) > 0) {
+if (sizeof($admin_user_array['user_array']) > 0) {
 
-    foreach ($user_array as $user) {
+    foreach ($admin_user_array['user_array'] as $user) {
 
         echo "                 <tr>\n";
         echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", $user['UID'], "</td>\n";
@@ -321,25 +321,29 @@ echo "           </tr>\n";
 echo "         </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">Pages: ";
+
+$page_count = ceil($admin_user_array['user_count'] / 20);
+    
+if ($page_count > 1) {
+
+    for ($page = 1; $page <= $page_count; $page++) {
+        echo "<a href=\"admin_users.php?webtag=$webtag&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir&amp;page=$page\" target=\"_self\">$page</a> ";
+    }
+
+}else {
+
+    echo "<a href=\"admin_users.php?webtag=$webtag&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir&amp;page=1\" target=\"_self\">1</a> ";
+}
+
+echo "</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
-
-if (sizeof($user_array) == 20) {
-    if ($start < 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
-    }elseif ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
-    }
-}else {
-    if ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-    }else {
-        echo "<p>&nbsp;</p>\n";
-    }
-}
 
 echo "<form action=\"admin_users.php\" method=\"get\">\n";
 echo "  ", form_input_hidden("webtag", $webtag), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.38 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.39 2004-04-13 17:57:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,76 +121,106 @@ if (isset($usersearch) && strlen($usersearch) > 0) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<table width=\"65%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"posthead\">\n";
-echo "      <table width=\"100%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "               <table width=\"100%\">\n";
 
-if ($user_search_array) {
+if (sizeof($user_search_array['user_array']) > 0) {
 
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
-    echo "          <td class=\"subhead\" align=\"right\" width=\"200\">{$lang['lastvisit']}</td>\n";
-    echo "        </tr>\n";
+    echo "                 <tr>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"right\" width=\"200\">{$lang['lastvisit']}&nbsp;</td>\n";
+    echo "                 </tr>\n";
 
-    foreach ($user_search_array as $user_search) {
-        echo "        <tr>\n";
-        echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile({$user_search['UID']}, '$webtag')\">", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</a></td>\n";
-        echo "          <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_search['LAST_LOGON']), "</td>\n";
-        echo "        </tr>\n";
+    foreach ($user_search_array['user_array'] as $user_search) {
+        echo "                 <tr>\n";
+        echo "                   <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile({$user_search['UID']}, '$webtag')\">", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</a></td>\n";
+        echo "                   <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_search['LAST_LOGON']), "&nbsp;</td>\n";
+        echo "                 </tr>\n";
+    }
+
+    echo "                 <tr>\n";
+    echo "                   <td class=\"postbody\">&nbsp;</td>\n";
+    echo "                 </tr>\n";
+
+}else {
+
+    echo "                 <tr>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
+    echo "                 </tr>\n";
+    echo "                 <tr>\n";
+    echo "                   <td class=\"postbody\" align=\"left\">{$lang['yoursearchdidnotreturnanymatches']}</td>\n";
+    echo "                 </tr>\n";
+    echo "                 <tr>\n";
+    echo "                   <td class=\"postbody\">&nbsp;</td>\n";
+    echo "                 </tr>\n";
+}
+
+echo "               </table>\n";
+echo "             </td>\n";
+echo "           </tr>\n";
+echo "         </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">Pages: ";
+
+$page_count = ceil($user_search_array['user_count'] / 10);
+    
+if ($page_count > 1) {
+
+    for ($page = 1; $page <= $page_count; $page++) {
+        echo "<a href=\"visitor_log.php?webtag=$webtag&amp;usersearch=$usersearch&amp;page=$page\" target=\"_self\">$page</a> ";
     }
 
 }else {
 
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"postbody\" align=\"left\">{$lang['yoursearchdidnotreturnanymatches']}</td>\n";
-    echo "        </tr>\n";
+    echo "<a href=\"admin_users.php?webtag=$webtag&amp;usersearch=$usersearch&amp;page=1\" target=\"_self\">1</a> ";
 }
 
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+echo "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
-if ((sizeof($user_search_array) == 20)) {
-  if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
-  }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
-  }
-}else {
-  if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-  }
-}
-
-echo "<p>&nbsp;</p>\n";
-echo "<table width=\"65%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"posthead\">\n";
-echo "      <table width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td class=\"posthead\" align=\"left\">\n";
-echo "            <form method=\"get\" action=\"visitor_log.php\" target=\"_self\">\n";
-echo "              ", form_input_hidden("webtag", $webtag), "\n";
-echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
-echo "            </form>\n";
-echo "          </td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-
+echo "<form action=\"visitor_log.php\" method=\"get\">\n";
+echo "  ", form_input_hidden("webtag", $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"posthead\" align=\"left\">\n";
+echo "                    {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"6\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

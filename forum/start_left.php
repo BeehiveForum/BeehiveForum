@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.76 2004-04-28 14:28:54 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.77 2004-04-29 11:59:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -196,7 +196,7 @@ echo "  </tr>\n";
 
 // Get recent visitors
 
-$users_array = users_get_recent();
+$users_array = users_get_recent(0, 10);
 
 if (sizeof($users_array['user_array']) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.78 2004-04-28 14:28:51 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.79 2004-04-29 11:59:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -329,22 +329,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ";
-
-$page_count = ceil($admin_user_array['user_count'] / 20);
-
-if ($page_count > 1) {
-
-    for ($page = 1; $page <= $page_count; $page++) {
-        echo "<a href=\"admin_users.php?webtag=$webtag&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir&amp;page=$page\" target=\"_self\">$page</a> ";
-    }
-
-}else {
-
-    echo "<a href=\"admin_users.php?webtag=$webtag&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir&amp;page=1\" target=\"_self\">1</a> ";
-}
-
-echo "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $admin_user_array['user_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

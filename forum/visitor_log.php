@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.45 2004-04-28 14:28:55 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.46 2004-04-29 11:59:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -90,7 +90,7 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
     $start = floor($_GET['page'] - 1) * 20;
 }else {
     $start = 0;
@@ -113,7 +113,7 @@ echo "<h1>{$lang['recentvisitors']}</h1><br />\n";
 if (isset($usersearch) && strlen($usersearch) > 0) {
     $user_search_array = users_search_recent($usersearch, $start);
 }else {
-    $user_search_array = users_get_recent();
+    $user_search_array = users_get_recent($start, 20);
 }
 
 echo "<div align=\"center\">\n";
@@ -166,22 +166,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">Pages: ";
-
-$page_count = ceil($user_search_array['user_count'] / 10);
-
-if ($page_count > 1) {
-
-    for ($page = 1; $page <= $page_count; $page++) {
-        echo "<a href=\"visitor_log.php?webtag=$webtag&amp;usersearch=$usersearch&amp;page=$page\" target=\"_self\">$page</a> ";
-    }
-
-}else {
-
-    echo "<a href=\"visitor_log.php?webtag=$webtag&amp;usersearch=$usersearch&amp;page=1\" target=\"_self\">1</a> ";
-}
-
-echo "</td>\n";
+echo "      <td align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $user_search_array['user_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

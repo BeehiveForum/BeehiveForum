@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.65 2004-04-28 20:38:56 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.66 2004-04-29 11:59:53 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -82,7 +82,7 @@ function email_sendnotification($tuid, $msg, $fuid)
               $message.= dirname($_SERVER['PHP_SELF']);
             }
 
-            $message.= "/?webtag=$webtag&amp;msg=$msg\n\n";
+            $message.= "/?webtag=$webtag&msg=$msg\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['msgnotificationemail_4']}\n";
             $message.= "{$lang['msgnotificationemail_5']} http://". $_SERVER['HTTP_HOST']. dirname($_SERVER['PHP_SELF']). "/, {$lang['msgnotificationemail_6']}\n";
@@ -164,7 +164,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
           $message.= dirname($_SERVER['PHP_SELF']);
         }
 
-        $message.= "/?webtag=$webtag&amp;msg=$msg\n\n";
+        $message.= "/?webtag=$webtag&msg=$msg\n\n";
         $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $message.= "{$lang['subnotification_5']}\n";
         $message.= "{$lang['subnotification_6']} http://". $_SERVER['HTTP_HOST']. dirname($_SERVER['PHP_SELF']). "/?msg=$msg,\n";
@@ -240,7 +240,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
               $message.= dirname($_SERVER['PHP_SELF']);
             }
 
-            $message.= "/?webtag=$webtag&amp;pmid=$mid\n\n";
+            $message.= "/?webtag=$webtag&pmid=$mid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['pmnotification_4']}\n";
             $message.= "{$lang['pmnotification_5']} http://". $_SERVER['HTTP_HOST']. dirname($_SERVER['PHP_SELF']). "/, {$lang['pmnotification_6']}\n";
@@ -307,7 +307,7 @@ function email_send_pw_reminder($logon)
                 $message.= dirname($_SERVER['PHP_SELF']);
             }
 
-            $message.= "/change_pw.php?webtag=$webtag&amp;u={$mailto['UID']}&amp;h={$mailto['PASSWD']}";
+            $message.= "/change_pw.php?webtag=$webtag&u={$mailto['UID']}&h={$mailto['PASSWD']}";
 
             $header = "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
@@ -336,20 +336,18 @@ function email_get_language($to_uid)
      // if the user has expressed a preference for language, use it
      // if available otherwise use the default language.
 
-    $default_language = forum_get_setting('default_language', false, 'en');
+    if ($user_prefs = user_get_prefs($to_uid)) {
 
-    if ($pref_language = bh_session_get_value("LANGUAGE")) {
-        if (file_exists("./include/languages/{$pref_language}.inc.php")) {
-             require("./include/languages/{$pref_language}.inc.php");
-             return $lang;
-        }else {
-             require("./include/languages/{$default_language}.inc.php");
+        if (file_exists("./include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
+             require("./include/languages/{$user_prefs['LANGUAGE']}.inc.php");
              return $lang;
         }
-    }else {
-         require("./include/languages/{$default_language}.inc.php");
-         return $lang;
     }
+
+    $default_language = forum_get_setting('default_language', false, 'en');
+
+    require("./include/languages/{$default_language}.inc.php");
+    return $lang;
 }
 
 function server_os_mswin()

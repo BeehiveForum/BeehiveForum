@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.55 2004-04-28 14:28:53 decoyduck Exp $ */
+/* $Id: links.php,v 1.56 2004-04-29 11:59:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -309,22 +309,7 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?webtag=$webtag&amp;mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "      <td class=\"postbody\" colspan=\"5\" align=\"center\">{$lang['pages']}: ";
-
-$page_count = ceil($links['links_count'] / 20);
-
-if ($page_count > 1) {
-
-    for ($page = 1; $page <= $page_count; $page++) {
-        echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;page=$page\" target=\"_self\">$page</a> ";
-    }
-
-}else {
-
-    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;page=1\" target=\"_self\">1</a> ";
-}
-
-echo "</td>\n";
+echo "    <td class=\"postbody\" colspan=\"5\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $links['links_count'], 20), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

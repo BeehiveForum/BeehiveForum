@@ -64,7 +64,7 @@ require_once("./include/poll.inc.php");
 require_once("./include/admin.inc.php");
 
 // Check if the user is viewing signatures.
-$show_sigs = !(bh_session_get_value('VIEW_SIGS') == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 

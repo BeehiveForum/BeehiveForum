@@ -146,7 +146,7 @@ $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
 if($closed) $foldertitle .= " (closed)";
 
-$show_sigs = !(bh_session_get_value('SHOW_SIGS') == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $msg_count = count($messages);
 

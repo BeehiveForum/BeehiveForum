@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.63 2004-03-04 22:17:33 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.64 2004-03-09 20:52:48 tribalonline Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -67,8 +67,8 @@ function format_url2link($html)
     $html = " ".$html;
 
     // URL:
-    $html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:?[^@\s]+@)?([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i", "$1<a href=\"$2\">$2</a>", $html);
-    $html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:?[^@\s]+@)?([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
 
     // MAIL:
     $html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i", "$1<a href=\"mailto:$3\">$2$3</a>", $html);

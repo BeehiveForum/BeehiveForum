@@ -68,7 +68,7 @@ if (isset($HTTP_POST_VARS['logon'])) {
     if ($luid > -1) {
     
       // Reset Thread Mode      
-      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, '/');
+      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
     
       if ($HTTP_POST_VARS['submit'] == 'Guest') {
       
@@ -112,12 +112,12 @@ if (isset($HTTP_POST_VARS['logon'])) {
                
         for ($i = 0; $i < sizeof($usernames); $i++) {
         
-          setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+          setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
 
           if(@$HTTP_POST_VARS['remember_user'] == "Y") {
-            setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
           }else {
-            setcookie("bh_remember_password[$i]", str_repeat(chr(255), 4), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            setcookie("bh_remember_password[$i]", str_repeat(chr(255), 4), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
           }
           
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.6 2004-05-23 12:33:55 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.7 2004-05-25 22:09:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -140,6 +140,15 @@ if (isset($_POST['delete'])) {
 }
 
 echo "<h1>{$lang['admin']} : {$lang['usergroups']}</h1>\n";
+
+if (isset($_GET['add_success'])) {
+    echo "<h2>{$lang['successfullyaddedgroup']}: ", _stripslashes($_GET['add_success']), "</h2>\n";
+}
+
+if (isset($_GET['del_success'])) {
+    echo "<h2>{$lang['successfullydeletedgroup']}: ", _stripslashes($_GET['del_success']), "</h2>\n";
+}
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_user_groups.php\" method=\"post\">\n";

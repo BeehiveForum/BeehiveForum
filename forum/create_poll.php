@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.112 2004-05-17 15:56:59 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.113 2004-05-25 22:09:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -220,7 +220,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
 
-        $t_message_text = trim(_stripslashes($_POST['t_message_text']));
+        $t_message_text = trim($_POST['t_message_text']);
 
         if (strlen($t_message_text) >= 65535) {
             $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
@@ -235,7 +235,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim(_stripslashes($_POST['t_sig']));
+        $t_sig = trim($_POST['t_sig']);
 
         if (strlen($t_sig) >= 65535) {
             $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";

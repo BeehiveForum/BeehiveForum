@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.71 2004-05-25 13:49:52 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.72 2004-05-25 22:09:11 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -247,11 +247,22 @@ function folder_get_all()
 
     if (!$table_data = get_table_prefix()) return array();
 
+    if (!$uid = bh_session_get_value('UID')) $uid = 0;
+
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(THREAD.FID) AS THREAD_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(THREAD.FID) AS THREAD_COUNT, ";
+    $sql.= "GROUP_PERMS.GID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, COUNT(GROUP_USERS.UID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "GROUP BY FOLDER.FID, FOLDER.TITLE ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID <> 0) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.POSITION";
 
     $result = db_query($sql, $db_folder_get_all);

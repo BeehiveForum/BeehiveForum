@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.33 2004-04-28 14:28:51 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.34 2004-04-28 14:48:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,6 +127,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['forum_desc'] = trim($_POST['forum_desc']);
     }else {
         $new_forum_settings['forum_desc'] = "";
+    }
+
+    if (isset($_POST['forum_keywords']) && strlen(trim($_POST['forum_keywords'])) > 0) {
+        $new_forum_settings['forum_keywords'] = trim($_POST['forum_keywords']);
+    }else {
+        $new_forum_settings['forum_keywords'] = "";
     }
 
     if (isset($_POST['default_style']) && strlen(trim($_POST['default_style'])) > 0) {
@@ -379,6 +385,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['forumdesc']}:</td>\n";
 echo "                  <td>", form_input_text("forum_desc", forum_get_setting('forum_desc', false, ''), 45, 80), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"200\">{$lang['forumkeywords']}:</td>\n";
+echo "                  <td>", form_input_text("forum_keywords", forum_get_setting('forum_keywords', false, ''), 45, 80), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

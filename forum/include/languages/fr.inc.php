@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.104 2004-08-14 23:40:56 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.105 2004-08-17 10:03:41 rowan_hill Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -739,6 +739,7 @@ $lang['usersinthread'] = "Les utilisateurs dans le fil";
 $lang['correctedcode'] = "Code corrigé";
 $lang['submittedcode'] = "Code soumis";
 $lang['htmlinmessage'] = "HTML dans le message";
+$lang['emoticonsinmessage'] = "Emoticons dans le messge";
 $lang['disableemoticonsinmessage'] = "Disable emoticons dans le message";
 $lang['automaticallyparseurls'] = "Automatically parse URLs";
 $lang['setthreadtohighinterest'] = "Set thread to high interest";

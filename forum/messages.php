@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.159 2004-09-08 01:55:35 tribalonline Exp $ */
+/* $Id: messages.php,v 1.160 2004-09-09 10:21:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -227,7 +227,7 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 $msg_count = count($messages);
 
-$highlight = array();
+$highlight_array = array();
 
 if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
     $highlight_array = explode(' ', rawurldecode($_GET['search_string']));
@@ -326,19 +326,19 @@ if ($msg_count > 0) {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, true, false, $highlight);
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, true, false, $highlight_array);
             $last_pid = $message['PID'];
 
           }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, true, $show_sigs, false, $highlight);
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, true, $show_sigs, false, $highlight_array);
             $last_pid = $message['PID'];
 
           }
 
         }else {
 
-          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, false, $show_sigs, false, $highlight);
+          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, false, $show_sigs, false, $highlight_array);
           $last_pid = $message['PID'];
 
         }
@@ -361,9 +361,9 @@ echo "    <td width=\"33%\"><p><img src=\"". style_image('reply_all.png') ."\" a
 
 echo "    <td width=\"33%\" align=\"center\"><p>";
 if (bh_session_get_value('UID') != 0) {
-	echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
+        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
 } else {
-	echo "&nbsp;";
+        echo "&nbsp;";
 }
 echo "</p></td>\n";
 
@@ -372,7 +372,7 @@ if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
     form_quick_button("./messages.php", "{$lang['keepreading']} &gt;&gt;", "msg", "$tid.$npid");
 } else {
-	echo "&nbsp;";
+        echo "&nbsp;";
 }
 echo "    </td>\n";
 

@@ -436,7 +436,8 @@ function threads_get_folder($uid, $fid, $start = 0)
     // Formulate query
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
-    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, AT.aid ";
+    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";

@@ -49,13 +49,16 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
         }
         $lid = $HTTP_POST_VARS['lid'];
     } elseif ($HTTP_POST_VARS['type'] == "moderation") {
-        if ($HTTP_POST_VARS['delete'] == "confirm") {
-            links_delete($HTTP_POST_VARS['lid']);
-            header_redirect("links.php");
-            exit;
-        } else {
-            links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(htmlentities($HTTP_POST_VARS['description'])));
-            $lid = $HTTP_POST_VARS['lid'];
+        $link = links_get_single($HTTP_POST_VARS['lid']);
+        if (perm_is_moderator() || $link['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) {
+            if ($HTTP_POST_VARS['delete'] == "confirm") {
+                links_delete($HTTP_POST_VARS['lid']);
+                header_redirect("links.php");
+                exit;
+            } else {
+                links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(htmlentities($HTTP_POST_VARS['description'])));
+                $lid = $HTTP_POST_VARS['lid'];
+            }
         }
     }
 }
@@ -161,7 +164,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
     echo "</form>\n";
 }
 
-if (perm_is_moderator()) {
+if (perm_is_moderator() || $link['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) {
     echo "<p>&nbsp;</p>\n";
     echo "<form name=\"link_moderation\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
     echo "<table align=\"center\" class=\"box\"><tr><td>\n";

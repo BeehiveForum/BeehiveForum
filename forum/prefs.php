@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.75 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.76 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -211,6 +211,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $t_view_sigs = "";
     }
 
+    if (isset($HTTP_POST_VARS['anon_logon']) && $HTTP_POST_VARS['anon_logon'] == "Y") {
+        $t_anon_logon = 1;
+    }else {
+        $t_anon_logon = 0;
+    }
+
     if (isset($HTTP_POST_VARS['timezone'])) {
         $t_timezone = $HTTP_POST_VARS['timezone'];
     }else {
@@ -293,7 +299,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
         user_update_prefs($uid, $t_firstname, $t_lastname, $t_user_dob,
                           $t_homepage_url, $t_pic_url, $t_email_notify, $t_timezone, $t_dl_saving,
                           $t_mark_as_of_int, $t_posts_per_page, $t_font_size, $t_style, $t_view_sigs,
-                          $t_start_page, $t_language, $t_pm_notify, $t_pm_notify_email, $t_dob_display);
+                          $t_start_page, $t_language, $t_pm_notify, $t_pm_notify_email, $t_dob_display,
+                          $t_anon_logon);
 
         // Update USER_SIG
 
@@ -365,12 +372,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "</script>";
 
             // If they're still here, Javascript's not working. Give up, give a link.
-            echo "<div align=\"center\"><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>";
+            echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['userpreferences']}</p>";
 
             form_quick_button("./prefs.php", $lang['continue'], "", "", "_top");
 
-            // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+            html_draw_bottom();
             exit;
         }
     }
@@ -435,12 +442,12 @@ if (!empty($error_html)) {
         <td>: <?php echo form_field("cpw", "", 37, 0, "password"); ?></td>
       </tr>
       <tr>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td>&nbsp;</td>
         <td align="center"><span style="font-size: 10px">(<?php echo $lang['leaveblanktoretaincurrentpasswd']; ?>)</span></td>
       </tr>
       <tr>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
       </tr>
       <tr>
         <td><?php echo $lang['nickname']; ?></td>
@@ -451,8 +458,8 @@ if (!empty($error_html)) {
         <td>: <?php echo form_field("email", (isset($t_email) ? $t_email : $user['EMAIL']), 37, 80); ?></td>
       </tr>
       <tr>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
       </tr>
       <tr>
         <td><?php echo $lang['firstname']; ?></td>
@@ -488,8 +495,8 @@ if (!empty($error_html)) {
         <td>: <?php echo form_field("pic_url", (isset($t_pic_url) ? $t_pic_url : $user_prefs['PIC_URL']), 37, 255); ?></td>
       </tr>
       <tr>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
       </tr>
     </table>
     <table class="posthead" width="400">
@@ -515,7 +522,10 @@ if (!empty($error_html)) {
         <td><?php echo form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], (isset($t_view_sigs) && $t_view_sigs == "Y") ? true : ($user_prefs['VIEW_SIGS'] == "Y")); ?></td>
       </tr>
       <tr>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td><?php echo form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($t_anon_logon) && $t_anon_logon == 1) ? true : ($user_prefs['ANON_LOGON'] == 1)); ?></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
       </tr>
     </table>
     <table class="posthead" width="400">
@@ -659,8 +669,8 @@ if (!empty($error_html)) {
         </td>
       </tr>
       <tr>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
       </tr>
     </table>
     <table class="posthead" width="400">
@@ -671,7 +681,7 @@ if (!empty($error_html)) {
         <td colspan="2"><?php echo form_textarea("sig_content", (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT']))), 4, 60); ?></td>
       </tr>
       <tr>
-        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td>&nbsp;</td>
         <td align="right"><?php echo form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y")); ?></td>
       </tr>
     </table>
@@ -680,6 +690,6 @@ if (!empty($error_html)) {
 </div>
 <?php
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

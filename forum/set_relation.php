@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.21 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.22 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -83,7 +83,7 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($H
     html_draw_top();
     echo "<h1>Invalid Operation</h1>\n";
     echo "<h2>required information not found</h2>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 
 }

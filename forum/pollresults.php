@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.27 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.28 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -53,7 +53,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == $lang['clos
   echo "  window.close();\n";
   echo "</script>\n";
 
-  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+  html_draw_bottom();
   exit;
 
 }
@@ -71,7 +71,7 @@ if (isset($HTTP_GET_VARS['tid'])) {
   echo "</form>\n";
   echo "</div>";
 
-  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+  html_draw_bottom();
   exit;
 
 }
@@ -180,6 +180,6 @@ echo "  </form>\n";
 echo "</div>\n";
 
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

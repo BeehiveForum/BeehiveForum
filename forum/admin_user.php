@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.48 2003-09-16 12:34:43 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.49 2003-09-21 12:57:57 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -72,7 +72,7 @@ html_draw_top();
 if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -83,7 +83,7 @@ if (isset($HTTP_GET_VARS['uid'])) {
 }else {
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<p>{$lang['nouserspecified']}</p>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -184,7 +184,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 // Draw the form
 echo "<h1>{$lang['manageuser']}</h1>\n";
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 
 if (isset($HTTP_POST_VARS['t_delete_posts'])) {
@@ -211,7 +211,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
-    echo "<p>", form_submit("submit", $lang['submit']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("cancel", $lang['cancel']), "</p>\n";
+    echo "<p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
     echo "</form>\n";
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
@@ -265,7 +265,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "          <td align=\"left\">", form_checkbox("t_splat", USER_PERM_SPLAT, $lang['splat'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE), "</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "          <td>&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}:</td>\n";
@@ -313,7 +313,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     }
 
     echo "        <tr>\n";
-    echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "          <td align=\"left\">&nbsp;</td>\n";
     echo "        </tr>\n";
 
     if ($user['STATUS'] & PERM_CHECK_SOLDIER) {
@@ -343,7 +343,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     }
 
     echo "        <tr>\n";
-    echo "          <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "          <td>&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}:</td>\n";
@@ -352,7 +352,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "          <td align=\"left\">", form_checkbox("t_delete_posts", 1, $lang['deleteallusersposts'], false), "</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "          <td>&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td class=\"subhead\" align=\"left\">{$lang['attachments']}:</td>\n";
@@ -421,13 +421,13 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
         echo "              <tr>\n";
         echo "                <td valign=\"top\" width=\"300\" class=\"postbody\">{$lang['noattachmentsforuser']}</td>\n";
-        echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-        echo "                <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
         echo "              </tr>\n";
         echo "              <tr>\n";
-        echo "                <td width=\"300\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-        echo "                <td width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-        echo "                <td width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "                <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
         echo "              </tr>\n";
 
     }
@@ -440,14 +440,14 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
-    echo "<p>", form_submit("submit", $lang['submit']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("cancel", $lang['cancel']), "</p>\n";
+    echo "<p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
     echo "</form>\n";
 
 }
 
 if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+    echo "<p>&nbsp;</p>\n";
     echo "<table width=\"50%\" border=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">\n";
@@ -456,7 +456,7 @@ if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confi
     echo "      <p>{$lang['wormdesc']}</p>\n";
     echo "      <p>{$lang['waspdesc']}</p>";
     echo "      <p>{$lang['splatdesc']}</p>";
-    echo "      <p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>";
+    echo "      <p>&nbsp;</p>";
     echo "      <p>{$lang['aliasdesc']}</p>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -466,6 +466,6 @@ if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confi
 
 echo "</div>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

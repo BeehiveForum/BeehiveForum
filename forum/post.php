@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.132 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: post.php,v 1.133 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -301,7 +301,7 @@ if (!$newthread) {
         echo "</td></tr>\n";
         echo "</table></form>\n";
 
-        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+        html_draw_bottom();
         exit;
 
     }
@@ -453,7 +453,7 @@ if (!$newthread) {
             echo "</td></tr>\n";
             echo "</table></form>\n";
 
-            // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+            html_draw_bottom();
             exit;
         }
     }
@@ -696,7 +696,7 @@ echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="clos
 
 if ($attachments_enabled) {
 
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('".$aid."')\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('".$aid."')\"");
     echo form_input_hidden("aid", $aid);
 }
 
@@ -759,6 +759,6 @@ if (!$newthread) {
 
 echo "</form>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

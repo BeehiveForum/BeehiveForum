@@ -21,35 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.19 2003-09-16 14:45:02 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.20 2003-09-21 12:57:59 decoyduck Exp $ */
 
 // Compresses the output of the PHP scripts to save bandwidth.
 
 require_once('./include/config.inc.php');
-
-function bh_script_start()
-{
-    global $start_time;
-    $start_time = microtime();
-}
-
-function bh_script_stop()
-{
-    global $start_time;
-    $stop_time = microtime();
-
-    $start_u = substr($start_time, 0, 10);
-    $start_s = substr($start_time, 11, 10);
-
-    $stop_u = substr($stop_time, 0, 10);
-    $stop_s = substr($stop_time, 11, 10);
-
-    $start_total = doubleval($start_u) + $start_s;
-    $stop_total  = doubleval($stop_u)  + $stop_s;
-
-    $elapsed_time = round($stop_total  -  $start_total, 5);
-    return $elapsed_time;
-}
 
 function bh_check_gzip()
 {
@@ -89,18 +65,9 @@ function bh_gzhandler($contents)
     if ($gzip_compress_level > 9) $gzip_compress_level = 9;
     if ($gzip_compress_level < 1) $gzip_compress_level = 1;
 
-    // work out how long it took the script to execute
-    $bh_script_time = bh_script_stop();
-
     // check that the encoding is possible.
     // and fetch the client's encoding method.
     if ($encoding = bh_check_gzip()) {
-
-        // GZIP compression status for display
-        $bh_gz_status = "GZIP Enabled";
-
-        // Draw the bottom of the page.
-        $contents.= html_draw_bottom();
 
         // do the compression
         if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
@@ -130,24 +97,12 @@ function bh_gzhandler($contents)
 
         }else {
 
-            // GZIP compression status for display
-            $bh_gz_status = "GZIP Disabled";
-
-            // Draw the bottom of the page.
-            $contents.= html_draw_bottom();
-
             // compression failed so return uncompressed string
             return $contents;
 
         }
 
     }else {
-
-        // GZIP compression status for display
-        $bh_gz_status = "GZIP Disabled";
-
-        // Draw the bottom of the page.
-        $contents.= html_draw_bottom();
 
         // return the text uncompressed as the client
         // doesn't support it or it has been disabled
@@ -156,9 +111,6 @@ function bh_gzhandler($contents)
 
     }
 }
-
-// Start the clock ticking
-bh_script_start();
 
 // Enabled the gzip handler
 ob_start("bh_gzhandler");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.46 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.47 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -86,9 +86,9 @@ if ($thread_array = threads_get_most_recent()) {
             echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['TID']."\" align=\"middle\" alt=\"{$lang['readthread']}\" />";
         }
 
-        echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "&nbsp;</td>\n";
         echo "          <td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">";
-        echo _stripslashes($thread['TITLE'])."</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo _stripslashes($thread['TITLE'])."</a>&nbsp;";
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
@@ -110,7 +110,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 
 // Display "Start Reading" button
@@ -124,7 +124,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"subhead\">{$lang['threadoptions']}</td>\n";
@@ -133,16 +133,16 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"subhead\">{$lang['recentvisitors']}</td>\n";
@@ -160,7 +160,7 @@ if ($users_array = users_get_recent()) {
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
         echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $resent_user['UID'], ")\">", $resent_user['NICKNAME'], "</a></td>\n";
-        echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($resent_user['LAST_LOGON']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($resent_user['LAST_LOGON']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }
 
@@ -170,13 +170,13 @@ if ($users_array = users_get_recent()) {
 }
 
 echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"visitor_log.php\" target=\"right\">{$lang['showmorevisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"right\">{$lang['showmorevisitors']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 
 if ($birthdays = user_get_forthcoming_birthdays()) {
@@ -193,7 +193,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
         echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">", $row['NICKNAME'], "</a></td>\n";
-        echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }
 
@@ -201,7 +201,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td>&nbsp;</td>\n";
     echo "  </tr>\n";
 }
 
@@ -209,7 +209,7 @@ echo "  <tr>\n";
 echo "    <td class=\"subhead\" colspan=\"2\">{$lang['navigate']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>\n";
@@ -226,10 +226,10 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.46 2003-09-20 17:53:36 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.47 2003-09-21 12:57:59 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -46,6 +46,24 @@ function bh_session_check()
 
     $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE TIME < $session_stamp";
     $result = db_query($sql, $db_bh_session_check);
+
+    // Check the number of active users stat
+
+    $sql = "SELECT COUNT(UID) AS SCOUNT FROM ". forum_table("SESSIONS");
+    $result = db_query($sql, $db_bh_session_check);
+
+    $sessions = db_fetch_array($result);
+
+    $sql = "SELECT MOST_USERS_COUNT FROM ". forum_table("STATS");
+    $result = db_query($sql, $db_bh_session_check);
+
+    $most_users = db_fetch_array($result);
+
+    if ($sessions['SCOUNT'] > $most_users['MOST_USERS_COUNT']) {
+
+        $sql = "UPDATE ". forum_table("STATS"). " SET MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = {$sessions['SCOUNT']}";
+        $result = db_query($sql, $db_bh_session_check);
+    }
 
     // Check the current user's cookie data. This is the main session
     // data that Beehive relies on. We only store something in the

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.23 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.24 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -47,7 +47,7 @@ if(!bh_session_check()){
 if (!$show_links) {
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -99,7 +99,7 @@ if (isset($HTTP_GET_VARS['action'])) {
 if (!isset($HTTP_GET_VARS['lid']) && !isset($lid)) {
     html_draw_top();
     echo "<h2>{$lang['mustprovidelinkID']}</h2>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 } elseif (!isset($lid)) {
     $lid = $HTTP_GET_VARS['lid'];
@@ -109,16 +109,16 @@ $link = links_get_single($lid);
 if (!$link) {
     html_draw_top();
     echo "<h2>{$lang['invalidlinkID']}</h2>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 $link['TITLE'] = _stripslashes($link['TITLE']);
 $folders = links_folders_get(perm_is_moderator());
 
 html_draw_top();
-echo "<h1>{$lang['links']}: " . links_display_folder_path($link['FID'], $folders, true, true, "links.php") . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>:<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"links.php?lid=$lid&action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
+echo "<h1>{$lang['links']}: " . links_display_folder_path($link['FID'], $folders, true, true, "links.php") . "&nbsp;:&nbsp;<a href=\"links.php?lid=$lid&action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
 if (isset($HTTP_POST_VARS['type']) && $HTTP_POST_VARS['type'] == "vote" && bh_session_get_value('UID') != 0 && isset($HTTP_POST_VARS['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
-$error = $error ? $error : "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+$error = $error ? $error : "&nbsp;";
 echo "<p>$error</p>\n";
 echo "<table class=\"box\" cellpadding=\"5\" cellspacing=\"2\" align=\"center\">\n";
 echo "<tr><td class=\"subhead\" align=\"right\">{$lang['address']}:</td><td class=\"posthead\"><a href=\"links.php?lid=$lid&action=go\" target=\"_blank\">{$link['URI']}</td></tr>\n";
@@ -143,7 +143,7 @@ echo "</table>\n";
 if (bh_session_get_value('UID') != 0) {
     $vote = links_get_vote($lid, bh_session_get_value('UID'));
     $vote = $vote ? $vote : -1;
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+    echo "<p>&nbsp;</p>\n";
     echo "<form name=\"link_vote\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
     echo form_input_hidden("type", "vote") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";
@@ -151,9 +151,9 @@ if (bh_session_get_value('UID') != 0) {
     echo "<table cellspacing=\"0\">\n";
     echo "<tr class=\"posthead\">\n";
     echo "<td>{$lang['rate']} {$link['TITLE']}: </td>";
-    echo "<td><b>{$lang['bad']} (0)</b><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "<td>" . form_radio_array("vote", range(0, 10), array(0 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 1 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 2 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 3 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 4 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 5 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 6 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 7 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 8 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 9 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", 10 => "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>"), $vote) . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "<td><b>(10) {$lang['good']}</b><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "<td><b>{$lang['bad']} (0)</b>&nbsp;</td>\n";
+    echo "<td>" . form_radio_array("vote", range(0, 10), array(0 => "&nbsp;", 1 => "&nbsp;", 2 => "&nbsp;", 3 => "&nbsp;", 4 => "&nbsp;", 5 => "&nbsp;", 6 => "&nbsp;", 7 => "&nbsp;", 8 => "&nbsp;", 9 => "&nbsp;", 10 => "&nbsp;"), $vote) . "&nbsp;</td>\n";
+    echo "<td><b>(10) {$lang['good']}</b>&nbsp;</td>\n";
     echo "<td>" . form_submit("submit", $lang['voteexcmark']) . "</td>\n";
     echo "</tr>";
     echo "</table>";
@@ -161,7 +161,7 @@ if (bh_session_get_value('UID') != 0) {
     echo "</form>\n";
 }
 
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+echo "<p>&nbsp;</p>\n";
 $comments = links_get_comments($lid);
 if ($comments) {
     echo "<table width=\"90%\" align=\"center\">\n";
@@ -177,7 +177,7 @@ if ($comments) {
 }
 
 if (bh_session_get_value('UID') != 0) {
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+    echo "<p>&nbsp;</p>\n";
     echo "<form name=\"link_comment\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
     echo form_input_hidden("type", "comment") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";
@@ -192,7 +192,7 @@ if (bh_session_get_value('UID') != 0) {
 }
 
 if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+    echo "<p>&nbsp;</p>\n";
     echo "<form name=\"link_moderation\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
     echo "<table align=\"center\" class=\"box\"><tr><td>\n";
     echo form_input_hidden("type", "moderation") . "\n";
@@ -205,12 +205,12 @@ if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
     echo "<tr><td align=\"right\">{$lang['editdescription']}:</td><td>" . form_input_text("description", _stripslashes($link['DESCRIPTION']), 60) . "</td></tr>\n";
     echo "<tr><td align=\"right\">{$lang['delete']}:</td><td>" . form_checkbox("delete", "confirm", "") . "</td></tr>\n";
     echo "<tr><td align=\"right\">{$lang['hide']}:</td><td>" . form_checkbox("hide", "confirm", "", (isset($link['VISIBLE']) && $link['VISIBLE'] == 'N')) . "</td></tr>\n";
-    echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td><td>" . form_submit() . "</td></tr>\n";
+    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table\n";
     echo "</form>\n";
 }
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

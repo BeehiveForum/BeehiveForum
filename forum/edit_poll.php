@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.28 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.29 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -62,7 +62,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
   html_draw_top();
   echo "<h1>{$lang['invalidop']}</h1>\n";
   echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
-  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+  html_draw_bottom();
   exit;
 
 }
@@ -328,7 +328,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    </td>";
   $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "</table>\n";
-  $polldata['CONTENT'].= "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+  $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
 
   if (bh_session_get_value('UID') != $polldata['FROM_UID'] && !perm_is_moderator()) {
     edit_refuse($tid, $pid);
@@ -564,10 +564,10 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
   </table>
 <?php
 
-  echo form_submit("submit", $lang['apply']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("preview", $lang['preview']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("cancel", $lang['cancel']);
+  echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
   if ($aid = get_attachment_id($tid, $pid)) {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
   }
 
   echo "</form>\n";
@@ -579,6 +579,6 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
     message_display($tid, $polldata, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
   }
 
-  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+  html_draw_bottom();
 
 ?>

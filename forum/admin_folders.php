@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.36 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.37 2003-09-21 12:57:57 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -58,7 +58,7 @@ html_draw_top();
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -156,12 +156,12 @@ echo "            <td align=\"left\">". form_field("t_title_new", $lang['newfold
 echo "            <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
 echo "            <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
 echo "            <td align=\"left\">&nbsp;</td>\n";
-echo "            <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td align=\"left\">&nbsp;</td>\n";
 echo "            <td align=\"left\">".form_dropdown_array("t_allow_new", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD)."</td>\n";
 echo "            <td align=\"left\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td colspan=\"8\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td colspan=\"8\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -171,6 +171,6 @@ echo "  <p>", form_input_hidden("t_count", sizeof($folder_array)), form_submit('
 echo "</form>";
 echo "</div>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

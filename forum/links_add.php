@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.21 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.22 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -47,7 +47,7 @@ if(!bh_session_check()){
 if (!$show_links) {
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}.</h2>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -104,13 +104,13 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     if ($HTTP_GET_VARS['mode'] == 'link' && !in_array($fid, array_keys($folders))) { // this did use array_key_exists(), but that's only supported in PHP/4.1.0+
         html_draw_top();
         echo "<h2>{$lang['mustspecifyvalidfolder']}</h2>";
-        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+        html_draw_bottom();
         exit;
     }
 } else {
     html_draw_top();
     echo "<h2>{$lang['mustspecifyfolder']}</h2>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -132,11 +132,11 @@ if ($mode == "link") {
     echo "<tr><td align=\"right\">{$lang['addressurluri']}:</td><td>" . form_input_text("uri", $uri, 60, 255) . "</td></tr>\n";
     echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", $name, 60, 64) . "</td></tr>\n";
     echo "<tr><td align=\"right\">{$lang['description']}:</td><td>" . form_input_text("description", $description, 60) . "</td></tr>\n";
-    echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td><td>" . form_submit() . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
+    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table>\n";
     echo "</form>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -152,11 +152,11 @@ if ($mode == "folder") {
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
     echo "<table class=\"posthead\" cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", isset($name) ? $name : '', 60, 64) . "</td></tr>\n";
-    echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td><td>" . form_submit() . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
+    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table>\n";
     echo "</form>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.33 2003-09-15 19:04:31 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.34 2003-09-21 12:57:59 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -53,7 +53,7 @@ if (!isset($uid)) {
     html_draw_top();
     echo "<h1>{$lang['error']}:</h1>";
     echo "<p>{$lang['nouserspecified']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -67,7 +67,7 @@ html_draw_top("title=$title");
 if (!$profile_sections = profile_sections_get()) {
     echo "<h1>{$lang['error']}:</h1>";
     echo "<p>{$lang['profilesnotsetup']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -86,31 +86,31 @@ echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td><h2><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>" . format_user_name($user['LOGON'], $user['NICKNAME']);
+echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
 
-if ($relationship & USER_FRIEND) echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-if ($relationship & USER_IGNORED) echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
 
 echo "</h2></td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";
 echo "          </tr>\n";
 
 if ($age = user_get_age($uid)) {
     echo "          <tr>\n";
-    echo "            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "            <td>&nbsp;</td>\n";
     echo "            <td align=\"right\" class=\"smalltext\">";
 
     if ($dob = user_get_dob($uid)) {
-        echo "{$lang['birthday']}: " . $dob . " ({$lang['aged']} " . $age . ")<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "{$lang['birthday']}: " . $dob . " ({$lang['aged']} " . $age . ")&nbsp;</td>\n";
     } else {
-        echo "{$lang['age']}: " . $age . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "{$lang['age']}: " . $age . "&nbsp;</td>\n";
     }
     echo "          </tr>\n";
 }
 
 echo "          <tr>\n";
-echo "            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: " . user_get_post_count($uid). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: " . user_get_post_count($uid). "&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
@@ -141,7 +141,7 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
 }
 
 for(;$i % 4; $i++){
-    echo "            <td width=\"25%\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "            <td width=\"25%\">&nbsp;</td>\n";
 }
 
 echo "          </tr>\n";
@@ -233,6 +233,6 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

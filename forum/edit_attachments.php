@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.15 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.16 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -48,7 +48,7 @@ require_once("./include/html.inc.php");
 if (!$attachments_enabled) {
     html_draw_top();
     echo "<h1>Attachments have been disabled by the forum owner.</h1>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -72,7 +72,7 @@ if(isset($HTTP_GET_VARS['uid'])){
 } else {
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<p>{$lang['nomessagespecifiedforedit']}</p>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -98,7 +98,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "  window.close();\n";
     echo "</script>\n";
 
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 
   }
@@ -108,9 +108,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
 <h1><?php echo $lang['attachments']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
-    <td width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-    <td width="200" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="300" class="postbody">&nbsp;</td>
+    <td width="200" class="postbody">&nbsp;</td>
+    <td width="100" class="postbody">&nbsp;</td>
   </tr>
 <?php
 
@@ -167,13 +167,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     echo "  <tr>\n";
     echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">({$lang['none']})</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
 
   }
@@ -186,12 +186,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
   <tr>
     <td valign="top" width="300" class="postbody"><?php echo $lang['totalsize']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size($total_attachment_size); ?></td>
-    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="100" class="postbody">&nbsp;</td>
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody"><?php echo $lang['freespace']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space($uid)); ?></td>
-    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="100" class="postbody">&nbsp;</td>
   </tr>
   <tr>
     <td width="500" colspan="3"><hr width="500"/></td>
@@ -206,6 +206,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
 </form>
 <?php
 
-  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+  html_draw_bottom();
 
 ?>

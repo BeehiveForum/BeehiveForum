@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.16 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.17 2003-09-21 12:57:57 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -57,7 +57,7 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 
 }
@@ -113,9 +113,9 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<p>", form_submit('save', $lang['save']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_reset(), "</p>\n";
+echo "<p>", form_submit('save', $lang['save']), "&nbsp;", form_reset(), "</p>\n";
 echo "</form>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

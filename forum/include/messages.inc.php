@@ -22,10 +22,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Included functions for displaying threads in the left frameset.
+// Included functions for displaying messages in the main frameset.
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/threads.inc.php"); // Thread processing functions
+require_once("./include/format.inc.php"); // Formatting functions
 
 function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
@@ -33,11 +34,11 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
-	$sql  = "SELECT POST.pid, POST.reply_to_pid, POST.from_uid, POST.to_uid, POST.created, POST.content, FUSER.nickname AS fnick, TUSER.nickname AS tnick ";
+	$sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, POST.CREATED, POST.CONTENT, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK ";
 	$sql .= "FROM POST LEFT JOIN USER FUSER ON POST.from_uid = FUSER.uid LEFT JOIN USER TUSER ON POST.to_uid = TUSER.uid ";
-	$sql .= "WHERE POST.tid = $tid ";
-	$sql .= "AND POST.pid >= $pid ";
-	$sql .= "ORDER BY POST.pid ";
+	$sql .= "WHERE POST.TID = $tid ";
+	$sql .= "AND POST.PID >= $pid ";
+	$sql .= "ORDER BY POST.PID ";
 	$sql .= "LIMIT 0, " . $limit;
 
 	$resource_id = db_query($sql, $db);
@@ -47,17 +48,18 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 
 		$message = db_fetch_array($resource_id);
 
-		$messages[$i]['pid'] = $message['pid'];
-		$messages[$i]['reply_to_pid'] = $message['reply_to_pid'];
-		$messages[$i]['from_uid'] = $message['from_uid'];
-		$messages[$i]['to_uid'] = $message['to_uid'];
-		$messages[$i]['created'] = $message['created'];
-		$messages[$i]['content'] = $message['content'];
-		$messages[$i]['fnick'] = $message['fnick'];
-		if(isset($message['tnick'])){
-           	$messages[$i]['tnick'] = $message['tnick'];
+		$messages[$i]['PID'] = $message['PID'];
+		$messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
+		//echo "<p>" . $message['REPLY_TO_PID'] . "</p>";
+		$messages[$i]['FROM_UID'] = $message['FROM_UID'];
+		$messages[$i]['TO_UID'] = $message['TO_UID'];
+		$messages[$i]['CREATED'] = timestamp_to_date($message['CREATED']);
+		$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
+		$messages[$i]['FNICK'] = $message['FNICK'];
+		if(isset($message['TNICK'])){
+           	$messages[$i]['TNICK'] = $message['TNICK'];
         } else {
-            $messages[$i]['tnick'] = "ALL";
+            $messages[$i]['TNICK'] = "ALL";
         }
 	}
 
@@ -65,9 +67,9 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	return $messages;
 }
 
-function messages_top($threadtitle)
+function messages_top($foldertitle, $threadtitle)
 {
-    echo "<p>Discussion: $threadtitle</p>";
+    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />$foldertitle: $threadtitle</p>";
     // To be expanded later
 }
 
@@ -76,23 +78,42 @@ function messages_bottom()
     echo "<p>Bottom of messages, innit?</p>";
 }
 
-function message_display($tid, $message)
+function message_display($tid, $message, $msg_count, $first_msg)
 {
-    echo "<br /><div align=\"center\">\n";
+    //echo "<p>" . $message['REPLY_TO_PID'] . "</p>";
+    global $HTTP_SERVER_VARS;
+
+    echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a><br /><div align=\"center\">\n";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
     echo "<table width=\"100%\" border=\"0\"><tr>\n";
-    echo "<td class=\"posthead\" width=\"1%\" align=\"right\">\n";
+    echo "<td class=\"posthead\" width=\"4%\" align=\"right\">\n";
     echo "<p class=\"posttofromlabel\">From:<br>To:</p></td>\n";
-    echo "<td class=\"posthead\" width=\"99%\">\n";
-    echo "<p class=\"posttofrom\">" . $message['fnick'] . "<br>" . $message['tnick'] . "</p></td>\n";
-    echo "<td class=\"posthead\" width=\"1%\" align=\"right\">\n";
-    echo "<p class=\"postinfo\">Info</p></td></table>\n";
+    echo "<td class=\"posthead\" width=\"92%\">\n";
+    echo "<p class=\"posttofrom\">" . $message['FNICK'] . "<br>" . $message['TNICK'] . "</p></td>\n";
+    echo "<td class=\"posthead\" width=\"4%\" align=\"right\" nowrap>\n";
+    echo "<p class=\"postinfo\">";
+    echo format_time($message['CREATED']);
+    //echo $message['CREATED'];
+    echo "<br />" . $message['PID'] . " of $msg_count";
+    echo "</p></td></table>\n";
     echo "<table width=\"100%\" border=\"0\">\n";
-    echo "<tr><td class=\"postnumber\">$tid.".$message['pid']."</td></tr>\n";
-    echo "<tr><td class=\"postbody\">\n";
-    echo $message['content']."\n";
+    echo "<tr><td class=\"postnumber\">";
+    echo "$tid." . $message['PID'];
+    if($message['PID'] > 1){
+        echo " in reply to ";
+        if(intval($message['REPLY_TO_PID']) >= intval($first_msg)){
+            echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\">";
+            echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+        } else {
+            echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\">";
+            echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+        }
+    }
     echo "</td></tr>\n";
-    echo "<tr><td><p class=\"postresponse\"><a href=\"post.php?replyto=$tid.".$message['pid']."\">Reply</a></p></td></tr></table>\n";
+    echo "<tr><td class=\"postbody\">\n";
+    echo $message['CONTENT'] . "\n";
+    echo "</td></tr>\n";
+    echo "<tr><td><p class=\"postresponse\"><a href=\"post.php?replyto=$tid.".$message['PID']."\">Reply</a></p></td></tr></table>\n";
     echo "</td></tr></table></div>\n";
 }
 
@@ -211,5 +232,28 @@ function messages_update_read($tid,$pid,$uid)
         db_query($sql,$db);
     }
     db_disconnect($db);
+}
+
+function messages_get_most_recent($uid)
+{
+    $return = "1.1";
+    
+    $db = db_connect();
+
+    $sql = "select THREAD.TID, THREAD.MODIFIED, USER_THREAD.LAST_READ ";
+    $sql .= "from THREAD left join USER_THREAD on (USER_THREAD.TID = THREAD.TID and USER_THREAD.UID = $uid) ";
+    $sql .= "order by THREAD.MODIFIED DESC LIMIT 0,1";
+
+    $result = db_query($sql,$db);
+
+    if(db_num_rows($result)){
+        $fa = db_fetch_array($result);
+        if($fa['LAST_READ']){
+            $return = $fa['TID'] . "." . $fa['LAST_READ'];
+        } else {
+            $return = $fa['TID'] . ".1";
+        }
+    }
+    return $return;
 }
 ?>

@@ -22,51 +22,44 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// THREAD LIST DISPLAY
-
-// NOTE: The way this works at the moment, it's insecure. Anyone could see
-// anyone else's unread messages etc. by changing the UID in the query string.
-
 // Require functions
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/messages.inc.php"); // Message processing functions
+require_once("./include/folder.inc.php"); // Folder processing functions
 
 // Check that required variables are set
-// default to display all discussions if no other mode specified
+// default to display most recent discussion for user
 if (!isset($HTTP_GET_VARS['msg'])) {
-   $msg = '1.1';
-   $tid = 1;
-   $pid = 1;
+    if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+        $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    } else {
+        $msg = "1.1";
+    }
 } else {
-   $msg = $HTTP_GET_VARS['msg'];
-   $tidpid = explode('.',$msg);
-   $tid = $tidpid[0];
-   $pid = $tidpid[1];
+    $msg = $HTTP_GET_VARS['msg'];
 }
+
+$tidpid = explode('.',$msg);
+$tid = $tidpid[0];
+$pid = $tidpid[1];
 
 // Output XHTML header
 html_draw_top();
 
 $messages = messages_get($tid,$pid,20);
 $threaddata = thread_get($tid);
+$foldertitle = folder_get_title($threaddata['FID']);
 
-/* if(!$threaddata){
-    echo "<h1>Fuck up</h1>";
-} else {
-    foreach ($threaddata as $var => $value) {
-        echo "<p>$var : $value</p>";
-    }
-} */
+$msg_count = count($messages);
 
+messages_top($foldertitle,$threaddata['TITLE']);
 
-messages_top($threaddata['TITLE']);
-
-$n = count($messages);
-
-if($n>0){
+if($msg_count>0){
+    $first_msg = $messages[0]['PID'];
+    echo "<p>first_msg: $first_msg</p>";
     foreach($messages as $message) {
-        message_display($tid,$message);
+        message_display($tid,$message,$msg_count,$first_msg);
     }
 }
 
@@ -74,7 +67,7 @@ messages_nav_strip($tid,$pid,$threaddata['LENGTH']);
 messages_bottom();
 html_draw_bottom();
 
-if($n > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     messages_update_read($tid,$pid+$n-1,$HTTP_COOKIE_VARS['bh_sess_uid']);
 }
 

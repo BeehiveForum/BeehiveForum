@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.43 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.44 2004-01-10 22:53:18 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -51,9 +51,9 @@ if (!$attachments_enabled) {
 // a spoofed path type URL query is used.
 
 if (strstr($HTTP_SERVER_VARS['PHP_SELF'], 'getattachment.php')) {
-    preg_match("/\/getattachment.php\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+    preg_match("/\/getattachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
 }else {
-    preg_match("/\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+    preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
 }
 
 if (isset($attachment_data[1])) {
@@ -66,18 +66,18 @@ if (isset($attachment_data[1])) {
 
     if ($attachmentdetails = get_attachment_by_hash($hash)) {
 
-        if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
+        // Use these quite a few times, so assign them to variables to save some time.
 
-            // Use these quite a few times, so assign them to variables to make it easier
+        $filepath = $attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']));
+        $filename = rawurldecode(basename($attachmentdetails['FILENAME']));
 
-            $filepath = $attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']));
-            $filename = basename($attachmentdetails['FILENAME']);
+        if (file_exists($filepath)) {
 
             // Filesize for Content-Length header.
 
             $length = filesize($filepath);
 
-            // Are we viewing or downloading the attachment?
+            // Are we viewing or downloading the attachment?           
 
             if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
                 header("Content-Type: application/x-ms-download", true);
@@ -120,7 +120,7 @@ if (isset($attachment_data[1])) {
             }
 
             header("Content-Length: $length", true);
-            header("Content-disposition: inline; filename=$filename", true);
+            header("Content-disposition: attachment; filename=\"$filename\"", true);
             readfile($filepath);
             exit;
         }

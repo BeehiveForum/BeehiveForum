@@ -256,14 +256,38 @@ if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"sma
 // Iterate through the information we've just got and display it in the right order
 while (list($key1, $folder_number) = each($folder_order)) {
 	echo "<tr>\n";
-	echo "<td class=\"foldername\" colspan=\"2\">\n";
+	echo "<td colspan=\"2\">\n";
+	echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+	echo "<tr>\n";
+	echo "<td class=\"foldername\">\n";
 	echo "<img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"folder\" />\n";
-	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">".$folder_info[$folder_number]."</a>";
+	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE']. "</a>";
+	echo "</td>\n";
+	echo "<td class=\"folderpostnew\" width=\"15\">\n";
+	echo "<a href=\"". $HTTP_SERVER_VARS['PHP_SELF']. "?mode=0&folder=". $folder_number. "\">";
+	
+	if (!$folder_info[$folder_number]['INTEREST']) {
+	  echo "<img src=\"". style_image('high_interest.png'). "\" border=\"0\" height=\"15\" alt=\"Ignore This Folder\" /></a>\n";
+	}else {
+          echo "<img src=\"". style_image('low_interest.png'). "\" border=\"0\" height=\"15\" alt=\"Stop Ignoring This Folder\" /></a>\n";
+	}
+
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	if (is_array($thread_info)) {
 		echo "<tr>\n";
-		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." threads</a></td>\n";
+		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">";
+		
+		if (isset($folder_msgs[$folder_number])) {
+		    echo $folder_msgs[$folder_number];
+		}else {
+		    echo "0";
+		}
+		
+		echo " threads</a></td>\n";
 		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
 		echo "</tr>\n";
 		if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<tr><td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\" colspan=\"2\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">Previous 50 threads</a></td></tr>\n";
@@ -339,7 +363,15 @@ while (list($key1, $folder_number) = each($folder_order)) {
 	} else {
 	
 		echo "<tr>\n";
-		echo "<td class=\"threads\" style=\"border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." threads</a></td>\n";
+		echo "<td class=\"threads\" style=\"border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">";
+		
+		if (isset($folder_msgs[$folder_number])) {
+		    echo $folder_msgs[$folder_number];
+		}else {
+		    echo "0";
+	        }
+		
+		echo " threads</a></td>\n";
 		echo "<td class=\"threads\" style=\"border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
 		echo "</tr>\n";
 		

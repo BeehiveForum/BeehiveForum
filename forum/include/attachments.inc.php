@@ -21,13 +21,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.94 2005-03-27 13:02:57 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.95 2005-04-04 11:54:36 decoyduck Exp $ */
+
+/**
+* attachments.inc.php - attachment upload handling
+*
+* Contains functions to handle the upload, deletion and modification of file attachments
+*/
+
+/**
+*
+*/
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "gd_lib.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
+
+/**
+* Fetches user attachments
+*
+* Fetches the available attachments based on the provided parameters that match $aid
+*
+* @return bool
+* @param integer $uid - User ID
+* @param string $aid - Current post attachment ID (MD5 Hash)
+* @param array $user_attachments - By reference array containing normal attachments
+* @param array $user_attachments - By reference array containing image attachments
+*/
 
 function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachments)
 {
@@ -91,6 +114,18 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
     return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
 
+/**
+* Fetches user attachments
+*
+* Fetches the available attachments based on the provided parameters that do not match $aid
+*
+* @return bool
+* @param integer $uid - User ID
+* @param string $aid - Current post attachment ID (MD5 Hash)
+* @param array $user_attachments - By reference array containing normal attachments
+* @param array $user_attachments - By reference array containing image attachments
+*/
+
 function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attachments)
 {
     $user_attachments = array();
@@ -152,6 +187,17 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
 
     return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
+
+/**
+* Fetches user attachments
+*
+* Fetches the available attachments for the provided User ID
+*
+* @return bool
+* @param integer $uid - User ID
+* @param array $user_attachments - By reference array containing normal attachments
+* @param array $user_attachments - By reference array containing image attachments
+*/
 
 function get_users_attachments($uid, &$user_attachments, &$user_image_attachments)
 {
@@ -216,6 +262,19 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
     return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
 
+/**
+* Add user attachment
+*
+* Adds a record to the database for a new file attachment
+*
+* @return bool
+* @param integer $uid - User ID
+* @param string $aid - Post attachment ID (MD5 Hash)
+* @param integer $fileid - Unique ID of the file for duplicate filenames
+* @param string $filename - Filename of the file attachment
+* @param string $mimetype - MIME type of the file attachment
+*/
+
 function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
 {
     $db_add_attachment = db_connect();
@@ -234,10 +293,17 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
     $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
 
-    $result = db_query($sql, $db_add_attachment);
-
-    return $result;
+    return ($result = db_query($sql, $db_add_attachment));
 }
+
+/**
+* Delete an attachment
+*
+* Deletes an attachment by it's Post attachment ID
+*
+* @return void
+* @param string $aid - Post attachment ID (MD5 Hash)
+*/
 
 function delete_attachment_by_aid($aid)
 {
@@ -265,6 +331,15 @@ function delete_attachment_by_aid($aid)
         delete_attachment($row['HASH']);
     }
 }
+
+/**
+* Delete an attachment
+*
+* Deletes an attachment by it's file hash
+*
+* @return void
+* @param string $hash - File attachment ID (MD5 Hash)
+*/
 
 function delete_attachment($hash)
 {
@@ -343,6 +418,15 @@ function delete_attachment($hash)
     }
 }
 
+/**
+* Get free attachment space
+*
+* Gets the free attachment space for the specified User ID
+*
+* @return integer
+* @param integer $uid - User ID
+*/
+
 function get_free_attachment_space($uid)
 {
     $used_attachment_space = 0;
@@ -374,6 +458,16 @@ function get_free_attachment_space($uid)
     return $max_attachment_space - $used_attachment_space;
 }
 
+/**
+* Gets Post attachment ID
+*
+* Gets the post attachment ID from the provided Thread ID and Post ID
+*
+* @return mixed
+* @param integer $tid - Thread ID
+* @param integer $pid - Post ID
+*/
+
 function get_attachment_id($tid, $pid)
 {
     $db_get_attachment_id = db_connect();
@@ -400,6 +494,15 @@ function get_attachment_id($tid, $pid)
     }
 }
 
+/**
+* Get folder ID
+*
+* Get the folder ID from the provided post attachment ID
+*
+* @return mixed
+* @param string $aid Post attachment ID (MD5 Hash)
+*/
+
 function get_folder_fid($aid)
 {
     $db_get_folder_fid = db_connect();
@@ -424,6 +527,15 @@ function get_folder_fid($aid)
     return false;
 }
 
+/**
+* Get PM attachment ID
+*
+* Gets the PM attachment ID from the provided personal message ID
+*
+* @return mixed
+* @param integer $mid Personal Message ID
+*/
+
 function get_pm_attachment_id($mid)
 {
     $db_get_pm_attachment_id = db_connect();
@@ -445,6 +557,16 @@ function get_pm_attachment_id($mid)
         return false;
     }
 }
+
+/**
+* Get message link
+*
+* Constucts the URI for use in a HTML anchor href attribute for the message that contains the specified attachment.
+*
+* @return mixed
+* @param string $aid - Attachment ID (MD5 Hash)
+* @param bool $get_pm_link - Optional paramter for getting PM link if post link fails
+*/
 
 function get_message_link($aid, $get_pm_link = true)
 {
@@ -482,6 +604,15 @@ function get_message_link($aid, $get_pm_link = true)
     return false;
 }
 
+/**
+* Gets attachment count for specified post attachment ID
+*
+* Returns the number of individual attachments a post or PM contains
+*
+* @return integer
+* @param string $aid - Post attachment ID (MD5 Hash)
+*/
+
 function get_num_attachments($aid)
 {
     $db_get_num_attachments = db_connect();
@@ -498,6 +629,15 @@ function get_num_attachments($aid)
     list($attachment_count) = db_fetch_array($result, DB_RESULT_NUM);
     return $attachment_count;
 }
+
+/**
+* Fetches an attachment
+*
+* Fetches the attachment that matches the specified file hash
+*
+* @return mixed
+* @param string $hash - File attachment hash (MD5 Hash)
+*/
 
 function get_attachment_by_hash($hash)
 {
@@ -517,6 +657,15 @@ function get_attachment_by_hash($hash)
     }
 }
 
+/**
+* Increment download count
+*
+* Increments the download count for the specified file hash
+*
+* @return mixed
+* @param string $hash - Post attachment ID (MD5 hash)
+*/
+
 function attachment_inc_dload_count($hash)
 {
     $db_attachment_inc_dload_count = db_connect();
@@ -531,8 +680,14 @@ function attachment_inc_dload_count($hash)
     return db_query($sql, $db_attachment_inc_dload_count);
 }
 
-// Checks to see if an attachment has been embedded in the content
-// True: attachment is embedded. False: no attachments embedded
+/**
+* Check for embedded attachments
+*
+* Checks provided content for attachments embedded in HTML image / object tags
+*
+* @return bool
+* @param string $content - string to check
+*/
 
 function attachment_embed_check($content)
 {
@@ -542,6 +697,17 @@ function attachment_embed_check($content)
 
     return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/ ", $content_check);
 }
+
+/**
+* Make attachment link
+*
+* Constucts the correct type of link for the specified attachment / image attachment
+*
+* @return string
+* @param array $attachment - attachment array retrieved from get_attachments / get_all_attachments function
+* @param bool $show_thumbs - Optionally enable or disable the display of thumbnails for supported image attachments
+* @param bool $limit_filename - Optionally truncate the filename to 16 characters if it is too long
+*/
 
 function attachment_make_link($attachment, $show_thumbs = true, $limit_filename = false)
 {
@@ -646,110 +812,14 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     return $attachment_link;
 }
 
-// Based function is based on code listed at:
-// http://uk.php.net/manual/en/function.gd-info.php
-
-function attachments_get_gd_info()
-{
-    $get_gd_info = array('GD Version'         => "", 'FreeType Support' => 0,
-                         'FreeType Support'   => 0,  'FreeType Linkage' => "",
-                         'T1Lib Support'      => 0,  'GIF Read Support' => 0,
-                         'GIF Create Support' => 0,  'JPG Support' => 0,
-                         'PNG Support'        => 0,  'WBMP Support' => 0,
-                         'XBM Support'        => 0);
-    $gif_support = 0;
-
-    ob_start();
-    eval("phpinfo();");
-    $php_info = ob_get_contents();
-    ob_end_clean();
-
-    foreach (explode("\n", $php_info) as $line) {
-
-        if (strpos($line, "GD Version") !== false) {
-            $get_gd_info["GD Version"] = preg_replace("/[^0-9|\.]/", "", trim(str_replace("GD Version", "", strip_tags($line))));
-        }
-
-        if (strpos($line, "FreeType Support") !== false) {
-            $get_gd_info["FreeType Support"] = trim(str_replace("FreeType Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "FreeType Linkage") !== false) {
-            $get_gd_info["FreeType Linkage"] = trim(str_replace("FreeType Linkage", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "T1Lib Support") !== false) {
-            $get_gd_info["T1Lib Support"] = trim(str_replace("T1Lib Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "GIF Read Support") !== false) {
-            $get_gd_info["GIF Read Support"] = trim(str_replace("GIF Read Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "GIF Create Support") !== false) {
-            $get_gd_info["GIF Create Support"] = trim(str_replace("GIF Create Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "GIF Support") !== false) {
-            $gif_support = trim(str_replace("GIF Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "JPG Support") !== false) {
-            $get_gd_info["JPG Support"] = trim(str_replace("JPG Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "PNG Support") !== false) {
-            $get_gd_info["PNG Support"] = trim(str_replace("PNG Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "WBMP Support") !== false) {
-            $get_gd_info["WBMP Support"] = trim(str_replace("WBMP Support", "", strip_tags($line)));
-        }
-
-        if (strpos($line, "XBM Support") !== false) {
-            $get_gd_info["XBM Support"] = trim(str_replace("XBM Support", "", strip_tags($line)));
-        }
-    }
-
-    if ($gif_support === "enabled") {
-        $get_gd_info["GIF Read Support"]  = 1;
-        $get_gd_info["GIF Create Support"] = 1;
-    }
-
-    if ($get_gd_info["FreeType Support"] === "enabled") {
-        $get_gd_info["FreeType Support"] = 1;
-    }
-
-    if ($get_gd_info["T1Lib Support"] === "enabled") {
-        $get_gd_info["T1Lib Support"] = 1;
-    }
-
-    if ($get_gd_info["GIF Read Support"] === "enabled") {
-        $get_gd_info["GIF Read Support"] = 1;
-    }
-
-    if ($get_gd_info["GIF Create Support"] === "enabled") {
-        $get_gd_info["GIF Create Support"] = 1;
-    }
-
-    if ($get_gd_info["JPG Support"] === "enabled") {
-        $get_gd_info["JPG Support"] = 1;
-    }
-
-    if ($get_gd_info["PNG Support"] === "enabled") {
-        $get_gd_info["PNG Support"] = 1;
-    }
-
-    if ($get_gd_info["WBMP Support"] === "enabled") {
-        $get_gd_info["WBMP Support"] = 1;
-    }
-
-    if ($get_gd_info["XBM Support"] === "enabled") {
-        $get_gd_info["XBM Support"] = 1;
-    }
-
-   return $get_gd_info;
-}
+/**
+* Create a thumbnail
+*
+* Creates a thumbnail for the attachment if it is of a supported image type
+*
+* @return bool
+* @param string $filepath - path to the file attachment on the server
+*/
 
 function attachment_create_thumb($filepath)
 {
@@ -773,7 +843,7 @@ function attachment_create_thumb($filepath)
 
     if (file_exists($filepath) && @$image_info = getimagesize($filepath)) {
 
-        if ($attachment_gd_info = attachments_get_gd_info()) {
+        if ($attachment_gd_info = get_gd_info()) {
 
             if ($attachment_gd_info[$required_read_support[$image_info[2]]] == 1
                 && $attachment_gd_info[$required_write_support[$image_info[2]]] == 1

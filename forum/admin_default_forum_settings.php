@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.25 2005-03-28 19:43:27 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.26 2005-04-04 00:59:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -81,6 +81,7 @@ if (!perm_has_forumtools_access()) {
 }
 
 $error_html = "";
+$text_captcha_dir_created = false;
 
 // Languages
 
@@ -147,10 +148,58 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['require_email_confirmation'] = "N";
     }
 
-    if (isset($_POST['use_text_capatcha']) && $_POST['use_text_capatcha'] == "Y") {
-        $new_forum_settings['use_text_capatcha'] = "Y";
+    if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
+        $new_forum_settings['text_captcha_enabled'] = "Y";
     }else {
-        $new_forum_settings['use_text_capatcha'] = "N";
+        $new_forum_settings['text_captcha_enabled'] = "N";
+    }
+
+    if (isset($_POST['text_captcha_dir']) && strlen(trim(_stripslashes($_POST['text_captcha_dir']))) > 0) {
+
+        $new_forum_settings['text_captcha_dir'] = trim(_stripslashes($_POST['text_captcha_dir']));
+
+        if (!@is_dir("{$new_forum_settings['text_captcha_dir']}")) {
+
+            @mkdir("$text_captcha_dir", 0755);
+            @chdir("$text_captcha_dir", 0777);
+        }
+
+        if (!@is_dir("{$new_forum_settings['text_captcha_dir']}/fonts")) {
+
+            @mkdir("{$new_forum_settings['text_captcha_dir']}/fonts", 0755);
+            @chdir("{$new_forum_settings['text_captcha_dir']}/fonts", 0777);
+        }
+
+        if (!@is_dir("{$new_forum_settings['text_captcha_dir']}/images")) {
+
+            @mkdir("{$new_forum_settings['text_captcha_dir']}/images", 0755);
+            @chdir("{$new_forum_settings['text_captcha_dir']}/images", 0777);
+        }
+
+        if (@is_dir("{$new_forum_settings['text_captcha_dir']}/fonts") && @is_dir("{$new_forum_settings['text_captcha_dir']}/images")) {
+
+            if (!is_writable("{$new_forum_settings['text_captcha_dir']}/fonts") || !is_writable("{$new_forum_settings['text_captcha_dir']}/images")) {
+
+                $error_html.= "<h2>{$lang['textcaptchadirsnotwritable']}</h2>\n";
+                $valid = false;
+            }
+
+        }else {
+
+            $error_html.= "<h2>{$lang['textcaptchadirsnotwritable']}</h2>\n";
+            $valid = false;
+        }
+
+    }else if (strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
+
+        $error_html = "<h2>{$lang['textcaptchadirblank']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['text_captcha_key']) && strlen(trim(_stripslashes($_POST['text_captcha_key']))) > 0) {
+        $new_forum_settings['text_captcha_key'] = trim(_stripslashes($_POST['text_captcha_key']));
+    }else {
+        $new_forum_settings['text_captcha_key'] = "";
     }
 
     if (isset($_POST['new_user_email_notify']) && $_POST['new_user_email_notify'] == "Y") {
@@ -246,21 +295,19 @@ if (isset($_POST['submit'])) {
 
         $new_forum_settings['attachment_dir'] = trim(_stripslashes($_POST['attachment_dir']));
 
-        if (!(@is_dir($new_forum_settings['attachment_dir']))) {
+        if (!@is_dir($new_forum_settings['attachment_dir'])) {
 
             @mkdir($new_forum_settings['attachment_dir'], 0755);
             @chmod($new_forum_settings['attachment_dir'], 0777);
         }
 
-        if (@$fp = fopen("{$new_forum_settings['attachment_dir']}/bh_attach_test", "w")) {
+        if (@is_dir($new_forum_settings['attachment_dir'])) {
 
-           fclose($fp);
-           unlink("{$new_forum_settings['attachment_dir']}/bh_attach_test");
+            if (!@is_writable($new_forum_settings['attachment_dir'])) {
 
-        }else {
-
-           $error_html.= "<h2>{$lang['attachmentdirnotwritable']}</h2>\n";
-           $valid = false;
+               $error_html.= "<h2>{$lang['attachmentdirnotwritable']}</h2>\n";
+               $valid = false;
+            }
         }
 
     }elseif (strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
@@ -435,20 +482,28 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"300\">{$lang['allownewuserregistrations']}:</td>\n";
+echo "                        <td width=\"250\">{$lang['allownewuserregistrations']}:</td>\n";
 echo "                        <td>", form_radio("allow_new_registrations", "Y", $lang['yes'], (isset($default_forum_settings['allow_new_registrations']) && $default_forum_settings['allow_new_registrations'] == 'Y') || !isset($default_forum_settings['allow_new_registrations'])), "&nbsp;", form_radio("allow_new_registrations", "N", $lang['no'], (isset($default_forum_settings['allow_new_registrations']) && $default_forum_settings['allow_new_registrations'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"300\">{$lang['preventuseofduplicateemailaddresses']}:</td>\n";
+echo "                        <td width=\"250\">{$lang['preventduplicateemailaddresses']}:</td>\n";
 echo "                        <td>", form_radio("require_unique_email", "Y", $lang['yes'], (isset($default_forum_settings['require_unique_email']) && $default_forum_settings['require_unique_email'] == 'Y')), "&nbsp;", form_radio("require_unique_email", "N", $lang['no'], (isset($default_forum_settings['require_unique_email']) && $default_forum_settings['require_unique_email'] == 'N') || !isset($default_forum_settings['require_unique_email'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"300\">{$lang['requireemailconfirmation']}:</td>\n";
+echo "                        <td width=\"250\">{$lang['requireemailconfirmation']}:</td>\n";
 echo "                        <td>", form_radio("require_email_confirmation", "Y", $lang['yes'], (isset($default_forum_settings['require_email_confirmation']) && $default_forum_settings['require_email_confirmation'] == 'Y')), "&nbsp;", form_radio("require_email_confirmation", "N", $lang['no'], (isset($default_forum_settings['require_email_confirmation']) && $default_forum_settings['require_email_confirmation'] == 'N') || !isset($default_forum_settings['require_email_confirmation'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"300\">{$lang['usetextcaptcha']}:</td>\n";
-echo "                        <td>", form_radio("use_text_capatcha", "Y", $lang['yes'], (isset($default_forum_settings['use_text_capatcha']) && $default_forum_settings['use_text_capatcha'] == 'Y')), "&nbsp;", form_radio("use_text_capatcha", "N", $lang['no'], (isset($default_forum_settings['use_text_capatcha']) && $default_forum_settings['use_text_capatcha'] == 'N') || !isset($default_forum_settings['use_text_capatcha'])), "</td>\n";
+echo "                        <td width=\"250\">{$lang['usetextcaptcha']}:</td>\n";
+echo "                        <td>", form_radio("text_captcha_enabled", "Y", $lang['yes'], (isset($default_forum_settings['text_captcha_enabled']) && $default_forum_settings['text_captcha_enabled'] == 'Y')), "&nbsp;", form_radio("text_captcha_enabled", "N", $lang['no'], (isset($default_forum_settings['text_captcha_enabled']) && $default_forum_settings['text_captcha_enabled'] == 'N') || !isset($default_forum_settings['text_captcha_enabled'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['textcaptchadir']}:</td>\n";
+echo "                        <td>", form_input_text("text_captcha_dir", (isset($default_forum_settings['text_captcha_dir'])) ? $default_forum_settings['text_captcha_dir'] : "text_captcha", 35, 255), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['textcaptchakey']}:</td>\n";
+echo "                        <td>", form_input_text("text_captcha_key", (isset($default_forum_settings['text_captcha_key'])) ? $default_forum_settings['text_captcha_key'] : "BeehiveForum06TextCaptchaKey", 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                       <td colspan=\"2\" >\n";
@@ -456,6 +511,8 @@ echo "                         <p class=\"smalltext\">{$lang['forum_settings_hel
 echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
 echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_43']}</p>\n";
 echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
+echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_45']}</p>\n";
+echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_46']}</p>\n";
 echo "                       </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.111 2005-04-03 22:28:22 rowan_hill Exp $ */
+/* $Id: register.php,v 1.112 2005-04-04 00:59:27 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -63,6 +63,7 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
+include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Where are we going after we've logged on?
@@ -126,6 +127,8 @@ $timezones = array("UTC -12h", "UTC -11h", "UTC -10h", "UTC -9h30m", "UTC -9h", 
 
 $timezones_data = array(-12, -11, -10, -9.5, -9, -8.5, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0, 1, 2, 3, 3.5, 4, 4.5, 5, 5.5,
                         6, 6.5, 7, 8, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13, 14);
+
+$text_captcha = new captcha(6, 15, 25, 9, 30);
 
 if (isset($_POST['submit'])) {
 
@@ -337,6 +340,31 @@ if (isset($_POST['submit'])) {
         $new_user['EMOTICONS'] = $_POST['EMOTICONS'];
     }else {
         $new_user['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
+    }
+
+    if (forum_get_setting('text_captcha_enabled', 'Y')) {
+
+        if (isset($_POST['public_key']) && strlen(trim(_stripslashes($_POST['public_key']))) > 0) {
+
+            $public_key = trim(_stripslashes($_POST['public_key']));
+
+            if (isset($_POST['private_key']) && strlen(trim(_stripslashes($_POST['private_key']))) > 0) {
+                $private_key = trim(_stripslashes($_POST['private_key']));
+            }else {
+                $error_html.= "<h2>{$lang['textcaptchamissingkey']}</h2>\n";
+                $valid = false;
+            }
+
+            if ($valid) {
+
+                $text_captcha->set_public_key($public_key);
+
+                if (!$text_captcha->verify_keys($private_key)) {
+                    $error_html.= "<h2>{$lang['textcaptchaverificationfailed']}</h2>\n";
+                    $valid = false;
+                }
+            }
+        }
     }
 
     // Defaults that we don't otherwise set.
@@ -660,6 +688,34 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";
 echo "                </tr>\n";
+
+if (forum_get_setting('text_captcha_enabled', 'Y')) {
+
+    if ($text_captcha->generate_keys() && $text_captcha->make_image()) {
+
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['textcaptchaconfirmation']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td valign=\"top\">{$lang['textcaptchaexplain']}</td>\n";
+        echo "                  <td><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" /></td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td>", form_input_text("private_key", "", $text_captcha->get_num_chars(), $text_captcha->get_num_chars(), "", "text_captcha_input"), form_input_hidden("public_key", $text_captcha->get_public_key()), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td colspan=\"2\">", $text_captcha->get_error(), "</td>\n";
+        echo "                </tr>\n";
+    }
+}
+
 echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";

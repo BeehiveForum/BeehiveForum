@@ -234,7 +234,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "<tr><td>&nbsp;</td></tr>\n";
   echo "<tr><td class=\"subhead\">Possible Aliases:</td></tr>\n";
 
-  $sql = "select UID, LOGON from ". forum_table("USER"). " where LOGON_FROM = '". $user['LOGON_FROM']. "' and LOGON <> '". $user['LOGON']. "'";
+  $sql = "select UID, LOGON from ". forum_table("USER"). " where LOGON_FROM <> '' and LOGON_FROM = '". $user['LOGON_FROM']. "' and LOGON <> '". $user['LOGON']. "'";
   $result = db_query($sql, $db);
 
   if (db_num_rows($result)) {

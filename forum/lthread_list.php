@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.14 2003-08-02 13:46:35 hodcroftcj Exp $ */
+/* $Id: lthread_list.php,v 1.15 2003-08-07 16:06:12 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -38,58 +38,41 @@ require_once("./include/constants.inc.php");
 require_once("./include/light.inc.php");
 require_once("./include/lang.inc.php");
 
-if(!bh_session_check()){
+if(!bh_session_check() || bh_session_get_value('UID') == 0){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./llogon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
 
 // Check that required variables are set
-if (bh_session_get_value('UID') == 0) {
-    $user = 0; // default to UID 0 if no other UID specified
-    if (!isset($HTTP_GET_VARS['mode'])) {
-        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
-            $mode = 0;
-        }else{
-            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
-        }
-    } else {
-        // non-logged in users can only display "All" threads or those in the past x days, since the other options would be impossible
-        if ($HTTP_GET_VARS['mode'] == 0 || $HTTP_GET_VARS['mode'] == 3 || $HTTP_GET_VARS['mode'] == 4 || $HTTP_GET_VARS['mode'] == 5) {
-            $mode = $HTTP_GET_VARS['mode'];
+
+$user = bh_session_get_value('UID');
+
+if (isset($HTTP_GET_VARS['markread'])) {
+
+  if ($HTTP_GET_VARS['markread'] == 2) {
+    threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
+  }elseif ($HTTP_GET_VARS['markread'] == 0) {
+    threads_mark_all_read();
+  }elseif ($HTTP_GET_VARS['markread'] == 1) {
+    threads_mark_50_read();
+  }
+
+}
+
+if (!isset($HTTP_GET_VARS['mode'])) {
+    if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
+        if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
+            $mode = 1;
         } else {
             $mode = 0;
         }
+    }else {
+        $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
     }
 } else {
-    $user = bh_session_get_value('UID');
-
-    if (isset($HTTP_GET_VARS['markread'])) {
-
-      if ($HTTP_GET_VARS['markread'] == 2) {
-        threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
-      }elseif ($HTTP_GET_VARS['markread'] == 0) {
-        threads_mark_all_read();
-      }elseif ($HTTP_GET_VARS['markread'] == 1) {
-        threads_mark_50_read();
-      }
-
-    }
-
-    if (!isset($HTTP_GET_VARS['mode'])) {
-        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
-            if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
-                $mode = 1;
-            } else {
-                $mode = 0;
-            }
-        }else {
-            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
-        }
-    } else {
-        $mode = $HTTP_GET_VARS['mode'];
-    }
+    $mode = $HTTP_GET_VARS['mode'];
 }
 
 if (isset($HTTP_GET_VARS['folder'])) {
@@ -116,9 +99,9 @@ if (bh_session_get_value('UID') == 0) {
   $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
                   $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
                   $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                  $lang['unreadstartedbyfriend'],$lang['polls']);
+                  $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
 
-  echo light_form_dropdown_array("mode",range(0,13),$labels,$mode). "\n        ";
+  echo light_form_dropdown_array("mode",range(0,15),$labels,$mode). "\n        ";
 
 }
 
@@ -174,6 +157,12 @@ if(isset($folder)){
         case 13: // Polls
             list($thread_info, $folder_order) = threads_get_polls($user);
             break;
+        case 14: // Sticky threads
+            list($thread_info, $folder_order) = threads_get_sticky($user);
+            break;
+        case 15: // Most unread posts
+            list($thread_info, $folder_order) = threads_get_longest_unread($user);
+            break;    
     }
 }
 

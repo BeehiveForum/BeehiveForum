@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.28 2003-08-02 23:37:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.29 2003-08-07 16:06:14 hodcroftcj Exp $ */
 
 // International English language file
 
@@ -801,5 +801,7 @@ $lang['unreadmessages'] = "Unread Messages";
 $lang['subscribed'] = "Subscribed";
 $lang['ignorethisfolder'] = "Ignore This Folder";
 $lang['stopignoringthisfolder'] = "Stop Ignoring This Folder";
+$lang['stickythreads'] = "Sticky Threads";
+$lang['mostunreadposts'] = "Most unread posts"
 
 ?>

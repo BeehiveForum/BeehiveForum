@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.14 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.15 2003-08-07 16:06:12 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -33,7 +33,7 @@ require_once("./include/errorhandler.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if (!bh_session_check()){
+if (!bh_session_check() || bh_session_get_value('UID') == 0){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);

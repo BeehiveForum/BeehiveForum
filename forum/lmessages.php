@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.9 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: lmessages.php,v 1.10 2003-08-07 16:06:12 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -43,9 +43,9 @@ require_once("./include/poll.inc.php");
 require_once("./include/light.inc.php");
 require_once("./include/lang.inc.php");
 
-if(!bh_session_check()){
+if(!bh_session_check() || bh_session_get_value('UID') == 0){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./llogon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.29 2003-08-05 03:11:21 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.30 2003-08-07 16:06:14 hodcroftcj Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -113,7 +113,7 @@ function thread_get_interest($tid)
     $result = db_query($sql, $db_thread_get_interest);
 
     if (db_num_rows($result)) {
-        $row = db_fetch_array($resource_id);
+        $row = db_fetch_array($result);
         return $row['INTEREST'];
     }else {
         return 0;

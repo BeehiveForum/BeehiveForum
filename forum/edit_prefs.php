@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.3 2004-01-26 19:40:32 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.4 2004-02-03 13:01:28 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -204,7 +204,7 @@ echo "            <tr>\n";
 echo "              <td class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"100%\">\n";
 echo "                  <tr>\n";
-echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['userinformation']}:</td>\n";
+echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['userinformation']}</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td width=\"200\">{$lang['nickname']}:</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.67 2004-02-02 20:47:05 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.68 2004-02-03 13:01:28 decoyduck Exp $ */
 
 // International English language file
 
@@ -666,7 +666,7 @@ $lang['homepageURL'] = "Homepage URL";
 $lang['pictureURL'] = "Picture URL";
 $lang['forumoptions'] = "Forum Options";
 $lang['notifybyemail'] = "Notify by email of posts to me";
-$lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
+$lang['notifyofnewpm'] = "Notify by popup of new PM messages to me (disables thread list PM notification)";
 $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
 $lang['daylightsaving'] = "Adjust for daylight saving";
 $lang['autohighinterest'] = "Automatically mark threads I post in as High Interest";
@@ -684,6 +684,10 @@ $lang['showonlyage'] = "Show only age to others";
 $lang['showageanddob'] = "Show to others";
 $lang['browseanonymously'] = "Browse forum anonymously";
 $lang['showforumstats'] = "Show forum stats at bottom of message pane";
+$lang['timezone'] = "Time Zone";
+$lang['language'] = "Language";
+$lang['emailsettings'] = "Email Settings";
+$lang['privacysettings'] = "Privacy Settings";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

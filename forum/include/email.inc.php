@@ -24,6 +24,7 @@ USA
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/config.inc.php"); // Formatting functions
+require_once("./include/constants.inc.php");
 
 function email_sendnotification($tuid, $msg, $fuid)
 {
@@ -170,7 +171,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
-            $pm_message = pm_single_get($mid, $tuid);
+            $pm_message = pm_single_get($mid, PM_FOLDER_INBOX, $tuid);
 
             $message = strtoupper($mailfrom['LOGON']). " posted a PM to you on $forum_name\n\n";
             $message.= "The subject is:  ". _htmlentities_decode(_stripslashes($pm_message['SUBJECT'])). "\n\n";

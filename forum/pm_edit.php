@@ -55,8 +55,17 @@ require_once("./include/attachments.inc.php");
 
 // Get the Message ID (MID)
 
-if (isset($HTTP_GET_VARS['mid']))  $mid = $HTTP_GET_VARS['mid'];
-if (isset($HTTP_POST_VARS['mid'])) $mid = $HTTP_POST_VARS['mid'];
+if (isset($HTTP_GET_VARS['mid'])) {
+    $mid = $HTTP_GET_VARS['mid'];
+}elseif (isset($HTTP_POST_VARS['mid'])) {
+    $mid = $HTTP_POST_VARS['mid'];
+}else {
+    html_draw_top();
+    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
+    html_draw_bottom();
+    exit;
+}
 
 // User clicked cancel
 
@@ -90,62 +99,85 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
 
-    $pm_elements_array = pm_single_get($mid, 0, bh_session_get_value('UID'));
+    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
 
-    if ($HTTP_POST_VARS['t_post_html'] == "Y") {
-        $t_content = fix_html($t_content);
-        $pm_elements_array['CONTENT'] = $t_content;
-        $t_content = str_replace("&", "&amp;", $t_content);
-    }else{
-        $t_content = make_html($t_content);
-        $pm_elements_array['CONTENT'] = $t_content;
-        $t_content = strip_tags($t_content);
-        $t_content = ereg_replace("\n+", "\n", $t_content);
-    }
+        if ($HTTP_POST_VARS['t_post_html'] == "Y") {
+            $t_content = fix_html($t_content);
+            $pm_elements_array['CONTENT'] = $t_content;
+            $t_content = str_replace("&", "&amp;", $t_content);
+        }else{
+            $t_content = make_html($t_content);
+            $pm_elements_array['CONTENT'] = $t_content;
+            $t_content = strip_tags($t_content);
+            $t_content = ereg_replace("\n+", "\n", $t_content);
+        }
 
-    $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
-    $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
+        $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
+        $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
-}else if ($valid && isset($HTTP_POST_VARS['submit'])) {
-
-    $t_subject = _htmlentities($t_subject);
-
-    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-        $t_content = make_html($t_content);
-    }
-
-    if (pm_edit_message($mid, $t_subject, $t_content)) {
-        header_redirect("pm.php?folder=2");
     }else {
-        $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
-        $valid = false;
-    }
-
-}else {
-
-    $pm_elements_array = pm_single_get($mid, 0, bh_session_get_value('UID'));
-
-    if ($pm_elements_array['TYPE'] <> PM_NEW) {
         html_draw_top();
         pm_edit_refuse();
         html_draw_bottom();
         exit;
     }
 
-    $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
-    $t_content = $pm_elements_array['CONTENT'];
-    $t_subject = $pm_elements_array['SUBJECT'];
+}else if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
-    if (!isset($HTTP_POST_VARS['b_edit_html'])) {
-        $t_content = str_replace("\n", "", $t_content);
-        $t_content = str_replace("\r", "", $t_content);
-        $t_content = str_replace("<p>", "\n\n<p>", $t_content);
-        $t_content = str_replace("</p>", "</p>\n", $t_content);
-        $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
-        $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
-        $t_content = strip_tags($t_content);
-    }else{
-        $t_content = _htmlentities($t_content);
+    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
+
+        $t_subject = _htmlentities($t_subject);
+
+        if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
+            $t_content = make_html($t_content);
+        }
+
+        if (pm_edit_message($mid, $t_subject, $t_content)) {
+            header_redirect("pm.php?folder=2");
+        }else {
+            $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
+            $valid = false;
+        }
+
+    }else {
+        html_draw_top();
+        pm_edit_refuse();
+        html_draw_bottom();
+        exit;
+    }
+
+}else {
+
+    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
+
+        if ($pm_elements_array['TYPE'] <> PM_NEW) {
+            html_draw_top();
+            pm_edit_refuse();
+            html_draw_bottom();
+            exit;
+        }
+
+        $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
+        $t_content = $pm_elements_array['CONTENT'];
+        $t_subject = $pm_elements_array['SUBJECT'];
+
+        if (!isset($HTTP_POST_VARS['b_edit_html'])) {
+            $t_content = str_replace("\n", "", $t_content);
+            $t_content = str_replace("\r", "", $t_content);
+            $t_content = str_replace("<p>", "\n\n<p>", $t_content);
+            $t_content = str_replace("</p>", "</p>\n", $t_content);
+            $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
+            $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
+            $t_content = strip_tags($t_content);
+        }else{
+            $t_content = _htmlentities($t_content);
+        }
+
+    }else {
+        html_draw_top();
+        pm_edit_refuse();
+        html_draw_bottom();
+        exit;
     }
 }
 

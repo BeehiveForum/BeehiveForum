@@ -95,9 +95,35 @@ if (isset($HTTP_POST_VARS['clear'])) {
 
 }
 
+$sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
+$sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
+$sql.= "ADMIN_LOG.FID, ADMIN_LOG.TID, ADMIN_LOG.PID, FOLDER.TITLE AS FOLDER_TITLE, THREAD.TITLE AS THREAD_TITLE, ";
+$sql.= "ADMIN_LOG.PSID, ADMIN_LOG.PIID, PS.NAME AS PS_NAME, PI.NAME AS PI_NAME, ADMIN_LOG.ACTION ";
+$sql.= "FROM ". forum_table("ADMIN_LOG"). " ADMIN_LOG ";
+$sql.= "LEFT JOIN ". forum_table("USER"). " AUSER ON (AUSER.UID = ADMIN_LOG.ADMIN_UID) ";
+$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = ADMIN_LOG.UID) ";
+$sql.= "LEFT JOIN ". forum_table("PROFILE_SECTION"). " PS ON (PS.PSID = ADMIN_LOG.PSID) ";
+$sql.= "LEFT JOIN ". forum_table("PROFILE_ITEM"). " PI ON (PI.PIID = ADMIN_LOG.PIID) ";
+$sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON (FOLDER.FID = ADMIN_LOG.FID) ";
+$sql.= "LEFT JOIN ". forum_table("THREAD"). " THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
+$sql.= "ORDER BY $sort_by $sort_dir LIMIT $start, 20";
+
+$result = db_query($sql, $db);
+
 // Draw the form
 echo "<h1>Admin Access Log</h1>\n";
-echo "<p>This list shows the last 20 actions sanctioned by users with Admin privileges.</p>\n";
+echo "<p>This list shows the last actions sanctioned by users with Admin privileges.</p>\n";
+
+if ($start > 0) {
+  echo "<p>Showing actions ", $start + 1, " to ";
+  if ($start + 20 > db_num_rows($result)) {
+    echo $start + db_num_rows($result);
+  }else {
+    echo $start + 20;
+  }
+  echo " inclusive.</p>\n";
+}
+
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
@@ -124,21 +150,6 @@ if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
 }
 
 echo "        </tr>\n";
-
-$sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
-$sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
-$sql.= "ADMIN_LOG.FID, ADMIN_LOG.TID, ADMIN_LOG.PID, FOLDER.TITLE AS FOLDER_TITLE, THREAD.TITLE AS THREAD_TITLE, ";
-$sql.= "ADMIN_LOG.PSID, ADMIN_LOG.PIID, PS.NAME AS PS_NAME, PI.NAME AS PI_NAME, ADMIN_LOG.ACTION ";
-$sql.= "FROM ". forum_table("ADMIN_LOG"). " ADMIN_LOG ";
-$sql.= "LEFT JOIN ". forum_table("USER"). " AUSER ON (AUSER.UID = ADMIN_LOG.ADMIN_UID) ";
-$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = ADMIN_LOG.UID) ";
-$sql.= "LEFT JOIN ". forum_table("PROFILE_SECTION"). " PS ON (PS.PSID = ADMIN_LOG.PSID) ";
-$sql.= "LEFT JOIN ". forum_table("PROFILE_ITEM"). " PI ON (PI.PIID = ADMIN_LOG.PIID) ";
-$sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON (FOLDER.FID = ADMIN_LOG.FID) ";
-$sql.= "LEFT JOIN ". forum_table("THREAD"). " THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
-$sql.= "ORDER BY $sort_by $sort_dir LIMIT $start, 20";
-
-$result = db_query($sql, $db);
 
 if (db_num_rows($result)) {
 
@@ -294,14 +305,14 @@ echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">More</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">Recent Entries</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">Recent Entries</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">More</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">Recent Entries</a>&nbsp;&nbsp;";
   }
 }
 

@@ -121,7 +121,7 @@ if ($valid) {
 
         if (post_delete($tid, $pid)) {
 
-            admin_addlog(0, 0, $tid, $pid, 0, 0, 22);
+            if (perm_is_moderator()) admin_addlog(0, 0, $tid, $pid, 0, 0, 22);
 
             echo "<div align=\"center\">";
             echo "<p>Post deleted successfully</p>";

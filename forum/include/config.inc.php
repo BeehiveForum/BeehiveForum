@@ -40,6 +40,7 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 $forum_settings = array('forum_name'                => "A Beehive Forum",
                         'forum_email'               => "admin@abeehiveforum.net",
                         'default_style'             => "default",
+                        'default_emoticons'         => "default",
                         'default_language'          => "en",
                         'show_friendly_errors'      => 'Y',
                         'cookie_domain'             => "",

@@ -124,7 +124,7 @@ if (bh_session_check()) {
 ?>
 <noframes>
 <body>
-<h1><?php echo $lang['noframesupport']; ?></h1>
+<h1><?php echo $lang['noframessupport']; ?></h1>
 <p><?php echo $lang['uselightversion']; ?></p>
 </body>
 </noframes>

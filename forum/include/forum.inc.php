@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.78 2004-08-15 16:23:07 hodcroftcj Exp $ */
+/* $Id: forum.inc.php,v 1.79 2004-08-17 10:04:46 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -445,7 +445,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (ID)";
+        $sql.= "  PRIMARY KEY (ID,UID)";
         $sql.= ") TYPE=MYISAM;";
 
         $result = db_query($sql, $db_forum_create);
@@ -455,7 +455,6 @@ function forum_create($webtag, $forum_name, $access)
         $sql = "CREATE TABLE {$webtag}_FOLDER (";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  ACCESS_LEVEL TINYINT(4) DEFAULT '0',";
         $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
         $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
         $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
@@ -557,6 +556,7 @@ function forum_create($webtag, $forum_name, $access)
 
         $sql = "CREATE TABLE {$webtag}_PM (";
         $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+		$sql.= "  REPLY_TO_MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -600,6 +600,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
         $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
         $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (TID)";
         $sql.= ") TYPE=MYISAM;";
 
@@ -648,6 +649,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (ID),";
         $sql.= "  KEY AID (AID),";
         $sql.= "  KEY HASH (HASH)";
@@ -741,7 +743,6 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
-        $sql.= "  ALLOWED TINYINT(4) DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (UID,FID)";
         $sql.= ") TYPE=MYISAM;";
 
@@ -840,8 +841,8 @@ function forum_create($webtag, $forum_name, $access)
 
         // Create General Folder
 
-        $sql = "INSERT INTO {$webtag}_FOLDER (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
-        $sql.= "VALUES ('General', 0, NULL, NULL, 0)";
+        $sql = "INSERT INTO {$webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
+        $sql.= "VALUES ('General', NULL, NULL, 0)";
 
         $result = db_query($sql, $db_forum_create);
 
@@ -853,13 +854,13 @@ function forum_create($webtag, $forum_name, $access)
 
         // Create default group permissions
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 0, 1536);";
+        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 0, 1792);";
         $result = db_query($sql, $db_forum_create);
 
-                $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 1, 508);";
+                $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 1, 6652);";
                 $result = db_query($sql, $db_forum_create);
 
-                $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (0, 1, 252);";
+                $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (0, 1, 6396);";
                 $result = db_query($sql, $db_forum_create);
 
                 // Create default user permissions

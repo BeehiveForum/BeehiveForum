@@ -275,7 +275,8 @@ function thread_get($tid)
 function threads_get_folder_msgs()
 {
 	$db = db_connect();
-	$sql = "SELECT fid, COUNT(fid) AS total FROM " . forum_table("THREAD") . " GROUP BY fid";
+	//$sql = "SELECT fid, COUNT(fid) AS total FROM " . forum_table("THREAD") . " GROUP BY fid";
+    $sql = "SELECT ".forum_table("FOLDER").".fid, COUNT(".forum_table("THREAD").".fid) AS total FROM ".forum_table("FOLDER")." LEFT JOIN ".forum_table("THREAD")." ON ".forum_table("FOLDER").".fid = ".forum_table("THREAD").".fid GROUP BY ".forum_table("FOLDER").".fid";
 	$resource_id = db_query($sql, $db);
 	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
 		$folder = db_fetch_array($resource_id);

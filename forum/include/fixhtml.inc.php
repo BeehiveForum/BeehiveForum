@@ -16,7 +16,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -206,7 +206,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 								} else {
 									array_splice($html_parts, $i, 0, array("/".$last_tag[$j], ""));
 									$opentags[$last_tag[$j]]--;
-									array_splice($last_tag, $j, 1);	
+									array_splice($last_tag, $j, 1);
 									$i+=2;
 								}
 							}
@@ -321,7 +321,7 @@ function clean_attributes($tag)
 				$tmp_attrib = strtolower($attrib[0])."=";
 				$attrib_value = substr($split_tag[$i], strlen($tmp_attrib));
 
-				$first_char = substr($attrib_value, 0, 1);			
+				$first_char = substr($attrib_value, 0, 1);
 				$last_char = substr($attrib_value, -1);
 
 				if($first_char == "\"" || $first_char == "'"){
@@ -347,7 +347,7 @@ function clean_attributes($tag)
 				$tmp_attrib = strtolower($attrib[0])."=";
 				$attrib_value = substr($split_tag[$i], strlen($tmp_attrib));
 
-				$first_char = substr($attrib_value, 0, 1);			
+				$first_char = substr($attrib_value, 0, 1);
 				$last_char = substr($attrib_value, -1);
 
 				if($first_char == "\"" || $first_char == "'"){

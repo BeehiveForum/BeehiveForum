@@ -231,9 +231,13 @@ if (isset($HTTP_GET_VARS['msg'])) {
     if(thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])) {
 
         list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'],
-             $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
+             $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'],
+             $thread['logon'], $thread['nickname'], $thread['relationship'], $thread['aid'])  = thread_get($tid);
 
         $thread['title'] = _stripslashes($thread['title']);
+
+	if (isset($thread['aid'])) $thread['attachments'] = 1;
+	if (!isset($thread['relationship'])) $thread['relationship'] == 0;
 
         if ($thread['tid'] == $tid) {
 
@@ -435,7 +439,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             if (isset($folder) && $folder_number == $folder) {
-            
+
                 $more_threads = $folder_msgs[$folder] - $start_from - 50;
 
                 if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next $more_threads threads</a></td></tr>\n";

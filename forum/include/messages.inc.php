@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.170 2003-09-16 10:19:12 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.171 2003-09-20 17:54:39 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -796,6 +796,60 @@ function messages_fontsize_form($tid, $pid)
     }
 
     echo $fontstrip;
+}
+
+function messages_forum_stats()
+{
+    global $session_cutoff;
+
+    $db_messages_forum_stats = db_connect();
+
+    $session_stamp = time() - $session_cutoff;
+
+    $sql = "SELECT SG.COUNT(UID) AS GUESTS, SN.COUNT(UID) AS USERS, SA.COUNT(UID) AS ANON ";
+    $sql.= "FROM SESSIONS SG, SESSIONS SN, SESSIONS SA ";
+    $sql.= "LEFT JOIN USER_PREFS UPN ON (UPN.UID = SN.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS UPA ON (UPA.UID = SN.UID) ";
+    $sql.= "WHERE SG.UID = 0 AND SG.TIME >= $session_stamp";
+    $sql.= "WHERE SU.UID <> 0 AND SN.TIME >= $session_stamp AND UPN.ANON_LOGON = 0";
+    $sql.= "WHERE SG.UID <> 0 AND SG.TIME >= $session_stamp AND UPA.ANON_LOGON = 1";
+    $sql.= "LIMIT 0, 1";
+
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    while ($row = db_fetch_array($result)) {
+        $stats['GUESTS'] = (isset($row['GUESTS'])) ? $row['GUESTS'] : 0;
+        $stats['USERS']  = (isset($row['USERS']))  ? $row['USERS']  : 0;
+        $stats['ANON']   = (isset($row['ANON']))   ? $row['ANON']   : 0;
+    }
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+    $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+    $sql.= "WHERE SESSIONS.UID <> 0 AND SESSIONS.TIME >= $session_stamp ";
+    $sql.= "AND USER_PREFS.ANON_LOGON = 0 LIMIT 0, 8 ";
+    $sql.= "ORDER BY SESSION.ID DESC";
+
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    while ($row = db_fetch_array($result)) {
+        $stats['USERS'][] = array('UID'      => $row['UID'],
+                                  'LOGON'    => $row['LOGON'],
+                                  'NICKNAME' => $row['NICKNAME']);
+    }
+
+    $sql = "SELECT COUNT(POST.TID) AS TCOUNT, COUNT(POST.PID) AS PCOUNT, ";
+    $sql.= "THREAD.TITLE, THREAD.TID, THREAD.LENGTH ";
+    $sql.= "FROM POSTS POSTS, THREADS THREADS ";
+    $sql.= "ORDER BY THREADS.LENGTH DESC ";
+    $sql.= "LIMIT 0, 1";
+
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    while ($row = db_fetch_array($result)) {
+        $stats['TCOUNT'] = $row['TCOUNT'];
+        $stats['PCOUNT'] = $row['PCOUNT'];
+    }
 }
 
 ?>

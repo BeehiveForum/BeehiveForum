@@ -80,6 +80,12 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
     $sort_dir = "DESC";
 }
 
+if (isset($HTTP_GET_VARS['offset'])) {
+    $start = $HTTP_GET_VARS['offset'];
+}else {
+    $start = 0;
+}
+
 $db = db_connect();
 
 if (isset($HTTP_POST_VARS['clear'])) {
@@ -130,9 +136,9 @@ $sql.= "LEFT JOIN ". forum_table("PROFILE_SECTION"). " PS ON (PS.PSID = ADMIN_LO
 $sql.= "LEFT JOIN ". forum_table("PROFILE_ITEM"). " PI ON (PI.PIID = ADMIN_LOG.PIID) ";
 $sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON (FOLDER.FID = ADMIN_LOG.FID) ";
 $sql.= "LEFT JOIN ". forum_table("THREAD"). " THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
-$sql.= "ORDER BY $sort_by $sort_dir LIMIT 0, 20";
+$sql.= "ORDER BY $sort_by $sort_dir LIMIT $start, 20";
 
-$result = db_query($sql,$db);
+$result = db_query($sql, $db);
 
 if (db_num_rows($result)) {
 
@@ -285,6 +291,20 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+
+if (db_num_rows($result) == 20) {
+  if ($start < 20) {
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
+  }elseif ($start >= 20) {
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">Recent Entries</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
+  }
+}else {
+  if ($start >= 20) {
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
+  }
+}
+
 echo "</div>\n";
 echo "<p>&nbsp;</p>\n";
 

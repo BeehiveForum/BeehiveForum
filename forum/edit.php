@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.79 2004-01-26 19:40:26 decoyduck Exp $ */
+/* $Id: edit.php,v 1.80 2004-02-09 03:48:33 tribalonline Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -243,7 +243,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 				$t_content = add_paragraphs($t_content);
 			}
 			$preview_message['CONTENT'] = $t_content;
-			$t_content = str_replace("&", "&amp;", $t_content);
+//			$t_content = str_replace("&", "&amp;", $t_content);
 
 			if ($old_t_content != $t_content) {
 				$content_html_changes = true;
@@ -481,7 +481,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 //            $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
             $t_content = strip_tags($t_content);
         }else{
-            $t_content = _htmlentities($t_content);
+//            $t_content = _htmlentities($t_content);
         }
 
     }else{
@@ -565,6 +565,9 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 
 if ($edit_type == "html") {
 	tools_html(form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+
+	$t_content = tidy_html($t_content, isset($auto_linebreaks) ? $auto_linebreaks : false);
+	$t_content = _htmlentities($t_content);
 
 	echo tools_junk()."\n";
 	echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";

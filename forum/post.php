@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.150 2004-02-09 01:26:56 tribalonline Exp $ */
+/* $Id: post.php,v 1.151 2004-02-09 03:48:33 tribalonline Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -704,6 +704,7 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 
 tools_html(form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 
+echo tools_junk()."\n";
 if (isset($t_content)) {
 	if (isset($HTTP_POST_VARS['preview']) && isset($HTTP_POST_VARS['t_post_html']) && $t_post_html) {
 		$t_content = tidy_html($t_content, $auto_linebreaks);
@@ -712,9 +713,7 @@ if (isset($t_content)) {
 } else {
 	$t_content = "";
 }
-
-echo tools_junk()."\n";
-echo form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
+echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
 echo tools_junk()."\n";
 
 echo "\n\n<script language=\"Javascript\">\n";

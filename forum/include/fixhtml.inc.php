@@ -544,10 +544,55 @@ function tidy_html ($html, $linebreaks = true) {
 	}
 
 	// make <quote source=".." url="..">..</quote> tag
-	$html = preg_replace("/<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">([^<]*)?<\/a>)?<\/div>[^\"]+\"quote\">((.|\s)*)<\/div>/i",
-						"<quote source=\"$3\" url=\"$2\">$4</quote>", $html);
+	$html_left = "";
+	$html_right = $html;
+	while ($pos = strpos($html_right, "<div class=\"quotetext\"><b>quote: </b>")) {
+		$html_left .= substr($html_right, 0, $pos);
+		$matches = array();
+
+		if (preg_match("/^<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">)?([^<]*)?(<\/a>)?<\/div>\s*<div class=\"quote\">((.|\s)*)<\/div>/i", 
+						substr($html_right, $pos), $matches)) {
+			$html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
+
+			$search = "class=\"quote\"";
+			$j = strpos($html_right, $search);
+
+			$first = $j + strlen($search) + 1;
+			$open_num = 1;
+			while (1 != 2) {
+				$open = strpos($html_right, "<div", $j);
+				$close = strpos($html_right, "</div>", $j);
+				if (!is_integer($open)) {
+					$open = $close+1;
+				}
+				if ($close < $open && $open_num == 1) {
+					$j = $close;
+					break;
+				} else if ($close < $open) {
+					$open_num--;
+					$open = $close;
+				} else {
+					$open_num++;
+				}
+				$j = $open+1;
+			}
+
+			$html_left .= substr($html_right, $first, $j-$first)."</quote>";
+			$html_right = substr($html_right, $j + strlen("</div>"));
+
+		} else {
+			$html_left .= substr($html_right, $pos, 1);
+			$html_right = substr($html_right, $pos + 1);
+		}
+	}
+	$html = $html_left.$html_right;
+
+//	$html = preg_replace("/<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">([^<]*)?<\/a>)?<\/div>[^\"]+\"quote\">((.|\s)*)<\/div>/i",
+//						"<quote source=\"$3\" url=\"$2\">$4</quote>", $html);
+
+
 	// make <code>..</code> tag, and html_entity_decode 
-	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>[^\"]+\"code\">((.|\s)*)<\/pre>/ie",
+	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>[^\"]+\"code\">([^<]*)<\/pre>/ie",
 						"'<code>'.html_entity_decode('$1').'</code>'", $html);
 
 	return $html;

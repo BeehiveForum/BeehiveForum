@@ -25,6 +25,7 @@ USA
 
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/html.inc.php");
 
 if(!bh_session_check()){
 
@@ -38,7 +39,7 @@ if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
     exit;
 }
 
-require_once("./include/html.inc.php");
+
 require_once("./include/constants.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/form.inc.php");

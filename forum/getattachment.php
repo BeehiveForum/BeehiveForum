@@ -72,6 +72,12 @@ if (isset($HTTP_GET_VARS['hash']) && isset($HTTP_GET_VARS['filename']) && isset(
       }else {
     
         header("Content-Type: ". $attachmentdetails['MIMETYPE']);
+        
+        if($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
+          header("Content-disposition: filename=". $HTTP_GET_VARS['filename']);
+          header("Content-Transfer-Encoding: binary");
+        }
+        
         header("Pragma: no-cache");
         header("Expires: 0");
           

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.169 2004-09-07 01:50:48 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.170 2004-09-08 21:56:55 decoyduck Exp $ */
 
 // International English language file
 
@@ -957,6 +957,7 @@ $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebre
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
 $lang['privatemessageoptions'] = "Private Message Options";
 $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
+$lang['includepminreply'] = "Include message body when replying to PM";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

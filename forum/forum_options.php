@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.54 2004-09-07 01:50:48 tribalonline Exp $ */
+/* $Id: forum_options.php,v 1.55 2004-09-08 21:56:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -196,6 +196,18 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['PM_SAVE_SENT_ITEM'] = ($_POST['pm_save_sent_items_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['PM_SAVE_SENT_ITEM'] = false;
+    }
+
+    if (isset($_POST['pm_include_reply']) && $_POST['pm_include_reply'] == "Y") {
+        $user_prefs['PM_INCLUDE_REPLY'] = "Y";
+    }else {
+        $user_prefs['PM_INCLUDE_REPLY'] = "N";
+    }
+
+    if (isset($_POST['pm_include_reply_global'])) {
+        $user_prefs_global['PM_INCLUDE_REPLY'] = ($_POST['pm_include_reply_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['PM_INCLUDE_REPLY'] = false;
     }
 
 
@@ -470,6 +482,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_save_sent_items", "Y", $lang['savepminsentitems'], (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_save_sent_items_global","Y",$lang['setforallforums'],$user_prefs['PM_SAVE_SENT_ITEM_GLOBAL']), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("pm_include_reply", "Y", $lang['includepminreply'], (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_include_reply_global","Y",$lang['setforallforums'],$user_prefs['PM_INCLUDE_REPLY_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

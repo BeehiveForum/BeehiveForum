@@ -29,6 +29,7 @@ require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/form.inc.php"); // Form drawing functions
 require_once("./include/header.inc.php");
+require_once("./include/functions.inc.php");
 
 header_no_cache();
 

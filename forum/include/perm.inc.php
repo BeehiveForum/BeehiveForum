@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.30 2004-05-24 18:01:37 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.31 2004-05-25 11:51:17 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -60,7 +60,7 @@ function perm_has_admin_access()
 
     $row = db_fetch_array($result);
 
-    return ($row['STATUS'] & USER_PERM_ADMIN_TOOLS);
+    return ($row['STATUS'] & USER_PERM_ADMIN_TOOLS) > 0;
 }
 
 function perm_has_forumtools_access()
@@ -80,7 +80,7 @@ function perm_has_forumtools_access()
 
     $row = db_fetch_array($result);
 
-    return ($row['STATUS'] & USER_PERM_FORUM_TOOLS);
+    return ($row['STATUS'] & USER_PERM_FORUM_TOOLS) > 0;
 }
 
 function perm_check_folder_permissions($fid, $access_level)
@@ -94,26 +94,19 @@ function perm_check_folder_permissions($fid, $access_level)
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT GROUP_PERMS.PERM AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN ($fid) ";
+    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS ";
+    $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "WHERE GROUP_PERMS.FID IN (0, $fid) ";
+    $sql.= "AND ((GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_USERS.UID = '$uid') ";
+    $sql.= "OR GROUP_PERMS.GID = 0 OR GROUP_PERMS.GID IS NULL) ";
     $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 
     $result = db_query($sql, $db_perm_check_folder_permissions);
 
-    if (db_num_rows($result) > 0) {
-
-        $row = db_fetch_array($result);
-        if (!is_null($row['STATUS'])) return ($row['STATUS'] & $access_level) > 0;
-    }
-
-    $sql = "SELECT PERM AS STATUS FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-    $result = db_query($sql, $db_perm_check_folder_permissions);
-
     $row = db_fetch_array($result);
-    if (!is_null($row['STATUS'])) return ($row['STATUS'] & $access_level) > 0;
 
-    return true;
+    return ($row['STATUS'] & $access_level) > 0;
 }
 
 function perm_get_user_groups()

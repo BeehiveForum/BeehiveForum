@@ -49,7 +49,7 @@ if(bh_session_check()) {
     
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($HTTP_POST_VARS['logon'])) {
 
   if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
   
@@ -183,6 +183,7 @@ echo "    document.logonform.password.value = p;\n";
 echo "    document.logonform.remember_user.checked = true;\n";
 echo "  }\n";
 echo "}\n\n";
+echo "var has_clicked = false;\n\n";
 echo "//-->\n";
 echo "</script>\n";
   
@@ -204,7 +205,7 @@ if (isset($HTTP_GET_VARS['other'])) {
    
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "  <form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
+echo "  <form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
 echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
@@ -276,16 +277,12 @@ echo form_checkbox("remember_user", "Y", "Remember password", ($HTTP_COOKIE_VARS
 
 echo "</td>\n";
 echo "            </tr>\n";
-echo "            <tr>\n";
-echo "              <td>&nbsp;</td>\n";
-echo "              <td>&nbsp;</td>\n";
-echo "            </tr>\n";
 echo "          </table>\n";
 echo "          <table class=\"posthead\" width=\"100%\">\n";
 echo "            <tr>\n";
 echo "              <td align=\"center\">";
 
-echo form_submit("submit", "Logon");
+echo form_button('logon', 'Logon', "onclick=\"has_clicked = true; document.logonform.submit();\"");
 
 echo "</td>\n";
 echo "            </tr>\n";

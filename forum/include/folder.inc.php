@@ -46,7 +46,7 @@ function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 function folder_get_title($fid)
 {
    $db_folder_get_title = db_connect();
-   $sql = "select FOLDER.TITLE from " . forum_table("FOLDER") . " where FID = $fid";
+   $sql = "select ". forum_table("FOLDER"). ".TITLE from " . forum_table("FOLDER") . " where FID = $fid";
    $resource_id = db_query($sql,$db_folder_get_title);
    if(!db_num_rows($resource_id)){
      $foldertitle = "The Unknown Folder";

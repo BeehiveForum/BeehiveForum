@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.133 2004-06-28 21:51:03 decoyduck Exp $ */
+/* $Id: edit.php,v 1.134 2004-06-29 15:50:15 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -423,6 +423,14 @@ if (isset($_POST['preview'])) {
             if (perm_is_moderator($t_fid) && ($_POST['t_from_uid'] != bh_session_get_value('UID'))) {
                 admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
             }
+
+			echo "<script language=\"Javascript\">\n";
+			echo "  <!--\n";
+			echo "    function clearFocus() {\n";
+			echo "      return;\n";
+			echo "    }\n";
+			echo "  //-->\n";
+			echo "</script>\n";
 
             echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
             echo "<br />\n";

@@ -25,6 +25,7 @@ USA
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/user.inc.php");
 require_once("./include/format.inc.php");
+require_once("./include/forum.inc.php");
 
 $uid = $HTTP_GET_VARS['uid'];
 $psid = $HTTP_GET_VARS['psid'];
@@ -62,13 +63,13 @@ if($row_count == 0){
 
 echo "<table width=\"100%\" class=\"subhead\" border=\"0\"><tr>\n";
 
-for($i=0;$i<$row_count;$i++){
+for ($i = 0; $i < $row_count; $i++) {
     $row = db_fetch_array($result);
-    if($i==0){
-        if(!$psid){ // Default profile section is first one found
+    if ($i == 0) {
+        if(!$psid) {
             $psid = $row['PSID'];
         }
-    } else if(!($i%4)){ // Start new row every 4 sections
+    } else if(!($i % 4)){ // Start new row every 4 sections
         echo "</tr><tr>";
     }
     echo "<td width=\"25%\">";
@@ -80,7 +81,7 @@ for($i=0;$i<$row_count;$i++){
     }
 }
 
-for(;$i%4;$i++){
+for(;$i % 4; $i++){
     echo "<td width=\"25%\">&nbsp;</td>";
 }
 
@@ -111,9 +112,7 @@ $sql.= "where UID = '" . $HTTP_COOKIE_VARS['bh_sess_uid'] . "' ";
 $sql.= "and PEER_UID = '$uid'";
 
 $result = db_query($sql,$db);
-
 $row = db_fetch_array($result);
-$exists = db_num_rows($result);
 
 if($row['RELATIONSHIP'] != 1){
     $setrel = 1;
@@ -122,7 +121,8 @@ if($row['RELATIONSHIP'] != 1){
     $setrel = 0;
     $text = "Remove from friends";
 }
-echo "<tr><td><a href=\"./set_relation.php?uid=$uid&rel=$setrel&exists=$exists&ret=";
+
+echo "<tr><td><a href=\"./set_relation.php?uid=$uid&rel=$setrel&ret=";
 echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?uid=$uid&psid=$psid";
 echo "\">$text</a></td></tr>\n";
 
@@ -133,7 +133,8 @@ if($row['RELATIONSHIP'] != -1){
     $setrel = 0;
     $text = "Stop ignoring user";
 }
-echo "<tr><td><a href=\"./set_relation.php?uid=$uid&rel=$setrel&exists=$exists&ret=";
+
+echo "<tr><td><a href=\"./set_relation.php?uid=$uid&rel=$setrel&ret=";
 echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?uid=$uid&psid=$psid";
 echo "\">$text</a></td></tr>\n";
 

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.72 2004-04-11 01:01:16 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.73 2004-04-14 15:26:31 tribalonline Exp $ */
 
 include_once("./include/emoticons.inc.php");
 
@@ -39,7 +39,6 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 	$ret_text = '';
 
 	if (!empty($html)) {
-        $html = _stripslashes($html);
 		$html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
 		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noemots", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
@@ -635,7 +634,7 @@ function tidy_html ($html, $linebreaks = true) {
 
 
 	// convert smileys back to plain text
-	$html = preg_replace("/<span class=\"e_[^>]*\" title=\"[^>]*\"><span>([^<]*)<\/span><\/span>/i", "$1", $html);
+	$html = clean_emoticons($html);
 
 	return $html;
 }
@@ -647,6 +646,10 @@ function regex_output($text) {
     // http://uk2.php.net/manual/en/function.preg-replace.php
     $text = str_replace('\"', '"', $text);
     return "<code>$text</code>";
+}
+
+function clean_emoticons($html) {
+	return preg_replace("/<span class=\"e_[^>]*\" title=\"[^>]*\"><span>([^<]*)<\/span><\/span>/i", "$1", $html);
 }
 
 function clean_styles ($style) {
@@ -870,6 +873,22 @@ function add_paragraphs ($html, $base = true, $br_only = true) {
 	}
 
 	return $return;
+}
+
+function make_html($html, $br_only = false)
+{
+    $html = _htmlentities($html);
+    $html = format_url2link($html);
+
+	$h_s = preg_split("/(<a[^>]+>[^<]+<\/a>)/", $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+	for ($i=0; $i<count($h_s); $i+=2) {
+		$h_s[$i] = emoticons_convert($h_s[$i]);
+	}
+	$html = implode("", $h_s);
+
+    $html = add_paragraphs($html, true, $br_only);
+
+    return $html;
 }
 
 // $text to be filtered

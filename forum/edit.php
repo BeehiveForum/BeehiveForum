@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.112 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit.php,v 1.113 2004-04-14 15:26:31 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -198,37 +198,54 @@ $valid = true;
 html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "htmltools.js", "emoticons.js");
 
 $t_content = "";
-$edit_type = "text";
-$t_post_html = false;
-$content_html_changes = false;
-$sig_html_changes = false;
+$t_sig = "";
 
-if (isset($HTTP_POST_VARS['edit_type'])) {
-    $edit_type = $HTTP_POST_VARS['edit_type'];
-}
-if (isset($HTTP_POST_VARS['b_edit_html'])) {
-    $edit_type = "html";
-} else if (isset($HTTP_POST_VARS['b_edit_text'])) {
-    $edit_type = "text";
-}
-if ($edit_type == "html") {
-    $t_post_html = true;
-    if (isset($HTTP_POST_VARS['t_post_html'])) {
-        $t_post_html = $HTTP_POST_VARS['t_post_html'];
-        if ($t_post_html == "enabled_auto") {
-            $t_post_html = true;
-            $auto_linebreaks = true;
-        } else if ($t_post_html == "enabled") {
-            $t_post_html = true;
-            $auto_linebreaks = false;
-        } else {
-            $t_post_html = false;
-        }
+$post_html = 0;
+$sig_html = 2;
+
+if (isset($HTTP_POST_VARS['t_post_html'])) {
+    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+    if ($t_post_html == "enabled_auto") {
+		$post_html = 1;
+    } else if ($t_post_html == "enabled") {
+		$post_html = 2;
     }
+}
+if (isset($HTTP_POST_VARS['t_sig_html'])) {
+	$t_sig_html = $HTTP_POST_VARS['t_sig_html'];
+	if ($t_sig_html != "N") {
+		$sig_html = 1;
+	}
+}
+
+$post = new MessageText($post_html);
+$sig = new MessageText($sig_html);
+
+if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
+	$t_content = $HTTP_POST_VARS['t_content'];
+	
+	if ($post_html && attachment_embed_check($t_content)) {
+		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+		$valid = false;
+	}
+
+	$post->setContent($t_content);
+	$t_content = $post->getContent();
+
+}
+if (isset($HTTP_POST_VARS['t_sig']) && trim($HTTP_POST_VARS['t_sig']) != "") {
+	$t_sig = $HTTP_POST_VARS['t_sig'];
+
+	if (attachment_embed_check($t_sig)) {
+		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+		$valid = false;
+	}
+
+	$sig->setContent($t_sig);
+	$t_sig = $sig->getContent();
 }
 
 if (isset($HTTP_POST_VARS['preview'])) {
-
     $preview_message = messages_get($tid, $pid, 1);
 
     if (isset($HTTP_POST_VARS['t_to_uid'])) {
@@ -245,63 +262,13 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
-
-        $t_content = $HTTP_POST_VARS['t_content'];
-        
-        if (attachment_embed_check($t_content) && $t_post_html == true) {
-            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-            $valid = false;
-        }
-    }else {
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-        $valid = false;
-    }
-
-    if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
-
-        $old_t_sig = $HTTP_POST_VARS['t_sig'];
-
-        $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
-
-        if ($old_t_sig != tidy_html($t_sig, false)) {
-            $sig_html_changes = true;
-        }
-
-        if (attachment_embed_check($t_sig)) {
-            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-            $valid = false;
-        }
-    }else {
-        $t_sig = "";
-    }
+	if (trim($t_content) == "") {
+		$error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+		$valid = false;
+	}
 
     if ($valid) {
-
-        if ($t_post_html == true && $edit_type == "html") {
-            $old_t_content = $t_content;
-            $t_content = fix_html($t_content);
-
-            if ($old_t_content != tidy_html($t_content)) {
-                $content_html_changes = true;
-            }
-
-            if ($auto_linebreaks == true) {
-                $t_content = add_paragraphs($t_content);
-            }
-            $preview_message['CONTENT'] = $t_content;
-//            $t_content = str_replace("&", "&amp;", $t_content);
-
-/*            $t_content = fix_html($t_content);
-            $preview_message['CONTENT'] = $t_content;
-            $t_content = str_replace("&", "&amp;", $t_content);*/
-        }else{
-            $t_content = make_html($t_content);
-            $preview_message['CONTENT'] = $t_content;
-            $t_content = strip_tags($t_content);
-          //  $t_content = ereg_replace("\n+", "\n", $t_content);
-        }
-
+        $preview_message['CONTENT'] = $t_content;
         $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
 
         if ($to_uid == 0) {
@@ -324,8 +291,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $preview_message['FROM_UID'] = $from_uid;
     }
 
-}elseif (isset($HTTP_POST_VARS['submit'])) {
-
+} else if (isset($HTTP_POST_VARS['submit'])) {
     $editmessage = messages_get($tid, $pid, 1);
 
     if (isset($HTTP_POST_VARS['t_to_uid'])) {
@@ -342,36 +308,10 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
-
-        $t_content = $HTTP_POST_VARS['t_content'];
-
-        if (attachment_embed_check($t_content) && $t_post_html == true) {
-            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-            $valid = false;
-        }
-    }else {
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-        $valid = false;
-    }
-
-    if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
-
-        $old_t_sig = $HTTP_POST_VARS['t_sig'];
-
-        $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
-
-        if ($old_t_sig != $t_sig) {
-            $sig_html_changes = true;
-        }
-
-        if (attachment_embed_check($t_sig)) {
-            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-            $valid = false;
-        }
-    }else {
-        $t_sig = "";
-    }
+	if (trim($t_content) == "") {
+		$error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+		$valid = false;
+	}
 
     if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
     
@@ -397,25 +337,9 @@ if (isset($HTTP_POST_VARS['preview'])) {
     $preview_message = $editmessage;
 
     if ($valid) {
+        $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
 
-        if ($t_post_html == true) {
-            $old_t_content = _stripslashes($t_content);
-            $t_content = fix_html($t_content);
-
-            if ($old_t_content != tidy_html($t_content)) {
-                $content_html_changes = true;
-            }
-
-            if ($auto_linebreaks == true) {
-                $t_content = add_paragraphs($t_content);
-            }
-        }else{
-            $t_content = make_html($t_content);
-        }
-
-        $t_content.= "<div class=\"sig\">$t_sig</div>";
-
-        $updated = post_update($tid, $pid, $t_content);
+        $updated = post_update($tid, $pid, $t_content_tmp);
 
         if ($updated) {
         
@@ -449,40 +373,6 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         }else{
             $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
-
-			$t_content_temp = $t_content;
-			$t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
-
-			if (count($t_content_temp) > 1) {
-
-				$t_sig_temp = array_pop($t_content_temp);
-				$t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
-
-				$t_sig = "";
-
-				for ($i = 0; $i < count($t_sig_temp) - 1; $i++) {
-					$t_sig.= $t_sig_temp[$i];
-					if ($i < count($t_sig_temp) - 2 ) {
-						$t_sig.= "</div>";
-					}
-				}
-
-			}else {
-				$t_sig = "";
-			}
-
-			$t_content = "";
-
-			for ($i = 0; $i < count($t_content_temp); $i++) {
-				$t_content.= $t_content_temp[$i];
-				if ($i < count($t_content_temp) - 1) {
-					$t_content.= "<div class=\"sig\">";
-				}
-			}
-
-			if (!isset($HTTP_POST_VARS['b_edit_html'])) {
-				$t_content = strip_tags($t_content);
-			}
         }
     }
 
@@ -520,7 +410,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $to_uid = $editmessage['TO_UID'];
         $from_uid = $editmessage['FROM_UID'];
 
-        $t_content_temp = $editmessage['CONTENT'];
+        $t_content_temp = clean_emoticons($editmessage['CONTENT']);
         $t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
 
         if (count($t_content_temp) > 1) {
@@ -550,19 +440,19 @@ if (isset($HTTP_POST_VARS['preview'])) {
             }
         }
 
-        $preview_message['CONTENT'] = $t_content."<div class=\"sig\">".$t_sig."</div>";
+		$post_html = 0;
+		$t_content_tmp = preg_replace("/<a href=\"(.*)\">\1<\/a>/", "\\1", $t_content);
+		if (strip_tags($t_content_tmp, '<p><br>') != $t_content) {
+			$post_html = 2;
+		} else {
+			$t_content = strip_tags($t_content);
+		}
 
-        if (!isset($HTTP_POST_VARS['b_edit_html'])) {
+		$post = new MessageText($post_html, $t_content);
+		$sig = new MessageText($sig_html, $t_sig);
 
-//            $t_content = trim($t_content);
-//            $t_content = str_replace("<p>", "\n\n<p>", $t_content);
-//            $t_content = str_replace("</p>", "</p>\n", $t_content);
-//            $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
-//            $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
-            $t_content = strip_tags($t_content);
-        }else{
-//            $t_content = _htmlentities($t_content);
-        }
+		$t_content = $post->getContent();
+		$t_sig = $sig->getContent();
 
     }else{
         $valid = false;
@@ -570,7 +460,6 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     unset($editmessage);
- //   $t_post_html = isset($HTTP_POST_VARS['b_edit_html']);
 }
 
 echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
@@ -652,58 +541,34 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 
 $tools = new TextAreaHTML("f_edit");
 
-if ($edit_type == "html") {
-	echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
 
-    $t_content = tidy_html($t_content, isset($auto_linebreaks) ? $auto_linebreaks : false);
-    $t_content = _htmlentities($t_content);
+echo $tools->textarea("t_content", $post->getTidyContent(), 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
-    echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+if ($post->isDiff()) {
 
-    if ($content_html_changes == true) {
+	echo $tools->compare_original("t_content", $post->getOriginalContent());
 
-		echo $tools->compare_original("t_content", $old_t_content);
-
-        echo "<br /><br />\n";
-    }
-
-    echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
-
-    $tph_radio = 1;
-    if ($t_post_html) {
-        $tph_radio = 3;
-        if (isset($auto_linebreaks) && $auto_linebreaks == true) {
-            $tph_radio = 2;
-        }
-    }
-
-    echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
-    echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
-    echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
-
-	echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-
-    echo "<br /><br />\n";
-
-} else {
-    echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
-
+	echo "<br /><br />\n";
 }
+
+echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+
+$tph_radio = $post->getHTML();
+
+echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+
+echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
+echo "<br /><br />\n";
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 
 echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
-
-if ($edit_type == "html") {
-    echo "&nbsp;".form_submit("b_edit_text", $lang['edittext']);
-    echo form_input_hidden("edit_type", "html");
-
-} else {
-    echo "&nbsp;".form_submit("b_edit_html", $lang['editHTML']);
-    echo form_input_hidden("edit_type", "text");
-}
 
 if ($aid = get_attachment_id($tid, $pid)) {
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
@@ -717,15 +582,13 @@ if ($aid = get_attachment_id($tid, $pid)) {
 // ---- SIGNATURE ----
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-$t_sig = tidy_html($t_sig, false);
-
-echo $tools->textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+echo $tools->textarea("t_sig", $sig->getTidyContent(), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
 echo $tools->js();
 
-if ($sig_html_changes == true) {
+if ($sig->isDiff()) {
 
-	echo $tools->compare_original("t_sig", $old_t_sig);
+	echo $tools->compare_original("t_sig", $sig->getOriginalContent());
 }
 
 echo "</td></tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.74 2004-04-13 14:04:04 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.75 2004-04-14 15:26:32 tribalonline Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -132,23 +132,6 @@ function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = 
     }
 
     return $new_tid;
-}
-
-function make_html($text, $br_only = false)
-{
-    $html = _stripslashes($text);
-    $html = _htmlentities($html);
-    $html = format_url2link($html);
-
-	$h_s = preg_split("/(<a[^>]+>[^<]+<\/a>)/", $html, -1, PREG_SPLIT_DELIM_CAPTURE);
-	for ($i=0; $i<count($h_s); $i+=2) {
-		$h_s[$i] = emoticons_convert($h_s[$i]);
-	}
-	$html = implode("", $h_s);
-
-    $html = add_paragraphs($html, true, $br_only);
-
-    return $html;
 }
 
 function post_draw_to_dropdown($default_uid, $show_all = true)
@@ -389,6 +372,79 @@ function check_ddkey($ddkey)
     }
 
     return !($ddkey == $ddkey_check);
+}
+
+
+class MessageText {
+
+	var $html;
+	var $text;
+	var $original_text;
+	var $diff;
+	var $emoticons;
+
+	function MessageText ($html = 0, $content = "", $emoticons = true) {
+		$this->diff = false;
+		$this->emoticons = $emoticons;
+		$this->setHTML($html);
+		$this->setContent($content);
+	}
+
+	function setHTML ($html) {
+		if ($html == false || $html == "N") {
+			$this->html = 0;
+		} else if ($html == 1 || $html == "A") {
+			$this->html = 1;
+		} else {
+			$this->html = 2;
+		}
+	}
+
+	function getHTML () {
+		return $this->html;
+	}
+
+	function setContent ($text) {
+		$text = _stripslashes($text);
+
+		$this->original_text = $text;
+
+		if ($this->html == 0) {
+			$text = make_html($text);
+		} else if ($this->html > 0) {
+			$text = fix_html($text, $this->emoticons);
+
+			if ($this->original_text != tidy_html($text, ($this->html == 1) ? true : false)) {
+				$this->diff = true;
+			}
+
+			if ($this->html == 1) {
+				$text = add_paragraphs($text);
+			}
+		}
+
+		$this->text = $text;
+	}
+
+	function getContent () {
+		return $this->text;
+	}
+
+	function getTidyContent () {
+		if ($this->html == 0) {
+			return strip_tags($this->text);
+		} else if ($this->html > 0) {
+			return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false));
+		}
+	}
+
+	function getOriginalContent () {
+		return $this->original_text;
+	}
+
+	function isDiff () {
+		return $this->diff;
+	}
 }
 
 ?>

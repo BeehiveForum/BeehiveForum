@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.60 2004-04-12 15:34:48 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.61 2004-04-14 15:26:31 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,6 +41,7 @@ include_once("./include/fixhtml.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
+include_once("./include/htmltools.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/pm.inc.php");
@@ -137,6 +138,7 @@ if (isset($mid)) {
 // Assume everything is correct (form input, etc)
 
 $valid = true;
+$t_content = "";
 
 // User clicked the submit button - check the data that was submitted
 
@@ -220,38 +222,27 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
         $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
     }
+}
 
-    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
-        $t_post_html = "Y";
-    }else {
-        $t_post_html = "N";
+$post_html = 0;
+if (isset($HTTP_POST_VARS['t_post_html'])) {
+    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+    if ($t_post_html == "enabled_auto") {
+		$post_html = 1;
+    } else if ($t_post_html == "enabled") {
+		$post_html = 2;
     }
 }
 
 // Process the data based on what we know.
-
-if ($valid) {
-
-    if (isset($t_post_html) && $t_post_html == "Y") {
-        $t_content = fix_html($t_content);
-    }
-
-}else {
-
-    if (isset($t_post_html) && $t_post_html == "Y") {
-        $t_content = _stripslashes($t_content);
-    }
-}
+$post = new MessageText($post_html, $t_content);
+$t_content = $post->getContent();
 
 // Send the PM
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
-
-        if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-            $t_content = make_html($t_content);
-        }
 
         foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
             if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
@@ -273,7 +264,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     header_redirect($uri);
 }
 
-html_draw_top("openprofile.js", "post.js", "basetarget=_blank");
+html_draw_top("openprofile.js", "post.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
 
 // Attachment Unique ID
@@ -282,15 +273,6 @@ if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = md5(uniqid(rand()));
 }else{
   $aid = $HTTP_POST_VARS['aid'];
-}
-
-// User clicked the Convert button.
-
-if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
-
-   $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
-   $t_post_html = "Y";
-
 }
 
 // preview message
@@ -316,11 +298,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     $pm_preview_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
-    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-        $pm_preview_array['CONTENT'] = make_html($t_content);
-    }else {
-        $pm_preview_array['CONTENT'] = $t_content;
-    }
+    $pm_preview_array['CONTENT'] = $t_content;
 
     draw_pm_message($pm_preview_array);
     echo "<br />\n";
@@ -348,9 +326,7 @@ if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
     echo "<br />\n";
 }
 
-if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-    $t_content = isset($t_content) ? _stripslashes($t_content) : "";
-}
+$tools = new TextAreaHTML("f_post");
 
 echo "<form name=\"f_post\" action=\"pm_write.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "<table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -368,15 +344,33 @@ echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 72). "</td>\n";
+echo "          <td>".$tools->toolbar();
+echo $tools->textarea("t_content", $post->getTidyContent(), 15, 72). "</td>\n";
 echo "        </tr>\n";
+if ($post->isDiff()) {
+	echo "        <tr>\n";
+	echo "          <td>\n";
+	echo "            ".$tools->compare_original("t_content", $post->getOriginalContent());
+	echo "          </td>\n";
+	echo "        </tr>\n";
+}
 echo "        <tr>\n";
-echo "          <td><span class=\"bhinputcheckbox\">", form_checkbox('t_post_html', 'Y', $lang['messagecontainsHTML'], (isset($t_post_html) && $t_post_html == 'Y')), "</td>\n";
+echo "          <td>\n";
+echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+$tph_radio = $post->getHTML();
+
+echo "            ".form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+echo "            ".form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+echo "            ".form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+
+echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+echo "          </td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+
 echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
 echo form_submit('cancel', $lang['cancel']);
 
@@ -385,7 +379,7 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && forum_get_setting('p
     echo form_input_hidden("aid", $aid);
 }
 
-echo "&nbsp;".form_submit("convert_html", $lang['converttoHTML']);
+echo $tools->js();
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.67 2005-01-30 18:56:25 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.68 2005-01-31 15:44:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -399,6 +399,20 @@ if (!isset($uid)) $uid = bh_session_get_value('UID');
 
 $user_prefs = user_get_prefs($uid);
 
+// Get the available forum styles and emoticons
+
+$available_styles = styles_get_available();
+$available_emoticons = emoticons_get_available();
+
+// Set the default POST_PAGE options if none set
+
+if ($user_prefs['POST_PAGE'] == 0) {
+
+    $user_prefs['POST_PAGE']  = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY;
+    $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT | POST_AUTO_LINKS;
+    $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
+}
+
 // Start output here
 
 html_draw_top("emoticons.js");
@@ -450,13 +464,7 @@ echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['timezone']}<
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['timezonefromGMT']}:</td>\n";
-
-if (isset($user_prefs['TIMEZONE']) && is_numeric($user_prefs['TIMEZONE'])) {
-    echo "                  <td>", form_dropdown_array("timezone", $timezones_data, $timezones, $user_prefs['TIMEZONE']), "</td>\n";
-}else {
-    echo "                  <td>", form_dropdown_array("timezone", $timezones_data, $timezones, 0), "</td>\n";
-}
-
+echo "                  <td>", form_dropdown_array("timezone", $timezones_data, $timezones, (isset($user_prefs['TIMEZONE']) && is_numeric($user_prefs['TIMEZONE']) ? $user_prefs['TIMEZONE'] : 0)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -556,64 +564,27 @@ echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['style']}</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['postsperpage']}:</td>\n";
-
-if (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PAGE'])) {
-    echo "                  <td>", form_dropdown_array("posts_per_page", array(10, 20, 30), array(10, 20, 30), $user_prefs['POSTS_PER_PAGE']), "</td>\n";
-}else {
-    echo "                  <td>", form_dropdown_array("posts_per_page", array(10, 20, 30), array(10, 20, 30), 10), "</td>\n";
-}
+echo "                  <td>", form_dropdown_array("posts_per_page", array(10, 20, 30), array(10, 20, 30), (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PAGE'])) ? $user_prefs['POSTS_PER_PAGE'] : 10), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("posts_per_page_global", "Y", $lang['setforallforums'], $user_prefs['POSTS_PER_PAGE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['fontsize']}:</td>\n";
-
-if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
-    echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']), "</td>\n";
-}else {
-    echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), 10), "</td>\n";
-}
+echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) ? $user_prefs['FONT_SIZE'] : 10), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("font_size_global", "Y", $lang['setforallforums'], $user_prefs['FONT_SIZE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['forumstyle']}:</td>\n";
-
-$styles = style_get_styles();
-$styles_keys = array_keys($styles);
-
-if (_in_array($user_prefs['STYLE'], $styles_keys)) {
-    $selected_style = $user_prefs['STYLE'];
-}else {
-    $selected_style = forum_get_setting('default_style');
-}
-
-echo "                  <td>", form_dropdown_array("style", $styles_keys, array_values($styles), $selected_style), "</td>\n";
+echo "                  <td>", form_dropdown_array("style", array_keys($available_styles), array_values($available_styles), (_in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style')), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("style_global", "Y", $lang['setforallforums'], $user_prefs['STYLE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"250\">{$lang['forumemoticons']} ";
-echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('', '$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
-
-$emot_sets = emoticons_get_sets();
-$emot_sets_keys = array_keys($emot_sets);
-
-if (_in_array($user_prefs['EMOTICONS'], $emot_sets_keys)) {
-    $emot_selected = $user_prefs['EMOTICONS'];
-}else {
-    $emot_selected = forum_get_setting('default_emoticons');
-}
-
-echo "                  <td>", form_dropdown_array("emoticons", $emot_sets_keys, array_values($emot_sets), $emot_selected), "</td>\n";
+echo "                  <td width=\"250\">{$lang['forumemoticons']} [<a href=\"javascript:void(0);\" onclick=\"openEmoticons('', '$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
+echo "                  <td>", form_dropdown_array("emoticons", array_keys($available_emoticons), array_values($available_emoticons), (_in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons')), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("emoticons_global", "Y", $lang['setforallforums'], $user_prefs['EMOTICONS_GLOBAL']), "&nbsp;</td>\n";
-
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['startpage']}:</td>\n";
-
-if (isset($user_prefs['START_PAGE'])) {
-    echo "                  <td>", form_dropdown_array("start_page", range(0, 3), array($lang['start'], $lang['messages'], $lang['pminbox'], $lang['startwiththreadlist']), $user_prefs['START_PAGE']), "</td>\n";
-}else {
-    echo "                  <td>", form_dropdown_array("start_page", range(0, 3), array($lang['start'], $lang['messages'], $lang['pminbox'], $lang['startwiththreadlist']), 0), "</td>\n";
-}
+echo "                  <td>", form_dropdown_array("start_page", range(0, 3), array($lang['start'], $lang['messages'], $lang['pminbox'], $lang['startwiththreadlist']), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("start_page_global", "Y", $lang['setforallforums'], $user_prefs['START_PAGE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -627,11 +598,6 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-
-if ($user_prefs['POST_PAGE'] == 0) {
-    $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
-}
-
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -661,22 +627,13 @@ echo "                <tr>\n";
 echo "                  <td>", form_checkbox("post_links", "Y", $lang['automaticallyparseurlsbydefault'], $user_prefs['POST_PAGE'] & POST_AUTO_LINKS), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-
-if (($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0) {
-    $post_html = 1;
-}else if (($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0) {
-    $post_html = 2;
-}else {
-    $post_html = 0;
-}
-
-echo "                  <td>", form_radio("post_html", "0", $lang['postinplaintextbydefault'], $post_html == 0), "</td>\n";
+echo "                  <td>", form_radio("post_html", "0", $lang['postinplaintextbydefault'], ((!$user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0 && (!$user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_radio("post_html", "1", $lang['postinhtmlwithautolinebreaksbydefault'], $post_html == 1), "</td>\n";
+echo "                  <td>", form_radio("post_html", "1", $lang['postinhtmlwithautolinebreaksbydefault'], ($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_radio("post_html", "2", $lang['postinhtmlbydefault'], $post_html == 2), "</td>\n";
+echo "                  <td>", form_radio("post_html", "2", $lang['postinhtmlbydefault'], ($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

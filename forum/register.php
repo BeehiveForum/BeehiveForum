@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.102 2005-01-30 14:10:23 decoyduck Exp $ */
+/* $Id: register.php,v 1.103 2005-01-31 15:44:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,6 +49,7 @@ include_once("./include/format.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/session.inc.php");
+include_once("./include/styles.inc.php");
 include_once("./include/user.inc.php");
 
 // Where are we going after we've logged on?
@@ -97,67 +98,10 @@ if (forum_get_setting('allow_new_registrations', 'N', false)) {
     exit;
 }
 
-$available_styles = array();
-$style_names = array();
+$available_styles = styles_get_available();
+$available_emoticons = emoticons_get_available();
+$available_langs = lang_get_available();
 
-if (@$dir = opendir('styles')) {
-
-    while (($file = readdir($dir)) !== false) {
-
-        if (@is_dir("styles/$file") && $file != '.' && $file != '..') {
-
-            if (@file_exists("./styles/$file/desc.txt")) {
-
-                if (@$fp = fopen("./styles/$file/desc.txt", "r")) {
-
-                    $available_styles[] = $file;
-                    $style_names[] = _htmlentities(fread($fp, filesize("styles/$file/desc.txt")));
-                    fclose($fp);
-
-                }else {
-
-                    $available_styles[] = $file;
-                    $style_names[] = $file;
-                }
-            }
-        }
-    }
-    closedir($dir);
-}
-
-array_multisort($style_names, $available_styles);
-
-$available_emots = array();
-$emot_names = array();
-
-if (@$dir = opendir('emoticons')) {
-
-    while (($file = readdir($dir)) !== false) {
-
-        if (@is_dir("emoticons/$file") && $file != '.' && $file != '..') {
-
-            if (@file_exists("./emoticons/$file/desc.txt")) {
-
-                if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
-
-                    $available_emots[] = $file;
-                    $emot_names[] = _htmlentities(fread($fp, filesize("emoticons/$file/desc.txt")));
-                    fclose($fp);
-
-                }else {
-
-                    $available_emots[] = $file;
-                    $emot_names[] = $file;
-                }
-            }
-        }
-    }
-    closedir($dir);
-}
-
-array_multisort($emot_names, $available_emots);
-
-$available_langs = lang_get_available(); // Get available languages
 $available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
 array_unshift($available_langs, "");
 
@@ -624,61 +568,11 @@ echo "                  <td>", form_dropdown_array("LANGUAGE", $available_langs,
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['style']}</td>\n";
-echo "                  <td>";
-
-if (isset($new_user['STYLE'])) {
-    $selected_style = $new_user['STYLE'];
-    if (!in_array($selected_style, $available_styles)) {
-        $selected_style = forum_get_setting('default_style');
-    }
-}else {
-    $selected_style = forum_get_setting('default_style');
-}
-
-foreach ($available_styles as $key => $style) {
-    if (strtolower($style) == strtolower($selected_style)) {
-        break;
-    }
-}
-
-reset($available_styles);
-
-if (isset($key)) {
-    echo form_dropdown_array("STYLE", $available_styles, $style_names, $available_styles[$key]);
-}else {
-    echo form_dropdown_array("STYLE", $available_styles, $style_names, $available_styles[0]);
-}
-
-echo "                  </td>\n";
+echo "                  <td>", form_dropdown_array("STYLE", array_keys($available_styles), array_values($available_styles), (isset($new_user['STYLE']) && _in_array($new_user['STYLE'], array_keys($available_styles))) ? $new_user['STYLE'] : forum_get_setting('default_style')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['forumemoticons']}</td>\n";
-echo "                  <td>";
-
-if (isset($new_user['EMOTICONS'])) {
-    $selected_emoticon = $new_user['EMOTICONS'];
-    if (!in_array($selected_emoticon, $available_emots)) {
-        $selected_emoticon = forum_get_setting('default_emoticons');
-    }
-}else {
-    $selected_emoticon = forum_get_setting('default_emoticons');
-}
-
-foreach ($available_emots as $key => $emoticon) {
-    if (strtolower($emoticon) == strtolower($selected_emoticon)) {
-        break;
-    }
-}
-
-reset($available_emots);
-
-if (isset($key)) {
-    echo form_dropdown_array("EMOTICONS", $available_emots, $emot_names, $available_emots[$key]);
-}else {
-    echo form_dropdown_array("EMOTICONS", $available_emots, $emot_names, $available_emots[0]);
-}
-
-echo "                  </td>\n";
+echo "                  <td>", form_dropdown_array("EMOTICONS", array_keys($available_emoticons), array_values($available_emoticons), (isset($new_user['EMOTICONS']) && _in_array($new_user['EMOTICONS'], array_keys($available_emoticons))) ? $new_user['EMOTICONS'] : forum_get_setting('default_emoticons')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

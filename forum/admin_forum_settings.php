@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.44 2004-11-14 16:11:31 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.45 2004-12-03 00:29:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -641,62 +641,6 @@ echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_16']}</p>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['personalmessages']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td>\n";
-echo "                          <fieldset>\n";
-echo "                            <legend>", form_checkbox("show_pms", "Y", $lang['enablepersonalmessages'], forum_get_setting('show_pms', 'Y', false)), "</legend>\n";
-echo "                            <table class=\"posthead\" width=\"100%\">\n";
-echo "                              <tr>\n";
-echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['pmusermessages']}:</td>\n";
-echo "                                <td>", form_input_text("pm_max_user_messages", forum_get_setting('pm_max_user_messages', false, 100), 10, 32), "&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                              <tr>\n";
-echo "                                <td>", form_checkbox("pm_auto_prune", "Y", $lang['autopruneuserspmfoldersevery'], forum_get_setting('pm_auto_prune', 'Y', false)), "&nbsp;</td>\n";
-echo "                                <td>", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), forum_get_setting('pm_auto_prune_length', false, 60)), " <span class=\"admin_settings_text\">{$lang['days']}</span>&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                              <tr>\n";
-echo "                                <td colspan=\"2\">", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], forum_get_setting('pm_allow_attachments', 'Y', false)), "&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                            </table>\n";
-echo "                          </fieldset>\n";
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_17']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_18']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_19']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

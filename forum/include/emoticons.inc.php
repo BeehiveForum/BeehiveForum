@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.22 2004-08-12 20:41:33 tribalonline Exp $ */
+/* $Id: emoticons.inc.php,v 1.23 2004-08-20 23:40:55 tribalonline Exp $ */
 
 // Emoticon filter file
 
@@ -54,8 +54,8 @@ for ($i=0; $i<count($e_keys); $i++) {
 				$a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
 				$a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
 
-				$pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span>&nbsp;<\/span>".$a_e ."/";
-				$replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span>&nbsp;</span>";
+				$pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
+				$replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
 			}
 		}
 	}
@@ -78,16 +78,16 @@ function emoticons_convert ($content) {
 		//$front = (preg_match("/^\w/", $k)) ? '\b' : '\B';
 		//$end = (preg_match("/\w$/", $k)) ? '\b' : '\B';
 
-		$front = "(?<=\s|^|&nbsp;)";
-		$end = "(\s|$)"; //"(?=\s|$)";
+		$front = "(?<=\s|^)";
+		$end = "(?=\s|$)";
 
 		if ($k != $k3) {
 			$pattern_array[] = "/$front". preg_quote($k3, "/") ."$end/";
-			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>&nbsp;</span>";
+			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
 		}
 
 		$pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
-		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>&nbsp;</span>";
+		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
 	}
 
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
@@ -98,14 +98,14 @@ function emoticons_convert ($content) {
 		$content = $new_content;
 	}
 
-	$content = preg_replace_callback("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)/", "emoticons_callback", $content);
+	$content = preg_replace_callback("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>(\s|$)/", "emoticons_callback", $content);
 
 	return $content;
 }
 
 function emoticons_callback ($matches)
 {
-    return urldecode($matches[1]);
+    return urldecode($matches[1])."&nbsp;</span>";
 }
 
 function emoticons_get_sets() {

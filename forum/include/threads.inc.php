@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.133 2004-08-08 12:18:50 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.134 2004-08-09 00:25:44 rowan_hill Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -733,7 +733,7 @@ function threads_get_most_recent()
     }
 }
 
-function threads_get_unread_by_days($uid, $days = 1) // get unread messages for $uid
+function threads_get_unread_by_days($uid, $days = 0) // get unread messages for $uid
 {
 
     $folders = threads_get_available_folders();

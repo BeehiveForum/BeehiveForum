@@ -151,7 +151,7 @@ A		{
           background-color: #CCD0E3;
           font-size: 10pt;
           border: solid;
-          float: left;
+          'float: left;
           border-width: 1px;
           border-color: black #000000
 }

@@ -24,6 +24,11 @@ USA
 //            (e.g. close open tags, filter certain tags)
 
 // "$bad_tags" is an array of tags to be filtered
+function pr($t) {
+	echo "<pre>";
+	print_r($t);
+	echo "</pre>";
+}
 function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
 {
 
@@ -55,7 +60,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 								break;
 
 							} else {
-								$tmpcode .= _htmlentities("<".$html_parts[$j].">");
+								$tmpcode .= htmlspecialchars("<".$html_parts[$j].">");
 							}
 						} else {
 							$tmpcode .= $html_parts[$j];
@@ -66,6 +71,9 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$i += 2;
 					}
 				}
+			} else {
+				$html_parts[$i] = str_replace("<", "&lt;", $html_parts[$i]);
+				$html_parts[$i] = str_replace(">", "&gt;", $html_parts[$i]);
 			}
 		}
 
@@ -289,7 +297,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 		$reverse_lt = array_reverse($last_tag);
 		for($i=0;$i<count($reverse_lt);$i++) {
-			if (strlen($reverse_lt[$i]) > 1) {
+			if (strlen($reverse_lt[$i]) > 0) {
 				$ret_text .= "</".$reverse_lt[$i].">";
 			}
 		}
@@ -385,6 +393,10 @@ function clean_attributes($tag)
 					$attrib_value = substr($attrib_value, 0, -1);
 				}
 
+				if($tmp_attrib == "style=") {
+					$attrib_value = clean_styles($attrib_value);
+				}
+
 				$tmp_attrib .= "\"".$attrib_value."\"";
 
 				$split_tag[$i] = $tmp_attrib;
@@ -411,6 +423,10 @@ function clean_attributes($tag)
 					$attrib_value = substr($attrib_value, 0, -1);
 				}
 
+				if($tmp_attrib == "style=") {
+					$attrib_value = clean_styles($attrib_value);
+				}
+
 				$tmp_attrib .= "\"".$attrib_value."\"";
 
 				$split_tag[$i] = $tmp_attrib;
@@ -424,6 +440,12 @@ function clean_attributes($tag)
 	}
 
 	return $new_tag;
+}
+
+
+function clean_styles ($style) {
+	$style = preg_replace("/position\s*:\s*absolute\s*;?/", "", $style);
+	return $style;
 }
 
 // $text to be filtered

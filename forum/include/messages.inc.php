@@ -147,7 +147,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<table width=\"100%\" border=\"0\">\n";
         if($in_list){
             echo "<tr><td align=\"right\"><p class=\"postnumber\" style=\"text-align:right\">";
-            echo "$tid." . $message['PID'];
+            echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";            
+            //echo "$tid." . $message['PID'];
             if($message['PID'] > 1){
                 echo " in reply to ";
                 if(intval($message['REPLY_TO_PID']) >= intval($first_msg)){

@@ -38,6 +38,7 @@ require_once("./include/format.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/threads.inc.php");
 require_once("./include/messages.inc.php");
+require_once("./include/fixhtml.inc.php");
 
 $valid = true;
 
@@ -70,10 +71,7 @@ if(isset($HTTP_POST_VARS['t_newthread'])){
 
 if($valid){
     if($t_post_html == "Y"){
-        if(!is_valid_html($t_content)){
-            $valid = false;
-            $error_html = "<h2>Your HTML markup is invalid</h2>";
-        }
+        $t_content = fix_html($t_content);
     }
 }
 
@@ -86,35 +84,62 @@ foreach ($HTTP_POST_VARS as $var => $value) {
 echo "</table>"; */
 
 if($valid){
-    if($newthread){
-        $t_tid = post_create_thread($t_fid,$t_threadtitle);
-        $t_rpid = 0;
-    } else {
-        $t_tid = $HTTP_POST_VARS['t_tid'];
-        $t_rpid = $HTTP_POST_VARS['t_rpid'];
-    }
-    if($t_tid > 0){
+    if(isset($HTTP_POST_VARS['preview'])){
+        echo "<h2>Message Preview:</h2>";
+        if($HTTP_POST_VARS['t_to_uid'] == 0){
+            $preview_message['TLOGON'] = "ALL";
+            $preview_message['TNICK'] = "ALL";
+        } else {
+            $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
+            $preview_message['TLOGON'] = $preview_tuser['LOGON'];
+            $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
+        }
+        $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+        $preview_message['FLOGON'] = $preview_tuser['LOGON'];
+        $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
         if($t_post_html != "Y"){
-            $t_content = make_html($t_content);
+            $preview_message['CONTENT'] = make_html($t_content);
         }
         if($t_sig){
             if($t_sig_html != "Y"){
                 $t_sig = make_html($t_sig);
+            } else {
+                $t_sig = stripslashes($t_sig);
             }
-            $t_content .= $t_sig;
+            $preview_message['CONTENT'] = $preview_message['CONTENT'] . $t_sig;
         }
-        $new_pid = post_create($t_tid,$t_rpid,$HTTP_COOKIE_VARS['bh_sess_uid'],$HTTP_POST_VARS['t_to_uid'],$t_content);
-        if($new_pid > -1){
-            echo "<p>&nbsp;</p>";
-            echo "<p>&nbsp;</p>";
-            echo "<div align=\"center\">";
-            echo "<p>Post created successfully</p>";
-            echo "<p><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a></p>";
-            echo "</div>";
-            html_draw_bottom();
-            exit;
+        message_display(0,$preview_message,0,0,false);
+    } else if(isset($HTTP_POST_VARS['submit'])){
+        if($newthread){
+            $t_tid = post_create_thread($t_fid,$t_threadtitle);
+            $t_rpid = 0;
         } else {
-            $error_html = "<h2>Error creating post</h2>";
+            $t_tid = $HTTP_POST_VARS['t_tid'];
+            $t_rpid = $HTTP_POST_VARS['t_rpid'];
+        }
+        if($t_tid > 0){
+            if($t_post_html != "Y"){
+                $t_content = make_html($t_content);
+            }
+            if($t_sig){
+                if($t_sig_html != "Y"){
+                    $t_sig = make_html($t_sig);
+                }
+                $t_content .= $t_sig;
+            }
+            $new_pid = post_create($t_tid,$t_rpid,$HTTP_COOKIE_VARS['bh_sess_uid'],$HTTP_POST_VARS['t_to_uid'],$t_content);
+            if($new_pid > -1){
+                echo "<p>&nbsp;</p>";
+                echo "<p>&nbsp;</p>";
+                echo "<div align=\"center\">";
+                echo "<p>Post created successfully</p>";
+                echo "<p><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a></p>";
+                echo "</div>";
+                html_draw_bottom();
+                exit;
+            } else {
+                $error_html = "<h2>Error creating post</h2>";
+            }
         }
     }
 }
@@ -150,9 +175,9 @@ $sig_content = "";
 $sig_html = "N";
 $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$sig_content,$sig_html);
 if($newthread){
-    echo "<h1>Create new thread</h1>";
+    echo "<h2>Create new thread</h2>";
 } else {
-    echo "<h1>Post reply</h1>";
+    echo "<h2>Post reply</h2>";
 }
 if(isset($error_html)){
     echo $error_html;
@@ -194,8 +219,15 @@ if($t_post_html == "Y"){
 }
 echo ">&nbsp;Contains HTML</td></tr></table>";
 echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
+echo "&nbsp;&nbsp;<input name=\"preview\" type=\"submit\" value=\"Preview\">";
 echo "</form>";
-
+echo "<p>&nbsp;&nbsp;</p>";
+if(!$newthread){
+    echo "<p>In reply to:</p>";
+    $reply_message = messages_get($reply_to_tid,$reply_to_pid);
+    message_display(0,$reply_message[0],0,0,false);
+    echo "<p>&nbsp;&nbsp;</p>";
+}
 html_draw_bottom();
 ?>
 

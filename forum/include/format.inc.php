@@ -24,9 +24,13 @@ USA
 function format_user_name($u_logon,$u_nickname)
 {
     if($u_nickname != ""){
-        $fmt = $u_nickname . " (" . $u_logon . ")";
+        if(strtoupper($u_logon) == strtoupper($u_nickname)){
+            $fmt = $u_nickname;
+        } else {
+            $fmt = $u_nickname . " (" . strtoupper($u_logon) . ")";
+        }
     } else {
-        $fmt = $u_logon;
+        $fmt = strtoupper($u_logon);
     }
     
     return $fmt;

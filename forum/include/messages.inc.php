@@ -33,12 +33,16 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
-	$sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.CONTENT, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK ";
-	$sql .= "FROM POST LEFT JOIN USER FUSER ON POST.from_uid = FUSER.uid LEFT JOIN USER TUSER ON POST.to_uid = TUSER.uid ";
-	$sql .= "WHERE POST.TID = $tid ";
-	$sql .= "AND POST.PID >= $pid ";
-	$sql .= "ORDER BY POST.PID ";
-	$sql .= "LIMIT 0, " . $limit;
+	$sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
+	$sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.CONTENT, ";
+	$sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
+	$sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK ";
+	$sql .= "from POST left join USER FUSER on (POST.from_uid = FUSER.uid) ";
+	$sql .= "left join USER TUSER on (POST.to_uid = TUSER.uid) ";
+	$sql .= "where POST.TID = $tid ";
+	$sql .= "and POST.PID >= $pid ";
+	$sql .= "order by POST.PID ";
+	$sql .= "limit 0, " . $limit;
 
 	$resource_id = db_query($sql, $db);
 
@@ -55,10 +59,13 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 		$messages[$i]['CREATED'] = $message['CREATED'];
 		$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
 		$messages[$i]['FNICK'] = $message['FNICK'];
+		$messages[$i]['FLOGON'] = $message['FLOGON'];
 		if(isset($message['TNICK'])){
            	$messages[$i]['TNICK'] = $message['TNICK'];
+           	$messages[$i]['TLOGON'] = $message['TLOGON'];
         } else {
             $messages[$i]['TNICK'] = "ALL";
+           	$messages[$i]['TLOGON'] = "ALL";
         }
 	}
 
@@ -91,7 +98,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td width=\"4%\" align=\"right\">\n";
     echo "<p class=\"posttofromlabel\">From:<br />To:</p></td>\n";
     echo "<td width=\"92%\">\n";
-    echo "<p class=\"posttofrom\">" . $message['FNICK'] . "<br />" . $message['TNICK'] . "</p></td>\n";
+    echo "<p class=\"posttofrom\">";
+    echo format_user_name($message['FLOGON'], $message['FNICK']) . "<br />";
+    echo format_user_name($message['TLOGON'], $message['TNICK']) . "</p></td>\n";
     echo "<td width=\"4%\" align=\"right\" nowrap>\n";
     if($in_list){
         echo "<p class=\"postinfo\">";
@@ -119,7 +128,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo $message['CONTENT'] . "\n";
     echo "</td></tr>\n";
     if($in_list){
-        echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\"><a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a></p></td></tr>";
+        echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\">";
+        echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a></p></td></tr>";
     }
     echo "</table>\n";
     echo "</td></tr></table></div>\n";

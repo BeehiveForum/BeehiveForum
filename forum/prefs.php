@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -34,6 +34,7 @@ if(!bh_session_check()){
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
+require_once("./include/fixhtml.inc.php");
 
 $error_html = "";
 
@@ -58,10 +59,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
     if($valid){
         if($HTTP_POST_VARS['sig_html'] == "Y"){
-            if(!is_valid_html($HTTP_POST_VARS['sig_content'])){
-                $valid = false;
-                $error_html = "<h2>HTML markup in signature is invalid</h2>";
-            }
+            $HTTP_POST_VARS['sig_content'] = fix_html($HTTP_POST_VARS['sig_content']);
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.137 2004-09-13 14:43:23 tribalonline Exp $ */
+/* $Id: threads.inc.php,v 1.138 2004-09-16 12:00:01 tribalonline Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -447,7 +447,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_all);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    list($threads, $folder_order) = threads_process_list($resource_id, $relationship == USER_IGNORED_COMPLETELY);
     return array($threads, $folder_order);
 
 }
@@ -783,7 +783,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
 
 // Arrange the results of a query into the right order for display
 
-function threads_process_list($resource_id)
+function threads_process_list($resource_id, $allow_ignored_completely = false)
 {
     $max = db_num_rows($resource_id);
 
@@ -817,7 +817,7 @@ function threads_process_list($resource_id)
             // and there are currently no replies (length of 1) then we don't
             // want to display it.
 
-            if(!($thread['relationship'] & USER_IGNORED_COMPLETELY))
+            if(!($thread['relationship'] & USER_IGNORED_COMPLETELY) || $allow_ignored_completely)
             {
 				if (!($thread['relationship'] & USER_IGNORED) || $thread['length'] > 1 || $thread['fid'] == $folder) {
 
@@ -975,9 +975,9 @@ function threads_draw_discussions_dropdown($mode)
     }else {
 
         $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
-                        $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
-                        $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                        $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['unreadtoday']);
+                        $lang['unreadtoday'],$lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
+                        $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
+                        $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
  
         echo form_dropdown_array("mode",range(0,16),$labels,$mode,"onchange=\"submit()\""). "\n";
 

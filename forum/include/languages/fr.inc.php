@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.114 2004-09-14 17:45:36 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.115 2004-09-16 12:00:01 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -1170,6 +1170,7 @@ $lang['highinterest'] = "Haut Intérêt";
 $lang['unreadhighinterest'] = "Non lu Haut Interest";
 $lang['iverecentlyseen'] = "J'ai vu récemment";
 $lang['iveignored'] = "J'ai négligé";
+$lang['byignoredusers'] = "By ignored users";
 $lang['ivesubscribedto'] = "Je se suis abonné à";
 $lang['startedbyfriend'] = "Commencé par l'ami";
 $lang['unreadstartedbyfriend'] = "Non lu commencé par l'ami";

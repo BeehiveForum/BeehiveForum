@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.217 2004-08-09 00:49:35 rowan_hill Exp $ */
+/* $Id: thread_list.php,v 1.218 2004-09-16 12:00:02 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -245,44 +245,47 @@ if (isset($folder)) {
         case 3; // Today's discussions
             list($thread_info, $folder_order) = threads_get_by_days($uid, 1);
             break;
-        case 4; // 2 days back
+        case 4: // Unread today
+            list($thread_info, $folder_order) = threads_get_unread_by_days($uid);
+            break;
+        case 5; // 2 days back
             list($thread_info, $folder_order) = threads_get_by_days($uid, 2);
             break;
-        case 5; // 7 days back
+        case 6; // 7 days back
             list($thread_info, $folder_order) = threads_get_by_days($uid, 7);
             break;
-        case 6; // High interest
+        case 7; // High interest
             list($thread_info, $folder_order) = threads_get_by_interest($uid, 1);
             break;
-        case 7; // Unread high interest
+        case 8; // Unread high interest
             list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, 1);
             break;
-        case 8; // Recently seen
+        case 9; // Recently seen
             list($thread_info, $folder_order) = threads_get_recently_viewed($uid);
             break;
-        case 9; // Ignored
+        case 10; // Ignored
             list($thread_info, $folder_order) = threads_get_by_interest($uid, -1);
             break;
-        case 10; // Subscribed to
+        case 11; // By Ignored Users
+            list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_IGNORED_COMPLETELY);
+            break;
+        case 12; // Subscribed to
             list($thread_info, $folder_order) = threads_get_by_interest($uid, 2);
             break;
-        case 11: // Started by friend
+        case 13: // Started by friend
             list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_FRIEND);
             break;
-        case 12: // Unread started by friend
+        case 14: // Unread started by friend
             list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, USER_FRIEND);
             break;
-        case 13: // Polls
+        case 15: // Polls
             list($thread_info, $folder_order) = threads_get_polls($uid);
             break;
-        case 14: // Sticky threads
+        case 16: // Sticky threads
             list($thread_info, $folder_order) = threads_get_sticky($uid);
             break;
-        case 15: // Most unread posts
+        case 17: // Most unread posts
             list($thread_info, $folder_order) = threads_get_longest_unread($uid);
-            break;
-        case 16: // Unread today
-            list($thread_info, $folder_order) = threads_get_unread_by_days($uid);
             break;
         default: // Default to all threads
             list($thread_info, $folder_order) = threads_get_all($uid, $start_from);

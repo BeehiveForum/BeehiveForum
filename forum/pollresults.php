@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.21 2003-08-10 17:30:51 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.22 2003-08-10 22:09:17 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -174,7 +174,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "  <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\">\n";
+echo "  <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
 echo "    ". form_submit('submit', $lang['close']). "\n";
 echo "  </form>\n";
 echo "</div>\n";

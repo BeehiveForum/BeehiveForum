@@ -82,10 +82,13 @@ $available_langs = lang_get_available(); // get list of available languages
 if(isset($HTTP_POST_VARS['submit'])) {
 
     $valid = true;
+    $update_password = false;
 
     if (isset($HTTP_POST_VARS['pw']) && trim($HTTP_POST_VARS['pw']) != "") {
         if (isset($HTTP_POST_VARS['cpw']) && trim($HTTP_POST_VARS['pw']) != "") {
-            if ($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']) {
+            if ($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']) {
+                $update_password = true;
+            }else {
                 $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
                 $valid = false;
             }
@@ -126,14 +129,13 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
         // Update basic settings in USER table
 
-        user_update(bh_session_get_value('UID'),
-                    $HTTP_POST_VARS['pw'],
-                    $HTTP_POST_VARS['nickname'],
-                    $HTTP_POST_VARS['email']);
+        user_update(bh_session_get_value('UID'), $HTTP_POST_VARS['nickname'], $HTTP_POST_VARS['email']);
 
-        // Update the stored logon password
+        // Update the password (and cookie)
 
-        if (isset($HTTP_POST_VARS['pw']) && trim($HTTP_POST_VARS['pw']) != "") {
+        if ($update_password) {
+
+            user_update_pw($HTTP_POST_VARS['pw']);
 
             // Username array
 

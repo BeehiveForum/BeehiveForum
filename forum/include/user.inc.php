@@ -66,20 +66,29 @@ function user_create($logon,$password,$nickname,$email)
     return $new_uid;
 }
 
-function user_update($uid,$password,$nickname,$email)
+function user_update($uid, $nickname, $email)
 {
-    $bit = ($password) ? "PASSWD = \"" . md5($password) . "\", " : "";
 
-    $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"". _htmlentities($nickname). "\", EMAIL = \"". _htmlentities($email). "\"";
-    $sql .= " WHERE UID = $uid";
-
-    //echo $sql;
+    $sql = "UPDATE ". forum_table("USER"). " set NICKNAME = \"". _htmlentities($nickname). "\", ";
+    $sql.= "EMAIL = \"". _htmlentities($email). "\" WHERE UID = $uid";
 
     $db_user_update = db_connect();
     $result = db_query($sql, $db_user_update);
 
     return $result;
 }
+
+function user_change_pw($uid, $password)
+{
+
+    $sql = "UPDATE ". forum_table("USER"). " set PASSWD = '". md5($password). "'";
+
+    $db_user_change_pw = db_connect();
+    $result = db_query($sql, $db_user_change_pw);
+
+    return $result;
+}
+
 
 function user_get_status($uid)
 {
@@ -426,9 +435,9 @@ function user_get_dob($uid)
 
 function user_get_age($uid)
 {
-	$prefs = user_get_prefs($uid);
-	if ($prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
-	    return format_age($prefs['DOB']);
+        $prefs = user_get_prefs($uid);
+        if ($prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
+            return format_age($prefs['DOB']);
     } else {
         return false;
     }
@@ -443,7 +452,7 @@ function user_get_forthcoming_birthdays()
     $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
     $sql .= "ORDER BY DAYS_TO_BIRTHDAY ASC ";
     $sql .= "LIMIT 0, 5";
-    
+
     $result = db_query($sql, $db_user_get_forthcoming_birthdays);
     if (db_num_rows($result)) {
         $birthdays = array();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.30 2004-04-08 16:47:14 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.31 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -34,10 +34,7 @@ include_once("./include/forum.inc.php");
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
-}
+$webtag = get_webtag();
 
 // We got this far we should now read the forum settings
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.37 2004-04-08 16:47:15 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.38 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -36,17 +36,6 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Check we have a webtag
-
-if (!$webtag = get_webtag()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
-}
-
-// We got this far we should now read the forum settings
-
-$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -71,6 +60,16 @@ if (!$user_sess = bh_session_check()) {
     $uri = "./llogon.php?webtag=$webtag&final_uri=". rawurlencode(get_request_uri());
     header_redirect($uri);
 }
+
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    header_redirect("./lforums.php");
+}
+
+// We got this far we should now read the forum settings
+
+$forum_settings = get_forum_settings();
 
 // Load the wordfilter for the current user
 
@@ -404,9 +403,9 @@ if (!isset($t_sig) || !$t_sig) {
 }
 
 if ($newthread) {
-    echo "<h1>{$lang['createnewthread']}</h1>\n";
+    echo "<h2>{$lang['createnewthread']}</h2>\n";
 }else {
-    echo "<h1>{$lang['postreply']}</h1>\n";
+    echo "<h2>{$lang['postreply']}</h2>\n";
 }
 if (isset($error_html)) {
     echo $error_html . "\n";

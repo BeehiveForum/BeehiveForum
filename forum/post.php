@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.174 2004-04-08 16:47:16 decoyduck Exp $ */
+/* $Id: post.php,v 1.175 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -33,17 +33,6 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Check we have a webtag
-
-if (!$webtag = get_webtag()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
-}
-
-// We got this far we should now read the forum settings
-
-$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -100,6 +89,17 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?final_uri=$request_uri");
+}
+
+// We got this far we should now read the forum settings
+
+$forum_settings = get_forum_settings();
 
 // Load the wordfilter for the current user
 

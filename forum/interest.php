@@ -21,21 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.32 2004-04-08 16:47:15 decoyduck Exp $ */
+/* $Id: interest.php,v 1.33 2004-04-10 16:35:00 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Check we have a webtag
-
-if (!$webtag = get_webtag()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
-}
-
-// We got this far we should now read the forum settings
-
-$forum_settings = get_forum_settings();
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
@@ -83,6 +72,17 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?final_uri=$request_uri");
+}
+
+// We got this far we should now read the forum settings
+
+$forum_settings = get_forum_settings();
 
 // Load the wordfilter for the current user
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.68 2004-04-09 00:11:28 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.69 2004-04-10 16:35:01 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -150,8 +150,6 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 {
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
-    
-    if (!$table_data = get_table_prefix()) return "";
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 

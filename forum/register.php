@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.80 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: register.php,v 1.81 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,10 +31,6 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Fetch the forum webtag and settings
-$webtag = get_webtag();
-$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -52,7 +48,7 @@ if (isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
 }
 
-if (bh_session_get_value('UID')) {
+if ($user_sess = bh_session_check()) {
 
     html_draw_top();
     echo "<div align=\"center\">\n";
@@ -68,6 +64,10 @@ if (bh_session_get_value('UID')) {
     html_draw_bottom();
     exit;
 }
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
 
 $available_styles = array();
 $style_names = array();

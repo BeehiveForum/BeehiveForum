@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.53 2004-08-04 23:46:35 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.54 2004-09-13 15:59:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -181,7 +181,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $user_search_array['user_count'], 20), "</td>\n";
+echo "      <td align=\"center\">", page_links(get_request_uri(), $start, $user_search_array['user_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.87 2004-08-17 10:52:23 tribalonline Exp $ */
+/* $Id: admin_users.php,v 1.88 2004-09-13 15:59:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -318,7 +318,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $admin_user_array['user_count'], 20), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start, $admin_user_array['user_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

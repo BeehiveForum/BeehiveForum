@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.173 2004-09-13 14:43:23 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.174 2004-09-13 15:59:21 decoyduck Exp $ */
 
 // International English language file
 
@@ -157,6 +157,7 @@ $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
 $lang['top'] = "Top";
+$lang['free'] = "Free";
 
 // Admin interface (admin*.php) ----------------------------------------
 

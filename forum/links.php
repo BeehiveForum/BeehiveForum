@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.64 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: links.php,v 1.65 2004-09-13 15:59:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -325,7 +325,7 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?webtag=$webtag&amp;mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"5\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $links['links_count'], 20), "</td>\n";
+echo "    <td class=\"postbody\" colspan=\"5\" align=\"center\">", page_links(get_request_uri(), $start, $links['links_count'], 20), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";

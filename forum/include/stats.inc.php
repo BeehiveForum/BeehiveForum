@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.33 2004-07-14 18:39:01 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.34 2004-09-05 17:16:23 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -110,9 +110,11 @@ function get_active_users()
     // Current active users
 
     $sql = "SELECT DISTINCT SESSIONS.UID, SESSIONS.TIME, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, ";
     $sql.= "USER_PREFS.ANON_LOGON FROM SESSIONS SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '{$table_data['FID']}' ";
     $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
@@ -124,7 +126,7 @@ function get_active_users()
 
             $stats['GUESTS']++;
 
-        }elseif (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] == 1) {
+        }elseif (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] == 'Y') {
 
             $stats['AUSERS']++;
 

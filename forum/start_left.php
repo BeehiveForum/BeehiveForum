@@ -57,13 +57,19 @@ $fidlist = folder_get_available();
 $db = db_connect();
 
 // Get most recent threads
-$sql = "select T.TID, T.TITLE, T.LENGTH, UT.LAST_READ, UT.INTEREST ";
-$sql.= "from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
-$sql.= "on (T.TID = UT.TID and UT.UID = $uid) ";
-$sql.= "where T.FID in ($fidlist) ";
-$sql.= "and (UT.INTEREST >= 0 or UT.INTEREST is null) ";
-$sql.= "order by T.MODIFIED desc ";
-$sql.= "limit 0, 10";
+$sql  = "SELECT T.TID, T.TITLE, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
+$sql .= "FROM ".forum_table("THREAD")." T ";
+$sql .= "LEFT JOIN ".forum_table("USER_THREAD")." UT ";
+$sql .= "ON (T.TID = UT.TID and UT.UID = $uid) ";
+$sql .= "JOIN " . forum_table("USER") . " U ";
+$sql .= "JOIN " . forum_table("POST") . " P ";
+$sql .= "WHERE T.FID IN ($fidlist) ";
+$sql .= "AND U.UID = P.FROM_UID ";
+$sql .= "AND P.TID = T.TID ";
+$sql .= "AND P.PID = 1 ";
+$sql .= "AND (UT.INTEREST >= 0 or UT.INTEREST is null) ";
+$sql .= "ORDER BY T.MODIFIED desc ";
+$sql .= "LIMIT 0, 10";
 
 $result = db_query($sql, $db);
 
@@ -83,12 +89,8 @@ while($row = db_fetch_array($result)){
     } elseif ($row['LAST_READ'] == $row['LENGTH']) {
         echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
     }
-    
-    $thread_author = thread_get_author($tid);
-    
-    /* With status mouseover: echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\"onmouseOver=\"status='#$tid Started by $thread_author';return true\" onmouseOut=\"window.status='';return true\" title=\"#$tid Started by $thread_author\">"; */
-    
-    echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by $thread_author\">";
+
+    echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($row['LOGON'], $row['NICKNAME']) . "\">";
     echo _stripslashes($row['TITLE'])."</a>&nbsp;";
     if ($row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\">";
     if ($row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\">";

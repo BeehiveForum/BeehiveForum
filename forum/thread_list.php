@@ -419,9 +419,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" title=\"#".$thread['tid']. " Started by ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
                     if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"High Interest\" align=\"middle\"> ";
                     if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"Subscribed\" align=\"middle\"> ";
-                    if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"This is a poll\" align=\"middle\"> ";
-                    if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Discussion started by a friend\" align=\"middle\"> ";
-		    if ($thread['attachments']) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"Discussion contains an attachment\" align=\"middle\"> ";
+                    if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"Poll\" align=\"middle\"> ";
+                    if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Friend\" align=\"middle\"> ";
+		            if ($thread['attachments']) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"Attachment\" align=\"middle\"> ";
                     echo "<span class=\"threadxnewofy\">".$number."</span>";
                     echo "</td><td valign=\"top\" nowrap=\"nowrap\" align=\"right\">";
                     echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.53 2005-03-15 21:29:46 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.54 2005-03-23 20:34:12 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -88,6 +88,11 @@ function post_delete($tid, $pid)
 
     $sql = "DELETE FROM {$table_data['PREFIX']}THREAD ";
     $sql.= "WHERE TID = '$tid' AND LENGTH = 1";
+
+    $result = db_query($sql, $db_post_delete);
+
+    $sql = "DELETE FROM SEARCH_POSTS WHERE TID = $tid ";
+    $sql.= "AND PID = $pid";
 
     $result = db_query($sql, $db_post_delete);
 

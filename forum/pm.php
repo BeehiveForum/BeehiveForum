@@ -108,7 +108,7 @@ if (isset($HTTP_GET_VARS['folder'])) {
         $folder = 0;
     }
 }else {
-    $folder = PM_FOLDER_INBOX;
+    $folder_bitwise = PM_FOLDER_INBOX;
     $folder = 0;
 }
 
@@ -133,7 +133,7 @@ if (isset($HTTP_GET_VARS['mid'])) {
 
     $pm_elements_array = array();
 
-    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder)) {
+    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder_bitwise)) {
         if ($folder == PM_FOLDER_INBOX) {
             draw_pm_message($pm_elements_array, $HTTP_GET_VARS['mid']);
         }else {
@@ -157,6 +157,9 @@ echo "      <td class=\"posthead\" width=\"50%\">&nbsp;{$lang['subject']}</td>\n
 
 if ($folder == 1 || $folder == 2) {
     echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
+}elseif  ($folder == 3) {
+    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
+    echo "      <td class=\"posthead\">&nbsp;{$lang['from']}</td>\n";
 }else {
     echo "      <td class=\"posthead\">&nbsp;{$lang['from']}</td>\n";
 }
@@ -200,17 +203,33 @@ if (sizeof($listmessages_array) == 0) {
         echo "<a href=\"pm.php?folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
         echo "</td>\n";
 
-        echo "      <td class=\"postbody\">";
-
         if ($folder == 1 || $folder == 2) {
+
+            echo "      <td class=\"postbody\">";
             echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['TO_UID'] . ")\" target=\"_self\">";
             echo format_user_name($listmessages_array[$i]['TLOGON'], $listmessages_array[$i]['TNICK']) . "</a>";
-        }else {
+            echo "</td>\n";
+
+        }elseif ($folder == 3) {
+
+            echo "      <td class=\"postbody\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['TO_UID'] . ")\" target=\"_self\">";
+            echo format_user_name($listmessages_array[$i]['TLOGON'], $listmessages_array[$i]['TNICK']) . "</a>";
+            echo "</td>\n";
+
+            echo "      <td class=\"postbody\">";
             echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['FROM_UID'] . ")\" target=\"_self\">";
             echo format_user_name($listmessages_array[$i]['FLOGON'], $listmessages_array[$i]['FNICK']) . "</a>";
-        }
+            echo "</td>\n";
 
-        echo "</td>\n";
+        }else {
+
+            echo "      <td class=\"postbody\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['FROM_UID'] . ")\" target=\"_self\">";
+            echo format_user_name($listmessages_array[$i]['FLOGON'], $listmessages_array[$i]['FNICK']) . "</a>";
+            echo "</td>\n";
+
+        }
 
         echo "      <td class=\"postbody\">", format_time($listmessages_array[$i]['CREATED']), "</td>\n";
         echo "      <td class=\"postbody\">", form_checkbox('process[]', $listmessages_array[$i]['MID'], ''), "</td>\n";

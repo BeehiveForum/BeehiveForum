@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.32 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.33 2003-08-01 20:00:50 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -216,7 +216,6 @@ function folder_is_valid($fid)
 function user_set_folder_interest($fid, $interest)
 {
     $uid = bh_session_get_value('UID');
-
     $db_user_set_folder_interest = db_connect();
 
     $sql = "delete from ". forum_table("USER_FOLDER"). " where UID = '$uid' and FID = '$fid'";
@@ -228,6 +227,27 @@ function user_set_folder_interest($fid, $interest)
         $result = db_query($sql, $db_user_set_folder_interest);
     }
 
+}
+
+function user_get_restricted_folders($uid)
+{
+    $db_user_get_restricted_folders = db_connect();
+
+    $sql = "select F.FID, F.TITLE, UF.ALLOWED from ". forum_table("FOLDER"). " F ";
+    $sql.= "left join ". forum_table("USER_FOLDER"). " UF on (UF.UID = $uid and UF.FID = F.FID) ";
+    $sql.= "where F.ACCESS_LEVEL = 1";
+
+    $result = db_query($sql, $db_user_get_restricted_folders);
+
+    if (db_num_rows($result)) {
+        $user_restricted_folders_array = array();
+	while ($row = db_fetch_array($result)) {
+	    $user_restricted_folders_array[] = $row;
+	}
+	return $user_restricted_folders_array;
+    }else {
+        return false;
+    }
 }
 
 function folder_thread_type_allowed($fid, $type) // for types see constants.inc.php

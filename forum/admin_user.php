@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.43 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.44 2003-08-01 20:00:50 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -147,25 +147,22 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         $user['STATUS'] = $new_status;
 
-        // Private folder permissions
+        // Get Private folder permissions
 
-        if (isset($HTTP_POST_VARS['t_fcount'])) {
+	$uf = array();
 
-            for ($i = 0; $i < $HTTP_POST_VARS['t_fcount']; $i++) {
+	if (isset($HTTP_POST_VARS['t_fallow'])) {
 
-                $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
-                if (isset($HTTP_POST_VARS['t_fallow_'. $i])) {
-                    $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
-                }else {
-                    $uf[$i]['allowed'] = 0;
-                }
-            }
+	    for ($i = 0; $i < sizeof($HTTP_POST_VARS['t_fallow']); $i++) {
+	        $uf[$i]['fid'] = $HTTP_POST_VARS['t_fallow'][$i];
+	        $uf[$i]['allowed'] = 1;
+	    }
+	}
 
-            if (isset($uf)) {
-                user_update_folders($uid, $uf);
-                admin_addlog($uid, 0, 0, 0, 0, 0, 2);
-            }
-        }
+	// Update Private folder permissions
+
+        user_update_folders($uid, $uf);
+        admin_addlog($uid, 0, 0, 0, 0, 0, 2);
 
         // IP Address banning / unbanning
 
@@ -276,22 +273,12 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "          <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}:</td>\n";
     echo "        </tr>\n";
 
-    // Restricted folders
+    if ($user_restricted_folder_array = user_get_restricted_folders($uid)) {
 
-    $sql = "select F.FID, F.TITLE, UF.ALLOWED from ". forum_table("FOLDER"). " F ";
-    $sql.= "left join ". forum_table("USER_FOLDER"). " UF on (UF.UID = $uid and UF.FID = F.FID) ";
-    $sql.= "where F.ACCESS_LEVEL = 1";
-
-    $result = db_query($sql,$db);
-    $count  = 0;
-
-    if (db_num_rows($result)) {
-
-        while($row = db_fetch_array($result)) {
+        foreach($user_restricted_folder_array as $user_restricted_folder) {
             echo "        <tr>\n";
-            echo "          <td align=\"left\">", form_checkbox("t_fallow_$count", 1, $row['TITLE'], (isset($row['ALLOWED']) && $row['ALLOWED'] > 0)), form_input_hidden("t_fid_$count", $row['FID']), "</td>\n";
+            echo "          <td align=\"left\">", form_checkbox("t_fallow[]", $user_restricted_folder['FID'], $user_restricted_folder['TITLE'], (isset($user_restricted_folder['ALLOWED']) && $user_restricted_folder['ALLOWED'] > 0)), "</td>\n";
             echo "        </tr>\n";
-            $count++;
         }
 
     }else {
@@ -301,7 +288,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     }
 
     echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_input_hidden("t_fcount", db_num_rows($result)), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "          <td align=\"left\">&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}";

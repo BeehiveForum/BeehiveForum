@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.30 2003-07-28 20:20:13 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.31 2003-08-01 20:00:50 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -91,14 +91,14 @@ echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['foldername']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['description']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['accesslevel']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['threadcount']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['move']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['allow']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['id']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['foldername']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['description']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['accesslevel']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['threadcount']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['move']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['allow']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['permissions']}</td>\n";
 echo "          </tr>\n";
 
 $folder_array = folder_get_all();

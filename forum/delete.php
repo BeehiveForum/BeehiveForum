@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.39 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: delete.php,v 1.40 2003-12-16 00:30:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -95,7 +95,9 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
         $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
         if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
-            edit_refuse();
+            html_draw_top();
+            edit_refuse($tid, $pid);
+	    html_draw_bottom();
             exit;
         }
 

@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.164 2005-03-14 13:27:26 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.165 2005-03-15 21:30:07 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/folder.inc.php");
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
-include_once(BH_INCLUDE_PATH. "/lang.inc.php");
-include_once(BH_INCLUDE_PATH. "/user.inc.php");
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function threads_get_folders()
 {

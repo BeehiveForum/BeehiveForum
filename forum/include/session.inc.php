@@ -21,19 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.165 2005-03-14 13:27:26 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.166 2005-03-15 21:30:06 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/banned.inc.php");
-include_once(BH_INCLUDE_PATH. "/db.inc.php");
-include_once(BH_INCLUDE_PATH. "/format.inc.php");
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
-include_once(BH_INCLUDE_PATH. "/ip.inc.php");
-include_once(BH_INCLUDE_PATH. "/lang.inc.php");
-include_once(BH_INCLUDE_PATH. "/logon.inc.php");
-include_once(BH_INCLUDE_PATH. "/pm.inc.php");
-include_once(BH_INCLUDE_PATH. "/stats.inc.php");
-include_once(BH_INCLUDE_PATH. "/search.inc.php");
-include_once(BH_INCLUDE_PATH. "/user.inc.php");
+include_once(BH_INCLUDE_PATH. "banned.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "ip.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "pm.inc.php");
+include_once(BH_INCLUDE_PATH. "stats.inc.php");
+include_once(BH_INCLUDE_PATH. "search.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Checks the session and returns it as an array.
 

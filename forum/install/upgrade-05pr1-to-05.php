@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.21 2005-03-14 13:27:28 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.22 2005-03-15 21:30:08 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -37,8 +37,8 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "/constants.inc.php");
-include_once(BH_INCLUDE_PATH. "/db.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 
 set_time_limit(0);
 

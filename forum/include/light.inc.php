@@ -21,15 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.78 2005-03-14 13:27:25 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.79 2005-03-15 21:30:03 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
-include_once(BH_INCLUDE_PATH. "/html.inc.php");
-include_once(BH_INCLUDE_PATH. "/lang.inc.php");
-include_once(BH_INCLUDE_PATH. "/myforums.inc.php");
-include_once(BH_INCLUDE_PATH. "/threads.inc.php");
-include_once(BH_INCLUDE_PATH. "/user.inc.php");
-include_once(BH_INCLUDE_PATH. "/word_filter.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "myforums.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function light_html_draw_top ($title = false)
 {

@@ -21,15 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.335 2005-03-14 13:27:25 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.336 2005-03-15 21:30:03 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "/banned.inc.php");
-include_once(BH_INCLUDE_PATH. "/fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "/folder.inc.php");
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
-include_once(BH_INCLUDE_PATH. "/html.inc.php");
-include_once(BH_INCLUDE_PATH. "/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "attachments.inc.php");
+include_once(BH_INCLUDE_PATH. "banned.inc.php");
+include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {

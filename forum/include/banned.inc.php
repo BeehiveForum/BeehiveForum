@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.2 2005-03-14 13:27:24 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.3 2005-03-15 21:29:45 decoyduck Exp $ */
 
 // banned.inc.php contains functions for checking the ban data
 // against the user credentials.
 
-include_once(BH_INCLUDE_PATH. "/ip.inc.php");
-include_once(BH_INCLUDE_PATH. "/user.inc.php");
+include_once(BH_INCLUDE_PATH. "ip.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function ban_check($user_sess, $show_error = true)
 {

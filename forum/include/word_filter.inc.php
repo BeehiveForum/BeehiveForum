@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.22 2005-03-14 13:27:27 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.23 2005-03-15 21:30:08 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
-include_once(BH_INCLUDE_PATH. "/session.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // Loads the user's word filter into an array.
 // Saves having to query the database every time

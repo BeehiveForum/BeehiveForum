@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.47 2005-03-14 13:27:25 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.48 2005-03-15 21:30:03 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0) // setting $invisible to true gets links that are marked as not visible too
 {

@@ -20,12 +20,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.93 2005-03-14 13:27:24 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.94 2005-03-15 21:29:46 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/geshi.inc.php");
-include_once(BH_INCLUDE_PATH. "/emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "/html.inc.php");
-include_once(BH_INCLUDE_PATH. "/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "geshi.inc.php");
+include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 $fix_html_code_text = 'code:';
 $fix_html_quote_text = 'quote:';

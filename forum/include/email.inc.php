@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.87 2005-03-14 13:27:24 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.88 2005-03-15 21:29:46 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
-include_once(BH_INCLUDE_PATH. "/lang.inc.php");
-include_once(BH_INCLUDE_PATH. "/server.inc.php");
-include_once(BH_INCLUDE_PATH. "/user_rel.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
+include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 
 function email_sendnotification($tuid, $msg, $fuid)
 {

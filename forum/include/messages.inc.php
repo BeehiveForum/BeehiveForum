@@ -90,9 +90,12 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	return $messages;
 }
 
-function messages_top($foldertitle, $threadtitle)
+function messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
-    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle</p>";
+    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"./images/high_interest.png\" alt=\"High Interest\" align=\"middle\">";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"./images/subscribe.png\" alt=\"Subscribed\" align=\"middle\">";
+    echo "</p>";
     // To be expanded later
 }
 
@@ -437,13 +440,30 @@ function message_fontsize_form($fontsize, $tid, $pid)
     if (!isset($user_prefs['LAST_NAME'])) $user_prefs['LAST_NAME'] = "";
     if (!isset($user_prefs['HOMEPAGE_URL'])) $user_prefs['HOMEPAGE_URL'] = "";
     if (!isset($user_prefs['PIC_URL'])) $user_prefs['PIC_URL'] = "";
-    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRSTNAME'],
-                      $user_prefs['LASTNAME'], $user_prefs['HOMEPAGE_URL'],
-                      $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
-                      $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
-                      $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
-                      $fontsize);
-   
+
+    if (empty($user_prefs['FONT_SIZE'])) {
+    
+      $user_prefs = array('FIRST_NAME' => '', 'LAST_NAME'      => '', 'HOMEPAGE_URL'   => '',
+                          'PIC_URL'    => '', 'EMAIL_NOTIFY'   => '', 'TIMEZONE'       => 0,
+                          'DL_SAVING'  => '', 'MARK_AS_OF_INT' => '', 'POSTS_PER_PAGE' => 5,
+                          'FONT_SIZE'  => $fontsize);
+
+      user_insert_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
+                        $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
+                        $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
+                        $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
+                        $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
+                        $user_prefs['FONT_SIZE']);
+    }else {
+
+      user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
+                        $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
+                        $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
+                        $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
+                        $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
+                        $fontsize);
+    }
+    
     $fontstrip = "Adjust text size: ";
     
     if (($fontsize > 1) && ($fontsize < 15)) {

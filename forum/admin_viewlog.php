@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.22 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.23 2003-11-17 16:01:42 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -84,7 +84,7 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
     $sort_dir = "DESC";
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_int($HTTP_GET_VARS['page'])) {
+if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
     $start = $HTTP_GET_VARS['page'] * 20;
 }else {
     $start = 0;

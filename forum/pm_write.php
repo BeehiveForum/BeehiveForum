@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.31 2003-11-16 22:10:08 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.32 2003-11-17 16:01:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -57,9 +57,9 @@ require_once("./include/attachments.inc.php");
 
 // Get the Message ID (MID) if any.
 
-if (isset($HTTP_GET_VARS['replyto']) && is_int($HTTP_GET_VARS['replyto']))) {
+if (isset($HTTP_GET_VARS['replyto']) && is_numeric($HTTP_GET_VARS['replyto']))) {
     $mid = $HTTP_GET_VARS['replyto'];
-}elseif (isset($HTTP_POST_VARS['replyto']) && is_int($HTTP_GET_VARS['replyto']))) {
+}elseif (isset($HTTP_POST_VARS['replyto']) && is_numeric($HTTP_GET_VARS['replyto']))) {
     $mid = $HTTP_POST_VARS['replyto'];
 }
 
@@ -271,7 +271,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 // PM link from profile
 
-if (isset($HTTP_GET_VARS['uid']) && is_int($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
 
     $to_user = user_get($HTTP_GET_VARS['uid']);
     $t_recipient_list = ucfirst(strtolower($to_user['LOGON']));

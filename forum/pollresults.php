@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.31 2003-11-16 22:10:08 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.32 2003-11-17 16:01:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -58,7 +58,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == $lang['clos
 
 }
 
-if (isset($HTTP_GET_VARS['tid']) && is_int($HTTP_GET_VARS['tid']))) {
+if (isset($HTTP_GET_VARS['tid']) && is_numeric($HTTP_GET_VARS['tid']))) {
 
   $tid = $HTTP_GET_VARS['tid'];
 
@@ -78,7 +78,7 @@ if (isset($HTTP_GET_VARS['tid']) && is_int($HTTP_GET_VARS['tid']))) {
 
 $polldata = poll_get($tid);
 
-if (isset($HTTP_GET_VARS['viewstyle']) && is_int($HTTP_GET_VARS['viewstyle'])) {
+if (isset($HTTP_GET_VARS['viewstyle']) && is_numeric($HTTP_GET_VARS['viewstyle'])) {
     $viewstyle = $HTTP_GET_VARS['viewstyle'];
     if ($viewstyle < 0 || $viewstyle > 1) $viewstyle = 0;
 }else {

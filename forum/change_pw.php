@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.13 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.14 2003-11-17 16:01:42 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -72,10 +72,10 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 }
 
-if (isset($HTTP_GET_VARS['u']) && is_int($HTTP_GET_VARS['u']) && isset($HTTP_GET_VARS['h']) && is_md5($HTTP_GET_VARS['h'])) {
+if (isset($HTTP_GET_VARS['u']) && is_numeric($HTTP_GET_VARS['u']) && isset($HTTP_GET_VARS['h']) && is_md5($HTTP_GET_VARS['h'])) {
     $uid = $HTTP_GET_VARS['u'];
     $key = $HTTP_GET_VARS['h'];
-}elseif (isset($HTTP_POST_VARS['uid']) && is_int($HTTP_GET_VARS['uid']) && isset($HTTP_POST_VARS['key']) && is_md5($HTTP_GET_VARS['key'])) {
+}elseif (isset($HTTP_POST_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid']) && isset($HTTP_POST_VARS['key']) && is_md5($HTTP_GET_VARS['key'])) {
     $uid = $HTTP_POST_VARS['uid'];
     $key = $HTTP_POST_VARS['key'];
 }else {

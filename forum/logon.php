@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.97 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: logon.php,v 1.98 2003-11-17 16:01:42 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -49,11 +49,11 @@ if (isset($HTTP_GET_VARS['final_uri'])) {
 
     $final_uri = "./discussion.php?msg=". $HTTP_GET_VARS['msg'];
 
-}elseif (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
+}elseif (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
 
     $final_uri = "./discussion.php?folder=". $HTTP_GET_VARS['folder'];
 
-}elseif (isset($HTTP_GET_VARS['pmid']) && is_int($HTTP_GET_VARS['pmid'])) {
+}elseif (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
 
     $final_uri = "./pm.php?mid=". $HTTP_GET_VARS['pmid'];
 

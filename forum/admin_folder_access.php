@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.10 2003-11-13 20:44:40 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.11 2003-11-17 16:01:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -64,9 +64,9 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
 // Update stuff here
 
-if (isset($HTTP_GET_VARS['fid']) && is_int($HTTP_GET_VARS['fid'])) {
+if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
     $fid = $HTTP_GET_VARS['fid'];
-}else if (isset($HTTP_POST_VARS['fid']) && is_int($HTTP_POST_VARS['fid'])) {
+}else if (isset($HTTP_POST_VARS['fid']) && is_numeric($HTTP_POST_VARS['fid'])) {
     $fid = $HTTP_POST_VARS['fid'];
 }else {
     $fid = 1;

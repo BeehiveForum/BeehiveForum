@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.31 2003-11-13 20:44:40 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.32 2003-11-17 16:01:41 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -62,11 +62,11 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     header_redirect('./admin_prof_sect.php');
 }
 
-if (isset($HTTP_GET_VARS['psid']) && is_int($HTTP_GET_VARS['psid'])) {
+if (isset($HTTP_GET_VARS['psid']) && is_numeric($HTTP_GET_VARS['psid'])) {
 
   $psid = $HTTP_GET_VARS['psid'];
 
-}elseif (isset($HTTP_POST_VARS['t_psid']) && is_int($HTTP_POST_VARS['t_psid'])) {
+}elseif (isset($HTTP_POST_VARS['t_psid']) && is_numeric($HTTP_POST_VARS['t_psid'])) {
 
   $psid = $HTTP_POST_VARS['t_psid'];
 

@@ -22,6 +22,8 @@ USA
 
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
+//            N.B. filtering comments (!--) or xmp tags will
+//            also filter everything within the tag pair
 
 // "$bad_tags" is an array of tags to be filtered
 function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea"))
@@ -49,6 +51,21 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				array_push($html_parts, substr($html, $open_pos+1, $end_comment-$open_pos+1));
 
 				$html = substr($html, $end_comment+3);
+
+			} else if(substr($html, $open_pos+1, 3) == "xmp"){
+				$html = substr_replace($html, "", $open_pos+4, $close_pos-$open_pos-4);
+				$end_xmp = strpos($html, "</xmp", $open_pos);
+				if(!is_integer($end_xmp)){
+					$html = substr_replace($html, "</xmp>", $open_pos+5, 0);
+					$end_xmp = $open_pos+5;
+				} else {
+					$close_pos = strpos($html, ">", $closepos);
+					$html = substr_replace($html, "", $end_xmp+5, $close_pos-$end_xmp-4);
+				}
+				array_push($html_parts, substr($html, 0, $open_pos));
+				array_push($html_parts, substr($html, $open_pos+1, $end_xmp-$open_pos+4));
+
+				$html = substr($html, $end_xmp+6);
 
 			} else if(!is_integer($open_pos) || $close_pos < $open_pos){
 				// > by itself
@@ -86,16 +103,11 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				$close_pos = false;
 			}
 		}
-        if(isset($html_parts[count($html_parts)])){
-    		$html_parts[count($html_parts)] .= $html;
-        } else {
-    		$html_parts[count($html_parts)] = $html;
-        }
-		//$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
+		$html_parts[count($html_parts)] .= $html;
 
-		$opentags = array("table"=>0);
+		$opentags = array();
 		$last_tag = array();
-		$single_tags = array("br","img","hr","!--","area");
+		$single_tags = array("br","img","hr","!--","area","embed","xmp");
 		$no_nest = array("p");
 
 		for($i=0; $i<count($html_parts); $i++){
@@ -103,10 +115,10 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				if(substr($html_parts[$i],0,1) == "/"){ // closing tag
 					$tag_bits = explode(" ", substr($html_parts[$i],1));
 					if(substr($tag_bits[0], -1) == "/"){
-						$tag_bits[0] = substr($tag_bits[0], 0, -1);
+						$tag_bits[0] = strtolower(substr($tag_bits[0], 0, -1));
 					}
 
-					$tag = strtolower($tag_bits[0]);
+					$tag = $tag_bits[0];
 
 					// filter 'bad' tags
 					if(in_array($tag, $bad_tags)){
@@ -123,9 +135,9 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 						// tag hasn't been opened
 						} else if($opentags[$tag] <= 0){
-							array_push($last_tag, $last_tag2);
-							array_splice($html_parts, $i-1, 0, array("",$tag));
-							$i+=2;
+							$html_parts[$i-1] .= $html_parts[$i+1];
+							array_splice($html_parts, $i, 2);
+							$i--;
 
 						// tag hasn't been closed
 						} else if ($last_tag2 != $tag){
@@ -134,19 +146,18 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							$i++;
 
 						}
-
-						//$html_parts[$i] = "/".$tag;
 					}
 
 				} else {
 					if(substr($html_parts[$i], -1) == "/"){
 						$html_parts[$i] = substr($html_parts[$i], 0, -1);
 					}
-//
+
 					$firstspace = strpos($html_parts[$i], " ");
 
-					if(substr($html_parts[$i], 0, 3) == "!--"){
-						$tag = "!--";
+					$firstthree = substr($html_parts[$i], 0, 3);
+					if($firstthree == "!--" || $firstthree == "xmp"){
+						$tag = $firstthree;
 
 					} else if(is_integer($firstspace)){
 						$html_parts[$i] = clean_attributes($html_parts[$i]);
@@ -166,11 +177,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$i -= 2;
 
 					} else if(!in_array($tag, $single_tags)){
-                        if(isset($opentags[$tag])){
-    						$opentags[$tag]++;
-                        } else {
-    						$opentags[$tag] = 1;
-                        }
+						$opentags[$tag]++;
 						array_push($last_tag, $tag);
 
 						// make sure certain tags can't nest within themselves, e.g. <p><p>
@@ -192,7 +199,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							$i+=2;
 						}
 					// make XHTML single tag
-					} else if(substr($html_parts[$i], -2) != "--" && substr($html_parts[$i], -2) != " /"){
+					} else if(substr($html_parts[$i], -2) != "--" && substr($html_parts[$i], -2) != " /" && substr($html_parts[$i], -3) != "xmp"){
 						if(substr($html_parts[$i], -1) != "/"){
 							$html_parts[$i] .= " /";
 						} else {
@@ -203,7 +210,6 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 			}
 		}
 		// reconstruct the HTML
-		$ret_text = "";
 		for($i=0; $i<count($html_parts); $i++){
 			if($i%2){
 				$ret_text .= "<$html_parts[$i]>";
@@ -259,13 +265,13 @@ function clean_attributes($tag)
 	$valid["ol"] = $valid["ul"];
 	$valid["il"] = $valid["ul"];
 
-	$valid["embed"] = array("src", "type", "pluginspage", "pluginurl", "border", "frameborder", "height", "width", "units", "hidden", "hspace", "vspace", "name", "palette", "wmode", "menu");
+	$valid["embed"] = array("src", "type", "pluginspage", "pluginurl", "border", "frameborder", "height", "width", "units", "hidden", "hspace", "vspace", "name", "palette", "wmode", "menu", "bgcolor");
 
 	$valid["object"] = array("archive", "classid", "codebase", "codetype", "data", "declare", "height", "width", "name", "standby", "type", "usemap");
 	$valid["param"] = array("name", "id", "value", "valuetype", "type");
 
 
-	$split_tag = explode(" ", $tag);
+	$split_tag = preg_split("/\s+/", $tag);
 	for($i=1; $i<count($split_tag); $i++){
 		$quote = substr($split_tag[$i], strpos($split_tag[$i], "=")+1, 1);
 		if($quote == "\"" || $quote == "'"){

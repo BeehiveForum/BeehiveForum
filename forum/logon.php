@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.120 2004-03-16 19:22:49 decoyduck Exp $ */
+/* $Id: logon.php,v 1.121 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -76,9 +76,9 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
 
     if (isset($final_uri)) {
-        form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "final_uri", rawurlencode(rawurlencode($final_uri)), "_top");
+        form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
     }else {
-        form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "", "", "_top");
+        form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
     }
 
     echo "</div>\n";
@@ -146,9 +146,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
         echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
         if (isset($final_uri)) {
-            form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
+            form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
         }else {
-            form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "", "", "_top");
+            form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
         }
 
         html_draw_bottom();
@@ -248,8 +248,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 echo "</script>";
 
                 // If they're still here, Javascript's not working. Give up, give a link.
-                echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-                echo "<p>{$lang['loggedinsuccessfully']}</p>";
+                echo "<div align=\"center\">\n";
+                echo "<p>{$lang['loggedinsuccessfully']}</p>\n";
 
                 if (isset($final_uri)) {
                     form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
@@ -281,7 +281,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
 
             if (isset($final_uri)) {
-                form_quick_button("./index.php", $lang['back'], array("final_uri", "webtag"), array(rawurlencode($final_uri), $webtag['WEBTAG']), "_top");
+                form_quick_button("./index.php", $lang['back'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
             }else {
                 form_quick_button("./index.php", $lang['back'], "webtag", $webtag['WEBTAG'], "_top");
             }

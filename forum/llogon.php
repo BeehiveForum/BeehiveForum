@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.23 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.24 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -60,7 +60,7 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
 
     light_html_draw_top();
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    echo form_quick_button("./lthread_list.php?webtag={$webtag['WEBTAG']}", $lang['continue'], 0, 0, "_top");
+    form_quick_button("./lthread_list.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
     light_html_draw_bottom();
     exit;
 
@@ -101,7 +101,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
           light_html_draw_top();
 
           echo "<p>{$lang['loggedinsuccessfully']}</p>";
-          echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "final_uri", rawurlencode($final_uri));
+          form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode($final_uri), $webtag['WEBTAG']));
 
           light_html_draw_bottom();
           exit;
@@ -120,12 +120,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     }else {
 
-      light_html_draw_top();
-      echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-      echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['back'], 0, 0, "_top");
-      light_html_draw_bottom();
-      exit;
-
+        light_html_draw_top();
+        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+        form_quick_button("./index.php", $lang['back'], "webtag", $webtag['WEBTAG'], "_top");
+        light_html_draw_bottom();
+        exit;
     }
 
   }else {

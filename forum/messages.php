@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.119 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: messages.php,v 1.120 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -262,7 +262,7 @@ if ($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID')
 if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
     echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
-    echo form_quick_button("./messages.php?webtag={$webtag['WEBTAG']}", "{$lang['keepreading']} >>", "msg", "$tid.$npid");
+    form_quick_button("./messages.php", "{$lang['keepreading']} &gt;&gt;", array("msg", "webtag"), array("$tid.$npid", $webtag['WEBTAG']));
     echo "</td></tr></table>\n";
 }else {
     echo "<p>&nbsp;</p>\n";

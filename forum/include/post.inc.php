@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.60 2004-03-17 17:20:35 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.61 2004-03-17 17:28:30 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -126,7 +126,7 @@ function make_html($text, $br_only = false)
     $html = _stripslashes($text);
     $html = _htmlentities($html);
     $html = format_url2link($html);
-	$html = emoticons_convert($html);
+    $html = emoticons_convert($html);
     $html = add_paragraphs($html, true, $br_only);
 
     return $html;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.9 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.10 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -74,7 +74,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         light_html_draw_top();
 
         echo "<p>{$lang['youhaveloggedout']}</p>";
-        echo form_quick_button("./llogon.php?webtag={$webtag['WEBTAG']}", $lang['ok']);
+        form_quick_button("./llogon.php", $lang['ok'], "webtag", $webtag['WEBTAG']);
 
         light_html_draw_bottom();
         exit;

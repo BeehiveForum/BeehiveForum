@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.38 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.39 2004-03-12 22:13:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -110,51 +110,72 @@ html_draw_top();
 echo "<h1>{$lang['admin']} : {$lang['manageprofileitems']}<br />{$lang['section']}: ". profile_section_get_name($psid). "</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_items\" action=\"admin_prof_items.php?webtag=$webtag\" method=\"post\">\n";
-echo "  <table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "<form name=\"f_sections\" action=\"admin_prof_sect.php?webtag=$webtag\" method=\"post\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
-echo "      <td class=\"posthead\">\n";
-echo "        <table class=\"posthead\" width=\"100%\">\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['position']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['itemname']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['type']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['moveto']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deleteitem']}</td>\n";
-echo "          </tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['position']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['itemname']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['type']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['moveto']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deleteitem']}</td>\n";
+echo "                </tr>\n";
 
 if ($profile_items = profile_items_get($psid)) {
 
     for($i = 0; $i < sizeof($profile_items); $i++) {
 
-        echo "          <tr>\n";
-        echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_items[$i]['PIID']}]", range(1, sizeof($profile_items) + 1), range(1, sizeof($profile_items) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_items[$i]['PIID']}]", $i), form_input_hidden("t_piid[{$profile_items[$i]['PIID']}]", $profile_items[$i]['PIID']), "</td>\n";
-        echo "            <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME'], 64, 64), form_input_hidden("t_old_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME']), "</td>\n";
-        echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type[{$profile_items[$i]['PIID']}]", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), $profile_items[$i]['TYPE']), form_input_hidden("t_old_type[{$profile_items[$i]['PIID']}]", $profile_items[$i]['TYPE']), "</td>\n";
-        echo "            <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid, "t_move[{$profile_items[$i]['PIID']}]"), "</td>\n";
-        echo "            <td valign=\"top\" align=\"left\" width=\"100\">", form_submit("t_delete[{$profile_items[$i]['PIID']}]", $lang['delete']), "</td>\n";
-        echo "          </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_items[$i]['PIID']}]", range(1, sizeof($profile_items) + 1), range(1, sizeof($profile_items) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_items[$i]['PIID']}]", $i), form_input_hidden("t_piid[{$profile_items[$i]['PIID']}]", $profile_items[$i]['PIID']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME'], 64, 64), form_input_hidden("t_old_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type[{$profile_items[$i]['PIID']}]", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), $profile_items[$i]['TYPE']), form_input_hidden("t_old_type[{$profile_items[$i]['PIID']}]", $profile_items[$i]['TYPE']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid, "t_move[{$profile_items[$i]['PIID']}]"), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\" width=\"100\">", form_submit("t_delete[{$profile_items[$i]['PIID']}]", $lang['delete']), "</td>\n";
+        echo "                </tr>\n";
     }
 }
 
 // Draw a row for a new section to be created
-echo "          <tr>\n";
-echo "            <td align=\"left\">{$lang['new_caps']}</td>\n";
-echo "            <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 64, 64), "</td>";
-echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type_new", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown'])), "</td>\n";
-echo "            <td align=\"center\">&nbsp;</td>\n";
-echo "            <td align=\"center\">&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td colspan=\"4\">&nbsp;</td>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">{$lang['new_caps']}</td>\n";
+echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 64, 64), "</td>";
+echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type_new", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown'])), "</td>\n";
+echo "                  <td align=\"center\">&nbsp;</td>\n";
+echo "                  <td align=\"center\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>{$lang['fieldtypeexample1']}</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>{$lang['fieldtypeexample2']}</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
-echo "  <p>", form_input_hidden("t_psid", $psid), form_submit('submit', 'Save'), "&nbsp;", form_submit("cancel", $lang['back']), "</p>\n";
-echo "  <p>{$lang['fieldtypeexample1']}</p>\n";
-echo "  <p>{$lang['fieldtypeexample2']}</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 

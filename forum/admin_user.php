@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.62 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.63 2004-03-12 22:13:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,30 +96,33 @@ if (!isset($user['STATUS'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageuser']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['manageuser']} : {$user['LOGON']}</h1>\n";
 
 // Do updates
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($HTTP_POST_VARS['del'])) {
 
-    if ($HTTP_POST_VARS['submit'] == 'Del') {
+    if (isset($HTTP_POST_VARS['hash']) && is_md5($HTTP_POST_VARS['hash'])) {
 
-        delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
-        admin_addlog($uid, 0, 0, 0, 0, 0, 6);
+        delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['hash']);
+    }
 
-    }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
+}elseif (isset($HTTP_POST_VARS['submit'])) {
+
+    if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
         if ($user_post_array = get_user_posts($uid)) {
 
             foreach ($user_post_array as $user_post) {
-	        post_delete($user_post['TID'], $user_post['PID']);
+                post_delete($user_post['TID'], $user_post['PID']);
             }
 
             admin_addlog($uid, 0, 0, 0, 0, 0, 3);
-
         }
 
-    }else {
+        echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";        
+    
+    }elseif (!isset($HTTP_POST_VARS['t_delete_posts']) || (isset($HTTP_POST_VARS['t_delete_posts']) && $HTTP_POST_VARS['t_delete_posts'] = "")) {
 
         $t_soldier = (isset($HTTP_POST_VARS['t_soldier'])) ? $HTTP_POST_VARS['t_soldier'] : 0;
         $t_worker  = (isset($HTTP_POST_VARS['t_worker']))  ? $HTTP_POST_VARS['t_worker']  : 0;
@@ -206,194 +209,249 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 }
             }
         }
+            
+        echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
     }
-    
-    echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
 }
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
+echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
+echo "  ", form_input_hidden("uid", $uid), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['userstatus']}</td>\n";
+echo "                </tr>\n";
 
 if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
-    echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
-    echo "<table width=\"50%\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"box\">\n";
-    echo "      <table class=\"posthead\" width=\"100%\">\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\">{$lang['userstatus']}: ", $user['LOGON'], "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td><h2>{$lang['warning_caps']}</h2></td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>{$lang['userdeleteallpostswarning']}</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>", form_checkbox("t_confirm_delete_posts", 1, $lang['confirm'], false), "</td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
-    echo "</form>\n";
+    echo "                <tr>\n";
+    echo "                  <td><h2>{$lang['warning_caps']}</h2></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>{$lang['userdeleteallpostswarning']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>", form_checkbox("t_confirm_delete_posts", 1, $lang['confirm'], false), "</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";     
+    echo "  </table>\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
-    echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"get\">\n";
-    echo "<table width=\"50%\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"box\">\n";
-    echo "      <table class=\"posthead\" width=\"100%\">\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\">{$lang['userstatus']}: ", $user['LOGON'], "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>{$lang['postssuccessfullydeleted']}</td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", $ret), "\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<p>", form_submit("submit", $lang['continue']), "</p>\n";
-    echo "</form>\n";
+    echo "                <tr>\n";
+    echo "                  <td>{$lang['postssuccessfullydeleted']}</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";     
+    echo "  </table>\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
 
 }else {
 
-    echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
-    echo "<table width=\"50%\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"box\">\n";
-    echo "      <table class=\"posthead\" width=\"100%\">\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['userstatus']}: ", $user['LOGON'], "</td>\n";
-    echo "        </tr>\n";
-
     if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
-        echo "        <tr>\n";
-        echo "          <td align=\"left\">", form_checkbox("t_soldier", USER_PERM_SOLDIER, $lang['soldier'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False), "</td>\n";
-        echo "        </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">", form_checkbox("t_soldier", USER_PERM_SOLDIER, $lang['soldier'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False), "</td>\n";
+        echo "                </tr>\n";
     }
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_worker", USER_PERM_WORKER, $lang['worker'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_worm", USER_PERM_WORM, $lang['worm'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_wasp", USER_PERM_WASP, $lang['wasp'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_splat", USER_PERM_SPLAT, $lang['splat'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}:</td>\n";
-    echo "        </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_worker", USER_PERM_WORKER, $lang['worker'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_worm", USER_PERM_WORM, $lang['worm'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_wasp", USER_PERM_WASP, $lang['wasp'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_splat", USER_PERM_SPLAT, $lang['splat'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";    
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";    
+    echo "              <table class=\"posthead\" width=\"100%\">\n";    
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}:</td>\n";
+    echo "                </tr>\n";
 
     if ($user_restricted_folder_array = user_get_restricted_folders($uid)) {
 
         foreach($user_restricted_folder_array as $user_restricted_folder) {
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">", form_checkbox("t_fallow[]", $user_restricted_folder['FID'], $user_restricted_folder['TITLE'], (isset($user_restricted_folder['ALLOWED']) && $user_restricted_folder['ALLOWED'] > 0)), "</td>\n";
-            echo "        </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">", form_checkbox("t_fallow[]", $user_restricted_folder['FID'], $user_restricted_folder['TITLE'], (isset($user_restricted_folder['ALLOWED']) && $user_restricted_folder['ALLOWED'] > 0)), "</td>\n";
+            echo "                </tr>\n";
         }
 
     }else {
-        echo "        <tr>\n";
-        echo "          <td align=\"left\">{$lang['norestrictedfolders']}</td>\n";
-        echo "        </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">{$lang['norestrictedfolders']}</td>\n";
+        echo "                </tr>\n";
     }
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}:</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>&nbsp;</td>\n";
-    echo "        </tr>\n";    
-    echo "        <tr>\n";
-    echo "          <td>\n";
-    echo "            <table class=\"box\" align=\"center\" width=\"80%\">\n";
-    echo "              <tr>\n";
-    echo "                <td>\n";
-    echo "                  <table class=\"posthead\" width=\"100%\">\n";
-    echo "                    <tr>\n";
-    echo "                      <td class=\"subhead\">&nbsp;</td>\n";
-    echo "                      <td class=\"subhead\" width=\"150\">&nbsp;LOGON</td>\n";
-    echo "                      <td class=\"subhead\">&nbsp;IP Address</td>\n";
-    echo "                    </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";    
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n"; 
+    echo "              <table class=\"posthead\" width=\"100%\">\n";        
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}:</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";    
+    echo "                <tr>\n";
+    echo "                  <td>\n";
+    echo "                    <table class=\"box\" align=\"center\" width=\"80%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td>\n";
+    echo "                          <table class=\"posthead\" width=\"100%\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td class=\"subhead\">&nbsp;</td>\n";
+    echo "                              <td class=\"subhead\" width=\"150\">&nbsp;LOGON</td>\n";
+    echo "                              <td class=\"subhead\">&nbsp;IP Address</td>\n";
+    echo "                            </tr>\n";
 
     if ($user_alias_array = user_get_aliases($user['UID'])) {
 
         foreach ($user_alias_array as $user_alias) {
-            echo "                    <tr>\n";
-            echo "                      <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
-            echo "                      <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
-            echo "                      <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
+            echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+            echo "                              <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
             
             if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
 
             echo "</td>\n";            
-            echo "                    </tr>\n";
+            echo "                            </tr>\n";
         }
 
     }
     
-    echo "                    <tr>\n";
-    echo "                      <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user['LOGON_FROM'], "", ip_is_banned($user['LOGON_FROM'])), "</td>\n";
-    echo "                      <td align=\"left\">&nbsp;{$user['LOGON']}</td>\n";
-    echo "                      <td align=\"left\">&nbsp;{$user['LOGON_FROM']}";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user['LOGON_FROM'], "", ip_is_banned($user['LOGON_FROM'])), "</td>\n";
+    echo "                              <td align=\"left\">&nbsp;{$user['LOGON']}</td>\n";
+    echo "                              <td align=\"left\">&nbsp;{$user['LOGON_FROM']}";
             
     if (ip_is_banned($user['LOGON_FROM'])) echo form_input_hidden("t_ip_banned[]", $user['LOGON_FROM']); 
 
     echo "</td>\n";            
-    echo "                    </tr>\n";
-    echo "                  </table>\n";    
-    echo "                </td>\n";    
-    echo "              </tr>\n";
-    echo "            </table>\n";
-    echo "          </td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>\n";
-    echo "            <table width=\"80%\" align=\"center\">\n";
-    echo "              <tr>\n";
-    echo "                <td class=\"smalltext\" align=\"left\">{$lang['tobananIPaddress']}</td>\n";
-    echo "              </tr>\n";
-    echo "            </table>\n";
-    echo "          </td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}:</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_delete_posts", 1, $lang['deleteallusersposts'], false), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['attachments']}:</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">\n";
-    echo "            <table class=\"posthead\" width=\"100%\">\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";    
+    echo "                        </td>\n";    
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"smalltext\" align=\"left\">{$lang['tobananIPaddress']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";    
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";    
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";     
+    echo "              <table width=\"100%\" align=\"center\">\n";    
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}:</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_delete_posts", 1, $lang['deleteallusersposts'], false), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";    
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";     
+    echo "              <table width=\"100%\" align=\"center\">\n";    
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}:</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">\n";
+    echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
     $total_attachment_size = 0;
 
@@ -401,8 +459,8 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
         for ($i = 0; $i < sizeof($attachments); $i++) {
 
-            echo "              <tr>\n";
-            echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
+            echo "                      <tr>\n";
+            echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
             
             if ($attachment_use_old_method) {
                 echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
@@ -437,21 +495,20 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
             if ($messagelink = get_message_link($attachments[$i]['aid'])) {
                 if (strstr($messagelink, 'messages.php')) {
-                    echo "                <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", $messagelink, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", $messagelink, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
                 }else {
-                    echo "                <td valign=\"top\" width=\"100\" class=\"postbody\">{$lang['messageunavailable']}</td>\n";
+                    echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
                 }
             }else {
-                echo "                <td valign=\"top\" width=\"100\" class=\"postbody\">{$lang['messageunavailable']}</td>\n";
+                echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
             }
 
-            echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
-            echo "                <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
-            echo "                  ". form_input_hidden('userfile', $attachments[$i]['filename']);
-            echo "                  ". form_input_hidden('aid', $attachments[$i]['aid']);
-            echo "                  ". form_submit('submit', $lang['del']). "\n";
-            echo "                </td>\n";
-            echo "              </tr>\n";
+            echo "                        <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
+            echo "                        <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
+            echo "                          ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
+            echo "                          ", form_submit('del', $lang['del']), "\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
 
             $total_attachment_size += $attachments[$i]['filesize'];
 
@@ -459,51 +516,66 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
     }else {
 
-        echo "              <tr>\n";
-        echo "                <td valign=\"top\" width=\"300\" class=\"postbody\">{$lang['noattachmentsforuser']}</td>\n";
-        echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-        echo "              </tr>\n";
-        echo "              <tr>\n";
-        echo "                <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-        echo "              </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\">{$lang['noattachmentsforuser']}</td>\n";
+        echo "                        <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                        <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                        <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                        <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
 
     }
 
-    echo "            </table>\n";
-    echo "          </td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", $ret), "\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
-    echo "</form>\n";
-
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";    
+    echo "  </table>\n";
+    echo "  ", form_input_hidden("ret", $ret), "\n";
 }
 
 if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
-    echo "<p>&nbsp;</p>\n";
-    echo "<table width=\"50%\" border=\"0\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\">\n";
-    echo "      <p>{$lang['soldierdesc']}</p>\n";
-    echo "      <p>{$lang['workerdesc']}</p>\n";
-    echo "      <p>{$lang['wormdesc']}</p>\n";
-    echo "      <p>{$lang['waspdesc']}</p>";
-    echo "      <p>{$lang['splatdesc']}</p>";
-    echo "      <p>&nbsp;</p>";
-    echo "      <p>{$lang['aliasdesc']}</p>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table width=\"100%\" border=\"0\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\">\n";
+    echo "              <p>{$lang['soldierdesc']}</p>\n";
+    echo "              <p>{$lang['workerdesc']}</p>\n";
+    echo "              <p>{$lang['wormdesc']}</p>\n";
+    echo "              <p>{$lang['waspdesc']}</p>";
+    echo "              <p>{$lang['splatdesc']}</p>";
+    echo "              <p>&nbsp;</p>";
+    echo "              <p>{$lang['aliasdesc']}</p>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 
 }
 
+echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

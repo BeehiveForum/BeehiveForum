@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.34 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.35 2004-03-12 22:13:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -97,50 +97,61 @@ echo "<h1>{$lang['admin']} : {$lang['manageprofilesections']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_sections\" action=\"admin_prof_sect.php?webtag=$webtag\" method=\"post\">\n";
-echo "  <table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
-echo "      <td class=\"posthead\">\n";
-echo "        <table class=\"posthead\" width=\"100%\">\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['position']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['items']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deletesection']}</bdo></td>\n";
-echo "          </tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['position']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['items']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deletesection']}</bdo></td>\n";
+echo "                </tr>\n";
 
 if ($profile_sections = profile_sections_get()) {
 
     for ($i = 0; $i < sizeof($profile_sections); $i++) {
 
-        echo "          <tr>\n";
-        echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_sections[$i]['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_sections[$i]['PSID']}]", $i), form_input_hidden("t_psid[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['PSID']), "</td>\n";
-        echo "            <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME'] ,64, 64), form_input_hidden("t_old_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME']), "</td>\n";
-        echo "            <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&psid={$profile_sections[$i]['PSID']}'\""), "</a></td>\n";
+        echo "                <tr>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_sections[$i]['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_sections[$i]['PSID']}]", $i), form_input_hidden("t_psid[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['PSID']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME'] ,64, 64), form_input_hidden("t_old_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&psid={$profile_sections[$i]['PSID']}'\""), "</a></td>\n";
 
         if (!profile_items_get($profile_sections[$i]['PSID'])) {
-            echo "            <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";
+            echo "                  <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";
         }else{
-            echo "            <td>&nbsp;</td>\n";
+            echo "                  <td>&nbsp;</td>\n";
         }
 
-        echo "          </tr>\n";
+        echo "                </tr>\n";
     }
 }
 
 // Draw a row for a new section to be created
-echo "          <tr>\n";
-echo "            <td align=\"left\">NEW</td>\n";
-echo "            <td align=\"left\">", form_field("t_name_new", $lang['newsection'], 64, 64), "</td>\n";
-echo "            <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td colspan=\"4\">&nbsp;</td>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">NEW</td>\n";
+echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newsection'], 64, 64), "</td>\n";
+echo "                  <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
-echo "<p>", form_submit('submit', 'Save'), "</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 

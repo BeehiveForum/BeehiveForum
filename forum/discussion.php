@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.32 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.33 2004-03-07 09:45:45 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -52,6 +52,7 @@ echo "<head>\n";
 echo "<title>{$forum_name}</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
 echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
 

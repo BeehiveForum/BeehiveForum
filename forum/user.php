@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.3 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: user.php,v 1.4 2004-03-07 09:45:45 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -61,6 +61,7 @@ $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $lang['_charset']; ?>">
 <link rel="stylesheet" href="<?php echo $stylesheet; ?>" type="text/css">
+<link rel="icon" href="images/favicon.ico" type="image/ico">
 </head>
 <frameset cols="180,*" border="1">
 <frame src="./user_menu.php" name="left" border="1">

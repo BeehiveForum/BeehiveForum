@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.18 2004-03-07 09:45:45 decoyduck Exp $ */
+/* $Id: start.php,v 1.19 2004-03-07 17:37:58 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -57,11 +57,9 @@ echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
 echo "<frame src=\"./start_left.php\" name=\"left\" border=\"1\">\n";
 
-if (isset($HTTP_GET_VARS['show'])) {
+if (isset($HTTP_GET_VARS['show']) && $HTTP_GET_VARS['show'] == "visitors") {
 
-    if ($HTTP_GET_VARS['show'] == 'visitors') {
-        echo "<frame src=\"./visitor_log.php\" name=\"right\" border=\"1\">\n";
-    }
+    echo "<frame src=\"./visitor_log.php\" name=\"right\" border=\"1\">\n";
 
 }else {
 

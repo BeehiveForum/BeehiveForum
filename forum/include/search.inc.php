@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.110 2005-03-20 11:15:21 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.111 2005-03-20 12:37:33 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -29,6 +29,14 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function search_execute($argarray, &$urlquery, &$error)
 {
+    // Check the last time the user performed a search
+
+    if (!check_search_frequency()) {
+
+        $error = SEARCH_FREQUENCY_TOO_GREAT;
+        return false;
+    }
+
     // MySQL has a list of stop words for fulltext searches.
     // We'll save ourselves some server time by checking
     // them first.
@@ -482,6 +490,44 @@ function search_draw_user_dropdown($name)
     }
 
     return form_dropdown_array($name, $uids, $names, 0, false, "search_dropdown");
+}
+
+function check_search_frequency()
+{
+    $db_check_search_frequency = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $search_stamp = time() - intval(forum_get_setting('search_min_frequency', false, 30));
+
+    $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) FROM USER_TRACK WHERE UID = '$uid'";
+    $result = db_query($sql, $db_check_search_frequency);
+
+    if (db_num_rows($result) > 0) {
+
+        list($last_search_check) = db_fetch_array($result);
+
+        if ($last_search_check < $search_stamp) {
+
+            $sql = "UPDATE USER_TRACK SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
+            $result = db_query($sql, $db_check_search_frequency);
+
+            return true;
+        }
+
+    }else{
+
+        $sql = "INSERT INTO USER_TRACK (UID, LAST_SEARCH) ";
+        $sql.= "VALUES ('$uid', NOW())";
+
+        $result = db_query($sql, $db_check_search_frequency);
+
+        return true;
+    }
+
+    return false;
 }
 
 function search_index_old_post()

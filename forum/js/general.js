@@ -30,3 +30,16 @@ function confirmFolderIgnore() {
 function confirmFolderUnignore() {
         return window.confirm('Are you sure you want to stop ignoring this folder?');
 }
+
+function disable_button (button) {
+
+    button.className = 'button_disabled';
+    
+    if (document.all || document.getElementById) {
+        button.disabled = true;
+    }else if (button) {
+        button.onclick = null;
+    }
+
+    return true;
+}

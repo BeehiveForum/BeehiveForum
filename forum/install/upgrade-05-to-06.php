@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.35 2005-03-18 23:58:56 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.36 2005-03-20 12:37:33 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -72,6 +72,30 @@ if (db_num_rows($result) > 0) {
         $valid = false;
         return;
     }
+}
+
+$sql = "DROP TABLE IF EXISTS DEDUPE";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE USER_TRACK (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  DDKEY DATETIME DEFAULT NULL,";
+$sql.= "  LAST_POST DATETIME DEFAULT NULL,";
+$sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (UID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
 }
 
 $sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_FILES";

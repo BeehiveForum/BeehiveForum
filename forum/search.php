@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.108 2005-03-19 17:53:34 decoyduck Exp $ */
+/* $Id: search.php,v 1.109 2005-03-20 12:37:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -116,7 +116,7 @@ if (isset($_POST['search_string'])) {
     echo "<h1>{$lang['searchmessages']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form method=\"post\" action=\"search.php\" target=\"left\">\n";
+    echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"left\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden('sstart', '0'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -243,7 +243,7 @@ if (isset($_POST['search_string'])) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['find']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['find'], "onclick=\"disable_button(this); search_form.submit()\""), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -260,9 +260,10 @@ $error = false;
 thread_list_draw_top(0);
 
 echo "</table>\n";
-echo "<h1>{$lang['searchresults']}</h1>\n";
 
 if ($search_results_array = search_execute($search_arguments, $urlquery, $error)) {
+
+    echo "<h1>{$lang['searchresults']}</h1>\n";
 
     if (isset($search_arguments['sstart'])) {
         $sstart = $search_arguments['sstart'];
@@ -346,6 +347,8 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
 }else if ($error) {
 
+    echo "<h1>{$lang['error']}</h1>\n";
+
     switch($error) {
 
         case SEARCH_USER_NOT_FOUND:
@@ -356,6 +359,9 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
             break;
         case SEARCH_NO_MATCHES:
             echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
+            break;
+        case SEARCH_FREQUENCY_TOO_GREAT:
+            echo "<p>{$lang['searchfrequencyerror_1']} ", forum_get_setting('search_min_frequency', false, 30), " {$lang['searchfrequencyerror_2']}</p>\n";
             break;
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.113 2005-03-18 23:58:40 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.114 2005-03-20 12:37:33 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -389,27 +389,65 @@ function check_ddkey($ddkey)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DDKEY FROM DEDUPE WHERE UID = '$uid'";
+    $sql = "SELECT UNIX_TIMESTAMP(DDKEY) FROM USER_TRACK WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_ddkey);
 
     if (db_num_rows($result)) {
 
         list($ddkey_check) = db_fetch_array($result);
 
-        $sql = "UPDATE DEDUPE SET DDKEY = '$ddkey' WHERE UID = '$uid'";
+        $sql = "UPDATE USER_TRACK SET DDKEY = FROM_UNIXTIME($ddkey) WHERE UID = '$uid'";
         $result = db_query($sql, $db_check_ddkey);
 
     }else{
 
         $ddkey_check = "";
 
-        $sql = "INSERT INTO DEDUPE (UID, DDKEY) ";
-        $sql.= "VALUES ('$uid', '$ddkey')";
+        $sql = "INSERT INTO USER_TRACK (UID, DDKEY) ";
+        $sql.= "VALUES ('$uid', FROM_UNIXTIME($ddkey))";
 
         $result = db_query($sql, $db_check_ddkey);
     }
 
     return !($ddkey == $ddkey_check);
+}
+
+function check_post_frequency()
+{
+    $db_check_post_frequency = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $search_stamp = time() - intval(forum_get_setting('minimum_post_frequency', false, 0));
+
+    $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) FROM USER_TRACK WHERE UID = '$uid'";
+    $result = db_query($sql, $db_check_post_frequency);
+
+    if (db_num_rows($result) > 0) {
+
+        list($last_search_check) = db_fetch_array($result);
+
+        if ($last_search_check < $search_stamp) {
+
+            $sql = "UPDATE USER_TRACK SET LAST_POST = NOW() WHERE UID = '$uid'";
+            $result = db_query($sql, $db_check_post_frequency);
+
+            return true;
+        }
+
+    }else{
+
+        $sql = "INSERT INTO USER_TRACK (UID, LAST_POST) ";
+        $sql.= "VALUES ('$uid', NOW())";
+
+        $result = db_query($sql, $db_check_post_frequency);
+
+        return true;
+    }
+
+    return false;
 }
 
 class MessageText {

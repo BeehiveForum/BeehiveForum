@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.241 2005-03-14 13:11:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.242 2005-03-20 12:37:33 decoyduck Exp $ */
 
 // International English language file
 
@@ -560,10 +560,12 @@ $lang['enablewikiintegration'] = "Enable WikiWiki Integration";
 $lang['enablewikiquicklinks'] = "Enable WikiWiki Quick Links";
 $lang['wikiintegrationuri'] = "WikiWiki Location";
 $lang['maximumpostlength'] = "Maximum Post Length";
+$lang['minimumpostfrequency'] = "Minimum Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['searchoptions'] = "Search Options";
 $lang['minsearchwordlength'] = "Min search word length";
+$lang['minsearchfrequency'] = "Min search frequency";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Session cut off (seconds)";
 $lang['activesessioncutoffseconds'] = "Active session cut off (seconds)";
@@ -602,7 +604,7 @@ $lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in hours
 $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a seperate page.";
 $lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
 $lang['forum_settings_help_13'] = "The Links section of Beehive provides a place for your users to maintain a list of sites they frequently visit that other users may find useful. Links can be divided into categories by folder and allow for comments and ratings to be given. In order to moderate the links section a user must be ranted Global Moderator status.";
-$lang['forum_settings_help_14'] = "This settings defines the mimumum word length that is allowed to to be searched for in AND and OR based searches. Words smaller than the value specified will be removed from the query automatically. Exact phrase searches are not effected by this setting";
+$lang['forum_settings_help_14'] = "<b>Min search word length</b> defines the mimumum word length that is allowed to to be searched for. Words smaller than the value specified will be removed from the query automatically.";
 $lang['forum_settings_help_15'] = "<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
 $lang['forum_settings_help_16'] = "<b>Active session cut off</b> is the maximum time before a user's session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
 $lang['forum_settings_help_17'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
@@ -626,7 +628,9 @@ $lang['forum_settings_help_34'] = "<b>Open</b> will allow all users and guests a
 $lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, with the exception of Admins who may still access the admin panel.";
 $lang['forum_settings_help_36'] = "<b>Restrict</b> allows to set a list of users who are allowed access to your forum.";
 $lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a password to give out to users so they can access your forum.";
-$lang['forum_settings_help_38'] = "Where setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
+$lang['forum_settings_help_38'] = "When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
+$lang['forum_settings_help_39'] = "<b>Min search frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
+$lang['forum_settings_help_40'] = "<b>Minimum Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -918,6 +922,8 @@ $lang['reducesiglength'] = "Signature length must be under 65,535 characters (cu
 $lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
 $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
+$lang['postfrequencytoogreat_1'] = "You can only post once every";
+$lang['postfrequencytoogreat_2'] = "seconds. Please try again later.";
 
 // Message display (messages.php) --------------------------------------
 
@@ -1326,6 +1332,8 @@ $lang['postsfromuser'] = "Posts from user";
 $lang['poststouser'] = "Posts to user";
 $lang['poststoandfromuser'] = "Posts to and from user";
 $lang['poststoandfrommeonly'] = "Posts to and from me only";
+$lang['searchfrequencyerror_1'] = "You can only search once every";
+$lang['searchfrequencyerror_2'] = "seconds. Please try again later.";
 
 // Start page (start_left.php) -----------------------------------------
 

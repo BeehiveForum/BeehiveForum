@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.61 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.62 2005-03-20 12:37:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -211,6 +211,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['maximum_post_length'] = $_POST['maximum_post_length'];
     }else {
         $new_forum_settings['maximum_post_length'] = 6226;
+    }
+
+    if (isset($_POST['minimum_post_frequency']) && is_numeric($_POST['minimum_post_frequency'])) {
+        $new_forum_settings['minimum_post_frequency'] = $_POST['minimum_post_frequency'];
+    }else {
+        $new_forum_settings['minimum_post_frequency'] = 0;
     }
 
     if (isset($_POST['enable_wiki_integration']) && $_POST['enable_wiki_integration'] == "Y") {
@@ -481,16 +487,21 @@ echo "                        <td>", form_radio("allow_post_editing", "Y", $lang
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['postedittimeout']}:</td>\n";
-echo "                        <td>", form_input_text("post_edit_time", (isset($current_forum_settings['post_edit_time']) && $current_forum_settings == false ? $current_forum_settings['post_edit_time'] : '0'), 20, 32), "</td>\n";
+echo "                        <td>", form_input_text("post_edit_time", (isset($current_forum_settings['post_edit_time']) && is_numeric($current_forum_settings['post_edit_time']) ? $current_forum_settings['post_edit_time'] : '0'), 20, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['maximumpostlength']}:</td>\n";
-echo "                        <td>", form_input_text("maximum_post_length", (isset($current_forum_settings['maximum_post_length']) && $current_forum_settings == false ? $current_forum_settings['maximum_post_length'] : '6226'), 20, 32), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("maximum_post_length", (isset($current_forum_settings['maximum_post_length']) && is_numeric($current_forum_settings['maximum_post_length']) ? $current_forum_settings['maximum_post_length'] : '6226'), 20, 32), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\">{$lang['minimumpostfrequency']}:</td>\n";
+echo "                        <td>", form_input_text("minimum_post_frequency", (isset($current_forum_settings['minimum_post_frequency']) && is_numeric($current_forum_settings['minimum_post_frequency']) ? $current_forum_settings['minimum_post_frequency'] : '0'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_10']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_11']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_40']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -527,7 +538,7 @@ echo "                        <td>", form_radio("enable_wiki_quick_links", "Y", 
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['wikiintegrationuri']}:</td>\n";
-echo "                        <td>", form_input_text("wiki_integration_uri", (isset($current_forum_settings['wiki_integration_uri']) && $current_forum_settings == false ? $current_forum_settings['wiki_integration_uri'] : 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
+echo "                        <td>", form_input_text("wiki_integration_uri", (isset($current_forum_settings['wiki_integration_uri']) ? $current_forum_settings['wiki_integration_uri'] : 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

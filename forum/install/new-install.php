@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.40 2005-03-18 23:58:56 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.41 2005-03-20 12:37:33 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -81,10 +81,12 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE DEDUPE (";
+$sql = "CREATE TABLE USER_TRACK (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  DDKEY CHAR(32) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY (UID)";
+$sql.= "  DDKEY DATETIME DEFAULT NULL,";
+$sql.= "  LAST_POST DATETIME DEFAULT NULL,";
+$sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {

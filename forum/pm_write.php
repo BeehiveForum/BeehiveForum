@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.107 2005-03-19 17:53:33 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.108 2005-03-20 12:37:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -753,7 +753,7 @@ echo $tools->js();
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else{
-    echo form_input_hidden("t_dedupe", date("YmdHis"));
+    echo form_input_hidden("t_dedupe", gmmktime());
 }
 
 if (isset($t_rmid)) echo form_input_hidden("replyto", $t_rmid), "\n";

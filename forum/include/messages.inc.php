@@ -222,6 +222,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if($in_list) {
             $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
 	    if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
+	    if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
             echo format_time($message['CREATED'], 1);
         }
     }

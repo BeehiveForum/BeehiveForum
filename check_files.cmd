@@ -19,10 +19,12 @@
 :: USA
 :: ======================================================================
 ::
-:: $Id: check_files.cmd,v 1.4 2004-02-22 20:59:47 decoyduck Exp $
+:: $Id: check_files.cmd,v 1.5 2004-02-22 21:01:32 decoyduck Exp $
 :: 
 :: Checks each of the files includes with Beehive by parsing the file
-:: using the CLI version of php.exe. 
+:: using the CLI version of php.exe. Run from a command prompt in the
+:: root of your CVS checkout or simply double click the script in
+:: Windows Explorer.
 ::
 :: Requirements:
 ::   - MS Windows NT/2000/XP.

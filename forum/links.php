@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -95,32 +95,32 @@ echo "<h1>Links</h1>\n";
 // work out where we are in the folder hierarchy and display links to all the higher levels
 
 echo "<h2>" . links_display_folder_path($fid, $folders) . "</h2>\n";
-if ($folders[$fid]['VISIBLE'] == "N") echo "<p class=\"threadtime\">This folder is hidden. <a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&action=foldershow\">[unhide]</a></p>";
+if ($folders[$fid]['VISIBLE'] == "N") echo "<p class=\"threadtime\">This folder is hidden. <a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&amp;action=foldershow\">[unhide]</a></p>";
 
 $subfolders = links_get_subfolders($fid, $folders);
 
-$new_folder_link = $HTTP_COOKIE_VARS['bh_sess_uid'] ? "[<a href=\"links_add.php?mode=folder&fid=$fid\">Add new folder</a>]" : "";
+$new_folder_link = $HTTP_COOKIE_VARS['bh_sess_uid'] ? "[<a href=\"links_add.php?mode=folder&amp;fid=$fid\">Add new folder</a>]" : "";
 if (count($subfolders) == 0) {
     echo "<p><span class=\"threadtime\">No subfolders in this category. $new_folder_link</span></p>\n";
 } else {
     if (count($subfolders) == 1) {
-       echo "<p><span class=\"threadtime\">1 subfolder in this category: $new_folder_link</span>\n";
+       echo "<p><span class=\"threadtime\">1 subfolder in this category: $new_folder_link</span></p>\n";
     } else {
-       echo "<p><span class=\"threadtime\">" . count($subfolders) . " subfolders in this category: $new_folder_link</span>\n";
+       echo "<p><span class=\"threadtime\">" . count($subfolders) . " subfolders in this category: $new_folder_link</span></p>\n";
     }
     echo "<table>\n";
     // create list of subfolders
     while (list($key, $val) = each($subfolders)) {
-            echo "<tr width=\"20\"><td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"folder\"></td><td class=\"postbody\"><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "style=\"color: gray;\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
+            echo "<tr><td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"folder\" /></td><td class=\"postbody\"><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "style=\"color: gray;\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             if (perm_is_moderator() && $folders[$val]['VISIBLE'] == "Y") {
-                echo "&nbsp;<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&action=folderhide&new_fid=$fid\" class=\"threadtime\">[hide]</a>\n";
+                echo "&nbsp;<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[hide]</a>\n";
             } elseif (perm_is_moderator() && $folders[$val]['VISIBLE'] == "N") {
-                echo "&nbsp;<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&action=foldershow&new_fid=$fid\" class=\"threadtime\">[unhide]</a>\n";
+                echo "&nbsp;<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[unhide]</a>\n";
             }
-            if (perm_is_moderator() && count(links_get_subfolders($val, $folders)) == 0) echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&action=folderdel&new_fid=$fid\" class=\"threadtime\">[delete]</a>\n";
+            if (perm_is_moderator() && count(links_get_subfolders($val, $folders)) == 0) echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[delete]</a>\n";
             echo "</td></tr>\n";
     }
-    echo "</table></p>\n";
+    echo "</table>\n";
     if (perm_is_moderator()) echo "<p class=\"threadtime\">Entries in a deleted folder will be moved to the parent folder. Only folders which do not contain subfolders may be deleted.</p>";
     //echo "</p>\n";
 }
@@ -160,49 +160,49 @@ echo "  <tr>\n";
 
 echo "    <td class=\"posthead\">";
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?fid=$fid&sort_by=TITLE&sort_dir=DESC\">Name</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=TITLE&amp;sort_dir=DESC\">Name</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&sort_by=TITLE&sort_dir=ASC\">Name</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=TITLE&amp;sort_dir=ASC\">Name</a>";
 }
 echo "</td>\n";
 
 echo "    <td class=\"posthead\" width=\"250\">";
 if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?fid=$fid&sort_by=DESCRIPTION&sort_dir=DESC\">Description</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">Description</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&sort_by=DESCRIPTION&sort_dir=ASC\">Description</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">Description</a>";
 }
 echo "</td>\n";
 
 echo "    <td class=\"posthead\">";
 if ($sort_by == "NICKNAME" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?fid=$fid&sort_by=NICKNAME&sort_dir=DESC\">Submitted by</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=NICKNAME&amp;sort_dir=DESC\">Submitted by</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&sort_by=NICKNAME&sort_dir=ASC\">Submitted by</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=NICKNAME&amp;sort_dir=ASC\">Submitted by</a>";
 }
 echo "</td>\n";
 
 echo "    <td class=\"posthead\">";
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?fid=$fid&sort_by=CREATED&sort_dir=DESC\">Date</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=CREATED&amp;sort_dir=DESC\">Date</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&sort_by=CREATED&sort_dir=ASC\">Date</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=CREATED&amp;sort_dir=ASC\">Date</a>";
 }
 echo "</td>\n";
 
 echo "    <td class=\"posthead\">";
 if ($sort_by == "CLICKS" && $sort_dir == "DESC") {
-    echo "<a href=\"links.php?fid=$fid&sort_by=CLICKS&sort_dir=ASC\">Clicks</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=CLICKS&amp;sort_dir=ASC\">Clicks</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&sort_by=CLICKS&sort_dir=DESC\">Clicks</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=CLICKS&amp;sort_dir=DESC\">Clicks</a>";
 }
 echo "</td>\n";
 
 echo "    <td class=\"posthead\">";
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
-    echo "<a href=\"links.php?fid=$fid&sort_by=RATING&sort_dir=ASC\">Rating</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=RATING&amp;sort_dir=ASC\">Rating</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&sort_by=RATING&sort_dir=DESC\">Rating</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;sort_by=RATING&amp;sort_dir=DESC\">Rating</a>";
 }
 echo "</td>\n";
 
@@ -213,7 +213,7 @@ echo "  </tr>\n";
 if (sizeof($links) > 0 ) {
       while (list($key, $link) = each($links)) {
       echo "  <tr" ; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">\n";
-      echo "    <td class=\"postbody\" valign=\"top\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?lid=$key&action=go\" target=\"_blank\""; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">". _stripslashes($link['TITLE']) . "</a></td>\n";
+      echo "    <td class=\"postbody\" valign=\"top\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?lid=$key&amp;action=go\" target=\"_blank\""; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">". _stripslashes($link['TITLE']) . "</a></td>\n";
       echo "    <td class=\"postbody\" width=\"250\">", _stripslashes($link['DESCRIPTION']), "</td>\n";
       echo "    <td class=\"postbody\" valign=\"top\">", format_user_name($link['LOGON'], $link['NICKNAME']), "</td>\n";
       echo "    <td class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
@@ -223,7 +223,7 @@ if (sizeof($links) > 0 ) {
       echo "</td>\n";
       if (perm_is_moderator()) {
           echo "    <td class=\"threadtime\" valign=\"top\">";
-          if ($link['VISIBLE'] == "Y") { echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&action=hide&lid=$key\">[hide]</a>"; } else { echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&action=show&lid=$key\">[unhide]</a>"; }
+          if ($link['VISIBLE'] == "Y") { echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&amp;action=hide&amp;lid=$key\">[hide]</a>"; } else { echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&amp;action=show&amp;lid=$key\">[unhide]</a>"; }
           echo "</td>\n";
       }
       echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?lid=$key\" class=\"threadtime\">[view]</a></td>\n";
@@ -233,7 +233,7 @@ if (sizeof($links) > 0 ) {
       echo "  <tr>\n    <td colspan=\"5\" class=\"postbody\">No links in this folder.</td>\n  </tr>\n";
 }
 
-echo $HTTP_COOKIE_VARS['bh_sess_uid'] ? "  <tr>\n    <td class=\"postbody\">&nbsp;</td>\n  </tr>\n  <tr>\n    <td class=\"postbody\"><a href=\"links_add.php?mode=link&fid=$fid\"><b>Add link here</b></a></td>\n  </tr>\n" : "";
+echo $HTTP_COOKIE_VARS['bh_sess_uid'] ? "  <tr>\n    <td class=\"postbody\">&nbsp;</td>\n  </tr>\n  <tr>\n    <td class=\"postbody\"><a href=\"links_add.php?mode=link&amp;fid=$fid\"><b>Add link here</b></a></td>\n  </tr>\n" : "";
 echo "</table>\n";
 html_draw_bottom();
 ?>

@@ -161,9 +161,8 @@ if (isset($searchsql)) {
   }
 
   echo form_submit("go","Go!"). "\n";
-
-  echo "<br /><br />\n";
-  echo "<h1>Search Results</h1>";
+  echo "      </form>\n";
+  echo "<h1>Search Results</h1>\n";
 
   $db  = db_connect();
   $sql = $basesql.$searchsql;
@@ -177,10 +176,10 @@ if (isset($searchsql)) {
   $result  = db_query($sql, $db);
   $numrows = db_num_rows($result);
 
-  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\">&nbsp;Found: ", $numrows, " matches<br />\n";
+  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;Found: ", $numrows, " matches<br />\n";
 
   if ($sstart >= 50) {
-      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">Previous Page</a>\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">Previous Page</a>\n";
   }
 
   echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -192,30 +191,41 @@ if (isset($searchsql)) {
 
     if (thread_is_poll($row['TID'])) {
 
-      $message['CONTENT'] = '<b>'. strip_tags(_stripslashes($threaddata['TITLE'])). '</b>';
+      $message['TITLE']   = '';
+      $message['CONTENT'] = strip_tags(_stripslashes($threaddata['TITLE']));
 
     }else {
 
-      $message['CONTENT'] = '<b>'. strip_tags(_stripslashes($threaddata['TITLE'])). '</b><br />';
-      $message['CONTENT'].= strip_tags(message_get_content($row['TID'], $row['PID']));
+      $message['TITLE']   = strip_tags(_stripslashes($threaddata['TITLE']));
+      $message['CONTENT'] = strip_tags(message_get_content($row['TID'], $row['PID']));
 
     }
 
-    if (strlen($message['CONTENT']) > 50) {
+    // trunicate the search result at the last space in the first 50 chars.
 
-      $message['CONTENT'] = substr($message['CONTENT'], 0, 50);
+    if (strlen($message['TITLE']) > 15) {
 
-      // trunicate the search result at the last space in the first 50 chars.
-
-      if ($schar = strrpos($message['CONTENT'], ' ')) {
-        $message['CONTENT'] = substr($message['CONTENT'], 0, $schar). "</b>";
+      if ($schar = strrpos($message['TITLE'], ' ')) {
+        $message['TITLE'] = substr($message['TITLE'], 0, $schar);
       }else {
-        $message['CONTENT'] = substr($message['CONTENT'], 0, 47). "...</b>";
+        $message['TITLE'] = substr($message['TITLE'], 0, 12). "...";
       }
 
     }
 
-    echo "<li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&search_string=", rawurlencode(trim($search_string)), "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
+    if (strlen($message['CONTENT']) > 35) {
+
+      $message['CONTENT'] = substr($message['CONTENT'], 0, 35);
+
+      if ($schar = strrpos($message['CONTENT'], ' ')) {
+        $message['CONTENT'] = substr($message['CONTENT'], 0, $schar);
+      }else {
+        $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "...";
+      }
+
+    }
+
+    echo "<li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />", wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />\n";
     echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
 
   }
@@ -234,7 +244,7 @@ if (isset($searchsql)) {
 ?>
 <h1>Search Messages</h1>
 <form method="post" action="search.php" target="left">
-<input type="hidden" name="sstart" value="0">
+<?php echo form_input_hidden('sstart', '0'); ?>
 <table border="0" width="550" align="center">
   <tr>
     <td class="postbody" colspan="2">Search Discussions...</td>

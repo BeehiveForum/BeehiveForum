@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -33,25 +33,31 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
     $db_post_create = db_connect();
     $content = addslashes($content);
-    
+
     $sql = "insert into " . forum_table("POST");
-    $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED) ";
-    $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW())";
+    $sql.= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED) ";
+    $sql.= "values ($tid,$reply_pid,$fuid,$tuid,NOW())";
 
     $result = db_query($sql,$db_post_create);
 
-    if($result) {
-    
+    if ($result) {
+
         $new_pid = db_insert_id($db_post_create);
+
         $sql = "insert into  " . forum_table("POST_CONTENT");
-        $sql .= " (TID,PID,CONTENT) ";
-        $sql .= "values ($tid, $new_pid, '$content')";
+        $sql.= " (TID,PID,CONTENT) ";
+        $sql.= "values ($tid, $new_pid, '$content')";
+
         $result = db_query($sql, $db_post_create);
-        
-        $sql = "update low_priority " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
-        $sql .= "where tid = $tid";
-        $result = db_query($sql, $db_post_create);
-        
+
+        if ($result) {
+
+            $sql = "update " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
+            $sql.= "where tid = $tid";
+            $result = db_query($sql, $db_post_create);
+
+        }
+
     } else {
         $new_pid = -1;
     }
@@ -64,7 +70,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     $db_post_save_attachment_id = db_connect();
     $sql = "insert into ". forum_table("POST_ATTACHMENT_IDS"). " (TID, PID, AID) values ($tid, $pid, '$aid')";
-    
+
     $result = db_query($sql, $db_post_save_attachment_id);
     return $result;
 }
@@ -105,15 +111,15 @@ function post_draw_to_dropdown($default_uid)
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
-	if(isset($default_uid) && $default_uid != 0){
-	    $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
-		$result = db_query($top_sql,$db_post_draw_to_dropdown);
-		if(db_num_rows($result)>0){
-			$top_user = db_fetch_array($result);
-			$fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-			$html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
-		}
-	}
+        if(isset($default_uid) && $default_uid != 0){
+            $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
+                $result = db_query($top_sql,$db_post_draw_to_dropdown);
+                if(db_num_rows($result)>0){
+                        $top_user = db_fetch_array($result);
+                        $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+                        $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+                }
+        }
 
     $html .= "<option value=\"0\">ALL</option>\n";
 

@@ -35,7 +35,7 @@ Beehive Forum 0.4-dev
 &nbsp;|&nbsp;
 <a href="http://sourceforge.net/docman/?group_id=50772" target="_blank">Docs</a>
 &nbsp;|&nbsp;
-<a href="http://sourceforge.net/tracker/?group_id=50772&atid=460926" target="_blank">Support</a>
+<a href="http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926" target="_blank">Support</a>
 </td>
 <td width="40%" align="right" class="smalltext">&copy;2003
 <a href="http://beehiveforum.net/" target="_blank">Project BeehiveForum</a>

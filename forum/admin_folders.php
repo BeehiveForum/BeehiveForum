@@ -76,7 +76,7 @@ echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\"><tr><td class=\"posthead\">";
 
-echo "<form name=\"f_folders\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
+echo "<form name=\"f_folders\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
 echo "<td class=\"subhead\">ID</td>\n";
 echo "<td class=\"subhead\">Folder Name</td>\n";

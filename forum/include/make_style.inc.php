@@ -174,10 +174,10 @@ function contrastFont($hex, $debug = false) {
     }
 
     if ($debug) {
-      $return = "<span style=\"background-color: #$hex; color: #$text_colour\">". strtoupper($hex). "</span><br>\n";
-      $return.= "hue: $hue<br>\nsat: $sat<br>\nlum: $lum<br>\nfont: $text_colour<br>\n";
-      $return.= "r: $r<br>\nb: $b<br>\ng: $g<br>\n";
-      $return.= "max: ". $rgb[2]. "<br>\nmin: ". $rgb[0]. "<br>\n";
+      $return = "<span style=\"background-color: #$hex; color: #$text_colour\">". strtoupper($hex). "</span><br />\n";
+      $return.= "hue: $hue<br />\nsat: $sat<br />\nlum: $lum<br />\nfont: $text_colour<br />\n";
+      $return.= "r: $r<br />\nb: $b<br />\ng: $g<br />\n";
+      $return.= "max: ". $rgb[2]. "<br />\nmin: ". $rgb[0]. "<br />\n";
       return $return;
     }
 

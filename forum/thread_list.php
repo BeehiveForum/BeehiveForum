@@ -318,40 +318,40 @@ if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"sma
 
 while (list($key1, $folder_number) = each($folder_order)) {
 
-    echo "<tr>\n";
-    echo "<td colspan=\"2\">\n";
-    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-    echo "<tr>\n";
-    echo "<td class=\"foldername\">\n";
-    echo "<img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"folder\" />\n";
-    echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE']. "</a>";
-    echo "</td>\n";
+    echo "  <tr>\n";
+    echo "    <td colspan=\"2\">\n";
+    echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "        <tr>\n";
+    echo "          <td class=\"foldername\">\n";
+    echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"folder\" />\n";
+    echo "            <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE']. "</a>";
+    echo "          </td>\n";
 
     if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
 
-      echo "<td class=\"folderpostnew\" width=\"15\">\n";
+      echo "          <td class=\"folderpostnew\" width=\"15\">\n";
 
       if (!$folder_info[$folder_number]['INTEREST']) {
-          echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"Ignore This Folder\" /></a>\n";
+          echo "            <a href=\"user_folder.php?fid=". $folder_number. "&amp;interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"Ignore This Folder\" /></a>\n";
       }else {
-          echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"Stop Ignoring This Folder\" /></a>\n";
+          echo "            <a href=\"user_folder.php?fid=". $folder_number. "&amp;interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"Stop Ignoring This Folder\" /></a>\n";
       }
 
-      echo "</td>\n";
+      echo "          </td>\n";
 
     }
 
-    echo "</tr>\n";
-    echo "</table>\n";
-    echo "</td>\n";
-    echo "</tr>\n";
+    echo "        </tr>\n";
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
 
     if (($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
         if (is_array($thread_info)) {
 
-            echo "<tr>\n";
-            echo "<td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">";
+            echo "  <tr>\n";
+            echo "    <td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\">";
 
             if (isset($folder_msgs[$folder_number])) {
                 echo $folder_msgs[$folder_number];
@@ -360,15 +360,18 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo " threads</a></td>\n";
-            echo "<td class=\"threads\" style=\"border-bottom: 0px; border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
-            echo "</tr>\n";
+            echo "    <td class=\"threads\" style=\"border-bottom: 0px; border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
+            echo "  </tr>\n";
 
             if ($start_from != 0 && isset($folder) && $folder_number == $folder) {
-                echo "<tr><td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\" colspan=\"2\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">Previous 50 threads</a></td></tr>\n";
+                echo "  <tr>\n";
+                echo "    <td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\" colspan=\"2\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">Previous 50 threads</a></td>\n";
+                echo "  </tr>\n";
             }
 
-            echo "<tr><td class=\"threads\" style=\"border-top: 0px;\" colspan=\"2\">\n";
-            echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+            echo "  <tr>\n";
+            echo "    <td class=\"threads\" style=\"border-top: 0px;\" colspan=\"2\">\n";
+            echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 
             while (list($key2, $thread) = each($thread_info)) {
 
@@ -377,7 +380,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                 if ($thread['fid'] == $folder_number) {
 
-                    echo "<tr><td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"16\">";
+                    echo "        <tr>\n";
+                    echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"16\">";
 
                     if ($thread['last_read'] == 0) {
 
@@ -426,18 +430,18 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     $thread_time = format_time($thread['modified']);
                     // $thread_author = thread_get_author($thread['tid']);
 
-                    echo "&nbsp;</td><td valign=\"top\">";
-                    // With mouseover status message: echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". $thread_author ."';return true\" onmouseOut=\"window.status='';return true\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a>&nbsp;";
-                    echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" title=\"#".$thread['tid']. " Started by ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
-                    if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"High Interest\" align=\"middle\"> ";
-                    if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"Subscribed\" align=\"middle\"> ";
-                    if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"Poll\" align=\"middle\"> ";
-                    if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Friend\" align=\"middle\"> ";
+                    echo "&nbsp;</td>\n";
+                    echo "          <td valign=\"top\">";
+                    // With mouseover status message: echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". $thread_author ."';return true\" onmouseOut=\"window.status='';return true\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a>&nbsp;";
+                    echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('".$thread['tid']."');\" title=\"#".$thread['tid']. " Started by ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
+                    if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"High Interest\" align=\"middle\" /> ";
+                    if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"Subscribed\" align=\"middle\" /> ";
+                    if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"Poll\" align=\"middle\" /> ";
+                    if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Friend\" align=\"middle\" /> ";
                     if ($thread['attachments']) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"Attachment\" align=\"middle\"> ";
-                    echo "<span class=\"threadxnewofy\">".$number."</span>";
-                    echo "</td><td valign=\"top\" nowrap=\"nowrap\" align=\"right\">";
-                    echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";
-                    echo "</td></tr>\n";
+                    echo "<span class=\"threadxnewofy\">".$number."</span></td>\n";
+                    echo "          <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">".$thread_time."&nbsp;</span></td>\n";
+                    echo "        </tr>\n";
                 }
             }
 
@@ -445,19 +449,21 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                 $more_threads = $folder_msgs[$folder] - $start_from - 50;
 
-                if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next $more_threads threads</a></td></tr>\n";
-                if ($more_threads > 50) echo "<tr><td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next 50 threads</a></td></tr>\n";
+                if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next $more_threads threads</a></td></tr>\n";
+                if ($more_threads > 50) echo "<tr><td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next 50 threads</a></td></tr>\n";
 
             }
 
-            echo "</table>\n</td>\n</tr>\n";
+            echo "      </table>\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
 
         }elseif ($folder_info[$folder_number]['INTEREST'] != -1) {
 
             // Only display the additional folder info if the user _DOESN'T_ have the folder on ignore
 
-            echo "<tr>\n";
-            echo "<td class=\"threads\" style=\"border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">";
+            echo "  <tr>\n";
+            echo "    <td class=\"threads\" style=\"border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\">";
 
             if (isset($folder_msgs[$folder_number])) {
                 echo $folder_msgs[$folder_number];
@@ -466,8 +472,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo " threads</a></td>\n";
-            echo "<td class=\"threads\" style=\"border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
-            echo "</tr>\n";
+            echo "    <td class=\"threads\" style=\"border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
+            echo "  </tr>\n";
 
         }
 
@@ -493,53 +499,55 @@ if ($mode == 0 && !isset($folder)) {
     }
 }
 
-echo "<tr>\n<td>&nbsp;</td>\n<tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 
     echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-    echo "<tr>\n";
-    echo "  <td class=\"smalltext\" colspan=\"2\">Mark as Read:</td>\n";
-    echo "</tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"smalltext\" colspan=\"2\">Mark as Read:</td>\n";
+    echo "  </tr>\n";
 
-    echo "<tr>\n";
-    echo "  <td>&nbsp;</td>\n";
-    echo "  <td class=\"smalltext\">\n";
-    echo "    <form name=\"f_mark\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
+    echo "  <tr>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td class=\"smalltext\">\n";
+    echo "      <form name=\"f_mark\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
 
     $labels = array("All Discussions", "Next 50 discussions");
 
     if (isset($visiblethreads) && is_array($visiblethreads)) {
 
         $labels[] = "Visible discussions";
-        echo form_input_hidden("tids", implode(',', $visiblethreads));
+        echo "        ", form_input_hidden("tids", implode(',', $visiblethreads)), "\n";
     }
 
-    echo form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n        ";
-    echo form_submit("go","Go!"). "\n";
-    echo "    </form>\n";
-    echo "  </td>\n";
-    echo "</tr>\n";
+    echo "        ", form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n";
+    echo "        ", form_submit("go","Go!"). "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
     echo "</table>\n";
 }
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-echo "<tr>\n";
-echo "  <td class=\"smalltext\" colspan=\"2\">Navigate:</td>\n";
-echo "</tr>\n";
-echo "<tr>\n";
-echo "  <td>&nbsp;</td>\n";
-echo "  <td class=\"smalltext\">\n";
-echo "    <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-echo form_input_text('msg', '1.1', 10). "\n        ";
-echo form_submit("go","Go!"). "\n";
-echo "    </form>\n";
-echo "  </td>\n";
-echo "</tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"smalltext\" colspan=\"2\">Navigate:</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "    <td class=\"smalltext\">\n";
+echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+echo "        ", form_input_text('msg', '1.1', 10). "\n";
+echo "        ", form_submit("go","Go!"). "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 
-echo "<script language=\"JavaScript\">\n";
+echo "<script language=\"JavaScript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 
 if (isset($first_thread)) {

@@ -218,7 +218,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['FNICK']    = $preview_tuser['NICKNAME'];
   $polldata['FROM_UID'] = $preview_tuser['UID'];
 
-  $polldata['CONTENT'] = "<br>\n";
+  $polldata['CONTENT'] = "<br />\n";
   $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
   $polldata['CONTENT'].= "  <tr>\n";
   $polldata['CONTENT'].= "    <td>\n";
@@ -332,7 +332,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 if(isset($error_html)) echo $error_html. "\n";
 
 ?>
-<form name="f_poll" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST" target="_self">
+<form name="f_poll" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post" target="_self">
 <?php
 
 if(isset($HTTP_POST_VARS['t_dedupe'])) {
@@ -348,7 +348,7 @@ if(!isset($t_sig) || !$t_sig) {
 }
 
 if($t_message_html != "Y") $t_message_text = isset($t_message_text) ? _stripslashes($t_message_text) : "";
-if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
+//if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
 
 if (isset($HTTP_GET_VARS['fid'])) {
     $t_fid = $HTTP_GET_VARS['fid'];
@@ -392,40 +392,40 @@ if (isset($HTTP_GET_VARS['fid'])) {
           <tr>
             <td>
               <table class="posthead" cellpadding="0" cellspacing="0" width="500">
-	        <tr>
-		  <td>&nbsp;</td>
+                <tr>
+                  <td>&nbsp;</td>
                   <td>No. Answers: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), isset($HTTP_POST_VARS['answercount']) ? $HTTP_POST_VARS['answercount'] : 0), " ", form_submit("changecount", "Change")  ?></td>
-	        </tr>
+                </tr>
                 <tr>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
                 </tr>
                 <?php
 
-	          $available_answers = array(5, 10, 15, 20);
+                  $available_answers = array(5, 10, 15, 20);
 
-	          if (isset($HTTP_POST_VARS['answercount'])) {
-	            $answercount = $available_answers[$HTTP_POST_VARS['answercount']];
-	          }else {
-	            $answercount = 5;
-	          }
+                  if (isset($HTTP_POST_VARS['answercount'])) {
+                    $answercount = $available_answers[$HTTP_POST_VARS['answercount']];
+                  }else {
+                    $answercount = 5;
+                  }
 
-	          for ($i = 0; $i < $answercount; $i++) {
+                  for ($i = 0; $i < $answercount; $i++) {
 
-		    echo "<tr>\n";
+                    echo "<tr>\n";
                     echo "  <td>", $i + 1, ". </td>\n";
                     echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 64), "</td>\n";
-		    echo "</tr>\n";
+                    echo "</tr>\n";
 
-		  }
+                  }
 
-		?>
-		<tr>
+                ?>
+                <tr>
                   <td>&nbsp;</td>
-		  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+                  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
                 </tr>
-	      </table>
-	    </td>
+              </table>
+            </td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -496,15 +496,15 @@ if (isset($HTTP_GET_VARS['fid'])) {
           <tr>
             <td><hr /></td>
           </tr>
-	  <tr>
-	    <td><h2>Additional Message (Optional)</h2></td>
-	  </tr>
+          <tr>
+            <td><h2>Additional Message (Optional)</h2></td>
+          </tr>
           <tr>
             <td>Do you want to include an additional post after the poll?</td>
           </tr>
-	  <tr>
-	    <td><?php echo form_textarea("t_message_text", htmlspecialchars($t_message_text), 15, 75); ?>
-	  </tr>
+          <tr>
+            <td><?php echo form_textarea("t_message_text", htmlspecialchars($t_message_text), 15, 75); ?></td>
+          </tr>
           <tr>
             <td>Signature:<br /><?php echo form_textarea("t_sig", htmlspecialchars($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>
           </tr>

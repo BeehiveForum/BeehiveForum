@@ -148,8 +148,8 @@ function message_get_content($tid,$pid)
 function messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
     echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"High Interest\" align=\"middle\">";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"Subscribed\" align=\"middle\">";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"High Interest\" align=\"middle\" />";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"Subscribed\" align=\"middle\" />";
     echo "</p>";
     // To be expanded later
 
@@ -262,7 +262,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
-            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
+            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span>";
         }else {
             if ($is_preview == false) {
                 echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
@@ -343,7 +343,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if (is_array($attachments)) {
 
-                echo "<b>Attachments:</b><br>\n";
+                echo "<b>Attachments:</b><br />\n";
 
                 for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -383,23 +383,23 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
 
-                echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" />";
+                echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"Reply\" />";
                 echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
 
             }
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" />";
-                echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"Delete\" />";
+                echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&amp;back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
                     if ($is_poll && $message['PID'] == 1) {
 
-                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
+                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit Poll\" />";
                       echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
 
                     }else {
 
-                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
+                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit\" />";
                       echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
 
                     }
@@ -407,13 +407,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
             if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
-                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
-                echo "&nbsp;<a href=\"user_rel.php?uid=".$message['FROM_UID']."&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"Relationship\" />";
+                echo "&nbsp;<a href=\"user_rel.php?uid=".$message['FROM_UID']."&amp;ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
             }
 
             if(perm_is_soldier()){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" />";
-                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.", $message['PID']. "\" target=\"_self\">Privileges</a>";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"Privileges\" />";
+                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.", $message['PID']. "\" target=\"_self\">Privileges</a>";
             }
 
             echo "</span></td></tr>";
@@ -436,13 +436,13 @@ function message_display_deleted($tid,$pid)
 
 function messages_start_panel()
 {
-    //echo "<p>&nbsp;</p>\n";
-    echo "<p align=\"center\"><table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\">";
+    echo "<div align=\"center\">\n";
+    echo "<table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\">";
 }
 
 function messages_end_panel()
 {
-    echo "</td></tr></table></p>";
+    echo "</td></tr></table></div>";
 }
 
 function messages_nav_strip($tid,$pid,$length,$ppp)
@@ -500,7 +500,6 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
 
     for($i=0;$i<=$max;$i++){
         // Only display first, last and those within 3 of the current section
-        //echo "$i : $max\n";
         if((abs($c - $i) < 4) || $i == 0 || $i == $max){
             $html .= "\n&nbsp;" . $navbits[$i];
         } else if(abs($c - $i) == 4){
@@ -530,30 +529,30 @@ function messages_interest_form($tid,$pid)
     $chk[$interest+1] = " checked";
     global $HTTP_SERVER_VARS;
 
-    echo "<p align=\"center\" class=\"messagefoot\">\n";
+    echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
-    echo "\" method=\"POST\">\n";
+    echo "\" method=\"post\">\n";
     echo "Rate my interest: \n";
     echo form_radio_array("interest",array(-1,0,1,2),array("Ignore ","Normal ","Interested ","Subscribe "),$interest);
     echo form_input_hidden("tid",$tid);
-    echo form_submit("submit","Apply","smallbutton");
+    echo form_submit("submit", "Apply"); //,"smallbutton");
     echo "</form>\n";
-    echo "</p>\n";
+    echo "</div>\n";
 }
 
 function messages_admin_form($tid, $pid, $title, $closed = false)
 {
     global $HTTP_SERVER_VARS;
 
-    echo "<p align=\"center\" class=\"messagefoot\">\n";
+    echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid";
-    echo "\" method=\"POST\">\n";
+    echo "\" method=\"post\">\n";
     echo "Rename thread:". form_input_text("t_name", htmlspecialchars(_stripslashes($title)), 30, 64). "&nbsp;";
-    echo form_submit("rename","Apply");
+    echo form_submit("rename", "Apply");
     echo "<br />Move thread:" . folder_draw_dropdown(0,"t_move");
-    echo "&nbsp;".form_submit("move","Move");
+    echo "&nbsp;".form_submit("move", "Move");
 
     if($closed){
         echo "&nbsp;&nbsp;".form_submit("reopen","Reopen for posting");
@@ -564,7 +563,7 @@ function messages_admin_form($tid, $pid, $title, $closed = false)
     echo form_input_hidden("t_tid",$tid);
     echo form_input_hidden("t_pid",$pid);
     echo "</form>\n";
-    echo "</p>\n";
+    echo "</div>\n";
 }
 
 function message_get_user($tid,$pid)
@@ -672,16 +671,16 @@ function messages_fontsize_form($tid, $pid)
       if ($fontsmaller < 1) $fontsmaller = 1;
       if ($fontlarger > 15) $fontlarger = 15;
 
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ";
-      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\" target=\"_self\">Larger</a>";
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ";
+      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">Larger</a>";
 
     }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 1) {
 
-      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. "<a href=\"messages.php?msg=$tid.$pid&fontsize=2\" target=\"_self\">Larger</a>";
+      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=2\" target=\"_self\">Larger</a>";
 
     }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 15) {
 
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=14\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize'];
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize'];
 
     }
 

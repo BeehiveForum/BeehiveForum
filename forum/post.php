@@ -412,7 +412,7 @@ echo "      document.f_post.t_to_uid.options[0] = new Option(newUser, \"U:\" + n
 echo "    }\n  }\n}\n";
 echo "//-->\n";
 echo "</script>\n";
-echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
 
 if(!isset($t_threadtitle)) {
     $t_threadtitle = "";
@@ -477,7 +477,7 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td>To: ". post_draw_to_dropdown($t_to_uid). "&nbsp;<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\"> ". form_submit("submit","Post") ."</td>\n";
+echo "          <td>To: ". post_draw_to_dropdown($t_to_uid). "&nbsp;", form_button("others", "Others", "onclick=\"javascript:launchOthers()\""), "&nbsp;", form_submit("submit","Post") ."</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\">\n";
@@ -494,7 +494,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit','Post', 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
+echo form_submit('submit','Post', 'onclick="if (typeof attachwin == \'object\' and !attachwin.closed) attachwin.close();"');
 echo "&nbsp;".form_submit('preview', 'Preview');
 echo "&nbsp;".form_submit('cancel', 'Cancel');
 

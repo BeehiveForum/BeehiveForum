@@ -37,7 +37,7 @@ function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text
     if($width) $html.= " size=\"$width\"";
     if($maxchars) $html.= " maxlength=\"$maxchars\"";
 
-    return $html.">";
+    return $html." />";
 }
 
 function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
@@ -59,7 +59,11 @@ function form_input_hidden($name, $value = "")
 // create a <textarea> field
 function form_textarea($name, $value = "", $rows = 0, $cols = 0, $wrap = "virtual", $custom_html = "")
 {
-    $html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"$wrap\" $custom_html";
+
+    //wrap attribute removed for XHTML 1.0 compliance.
+    //$html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"$wrap\" $custom_html";
+
+    $html = "<textarea name=\"$name\" class=\"bhtextarea\" $custom_html";
 
     if($rows) $html.= " rows=\"$rows\"";
     if($cols) $html.= " cols=\"$cols\"";
@@ -79,7 +83,7 @@ function form_dropdown_sql($name, $sql, $default)
     $result = db_query($sql, $db_form_dropdown_sql);
 
     while($row = db_fetch_array($result)){
-        $sel = ($row[0] == $default) ? " selected" : "";
+        $sel = ($row[0] == $default) ? " selected=\"selected\"" : "";
         if($row[1]){
             $html.= "<option value=\"".$row[0]."\"$sel>".$row[1]."</option>";
         } else {
@@ -96,7 +100,7 @@ function form_dropdown_array($name, $value, $label, $default = "", $custom_html 
     $html = "<select name=\"$name\" class=\"bhselect\" $custom_html>";
 
     for($i=0;$i<count($value);$i++){
-        $sel = ($value[$i] == $default) ? " selected" : "";
+        $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
         if($label[$i]){
             $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>";
         } else {
@@ -110,7 +114,7 @@ function form_dropdown_array($name, $value, $label, $default = "", $custom_html 
 function form_checkbox($name, $value, $text, $checked = false)
 {
     $html = "<span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked";
+    if($checked) $html .= " checked=\"checked\"";
     return $html . " />$text</span>";
 }
 
@@ -118,7 +122,7 @@ function form_checkbox($name, $value, $text, $checked = false)
 function form_radio($name, $value, $text, $checked = false)
 {
     $html = "<span class=\"bhinputradio\"><input type=\"radio\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked";
+    if($checked) $html .= " checked=\"checked\"";
     return $html . " />$text</span>";
 }
 

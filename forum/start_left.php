@@ -33,7 +33,7 @@ require_once("./include/form.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./index.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -95,20 +95,20 @@ while($row = db_fetch_array($result)){
     }
 
     echo "        <tr>\n";
-    echo "          <td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
+    echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
 
     if (($row['LAST_READ'] == 0) || ($row['LAST_READ'] < $row['LENGTH'])) {
-        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
+        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Thread\" />";
     } elseif ($row['LAST_READ'] == $row['LENGTH']) {
-        echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
+        echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Read Thread\" />";
     }
 
     echo "&nbsp;</td>\n";
     echo "          <td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($row['LOGON'], $row['NICKNAME']) . "\">";
     echo _stripslashes($row['TITLE'])."</a>&nbsp;";
 
-    if ($row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\">";
-    if ($row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\">";
+    if ($row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\" />";
+    if ($row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\" />";
 
     echo "          </td>\n";
     echo "        </tr>\n";
@@ -148,7 +148,7 @@ echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"
 while($row = db_fetch_array($result)){
 
     echo "        <tr>\n";
-    echo "          <td valign=\"top\" align=\"middle\" nowrap=\"nowrap\"><img src=\"".style_image('bullet.png')."\" width=\"12\" height=\"16\" /></td>\n";
+    echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"".style_image('bullet.png')."\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
     echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">". $row['NICKNAME']. "</a></td>\n";
     echo "          <td align=\"right\" nowrap=\"nowrap\">". format_time($row['LAST_LOGON']). "&nbsp;</td>\n";
     echo "        </tr>\n";
@@ -170,8 +170,8 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
-echo form_input_text('msg', '1.1', 10). "\n        ";
-echo form_submit("go","Go!"). "\n";
+echo "        ", form_input_text('msg', '1.1', 10). "\n";
+echo "        ", form_submit("go","Go!"). "\n";
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

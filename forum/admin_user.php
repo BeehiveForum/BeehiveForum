@@ -50,7 +50,7 @@ require_once("./include/edit.inc.php");
 require_once("./include/ip.inc.php");
 
 if(isset($HTTP_POST_VARS['cancel'])){
-	header_redirect($HTTP_POST_VARS['ret']);
+        header_redirect($HTTP_POST_VARS['ret']);
 }
 
 if (isset($HTTP_GET_VARS['ret'])) {
@@ -125,11 +125,11 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
 
-	}else {
+        }else {
 
-	  $uf[$i]['allowed'] = 0;
+          $uf[$i]['allowed'] = 0;
 
-	}
+        }
 
       }
 
@@ -171,7 +171,7 @@ echo "<h1>Manage User</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 
-echo "<form name=\"f_user\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
+echo "<form name=\"f_user\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "<table width=\"50%\"><tr><td class=\"box\">";
 echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
 
@@ -364,7 +364,7 @@ if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confi
   echo "<p><b>Wasps</b> can read messages, but cannot reply or post new messages.</p>";
   echo "<p><b>Splats</b> cannot access the forum. Use this to ban persistent idiots.</p>";
   echo "<p>&nbsp;</p>";
-  echo "<p><b>Possible Aliases</b> a list of users who's last recorded IP address match this user.</td></tr>\n";
+  echo "<p><b>Possible Aliases</b> a list of users who's last recorded IP address match this user.</p>\n";
   echo "</td></tr></table>\n";
 
 }

@@ -33,14 +33,14 @@ require_once("./include/config.inc.php");
 header_no_cache();
 
 $top_html   = "styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/top.html";
-$stylesheet = "styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/style.css"; 
+$stylesheet = "styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/style.css";
 
 if (!file_exists($top_html)) {
-	$top_html = "./top.html";
+        $top_html = "./top.html";
 }
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title><?php echo $forum_name; ?></title>
@@ -57,45 +57,45 @@ if(bh_session_check()) {
 
     if (isset($HTTP_GET_VARS['final_uri'])) {
 
-      echo "<frame src=\"". urldecode($HTTP_GET_VARS['final_uri']). "\" name=\"main\" border=\"1\">\n";
-      
+      echo "<frame src=\"". urldecode($HTTP_GET_VARS['final_uri']). "\" name=\"main\" border=\"0\" />\n";
+
     }else if (isset($HTTP_GET_VARS['msg'])) {
-    
-      echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" border=\"1\">\n";
-      
+
+      echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" border=\"0\" />\n";
+
     }else {
 
-      echo "<frame src=\"./start.php\" name=\"main\" border=\"1\">\n";
-      
+      echo "<frame src=\"./start.php\" name=\"main\" border=\"0\" />\n";
+
     }
 
 } else {
 
     echo "<frameset rows=\"60,*\" border=\"0\">\n";
     echo "<frame src=\"". $top_html. "\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-    
+
     if (isset($HTTP_GET_VARS['final_uri'])) {
-    
-        echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" border=\"1\" />\n";
-        
+
+        echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" border=\"0\" />\n";
+
     }elseif(isset($HTTP_GET_VARS['msg'])) {
-    
-        echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" border=\"1\" />\n";
-        
+
+        echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" border=\"0\" />\n";
+
     }else {
-    
-        echo "<frame src=\"./logon.php\" name=\"main\" border=\"1\" />\n";
-        
+
+        echo "<frame src=\"./logon.php\" name=\"main\" border=\"0\" />\n";
+
     }
-    
+
 }
 
 ?>
-</frameset>
 <noframes>
 <body>
 <h1>Oops, your browser says it doesn't support frames</h1>
 <p>You need to use the light HTML version of the forum <a href="llogon.php">here</a>.</p>
 </body>
 </noframes>
+</frameset>
 </html>

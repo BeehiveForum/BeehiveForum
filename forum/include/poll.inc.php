@@ -47,9 +47,9 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
           $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
           $sql.= "values ('$tid', '". addslashes($option_name). "')";
 
-	  $result = db_query($sql, $db_poll_create);
+          $result = db_query($sql, $db_poll_create);
 
-	}
+        }
 
       }
 
@@ -217,7 +217,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       $totalvotes = $totalvotes + $pollresults[$i]['VOTES'];
     }
 
-    $polldata['CONTENT'] = "<br>\n";
+    $polldata['CONTENT'] = "<br />\n";
     $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
     $polldata['CONTENT'].= "  <tr>\n";
     $polldata['CONTENT'].= "    <td>\n";
@@ -457,7 +457,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "    </td>\n";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
-    $polldata['CONTENT'].= "<br><br>\n";
+    $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
 
     // Work out what relationship the user has to the user who posted the poll
     $polldata['FROM_RELATIONSHIP'] = user_rel_get($HTTP_COOKIE_VARS['bh_sess_uid'], $polldata['FROM_UID']);

@@ -161,7 +161,7 @@ while (list($key1, $folder) = each($folder_order)) {
 					echo "<img src=\"./images/folder.png\" name=\"t".$thread['tid']."\" />\n";
 				}
 				echo "</td><td>\n";
-				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"changeTid('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ".format_user_name($thread['authorlogon'], $thread['authornick']);."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a>";
+				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"changeTid('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ".format_user_name($thread['authorlogon'], $thread['authornick'])."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a>";
 				echo "</td><td>\n";
 				echo "<span class=\"threadtime\">".$thread_time."</span><span class=\"threadxnewofy\">$number</span>\n";
 				echo "</td></tr>";

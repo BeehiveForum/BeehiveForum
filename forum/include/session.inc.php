@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.157 2005-02-17 22:58:13 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.158 2005-02-28 00:24:41 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -36,7 +36,7 @@ include_once("./include/user.inc.php");
 
 // Checks the session and returns it as an array.
 
-function bh_session_check()
+function bh_session_check($show_session_fail = true)
 {
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
@@ -134,15 +134,11 @@ function bh_session_check()
 
             if (($current_time - $user_sess['TIME']) > 300) {
 
-                $sql = "DELETE FROM SESSIONS WHERE ";
-                $sql.= "UID = '{$user_sess['UID']}' AND IPADDRESS = '$ipaddress' ";
-                $sql.= "AND HASH <> '$user_hash'";
-
-                $result = db_query($sql, $db_bh_session_check);
-
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
                 $sql.= "FID = '$fid', IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
+
+                echo $sql; exit;
 
                 $result = db_query($sql, $db_bh_session_check);
 
@@ -161,7 +157,11 @@ function bh_session_check()
 
             return $user_sess;
 
-        }else {
+        }elseif ($show_session_fail) {
+
+            if (defined("BEEHIVEMODE_LIGHT")) {
+                header_redirect("./llogon.php?final_uri=". get_request_uri());
+            }
 
             html_draw_top();
 
@@ -290,12 +290,14 @@ function bh_remove_stale_sessions()
 {
     $db_bh_remove_stale_sessions = db_connect();
 
-    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
+    $session_stamp = time() - intval(forum_get_setting('session_cutoff', false, 86400));
 
     $sql = "DELETE FROM SESSIONS WHERE ";
     $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
-    return db_query($sql, $db_bh_remove_stale_sessions);
+    $result = db_query($sql, $db_bh_remove_stale_sessions);
+
+    return true;
 }
 
 // Updates the visitor log for the current user

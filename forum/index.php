@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.102 2005-01-20 15:43:33 tribalonline Exp $ */
+/* $Id: index.php,v 1.103 2005-02-28 00:24:39 decoyduck Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -214,11 +214,15 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
 
 echo "<noframes>\n";
 echo "<body>\n";
-echo "<h1>{$lang['noframessupport']}</h1>\n";
-echo "<p>{$lang['uselightversion']}</p>\n";
-// Mikee says this strange linking is good for our search-engine ranking
-echo "<p><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive</a><span>&nbsp;</span><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">PHP forum software</a></p>\n";
-echo "</body>\n";
+
+define('BEEHIVE_LIGHT_INCLUDE', true);
+
+if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
+    include("./lthread_list.php");
+}else {
+    include("./llogon.php");
+}
+
 echo "</noframes>\n";
 echo "</frameset>\n";
 echo "</html>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.69 2005-02-24 23:32:01 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.70 2005-02-28 00:24:41 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -32,6 +32,8 @@ include_once("./include/word_filter.inc.php");
 function light_html_draw_top ($title = false)
 {
     $lang = load_language_file();
+
+    if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
 
     if (!isset($title) || !$title) {
         $title = forum_get_setting('forum_name');
@@ -53,6 +55,8 @@ function light_html_draw_top ($title = false)
 
 function light_html_draw_bottom ()
 {
+    if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
+
     echo "</body>\n";
     echo "</html>\n";
 }
@@ -129,11 +133,13 @@ function light_poll_confirm_close($tid)
 
 }
 
-function light_messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
+function light_messages_top($msg, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     $lang = load_language_file();
 
-    echo "<h2>$foldertitle: $threadtitle";
+    $webtag = get_webtag($webtag_search);
+
+    echo "<h2>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">$threadtitle</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";

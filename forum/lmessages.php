@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.48 2005-02-24 23:32:01 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.49 2005-02-28 00:24:40 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -146,10 +146,12 @@ $show_sigs = false; // explicitly set sigs not to show in light mode
 
 $msg_count = count($messages);
 
-light_messages_top(apply_wordfilter($foldertitle), apply_wordfilter(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+light_messages_top($msg, apply_wordfilter(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
 
 if ($msg_count > 0) {
+
     $first_msg = $messages[0]['PID'];
+
     foreach($messages as $message) {
 
         if (isset($message['RELATIONSHIP'])) {
@@ -198,9 +200,15 @@ if ($last_pid < $threaddata['LENGTH']) {
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
-echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p>\n";
+echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
 
-echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a></h4>";
+if (bh_session_get_value('UID') == 0) {
+    echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";
+}else {
+    echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+}
+
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 
 light_html_draw_bottom();
 

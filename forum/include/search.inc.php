@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.59 2004-04-29 14:03:11 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.60 2004-04-30 17:49:19 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -50,11 +50,17 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $forum_settings = get_forum_settings();
 
-    $search_sql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
-    $search_sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
+    $search_sql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, ";
+    $search_sql.= "POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
     $search_sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (THREAD.TID = POST.TID) ";
-    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
+    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ";
+    $search_sql.= "ON (THREAD.TID = POST.TID) ";
+    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
+    $search_sql.= "ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
+    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS POST_ATTACHMENT_IDS ";
+    $search_sql.= "ON (POST_ATTACHMENT_IDS.TID = POST.TID AND POST_ATTACHMENT_IDS.PID = POST.PID) ";
+    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_FILES POST_ATTACHMENT_FILES ";
+    $search_sql.= "ON (POST_ATTACHMENT_FILES.AID = POST_ATTACHMENT_IDS.AID) ";
     $search_sql.= "WHERE ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
@@ -108,22 +114,27 @@ function search_execute($argarray, &$urlquery, &$error)
 
                 $thread_title_sql = "THREAD.TITLE LIKE '%";
                 $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
 
                 $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
                 $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                $attach_files_sql.= implode("%' AND POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
 
                 $thread_title_sql.= "%'";
                 $post_content_sql.= "%'";
+                $attach_files_sql.= "%'";
 
                 if (isset($argarray['me_only']) && $argarray['me_only'] == 'Y') {
 
                     $keyword_search_sql.= "{$folder_sql} AND ({$thread_title_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
-                    $keyword_search_sql.= "{$post_content_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
+                    $keyword_search_sql.= "{$post_content_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
+                    $keyword_search_sql.= "{$attach_files_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
 
                 }else {
 
                     $keyword_search_sql.= "({$folder_sql} AND {$thread_title_sql} {$date_range_sql} {$from_to_user_sql}) ";
                     $keyword_search_sql.= "OR ({$folder_sql} AND {$post_content_sql} {$date_range_sql} {$from_to_user_sql}) ";
+                    $keyword_search_sql.= "OR ({$folder_sql} AND {$attach_files_sql} {$date_range_sql} {$from_to_user_sql}) ";
                 }
             }
 
@@ -143,22 +154,27 @@ function search_execute($argarray, &$urlquery, &$error)
 
                 $thread_title_sql = "THREAD.TITLE LIKE '%";
                 $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
 
                 $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
                 $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                $attach_files_sql.= implode("%' OR POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
 
                 $thread_title_sql.= "%'";
                 $post_content_sql.= "%'";
+                $attach_files_sql.= "%'";
 
                 if ($argarray['me_only'] == 'Y') {
 
                     $keyword_search_sql.= "{$folder_sql} AND (({$thread_title_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
-                    $keyword_search_sql.= "({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
+                    $keyword_search_sql.= "({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
+                    $keyword_search_sql.= "({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
 
                 }else {
 
-                    $keyword_search_sql.= "({$folder_sql} AND ({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql})";
-                    $keyword_search_sql.= " OR ({$folder_sql} AND ({$post_content_sql}) {$date_range_sql} {$from_to_user_sql})";
+                    $keyword_search_sql.= "({$folder_sql} AND ({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    $keyword_search_sql.= "OR ({$folder_sql} AND ({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    $keyword_search_sql.= "OR ({$folder_sql} AND ({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
                 }
             }
 
@@ -168,7 +184,9 @@ function search_execute($argarray, &$urlquery, &$error)
 
             $words = addslashes(trim($argarray['search_string']));
 
-            $keyword_search_sql.= "$folder_sql AND INSTR(THREAD.TITLE, ' {$words} ') OR INSTR(POST_CONTENT.CONTENT, ' {$words} ') ";
+            $keyword_search_sql.= "$folder_sql AND (INSTR(THREAD.TITLE, ' {$words} ') ";
+            $keyword_search_sql.= "OR INSTR(POST_CONTENT.CONTENT, ' {$words} ') ";
+            $keyword_search_sql.= "OR INSTR(POST_ATTACHMENT_FILES.FILENAME, ' {$words} ')) ";
             $keyword_search_sql.= "$date_range_sql ";
 
             if ($argarray['me_only'] == 'Y') {

@@ -123,31 +123,34 @@ function pm_draw_to_dropdown($default_uid)
     return $html;
 }
 
-function pm_single_get($mid)
+function pm_single_get($mid, $uid = false)
 {
     $pms = array();
 
     $db_pm_list_get = db_connect();
-    $uid = bh_session_get_value('UID');
+    if (!$uid) $uid = bh_session_get_value('UID');
 
     $sql = "SELECT PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "USER.LOGON, USER.NICKNAME, PM_CONTENT.CONTENT ";
     $sql.= "FROM ". forum_table("PM"). " PM ";
     $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.PID = PM.MID) ";
+    $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = $mid AND PM.DELETED = 0 AND PM.TO_UID = $uid";
 
-    $result_id = db_query($sql, $db_pm_list_get);
+    $result = db_query($sql, $db_pm_list_get);
 
-    $row = db_fetch_array($result_id);
+    if (db_num_rows($result) > 0) {
+        _pm_markasread($mid);
+        return db_fetch_array($result);
+    }else {
+        return false;
+    }
 
-    _pm_markasread($mid);
-
-    return $row;
 }
 
-function draw_pm_message($pm_elements_array, $replyto)
+function draw_pm_message($pm_elements_array, $replyto = false)
 {
+    global $lang;
 
     echo "<div align=\"center\">\n";
     echo "  <table width=\"90%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -155,14 +158,14 @@ function draw_pm_message($pm_elements_array, $replyto)
     echo "      <td>\n";
     echo "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
     echo "          <tr>\n";
-    echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;From:&nbsp;</span></td>\n";
+    echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}&nbsp;</span></td>\n";
     echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">\n";
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['FROM_UID'] . ")\" target=\"_self\">\n";
     echo format_user_name($pm_elements_array['LOGON'], $pm_elements_array['NICKNAME']), "</a>\n";
     echo "</span></td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;Subject:&nbsp;</span></td>\n";
+    echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
     echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">".stripslashes($pm_elements_array['SUBJECT'])."</span></td>\n";
     echo "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_elements_array['CREATED']), "&nbsp;</span></td>\n";
     echo "          </tr>\n";
@@ -181,8 +184,8 @@ function draw_pm_message($pm_elements_array, $replyto)
     echo "          <tr>\n";
     echo "            <td align=\"center\">\n";
 
-    if (isset($replyto) && $replyto != "no") {
-        echo "<span class=\"postresponse\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"Reply\" />&nbsp;<a href=\"pm_write.php?replyto=".$replyto."\" target=\"_self\">Reply</a></span>\n";
+    if ($replyto) {
+        echo "<span class=\"postresponse\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto=$replyto\" target=\"_self\">{$lang['reply']}</a></span>\n";
     }
 
     echo "</td>\n";
@@ -215,18 +218,17 @@ function draw_new_pm($t_subject, $t_content, $t_to_uid, $t_post_html)
     global $lang;
 
     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-    echo form_input_hidden('t_submit', 'Y'), "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td>\n";
     echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
     echo "        <tr>\n";
-    echo "          <td align=\"right\" width=\"30\">Subject:</td>\n";
-    echo "          <td>", form_field("t_subject", isset($t_subject) ? stripslashes(_htmlentities($t_subject)) : "", 23), "</td>\n";
+    echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
+    echo "          <td>", form_field("t_subject", isset($t_subject) ? stripslashes(_htmlentities($t_subject)) : "", 32), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td align=\"right\">To: </td>\n";
-    echo "          <td>", pm_draw_to_dropdown($t_to_uid), "&nbsp;", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "&nbsp;", form_submit("submit",$lang['post']), "</td>\n";
+    echo "          <td align=\"right\">{$lang['to']}: </td>\n";
+    echo "          <td>", pm_draw_to_dropdown($t_to_uid), "&nbsp;", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "</td>\n";
     echo "        </tr>\n";
     echo "      </table>\n";
     echo "      <table border=\"0\" class=\"posthead\">\n";
@@ -234,7 +236,7 @@ function draw_new_pm($t_subject, $t_content, $t_to_uid, $t_post_html)
     echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td><span class=\"bhinputcheckbox\">", form_checkbox('t_post_html', 'Y', 'Message Contains HTML', ($t_post_html == 'Y')), "</td>\n";
+    echo "          <td><span class=\"bhinputcheckbox\">", form_checkbox('t_post_html', 'Y', $lang['messagecontainsHTML'], ($t_post_html == 'Y')), "</td>\n";
     echo "        </tr>\n";
     echo "      </table>\n";
     echo "    </td>\n";
@@ -261,12 +263,14 @@ function pm_send_message($tuid, $subject, $content)
 
     if ($result) {
 
-      $new_pid = db_insert_id($db_pm_send_message);
+      $new_mid = db_insert_id($db_pm_send_message);
 
-      $sql = "insert into ". forum_table("PM_CONTENT"). " (PID, CONTENT) ";
-      $sql.= "values ('$new_pid', '$content')";
+      $sql = "insert into ". forum_table("PM_CONTENT"). " (MID, CONTENT) ";
+      $sql.= "values ('$new_mid', '$content')";
 
-      return db_query($sql, $db_pm_send_message);
+      if (db_query($sql, $db_pm_send_message)) {
+          return  $new_mid;
+      }
 
     }
 
@@ -287,11 +291,24 @@ function pm_new_check($uid)
 {
     $db_pm_new_check = db_connect();
 
-    $sql  = "SELECT TO_UID FROM ". forum_table("PM") . " WHERE VIEWED = 'Y' AND DELETED = 'Y' AND TO_UID = '$uid'";
-    $result = db_query($sql, $db_pm_new_get);
-    $num_rows = mysql_num_rows($result);
+    // Fetch any new messages that we haven't already notified the user about
 
-    return $num_rows;
+    $sql = "SELECT MID, TO_UID FROM ". forum_table("PM"). " ";
+    $sql.= "WHERE VIEWED IS NULL AND DELETED = 0 AND NOTIFIED = 0 AND TO_UID = $uid ORDER BY MID DESC";
+
+    $result = db_query($sql, $db_pm_new_check);
+
+    $num_rows = db_num_rows($result);
+
+    if ($num_rows > 0) {
+
+        // Update the notified state of the messages
+        list($mid) = db_fetch_array($result);
+        $sql = "UPDATE ". forum_table("PM"). " SET NOTIFIED = 1 WHERE MID <= $mid AND TO_UID = $uid";
+        $result = db_query($sql, $db_pm_new_check);
+    }
+
+    return ($num_rows > 0);
 
 }
 

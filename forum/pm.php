@@ -61,16 +61,19 @@ if (isset($HTTP_POST_VARS['delete'])) {
 
 html_draw_top_script();
 
-echo "<h1>Private Messages: PM Inbox</h1>\n";
-echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">PM Inbox</a> | <a href=\"pm_write.php\" target=\"_self\">Send New PM</a></div><br />\n";
+echo "<h1>{$lang['privatemessages']}: {$lang['pminbox']}</h1>\n";
+echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></div><br />\n";
 
 if (isset($HTTP_GET_VARS['mid'])) {
 
     $pm_elements_array = array();
-    $pm_elements_array = pm_single_get($HTTP_GET_VARS['mid']);
 
-    draw_pm_message($pm_elements_array, $HTTP_GET_VARS['mid']);
-    echo "<p>&nbsp;</p>\n";
+    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'])) {
+        draw_pm_message($pm_elements_array, $HTTP_GET_VARS['mid']);
+        echo "<p>&nbsp;</p>\n";
+    }else {
+        echo "<p>{$lang['messagehasbeendeleted']}</p>\n";
+    }
 }
 
 // new array
@@ -84,16 +87,16 @@ echo "<form action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
 echo "  <table width=\"95%\" align=\"center\">\n";
 echo "    <tr>\n";
 echo "      <td width=\"20\" align=\"center\">&nbsp;</td>\n";
-echo "      <td class=\"posthead\" width=\"50%\">&nbsp;Subject</td>\n";
-echo "      <td class=\"posthead\">&nbsp;Sent By</td>\n";
-echo "      <td class=\"posthead\">&nbsp;Time Sent</td>\n";
-echo "      <td class=\"posthead\">&nbsp;Delete</td>\n";
+echo "      <td class=\"posthead\" width=\"50%\">&nbsp;{$lang['subject']}</td>\n";
+echo "      <td class=\"posthead\">&nbsp;{$lang['sentby']}</td>\n";
+echo "      <td class=\"posthead\">&nbsp;{$lang['timesent']}</td>\n";
+echo "      <td class=\"posthead\">&nbsp;{$lang['delete']}</td>\n";
 echo "    </tr>\n";
 
 if (sizeof($listmessages_array) == 0) {
 
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\"></td><td class=\"postbody\">No Messages</td>\n";
+    echo "      <td class=\"postbody\"></td><td class=\"postbody\">{$lang['nomessages']}</td>\n";
     echo "    </tr>\n";
 
 }else {
@@ -137,7 +140,7 @@ if (sizeof($listmessages_array) == 0) {
 
     echo "    <tr>\n";
     echo "      <td class=\"postbody\" colspan=\"4\">&nbsp;</td>\n";
-    echo "      <td class=\"postbody\">", form_submit("Delete", "delete"), "</td>\n";
+    echo "      <td class=\"postbody\">", form_submit("Delete", $lang['delete']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

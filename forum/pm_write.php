@@ -142,7 +142,7 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
     if (isset($HTTP_POST_VARS['t_subject']) && trim($HTTP_POST_VARS['t_subject']) != "") {
         $t_subject = trim($HTTP_POST_VARS['t_subject']);
     }else {
-        $error_html = "<h2>Please enter a subject</h2>";
+        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>";
         $valid = false;
     }
 
@@ -150,7 +150,7 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
         $t_content = $HTTP_POST_VARS['t_content'];
     }else {
         $t_content = "";
-        $error_html = "<h2>Please enter the PM content</h2>";
+        $error_html = "<h2>{$lang['entercontentformessage']}</h2>";
         $valid = false;
     }
 }
@@ -188,7 +188,8 @@ if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
 // Send the PM
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
-    if (pm_send_message($t_to_uid, $t_subject, $t_content)) {
+    if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+        email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
         if (isset($mid)){
             $uri = "./pm.php?mid=$mid";
         }else {
@@ -196,7 +197,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         }
         header_redirect($uri);
     }else {
-        $error_html = "<h2>Error submitting to database</h2>";
+        $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
         $valid = $false;
     }
 }
@@ -208,7 +209,7 @@ draw_header_pm();
 
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
-    echo "<h1>Private Messages: Preview Message</h1>\n";
+    echo "<h1>{$lang['privatemessages']}: {$lang['messagepreview']}</h1>\n";
     echo "<br />\n";
 
     if ($HTTP_POST_VARS['t_to_uid'] == 0) {
@@ -235,13 +236,13 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
         $pm_elements_array['CONTENT'] = _htmlentities($t_content);
     }
 
-    draw_pm_message($pm_elements_array, "no");
+    draw_pm_message($pm_elements_array);
     echo "<br />\n";
 
 }
 
-echo "<h1>Private Messages: Write Message</h1>\n";
-echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">PM Inbox</a> | <a href=\"pm_write.php\" target=\"_self\">Send New PM</a></div><br />\n";
+echo "<h1>{$lang['privatemessages']}: {$lang['writepm']}</h1>\n";
+echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></div><br />\n";
 
 if ($valid == false) {
     echo $error_html;
@@ -256,7 +257,7 @@ if (isset($mid)) {
     $pm_elements_array = array();
     $pm_elements_array = pm_single_get($mid, bh_session_get_value('TO_UID'));
     echo "<p>in reply to:</p>";
-    draw_pm_message($pm_elements_array, "no");
+    draw_pm_message($pm_elements_array);
 
 }
 

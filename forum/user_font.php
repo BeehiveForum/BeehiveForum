@@ -48,7 +48,8 @@ if (isset($HTTP_GET_VARS['fontsize']) && $HTTP_GET_VARS['fontsize'] > 0 && $HTTP
                       $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
                       $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
                       $userprefs['MARK_AS_OF_INT'], $userprefs['POSTS_PER_PAGE'], $HTTP_GET_VARS['fontsize'],
-                      $userprefs['STYLE'], $userprefs['VIEW_SIGS'], $userprefs['START_PAGE']);
+                      $userprefs['STYLE'], $userprefs['VIEW_SIGS'], $userprefs['START_PAGE'],
+                      $userprefs['LANGUAGE'], $userprefs['PM_NOTIFY'], $userprefs['PM_NOTIFY_EMAIL']);
 
     bh_session_init(bh_session_get_value('UID'));
     header_redirect("./messages.php?msg=$msg");

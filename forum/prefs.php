@@ -135,10 +135,12 @@ if(isset($HTTP_POST_VARS['submit'])){
         // Older versions of PHP do not set the variables
         // if the checkbox is left unticked.
 
-        if (!isset($HTTP_POST_VARS['email_notify']))   $HTTP_POST_VARS['email_notify']   = '';
-        if (!isset($HTTP_POST_VARS['dl_saving']))      $HTTP_POST_VARS['dl_saving']      = '';
-        if (!isset($HTTP_POST_VARS['mark_as_of_int'])) $HTTP_POST_VARS['mark_as_of_int'] = '';
-        if (!isset($HTTP_POST_VARS['view_sigs']))      $HTTP_POST_VARS['view_sigs']      = '';
+        if (!isset($HTTP_POST_VARS['email_notify']))    $HTTP_POST_VARS['email_notify']    = '';
+        if (!isset($HTTP_POST_VARS['pm_notify']))       $HTTP_POST_VARS['pm_notify']       = '';
+        if (!isset($HTTP_POST_VARS['pm_notify_email'])) $HTTP_POST_VARS['pm_notify_email'] = '';
+        if (!isset($HTTP_POST_VARS['dl_saving']))       $HTTP_POST_VARS['dl_saving']       = '';
+        if (!isset($HTTP_POST_VARS['mark_as_of_int']))  $HTTP_POST_VARS['mark_as_of_int']  = '';
+        if (!isset($HTTP_POST_VARS['view_sigs']))       $HTTP_POST_VARS['view_sigs']       = '';
 
         user_update_prefs(bh_session_get_value('UID'), $HTTP_POST_VARS['firstname'],
                           $HTTP_POST_VARS['lastname'], $user_dob, $HTTP_POST_VARS['homepage_url'],
@@ -147,7 +149,8 @@ if(isset($HTTP_POST_VARS['submit'])){
                           $HTTP_POST_VARS['mark_as_of_int'], $HTTP_POST_VARS['posts_per_page'],
                           $HTTP_POST_VARS['font_size'], $HTTP_POST_VARS['style'],
                           $HTTP_POST_VARS['view_sigs'], $HTTP_POST_VARS['start_page'],
-                          $HTTP_POST_VARS['language']);
+                          $HTTP_POST_VARS['language'], $HTTP_POST_VARS['pm_notify'],
+                          $HTTP_POST_VARS['pm_notify_email']);
 
         // Update USER_SIG
 
@@ -280,6 +283,12 @@ if(!empty($error_html)) {
         <td><?php echo form_checkbox("email_notify", "Y", $lang['notifybyemail'], ($user_prefs['EMAIL_NOTIFY'] == "Y")); ?></td>
       </tr>
       <tr>
+        <td><?php echo form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], ($user_prefs['PM_NOTIFY'] == "Y")); ?></td>
+      </tr>
+      <tr>
+        <td><?php echo form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], ($user_prefs['PM_NOTIFY_EMAIL'] == "Y")); ?></td>
+      </tr>
+      <tr>
         <td><?php echo form_checkbox("dl_saving", "Y", $lang['daylightsaving'], ($user_prefs['DL_SAVING'] == "Y")); ?></td>
       </tr>
       <tr>
@@ -356,7 +365,7 @@ if(!empty($error_html)) {
       </tr>
       <tr>
         <td><?php echo $lang['startpage']; ?></td>
-        <td><?php echo form_dropdown_array("start_page", array(0, 1), array($lang['start'], $lang['messages']), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
+        <td><?php echo form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
       </tr>
       <tr>
         <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>

@@ -79,6 +79,8 @@ if (bh_session_check()) {
 
       if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
         $final_uri = "./discussion.php";
+      }elseif (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 2) {
+        $final_uri = "./pm.php";
       }else {
         $final_uri = "./start.php";
       }

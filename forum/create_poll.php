@@ -524,7 +524,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
             <td><?php echo $lang['signature']; ?>:<br /><?php echo form_textarea("t_sig", _htmlentities($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>
           </tr>
           <tr>
-            <td><?php echo form_checkbox("t_message_html", "Y", $lang['messagecontainsHTML'], (isset($HTTP_POST_VARS['t_message_html']) && $HTTP_POST_VARS['t_message_html'] == "Y")); ?></td>
+            <td><?php echo form_checkbox("t_message_html", "Y", "{$lang['messagecontainsHTML']} {$lang['notincludingsignature']}", (isset($HTTP_POST_VARS['t_message_html']) && $HTTP_POST_VARS['t_message_html'] == "Y")); ?></td>
           </tr>
         </table>
       </td>

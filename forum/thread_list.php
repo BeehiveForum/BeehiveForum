@@ -39,6 +39,7 @@ require_once("./include/session.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/pm.inc.php");
 
 if(!bh_session_check()){
 
@@ -106,7 +107,7 @@ setcookie('bh_thread_mode', $mode);
 if(!isset($HTTP_GET_VARS['start_from'])) { $start_from = 0; } else { $start_from = $HTTP_GET_VARS['start_from']; }
 
 // Output XHTML header
-html_draw_top();
+html_draw_pm_script();
 
 // Drop out of PHP to start the HTML table
 ?>
@@ -489,7 +490,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             // Only display the additional folder info if the user _DOESN'T_ have the folder on ignore
 
             echo "  <tr>\n";
-            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-right: 5px" : "border-right: 10px", "\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\">";
+            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-right: 1px" : "border-left: 1px", "\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\">";
 
             if (isset($folder_msgs[$folder_number])) {
                 echo $folder_msgs[$folder_number];
@@ -498,7 +499,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo " {$lang['threads']}</a></td>\n";
-            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-right: 5px" : "border-right: 10px", "\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a></td>\n";
+            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-left: 1px" : "border-right: 1px", "\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a></td>\n";
             echo "  </tr>\n";
 
         }

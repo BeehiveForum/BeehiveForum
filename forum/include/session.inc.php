@@ -74,7 +74,8 @@ function bh_session_init($uid)
     global $HTTP_SERVER_VARS, $default_style, $default_language;
 
     $sql = "select USER.UID, USER.LOGON, USER.PASSWD, USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, ";
-    $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE ";
+    $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, ";
+    $sql.= "USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY ";
     $sql.= "from " . forum_table("USER") . " USER left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
     $sql.= "where USER.UID = $uid";
 
@@ -99,7 +100,8 @@ function bh_session_init($uid)
                            'STYLE'          => $default_style,
                            'VIEW_SIGS'      => 0,
                            'START_PAGE'     => 0,
-                           'LANGUAGE'       => $default_language);
+                           'LANGUAGE'       => $default_language,
+                           'PM_NOTIFY'      => 'N');
 
     }
 

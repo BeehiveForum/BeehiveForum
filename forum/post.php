@@ -500,7 +500,7 @@ echo "        <tr>\n";
 echo "          <td>{$lang['signature']}:<br />".form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>", form_checkbox("t_post_html", "Y", $lang['messagecontainsHTML'], (isset($t_post_html) && $t_post_html == "Y")), "</td>\n";
+echo "          <td>", form_checkbox("t_post_html", "Y", "{$lang['messagecontainsHTML']} {$lang['notincludingsignature']}", (isset($t_post_html) && $t_post_html == "Y")), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";

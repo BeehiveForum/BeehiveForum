@@ -427,7 +427,8 @@ $lang['currentlyloggedinas'] = "You are currently logged in as";
 // Message composition (post.php, lpost.php) --------------------------------------
 
 $lang['selectfolder'] = "Select folder";
-$lang['messagecontainsHTML'] = "Message Contains HTML (not including signature)";
+$lang['messagecontainsHTML'] = "Message Contains HTML";
+$lang['notincludingsignature'] = "(not including signature)";
 $lang['mustenterpostcontent'] = "You must enter some content for the post!";
 $lang['messagepreview'] = "Message Preview";
 $lang['invalidusername'] = "Invalid username!";
@@ -480,12 +481,22 @@ $lang['closeforposting'] = "Close for posting";
 
 $lang['start'] = "Start";
 $lang['messages'] = "Messages";
+$lang['pminbox'] = "PM Inbox";
 $lang['links'] = "Links";
 $lang['preferences'] = "Preferences";
 $lang['profile'] = "Profile";
 $lang['admin'] = "Admin";
 $lang['login'] = "Login";
 $lang['logout'] = "Logout";
+
+// PM System (pm.php, pm_write.php, pm.inc.php) ------------------------
+$lang['privatemessages'] = "Private Messages";
+$lang['sendnewpm'] = "Send New PM";
+$lang['sentby'] = "Sent By";
+$lang['timesent'] = "Time Sent";
+$lang['nomessages'] = "No Messages";
+$lang['errorcreatingpm'] = "Error creating post! Please try again in a few minutes";
+$lang['writepm'] = "Write Message";
 
 // Preferences (prefs.php) ---------------------------------------------
 $lang['newpasswd'] = "New Password";
@@ -515,6 +526,8 @@ $lang['homepageURL'] = "Homepage URL";
 $lang['pictureURL'] = "Picture URL";
 $lang['forumoptions'] = "Forum Options";
 $lang['notifybyemail'] = "Notify by email of posts to me";
+$lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
+$lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
 $lang['daylightsaving'] = "Adjust for daylight saving";
 $lang['autohighinterest'] = "Automatically mark threads I post in as High Interest";
 $lang['globallyignoresigs'] = "Globally ignore user signatures";

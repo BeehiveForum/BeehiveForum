@@ -443,7 +443,7 @@ echo "<p>{$lang['to']}: ". post_draw_to_dropdown($t_to_uid) . form_submit("submi
 echo "<p>".light_form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</p>\n";
 
 echo "<p>{$lang['signature']}:<br />".light_form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
-echo "<p>".light_form_checkbox("t_post_html", "Y", $lang['messagecontainsHTML'], (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
+echo "<p>".light_form_checkbox("t_post_html", "Y", "{$lang['messagecontainsHTML']} {$lang['notincludingsignature']}", (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
 echo "<p>".light_form_submit("submit",$lang['post']);
 echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".light_form_submit("preview",$lang['preview']);
 echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".light_form_submit("cancel", $lang['cancel']);

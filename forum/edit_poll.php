@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.20 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: edit_poll.php,v 1.21 2003-08-10 02:18:32 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -470,10 +470,11 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
           </tr>
           <tr>
             <td>
-              <table border="0" width="300">
+              <table border="0" width="400">
                 <tr>
                   <td><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : $polldata['POLLTYPE'] == 0); ?></td>
                   <td><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : $polldata['POLLTYPE'] == 1); ?></td>
+                  <td><?php echo form_radio('polltype', '2', $lang['publicviewable'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 2 : $polldata['POLLTYPE'] == 2); ?></td>
                 </tr>
               </table>
             </td>

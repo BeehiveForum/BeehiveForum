@@ -359,7 +359,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 				if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"Subscribed\" align=\"middle\"> ";
 				if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"This is a poll\" align=\"middle\"> ";
 				echo "<span class=\"threadxnewofy\">".$number."</span>";
-				echo "</td><td valign=\"top\" nowrap=\"nowrap\">";
+				echo "</td><td valign=\"top\" nowrap=\"nowrap\" align=\"right\">";
 				echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";
 				echo "</td></tr>\n";
 			}

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.9 2003-11-29 20:28:04 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.10 2003-12-06 19:15:56 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -29,7 +29,8 @@ USA
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "UTF-8";
+$lang['_charset'] = "ISO-8859-1";
+$lang['_isocode'] = "fr";    // ISO-639 language code
 $lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
 
 

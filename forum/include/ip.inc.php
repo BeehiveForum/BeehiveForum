@@ -31,13 +31,18 @@ function ip_check()
 
     $db_ip_banned = db_connect();
 
-    $sql = "SELECT IP FROM " . forum_table("BANNED_IP") . " WHERE IP = \"" . $HTTP_SERVER_VARS['REMOTE_ADDR'] . "\"";
+    if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
+      $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+    }else {
+      $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+    }
 
+    $sql = "SELECT IP FROM ". forum_table("BANNED_IP"). " WHERE IP = '$ipaddress'";
     $result = db_query($sql, $db_ip_banned);
 
-    if(db_num_rows($result)>0){
-        header("HTTP/1.0 403 Forbidden");
-        exit();
+    if (db_num_rows($result) > 0) {
+        header("HTTP/1.0 500 Internal Server Error");
+        exit;
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.70 2004-05-25 11:51:16 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.71 2004-05-25 13:49:52 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -41,14 +41,18 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $folders['TITLES'] = array();
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql.= "COUNT(GROUP_USERS.UID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID IN (0, FOLDER.FID)) ";
-    $sql.= "WHERE ((GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_USERS.UID = '$uid') ";
-    $sql.= "OR GROUP_PERMS.GID = 0 OR GROUP_PERMS.GID IS NULL) ";
-    $sql.= "AND (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID <> 0) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
@@ -58,7 +62,17 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
         while($row = db_fetch_array($result, MYSQL_ASSOC)) {
 
-            if (($row['STATUS'] & $access_allowed) > 0) {
+            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) > 0)) {
+
+                $folders['FIDS'][] = $row['FID'];
+                $folders['TITLES'][] = $row['TITLE'];
+
+            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_STATUS'] & $access_allowed) > 0)) {
+
+                $folders['FIDS'][] = $row['FID'];
+                $folders['TITLES'][] = $row['TITLE'];
+
+            }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
 
                 $folders['FIDS'][] = $row['FID'];
                 $folders['TITLES'][] = $row['TITLE'];

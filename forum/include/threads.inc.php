@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.122 2004-05-25 11:51:17 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.123 2004-05-25 13:49:52 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -40,17 +40,20 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
     if (!$table_data = get_table_prefix()) return false;
     if (!is_numeric($access_allowed)) return false;
 
-    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, USER_FOLDER.INTEREST, BIT_OR(GROUP_PERMS.PERM) AS STATUS ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql.= "COUNT(GROUP_USERS.UID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID) ";
-    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID IN (0, FOLDER.FID)) ";
-    $sql.= "WHERE ((GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_USERS.UID = '$uid') ";
-    $sql.= "OR GROUP_PERMS.GID = 0 OR GROUP_PERMS.GID IS NULL) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID <> 0) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
     $sql.= "GROUP BY FOLDER.FID ";
+    $sql.= "ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_threads_get_folders);
 
@@ -60,20 +63,33 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
 
         while($row = db_fetch_array($result, MYSQL_ASSOC)) {
 
+            if ($row['USER_PERM_COUNT'] > 0) {
+
+                $status = $row['USER_STATUS'];
+
+            }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+
+                $status = $row['FOLDER_PERM_COUNT'];
+
+            }else {
+
+                $status = null;
+            }
+
             if (isset($row['INTEREST'])) {
 
                 $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
                                                   'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
                                                   'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
                                                   'INTEREST'      => $row['INTEREST'],
-                                                  'STATUS'        => $row['STATUS']);
+                                                  'STATUS'        => $status);
             }else {
 
                 $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
                                                   'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
                                                   'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
                                                   'INTEREST'      => 0,
-                                                  'STATUS'        => $row['STATUS']);
+                                                  'STATUS'        => $status);
             }
         }
 

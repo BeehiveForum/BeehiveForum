@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.79 2004-04-13 14:04:03 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.80 2004-04-13 14:16:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -556,7 +556,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 	    if ($attachment['deleted'] == 1) {
                 echo "                          ", form_submit('del', $lang['removefile']), "\n";
 	    }else {
-                echo "                          ", form_submit('del', $lang['del']), "\n";
+                echo "                          ", form_submit('del', $lang['delete']), "\n";
 	    }
 
             echo "                        </td>\n";

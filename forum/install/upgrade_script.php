@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.17 2004-08-15 16:23:07 hodcroftcj Exp $ */
+/* $Id: upgrade_script.php,v 1.18 2004-08-17 21:08:09 tribalonline Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -941,6 +941,39 @@ $sql.= "  ) TYPE=MYISAM;";
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;
     }
+
+	$sql = "CREATE TABLE {$forum_webtag}_FORUM_LINKS (";
+	$sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+	$sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+	$sql.= "  URI VARCHAR(255) DEFAULT NULL,";
+	$sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
+	$sql.= "  PRIMARY KEY  (LID)";
+	$sql.= ")";
+
+	if(!$result = mysql_query($sql, $db_install)) {
+		$valid = false;
+	}
+
+	$sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+	$sql.= "VALUES (1, 'Forum Links:', NULL)";
+
+	if(!$result = mysql_query($sql, $db_install)) {
+		$valid = false;
+	}
+
+	$sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+	$sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
+
+	if(!$result = mysql_query($sql, $db_install)) {
+		$valid = false;
+	}
+
+	$sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+	$sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
+
+	if(!$result = mysql_query($sql, $db_install)) {
+		$valid = false;
+	}
 
     $sql = "CREATE TABLE USER_FORUM (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";

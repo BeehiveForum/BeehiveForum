@@ -4,11 +4,15 @@ body                { background-color: #$elements[body]; margin-top: 10px; marg
 
 frameset            { border-style: none; margin:0; padding:0 }
 
-.navpage            { font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px;
+.navpage            { font-size: 10px; font-weight: bold; margin: 0px;
                       text-decoration: none; background-color: #$elements[navpage];
                       color: #$text_colour[navpage] }
 
 .navpage A          { background-color: transparent; color: #$text_colour[navpage] }
+
+.navleft			{ float: left; margin: 4px; }
+
+.navright			{ float: right; }
 
 p, h1, h2, .form    { background-color: transparent; text-decoration: none;
                       font-family: Verdana, Arial, Helvetica, sans-serif }

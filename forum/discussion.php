@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.55 2004-04-26 11:21:07 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.56 2004-04-26 19:55:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,6 +122,8 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else {
+
+        bh_setcookie('bh_thread_mode', 0);
 
         $msg = messages_get_most_recent(bh_session_get_value('UID'));
 

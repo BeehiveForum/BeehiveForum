@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.55 2004-04-11 15:27:07 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.56 2004-04-11 22:49:26 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -147,6 +147,7 @@ $lang['options'] = "Options";
 $lang['emoticons'] = "Emoticons";
 $lang['savechanges'] = "Save Changes";
 $lang['webtag'] = "Webtag";
+$lang['default'] = "default";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -331,7 +332,8 @@ $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expres
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9, _ - characters";
 $lang['warningnoforums'] = "WARNING: You have no forums set up.";
 $lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
-
+$lang['deleteforum'] = "Delete Forum";
+$lang['defaultforum'] = "Default Forum";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

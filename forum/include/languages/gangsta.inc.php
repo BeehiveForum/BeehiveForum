@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.53 2004-04-11 15:27:07 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.54 2004-04-11 22:49:26 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -147,6 +147,7 @@ $lang['options'] = "Options";
 $lang['emoticons'] = "Emoticons";
 $lang['savechanges'] = "Save Changes";
 $lang['webtag'] = "Webtag";
+$lang['default'] = "Default";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
@@ -264,6 +265,8 @@ $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expres
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9, _ - characters";
 $lang['warningnoforums'] = "WARNING: You have no forums set up.";
 $lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
+$lang['deleteforum'] = "Delete Forum";
+$lang['defaultforum'] = "Default Forum";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.5 2004-04-11 21:13:12 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.6 2004-04-11 22:49:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -110,6 +110,10 @@ if (isset($HTTP_POST_VARS['submit'])) {
         foreach($HTTP_POST_VARS['t_access'] as $fid => $new_access) {
             forum_update_access($fid, $new_access);
         }
+    }
+
+    if (isset($HTTP_POST_VARS['t_default_forum']) && is_numeric($HTTP_POST_VARS['t_default_forum'])) {
+        forum_set_default($HTTP_POST_VARS['t_default_forum']);
     }
 
     if (isset($HTTP_POST_VARS['t_webtag_new']) && strlen(trim($HTTP_POST_VARS['t_webtag_new'])) > 0) {
@@ -224,6 +228,7 @@ if (sizeof($forums_array) > 0) {
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['allow']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['delete']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['defaultforum']}</td>\n";
     echo "                </tr>\n";
 
     foreach ($forums_array as $forum) {
@@ -241,7 +246,8 @@ if (sizeof($forums_array) > 0) {
             echo "                  <td align=\"center\">&nbsp;</td>\n";
         }
 
-        echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", "Delete Forum"), "</td>\n";
+        echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", $lang['deleteforum']), "</td>\n";
+	echo "                  <td align=\"center\">", form_radio("t_default_forum", $forum['FID'], "", ($forum['DEFAULT_FORUM'] == 1)), "</td>\n";
         echo "                </tr>\n";
     }
 

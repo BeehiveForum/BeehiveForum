@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.15 2004-04-10 16:35:00 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.16 2004-04-10 18:38:49 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -68,7 +68,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
-        header_redirect("./llogon.php?webtag=$webtag");
+        header_redirect("./llogon.php");
 
     }else { // IIS bug prevents redirect at same time as setting cookies.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.13 2004-08-02 18:03:15 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.14 2004-08-08 20:34:34 tribalonline Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -441,7 +441,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  FONT_SIZE TINYINT(3) UNSIGNED DEFAULT '10' NOT NULL,";
     $sql.= "  STYLE VARCHAR(255) NOT NULL,";
     $sql.= "  EMOTICONS VARCHAR(255) NOT NULL,";
-    $sql.= "  VIEW_SIGS CHAR(1) DEFAULT 'Y' NOT NULL,";
+    $sql.= "  VIEW_SIGS CHAR(1) DEFAULT '' NOT NULL,";
     $sql.= "  START_PAGE TINYINT(3) UNSIGNED DEFAULT '0' NOT NULL,";
     $sql.= "  LANGUAGE VARCHAR(32) NOT NULL,";
     $sql.= "  PM_NOTIFY CHAR(1) DEFAULT 'Y' NOT NULL,";

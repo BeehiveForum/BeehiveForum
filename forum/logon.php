@@ -70,6 +70,45 @@ if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VA
 
 }
 
+// Delete the user's cookie as requested and send them back to the login form.
+
+if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == true) {
+
+  for ($i = 0; $i < sizeof($username_array); $i++) {
+
+    setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+    setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+    setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+
+  }
+
+  if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
+
+    header_redirect("./logon.php". (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''));
+
+  }else {
+
+    html_draw_top();
+
+    // Try a Javascript redirect
+    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+    echo "<!--\n";
+    echo "document.location.href = './index.php?final_uri=". urlencode($final_uri). "';\n";
+    echo "//-->\n";
+    echo "</script>";
+
+    // If they're still here, Javascript's not working. Give up, give a link.
+    echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+    echo "<p>You logged in successfully.</p>";
+    echo form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri));
+
+    html_draw_bottom();
+    exit;
+
+  }
+
+}
+
 if (isset($HTTP_POST_VARS['submit'])) {
 
   if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
@@ -218,7 +257,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "<h2>The username or password you supplied is not valid.</h2>\n";
       echo "<h2>Please reenter your password and try again.</h2>\n";
       echo form_quick_button("./index.php", "Back", 0, 0, "_top");
-      echo "</div>\n";
       html_draw_bottom();
       exit;
 
@@ -322,7 +360,6 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
   if ($password_array[0] == $passhash_array[0]) {
 
     echo form_input_password('password', '');
-    echo form_input_hidden('savepass', false);
 
   }else {
 
@@ -349,7 +386,6 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
     if ($password_array[0] == $passhash_array[0]) {
 
       echo form_input_password('password', '');
-      echo form_input_hidden('savepass', false);
 
     }else {
 
@@ -361,7 +397,6 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
   }else {
 
     echo form_input_password('password', '');
-    echo form_input_hidden('savepass', false);
 
   }
 
@@ -402,7 +437,10 @@ if (user_guest_enabled() && $guest_account_enabled) {
 }
 
 echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Register now.</a></p>\n";
-echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php\" target=\"_self\">Forgotten your password?</a></p>\n";
+echo "  <hr width=\"350\">\n";
+echo "  <h2>Problems logging on?<h2>\n";
+echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=true", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Delete Cookies</a></p>\n";
+echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Forgotten your password?</a></p>\n";
 echo "</div>\n";
 
 html_draw_bottom();

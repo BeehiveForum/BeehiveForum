@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.127 2004-07-31 20:22:35 rowan_hill Exp $ */
+/* $Id: poll.inc.php,v 1.128 2004-08-01 10:17:05 rowan_hill Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -416,6 +416,8 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                   
             	}
             	
+            	unset($dropdown);
+            	
                 $polldata['CONTENT'].= "                <tr><td colspan=\"2\"><hr /></td></tr>\n";
                 $poll_group_count++;
                 
@@ -439,12 +441,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
 	    }else {
 
-              $polldata['CONTENT'].= "        <tr>\n";
-              //$polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\" valign=\"top\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " {$pollresults['OPTION_NAME'][$i]}</td>\n";
-              
+              $polldata['CONTENT'].= "        <tr>\n";              
               $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
               $polldata['CONTENT'].= "          <td class=\"postbody\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
               $polldata['CONTENT'].= "        </tr>\n";
+              
 	    }
 
             $poll_previous_group = $pollresults['GROUP_ID'][$i];

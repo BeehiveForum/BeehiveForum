@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.43 2005-03-28 19:43:35 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.44 2005-03-29 00:30:48 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -31,39 +31,49 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 class Emoticons
 {
+    var $emoticons;
+    var $emoticons_text;
+    var $pattern_array;
+    var $replace_array;
+    var $user_emots;
+
     function Emoticons ()
     {
-        global $__emoticons;
+        if (!is_array($this->emoticons) || sizeof($this->emoticons) == 0) {
 
-        if (!isset($__emoticons) && count($__emoticons) == 0 && $__emoticons !== false) {
-
-            $user_emots = bh_session_get_value('EMOTICONS');
-            $user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons', false, 'default');
+            if (($user_emots = bh_session_get_value('EMOTICONS')) !== false) {
+                $this->user_emots = $user_emots;
+            }else {
+                $this->user_emots = forum_get_setting('default_emoticons', false, 'default');
+            }
 
             $emoticon = array();
 
-            if ($user_emots == 'none') {
-                $emoticon2 = array();
+            if ($this->user_emots == 'none') {
+
                 if (@$dir = opendir('emoticons')) {
+
                     while ((@$file = readdir($dir)) !== false) {
+
                         if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
+
                             if (@file_exists("./emoticons/$file/definitions.php")) {
+
                                 unset($emoticon);
                                 include ("./emoticons/$file/definitions.php");
-                                $emoticon2 = array_merge($emoticon2, $emoticon);
                             }
                         }
                     }
-                    $emoticon = $emoticon2;
                 }
 
-            } else {
-                if (@file_exists("./emoticons/$user_emots/definitions.php")) {
-                    include ("./emoticons/$user_emots/definitions.php");
+            }else {
+
+                if (@file_exists("./emoticons/{$this->user_emots}/definitions.php")) {
+                    include ("./emoticons/{$this->user_emots}/definitions.php");
                 }
             }
 
-            if (count($emoticon) > 0) {
+            if (sizeof($emoticon) > 0) {
 
                 krsort($emoticon);
                 reset($emoticon);
@@ -75,20 +85,18 @@ class Emoticons
                     $emoticon_text[$v][] = $k;
                 }
 
-                $pattern_array_2 = array();
-                $replace_array_2 = array();
+                $pattern_array = array();
+                $replace_array = array();
 
                 $e_keys = array_keys($emoticon);
 
-                for ($i=0; $i<count($e_keys); $i++) {
+                for ($i = 0; $i < count($e_keys); $i++) {
 
-                    for ($j=0; $j<count($e_keys); $j++) {
+                    for ($j = 0; $j < count($e_keys); $j++) {
 
                         if ($i != $j) {
 
-                            $pos = strpos(strtolower($e_keys[$j]), strtolower($e_keys[$i]));
-
-                            if (is_int($pos)) {
+                            if (($pos = strpos(strtolower($e_keys[$j]), strtolower($e_keys[$i]))) !== false) {
 
                                 $a = $e_keys[$j];
                                 $b = $e_keys[$i];
@@ -99,64 +107,61 @@ class Emoticons
                                 $a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
                                 $a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
 
-                                $pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
-                                $replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
+                                $pattern_array[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
+                                $replace_array[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
                             }
                         }
                     }
                 }
 
-                $__emoticons = array();
-                $__emoticons['user_emots'] = $user_emots;
-                $__emoticons['emoticons'] = $emoticon;
-                $__emoticons['emoticons_text'] = $emoticon_text;
-                $__emoticons['pattern'] = $pattern_array_2;
-                $__emoticons['replace'] = $replace_array_2;
+                $this->emoticons      = $emoticon;
+                $this->emoticons_text = $emoticon_text;
+                $this->pattern_array  = $pattern_array;
+                $this->replace_array  = $replace_array;
 
-            } else {
+            }else {
 
                 // marker to show that there are no defined emoticons
-                $__emoticons = false;
-
+                $this->emoticons = false;
             }
         }
     }
 
     function convert ($content)
     {
-        global $__emoticons;
-
-        if ($__emoticons == false) return $content;
-
-        $emoticon = $__emoticons['emoticons'];
-        $pattern_array_2 = $__emoticons['pattern'];
-        $replace_array_2 = $__emoticons['replace'];
+        if ($this->emoticons == false) return $content;
 
         // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
-        $browser = '</span>';
+
+        $browser_fix = "</span>";
+
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
+
             if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
-                $browser = '&nbsp;</span>';
-            } else if (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
-                $browser .= ' ';
+
+                $browser_fix = "&nbsp;</span>";
+
+            }else if (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
+
+                $browser_fix = "</span> ";
             }
         }
 
         $front = "(?<=\s|^|>)";
         $end = "(?=\s|$|<)";
 
-        foreach ($emoticon as $k => $v) {
+        foreach ($this->emoticons as $k => $v) {
 
             $k2 = _htmlentities($k);
 
             if ($k != $k2) {
 
                 $pattern_array[] = "/$front". preg_quote($k2, "/") ."$end/";
-                $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser";
+                $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser_fix";
             }
 
             $pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
-            $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser";
+            $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser_fix";
         }
 
         if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
@@ -164,7 +169,7 @@ class Emoticons
             $content = $new_content;
         }
 
-        if (@$new_content = preg_replace($pattern_array_2, $replace_array_2, $content)) {
+        if (@$new_content = preg_replace($this->pattern_array, $this->replace_array, $content)) {
 
             $content = $new_content;
         }
@@ -175,8 +180,8 @@ class Emoticons
 
 function emoticons_get_available()
 {
-    $sets = array();
-    $sets2 = array();
+    $sets_normal = array();
+    $sets_txtnon = array();
 
     if (@$dir = opendir('emoticons')) {
 
@@ -191,13 +196,13 @@ function emoticons_get_available()
                          @$content = fread($fp, filesize("emoticons/$file/desc.txt"));
                          $content = split("\n", $content);
 
-                         $sets2[$file] = _htmlentities($content[0]);
+                         $sets_txtnon[$file] = _htmlentities($content[0]);
 
                          fclose($fp);
 
                      }else {
 
-                         $sets2[$file] = _htmlentities($file);
+                         $sets_txtnon[$file] = _htmlentities($file);
                      }
 
                  }else if (@file_exists("./emoticons/$file/style.css")) {
@@ -207,13 +212,13 @@ function emoticons_get_available()
                          @$content = fread($fp, filesize("emoticons/$file/desc.txt"));
                          $content = split("\n", $content);
 
-                         $sets[$file] = _htmlentities($content[0]);
+                         $sets_normal[$file] = _htmlentities($content[0]);
 
                          fclose($fp);
 
                      }else {
 
-                         $sets[$file] = _htmlentities($file);
+                         $sets_normal[$file] = _htmlentities($file);
                      }
                  }
              }
@@ -222,12 +227,12 @@ function emoticons_get_available()
         closedir($dir);
     }
 
-    asort($sets);
-    reset($sets);
+    asort($sets_normal);
+    reset($sets_normal);
 
-    $sets = array_merge($sets2, $sets);
+    $available_sets = array_merge($sets_txtnon, $sets_normal);
 
-    return $sets;
+    return $available_sets;
 }
 
 function emoticons_set_exists($set)
@@ -237,8 +242,9 @@ function emoticons_set_exists($set)
 
 function emoticons_preview($set, $width=190, $height=100, $num = 35)
 {
-    global $lang;
-    global $webtag;
+    $lang = load_language_file();
+
+    $webtag = get_webtag($webtag_search);
 
     $emots_array = array();
 

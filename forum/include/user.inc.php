@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.201 2004-10-16 18:01:11 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.202 2004-10-19 19:31:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -740,7 +740,7 @@ function user_search($usersearch, $offset = 0)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N')";
@@ -751,7 +751,7 @@ function user_search($usersearch, $offset = 0)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N') ";
@@ -789,7 +789,7 @@ function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $o
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
@@ -867,7 +867,7 @@ function users_get_recent($offset, $limit)
 
     $sql = "SELECT USER.UID FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
 
@@ -877,7 +877,7 @@ function users_get_recent($offset, $limit)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
@@ -915,7 +915,7 @@ function users_search_recent($usersearch, $offset)
 
     $sql = "SELECT USER.UID FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
@@ -926,7 +926,7 @@ function users_search_recent($usersearch, $offset)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";

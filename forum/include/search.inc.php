@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.71 2004-06-30 20:08:47 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.72 2004-10-19 19:31:41 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -76,18 +76,18 @@ function search_execute($argarray, &$urlquery, &$error)
 
         if ($user_uid = user_get_uid($argarray['username'])) {
 
-	    if ($argarray['user_include'] == 1) {
+            if ($argarray['user_include'] == 1) {
 
                 $from_to_user_sql = "AND POST.FROM_UID = '{$user_uid['UID']}'";
 
-	    }elseif ($argarray['user_include'] == 2) {
+            }elseif ($argarray['user_include'] == 2) {
 
-	        $from_to_user_sql = "AND POST.TO_UID = '{$user_uid['UID']}'";
+                $from_to_user_sql = "AND POST.TO_UID = '{$user_uid['UID']}'";
 
-	    }else {
+            }else {
 
                 $from_to_user_sql = "AND (POST.FROM_UID = '{$user_uid['UID']}' OR POST.TO_UID = '{$user_uid['UID']}')";
-	    }
+            }
 
         }else {
 
@@ -106,45 +106,45 @@ function search_execute($argarray, &$urlquery, &$error)
         $post_content_sql = false;
         $attach_files_sql = false;
 
-	// Filter the input so the user can't do anything dangerous with it
+        // Filter the input so the user can't do anything dangerous with it
 
-	$argarray['search_string'] = str_replace("%", "", $argarray['search_string']);
+        $argarray['search_string'] = str_replace("%", "", $argarray['search_string']);
 
-	$argarray['search_string'] = _htmlentities($argarray['search_string']);
+        $argarray['search_string'] = _htmlentities($argarray['search_string']);
 
-	// Remove any keywords which are under the minimum length.
+        // Remove any keywords which are under the minimum length.
 
         $keywords_array = explode(' ', trim($argarray['search_string']));
 
-	// Boolean Search Parameters that we don't want to strip
+        // Boolean Search Parameters that we don't want to strip
 
-	$boolean_search_params = array('and', 'or', 'not', '+', '~', '-');
+        $boolean_search_params = array('and', 'or', 'not', '+', '~', '-');
 
         foreach ($keywords_array as $key => $value) {
 
             if (!in_array($key, $boolean_search_params)) {
                 if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
                     unset($keywords_array[$key]);
-		}
+                }
             }
         }
 
-	if (sizeof($keywords_array) > 0) {
+        if (sizeof($keywords_array) > 0) {
 
             if ((db_fetch_mysql_version() > 33232) && ($argarray['method'] == 1)) {
 
                 // Full Text Support in MySQL 3.32.32 and above
 
-		$keywords = addslashes(trim(implode(' ', $keywords_array)));
+                $keywords = addslashes(trim(implode(' ', $keywords_array)));
 
-	        $bool_mode = (db_fetch_mysql_version() > 40010) ? "IN BOOLEAN MODE" : "";
-	        $keywords = search_convert_fulltext($keywords);
+                $bool_mode = (db_fetch_mysql_version() > 40010) ? "IN BOOLEAN MODE" : "";
+                $keywords = search_convert_fulltext($keywords);
 
-    	        if ($argarray['include'] > 0) $thread_title_sql = "MATCH (THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
-	        if ($argarray['include'] > 1) $post_content_sql = "MATCH (POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
-	        if ($argarray['include'] > 2) $attach_files_sql = "MATCH (POST_ATTACHMENT_FILES.FILENAME) AGAINST('$keywords' $bool_mode)";
+                if ($argarray['include'] > 0) $thread_title_sql = "MATCH (THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
+                if ($argarray['include'] > 1) $post_content_sql = "MATCH (POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
+                if ($argarray['include'] > 2) $attach_files_sql = "MATCH (POST_ATTACHMENT_FILES.FILENAME) AGAINST('$keywords' $bool_mode)";
 
-	    }else {
+            }else {
 
                 if ($argarray['method'] == 2) { // AND
 
@@ -207,9 +207,9 @@ function search_execute($argarray, &$urlquery, &$error)
                     if ($argarray['include'] > 2) {
                         $attach_files_sql = "INSTR(POST_ATTACHMENT_FILES.FILENAME, '{$keywords}')";
                     }
-		}
+                }
             }
-	}
+        }
 
         if ($thread_title_sql || $post_content_sql || $attach_files_sql) {
 
@@ -536,8 +536,9 @@ function search_draw_user_dropdown($name)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE USER.UID <> '$uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON ";
+    $sql.= "(USER.UID = VISITOR_LOG.UID) WHERE USER.UID <> '$uid' ";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_search_draw_user_dropdown);

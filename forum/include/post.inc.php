@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.91 2004-08-20 23:40:56 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.92 2004-10-19 19:31:41 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -162,8 +162,9 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE USER.UID <> '$default_uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
+    $sql.= "ON (USER.UID = VISITOR_LOG.UID) WHERE USER.UID <> '$default_uid' ";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
@@ -222,8 +223,9 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE USER.UID <> '$default_uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
+    $sql.= "ON (USER.UID = VISITOR_LOG.UID) WHERE USER.UID <> '$default_uid' ";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
@@ -388,13 +390,13 @@ class MessageText {
         var $original_text = "";
         var $diff = false;
         var $emoticons = true;
-		var $links = true;
+                var $links = true;
 
         function MessageText ($html = 0, $content = "", $emoticons = true, $links = true) {
                 $this->diff = false;
                 $this->original_text = "";
                 $this->emoticons = $emoticons;
-				$this->links = $links;
+                                $this->links = $links;
                 $this->setHTML($html);
                 $this->setContent($content);
         }
@@ -415,23 +417,23 @@ class MessageText {
                 return $this->html;
         }
 
-		function setEmoticons ($bool) {
-				$this->emoticons = ($bool == true) ? true : false;
+                function setEmoticons ($bool) {
+                                $this->emoticons = ($bool == true) ? true : false;
                 $this->setContent($this->getOriginalContent());
-		}
+                }
 
-		function getEmoticons () {
-				return $this->emoticons;
-		}
+                function getEmoticons () {
+                                return $this->emoticons;
+                }
 
-		function getLinks () {
-				return $this->links;
-		}
+                function getLinks () {
+                                return $this->links;
+                }
 
-		function setLinks ($bool) {
-				$this->links = ($bool == true) ? true : false;
+                function setLinks ($bool) {
+                                $this->links = ($bool == true) ? true : false;
                 $this->setContent($this->getOriginalContent());
-		}
+                }
 
         function setContent ($text) {
 
@@ -479,107 +481,107 @@ class MessageText {
 
 class MessageTextParse {
 
-		var $html = "";
-		var $emoticons = "";
-		var $links = "";
-		var $message = "";
-		var $sig = "";
-		var $original = "";
+                var $html = "";
+                var $emoticons = "";
+                var $links = "";
+                var $message = "";
+                var $sig = "";
+                var $original = "";
 
-		function MessageTextParse ($message, $emots_default = true, $links_enabled = true) {
+                function MessageTextParse ($message, $emots_default = true, $links_enabled = true) {
 
-				$this->original = $message;
+                                $this->original = $message;
 
-				$message_temp = preg_split("/<div class=\"sig\">/", $message);
+                                $message_temp = preg_split("/<div class=\"sig\">/", $message);
 
-				if (count($message_temp) > 1) {
+                                if (count($message_temp) > 1) {
 
-						$sig_temp = array_pop($message_temp);
-						$sig_temp = preg_split("/<\/div>/", $sig_temp);
+                                                $sig_temp = array_pop($message_temp);
+                                                $sig_temp = preg_split("/<\/div>/", $sig_temp);
 
-						$sig = "";
+                                                $sig = "";
 
-						for ($i = 0; $i < count($sig_temp) - 1; $i++) {
-								$sig .= $sig_temp[$i];
-								if ($i < count($sig_temp) - 2) {
-										$sig .= "</div>";
-								}
-						}
+                                                for ($i = 0; $i < count($sig_temp) - 1; $i++) {
+                                                                $sig .= $sig_temp[$i];
+                                                                if ($i < count($sig_temp) - 2) {
+                                                                                $sig .= "</div>";
+                                                                }
+                                                }
 
-				} else {
-						$sig = "";
-				}
+                                } else {
+                                                $sig = "";
+                                }
 
-				$message = "";
+                                $message = "";
 
-				for ($i = 0; $i < count($message_temp); $i++) {
-						$message .= $message_temp[$i];
-						if ($i < count($message_temp) - 1) {
-								$message .= "<div class=\"sig\">";
-						}
-				}
+                                for ($i = 0; $i < count($message_temp); $i++) {
+                                                $message .= $message_temp[$i];
+                                                if ($i < count($message_temp) - 1) {
+                                                                $message .= "<div class=\"sig\">";
+                                                }
+                                }
 
-				$sig = clean_emoticons($sig);
-				$message_temp = clean_emoticons($message);
+                                $sig = clean_emoticons($sig);
+                                $message_temp = clean_emoticons($message);
 
-				$emoticons = $emots_default;
+                                $emoticons = $emots_default;
 
-				if ($message_temp == $message && emoticons_convert(strip_tags($message, '<span>')) != strip_tags($message, '<span>')) {
-						$emoticons = false;
-				} else if ($message_temp != $message) {
-						$emoticons = true;
-				}
+                                if ($message_temp == $message && emoticons_convert(strip_tags($message, '<span>')) != strip_tags($message, '<span>')) {
+                                                $emoticons = false;
+                                } else if ($message_temp != $message) {
+                                                $emoticons = true;
+                                }
 
-				$message = trim($message_temp);
+                                $message = trim($message_temp);
 
-				$html = 0;
-				$message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
-				if ($message_temp != $message) {
-						$links = true;
-				} else {
-						$links = $links_enabled;
-				}
-				$message = $message_temp;
+                                $html = 0;
+                                $message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
+                                if ($message_temp != $message) {
+                                                $links = true;
+                                } else {
+                                                $links = $links_enabled;
+                                }
+                                $message = $message_temp;
 
-				if (strip_tags($message, '<p><br>') != $message_temp) {
-						$html = 2;
-						if (add_paragraphs($message) == $message) {
-								$html = 1;
-						}
-				} else {
-						$message = _htmlentities_decode(strip_tags($message));
-				}
+                                if (strip_tags($message, '<p><br>') != $message_temp) {
+                                                $html = 2;
+                                                if (add_paragraphs($message) == $message) {
+                                                                $html = 1;
+                                                }
+                                } else {
+                                                $message = _htmlentities_decode(strip_tags($message));
+                                }
 
-				$this->message = $message;
-				$this->sig = $sig;
-				$this->html = $html;
-				$this->emoticons = $emoticons;
-				$this->links = $links;
-		}
+                                $this->message = $message;
+                                $this->sig = $sig;
+                                $this->html = $html;
+                                $this->emoticons = $emoticons;
+                                $this->links = $links;
+                }
 
-		function getMessage () {
-				return $this->message;
-		}
+                function getMessage () {
+                                return $this->message;
+                }
 
-		function getSig () {
-				return $this->sig;
-		}
+                function getSig () {
+                                return $this->sig;
+                }
 
-		function getMessageHTML () {
-				return $this->html;
-		}
+                function getMessageHTML () {
+                                return $this->html;
+                }
 
-		function getEmoticons () {
-				return $this->emoticons;
-		}
-		
-		function getLinks () {
-				return $this->links;
-		}
+                function getEmoticons () {
+                                return $this->emoticons;
+                }
 
-		function getOriginal () {
-				return $this->original;
-		}
+                function getLinks () {
+                                return $this->links;
+                }
+
+                function getOriginal () {
+                                return $this->original;
+                }
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.26 2004-10-17 11:29:40 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.27 2004-10-19 19:31:42 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -954,16 +954,15 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     $sql = "CREATE TABLE VISITOR_LOG (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
     $sql.= "  LAST_LOGON DATETIME NOT NULL,";
-    $sql.= "  PRIMARY KEY (UID, FID)";
+    $sql.= "  PRIMARY KEY (UID)";
     $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;
     }
 
-    $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) SELECT UID, 1, LAST_LOGON FROM USER";
+    $sql = "INSERT INTO VISITOR_LOG (UID, LAST_LOGON) SELECT UID, LAST_LOGON FROM USER";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;

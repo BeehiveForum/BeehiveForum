@@ -26,12 +26,9 @@ USA
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()) {
+if(!bh_session_check()){
 
-    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-    $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-    $uri.= "/logon.php?final_uri=";
-    $uri.= urlencode(get_request_uri());
+    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
     
 }
@@ -50,10 +47,7 @@ require_once("./include/poll.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-  $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-  $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-  $uri.= "/discussion.php";
-  if(isset($HTTP_POST_VARS['t_rpid'])) $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
+  $uri = "./discussion.php";
   header_redirect($uri);      
     
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
@@ -116,10 +110,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
   $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');    
   poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
     
-  $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-  $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-  $uri.= "/discussion.php?msg=$tid.1";
-    
+  $uri = "./discussion.php?msg=$tid.1";   
   header_redirect($uri);
     
 }

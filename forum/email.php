@@ -34,19 +34,18 @@ if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()) {
-	$uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-	$uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-	$uri.= "/logon.php?final_uri=";
-	$uri.= urlencode(get_request_uri());
-	header_redirect($uri);
+if(!bh_session_check()){
+
+    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    header_redirect($uri);
+    
 }
 
 if(isset($HTTP_POST_VARS['cancel'])){
-    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-    $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-    $uri.= "/user_profile.php?uid=".$HTTP_POST_VARS['t_to_uid'];
+
+    $uri = "./user_profile.php?uid=". $HTTP_POST_VARS['t_to_uid'];
     header_redirect($uri);
+    
 }
 
 require_once("./include/user.inc.php");
@@ -86,9 +85,9 @@ if(isset($HTTP_POST_VARS['submit'])){
         echo "<p>&nbsp;</p>\n";
         echo "<div align=\"center\">\n";
         echo $display;
-        $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-        $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-        $uri.= "/user_profile.php?uid=".$HTTP_POST_VARS['t_to_uid'];
+        
+        $uri = "./user_profile.php?uid=". $HTTP_POST_VARS['t_to_uid'];
+        
         echo "<a href=\"$uri\">Continue</a>";
         html_draw_bottom();
         exit;

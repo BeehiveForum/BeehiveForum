@@ -28,12 +28,9 @@ USA
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()) {
+if(!bh_session_check()){
 
-    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-    $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-    $uri.= "/logon.php?final_uri=";
-    $uri.= urlencode(get_request_uri());
+    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
     
 }
@@ -61,9 +58,7 @@ require_once("./include/poll.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-    $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-    $uri.= "/discussion.php";
+    $uri = "./discussion.php";
     if(isset($HTTP_POST_VARS['t_rpid'])) $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
     header_redirect($uri);      
     
@@ -252,18 +247,14 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($t_tid > 0 && $t_rpid > 0) {
         
-          $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-          $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-          $uri.= "/discussion.php?msg=$t_tid.$t_rpid";
+          $uri = "./discussion.php?msg=$t_tid.$t_rpid";
           
         }else{
-        
-          $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-          $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-          $uri.= "/discussion.php";
+
+          $uri = "./discussion.php";
           
         }
-        
+                
         header_redirect($uri);
         exit;
 
@@ -401,7 +392,7 @@ echo "      document.f_post.t_to_uid.options[0] = new Option(newUser, \"U:\" + n
 echo "    }\n  }\n}\n";
 echo "//-->\n";
 echo "</script>\n";
-echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"POST\" target=\"_self\">\n";
 
 if(!isset($t_threadtitle)) {
     $t_threadtitle = "";

@@ -56,7 +56,13 @@ function email_sendnotification($tuid, $msg, $fuid)
             $message = strtoupper($mailfrom['LOGON']). " posted a message to you on $forum_name\n\n";
             $message.= "The subject is:  ". htmlspecialchars_reverse(stripslashes($thread['TITLE'])). "\n\n";
             $message.= "To read that message and others in the same discussion, go to:\n";
-            $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg\n\n";
+            $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+            
+            if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+              $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+            }
+            
+            $message.= "/?msg=$msg\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "Note: If you do not wish to receive email notifications of Forum messages\n";
             $message.= "posted to you, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, click\n";
@@ -107,7 +113,13 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $message.= "have subscribed to on $forum_name\n\n";
         $message.= "The subject is:  ". htmlspecialchars_reverse(stripslashes($thread['TITLE'])). "\n\n";
         $message.= "To read that message and others in the same discussion, go to:\n";
-        $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg\n\n";
+        $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+            
+        if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+          $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+        }
+            
+        $message.= "/?msg=$msg\n\n";
         $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $message.= "Note: If you do not wish to receive email notifications of new messages\n";
         $message.= "in this thread, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";

@@ -83,9 +83,8 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
         exit;
     }
 } elseif (isset($HTTP_GET_VARS['fid'])) {
-    if (array_key_exists($HTTP_GET_VARS['fid'], $folders)) {
-        $fid = $HTTP_GET_VARS['fid'];
-    } else {
+    $fid = $HTTP_GET_VARS['fid'];
+    if ($HTTP_GET_VARS['mode'] == 'link' && !array_key_exists($fid, $folders)) {
         html_draw_top();
         echo "<h2>You must specify a valid folder!</h2>";
         html_draw_bottom();

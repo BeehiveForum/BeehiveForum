@@ -603,7 +603,7 @@ function messages_get_most_recent($uid)
         $fa = db_fetch_array($result);
         if(isset($fa['LAST_READ'])){
 	    if (intval($fa['LAST_READ']) < intval($fa['LENGTH'])) {
-	      $return = $fa['TID'] . ".". intval($fa['LAST_READ'] + 1);
+	      $return = $fa['TID'] . ".". intval($fa['LAST_READ']) + 1;
 	    }else {
               $return = $fa['TID'] . "." . $fa['LAST_READ'];
 	    }

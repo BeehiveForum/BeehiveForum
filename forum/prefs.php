@@ -1,6 +1,39 @@
 <?php
+
+/*======================================================================
+Copyright Project BeehiveForum 2002
+
+This file is part of BeehiveForum.
+
+BeehiveForum is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+BeehiveForum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+USA
+======================================================================*/
+
+//Check logged in status
+require_once("./include/session.inc.php");
+if(!bh_session_check()){
+    $go = "Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $go .= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $go .= "/logon.php?final_uri=";
+    $go .= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
+    header($go);
+}
+
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
+require_once("./include/post.inc.php");
 
 $error_html = "";
 
@@ -21,6 +54,15 @@ if(isset($HTTP_POST_VARS['submit'])){
     if(empty($HTTP_POST_VARS['email'])){
         $error_html .= "<h2>Email address is required</h2>";
         $valid = false;
+    }
+
+    if($valid){
+        if($HTTP_POST_VARS['sig_html'] == "Y"){
+            if(!is_valid_html($HTTP_POST_VARS['sig_content'])){
+                $valid = false;
+                $error_html = "<h2>HTML markup in signature is invalid</h2>";
+            }
+        }
     }
 
     if($valid){

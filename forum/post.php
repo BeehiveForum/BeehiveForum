@@ -1,4 +1,36 @@
 <?php
+
+/*======================================================================
+Copyright Project BeehiveForum 2002
+
+This file is part of BeehiveForum.
+
+BeehiveForum is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+BeehiveForum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+======================================================================*/
+
+//Check logged in status
+require_once("./include/session.inc.php");
+if(!bh_session_check()){
+    $go = "Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $go .= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $go .= "/logon.php?final_uri=";
+    $go .= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
+    header($go);
+}
+
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
@@ -6,16 +38,6 @@ require_once("./include/format.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/threads.inc.php");
 require_once("./include/messages.inc.php");
-
-if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-    html_draw_top();
-    echo "You must be logged in to post.";
-    echo "<a href=\"logon.php\" target=\"_self\">Log on...</a>";
-    html_draw_bottom();
-    exit;
-} else {
-    $sess_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-}
 
 $valid = true;
 
@@ -81,10 +103,14 @@ if($valid){
             }
             $t_content .= $t_sig;
         }
-        $new_pid = post_create($t_tid,$t_rpid,$sess_uid,$HTTP_POST_VARS['t_to_uid'],$t_content);
+        $new_pid = post_create($t_tid,$t_rpid,$HTTP_COOKIE_VARS['bh_sess_uid'],$HTTP_POST_VARS['t_to_uid'],$t_content);
         if($new_pid > -1){
+            echo "<p>&nbsp;</p>";
+            echo "<p>&nbsp;</p>";
+            echo "<div align=\"center\">";
             echo "<p>Post created successfully</p>";
-            echo "<p><a href=\"messages.php?msg=$t_tid.$t_rpid\">Return to messages</a></p>";
+            echo "<p><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a></p>";
+            echo "</div>";
             html_draw_bottom();
             exit;
         } else {
@@ -122,7 +148,7 @@ if(!$newthread){
 
 $sig_content = "";
 $sig_html = "N";
-$has_sig = user_get_sig($sess_uid,$sig_content,$sig_html);
+$has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$sig_content,$sig_html);
 if($newthread){
     echo "<h1>Create new thread</h1>";
 } else {
@@ -151,7 +177,7 @@ echo "<td align=\"right\">To:</td>";
 echo "<td>";
 echo post_draw_to_dropdown($t_to_uid);
 echo "</td></tr></table>";
-echo "<tr><td><textarea name=\"t_content\" cols=\"40\" rows=\"10\" wrap=\"VIRTUAL\">";
+echo "<tr><td><textarea name=\"t_content\" cols=\"60\" rows=\"10\" wrap=\"VIRTUAL\">";
 if(isset($t_content)){
     if($t_post_html == "Y"){
         echo stripslashes(htmlentities($t_content));
@@ -160,7 +186,7 @@ if(isset($t_content)){
     }
 }
 echo "</textarea></td></tr>";
-echo "<tr><td><textarea name=\"t_sig\" cols=\"40\" rows=\"4\" wrap=\"VIRTUAL\">$sig_content</textarea>";
+echo "<tr><td><textarea name=\"t_sig\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">$sig_content</textarea>";
 echo "<input type=\"hidden\" name=\"t_sig_html\" value=\"$sig_html\"></td></tr>";
 echo "<tr><td><input type=\"checkbox\" name=\"t_post_html\" value=\"Y\"";
 if($t_post_html == "Y"){

@@ -1,17 +1,16 @@
 <?php
 
 /*======================================================================
-Copyright Chris Hodcroft <chris@hodcroft.net>, 
-Ben Sekulowicz <me@beseku.com> 2002
+Copyright Project BeehiveForum 2002
 
-This file is part of Beehive.
+This file is part of BeehiveForum.
 
-Beehive is free software; you can redistribute it and/or modify
+BeehiveForum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-Beehive is distributed in the hope that it will be useful,
+BeehiveForum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -47,7 +46,13 @@ $pid = $tidpid[1];
 // Output XHTML header
 html_draw_top();
 
-$messages = messages_get($tid,$pid,20);
+if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
+    $ppp = $HTTP_COOKIE_VARS['bh_sess_ppp'];
+} else {
+    $ppp = 20;
+}
+
+$messages = messages_get($tid,$pid,$ppp);
 $threaddata = thread_get($tid);
 $foldertitle = folder_get_title($threaddata['FID']);
 
@@ -63,7 +68,7 @@ if($msg_count>0){
     }
 }
 
-messages_nav_strip($tid,$pid,$threaddata['LENGTH']);
+messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
 messages_bottom();
 html_draw_bottom();
 

@@ -1,24 +1,23 @@
 <?php
 
 /*======================================================================
-Copyright Ben Sekulowicz <me@beseku.com>, Chris Hodcroft
-<chris@hodcroft.net> 2002
+Copyright Project BeehiveForum 2002
 
-This file is part of Beehive.
+This file is part of BeehiveForum.
 
-Beehive is free software; you can redistribute it and/or modify
+BeehiveForum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-Beehive is distributed in the hope that it will be useful,
+BeehiveForum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
 USA
 ======================================================================*/
 
@@ -105,7 +104,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
 		$lst[$i]['tid'] = $thread['tid'];
 		$lst[$i]['fid'] = $thread['fid'];
-		$lst[$i]['title'] = $thread['title'];
+		$lst[$i]['title'] = stripslashes($thread['title']);
 		$lst[$i]['length'] = $thread['length'];
 
 		if (isset($thread['last_read'])) { // special case - last_read may be NULL, in which case PHP will complain that the array index doesn't exist if we don't do this
@@ -124,15 +123,15 @@ function threads_display_list($thread_info, $folder_order) // Displays the threa
 	// Get folder FIDs and titles
 	$folder_info = threads_get_folders();
 	if (!$folder_info) die ("Could not retrieve folder information");
-	
+
 	// Get total number of messages for each folder
 	$folder_msgs = threads_get_folder_msgs();
-	
+
 	// Work out if any folders have no messages - if so, they still need to be displayed, so add them to $folder_order
 	while (list($fid, $title) = each($folder_info)) {
 		if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
 	}
-	
+
 	// Iterate through the information we've just got and display it in the right order
 	while (list($key1, $folder) = each($folder_order)) {
 		echo "<tr>\n";
@@ -179,7 +178,7 @@ function thread_get_title($tid)
      $threadtitle = "The Unknown Thread";
    } else {
      $data = db_fetch_array($resource_id);
-     $threadtitle = $data['title'];
+     $threadtitle = stripslashes($data['title']);
    }
    db_disconnect($db);
    return $threadtitle;

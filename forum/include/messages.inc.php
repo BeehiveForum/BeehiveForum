@@ -1,24 +1,23 @@
 <?php
 
 /*======================================================================
-Copyright Ben Sekulowicz <me@beseku.com>, Chris Hodcroft
-<chris@hodcroft.net>, Mark Rendle <mark@bigpinkpig.com> 2002
+Copyright Project BeehiveForum 2002
 
-This file is part of Beehive Forum.
+This file is part of BeehiveForum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
+BeehiveForum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
+BeehiveForum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Beehive Forum; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
 USA
 ======================================================================*/
 
@@ -78,12 +77,15 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true)
 {
     //echo "<p>" . $message['REPLY_TO_PID'] . "</p>";
     global $HTTP_SERVER_VARS;
 
-    echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a><br /><div align=\"center\">\n";
+    if($in_list){
+        echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a>";
+    }
+    echo "<br /><div align=\"center\">\n";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
     echo "<table class=\"posthead\" width=\"100%\" border=\"0\"><tr>\n";
     echo "<td width=\"4%\" align=\"right\">\n";
@@ -91,41 +93,47 @@ function message_display($tid, $message, $msg_count, $first_msg)
     echo "<td width=\"92%\">\n";
     echo "<p class=\"posttofrom\">" . $message['FNICK'] . "<br />" . $message['TNICK'] . "</p></td>\n";
     echo "<td width=\"4%\" align=\"right\" nowrap>\n";
-    echo "<p class=\"postinfo\">";
-    echo format_time($message['CREATED']);
-    //echo $message['CREATED'];
-    echo "<br />" . $message['PID'] . " of $msg_count";
-    echo "</p></td></table>\n";
-    echo "<table width=\"100%\" border=\"0\">\n";
-    echo "<tr><td align=\"right\"><p class=\"postnumber\" style=\"text-align:right\">";
-    echo "$tid." . $message['PID'];
-    if($message['PID'] > 1){
-        echo " in reply to ";
-        if(intval($message['REPLY_TO_PID']) >= intval($first_msg)){
-            echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\">";
-            echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
-        } else {
-            echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\">";
-            echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
-        }
+    if($in_list){
+        echo "<p class=\"postinfo\">";
+        echo format_time($message['CREATED']);
+        echo "<br />" . $message['PID'] . " of $msg_count</p>";
     }
-    echo "</p></td></tr>\n";
+    echo "</td></table>\n";
+    echo "<table width=\"100%\" border=\"0\">\n";
+    if($in_list){
+        echo "<tr><td align=\"right\"><p class=\"postnumber\" style=\"text-align:right\">";
+        echo "$tid." . $message['PID'];
+        if($message['PID'] > 1){
+            echo " in reply to ";
+            if(intval($message['REPLY_TO_PID']) >= intval($first_msg)){
+                echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\">";
+                echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+            } else {
+                echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\">";
+                echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+            }
+        }
+        echo "</p></td></tr>\n";
+    }
     echo "<tr><td class=\"postbody\">\n";
     echo $message['CONTENT'] . "\n";
     echo "</td></tr>\n";
-    echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\"><a href=\"post.php?replyto=$tid.".$message['PID']."\">Reply</a></p></td></tr></table>\n";
+    if($in_list){
+        echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\"><a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a></p></td></tr>";
+    }
+    echo "</table>\n";
     echo "</td></tr></table></div>\n";
 }
 
-function messages_nav_strip($tid,$pid,$length)
+function messages_nav_strip($tid,$pid,$length,$ppp)
 {
     // Less than 20 messages, no nav needed
-    if($pid == 1 && $length < 20){
+    if($pid == 1 && $length < $ppp){
         return;
     }
 
-    // Modulus to get base for links, e.g. pid = 28, base = 8
-    $spid = $pid % 20;
+    // Modulus to get base for links, e.g. ppp = 20, pid = 28, base = 8
+    $spid = $pid % $ppp;
 
     // The first section, 1-x
     if($spid > 1){
@@ -139,15 +147,15 @@ function messages_nav_strip($tid,$pid,$length)
 
     // The middle section(s)
     $i = 0;
-    while($spid + 19 <= $length){
+    while($spid + ($ppp - 1) <= $length){
         $i++;
         if($spid == $pid){
             $c = $i;
-            $navbits[$i] = mess_nav_range($spid,$spid+19); // Don't add <a> tag for current section
+            $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\">" . mess_nav_range($spid,$spid+19) . "</a>";
+            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\">" . mess_nav_range($spid,$spid+($ppp - 1)) . "</a>";
         }
-        $spid += 20;
+        $spid += $ppp;
     }
 
     // The final section, x-n
@@ -164,7 +172,7 @@ function messages_nav_strip($tid,$pid,$length)
 
     $html = "Show messages:";
 
-    if($length <= 20){
+    if($length <= $ppp){
         $html .= " <a href=\"messages.php?msg=$tid.1\">All</a>";
     }
     $i=0;

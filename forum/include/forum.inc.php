@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.13 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.14 2004-03-16 19:22:50 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
@@ -35,30 +35,38 @@ function get_webtag()
     $db_get_table_prefix = db_connect();    
     
     if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
-        
         $webtag = strtolower(trim($HTTP_GET_VARS['webtag']));
-    
-        // test to see if the POST table exists with our prefix.
-        
-        $sql = "SELECT * FROM FORUMS WHERE WEBTAG = '$webtag'"; 
-        $result = db_query($sql, $db_get_table_prefix);
-        
-        // if we found the post table return the webtag
-    
-        if (db_num_rows($result) > 0) {
-            $row = db_fetch_array($result);
-            $row['PREFIX'] = "{$row['WEBTAG']}_";
-            return $row;
-        }
-        
-        html_draw_top();
-        echo "<div align=\"center\">\n";
-        echo "<h2>Unknown Forum Tag.</h2>\n";
-        form_quick_button("./index.php", $lang['continue'], 0, 0, "_top");
-        echo "</div>\n";
-        html_draw_bottom();
-        exit;
+    }else {
+        $webtag = "";
     }
+    
+    $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+    $result = db_query($sql, $db_get_table_prefix);
+        
+    // if we found the post table return the webtag
+    
+    if (db_num_rows($result) > 0) {
+        
+        $forum_data = db_fetch_array($result);
+        
+        if (strlen(trim($webtag)) > 0) {
+            $forum_data['WEBTAG'] = $webtag;
+            $forum_data['PREFIX'] = "{$webtag}_";
+        }else {
+            $forum_data['WEBTAG'] = "";
+            $forum_data['PREFIX'] = "";
+        }
+            
+        return $forum_data;
+    }
+        
+    html_draw_top();
+    echo "<div align=\"center\">\n";
+    echo "<h2>Unknown Forum Tag.</h2>\n";
+    form_quick_button("./index.php", $lang['continue'], 0, 0, "_top");
+    echo "</div>\n";
+    html_draw_bottom();
+    exit;
 }
 
 function get_forum_settings()
@@ -109,6 +117,8 @@ function get_forum_settings()
 
 function draw_start_page()
 {
+    global $lang;
+    
     $db_draw_start_page = db_connect();
     
     $webtag = get_webtag();
@@ -119,14 +129,58 @@ function draw_start_page()
     if (db_num_rows($result)) {
     
         $row = db_fetch_array($result);
-        echo $row['HTML'];
+        
+        if (strlen(trim($row['HTML'])) > 0) {
+        
+            echo $row['HTML'];
+
+        }else {
+        
+            html_draw_top();
+            echo "<h1>{$lang['editstartpage']}</h1>\n";
+            html_draw_bottom();
+        }
 
     }else {
     
         html_draw_top();
-        echo "<h1>You can edit this page from the admin interface</h1>\n";
+        echo "<h1>{$lang['editstartpage']}</h1>\n";
         html_draw_bottom();
     }
+}
+
+function load_start_page()
+{
+    $db_load_start_page = db_connect();
+    
+    $webtag = get_webtag();
+    
+    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$webtag['FID']}'";
+    $result = db_query($sql, $db_load_start_page);
+    
+    if (db_num_rows($result)) {
+    
+        $row = db_fetch_array($result);
+        return $row['HTML'];
+    }
+    
+    return "";
+}
+
+function save_start_page($content)
+{
+    $db_save_start_page = db_connect();
+    
+    $webtag = get_webtag();
+    $content = addslashes($content);
+    
+    $sql = "DELETE FROM START_MAIN WHERE FID = '{$webtag['FID']}'";
+    $result = db_query($sql, $db_save_start_page);
+    
+    $sql = "INSERT INTO START_MAIN (FID, HTML) ";
+    $sql.= "VALUES('{$webtag['FID']}', '$content')";
+    
+    return db_query($sql, $db_save_start_page);
 }
 
 ?>

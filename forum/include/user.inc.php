@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.137 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.138 2004-03-16 19:22:50 decoyduck Exp $ */
 
 function user_count()
 {
@@ -122,7 +122,9 @@ function user_get_status($uid)
     
     $webtag = get_webtag();
 
-    $sql = "SELECT STATUS FROM USER WHERE UID = $uid";
+    $sql = "SELECT STATUS FROM USER_STATUS WHERE UID = $uid ";
+    $sql.= "AND FID = '{$webtag['FID']}'";
+    
     $db_user_get_status = db_connect();
 
     $result = db_query($sql, $db_user_get_status);
@@ -140,8 +142,8 @@ function user_update_status($uid, $status)
 
     if (!is_numeric($uid)) return false;
 
-    $sql = "UPDATE USER SET STATUS = $status ";
-    $sql.= "WHERE UID = $uid";
+    $sql = "UPDATE USER_STATUS SET STATUS = $status ";
+    $sql.= "WHERE UID = $uid AND FID = '{$webtag['FID']}'";
 
     $result = db_query($sql, $db_user_update_status);
 
@@ -198,7 +200,10 @@ function user_logon($logon, $password, $md5hash = false)
     
     $webtag = get_webtag();
 
-    $sql = "SELECT UID, STATUS FROM USER WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
+    $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
+    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
 
     $db_user_logon = db_connect();
     $result = db_query($sql, $db_user_logon);
@@ -234,7 +239,12 @@ function user_check_logon($uid, $logon, $md5pass)
         
         $webtag = get_webtag();
 
-        $sql = "SELECT STATUS FROM USER WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
+        $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
+        $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
+        $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+        $sql.= "WHERE USER.UID = '$uid' AND USER.LOGON = '$logon' ";
+        $sql.= "AND USER.PASSWD = '$md5pass'";
+        
         $result = db_query($sql, $db_user_check_logon);
 
         if (db_num_rows($result)) {
@@ -531,7 +541,10 @@ function user_guest_enabled()
     
     $webtag = get_webtag();
 
-    $sql = "SELECT UID, STATUS FROM USER WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
+    $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
+    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "WHERE USER.LOGON = 'GUEST' AND USER.PASSWD = MD5('guest')";
     $result = db_query($sql, $db_user_guest_account);
 
     if (db_num_rows($result)) {
@@ -605,7 +618,7 @@ function user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir
     
     $webtag = get_webtag();
 
-    $sort_array = array('UID', 'LOGON', 'STATUS', 'VISITOR_LOG.LAST_LOGON');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 'VISITOR_LOG.LAST_LOGON');
 
     if (!is_numeric($offset)) $offset = 0;
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
@@ -614,8 +627,9 @@ function user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir
     $usersearch = addslashes($usersearch);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER.STATUS FROM USER USER ";
+    $sql.= "USER_STATUS.STATUS FROM USER USER ";
     $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
@@ -644,15 +658,16 @@ function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $o
     
     $user_get_all_array = array();
 
-    $sort_array = array('UID', 'LOGON', 'STATUS', 'VISITOR_LOG.LAST_LOGON');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 'VISITOR_LOG.LAST_LOGON');
 
     if (!is_numeric($offset)) $offset = 0;
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER.STATUS FROM USER USER ";
+    $sql.= "USER_STATUS.STATUS FROM USER USER ";
     $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir ";

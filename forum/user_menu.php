@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.2 2004-01-25 12:46:05 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.3 2004-01-26 19:40:58 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -39,7 +39,11 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
+}
 
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/perm.inc.php");
@@ -54,28 +58,28 @@ echo "  <tr>\n";
 echo "    <td class=\"subhead\">{$lang['menu']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./edit_prefs.php\" target=\"right\">{$lang['userdetails']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_prefs.php\" target=\"right\">{$lang['userdetails']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./edit_profile.php\" target=\"right\">{$lang['userprofile']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_profile.php\" target=\"right\">{$lang['userprofile']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./edit_password.php\" target=\"right\">{$lang['changepassword']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_password.php\" target=\"right\">{$lang['changepassword']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><hr /></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./edit_email.php\" target=\"right\">{$lang['emailandprivacy']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_email.php\" target=\"right\">{$lang['emailandprivacy']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./forum_options.php\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"forum_options.php\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./edit_attachments.php\" target=\"right\">{$lang['attachments']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_attachments.php\" target=\"right\">{$lang['attachments']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./edit_signature.php\" target=\"right\">{$lang['signature']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_signature.php\" target=\"right\">{$lang['signature']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.13 2004-01-25 12:46:05 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.14 2004-01-26 19:40:32 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -36,6 +36,11 @@ require_once("./include/header.inc.php");
 if (!bh_session_check()) {
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
+}
+
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/perm.inc.php");
@@ -57,11 +62,6 @@ $uid = bh_session_get_value('UID');
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-    if (bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
-    }
-
     for ($i = 0; $i < sizeof($HTTP_POST_VARS['t_piid']); $i++) {
 
         $entry = trim($HTTP_POST_VARS['t_entry'][$i]);
@@ -80,7 +80,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 if ($profile_values = profile_get_user_values($uid)) {
 
     // Draw the form
-    echo "<form name=\"f_profile\" action=\"./edit_profile.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.58 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: register.php,v 1.59 2004-01-26 19:40:45 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -181,9 +181,10 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
       // Profile section
       
-      $firstname   = (isset($HTTP_POST_VARS['firstname']) && trim($HTTP_POST_VARS['firstname']) != "") ? _stripslashes(trim($HTTP_POST_VARS['firstname'])) : "";
-      $lastname    = (isset($HTTP_POST_VARS['lastname']) && trim($HTTP_POST_VARS['lastname']) != "") ? _stripslashes(trim($HTTP_POST_VARS['lastname'])) : "";
-      $dob         = "{$HTTP_POST_VARS['dob_year']}-{$HTTP_POST_VARS['dob_month']}-{$HTTP_POST_VARS['dob_day']}";
+      $user_prefs['FIRSTNAME']   = (isset($HTTP_POST_VARS['firstname']) && trim($HTTP_POST_VARS['firstname']) != "") ? _stripslashes(trim($HTTP_POST_VARS['firstname'])) : "";
+      $user_prefs['LASTNAME']    = (isset($HTTP_POST_VARS['lastname']) && trim($HTTP_POST_VARS['lastname']) != "") ? _stripslashes(trim($HTTP_POST_VARS['lastname'])) : "";
+      $user_prefs['DOB']         = "{$HTTP_POST_VARS['dob_year']}-{$HTTP_POST_VARS['dob_month']}-{$HTTP_POST_VARS['dob_day']}";
+
       $sig_content = (isset($HTTP_POST_VARS['sig_content']) && trim($HTTP_POST_VARS['sig_content']) != "") ? trim($HTTP_POST_VARS['sig_content']) : "";
 
       if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y") {
@@ -196,18 +197,18 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
       // Preferences section
 
-      $email_notify       = (isset($HTTP_POST_VARS['notifybyemail']) && $HTTP_POST_VARS['notifybyemail'] == "Y") ? "Y" : "N";
-      $notifyofnewpmemail = (isset($HTTP_POST_VARS['notifyofnewpmemail']) && $HTTP_POST_VARS['notifyofnewpmemail'] == "Y") ? "Y" : "N";
-      $notifyofnewpm      = (isset($HTTP_POST_VARS['notifyofnewpm']) && $HTTP_POST_VARS['notifyofnewpm'] == "Y") ? "Y" : "N";
-      $mark_as_of_int     = (isset($HTTP_POST_VARS['autohighinterest']) && $HTTP_POST_VARS['autohighinterest'] == "Y") ? "Y" : "N";
-      $dl_saving          = (isset($HTTP_POST_VARS['daylightsaving']) && $HTTP_POST_VARS['daylightsaving'] == "Y") ? "Y" : "N";
-      $timezone           = (isset($HTTP_POST_VARS['timezone'])) ? $HTTP_POST_VARS['timezone'] : 0;
-      $language           = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : $default_language;
-      $forum_style        = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : $default_style;
+      $user_prefs['EMAIL_NOTIFY']    = (isset($HTTP_POST_VARS['notifybyemail']) && $HTTP_POST_VARS['notifybyemail'] == "Y") ? "Y" : "N";
+      $user_prefs['PM_NOTIFY_EMAIL'] = (isset($HTTP_POST_VARS['notifyofnewpmemail']) && $HTTP_POST_VARS['notifyofnewpmemail'] == "Y") ? "Y" : "N";
+      $user_prefs['PM_NOTIFY']       = (isset($HTTP_POST_VARS['notifyofnewpm']) && $HTTP_POST_VARS['notifyofnewpm'] == "Y") ? "Y" : "N";
+      $user_prefs['MARK_AS_OF_INT']  = (isset($HTTP_POST_VARS['autohighinterest']) && $HTTP_POST_VARS['autohighinterest'] == "Y") ? "Y" : "N";
+      $user_prefs['DL_SAVING']       = (isset($HTTP_POST_VARS['daylightsaving']) && $HTTP_POST_VARS['daylightsaving'] == "Y") ? "Y" : "N";
+      $user_prefs['TIMEZONE']        = (isset($HTTP_POST_VARS['timezone'])) ? $HTTP_POST_VARS['timezone'] : 0;
+      $user_prefs['LANGUAGE']        = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : $default_language;
+      $user_prefs['STYLE']           = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : $default_style;
 
       if ($new_uid > -1) {
 
-          user_update_prefs($new_uid, $firstname, $lastname, $dob, "", "", $email_notify, $timezone, $dl_saving, $mark_as_of_int, "", "", $forum_style, "", 0, $language, $notifyofnewpmemail, $notifyofnewpm, 0);
+          user_update_prefs($new_uid, $user_prefs);
           user_update_sig($new_uid, $sig_content, $sig_html);
 
           bh_session_init($new_uid);
@@ -290,6 +291,13 @@ if(isset($HTTP_POST_VARS['submit'])) {
               }
             }
           }
+          
+          /*echo "<pre>\n";
+          print_r($username_array);
+          print_r($password_array);
+          print_r($passhash_array);
+          echo "</pre>\n";
+          exit; */
 
           // Set the cookies
 
@@ -372,7 +380,7 @@ if (strlen($error_html) > 0) {
 
 ?>
 <div align="center">
-<form name="register" action="./register.php" method="POST">
+<form name="register" action="register.php" method="POST">
   <table class="box" cellpadding="0" cellspacing="0" align="center" width="500">
     <tr>
       <td>

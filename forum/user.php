@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.1 2004-01-24 16:43:13 decoyduck Exp $ */
+/* $Id: user.php,v 1.2 2004-01-26 19:40:58 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -40,7 +40,11 @@ if (!bh_session_check()) {
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
+}
 
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/perm.inc.php");

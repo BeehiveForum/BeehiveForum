@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.24 2004-01-15 19:20:29 decoyduck Exp $ */
+/* $Id: beehive.inc.php,v 1.25 2004-01-26 19:40:59 decoyduck Exp $ */
 
 require_once("./include/lang.inc.php");
 
@@ -34,11 +34,11 @@ function draw_beehive_bar()
     echo "  <tr>\n";
     echo "    <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
     echo "      Beehive Forum 0.4.1-dev2&nbsp;|&nbsp;\n";
-    echo "      <a href=\"./http://beehiveforum.net/faq\" target=\"_blank\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"./http://sourceforge.net/docman/?group_id=50772\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"./http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926\" target=\"_blank\">{$lang['support']}</a>\n";
+    echo "      <a href=\"http://beehiveforum.net/faq\" target=\"_blank\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://sourceforge.net/docman/?group_id=50772\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926\" target=\"_blank\">{$lang['support']}</a>\n";
     echo "    </td>\n";
-    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2003 <a href=\"./http://beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></td>\n";
+    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2003 <a href=\"http://beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";

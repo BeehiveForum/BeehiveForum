@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.13 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.14 2004-01-26 19:40:11 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -117,7 +117,7 @@ if (isset($HTTP_POST_VARS['add_recent_user'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_user\" action=\"./admin_folder_access\" method=\"post\">\n";
+echo "<form name=\"f_user\" action=\"admin_folder_access\" method=\"post\">\n";
 echo form_input_hidden('fid', $fid), "\n";
 echo "<table width=\"50%\">\n";
 echo "  <tr>\n";

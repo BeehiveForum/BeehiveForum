@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.50 2004-01-15 19:20:29 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.51 2004-01-26 19:40:48 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -136,10 +136,10 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./post.php\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./create_poll.php\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.27 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.28 2004-01-26 19:40:18 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -107,21 +107,21 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'ADMIN_LOG.LOG_TIME' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"./admin_viewlog.php?sort_by=LOG_TIME&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
+    echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?sort_by=LOG_TIME&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"./admin_viewlog.php?sort_by=LOG_TIME&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
+    echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?sort_by=LOG_TIME&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
 }
 
 if ($sort_by == 'ADMIN_LOG.ADMIN_UID' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"./admin_viewlog.php?sort_by=ADMIN_UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?sort_by=ADMIN_UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
 }else {                                                                
-    echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"./admin_viewlog.php?sort_by=ADMIN_UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?sort_by=ADMIN_UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'ADMIN_LOG.ACTION' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_viewlog.php?sort_by=ACTION&amp;sort_dir=DESC\">{$lang['action']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?sort_by=ACTION&amp;sort_dir=DESC\">{$lang['action']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_viewlog.php?sort_by=ACTION&amp;sort_dir=ASC\">{$lang['action']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?sort_by=ACTION&amp;sort_dir=ASC\">{$lang['action']}</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -132,10 +132,10 @@ if ($admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir)) {
 
         echo "        <tr>\n";
         echo "          <td class=\"posthead\" align=\"left\">", format_time($admin_log_entry['LOG_TIME']), "</td>\n";
-        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $admin_log_entry['ADMIN_UID'], "\">", format_user_name($admin_log_entry['ALOGON'], $admin_log_entry['ANICKNAME']), "</a></td>\n";
+        echo "          <td class=\"posthead\" align=\"left\"><a href=\"admin_user.php?uid=", $admin_log_entry['ADMIN_UID'], "\">", format_user_name($admin_log_entry['ALOGON'], $admin_log_entry['ANICKNAME']), "</a></td>\n";
 
         if (!empty($admin_log_entry['LOGON']) && !empty($admin_log_entry['NICKNAME'])) {
-            $user = "<a href=\"./admin_user.php?uid=". $admin_log_entry['UID']. "\">";
+            $user = "<a href=\"admin_user.php?uid=". $admin_log_entry['UID']. "\">";
             $user.= format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']). "</a>";
         }else {
             $user = "{$lang['unknownuser']} (UID: ". $admin_log_entry['UID']. ")";

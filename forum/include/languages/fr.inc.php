@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.16 2004-01-19 20:56:28 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.17 2004-01-26 19:41:17 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -39,6 +39,7 @@ $lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
 $lang['add'] = "Ajouter";
 $lang['advanced'] = "Advanced";
 $lang['remove'] = "Enlever";
+$lang['style'] = "Modèle";
 $lang['go'] = "Valider";
 $lang['folder'] = "Dossier";
 $lang['folders'] = "Dossiers";
@@ -606,7 +607,23 @@ $lang['cannotviewpm'] = "Ne peut pas regarder PM. Le message n'existe pas ou c'e
 $lang['nomessagespecifiedforreply'] = "Aucun message a spécifié pour la réponse à";
 $lang['nouserspecified'] = "Aucun utilisateur a spécifié.";
 
-// Preferences (prefs.php) ---------------------------------------------
+// Preferences / Profile (user_*.php) ---------------------------------------------
+
+$lang['mycontrols'] = "My Controls";
+$lang['menu'] = "Menu";
+$lang['userexp_1'] = "Use the menu on the left to manage your settings.";
+$lang['userexp_2'] = "<b>User Details</b> allows you to change your name, email address and password.";
+$lang['userexp_3'] = "<b>User Profile</b> allows you to edit your user profile.";
+$lang['userexp_4'] = "<b>Change Password</b> allows you to change your password";
+$lang['userexp_5'] = "<b>Email & Privacy</b> lets you change how you can be contacted on and off the forum.";
+$lang['userexp_6'] = "<b>Forum Options</b> lets you change how the forum looks and works.";
+$lang['userexp_7'] = "<b>Attachments</b> allows you to edit/delete your attachments.";
+$lang['userexp_8'] = "<b>Signature</b> lets you edit your signature.";
+$lang['userdetails'] = "User Details";
+$lang['userprofile'] = "User Profile";
+$lang['emailandprivacy'] = "Email & Privacy";
+$lang['userinformation'] = "User Information";
+$lang['changepassword'] = "Change Password";
 $lang['newpasswd'] = "Nouveau Mot de passe";
 $lang['confirmpasswd'] = "Confirmer le Mot de passe";
 $lang['passwdsdonotmatch'] = "Les mots de passe pas allumette!";
@@ -632,7 +649,7 @@ $lang['lastname'] = "Nom de famille";
 $lang['dateofbirth'] = "Date de naissance";
 $lang['homepageURL'] = "URL de votre page d'accueil";
 $lang['pictureURL'] = "URL de votre image";
-$lang['forumoptions'] = "Options";
+$lang['forumoptions'] = "Forum Options";
 $lang['notifybyemail'] = "Me notifier par mél de messages";
 $lang['notifyofnewpm'] = "Me notifier par popup de nouveaux messages personels.";
 $lang['notifyofnewpmemail'] = "Me notifier par mél de nouveaux messages personels";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.23 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.24 2004-01-26 19:40:14 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -61,25 +61,25 @@ echo "  <tr>\n";
 echo "    <td class=\"subhead\">Tools</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_users.php\" target=\"right\">{$lang['users']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_users.php\" target=\"right\">{$lang['users']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_folders.php\" target=\"right\">{$lang['folders']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_folders.php\" target=\"right\">{$lang['folders']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_prof_sect.php\" target=\"right\">{$lang['profiles']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_prof_sect.php\" target=\"right\">{$lang['profiles']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_startpage.php\" target=\"right\">{$lang['startpage']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_startpage.php\" target=\"right\">{$lang['startpage']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_make_style.php\" target=\"right\">{$lang['forumstyle']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_make_style.php\" target=\"right\">{$lang['forumstyle']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_wordfilter.php\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_wordfilter.php\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_viewlog.php\" target=\"right\">{$lang['viewlog']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_viewlog.php\" target=\"right\">{$lang['viewlog']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

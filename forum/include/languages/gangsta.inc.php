@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.17 2004-01-19 20:56:28 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.18 2004-01-26 19:41:17 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -37,6 +37,7 @@ $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 $lang['add'] = "Izadd";
 $lang['advanced'] = "Advanced";
 $lang['remove'] = "Remizove";
+$lang['style'] = "Style";
 $lang['go'] = "Gizo";
 $lang['folder'] = "Fo'da";
 $lang['folders'] = "Fo'daz";
@@ -618,7 +619,24 @@ $lang['nomessagespecifiedforreply'] = "Ain't no message specified fo' replyin' t
 $lang['nouserspecified'] = "No bitch specified.";
 $lang['pmnotificationpopup'] = "Yo has a new PM. Would yo like to go to yo inbizox homie?";
 
-// Preferences (prefs.php) ---------------------------------------------
+// Preferences / Profile (user_*.php) ---------------------------------------------
+
+$lang['mycontrols'] = "My Controls";
+$lang['menu'] = "Menu";
+$lang['userexp_1'] = "Use the menu on the left to manage your settings.";
+$lang['userexp_2'] = "<b>User Details</b> allows you to change your name, email address and password.";
+$lang['userexp_3'] = "<b>User Profile</b> allows you to edit your user profile.";
+$lang['userexp_4'] = "<b>Change Password</b> allows you to change your password";
+$lang['userexp_5'] = "<b>Email & Privacy</b> lets you change how you can be contacted on and off the forum.";
+$lang['userexp_6'] = "<b>Forum Options</b> lets you change how the forum looks and works.";
+$lang['userexp_7'] = "<b>Attachments</b> allows you to edit/delete your attachments.";
+$lang['userexp_8'] = "<b>Signature</b> lets you edit your signature.";
+$lang['userdetails'] = "User Details";
+$lang['userprofile'] = "User Profile";
+$lang['emailandprivacy'] = "Email & Privacy";
+$lang['userinformation'] = "User Information";
+$lang['changepassword'] = "Change Password";
+$lang['searchagain'] = "Search Again";
 $lang['newpasswd'] = "Nizew Pizasswizord";
 $lang['confirmpasswd'] = "Confizirm Pizasswizord";
 $lang['passwdsdonotmatch'] = "Yo pizasswizords do not match!";
@@ -635,8 +653,6 @@ $lang['aug'] = "Aizugizust";
 $lang['sep'] = "Sizeptizembizer";
 $lang['oct'] = "Octizobizer";
 $lang['nov'] = "Novizembizer";
-
-
 $lang['dec'] = "Decizembizer";
 $lang['userpreferences'] = "Yo prizeferizencizes";
 $lang['preferencesupdated'] = "Yo prizeferizencizes were updated right, yo.";

@@ -24,9 +24,7 @@ USA
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
 
-  global $HTTP_COOKIE_VARS;
-
-  $admin_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+  $admin_uid = bh_session_get_value('UID');
   $db_admin_addlog = db_connect();
 
   $sql = "INSERT INTO ". forum_table("ADMIN_LOG"). " (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";

@@ -35,8 +35,8 @@ require_once("./include/config.inc.php");
 
 header_no_cache();
 
-$top_html   = "styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/top.html";
-$stylesheet = "styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/style.css";
+$top_html   = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/top.html";
+$stylesheet = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
 
 if (!file_exists($top_html)) {
         $top_html = "./top.html";
@@ -52,7 +52,7 @@ if (!file_exists($top_html)) {
 </head>
 <?php
 
-if(bh_session_check()) {
+if (bh_session_check()) {
 
     echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";

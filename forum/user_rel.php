@@ -38,7 +38,7 @@ if(!bh_session_check()){
 
 require_once("./include/html.inc.php");
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }
@@ -49,7 +49,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 }elseif (isset($HTTP_POST_VARS['msg'])) {
     $msg = $HTTP_POST_VARS['msg'];
 }else {
-    $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    $msg = messages_get_most_recent(bh_session_get_value('UID'));
 }
 
 require_once("./include/user.inc.php");
@@ -58,7 +58,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
 
-$my_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+$my_uid = bh_session_get_value('UID');
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
@@ -72,7 +72,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     user_update_global_sig($my_uid, $sig_global);
 
     // Update the User's Session to save them having to logout and back in
-    bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+    bh_session_init(bh_session_get_value('UID'));
     header_redirect("./messages.php?msg=$msg");
 }
 
@@ -134,7 +134,7 @@ echo "<h1>User Relationship: $uname</h1>\n";
       </tr>
 <?php } ?>
       <tr>
-        <td width="130"><?php echo form_checkbox("sig_global", "Y", "Globally ignored", user_get_global_sig($HTTP_COOKIE_VARS['bh_sess_uid']) == "Y"); ?></td>
+        <td width="130"><?php echo form_checkbox("sig_global", "Y", "Globally ignored", user_get_global_sig(bh_session_get_value('UID')) == "Y"); ?></td>
         <td width="370">: No signatures are displayed.</td>
       </tr>
     </table>

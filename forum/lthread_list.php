@@ -43,7 +43,7 @@ if(!bh_session_check()){
 }
 
 // Check that required variables are set
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
     $user = 0; // default to UID 0 if no other UID specified
     if (!isset($HTTP_GET_VARS['mode'])) {
         if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
@@ -60,7 +60,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
         }
     }
 } else {
-    $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $user = bh_session_get_value('UID');
 
     if (isset($HTTP_GET_VARS['markread'])) {
 
@@ -103,7 +103,7 @@ light_html_draw_top();
 
 echo "<form name=\"f_mode\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n        ";
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
 
   $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
   echo light_form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode). "\n        ";
@@ -191,7 +191,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
 
-    if(thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])) {
+    if(thread_can_view($tid, bh_session_get_value('UID'))) {
 
         list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'],
              $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
@@ -368,7 +368,7 @@ if ($mode == 0 && !isset($folder)) {
     }
 }
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+if (bh_session_get_value('UID') != 0) {
 
     echo "  <h5>Mark as Read:</h5>\n";
     echo "    <form name=\"f_mark\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";

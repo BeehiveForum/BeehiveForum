@@ -102,7 +102,7 @@ if ($folders[$fid]['VISIBLE'] == "N") echo "<p class=\"threadtime\">This folder 
 
 $subfolders = links_get_subfolders($fid, $folders);
 
-$new_folder_link = $HTTP_COOKIE_VARS['bh_sess_uid'] ? "[<a href=\"links_add.php?mode=folder&amp;fid=$fid\">Add new folder</a>]" : "";
+$new_folder_link = bh_session_get_value('UID') ? "[<a href=\"links_add.php?mode=folder&amp;fid=$fid\">Add new folder</a>]" : "";
 if (count($subfolders) == 0) {
     echo "<p><span class=\"threadtime\">No subfolders in this category. $new_folder_link</span></p>\n";
 } else {
@@ -236,7 +236,7 @@ if (sizeof($links) > 0 ) {
       echo "  <tr>\n    <td colspan=\"5\" class=\"postbody\">No links in this folder.</td>\n  </tr>\n";
 }
 
-echo $HTTP_COOKIE_VARS['bh_sess_uid'] ? "  <tr>\n    <td class=\"postbody\">&nbsp;</td>\n  </tr>\n  <tr>\n    <td class=\"postbody\"><a href=\"links_add.php?mode=link&amp;fid=$fid\"><b>Add link here</b></a></td>\n  </tr>\n" : "";
+echo bh_session_get_value('UID') ? "  <tr>\n    <td class=\"postbody\">&nbsp;</td>\n  </tr>\n  <tr>\n    <td class=\"postbody\"><a href=\"links_add.php?mode=link&amp;fid=$fid\"><b>Add link here</b></a></td>\n  </tr>\n" : "";
 echo "</table>\n";
 html_draw_bottom();
 ?>

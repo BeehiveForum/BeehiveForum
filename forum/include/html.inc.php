@@ -23,6 +23,7 @@ USA
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/session.inc.php");
 
 function html_guest_error ()
 {
@@ -41,7 +42,7 @@ function html_poll_edit_error ()
 function _html_draw_top1($title = false)
 {
 
-    global $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $forum_name, $default_style;
+    global $HTTP_GET_VARS, $forum_name, $default_style;
 
     if(!$title) $title = $forum_name;
 
@@ -54,7 +55,8 @@ function _html_draw_top1($title = false)
 
     if (isset($default_style)) {
 
-        $user_style = empty($HTTP_COOKIE_VARS['bh_sess_style']) ? $default_style : $HTTP_COOKIE_VARS['bh_sess_style'];
+        $user_style = bh_session_get_value('STYLE');
+        $user_style = $user_style ? $user_style : $default_style;
 
         if (is_dir("./styles/$user_style")) {
             $stylesheet = "styles/$user_style/style.css";
@@ -68,7 +70,7 @@ function _html_draw_top1($title = false)
 
     echo "<link rel=\"stylesheet\" href=\"", $stylesheet, "\" type=\"text/css\" />\n";
 
-    if (!empty($HTTP_COOKIE_VARS['bh_sess_fontsize']) && $HTTP_COOKIE_VARS['bh_sess_fontsize'] != '10') {
+    if (bh_session_get_value('FONT_SIZE') && bh_session_get_value('FONT_SIZE') != '10') {
         echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";
     }
 
@@ -131,9 +133,10 @@ function html_draw_bottom ()
 
 function style_image($img)
 {
-    global $HTTP_COOKIE_VARS, $default_style;
+    global $default_style;
 
-    $file = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/images/$img";
+    $style = bh_session_get_value('STYLE');
+    $file  = "./styles/". ($style ? $style : $default_style) . "/images/$img";
 
     if (@file_exists($file)) {
         return $file;

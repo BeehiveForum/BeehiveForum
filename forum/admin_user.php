@@ -67,7 +67,7 @@ if (isset($HTTP_GET_VARS['ret'])) {
 
 html_draw_top();
 
-if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
+if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     echo "<h1>Access Denied</h1>\n";
     echo "<p>You do not have permission to use this section.</p>";
     html_draw_bottom();
@@ -126,8 +126,9 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     $new_status = $t_worker | $t_worm | $t_wasp | $t_splat;
 
-    if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN) {
+    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
       $new_status = $new_status | $t_soldier;
+      $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
     }else {
       $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
       $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
@@ -245,7 +246,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "          <td class=\"subhead\" align=\"left\">User Status: ", $user['LOGON'], "</td>\n";
   echo "        </tr>\n";
 
-  if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN) {
+  if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
     echo "        <tr>\n";
     echo "          <td align=\"left\">", form_checkbox("t_soldier", USER_PERM_SOLDIER, "Soldier", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False), "</td>\n";
     echo "        </tr>\n";

@@ -34,37 +34,11 @@ require_once("./include/constants.inc.php");
 function threads_get_available_folders()
 {
     return folder_get_available();
-
-    /*global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    $db_threads_get_available_folders = db_connect();
-
-    $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
-    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
-
-    $result = db_query($sql, $db_threads_get_available_folders);
-    $count = db_num_rows($result);
-
-    if($count==0){
-        $return = "0";
-    } else {
-        $row = db_fetch_array($result);
-        $return = $row['FID'];
-
-        while($row = db_fetch_array($result)){
-            $return .= ",".$row['FID'];
-        }
-    }
-
-    return $return;*/
 }
 
 function threads_get_folders()
 {
-
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_threads_get_folders = db_connect();
 
@@ -551,8 +525,7 @@ function threads_get_folder_msgs()
 
 function threads_any_unread()
 {
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $sql = "select * from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
     $sql.= "on (T.TID = UT.TID and UT.UID = '$uid') ";
@@ -569,8 +542,7 @@ function threads_any_unread()
 function threads_mark_all_read()
 {
 
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_threads_mark_all_read = db_connect();
 
@@ -579,17 +551,17 @@ function threads_mark_all_read()
 
     while($row = db_fetch_array($result_threads)) {
 
-      messages_update_read($row['TID'], $row['LENGTH'], $HTTP_COOKIE_VARS['bh_sess_uid']);
+      messages_update_read($row['TID'], $row['LENGTH'], bh_session_get_value('UID'));
 
       /*$sql = "SELECT TID, LAST_READ, INTEREST FROM ". forum_table("USER_THREAD");
-      $sql.= " WHERE TID = ". $row['TID']. " AND UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+      $sql.= " WHERE TID = ". $row['TID']. " AND UID = ". bh_session_get_value('UID');
 
       $result_lastread = db_query($sql, $db_threads_mark_all_read);
 
       if (!db_num_rows($result_lastread)) {
 
         $sql = "INSERT INTO ".forum_table("USER_THREAD")." (UID, TID, LAST_READ, LAST_READ_AT) ";
-        $sql.= "VALUES (". $HTTP_COOKIE_VARS['bh_sess_uid']. ", ". $row['TID']. ", ". $row['LENGTH'] .", NOW())";
+        $sql.= "VALUES (". bh_session_get_value('UID'). ", ". $row['TID']. ", ". $row['LENGTH'] .", NOW())";
         db_query($sql, $db_threads_mark_all_read);
 
       }else {
@@ -597,7 +569,7 @@ function threads_mark_all_read()
         $sql = "UPDATE LOW_PRIORITY ".forum_table("USER_THREAD");
         $sql.= " SET LAST_READ = ". $row['LENGTH']. ", ";
         $sql.= "LAST_READ_AT = NOW() ";
-        $sql.= "WHERE TID = ". $row['TID']." and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+        $sql.= "WHERE TID = ". $row['TID']." and UID = ". bh_session_get_value('UID');
 
         db_query($sql, $db_threads_mark_all_read);
 
@@ -610,8 +582,7 @@ function threads_mark_all_read()
 function threads_mark_50_read()
 {
 
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_threads_mark_50_read = db_connect();
 
@@ -625,7 +596,7 @@ function threads_mark_50_read()
 
     while ($row = db_fetch_array($result)) {
 
-      messages_update_read($row['TID'], $row['LENGTH'], $HTTP_COOKIE_VARS['bh_sess_uid']);
+      messages_update_read($row['TID'], $row['LENGTH'], bh_session_get_value('UID'));
 
     }
 
@@ -633,8 +604,6 @@ function threads_mark_50_read()
 
 function threads_mark_read($tidarray)
 {
-
-    global $HTTP_COOKIE_VARS;
 
     $db_threads_mark_read = db_connect();
 
@@ -645,7 +614,7 @@ function threads_mark_read($tidarray)
 
       list($ctlength) = db_fetch_array($result);
 
-      messages_update_read($ctid, $ctlength, $HTTP_COOKIE_VARS['bh_sess_uid']);
+      messages_update_read($ctid, $ctlength, bh_session_get_value('UID'));
 
     }
 

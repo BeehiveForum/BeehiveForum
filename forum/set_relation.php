@@ -38,7 +38,7 @@ require_once("./include/html.inc.php");
 require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }
@@ -51,7 +51,7 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
 
     $uid = $HTTP_GET_VARS['uid'];
     $rel = $HTTP_GET_VARS['rel'];
-    $myuid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $myuid = bh_session_get_value('UID');
 
     $db = db_connect();
 

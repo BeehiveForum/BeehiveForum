@@ -43,7 +43,7 @@ if(isset($HTTP_GET_VARS['final_uri'])){
 if(bh_session_check()) {
 
     light_html_draw_top();
-    echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
+    echo "<p>User ID ", bh_session_get_value('UID'), " already logged in.</p>\n";
     echo form_quick_button("./lthread_list.php", "Continue", 0, 0, "_top");
     light_html_draw_bottom();
     exit;

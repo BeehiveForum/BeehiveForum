@@ -28,12 +28,10 @@ require_once("./include/constants.inc.php");
 
 function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
-    global $HTTP_COOKIE_VARS;
+    $ustatus = bh_session_get_value('STATUS');
+    $uid = bh_session_get_value('UID');
 
-    $ustatus = $HTTP_COOKIE_VARS['bh_sess_ustatus'];
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-
-    if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER) {
+    if ($ustatus & PERM_CHECK_WORKER) {
         $sql = "select FID, TITLE from ".forum_table("FOLDER");
     } else {
         $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
@@ -99,8 +97,7 @@ function folder_move_threads($from,$to)
 
 function folder_get_available()
 {
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
     $db_folder_get_available = db_connect();
 
     $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
@@ -148,8 +145,7 @@ function folder_get_all()
 
 function user_set_folder_interest($fid, $interest)
 {
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_user_set_folder_interest = db_connect();
 

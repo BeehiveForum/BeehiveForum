@@ -75,9 +75,9 @@ function light_form_submit($name = "submit", $value = "Submit")
 function light_poll_confirm_close($tid)
 {
 
-    global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS;
 
-    if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
+    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse();
         return;
     }
@@ -132,8 +132,8 @@ function light_form_radio($name, $value, $text, $checked = false)
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
 {
 
-    global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    global $HTTP_SERVER_VARS;
+    $uid = bh_session_get_value('UID');
 
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
@@ -164,7 +164,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
     if ($in_list) {
 
-      if ((!isset($userpolldata['OPTION_ID']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
+      if ((!isset($userpolldata['OPTION_ID']) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
 
         for ($i = 1; $i <= sizeof($pollresults); $i++) {
 
@@ -266,7 +266,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
           $polldata['CONTENT'].= "<p>Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</p>\n";
 
-        }elseif ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+        }elseif (bh_session_get_value('UID') > 0) {
 
 
           $polldata['CONTENT'].= "<p>". light_form_submit('pollsubmit', 'Vote'). "</p>\n";
@@ -279,7 +279,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
     }
 
     // Work out what relationship the user has to the user who posted the poll
-    $polldata['FROM_RELATIONSHIP'] = user_rel_get($HTTP_COOKIE_VARS['bh_sess_uid'], $polldata['FROM_UID']);
+    $polldata['FROM_RELATIONSHIP'] = user_rel_get(bh_session_get_value('UID'), $polldata['FROM_UID']);
 
     light_message_display($tid, $polldata, $msg_count, $first_msg, $in_list, $closed, $limit_text, true);
 
@@ -288,14 +288,14 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
 {
 
-    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir;
+    global $maximum_post_length, $attachment_dir;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         light_message_display_deleted($tid, $message['PID']);
         return;
     }
 
-    if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
+    if (bh_session_get_value('UID') != $message['FROM_UID']) {
       if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
         light_message_display_deleted($tid, $message['PID']);
         return;
@@ -338,7 +338,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         echo "<b>Ignored message</b>";
     } else {
         if($in_list) {
-            $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
@@ -386,7 +386,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         echo "<p>\n";
 
         if($in_list && $limit_text != false){
-            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
+            if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
                 echo "<a href=\"lpost.php?replyto=$tid.".$message['PID']."\">Reply</a>";
 
@@ -486,11 +486,10 @@ function light_html_guest_error ()
 
 function light_folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 {
-    global $HTTP_COOKIE_VARS;
-    $ustatus = $HTTP_COOKIE_VARS['bh_sess_ustatus'];
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $ustatus = bh_session_get_value('STATUS');
+    $uid = bh_session_get_value('UID');
 
-    if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+    if(bh_session_get_value('STATUS') & PERM_CHECK_WORKER){
         $sql = "select FID, TITLE from ".forum_table("FOLDER");
     } else {
         $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";

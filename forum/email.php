@@ -38,7 +38,7 @@ if(!bh_session_check()){
     header_redirect($uri);
 }
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
@@ -65,7 +65,7 @@ if (isset($HTTP_GET_VARS['uid'])) {
 }
 
 $to_user = user_get($to_uid);
-$from_user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+$from_user = user_get(bh_session_get_value('UID'));
 
 if (isset($HTTP_POST_VARS['submit'])) {
 

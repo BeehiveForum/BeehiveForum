@@ -48,7 +48,7 @@ if (!$attachments_enabled) {
   exit;
 }
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }

@@ -52,7 +52,7 @@ if (!isset($uid)) {
 }
 
 $user = user_get($uid);
-$your_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+$your_uid = bh_session_get_value('UID');
 
 html_draw_top(format_user_name($user['LOGON'],$user['NICKNAME']));
 

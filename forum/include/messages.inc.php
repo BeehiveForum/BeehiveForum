@@ -38,8 +38,7 @@ require_once("./include/constants.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
     if(!$uid) $uid = 0;
 
     $db_message_get = db_connect();
@@ -195,14 +194,14 @@ function message_filter($content)
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
-    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing;
+    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
         return;
     }
 
-    if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
+    if (bh_session_get_value('UID') != $message['FROM_UID']) {
       if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
         message_display_deleted($tid, $message['PID']);
         return;
@@ -271,11 +270,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && bh_session_get_value('UID') != 0) {
         echo "<b>Ignored message</b>";
     } else {
         if($in_list) {
-            $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
             echo format_time($message['CREATED'], 1);
@@ -312,7 +311,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td>\n";
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
         echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
     }else if($in_list && $msg_count > 0) {
@@ -416,31 +415,25 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         }
 
-        /*echo "\$in_list: ", ($in_list) ? "true" : "false", "<br>\n";
-        echo "\$closed: ", ($closed) ? "true" : "false", "<br>\n";
-        echo "\$limit_text: ", ($limit_text) ? "true" : "false", "<br>\n";
-        echo "\$is_poll: ", ($is_poll) ? "true" : "false", "<br>\n";
-        echo "\$show_sigs: ", ($show_sigs) ? "true" : "false", "<br>\n";
-        echo "\$is_preview: ", ($is_preview) ? "true" : "false", "<br>\n"; */
-
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
-            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
+            if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"Reply\" />";
                 echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
 
             }
-            if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
+            if(bh_session_get_value('UID') == $message['FROM_UID'] || perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"Delete\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&amp;back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
                     if ($is_poll && $message['PID'] == 1) {
+		        if (!poll_is_closed($tid) || perm_is_moderator()) {
 
-                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit Poll\" />";
-                      echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
-
+                            echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit Poll\" />";
+                            echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
+		        }
                     }else {
 
                       echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit\" />";
@@ -450,7 +443,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 }
             }
 
-            if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
+            if(bh_session_get_value('UID') != $message['FROM_UID']) {
                 echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"Relationship\" />";
                 echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
             }
@@ -605,7 +598,13 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false)
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid");
     echo "\" method=\"post\">\n";
-    echo "<p>Rename thread: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
+
+    if (thread_is_poll($tid)) {
+        echo "<p>Rename thread: <a href=\"edit_poll.php?msg=$tid.$pid\" target=\"_parent\">Edit the poll</a> to rename this thread.</p>\n";
+    }else {
+        echo "<p>Rename thread: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
+    }
+
     echo "<p>Move thread: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", "Move");
 
     if ($closed) {
@@ -720,28 +719,26 @@ function messages_get_most_recent($uid)
 function messages_fontsize_form($tid, $pid)
 {
 
-    global $HTTP_COOKIE_VARS;
-
     $fontstrip = "<p>Adjust text size: ";
 
-    if (($HTTP_COOKIE_VARS['bh_sess_fontsize'] > 1) && ($HTTP_COOKIE_VARS['bh_sess_fontsize'] < 15)) {
+    if ((bh_session_get_value('FONT_SIZE') > 1) && (bh_session_get_value('FONT_SIZE') < 15)) {
 
-      $fontsmaller = $HTTP_COOKIE_VARS['bh_sess_fontsize'] - 1;
-      $fontlarger = $HTTP_COOKIE_VARS['bh_sess_fontsize'] + 1;
+      $fontsmaller = bh_session_get_value('FONT_SIZE') - 1;
+      $fontlarger = bh_session_get_value('FONT_SIZE') + 1;
 
       if ($fontsmaller < 1) $fontsmaller = 1;
       if ($fontlarger > 15) $fontlarger = 15;
 
       $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ";
-      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">Larger</a></p>\n";
+      $fontstrip.= bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">Larger</a></p>\n";
 
-    }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 1) {
+    }elseif (bh_session_get_value('FONT_SIZE') == 1) {
 
-      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=2\" target=\"_self\">Larger</a></p>\n";
+      $fontstrip.= bh_session_get_value('FONT_SIZE'). "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=2\" target=\"_self\">Larger</a></p>\n";
 
-    }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 15) {
+    }elseif (bh_session_get_value('FONT_SIZE') == 15) {
 
-      $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize']. "</p>\n";
+      $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">Smaller</a> ". bh_session_get_value('FONT_SIZE'). "</p>\n";
 
     }
 

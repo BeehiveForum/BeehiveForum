@@ -49,7 +49,7 @@ require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }
@@ -70,7 +70,7 @@ echo "<h1>Edit Profile</h1>\n";
 echo "<br />\n";
 
 
-$uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+$uid = bh_session_get_value('UID');
 
 
 // Do updates

@@ -48,7 +48,7 @@ echo "<h1>Create a Forum Style</h1>\n";
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-    if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)) {
+    if (bh_session_get_value('STATUS') && (bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
         if (isset($HTTP_POST_VARS['stylename']) && strlen($HTTP_POST_VARS['stylename']) > 0) {
 

@@ -48,7 +48,7 @@ if (!is_numeric($pid)) $pid = 1;
 if (!is_numeric($tid)) $tid = 1;
 
 // Check if the user is viewing signatures.
-$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS') == 1);
 
 // Output XHTML header
 html_draw_top_script();

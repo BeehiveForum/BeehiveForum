@@ -59,8 +59,8 @@ if (!bh_session_check()) {
 if (isset($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
-    if (isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
-        $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    if (bh_session_get_value('UID')) {
+        $msg = messages_get_most_recent(bh_session_get_value('UID'));
     }else {
         $msg = "1.1";
     }
@@ -71,7 +71,7 @@ list($tid, $pid) = explode('.', $msg);
 if (!isset($tid)) $tid = 1;
 if (!isset($pid)) $pid = 1;
 
-if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
+if(!thread_can_view($tid, bh_session_get_value('UID'))) {
         html_draw_top();
         echo "<h2>The requested thread could not be found. It has either been deleted or access was denied.</h2>";
         html_draw_bottom();
@@ -122,8 +122,8 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 // Output XHTML header
 html_draw_top_script();
 
-if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
-    $ppp = $HTTP_COOKIE_VARS['bh_sess_ppp'];
+if (bh_session_get_value('POSTS_PER_PAGE')) {
+    $ppp = bh_session_get_value('POSTS_PER_PAGE');
 } else {
     $ppp = 20;
 }
@@ -146,7 +146,7 @@ $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
 if($closed) $foldertitle .= " (closed)";
 
-$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+$show_sigs = !(bh_session_get_value('SHOW_SIGS') == 1);
 
 $msg_count = count($messages);
 
@@ -253,7 +253,7 @@ if($threaddata['POLL_FLAG'] == 'Y') {
     echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\">View Results</a>\n";
 }
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+if (bh_session_get_value('UID') != 0) {
 
         messages_interest_form($tid, $pid);
         messages_fontsize_form($tid, $pid);
@@ -267,8 +267,8 @@ draw_beehive_bar();
 messages_end_panel();
 html_draw_bottom();
 
-if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0){
-    messages_update_read($tid,$last_pid,$HTTP_COOKIE_VARS['bh_sess_uid']);
+if($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0){
+    messages_update_read($tid,$last_pid,bh_session_get_value('UID'));
 }
 
 ?>

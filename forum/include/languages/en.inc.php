@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.56 2003-12-02 22:16:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.57 2003-12-09 22:26:54 decoyduck Exp $ */
 
 // International English language file
 
@@ -253,6 +253,7 @@ $lang['deletedallusersposts'] = "Deleted All Posts for User";
 $lang['banneduser'] = "Banned User";
 $lang['unbanneduser'] = "Unbanned User";
 $lang['ipaddress'] = "IP address";
+$lang['ip'] = "IP";
 $lang['deleteduser'] = "Deleted User";
 $lang['changedtitleaccessfolder'] = "Changed Folder Options for folder";
 $lang['movedthreads'] = "Moved threads to folder";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.203 2003-12-07 17:34:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.204 2003-12-09 22:26:54 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -51,7 +51,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, ";
+    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP ";
     $sql .= "from " . forum_table("POST") . " POST ";
@@ -101,6 +101,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
             $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
 	    $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
 	    $messages[$i]['EDITED_BY'] = $message['EDITED_BY'];
+	    $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
             $messages[$i]['CONTENT'] = '';
             $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
             $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
@@ -299,10 +300,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && bh_session_get_value('UID') != 0) {
         echo "<b>{$lang['ignoredmsg']}</b>";
     } else {
-        if($in_list) {
+        if ($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
+            if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) echo "<b class=\"adminipdisplay\">{$lang['ip']}: {$message['IPADDRESS']}</b> ";
             echo format_time($message['CREATED'], 1);
         }
     }
@@ -447,7 +449,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
 
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
-            echo "<tr><td>";
+            echo "<tr>\n";
+            echo "  <td>";
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP)) || (bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
@@ -481,12 +484,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['relationship']}</a>";
             }
 
-            if(perm_is_soldier()){
+            if (perm_is_soldier()){
                 echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" />";
                 echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\">{$lang['privileges']}</a>";
             }
 
-            echo "</td></tr>";
+            echo "</td>\n";
+            echo "</tr>";
         }
         echo "</table>\n";
     }

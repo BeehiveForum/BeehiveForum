@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.45 2003-12-02 22:16:24 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.46 2003-12-09 22:26:54 decoyduck Exp $ */
 
 // International English language file
 
@@ -253,6 +253,7 @@ $lang['deletedallusersposts'] = "D3LEtED @LL POsTS FOR U\$3r";
 $lang['banneduser'] = "b4Nn3d U5eR";
 $lang['unbanneduser'] = "UN8@nNED USEr";
 $lang['ipaddress'] = "1P 4DDre55";
+$lang['ip'] = "1P";
 $lang['deleteduser'] = "deL3TeD U5Er";
 $lang['changedtitleaccessfolder'] = "Chang3d Ph0Ld3R OP+IonS pH0r f0LDEr";
 $lang['movedthreads'] = "MOVED THr34d5 t0 ph0lD3R";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.49 2003-11-27 21:51:50 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.50 2003-12-09 22:26:54 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -32,14 +32,18 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
     $db_post_create = db_connect();
     $content = addslashes($content);
 
+    if (!$ipaddress = get_ip_address()) {
+        $ipaddress = "";
+    }
+
     if (!is_numeric($tid)) return -1;
     if (!is_numeric($reply_pid)) return -1;
     if (!is_numeric($fuid)) return -1;
     if (!is_numeric($tuid)) return -1;
 
     $sql = "INSERT INTO " . forum_table("POST");
-    $sql.= " (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED) ";
-    $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW())";
+    $sql.= " (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, IPADDRESS) ";
+    $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), '$ipaddress')";
 
     $result = db_query($sql,$db_post_create);
 

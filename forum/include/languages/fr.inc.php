@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.108 2004-08-18 00:03:15 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.109 2004-09-03 19:59:52 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -843,6 +843,7 @@ $lang['nomessagespecifiedforreply'] = "Aucun message a spécifié pour la réponse 
 $lang['nouserspecified'] = "Aucun utilisateur a spécifié.";
 $lang['oldermessages'] = "Older Messages";
 $lang['newermessages'] = "Newer Messages";
+$lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 
@@ -937,6 +938,8 @@ $lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebreaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
+$lang['privatemessageoptions'] = "Private Message Options";
+$lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

@@ -71,23 +71,6 @@ list($tid, $pid) = explode('.', $msg);
 if (!isset($tid)) $tid = 1;
 if (!isset($pid)) $pid = 1;
 
-if (isset($HTTP_GET_VARS['fontsize'])) {
-
-    $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-
-    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
-                      $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
-                      $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
-                      $userprefs['MARK_AS_OF_INT'], $userprefs['POSTS_PER_PAGE'], $HTTP_GET_VARS['fontsize'],
-                      $userprefs['STYLE'], $userprefs['VIEW_SIGS'], $userprefs['START_PAGE']);
-
-    unset($userprefs);
-
-    bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
-    header_redirect($HTTP_SERVER_VARS['PHP_SELF']. "?msg=$msg");
-
-}
-
 if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
         html_draw_top();
         echo "<h2>The requested thread could not be found. It has either been deleted or access was denied.</h2>";

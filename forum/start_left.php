@@ -79,7 +79,7 @@ while($row = db_fetch_array($result)){
     echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
     
     if (($row['LAST_READ'] == 0) || ($row['LAST_READ'] < $row['LENGTH'])) {
-        echo "<img src=\"".style_image('star.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
+        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
     } elseif ($row['LAST_READ'] == $row['LENGTH']) {
         echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
     }

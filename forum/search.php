@@ -97,9 +97,9 @@ if (isset($searchsql)) {
 
   html_draw_top();
   
-  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
-  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
-  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";  
+  echo "<img src=\"".style_image('post.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
+  echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
+  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";  
   
   echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
 
@@ -135,13 +135,13 @@ if (isset($searchsql)) {
   $result = db_query($sql, $db);
   $numRows = mysql_num_rows($result);  
   
-  echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;Found: ", $numRows, " matches<br />\n";
+  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\">&nbsp;Found: ", $numRows, " matches<br />\n";
   
   if (($numRows > 50) && (($sstart + 50) < $numRows)) {
     if ($numRows - ($sstart + 50) > 50) {
-      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a><br />\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a><br />\n";
     }else{
-      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next ", $numRows - ($sstart + 50), "</a><br />\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next ", $numRows - ($sstart + 50), "</a><br />\n";
     }
   }
   
@@ -183,9 +183,9 @@ if (isset($searchsql)) {
   
   if (($numRows > 50) && (($sstart + 50) < $numRows)) {
     if ($numRows - ($sstart + 50) > 50) {
-      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a>\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a>\n";
     }else{
-      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next ", $numRows - ($sstart + 50), "</a>\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next ", $numRows - ($sstart + 50), "</a>\n";
     }
   }
   

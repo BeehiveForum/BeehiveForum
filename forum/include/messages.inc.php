@@ -48,9 +48,9 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-    $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
-    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
-    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
+    $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
+    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER.RELATIONSHIP as TO_RELATIONSHIP, ";
+    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP as FROM_RELATIONSHIP ";
     $sql .= "from " . forum_table("POST") . " POST ";
     $sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
     $sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
@@ -95,7 +95,8 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
             $messages[$i]['CREATED'] = $message['CREATED'];
             $messages[$i]['VIEWED'] = @$message['VIEWED'];
             $messages[$i]['CONTENT'] = '';
-            $messages[$i]['RELATIONSHIP'] = isset($message['RELATIONSHIP']) ? $message['RELATIONSHIP'] : 0;
+            $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
+			$messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $messages['TO_RELATIONSHIP'] : 0;
             $messages[$i]['FNICK'] = $message['FNICK'];
             $messages[$i]['FLOGON'] = $message['FLOGON'];
             
@@ -115,9 +116,12 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
             $messages['VIEWED'] = '';
         }
         
-        if(!isset($messages['RELATIONSHIP'])){
-            $messages['RELATIONSHIP'] = 0;
+        if(!isset($messages['FROM_RELATIONSHIP'])){
+            $messages['FROM_RELATIONSHIP'] = 0;
         }
+		if(!isset($messages['TO_RELATIONSHIP'])){
+			$messages['TO_RELATIONSHIP'] = 0;
+		}
         
         if(!isset($messages['TNICK'])){
             $messages['TNICK'] = 'ALL';
@@ -140,8 +144,8 @@ function message_get_content($tid,$pid)
 function messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
     echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" alt=\"High Interest\" align=\"middle\">";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" alt=\"Subscribed\" align=\"middle\">";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"High Interest\" align=\"middle\">";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"Subscribed\" align=\"middle\">";
     echo "</p>";
     // To be expanded later
     
@@ -162,9 +166,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         return;
     }
     
-    if(!isset($message['RELATIONSHIP'])) {
-        $message['RELATIONSHIP'] = 0;
+    if(!isset($message['FROM_RELATIONSHIP'])) {
+        $message['FROM_RELATIONSHIP'] = 0;
     }
+	if(!isset($message['TO_RELATIONSHIP'])) {
+		$message['TO_RELATIONSHIP'] = 0;
+	}
 
     if((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
@@ -184,10 +191,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
-    echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span></td>\n";
-    echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
+    echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
+	
+	if($message['FROM_RELATIONSHIP'] == 1) {
+		echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
+	} else if($message['FROM_RELATIONSHIP'] == -1) {
+		echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
+	}
+
+    echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
     
-    if($message['RELATIONSHIP'] < 0 && $limit_text) {
+    if($message['FROM_RELATIONSHIP'] < 0 && $limit_text) {
         echo "<b>Ignored message</b>";
     } else {
         if($in_list) {
@@ -204,9 +218,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
-        if(!$message['VIEWED']) {
-            echo " <span class=\"smalltext\">(unread)</span>";
-        }
+
+		if($message['TO_RELATIONSHIP'] == 1) {
+			echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
+		} else if($message['TO_RELATIONSHIP'] == -1) {
+			echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
+		}
+
+        if($message['VIEWED'] > 0) {
+			echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
+        } else {
+            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
+		}
     }else {
         echo "ALL</span>";
     }
@@ -214,12 +237,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td>\n";
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
     
-    if($message['RELATIONSHIP'] < 0 && $limit_text && $in_list) {
+    if($message['FROM_RELATIONSHIP'] == -1 && $limit_text && $in_list) {
         echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
     }else if($in_list) {
         if ($is_poll) {
-          echo "<img src=\"".style_image('poll.png')."\" alt=\"This is a poll\" align=\"middle\"> Poll ";
+          echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"This is a poll\" align=\"middle\"> Poll ";
         }
         echo $message['PID'] . " of " . $msg_count;
     }
@@ -227,7 +250,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "&nbsp;</span></td></tr>\n";
     echo "</table></td></tr>\n";
 
-    if(!($message['RELATIONSHIP'] < 0 && $limit_text)) {
+    if(!($message['FROM_RELATIONSHIP'] == -1 && $limit_text)) {
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
         if($in_list) {
             echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";            
@@ -252,7 +275,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "<p><b>Attachments:</b><br>\n";
                     for ($i = 0; $i < sizeof($attachments); $i++) {
                     
-                        echo "<img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\">";
+                        echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
                         echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\" title=\"";
                         
                         if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
@@ -282,25 +305,27 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
                
-                echo "<img src=\"".style_image('star.png')."\" border=\"0\" />";
+                echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
                                     
             }
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('folder.png')."\" border=\"0\" />";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
                 
                 if (!$is_poll || $message['PID'] > 1) {
                 
-                  echo "&nbsp;&nbsp;<img src=\"".style_image('poll.png')."\" border=\"0\" />";
+                  echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
                   echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
                   
                 }
-                
-                  
             }
+			if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
+				echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
+				echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Ignore User</a>";
+			}
             if(perm_is_moderator()){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('subscribe.png')."\" border=\"0\" />";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."\" target=\"_self\">Privileges</a>";
             }
             echo "</span></td></tr>";

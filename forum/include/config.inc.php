@@ -25,7 +25,7 @@ USA
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "localhost";	// the address of your MySQL server
+$db_server   = "mysql.sourceforge.net";	// the address of your MySQL server
 $db_username = "beehiveforum";	// your MySQL username
 $db_password = "miffle";	// your MySQL password
 $db_database = "beehiveforum";	// the name of your MySQL database
@@ -37,6 +37,7 @@ $db_database = "beehiveforum";	// the name of your MySQL database
 
 $forum_name  = "A Beehive Forum"; // the name of your forum
 $forum_email = "webmaster@yourdomain.com"; // admin email
+$default_style = "Default"; // the default forum style
 
 // ---------------------------------------------------------------------
 

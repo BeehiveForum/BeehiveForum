@@ -94,8 +94,8 @@ html_draw_top();
 // Func to change the little icon next to each discussion title
 function change_current_thread (thread_id) {
 	if (current_thread > 0){
-		document["t" + current_thread].src = "./images/bullet.png";
-		document["t" + thread_id].src = "./images/ct.png";
+		document["t" + current_thread].src = "<?php echo style_image('bullet.png'); ?>";
+		document["t" + thread_id].src = "<?php echo style_image('current_thread.png'); ?>";
 	}
 	current_thread = thread_id;
 }
@@ -105,9 +105,9 @@ function change_current_thread (thread_id) {
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td class="postbody" colspan="2">
-      <img src="<?php echo style_image('star.png'); ?>" width="14" height="14" alt="" />&nbsp;<a href="post.php" target="main">New Discussion</a><br />
-      <img src="<?php echo style_image('star.png'); ?>" width="14" height="14" alt="" />&nbsp;<a href="create_poll.php" target="main">Create Poll</a><br />
-      <img src="<?php echo style_image('star.png'); ?>" width="14" height="14" alt="" />&nbsp;<a href="search.php" target="right">Search</a><br />
+      <img src="<?php echo style_image('post.png'); ?>" height="15" alt="" />&nbsp;<a href="post.php" target="main">New Discussion</a><br />
+      <img src="<?php echo style_image('poll.png'); ?>" height="15" alt="" />&nbsp;<a href="create_poll.php" target="main">Create Poll</a><br />
+      <img src="<?php echo style_image('search.png'); ?>" height="15" alt="" />&nbsp;<a href="search.php" target="right">Search</a><br />
     </td>
   </tr>
   <tr>
@@ -248,13 +248,13 @@ if (!$thread_info) {
     echo "</tr>\n<tr>\n<td>&nbsp;</td>\n<tr>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('star.png')."\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr><tr><td>&nbsp;</td></tr>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr><tr><td>&nbsp;</td></tr>\n";
 
 // Iterate through the information we've just got and display it in the right order
 while (list($key1, $folder_number) = each($folder_order)) {
 	echo "<tr>\n";
 	echo "<td class=\"foldername\" colspan=\"2\">\n";
-	echo "<img src=\"".style_image('folder.png')."\" alt=\"folder\" />\n";
+	echo "<img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"folder\" />\n";
 	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">".$folder_info[$folder_number]."</a>";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -276,9 +276,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
-						echo "<img src=\"".style_image('ct.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
+						echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
 					} else {
-						echo "<img src=\"".style_image('star.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\"/>";
+						echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\"/>";
 					}				
 
 				} elseif ($thread['last_read'] < $thread['length']) {
@@ -288,9 +288,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
-						echo "<img src=\"".style_image('ct.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
+						echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
 					} else {
-						echo "<img src=\"".style_image('star.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
+						echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
 					}
 
 				} else {
@@ -299,9 +299,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 	
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
-						echo "<img src=\"".style_image('ct.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
+						echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
 					} else {
-						echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
+						echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
 					}
 				}
 				
@@ -312,9 +312,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 				echo "&nbsp;</td><td valign=\"top\">";
 				// With mouseover status message: echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". $thread_author ."';return true\" onmouseOut=\"window.status='';return true\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a>&nbsp;";
 				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a> ";
-				if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\"> ";
-				if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\"> ";
-				if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" alt=\"This is a poll\" align=\"middle\"> ";
+				if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"High Interest\" align=\"middle\"> ";
+				if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"Subscribed\" align=\"middle\"> ";
+				if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"This is a poll\" align=\"middle\"> ";
 				echo "<span class=\"threadxnewofy\">".$number."</span>";
 				echo "</td><td valign=\"top\" nowrap=\"nowrap\">";
 				echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";
@@ -350,10 +350,10 @@ if ($mode == 0 && !isset($folder)) {
         $total_threads += $num_threads;
     }
     $more_threads = $total_threads - $start_from - 50;
-  if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('star.png')."\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
-  if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('star.png')."\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
+  if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
+  if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
 }
-echo "<tr>\n<td colspan=\"2\">&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('star.png')."\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark discussions as read</a></td></tr>\n";
+echo "<tr>\n<td colspan=\"2\">&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark discussions as read</a></td></tr>\n";
 echo "</table>\n";
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";

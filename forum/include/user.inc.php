@@ -234,7 +234,7 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
     if (empty($timezone)) $timezone = 0;
     if (empty($posts_per_page)) $posts_per_page = 0;
     if (empty($font_size)) $font_size = 0;
-	if (!ereg("([[:alnum:]]+)", $style)) $style = 'beehive';
+	if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
     $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE)";

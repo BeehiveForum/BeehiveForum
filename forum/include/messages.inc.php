@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.253 2004-03-26 14:15:39 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.254 2004-03-27 20:27:49 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -204,7 +204,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
-    if ((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text) {
+    if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length'))) && $limit_text) {
 		$cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
 		$cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
         $message['CONTENT'] = fix_html($cut_msg, false);

@@ -266,15 +266,15 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   if ($max_value > 0) {
 
-    $horizontal_bar_width = floor((300 / $max_value));
-    $vertical_bar_height = floor((200 / $max_value));
-    $vertical_bar_width = floor((400 / $optioncount));
+    $horizontal_bar_width = round(300 / $max_value, 2);
+    $vertical_bar_height = round(200 / $max_value, 2);
+    $vertical_bar_width = round(400 / $optioncount, 2);
 
   }else {
 
     $horizontal_bar_width = 0;
     $vertical_bar_height = 0;
-    $vertical_bar_width = floor((400 / $optioncount));
+    $vertical_bar_width = round(400 / $optioncount, 2);
 
   }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.11 2003-11-17 22:02:11 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.12 2003-11-29 23:30:36 decoyduck Exp $ */
 
 // Changes the user's fontsize. Moved from messages.php (02.05.2003)
 
@@ -44,7 +44,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 }
 
 if (isset($HTTP_GET_VARS['fontsize']) && is_numeric($HTTP_GET_VARS['fontsize']) && $HTTP_GET_VARS['fontsize'] > 4 && $HTTP_GET_VARS['fontsize'] < 16 && $uid > 0) {
-
+    
     $userprefs = user_get_prefs(bh_session_get_value('UID'));
 
     user_update_prefs(bh_session_get_value('UID'), $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
@@ -55,7 +55,6 @@ if (isset($HTTP_GET_VARS['fontsize']) && is_numeric($HTTP_GET_VARS['fontsize']) 
                       $userprefs['LANGUAGE'], $userprefs['PM_NOTIFY'], $userprefs['PM_NOTIFY_EMAIL'],
                       $userprefs['DOB_DISPLAY'], $userprefs['ANON_LOGON'], $userprefs['SHOW_STATS']);
 
-    bh_session_init(bh_session_get_value('UID'));
     header_redirect("./messages.php?msg=$msg");
 
 }else {

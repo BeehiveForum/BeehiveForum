@@ -25,13 +25,14 @@ A list of changes since previous Beehive versions can be found in release.txt.
     1.4.2    Update the config file
   1.5    Upgrading from 0.2 to 0.3
   1.6    Upgrading from 0.1 / 0.1.1 to 0.2
+  1.7    Upgrading from 0.1 or 0.2 to 0.4
 
 2.    Known Issues
 
 3.    Support
   3.1    Requests / Bug reporting
   3.2    General questions and help
-  3.3    BeehiveForums in foreign langauges
+  3.3    BeehiveForums in foreign languages
     3.3.1    Translating BeehiveForums into my native language
     3.3.2    Current Available Languages   
 
@@ -56,7 +57,7 @@ You need web hosting which provides:
 
 To set up the database, use something like phpMyAdmin (get it from
 https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you
-have the skillz, to run the /docs/schema.sql file from the download.
+have the “skillz”, to run the /docs/schema.sql file from the download.
 
 (Beehive would prefer its very own database, but if you can't provide that, it
 should work in an existing one.)
@@ -198,7 +199,7 @@ When it's uploaded, open it in your browser, using the address like:
 
 http://www.mysite.com/forum/
 
-but pointing to whereever you've put it. If all has gone well, you should be
+but pointing to wherever you've put it. If all has gone well, you should be
 faced with a logon screen.
 
 The setup created the administrator login for you, which is as follows:
@@ -289,8 +290,8 @@ inducing adverts for stuff, it's entirely up to you.
 Just keep it 60 pixels high or under.
 
 
-1.4 Upgrading from 0.3
-======================
+1.4 Upgrading from 0.3 to 0.4
+=============================
 
 If you are already using 0.3 of Beehive Forum, you will need to update your
 database, and add some new variables to the config.inc.php file.
@@ -323,13 +324,30 @@ beforehand.
 =====================================
 
 Follow the same procedure as detailed above, but you must run /docs/upgrade-01-to-02.sql
-beforehand.
+beforehand
+
+
+1.7 Upgrading from 0.1 or 0.2 to to 0.4
+=======================================
+
+No direct route exists for 0.1 or 0.2 to be upgraded to 0.4. To upgrade either of these
+versions to 0.4 you will need to run the relevant schema files in order. For example
+if you are using Beehive 0.1 you will need to run /docs/upgrade-01-to-02.sql, followed
+by /docs/upgrade-02-to-03.sql, followed by /docs/upgrade-03-to-04.sql. This will bring
+the database up to date. Likewise to upgrade from 0.2 you will need to run both 
+/docs/upgrade-02-to-03.sql then /docs/upgrade-03-to-04.sql.
 
 
 2 Known Issues
 ==============
 
-- Nothing critical at the moment.
+- The PM notification pop-up always displays in English UK.
+
+- Folders created under 0.3 or below which contained quotes will now
+  display incorrectly in 0.4. You can fix this by visiting the admin
+  folders option and fixing the folder names. This was due to a bug
+  in previous versions which has now been fixed.
+
 
 3 Support
 =========
@@ -367,7 +385,7 @@ and far between.
 Unfortunatly the BeehiveForum coding team consists primarily of born and bread
 English men who have enough trouble speaking our own tongue as it is. Because
 of this, we're on the look out for people to start translating Beehive for us.
-If you feel you have the neccesary skills to do this (no babelfish / direct
+If you feel you have the necessary skills to do this (no babelfish / direct
 from dictionary translations please) feel free to drop us a note. With any
 luck your language file may end up being distributed with future versions of
 BeehiveForums and you may even get to see your name in print, or at the very
@@ -405,10 +423,13 @@ Mike Franklin / Simon Roberts / Kevin Yip
 
 Nigel Moore / Kevin Yip / Andrew Holgate
 
+
 4.4 Translations
 ================
 
-French - Mark Krywonos.
+French   - Mark Krywonos.
+Gangsta  - Jay Graham.
+X-Hacker - Matt Beale.
 
 
 4.5 Contributions
@@ -419,12 +440,14 @@ Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Lot
 
 4.6 Director
 ============
+
 Mark Rendle
 and Matt/Andy while I was moving house...
 
 
 4.7 Thanks to
 =============
+
 - The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.62 2003-11-29 12:07:05 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.63 2003-11-29 23:30:36 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -60,10 +60,7 @@ function bh_session_check()
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
 	$sql = "SELECT SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, USER.LOGON, USER.PASSWD, USER.STATUS, ";
-	$sql.= "USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, ";
-	$sql.= "USER_PREFS.STYLE, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, ";
-	$sql.= "USER_PREFS.PM_NOTIFY, USER_PREFS.SHOW_STATS ";
-	$sql.= "FROM ". forum_table("SESSIONS"). " SESSIONS ";
+	$sql.= "USER_PREFS.* FROM ". forum_table("SESSIONS"). " SESSIONS ";
 	$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
 	$sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER.UID = USER_PREFS.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";

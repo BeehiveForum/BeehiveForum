@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.57 2004-10-21 10:19:02 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.58 2004-10-24 13:25:57 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -123,6 +123,10 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $page_prefs = bh_session_get_value('POST_PAGE');
 
+// Get the user's UID
+
+$uid = bh_session_get_value('UID');
+
 if ($page_prefs == 0) {
         $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
 }
@@ -209,7 +213,7 @@ if (isset($_POST['t_sig_html'])) {
 
 } else {
         // Fetch the current user's sig
-        user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+        user_get_sig($uid, $t_sig, $t_sig_html);
 
         if ($t_sig_html != "N") {
                 $sig_html = 2;
@@ -351,7 +355,7 @@ if ($valid && isset($_POST['submit'])) {
 
         if ($newthread) {
 
-            $t_tid = post_create_thread($t_fid, $t_threadtitle);
+            $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle);
             $t_rpid = 0;
 
         }else {
@@ -368,12 +372,12 @@ if ($valid && isset($_POST['submit'])) {
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $_POST['t_to_uid'], $t_content);
+            $new_pid = post_create($t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 
-            email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
-            email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
+            email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+            email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
         }
 
     }else {

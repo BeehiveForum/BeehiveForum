@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.127 2004-09-08 01:50:00 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.128 2004-10-24 13:25:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -140,36 +140,40 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 $page_prefs = bh_session_get_post_page_prefs();
 
+// Get the user's UID. We need this a couple of times
+
+$uid = bh_session_get_value('UID');
+
 $valid = true;
 
 $fix_html = true;
 
 if (isset($_POST['t_post_emots'])) {
-	if ($_POST['t_post_emots'] == "disabled") {
-		$emots_enabled = false;
-	} else {
-		$emots_enabled = true;
-	}
+        if ($_POST['t_post_emots'] == "disabled") {
+                $emots_enabled = false;
+        } else {
+                $emots_enabled = true;
+        }
 } else {
-	$emots_enabled = true;
+        $emots_enabled = true;
 }
 if (isset($_POST['t_post_links'])) {
-	if ($_POST['t_post_links'] == "enabled") {
-		$links_enabled = true;
-	} else {
-		$links_enabled = false;
-	}
+        if ($_POST['t_post_links'] == "enabled") {
+                $links_enabled = true;
+        } else {
+                $links_enabled = false;
+        }
 } else {
-	$links_enabled = false;
+        $links_enabled = false;
 }
 if (isset($_POST['t_post_interest'])) {
-	if ($_POST['t_post_interest'] == "high") {
-		$high_interest = true;
-	} else {
-		$high_interest = false;
-	}
+        if ($_POST['t_post_interest'] == "high") {
+                $high_interest = true;
+        } else {
+                $high_interest = false;
+        }
 } else {
-	$high_interest = false;
+        $high_interest = false;
 }
 
 if (isset($_POST['t_message_html'])) {
@@ -181,50 +185,50 @@ if (isset($_POST['t_message_html'])) {
     } else if ($t_message_html == "enabled") {
         $post_html = 2;
     } else {
-		$post_html = 0;
-	}
+                $post_html = 0;
+        }
 
 } else {
-	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-		$post_html = 1;
-	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
+        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+                $post_html = 1;
+        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
 
-	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-	$links_enabled = ($page_prefs & POST_AUTO_LINKS);
-	$high_interest = bh_session_get_value('MARK_AS_OF_INT');
+        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+        $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+        $high_interest = bh_session_get_value('MARK_AS_OF_INT');
 }
 
 if (isset($_POST['t_sig_html'])) {
 
-	$t_sig_html = $_POST['t_sig_html'];
+        $t_sig_html = $_POST['t_sig_html'];
 
-	if ($t_sig_html != "N") {
-		$sig_html = 2;
-	}
+        if ($t_sig_html != "N") {
+                $sig_html = 2;
+        }
 
-	$fetched_sig = false;
+        $fetched_sig = false;
 
-	if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
-		$t_sig = _stripslashes($_POST['t_sig']);
-	}else {
-		$t_sig = "";
-	}
+        if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+                $t_sig = _stripslashes($_POST['t_sig']);
+        }else {
+                $t_sig = "";
+        }
 
 } else {
-	// Fetch the current user's sig
-	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+        // Fetch the current user's sig
+        user_get_sig($uid, $t_sig, $t_sig_html);
 
-	if ($t_sig_html != "N") {
-		$sig_html = 2;
-	}
+        if ($t_sig_html != "N") {
+                $sig_html = 2;
+        }
 
-	$t_sig = tidy_html($t_sig, false);
+        $t_sig = tidy_html($t_sig, false);
 
-	$fetched_sig = true;
+        $fetched_sig = true;
 }
 
 if (!isset($_POST['aid'])) {
@@ -320,7 +324,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($t_sig)) {
 
-		if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
+                if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
             $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
             $valid = false;
         }
@@ -341,19 +345,19 @@ if (isset($_POST['cancel'])) {
 
 } else if (isset($_POST['sig_toggle_x'])) {
 
-	if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
-		$t_message_text = _htmlentities(trim(_stripslashes($_POST['t_message_text'])));
-	}
+        if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
+                $t_message_text = _htmlentities(trim(_stripslashes($_POST['t_message_text'])));
+        }
 
-	if (isset($t_sig)) {
-		$t_sig = _htmlentities($t_sig);
-	}
+        if (isset($t_sig)) {
+                $t_sig = _htmlentities($t_sig);
+        }
 
-	$page_prefs ^= POST_SIGNATURE_DISPLAY;
+        $page_prefs ^= POST_SIGNATURE_DISPLAY;
 
-	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+        user_update_prefs($uid, array('POST_PAGE' => $page_prefs));
 
-	$fix_html = false;
+        $fix_html = false;
 }
 
 
@@ -361,10 +365,10 @@ $allow_html = true;
 $allow_sig = true;
 
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
-	$allow_html = false;
+        $allow_html = false;
 }
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
-	$allow_sig = false;
+        $allow_sig = false;
 }
 
 
@@ -422,8 +426,8 @@ if ($valid && isset($_POST['submit'])) {
 
         // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
-        $t_tid = post_create_thread($t_fid, $_POST['question'], 'Y', 'N');
-        $t_pid = post_create($t_tid, 0, bh_session_get_value('UID'), 0, '');
+        $t_tid = post_create_thread($t_fid, $uid, $_POST['question'], 'Y', 'N');
+        $t_pid = post_create($t_tid, 0, $uid, 0, '');
 
         if ($_POST['polltype'] == 2) {
             $_POST['pollvotetype'] = 1;
@@ -437,10 +441,10 @@ if ($valid && isset($_POST['submit'])) {
 
         if (strlen($t_message_text) > 0) {
 
-			if ($allow_sig == true && trim($t_sig) != "") {
-	            $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
-			}
-            post_create($t_tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
+                        if ($allow_sig == true && trim($t_sig) != "") {
+                    $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
+                        }
+            post_create($t_tid, 1, $uid, 0, $t_message_text);
         }
 
         if ($high_interest) thread_set_interest($t_tid, 1, true);
@@ -466,7 +470,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['TLOGON'] = "ALL";
     $polldata['TNICK'] = "ALL";
 
-    $preview_tuser = user_get(bh_session_get_value('UID'));
+    $preview_tuser = user_get($uid);
 
     $polldata['FLOGON']   = $preview_tuser['LOGON'];
     $polldata['FNICK']    = $preview_tuser['NICKNAME'];
@@ -570,9 +574,9 @@ if ($valid && isset($_POST['preview'])) {
     if (strlen($t_message_text) > 0) {
 
         $polldata['CONTENT'] = $t_message_text;
-		if ($allow_sig == true && trim($t_sig) != "") {
-	        $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
-		}
+                if ($allow_sig == true && trim($t_sig) != "") {
+                $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
+                }
 
         message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
     }
@@ -671,9 +675,9 @@ echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
 
 if ($allow_html == true) {
-	echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y')), "</td>\n";
+        echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y')), "</td>\n";
 } else {
-	echo "                  <td>", form_input_hidden('t_post_html', 'N'), "</td>\n";
+        echo "                  <td>", form_input_hidden('t_post_html', 'N'), "</td>\n";
 }
 
 echo "                  <td>&nbsp;</td>\n";
@@ -805,9 +809,9 @@ $tools = new TextAreaHTML("f_poll");
 $t_message_text = $post->getTidyContent();
 
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo "          <tr>\n";
-	echo "            <td>", $tools->toolbar(), "</td>\n";
-	echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td>", $tools->toolbar(), "</td>\n";
+        echo "          </tr>\n";
 }
 
 echo "          <tr>\n";
@@ -821,20 +825,20 @@ if ($post->isDiff() && $fix_html) {
 }
 
 if ($allow_html == true) {
-	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-	$tph_radio = $post->getHTML();
+        $tph_radio = $post->getHTML();
 
-	echo form_radio("t_message_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-	echo form_radio("t_message_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-	echo form_radio("t_message_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_message_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_message_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_message_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-		echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
-	}
-	echo "<br /><br />\n";
+        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+                echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
+        }
+        echo "<br /><br />\n";
 } else {
-	echo form_input_hidden("t_message_html", "disabled");
+        echo form_input_hidden("t_message_html", "disabled");
 }
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
@@ -854,38 +858,38 @@ if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
 if ($allow_sig == true) {
 
-	echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-	echo "  <tr>\n";
-	echo "    <td class=\"subhead\">\n";
-	echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
+        echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"subhead\">\n";
+        echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
 
-	$t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
-	if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-		echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
-		echo "    </td>\n";
-		echo "  </tr>\n";
+        if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
+                echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
 
-		echo "  <tr>\n";
-		echo "    <td colspan=\"2\">\n";
+                echo "  <tr>\n";
+                echo "    <td colspan=\"2\">\n";
 
-		echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+                echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-		echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+                echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-		if ($sig->isDiff() && $fix_html && !$fetched_sig) {
-			echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-		}
+                if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+                        echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+                }
 
-	} else {
-		echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
-		echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
-		echo "      ".form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
-	}
+        } else {
+                echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
+                echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
+                echo "      ".form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+        }
 
-	echo "    </td>\n";
-	echo "  </tr>\n";
-	echo "</table>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
 
 }
 

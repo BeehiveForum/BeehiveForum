@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.298 2004-10-21 13:42:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.299 2004-10-24 13:25:57 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -810,48 +810,40 @@ function messages_get_most_recent($uid, $fid = false)
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
-    $sql.= "AND POST.TID = THREAD.TID ";
-    $sql.= "AND POST.PID = 1 ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 10";
+    $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_messages_get_most_recent);
 
     if (db_num_rows($result)) {
 
-        while ($row = db_fetch_array($result)) {
+        $row = db_fetch_array($result);
 
-            if (!isset($row['RELATIONSHIP'])) $row['RELATIONSHIP'] = 0;
+        if (isset($row['LAST_READ'])) {
 
-            if (!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
-
-                if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
-
-                    if (isset($row['LAST_READ'])) {
-
-                        if ($row['LAST_READ'] < $row['LENGTH']) {
-                            $row['LAST_READ']++;
-                        }
-
-                        return "{$row['TID']}.{$row['LAST_READ']}";
-
-                    }else {
-
-                        return "{$row['TID']}.1";
-                    }
-                }
+            if ($row['LAST_READ'] < $row['LENGTH']) {
+                $row['LAST_READ']++;
             }
+
+            return "{$row['TID']}.{$row['LAST_READ']}";
+
+        }else {
+
+            return "{$row['TID']}.1";
         }
     }
 
@@ -874,49 +866,41 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
-    $sql.= "AND POST.TID = THREAD.TID ";
-    $sql.= "AND POST.PID = 1 ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 10";
+    $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_messages_get_most_recent);
 
     if (db_num_rows($result)) {
 
-        while ($row = db_fetch_array($result)) {
+        $row = db_fetch_array($result);
 
-            if (!isset($row['RELATIONSHIP'])) $row['RELATIONSHIP'] = 0;
+        if (isset($row['LAST_READ'])) {
 
-            if (!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
-
-                if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
-
-                    if (isset($row['LAST_READ'])) {
-
-                        if ($row['LAST_READ'] < $row['LENGTH']) {
-                            $row['LAST_READ']++;
-                        }
-
-                        return "{$row['TID']}.{$row['LAST_READ']}";
-
-                    }else {
-
-                        return "{$row['TID']}.1";
-                    }
-                }
+            if ($row['LAST_READ'] < $row['LENGTH']) {
+                $row['LAST_READ']++;
             }
+
+            return "{$row['TID']}.{$row['LAST_READ']}";
+
+        }else {
+
+            return "{$row['TID']}.1";
         }
     }
 
@@ -1061,7 +1045,7 @@ function messages_forum_stats($tid, $pid)
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>{$lang['longestthreadis']} '<a href=\"?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ".", ","), "</b> {$lang['postslowercase']}.</td>\n";
+                echo "            <td>{$lang['longestthreadis']} '<a href=\"?msg={$longest_thread['TID']}.1\">", _stripslashes($longest_thread['TITLE']), "</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ".", ","), "</b> {$lang['postslowercase']}.</td>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
                 echo "        </table>\n";

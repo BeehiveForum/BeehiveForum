@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.93 2004-10-21 10:19:02 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.94 2004-10-24 13:25:58 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -107,9 +107,10 @@ function post_save_attachment_id($tid, $pid, $aid)
     return db_query($sql, $db_post_save_attachment_id);
 }
 
-function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = false)
+function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $closed = false)
 {
     if (!is_numeric($fid)) return -1;
+    if (!is_numeric($uid)) return -1;
 
     $title  = addslashes(_htmlentities($title));
 
@@ -121,15 +122,15 @@ function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = 
 
     if (!$table_data = get_table_prefix()) return -1;
 
-    $sql = "insert into {$table_data['PREFIX']}THREAD" ;
-    $sql.= "(FID,TITLE,LENGTH,POLL_FLAG,STICKY,MODIFIED,CLOSED) ";
-    $sql.= "values ($fid, '$title', 0, '$poll', '$sticky', NOW(), $closed)";
+    $sql = "INSERT INTO {$table_data['PREFIX']}THREAD " ;
+    $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, MODIFIED, CLOSED) ";
+    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', NOW(), $closed)";
 
     $result = db_query($sql, $db_post_create_thread);
 
-    if($result){
+    if ($result) {
         $new_tid = db_insert_id($db_post_create_thread);
-    } else {
+    }else {
         $new_tid = -1;
     }
 

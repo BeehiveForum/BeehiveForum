@@ -218,7 +218,7 @@ if (!$thread_info) {
     echo "<td class=\"smalltext\">\n";
     echo "No messages in this category. Please select another, or <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0\">click here</a> for all threads.\n";
     echo "</td>\n";
-    echo "</tr>\n";
+    echo "</tr>\n<tr>\n<td>&nbsp;</td>\n<tr>\n";
 }
 
 // Iterate through the information we've just got and display it in the right order
@@ -299,7 +299,7 @@ while (list($key1, $folder) = each($folder_order)) {
 	echo "</td></tr>\n";
 	if (is_array($thread_info)) reset($thread_info);
 }
-echo "<tr><td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
+echo "<tr>\n<td>&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
 echo "</table>\n";
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.157 2004-12-27 14:52:18 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.158 2005-01-26 22:42:23 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -144,6 +144,42 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
 
 }
 
+function threads_get_started_by_me($uid, $start = 0) // get threads started by user
+{
+    $folders = folder_get_available();
+    $db_threads_get_all = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
+    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
+    // for threads with unread messages, so the UID needs to be passed to the function
+
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
+    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
+    $sql .= "(UP.UID = '$uid' AND UP.PEER_UID = THREAD.BY_UID) ";
+    $sql .= "WHERE THREAD.BY_UID = $uid AND THREAD.fid in ($folders) ";
+    $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+    $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "LIMIT $start, 50";
+
+    $result = db_query($sql, $db_threads_get_all);
+    list($threads, $folder_order) = threads_process_list($result);
+    return array($threads, $folder_order);
+
+}
+
 function threads_get_unread($uid) // get unread messages for $uid
 {
 
@@ -212,7 +248,6 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $result = db_query($sql, $db_threads_get_unread_to_me);
     list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_by_days($uid,$days = 1) // get threads from the last $days days
@@ -846,16 +881,16 @@ function threads_draw_discussions_dropdown($mode)
     if (bh_session_get_value('UID') == 0) {
 
         $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
-        echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
+        echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""), "\n";
 
     }else {
 
         $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
                         $lang['unreadtoday'],$lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
                         $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                        $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
+                        $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
 
-        echo form_dropdown_array("mode",range(0,16),$labels,$mode,"onchange=\"submit()\""). "\n";
+        echo form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\""), "\n";
 
     }
 }

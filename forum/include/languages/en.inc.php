@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.211 2005-01-25 12:51:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.212 2005-01-26 22:42:23 decoyduck Exp $ */
 
 // International English language file
 
@@ -1269,6 +1269,7 @@ $lang['byignoredusers'] = "By ignored users";
 $lang['ivesubscribedto'] = "I've subscribed to";
 $lang['startedbyfriend'] = "Started by friend";
 $lang['unreadstartedbyfriend'] = "Unread std by friend";
+$lang['startedbyme'] = "Started by me";
 $lang['unreadtoday'] = "Unread today";
 $lang['goexcmark'] = "Go!";
 $lang['folderinterest'] = "Folder Interest";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.85 2004-08-09 01:05:52 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.86 2004-08-09 21:07:57 tribalonline Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -413,6 +413,15 @@ class MessageText {
                 return $this->html;
         }
 
+		function setEmoticons ($bool) {
+				$this->emoticons = ($bool == true) ? true : false;
+                $this->setContent($this->getOriginalContent());
+		}
+
+		function getEmoticons () {
+				return $this->emoticons;
+		}
+
         function setContent ($text) {
 
                 //$text = _stripslashes($text);
@@ -455,6 +464,99 @@ class MessageText {
         function isDiff () {
                 return $this->diff;
         }
+}
+
+class MessageTextParse {
+
+		var $html = "";
+		var $emoticons = "";
+		var $message = "";
+		var $sig = "";
+		var $original = "";
+
+		function MessageTextParse ($message, $emots_default = true) {
+
+				$this->original = $message;
+
+				$message_temp = preg_split("/<div class=\"sig\">/", $message);
+
+				if (count($message_temp) > 1) {
+
+						$sig_temp = array_pop($message_temp);
+						$sig_temp = preg_split("/<\/div>/", $sig_temp);
+
+						$sig = "";
+
+						for ($i = 0; $i < count($sig_temp) - 1; $i++) {
+								$sig .= $sig_temp[$i];
+								if ($i < count($sig_temp) - 2) {
+										$sig .= "</div>";
+								}
+						}
+
+				} else {
+						$sig = "";
+				}
+
+				$message = "";
+
+				for ($i = 0; $i < count($message_temp); $i++) {
+						$message .= $message_temp[$i];
+						if ($i < count($message_temp) - 1) {
+								$message .= "<div class=\"sig\">";
+						}
+				}
+
+				$sig = clean_emoticons($sig);
+				$message_temp = clean_emoticons($message);
+
+				$emoticons = $emots_default;
+
+				if ($message_temp == $message && emoticons_convert($message) != $message) {
+						$emoticons = false;
+				} else if ($message_temp != $message) {
+						$emoticons = true;
+				}
+
+				$message = trim($message_temp);
+
+				$html = 0;
+				$message_temp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $message);
+
+				if (strip_tags($message, '<p><br>') != $message_temp) {
+						$html = 2;
+						if (add_paragraphs($message) == $message) {
+								$html = 1;
+						}
+				} else {
+						$message = strip_tags($message);
+				}
+
+				$this->message = $message;
+				$this->sig = $sig;
+				$this->html = $html;
+				$this->emoticons = $emoticons;
+		}
+
+		function getMessage () {
+				return $this->message;
+		}
+
+		function getSig () {
+				return $this->sig;
+		}
+
+		function getMessageHTML () {
+				return $this->html;
+		}
+
+		function getEmoticons () {
+				return $this->emoticons;
+		}
+
+		function getOriginal () {
+				return $this->original;
+		}
 }
 
 ?>

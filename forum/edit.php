@@ -52,6 +52,7 @@ require_once("./include/fixhtml.inc.php");
 require_once("./include/edit.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/attachments.inc.php");
+require_once("./include/config.inc.php");
 
 if (isset($HTTP_GET_VARS['msg'])) {
 
@@ -192,7 +193,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
             $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
-            if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $editmessage['FROM_UID'] && !perm_is_moderator()) {
+            if ((!$allow_post_editing || ($HTTP_COOKIE_VARS['bh_sess_uid'] != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
                 edit_refuse($tid, $pid);
                 exit;
             }

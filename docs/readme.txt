@@ -37,7 +37,7 @@ Version 0.2 / 13th September 2002
 1.1 Requirements
 ================
 You need web hosting which provides:
-  - PHP 4.x (tested on 4.0.6, 4.1 and 4.2) and
+  - PHP 4.x (tested on 4.0.6, 4.1.x, 4.2.x, and 4.3.0) and
   - MySQL 3.5 or above (must support compound AUTO_INCREMENT).
 
 
@@ -83,6 +83,7 @@ Next section:
 
 $forum_name  = "A Beehive Forum"; // the name of your forum
 $forum_email = "webmaster@yourdomain.com"; // admin email
+$default_style = "default"; // the default forum style directory name
 
 Change $forum_name to whatever you want displayed in the browser title bar for
 your forum. This value is also used when sending e-mails notifying people of
@@ -95,18 +96,34 @@ of your users take it upon themselves to reply to it.
 Change $default_style to the name of the style you want as the default for your
 forum. See section 1.3, Customising Beehive, for more info.
 
-You can also change the $maximum_post_length variable if you like - it limits
-the amount of a post that will be displayed in the message list, not the maximum
-possible size of posts. That's unlimited.
+That's all you need to do to get the forum running - however, you can read on for
+more information on other things you can change.
 
-Turn the attachments feature on or off by setting the $attachments_enabled to
-true or false. If you have limited web space or bandwidth, you may want to turn
-off this feature.
+$maximum_post_length: this limits the amount of a post that will be displayed in
+the message list, not the maximum possible size of posts. That's unlimited.
 
-If you choose to enable attachments, you will also need to set a folder for the files
-to be kept in. The default, "attachments", would use a folder called called "attachments"
-in the installation folder. If you wish, you can specify a root-relative path to keep
-them somewhere else (e.g. "/www/myattachmentdir").
+$allow_post_editing: choose whether to allow users to edit their own posts if
+they've made a mistake by setting it to true, or change to false to disallow post
+editing by users (moderators can always edit posts).
+
+$post_edit_time: you can restrict the time that posts are editable by users for
+after they are created - set it to a number of hours, or to 0 to allow posts to be
+edited at any time.
+
+$attachments_enabled: turns the attatchments feature on (true) or off (false).
+If you have limited web space or bandwidth, you may want to turn off this feature.
+
+$attachment_dir: If you choose to enable attachments, you will also need to set a
+folder for the files to be kept in. The default, "attachments", would use a folder
+called "attachments" in the installation folder. If you wish, you can specify a
+root-relative path to keep them somewhere else (e.g. "/www/myattachmentdir").
+
+$guest_account_enabled: enable (true) or disable (false) the guest account, to choose
+whether or not to allow casual browsers to read the forum.
+
+$gzip_compress_output: this nifty feature compresses the HTML output that is sent to
+the browser, which saves your bandwidth, at a cost of a slight increase in server CPU
+usage. Set to true for on or false for off.
 
 Save your changes.
 

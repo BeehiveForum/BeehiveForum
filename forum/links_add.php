@@ -87,7 +87,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     }
 } elseif (isset($HTTP_GET_VARS['fid'])) {
     $fid = $HTTP_GET_VARS['fid'];
-    if ($HTTP_GET_VARS['mode'] == 'link' && !array_key_exists($fid, $folders)) {
+    if ($HTTP_GET_VARS['mode'] == 'link' && !in_array($fid, array_keys($folders))) { // this did use array_key_exists(), but that's only supported in PHP/4.1.0+
         html_draw_top();
         echo "<h2>You must specify a valid folder!</h2>";
         html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.218 2004-01-26 19:41:00 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.219 2004-01-30 21:34:27 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -357,16 +357,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if($in_list && $msg_count > 0) {
 
             if ($is_preview) {
-                echo "<a href=\"?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"messages.php?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
             }else {
                 echo "<a href=\"?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             }
 
-            if($message['PID'] > 1) {
+            if ($message['PID'] > 1) {
 
                 echo " {$lang['inreplyto']} ";
 
-                if(intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
+                if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
                     echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
                     echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                 }else {

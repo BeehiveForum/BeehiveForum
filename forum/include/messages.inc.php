@@ -260,7 +260,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "&nbsp;</span></td></tr>\n";
     echo "</table></td></tr>\n";
 
-    if(($message['FROM_RELATIONSHIP'] ^ USER_IGNORED) || !$limit_text) {
+    if(!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
         if($in_list) {
             echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
@@ -277,17 +277,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
         echo "&nbsp;</span></td></tr>\n";
 
-		if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-			$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
-			$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
-			$msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
-			$message['CONTENT'] = "";
-			for ($i=0; $i<count($msg_split); $i++) {
-				if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-				$message['CONTENT'] .= $msg_split[$i];
-			}
-			$message['CONTENT'] .= "</div>";
-		}
+        if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
+            $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
+            $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
+            $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
+            $message['CONTENT'] = "";
+            for ($i=0; $i<count($msg_split); $i++) {
+                if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
+                $message['CONTENT'] .= $msg_split[$i];
+            }
+            $message['CONTENT'] .= "</div>";
+	}
 
         echo "<tr><td class=\"postbody\">". $message['CONTENT'];
         if ($tid <> 0 && isset($message['PID'])) {

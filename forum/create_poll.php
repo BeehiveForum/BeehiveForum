@@ -75,13 +75,13 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $valid = false;
   }
 
-  if ($valid && strlen($HTTP_POST_VARS['answers'][0]) == 0) {
+  if ($valid && strlen($HTTP_POST_VARS['answers'][1]) == 0) {
     $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
     $valid = false;
   }
 
   $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-  $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : ""; 
+  $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
   $t_message_text = (isset($HTTP_POST_VARS['t_message_text'])) ? $HTTP_POST_VARS['t_message_text'] : "";
 
 }
@@ -168,9 +168,9 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y');
     $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');
-    
+
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
-    
+
     if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
 
     if (strlen($t_message_text) > 0) {
@@ -182,10 +182,10 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         if($t_sig_html != "Y") $t_sig = make_html($t_sig);
         $t_message_text.= "\n<div class=\"sig\">". $t_sig. "</div>";
 
-      }    
-      
+      }
+
       post_create($tid, 1, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, $t_message_text);
-      
+
     }
 
     if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($tid, 1, true);

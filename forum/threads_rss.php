@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.1 2004-04-21 21:00:54 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.2 2004-04-21 21:02:54 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -57,7 +57,7 @@ $build_data = date("D, d M Y H:i:s  T");
 // echo out the rss feed
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-echo "<?xml-stylesheet type=\"text/xsl\" href=\"rss.xsl\"?>\n";
+echo "<?xml-stylesheet type=\"text/xsl\" href=\"styles/threads_rss.xsl\"?>\n";
 echo "<rss version=\"2.0\">\n";
 echo "\t<channel>\n";
 echo "\t\t<title>{$forum_name}</title>\n";

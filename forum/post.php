@@ -531,7 +531,7 @@ if (!$newthread) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, true, $show_sigs, true);
+      poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
 
     }else {
 

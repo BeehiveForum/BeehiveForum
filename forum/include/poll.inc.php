@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.138 2004-12-22 19:27:52 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.139 2004-12-27 00:20:51 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -300,9 +300,8 @@ function poll_get_user_vote($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP ";
-    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE UID = '$uid' ORDER BY ID";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "WHERE UID = $uid ORDER BY ID";
 
     $result = db_query($sql, $db_poll_get_user_vote);
 
@@ -315,12 +314,10 @@ function poll_get_user_vote($tid)
             $userpolldata[] = $row;
         }
 
-    }else {
-
-        $userpolldata = false;
+        return $userpolldata;
     }
 
-    return $userpolldata;
+    return false;
 }
 
 function poll_sort_groups($a, $b) {

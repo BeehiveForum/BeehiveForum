@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.155 2004-12-22 22:21:10 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.156 2004-12-27 00:20:51 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -574,21 +574,22 @@ function threads_get_most_recent()
 
     if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-    $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, T.POLL_FLAG, UT.LAST_READ, ";
-    $sql.= "UNIX_TIMESTAMP(T.MODIFIED) AS MODIFIED, UP.RELATIONSHIP, ";
-    $sql.= "UT.INTEREST, U.NICKNAME, U.LOGON ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD T ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD UT ";
-    $sql.= "ON (T.TID = UT.TID and UT.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER UF ON ";
-    $sql.= "(UF.FID = T.FID AND UF.UID = '$uid') ";
-    $sql.= "LEFT JOIN USER U ON (U.UID = T.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
-    $sql.= "(UP.UID = '$uid' AND UP.PEER_UID = T.BY_UID) ";
-    $sql.= "WHERE T.FID IN ($fidlist) ";
-    $sql.= "AND (UT.INTEREST IS NULL OR UT.INTEREST > -1) ";
-    $sql.= "AND (UF.INTEREST IS NULL OR UF.INTEREST > -1) ";
-    $sql.= "GROUP BY T.TID ORDER BY T.MODIFIED desc ";
+    $sql = "SELECT THREAD.TID, THREAD.TITLE, THREAD.STICKY, ";
+    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, USER_THREAD.LAST_READ, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+    $sql.= "USER_PEER.RELATIONSHIP, USER_THREAD.INTEREST, ";
+    $sql.= "USER.NICKNAME, USER.LOGON FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
+    $sql.= "WHERE THREAD.FID IN ($fidlist) ";
+    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "GROUP BY THREAD.TID ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_threads_get_recent);

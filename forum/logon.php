@@ -103,18 +103,20 @@ if (isset($HTTP_POST_VARS['logon'])) {
         if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
           $usernames[] = $HTTP_POST_VARS['logon'];
           $passwords[] = $HTTP_POST_VARS['password'];
-        }elseif (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
+        }
+        
+        if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
           $passwords[$key] = $HTTP_POST_VARS['password'];
         }
                
         for ($i = 0; $i < sizeof($usernames); $i++) {
         
-          setcookie("bh_remember_user[$i]", $usernames[$i], time() + YEAR_IN_SECONDS, '/');
+          setcookie("bh_remember_user[$i]", $usernames[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
           if(@$HTTP_POST_VARS['remember_user'] == "Y") {
-            setcookie("bh_remember_password[$i]", $passwords[$i], time() + YEAR_IN_SECONDS, '/');
+            setcookie("bh_remember_password[$i]", $passwords[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
           }else {
-            setcookie("bh_remember_password[$i]", str_repeat(chr(255), 4), time() + YEAR_IN_SECONDS, '/');
+            setcookie("bh_remember_password[$i]", str_repeat(chr(255), 4), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
           }
           
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.42 2004-04-11 00:00:42 decoyduck Exp $ */
+/* $Id: pm.php,v 1.43 2004-04-11 19:47:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,49 +122,35 @@ if (isset($HTTP_POST_VARS['savemessages'])) {
     }
 }
 
-// Default Folder
-
-$folder_bitwise = PM_FOLDER_INBOX;
-$folder = 0;
-
-// Which folder are we in?
-
-if (isset($HTTP_POST_VARS['folder'])) {
-    if ($HTTP_POST_VARS['folder'] == 1) {
-        $folder_bitwise = PM_FOLDER_SENT;
-        $folder = 1;
-    }elseif ($HTTP_POST_VARS['folder'] == 2) {
-        $folder_bitwise = PM_FOLDER_OUTBOX;
-        $folder = 2;
-    }elseif ($HTTP_POST_VARS['folder'] == 3) {
-        $folder_bitwise = PM_FOLDER_SAVED;
-        $folder = 3;
-    }else {
-        $folder_bitwise = PM_FOLDER_INBOX;
-        $folder = 0;
-    }
-}
-
-if (isset($HTTP_GET_VARS['folder'])) {
-    if ($HTTP_GET_VARS['folder'] == 1) {
-        $folder_bitwise = PM_FOLDER_SENT;
-        $folder = 1;
-    }elseif ($HTTP_GET_VARS['folder'] == 2) {
-        $folder_bitwise = PM_FOLDER_OUTBOX;
-        $folder = 2;
-    }elseif ($HTTP_GET_VARS['folder'] == 3) {
-        $folder_bitwise = PM_FOLDER_SAVED;
-        $folder = 3;
-    }else {
-        $folder_bitwise = PM_FOLDER_INBOX;
-        $folder = 0;
-    }
-}
-
 if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = $HTTP_GET_VARS['page'] * 10;
+    $start = floor($HTTP_GET_VARS['page'] - 1) * 10;
 }else {
     $start = 0;
+}
+
+// Default Folder
+
+$folder = PM_FOLDER_INBOX;
+
+if (isset($HTTP_GET_VARS['folder'])) {
+        
+    if ($HTTP_GET_VARS['folder'] == PM_FOLDER_SENT) {
+        $folder = PM_FOLDER_SENT;
+    }else if ($HTTP_GET_VARS['folder'] == PM_FOLDER_OUTBOX) {
+        $folder = PM_FOLDER_OUTBOX;
+    }else if ($HTTP_GET_VARS['folder'] == PM_FOLDER_SAVED) {
+        $folder = PM_FOLDER_SAVED;
+    }
+
+}elseif (isset($HTTP_POST_VARS['folder'])) {
+
+    if ($HTTP_POST_VARS['folder'] == PM_FOLDER_SENT) {
+        $folder = PM_FOLDER_SENT;
+    }else if ($HTTP_POST_VARS['folder'] == PM_FOLDER_OUTBOX) {
+        $folder = PM_FOLDER_OUTBOX;
+    }else if ($HTTP_POST_VARS['folder'] == PM_FOLDER_SAVED) {
+        $folder = PM_FOLDER_SAVED;
+    }
 }
 
 html_draw_top("basetarget=_blank", "openprofile.js");
@@ -185,15 +171,31 @@ echo "}\n";
 echo "//-->\n";
 echo "</script>\n";
 
-$pm_folders = array(0 => $lang['pminbox'],
-                    1 => $lang['pmsentitems'],
-                    2 => $lang['pmoutbox'],
-                    3 => $lang['pmsaveditems']);
-
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$pm_folders[$folder]}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+
+if ($folder == PM_FOLDER_INBOX) {
+
+    $pm_messages_array = pm_get_inbox($start);
+    echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pminbox']}</b></td>\n";
+
+}elseif ($folder == PM_FOLDER_SENT) {
+
+    $pm_messages_array = pm_get_sent($start);
+    echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pmsentitems']}</b></td>\n";
+
+}elseif ($folder == PM_FOLDER_OUTBOX) {
+
+    $pm_messages_array = pm_get_outbox($start);
+    echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pmoutbox']}</b></td>\n";
+
+}elseif ($folder == PM_FOLDER_SAVED) {
+
+    $pm_messages_array = pm_get_saveditems($start);
+    echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pmsaveditems']}</b></td>\n";
+}
+
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
@@ -202,17 +204,14 @@ if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
 
     $pm_elements_array = array();
 
-    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder_bitwise)) {
-        $pm_elements_array['FOLDER'] = $folder_bitwise;
+    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder)) {
+        $pm_elements_array['FOLDER'] = $folder;
         draw_pm_message($pm_elements_array);
         echo "<p>&nbsp;</p>\n";
     }else {
         echo "<p>{$lang['messagehasbeendeleted']}</p>\n";
     }
 }
-
-// get message list
-$listmessages_array = pm_list_get($folder_bitwise, $start);
 
 echo "<form name=\"pm\" action=\"pm.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
@@ -221,32 +220,24 @@ echo "    <tr>\n";
 echo "      <td width=\"20\" align=\"center\">&nbsp;</td>\n";
 echo "      <td class=\"posthead\" width=\"50%\">&nbsp;{$lang['subject']}</td>\n";
 
-if ($folder == 1 || $folder == 2) {
-    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
-}elseif  ($folder == 3) {
-    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
+if ($folder == PM_FOLDER_INBOX) {
     echo "      <td class=\"posthead\">&nbsp;{$lang['from']}</td>\n";
-}else {
+}elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
+    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
+}elseif  ($folder == PM_FOLDER_SAVED) {
+    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
     echo "      <td class=\"posthead\">&nbsp;{$lang['from']}</td>\n";
 }
 
 echo "      <td class=\"posthead\">&nbsp;{$lang['timesent']}</td>\n";
 
-if (sizeof($listmessages_array) == 0) {
-
-    echo "      <td class=\"posthead\" width=\"20\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\"></td><td class=\"postbody\">{$lang['nomessages']}</td>\n";
-    echo "    </tr>\n";
-
-}else {
+if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
 
     echo "      <td class=\"posthead\" width=\"25\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
     echo "    </tr>\n";
 
-    for ($i = 0; $i < sizeof($listmessages_array); $i++) {
-
+    foreach($pm_messages_array['message_array'] as $message) {
+        
         echo "    <tr>\n";
         echo "      <td class=\"postbody\">";
 
@@ -256,10 +247,10 @@ if (sizeof($listmessages_array) == 0) {
             $mid = NULL;
         }
 
-        if ($mid == $listmessages_array[$i]['MID']) {
+        if ($mid == $message['MID']) {
             echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" height=\"15\" title=\"Current Message\" alt=\"\"/>";
         }else {
-            if (($listmessages_array[$i]['TYPE'] == PM_UNREAD) || ($listmessages_array[$i]['TYPE'] == PM_NEW)) {
+            if (($message['TYPE'] == PM_UNREAD) || ($message['TYPE'] == PM_NEW)) {
                 echo "<img src=\"".style_image('pmunread.png')."\" align=\"middle\" height=\"15\" title=\"Unread Message\" alt=\"\" />";
             }else {
                 echo "<img src=\"".style_image('pmread.png')."\" align=\"middle\" height=\"15\" title=\"Read Message\" alt=\"\" />";
@@ -269,48 +260,48 @@ if (sizeof($listmessages_array) == 0) {
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", _stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
+        echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&amp;mid=".$message['MID']."\" target=\"_self\">", _stripslashes($message['SUBJECT']), "</a>";
 
-        if (isset($listmessages_array[$i]['AID'])) {
+        if (isset($message['AID'])) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
         }
 
-        if (($folder_bitwise == PM_FOLDER_OUTBOX) && (($listmessages_array[$i]['TYPE'] == PM_NEW) || ($listmessages_array[$i]['TYPE'] == PM_UNREAD))) {
-            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&mid={$listmessages_array[$i]['MID']}\">Edit</a>]</span>";
+        if (($folder == PM_FOLDER_OUTBOX) && (($message['TYPE'] == PM_NEW) || ($message['TYPE'] == PM_UNREAD))) {
+            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&mid={$message['MID']}\">Edit</a>]</span>";
         }
 
         echo "</td>\n";
 
-        if ($folder == 1 || $folder == 2) {
+        if ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['TO_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($listmessages_array[$i]['TLOGON'], $listmessages_array[$i]['TNICK']) . "</a>";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
+            echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a>";
             echo "</td>\n";
 
-        }elseif ($folder == 3) {
+        }elseif ($folder == PM_FOLDER_SAVED) {
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['TO_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($listmessages_array[$i]['TLOGON'], $listmessages_array[$i]['TNICK']) . "</a>";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
+            echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a>";
             echo "</td>\n";
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['FROM_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($listmessages_array[$i]['FLOGON'], $listmessages_array[$i]['FNICK']) . "</a>";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
+            echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a>";
             echo "</td>\n";
 
         }else {
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['FROM_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($listmessages_array[$i]['FLOGON'], $listmessages_array[$i]['FNICK']) . "</a>";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
+            echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a>";
             echo "</td>\n";
 
         }
 
-        echo "      <td class=\"postbody\">", format_time($listmessages_array[$i]['CREATED']), "</td>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $listmessages_array[$i]['MID'], ''), "</td>\n";
+        echo "      <td class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
         echo "    </tr>\n";
     }
 
@@ -321,34 +312,35 @@ if (sizeof($listmessages_array) == 0) {
     echo "      <td class=\"postbody\" colspan=\"5\">\n";
     echo "        <table width=\"100%\" align=\"center\" border=\"0\">\n";
     echo "          <tr>\n";
-    echo "            <td colspan=\"2\" width=\"25%\">\n";
-    echo "            <td align=\"center\">\n";
+    echo "            <td colspan=\"2\" width=\"25%\">&nbsp;</td>";
+    echo "            <td align=\"center\">Pages: ";
 
-    $pagenext = ($start / 10) + 1;
-    $pageprev = ($start / 10) - 1;
+    $page_count = ceil($pm_messages_array['message_count'] / 10);
+    
+    if ($page_count > 1) {
 
-    if (sizeof($listmessages_array) == 10) {
-        if ($start < 10) {
-            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pagenext\" target=\"_self\">{$lang['oldermessages']}</a>\n";
-        }elseif ($start >= 10) {
-            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pageprev\" target=\"_self\">{$lang['newermessages']}</a>&nbsp;&nbsp;\n";
-            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pagenext\" target=\"_self\">{$lang['oldermessages']}</a>\n";
+        for ($page = 1; $page <= $page_count; $page++) {
+            echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&page=$page\" target=\"_self\">$page</a> ";
         }
+
     }else {
-        if ($start >= 10) {
-            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pageprev\" target=\"_self\">{$lang['newermessages']}</a>\n";
-        }else {
-            echo "              &nbsp;\n";
-        }
+
+        echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&page=1\" target=\"_self\">1</a> ";
     }
 
-    echo "            </td>\n";
-    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder_bitwise <> PM_FOLDER_SAVED) && ($folder_bitwise <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
 
+}else {
+
+    echo "      <td class=\"posthead\" width=\"20\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\"></td><td class=\"postbody\">{$lang['nomessages']}</td>\n";
+    echo "    </tr>\n";
 }
 
 echo "    <tr>\n";

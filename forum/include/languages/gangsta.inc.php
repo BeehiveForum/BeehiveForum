@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.7 2003-11-09 14:37:29 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.8 2003-11-10 20:37:48 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -136,9 +136,9 @@ $lang['with'] = "wit";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
-$lang['db_connect_error_1'] = "An error has occured while connecting to the database.";
-$lang['db_connect_error_2'] = "If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:";
-$lang['db_connect_error_3'] = "They should be set to the database details given to you by your hosting provider.";
+$lang['db_connect_error_1'] = "Some shit got fucked up in tha databizase.";
+$lang['db_connect_error_2'] = "If yo is tha forum mack daddy, ensure tha followin' vizariabizles in yo config.inc.php ain't fucked:";
+$lang['db_connect_error_3'] = "They shizould be set to tha datizabizase shieeeeet given to yo ass by tha man.";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -321,7 +321,7 @@ $lang['otherattachmentsincludingpm'] = "Other Attizachments (incizluding fuckin'
 $lang['totalsize'] = "Total Sizize";
 $lang['freespace'] = "Free Spizace";
 $lang['attachmentproblem'] = "There was a prizoblem dizownloading this piece of shit. Please try again later.";
-$lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
+$lang['attachmentshavebeendisabled'] = "Tha man has dizisabled fuckin' attachments, cracka.";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
@@ -401,7 +401,7 @@ $lang['pmnotification_subject'] = "PM Nizotificatizion from";
 
 $lang['errorpleasewaitandretry'] = "Some shit got fucked up. Please wait a few mizinutes and then click tha Retizry button below.";
 $lang['retry'] = "Retizry";
-$lang['multipleerroronpost'] = "This error has occured mo' than onizce while attizempting to post/preview yo shit. Fo' yo convienience we have inclizuded yo mizessage text and if applizicable tha thread and message nizumber you were replying to below. You may wizish to save a cizopy of tha text elsewhere until tha forum is available again, <i> YOU GODDAMN DUMB SHIT MOTHERFUCKER</i>.";
+$lang['multipleerroronpost'] = "This error has occured mo' than onizce while attizempting to post/preview yo shit. Fo' yo convienience we have inclizuded yo mizessage text and if applizicable tha thread and message nizumber you were replying to below. You may wizish to save a cizopy of tha text elsewhere until tha forum is available again, <i>YOU GODDAMN DUMB SHIT MOTHERFUCKER</i>.";
 $lang['replymsgnumber'] = "Reply Message Nizumber";
 $lang['errormsgfordevs'] = "Error Message fo' server geeks and geeks";
 
@@ -440,7 +440,7 @@ $lang['unhide'] = "unhizide";
 $lang['nosubfolders'] = "No punk ass subfolders in this category, yo";
 $lang['1subfolder'] = "1 goddamn subfolder in this category, yo";
 $lang['subfoldersinthiscategory'] = "dizamn, subfolders in this category";
-$lang['linksdelexp'] = "Entries in a deleted folder will be moved to tha parent folder. Only folders which do not contain subfolders may be deleted.";
+$lang['linksdelexp'] = "Shit in a dizeleted fo'da will be mizoved to tha pizarent fo'da. Only fo'daz which ain't got no subfo'das can be gatted.";
 $lang['listview'] = "Lizist Viziew";
 $lang['listviewcannotaddfolders'] = "Ain't doin' that, bro. 30 entries mizax.";
 $lang['rating'] = "Rizating";

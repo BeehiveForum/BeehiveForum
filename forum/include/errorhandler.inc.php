@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.27 2003-11-02 12:47:36 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.28 2003-11-02 12:53:42 decoyduck Exp $ */
 
 // Error Handler
 
@@ -96,19 +96,19 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
                 case FATAL:
                     echo "<p><b>FATAL</b> [$errno] $errstr</p>\n";
-                    echo "<p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
                 case ERROR:
                     echo "<p><b>ERROR</b> [$errno] $errstr</p>\n";
-                    echo "<p>Error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+                    echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
                 case WARNING:
                     echo "<p><b>WARNING</b> [$errno] $errstr</p>\n";
-                    echo "<p>Warning in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+                    echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
                     break;
                 default:
                     echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                    echo "<p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+                    echo "<p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
             }
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.46 2004-04-29 21:01:27 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.47 2004-04-30 15:48:42 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -237,8 +237,7 @@ if ($valid && isset($_POST['submit'])) {
             if ($t_sig) {
 
                 if ($t_sig_html != "Y") $t_sig = make_html($t_sig);
-                $t_content = _stripslashes($t_content. "\n<div class=\"sig\">". $t_sig. "</div>");
-
+                $t_content.= "\n<div class=\"sig\">$t_sig</div>";
             }
 
             $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $_POST['t_to_uid'], $t_content);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.50 2004-11-06 23:43:22 decoyduck Exp $ */
+/* $Id: start.php,v 1.51 2004-12-10 16:52:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -106,7 +106,7 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-echo "<!DOCTYPE HTML SYSTEM \"dtd/beehive-frameset.dtd\">\n";
+echo "<!DOCTYPE html SYSTEM \"dtd/beehive-frameset.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
 echo "<head>\n";
 echo "<title>$forum_name</title>\n";

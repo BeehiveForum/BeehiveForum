@@ -257,6 +257,12 @@ if (db_num_rows($result)) {
             case 23:
                 $action_text = "Edited Post: $tid.$pid";
                 break;
+            case 24:
+                $action_text = "Edited Word Filter";
+                break;
+            default:
+                $action_text = "Unknown";
+                break;
 
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.50 2004-04-10 21:45:32 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.51 2004-04-11 01:01:16 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -1088,6 +1088,7 @@ $lang['quote'] = "Quizote";
 $lang['horizontalrule'] = "Horizontal rizule";
 $lang['image'] = "Izimage";
 $lang['hyperlink'] = "Hizyperlink";
+$lang['noemoticons'] = "Dizable emizotizicons";
 $lang['fontface'] = "Fizont Fizace";
 $lang['size'] = "Sizize";
 $lang['colour'] = "Cizolour";

@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.11 2004-04-10 21:45:32 decoyduck Exp $ */
-
 // htmltools.inc.php : wysiwyg toolbar functions
 
 include_once("./include/form.inc.php");
@@ -54,8 +52,7 @@ class TextAreaHTML {
 	// ----------------------------------------------------
 	function toolbar ($emoticons = true, $custom_html = "") {
 		global $lang;
-
-		$webtag = get_webtag();
+		global $webtag;
 
 		$this->tbs++;
 
@@ -79,8 +76,10 @@ class TextAreaHTML {
 		$str.= $this->_tb_img($lang['image'], "add_image();", "image_button.png");
 		$str.= $this->_tb_img($lang['hyperlink'], "add_link();", "link_button.png");
 		if ($emoticons == true) {
-			$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user', '$webtag');", "emoticons_button.png");
+			$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
 		}
+		$str.= $this->_tb_img($lang['noemoticons'], "add_tag('noemots');", "no_emoticons_button.png");
+
 		$str.= "	<br /><br />\n";
 		$str.= "	<select class=\"bhselect\" onChange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
 		$str.= "		<option value=\"\" selected>".$lang['fontface']."</option>\n";

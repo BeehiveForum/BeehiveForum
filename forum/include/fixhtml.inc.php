@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.71 2004-04-10 21:45:32 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.72 2004-04-11 01:01:16 tribalonline Exp $ */
 
 include_once("./include/emoticons.inc.php");
 
@@ -42,7 +42,7 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
         $html = _stripslashes($html);
 		$html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
+		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noemots", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
 
 		$htmltags = array_diff($htmltags, $bad_tags);
 		$bad_tags = array();
@@ -390,11 +390,18 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 		$tag = "";
 		$tag_code = false;
 		$tag_quote = false;
+		$noemots = 0;
 		for($i=0; $i<count($html_parts); $i++){
 			if($i%2){
 				$tag = $html_parts[$i];
 				if ($tag != "" && $tag != "/") {
 					$ret_text .= "<".$tag.">";
+
+					if ($tag == 'noemots') {
+						$noemots++;
+					} else if ($tag == '/noemots') {
+						$noemots--;
+					}
 
 					if ($tag == 'pre class="code"') {
 						$tag_code = true;
@@ -409,7 +416,7 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 					}
 				}
 			} else {
-				if ($emoticons == true && $tag_quote == false && $tag_code == false) {
+				if ($emoticons == true && $tag_quote == false && $tag_code == false && $noemots == 0) {
 					$html_parts[$i] = emoticons_convert($html_parts[$i]);
 				}
 				$ret_text .= $html_parts[$i];

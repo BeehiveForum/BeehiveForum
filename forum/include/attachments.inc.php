@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.51 2004-04-05 20:54:46 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.52 2004-04-05 20:57:33 decoyduck Exp $ */
 
 include_once("./include/perm.inc.php");
 
@@ -175,7 +175,7 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
     $filename = addslashes($filename);
     $mimetype = addslashes($mimetype);
     
-    if (!$table_data = get_table_prefix()) return false);
+    if (!$table_data = get_table_prefix()) return false;
     
     $sql = "INSERT INTO {$table_data['PREFIX']}POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.119 2005-03-13 20:15:54 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.120 2005-03-13 22:17:20 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -251,8 +251,8 @@ function forum_get_settings($current_only = false)
 {
     static $forum_get_settings = false;
 
-    $forum_settings = array();
-    $default_forum_settings = array();
+    static $forum_settings = array();
+    static $default_forum_settings = array();
 
     if (!is_bool($current_only)) return false;
 
@@ -273,7 +273,15 @@ function forum_get_settings($current_only = false)
 
         if ($table_data = get_table_prefix()) {
 
-            $forum_settings['FID'] = $table_data['FID'];
+            $forum_settings['fid'] = $table_data['FID'];
+
+            $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '{$table_data['FID']}'";
+            $result = db_query($sql, $db_forum_get_settings);
+
+            list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
+
+            $forum_settings['webtag'] = $webtag;
+            $forum_settings['access_level'] = $access_level;
 
             $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
             $result = db_query($sql, $db_forum_get_settings);
@@ -984,7 +992,7 @@ function forum_update_access($fid, $access, $passwd = false)
 
     // Only the queen can change a forums status!!
 
-    if (perm_has_forumtools_access()) {
+    if (perm_has_admin_access()) {
 
         $uid = bh_session_get_value('UID');
 

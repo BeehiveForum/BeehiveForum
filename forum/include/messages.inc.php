@@ -90,12 +90,9 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	return $messages;
 }
 
-function messages_top($foldertitle, $threadtitle, $interest_level = 0)
+function messages_top($foldertitle, $threadtitle)
 {
-    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"./images/high_interest.png\" alt=\"High Interest\" align=\"middle\">";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"./images/subscribe.png\" alt=\"Subscribed\" align=\"middle\">";
-    echo "</p>";
+    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle</p>";
     // To be expanded later
 }
 
@@ -436,7 +433,11 @@ function message_fontsize_form($fontsize, $tid, $pid)
       }
     }
 
-    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRSTNAME'],
+    if (!isset($user_prefs['FIRST_NAME'])) $user_prefs['FIRST_NAME'] = "";
+    if (!isset($user_prefs['LAST_NAME'])) $user_prefs['LAST_NAME'] = "";
+    if (!isset($user_prefs['HOMEPAGE_URL'])) $user_prefs['HOMEPAGE_URL'] = "";
+    if (!isset($user_prefs['PIC_URL'])) $user_prefs['PIC_URL'] = "";
+    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRSTNAME'],
                       $user_prefs['LASTNAME'], $user_prefs['HOMEPAGE_URL'],
                       $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
                       $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],

@@ -120,7 +120,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<p class=\"posttofromlabel\">From:<br />To:</p></td>\n";
     echo "<td width=\"92%\">\n";
     echo "<p class=\"posttofrom\">";
-    echo "<a href=\"#\" onclick=\"openProfile(".$message['FROM_UID'].")\">";
+    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['FROM_UID'].")\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a><br />";
     if($message['TLOGON'] != "ALL"){
         echo "<a href=\"#\" onclick=\"openProfile(".$message['TO_UID'].")\">";

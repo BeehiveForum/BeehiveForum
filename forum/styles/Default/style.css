@@ -1,5 +1,5 @@
 BODY {
-    background-color:#EAEFF4;
+    background-color: #EAEFF4;
     margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 05px;
@@ -37,6 +37,7 @@ frame {
     float: left;
     margin: 4px;
 }
+
 .navright {
     float: right;
 }
@@ -58,7 +59,7 @@ H1 {
     text-decoration: none;
     color: #000000;
     font-size: 10pt;
-    font-weight:bold;
+    font-weight: bold;
     margin: 0px;
     padding: 2px;
     width: 100%
@@ -70,7 +71,7 @@ H2 {
     text-decoration: none;
     color: #000000;
     font-size: 10pt;
-    font-weight:bold;
+    font-weight: bold;
     margin-top: 05px;
     margin-bottom: 05px;
     margin-left: 0px;
@@ -96,33 +97,33 @@ A {
 }
 
 .thread_list_folder {
-    background-color:#CCCCCC;
-    border-style:solid;
-    border-top-width:00px;
-    border-bottom-width:01px;
-    border-left-width:00px;
-    border-right-width:00px;
-    border-color:#FFFFFF;
-    height:20px;
-    vertical-align:middle;
+    background-color: #CCCCCC;
+    border-style: solid;
+    border-top-width: 00px;
+    border-bottom-width: 01px;
+    border-left-width: 00px;
+    border-right-width: 00px;
+    border-color: #FFFFFF;
+    height: 20px;
+    vertical-align: middle;
 }
 
 .thread_list_mode {
-    background-color:#EEEEEE;
-    border-style:solid;
-    border-top-width:01px;
-    border-bottom-width:01px;
-    border-left-width:01px;
-    border-right-width:01px;
-    border-color:#999999;
-    font-size:10pt;
-    margin-left:05px;
-    margin-right:05px;
+    background-color: #EEEEEE;
+    border-style: solid;
+    border-top-width: 01px;
+    border-bottom-width: 01px;
+    border-left-width: 01px;
+    border-right-width: 01px;
+    border-color: #999999;
+    font-size: 10pt;
+    margin-left: 05px;
+    margin-right: 05px;
 }
 
 .thread_list_thread {
-    border-style:none;
-    vertical-align:middle;
+    border-style: none;
+    vertical-align: middle;
 }
 
 .threads {
@@ -314,6 +315,7 @@ A {
     padding: 0px;
     height: 20px;
 }
+
 .postbody {
     font-size: 10pt;
     padding-top: 2px;
@@ -476,6 +478,7 @@ A {
     margin-right: 10px;
     padding: 3px;
 }
+
 .code {
     font-family: monospace;
     border: 1px    solid    #CCCCCC;
@@ -487,6 +490,7 @@ A {
     padding: 3px;
     overflow: auto;
 }
+
 .quote {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     border: 1px    solid    #CCCCCC;
@@ -497,6 +501,7 @@ A {
     margin-right: 10px;
     padding: 3px;
 }
+
 .spoiler {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     border: 1px    solid    #CCCCCC;
@@ -512,7 +517,7 @@ A {
 .tools {
     margin: 0;
     margin-bottom: 3px;
-    text-align:left;
+    text-align: left;
     display: none;
     background-image: url('../../images/html_toolbar.png');
     background-repeat: no-repeat;

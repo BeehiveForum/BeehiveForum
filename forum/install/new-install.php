@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.29 2005-03-05 21:55:44 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.30 2005-03-05 22:12:29 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -210,6 +210,15 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "INSERT INTO GROUP_PERMS VALUES (2, 0, 0, 1536);";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
 $sql = "INSERT INTO GROUP_PERMS VALUES (1, 1, 1, 6652);";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -250,6 +259,15 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "INSERT INTO GROUP_USERS VALUES (2, 1);";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE GROUPS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -266,8 +284,18 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+$sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
 $sql.= "VALUES (1, 'Queen', NULL, 0);";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+$sql.= "VALUES (1, NULL, NULL, 1);";
 
 if (!$result = db_query($sql, $db_install)) {
 

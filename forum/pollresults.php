@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.66 2004-06-03 16:42:47 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.67 2004-06-15 20:49:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -143,7 +143,8 @@ echo "<br />\n";
 
 if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
 
-    echo "<table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+    echo "<div align=\"center\">\n";
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"center\" class=\"postbody\">\n";
     echo "      <form name=\"f_mode\" method=\"get\" action=\"pollresults.php\">\n";
@@ -154,12 +155,14 @@ if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
+    echo "</div>\n";
 }
 
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+echo "<div align=\"center\">\n";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
 echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table width=\"95%\" align=\"center\">\n";
+echo "    <td align=\"center\">\n";
+echo "      <table width=\"95%\">\n";
 echo "        <tr>\n";
 echo "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
 echo "        </tr>\n";
@@ -183,7 +186,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
       echo poll_horizontal_graph($tid);
       echo "          </td>\n";
       echo "        </tr>\n";
-      
+
     }elseif ($polldata['POLLTYPE'] == 2) {
 
       echo "        <tr>\n";
@@ -226,11 +229,10 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
-echo "<div align=\"center\">\n";
-echo "  <form method=\"post\" action=\"pollresults.php\" target=\"_self\">\n";
-echo "    ", form_input_hidden('webtag', $webtag), "\n";
-echo "    ". form_submit('submit', $lang['close']). "\n";
-echo "  </form>\n";
+echo "<form method=\"post\" action=\"pollresults.php\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ". form_submit('submit', $lang['close']). "\n";
+echo "</form>\n";
 echo "</div>\n";
 
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.117 2004-06-13 20:02:09 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.118 2004-06-15 20:49:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -378,10 +378,11 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['FROM_UID'] = $preview_tuser['UID'];
 
     $polldata['CONTENT'] = "<br />\n";
-    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+    $polldata['CONTENT'].= "<div align=\"center\">\n";
+    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td>\n";
-    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">\n";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td><h2>". _stripslashes($_POST['question']). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
@@ -447,8 +448,8 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    </td>\n";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td>";
-    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
 
@@ -466,6 +467,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    </td>";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
+    $polldata['CONTENT'].= "</div>\n";
     $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
     message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);

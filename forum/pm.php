@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.58 2004-06-13 20:02:10 decoyduck Exp $ */
+/* $Id: pm.php,v 1.59 2004-06-15 20:49:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -220,10 +220,11 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     }
 }
 
+echo "<div align=\"center\">\n";
 echo "<form name=\"pm\" action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
-echo "  <table width=\"95%\" align=\"center\" border=\"0\">\n";
+echo "  <table width=\"95%\" border=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td width=\"20\" align=\"center\">&nbsp;</td>\n";
 echo "      <td class=\"posthead\" width=\"50%\">&nbsp;{$lang['subject']}</td>\n";
@@ -329,8 +330,8 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
 
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
-    echo "      <td class=\"postbody\" colspan=\"4\">\n";
-    echo "        <table width=\"100%\" align=\"center\" border=\"0\">\n";
+    echo "      <td class=\"postbody\" colspan=\"4\" align=\"center\">\n";
+    echo "        <table width=\"100%\" border=\"0\">\n";
     echo "          <tr>\n";
     echo "            <td colspan=\"2\" width=\"25%\">\n";
     echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
@@ -372,6 +373,7 @@ echo "    <tr>\n";
 echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "</div>\n";
 echo "</form>\n";
 
 html_draw_bottom();

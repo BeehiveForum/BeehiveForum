@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.83 2004-05-10 17:40:07 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.84 2004-06-15 20:49:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -184,8 +184,8 @@ echo "  <tr>\n";
 echo "    <td class=\"subhead\">{$lang['threadoptions']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"2\">\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "    <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
 echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "        </tr>\n";
@@ -209,8 +209,8 @@ $users_array = users_get_recent(0, 10);
 if (sizeof($users_array['user_array']) > 0) {
 
     echo "  <tr>\n";
-    echo "    <td>\n";
-    echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+    echo "    <td align=\"center\">\n";
+    echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
     foreach ($users_array['user_array'] as $resent_user) {
 
@@ -242,8 +242,8 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     echo "    <td class=\"subhead\" colspan=\"2\">{$lang['forthcomingbirthdays']}</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td>\n";
-    echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+    echo "    <td align=\"center\">\n";
+    echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
     foreach ($birthdays as $row) {
 
@@ -269,8 +269,8 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "    <td align=\"center\">\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
 echo "          <td>\n";
 echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";

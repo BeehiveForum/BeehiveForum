@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.58 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.59 2004-06-15 20:49:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -424,10 +424,11 @@ echo "</div>\n";
 echo "<br />\n";
 echo "<h1>{$lang['stylepreview']}:</h1>\n";
 echo "<br />\n";
-echo "<table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" class=\"box\">\n";
+echo "<div align=\"center\">\n";
+echo "<table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"box\">\n";
 echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" align=\"center\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\">\n";
+echo "    <td align=\"center\">\n";
+echo "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\">\n";
 echo "        <tr>\n";
 echo "          <td colspan=\"3\" height=\"20\" style=\"background-color: #{$elements['navpage']}; color: #", contrastFont($elements['navpage']), "; font-size: 10px; font-weight: bold; text-decoration: none\">&nbsp;&nbsp;\n";
 echo "            <a href=\"#\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
@@ -651,6 +652,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+echo "</div>\n";
 echo "<p>&nbsp;</p>\n";
 
 html_draw_bottom();

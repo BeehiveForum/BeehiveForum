@@ -437,13 +437,17 @@ function threads_get_folder($uid, $fid, $start = 0)
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "JOIN " . forum_table("USER") . " USER ";
+    $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid = $fid ";
+    $sql .= "AND USER.uid = POST.from_uid ";
+    $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";

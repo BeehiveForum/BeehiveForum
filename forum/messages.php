@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.167 2004-11-30 22:25:26 tribalonline Exp $ */
+/* $Id: messages.php,v 1.168 2004-12-12 12:40:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -215,7 +215,9 @@ if (!$threaddata = thread_get($tid)) {
     exit;
 }
 
-html_draw_top("title={$threaddata['TITLE']}", "openprofile.js", "basetarget=_blank", "robots=index,follow");
+$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+html_draw_top("title={$forum_name} > {$threaddata['TITLE']}", "openprofile.js", "basetarget=_blank", "robots=index,follow");
 
 if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 

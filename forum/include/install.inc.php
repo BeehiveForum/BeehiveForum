@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.16 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.17 2004-12-12 12:40:08 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -156,24 +156,33 @@ function install_get_webtags()
 {
     $db_install_get_webtags = db_connect();
 
-    $sql = "SHOW TABLES LIKE 'FORUMS' ";
+    $sql = "SELECT FID, WEBTAG FROM FORUMS ";
     $result = db_query($sql, $db_install);
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "SELECT WEBTAG FROM FORUMS ";
-        $result = db_query($sql, $db_install);
-
         $forum_webtag_array = array();
 
         while ($row = db_fetch_array($result)) {
-            $forum_webtag_array[] = $row['WEBTAG'];
+            $forum_webtag_array[$row['FID']] = $row['WEBTAG'];
         }
 
         return $forum_webtag_array;
     }
 
     return false;
+}
+
+function install_table_exists($table_name)
+{
+    $db_install_table_exists = db_connect();
+
+    $table_name = addslashes($table_name);
+
+    $sql = "SHOW TABLES LIKE '$table_name' ";
+    $result = db_query($sql, $db_install_table_exists);
+
+    return db_num_rows($result) > 0;
 }
 
 ?>

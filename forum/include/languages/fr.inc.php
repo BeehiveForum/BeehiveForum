@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.128 2004-12-09 18:17:57 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.129 2004-12-12 12:40:08 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -161,6 +161,7 @@ $lang['used'] = "Used";
 $lang['days'] = "days";
 $lang['sortasc'] = "Sort Asc";
 $lang['sortdesc'] = "Sort Desc";
+$lang['usage'] = "Usage";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -415,6 +416,10 @@ $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list 
 
 $lang['allowguestaccess'] = "Allow Guest Access";
 
+$lang['searchenginespidering'] = "Search Engine Spidering";
+$lang['allowsearchenginespidering'] = "Allow search engines to spider post content";
+
+
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 
 $lang['mustsupplyforumname'] = "You must supply a forum name";
@@ -501,6 +506,7 @@ $lang['forum_settings_help_23'] = "<b>Attachment Dir</b> is the location Beehive
 $lang['forum_settings_help_24'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
 $lang['forum_settings_help_25'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_26'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
+$lang['forum_settings_help_27'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.8 2004-12-11 14:37:29 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.9 2004-12-12 12:40:28 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -59,7 +59,7 @@ $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (LOG_ID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -70,7 +70,7 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "CREATE TABLE {$forum_webtag}_BANNED_IP (";
 $sql.= "  IP CHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (IP)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -82,7 +82,7 @@ $sql = "CREATE TABLE DEDUPE (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  DDKEY CHAR(32) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -97,7 +97,7 @@ $sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (ID,UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -112,7 +112,7 @@ $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
 $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
 $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (FID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -135,7 +135,7 @@ $sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  URI VARCHAR(255) DEFAULT NULL,";
 $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (LID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -175,7 +175,7 @@ $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID,FID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -211,7 +211,7 @@ $sql = "CREATE TABLE {$forum_webtag}_GROUP_USERS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID,UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -233,7 +233,7 @@ $sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -262,7 +262,7 @@ $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (LID),";
 $sql.= "  KEY FID (FID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -278,7 +278,7 @@ $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  COMMENT TEXT NOT NULL,";
 $sql.= "  PRIMARY KEY  (CID),";
 $sql.= "  KEY LID (LID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -292,7 +292,7 @@ $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT '1',";
 $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (FID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -315,7 +315,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  PRIMARY KEY  (LID,UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -333,7 +333,7 @@ $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (MID),";
 $sql.= "  KEY TO_UID (TO_UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -346,7 +346,7 @@ $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (MID),";
 $sql.= "  KEY AID (AID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -359,7 +359,7 @@ $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CONTENT TEXT,";
 $sql.= "  PRIMARY KEY  (MID),";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -376,7 +376,7 @@ $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
 $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (TID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -390,7 +390,7 @@ $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -413,7 +413,7 @@ $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (TID,PID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -443,7 +443,7 @@ $sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (ID),";
 $sql.= "  KEY AID (AID),";
 $sql.= "  KEY HASH (HASH)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -458,7 +458,7 @@ $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (FID, TID, PID),";
 $sql.= "  KEY AID (AID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -472,7 +472,7 @@ $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CONTENT TEXT,";
 $sql.= "  PRIMARY KEY  (TID,PID),";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -495,7 +495,7 @@ $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
 $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
 $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (PIID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -549,7 +549,7 @@ $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
 $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (PSID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -573,7 +573,7 @@ $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (ID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -597,7 +597,7 @@ $sql.= "  PRIMARY KEY  (TID),";
 $sql.= "  KEY FID (FID),";
 $sql.= "  KEY BY_UID (BY_UID),";
 $sql.= "  FULLTEXT KEY TITLE (TITLE)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -620,7 +620,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (UID,FID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -633,7 +633,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -649,7 +649,7 @@ $sql.= "  PTUID VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  PRIMARY KEY  (ID,TID,PTUID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -679,7 +679,7 @@ $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PRIMARY KEY  (UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -692,7 +692,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID,PIID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -705,7 +705,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CONTENT TEXT,";
 $sql.= "  HTML CHAR(1) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -720,7 +720,7 @@ $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
 $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID,TID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -733,7 +733,7 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  SNAME VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  SVALUE VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY (FID, SNAME)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -741,211 +741,49 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'forum_name', 'A Beehive Forum');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'forum_email', 'admin@abeehiveforum.net');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'default_style', 'default');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'default_emoticon', 'default');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'default_language', 'en');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'show_stats', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'show_links', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'auto_logon', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'show_pms', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'pm_max_user_messages', '100');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'pm_allow_attachments', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'maximum_post_length', '6226');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'allow_post_editing', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'post_edit_time', '0');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'allow_polls', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'search_min_word_length', '3');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'attachments_enabled', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'attachments_dir', 'attachments');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'attachments_allow_embed', 'N');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'attachments_use_old_method', 'N');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'guest_account_active', 'Y');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'session_cutoff', '86400');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, 'active_session_cutoff', '900');";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
+$forum_settings = array('1' => array('forum_name'             => 'A Beehive Forum',
+                                     'forum_email'            => 'admin@abeehiveforum.net',
+                                     'forum_desc'             => 'A Beehive Forum',
+                                     'forum_keywords'         => 'BeehiveForums, Beehive, Forum, Community',
+                                     'default_style'          => 'default',
+                                     'default_emoticons'      => 'default',
+                                     'default_language'       => 'en',
+                                     'allow_post_editing'     => 'Y',
+                                     'post_edit_time'         => '0',
+                                     'maximum_post_length'    => '6226',
+                                     'allow_polls'            => 'Y',
+                                     'search_min_word_length' => '3',
+                                     'session_cutoff'         => '86400',
+                                     'active_sess_cutoff'     => '900',
+                                     'show_stats'             => 'Y',
+                                     'guest_account_enabled'  => 'Y',
+                                     'auto_logon'             => 'Y',
+                                     'allow_search_spidering' => 'Y'),
+
+                        '0' => array('show_pms'                   => 'Y',
+                                     'pm_max_user_messages'       => '100',
+                                     'pm_auto_prune'              => 'N',
+                                     'pm_auto_prune_length'       => '60',
+                                     'pm_allow_attachments'       => 'Y',
+                                     'attachment_dir'             => 'attachments',
+                                     'attachments_enabled'        => 'Y',
+                                     'attachments_max_user_space' => '1024',
+                                     'attachments_allow_embed'    => 'N',
+                                     'attachment_use_old_method'  => 'N'));
+
+foreach ($forum_settings as $forum => $settings_array) {
+
+    foreach ($settings_array as $sname => $svalue) {
+
+        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+        $sql.= "VALUES ('$forum', '$sname', '$svalue')";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
 }
 
 $sql = "CREATE TABLE FORUMS (";
@@ -955,7 +793,7 @@ $sql.= "  DEFAULT_FORUM TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  ACCESS_LEVEL TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (FID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -979,7 +817,7 @@ $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (HASH, UID, IPADDRESS)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -994,7 +832,7 @@ $sql.= "  PASSWD VARCHAR(32) DEFAULT NULL,";
 $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -1017,7 +855,7 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
 $sql.= "  ALLOWED TINYINT(4) DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (UID,FID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -1071,7 +909,7 @@ $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -1086,7 +924,7 @@ $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
 $sql.= "  KEY SOUND (SOUND),";
 $sql.= "  KEY UID (UID),";
 $sql.= "  KEY WORD (WORD)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 

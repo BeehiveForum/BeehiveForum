@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.71 2004-09-23 21:14:28 decoyduck Exp $ */
+/* $Id: pm.php,v 1.72 2004-09-24 20:16:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -357,7 +357,7 @@ echo "    </tr>\n";
 $pm_free_space = pm_get_free_space();
 $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 
-$pm_free_percent = (100 / $pm_max_user_messages) * $pm_free_space;
+$pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
 
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
@@ -367,12 +367,11 @@ echo "          <tr>\n";
 echo "            <td colspan=\"2\" width=\"25%\">\n";
 echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">{$lang['pmfreespace']}:&nbsp;</td>\n";
-echo "                  <td width=\"65%\">\n";
+echo "                  <td width=\"60%\">\n";
 echo "                    <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";
 echo "                      <tr>\n";
-echo "                        <td title=\"{$pm_free_percent}% {$lang['free']}\">\n";
-echo "                          <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar\" style=\"width: {$pm_free_percent}%\">\n";
+echo "                        <td title=\"{$pm_used_percent}% {$lang['used']}\">\n";
+echo "                          <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar\" style=\"width: {$pm_used_percent}%\">\n";
 echo "                            <tr>\n";
 echo "                              <td></td>\n";
 echo "                            </tr>\n";
@@ -381,7 +380,9 @@ echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">&nbsp;($pm_free_space / $pm_max_user_messages)</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">Your PM folders are {$pm_used_percent}% full</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.45 2004-09-23 21:14:07 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.46 2004-09-24 20:16:36 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -157,6 +157,7 @@ $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
 $lang['top'] = "Top";
 $lang['free'] = "Free";
+$lang['used'] = "Used";
 $lang['days'] = "days";
 
 // Admin interface (admin*.php) ----------------------------------------

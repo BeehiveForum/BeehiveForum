@@ -49,7 +49,7 @@ if($logged_off){
     echo "<tr><td>You have logged out.</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
 } else {
-    echo "<tr><td>You are currently logged in as ".user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid'])."</td></tr>\n";
+    echo "<tr><td>You are currently logged in as ". user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']). "</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
     echo "<tr><td align=\"center\">".form_submit("submit","Log out");
 }

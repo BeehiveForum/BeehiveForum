@@ -43,6 +43,19 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     header_no_cache();
 }
 
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+
+  bh_session_end();
+  
+  $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+  $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+  $uri.= "/logon.php?final_uri=";
+  $uri.= urlencode(get_request_uri());
+  
+  header_redirect($uri);
+  
+}
+
 require_once("./include/config.inc.php");
 
 ?>

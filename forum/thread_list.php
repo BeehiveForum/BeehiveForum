@@ -81,6 +81,12 @@ function change_current_thread (thread_id) {
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
+		<td><a href="post.php" target="main" class="folderpostnew">New Discussion</a></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
 		<td>
 			<?
 			// Calls the desired mode (and hides non-available modes from guest users)

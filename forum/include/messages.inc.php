@@ -91,7 +91,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 
 function messages_top($foldertitle, $threadtitle)
 {
-    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />$foldertitle: $threadtitle</p>";
+    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle</p>";
     // To be expanded later
 }
 

@@ -140,7 +140,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
 	$sql .= "WHERE THREAD.fid in ($folders) ";
 	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
 	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
-	$sql .= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
+	$sql .= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL AND POST.PID = 1 ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 

@@ -37,8 +37,9 @@ require_once("./include/folder.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/constants.inc.php");
 
-function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function messages_get($tid, $pid = 1, $limit = 1)
 {
     global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
@@ -48,8 +49,6 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 
     $tbl_post = forum_table("POST");
 
-    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
-    // for threads with unread messages, so the UID needs to be passed to the function
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
@@ -164,7 +163,7 @@ function messages_bottom()
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
-    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir;
+    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
@@ -375,19 +374,20 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
-
-                if ($is_poll && $message['PID'] == 1) {
-
-                  echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
-                  echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
-
-                }else {
-
-                  echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
-                  echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
-
+                
+                if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
+                    if ($is_poll && $message['PID'] == 1) {
+    
+                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
+                      echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
+    
+                    }else {
+    
+                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
+                      echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
+    
+                    }
                 }
-
             }
 
             if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {

@@ -8,12 +8,12 @@ What's new in 0.3
         - The styles system has changed a bit - the majority of the stylesheet
           is now static, which saves even more bandwidth.
         - You can modify the start page directly from the admin interface.
-        - As well as ignoring a user, you can make them your "friend" - you can
-          now filter the thread list to only show discusisons started by Friends
-          if you want.
+        - As well as ignoring a user, you can make them your "Friend", and
+          filter the thread list to only show discusisons started by Friends if
+          you want.
         - New poll system, with up to 20 options per poll.
         - There's a new frameless light HTML "diet" version of the forum - now
-          you can post from a PDA and some mobile phones.
+          you can browse and post from a PDA and some mobile phones.
         - A links section that allows your users to create a database of useful
           links.
         - You can see a list of possible aliases for any user (people who have

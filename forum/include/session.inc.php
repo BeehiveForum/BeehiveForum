@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.97 2004-04-10 14:33:57 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.98 2004-04-11 22:19:21 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -220,7 +220,7 @@ function bh_session_init($uid)
 
     $result = db_query($sql, $db_bh_session_init);
 
-    if (!db_affected_rows($db_bh_session_init) && $table_data) {
+    if (db_affected_rows($db_bh_session_init) < 1 && $table_data) {
     
         $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
         $sql.= "VALUES ('$uid', '{$table_data['FID']}', NOW())";

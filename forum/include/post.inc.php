@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.69 2004-04-10 16:35:01 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.70 2004-04-11 22:19:21 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -91,7 +91,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     $result = db_query($sql, db_post_save_attachment_id);
 
-    if (!db_affected_rows($db_post_save_attachment_id)) {
+    if (db_affected_rows($db_post_save_attachment_id) < 1) {
     
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
         $result = db_query($sql, $db_post_save_attachment_id);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.198 2004-12-12 12:40:08 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.199 2004-12-12 12:50:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -530,7 +530,7 @@ $lang['enterfilenamestoupload'] = "Enter filename(s) to upload";
 $lang['nowpress'] = "Now press";
 $lang['ifdoneattachingfiles'] = "If you are done attaching file(s), press";
 $lang['attachmentsforthismessage'] = "Attachments for this message";
-$lang['otherattachmentsincludingpm'] = "Other Attachments (including PM Messages)";
+$lang['otherattachmentsincludingpm'] = "Other Attachments (including PM Messages and other forums)";
 $lang['totalsize'] = "Total Size";
 $lang['freespace'] = "Free Space";
 $lang['attachmentproblem'] = "There was a problem downloading this attachment. Please try again later.";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.108 2003-08-03 10:10:37 hodcroftcj Exp $ */
+/* $Id: post.php,v 1.109 2003-08-04 13:16:48 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -95,10 +95,10 @@ if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0,
 
   $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
 
-  if ($touser = user_get($u_login)) {
+  if ($touser = user_get_uid($u_login)) {
 
-    $HTTP_POST_VARS['t_to_uid'] = $touser['UID'];
-    $t_to_uid = $touser['UID'];
+    $HTTP_POST_VARS['t_to_uid'] = $touser;
+    $t_to_uid = $touser;
 
   }else{
 

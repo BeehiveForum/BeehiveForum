@@ -110,7 +110,7 @@ if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
 
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-		<link rel="stylesheet" href="./styles/style.css" type="text/css">
+		<link rel="stylesheet" href="styles.php?<?php echo md5(uniqid(rand())); ?>" type="text/css">
 
 	</head>
 

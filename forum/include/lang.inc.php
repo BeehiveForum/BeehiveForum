@@ -21,9 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.17 2004-12-12 12:40:08 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.18 2004-12-14 08:33:29 decoyduck Exp $ */
 
-include_once("./include/config.inc.php");
+if (@file_exists("./include/config.inc.php")) {
+    include_once("./include/config.inc.php");
+}
+
 include_once("./include/forum.inc.php");
 
 function load_language_file()

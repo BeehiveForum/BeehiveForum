@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.96 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: register.php,v 1.97 2004-12-14 08:33:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,7 +151,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['LOGON']) && strlen(trim(_stripslashes($_POST['LOGON']))) > 0) {
 
-        $new_user['LOGON'] = strtoupper(trim(_stripslashes(_stripslashes($_POST['LOGON']))));
+        $new_user['LOGON'] = strtoupper(trim(_stripslashes($_POST['LOGON'])));
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['LOGON'])) {
             $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
@@ -176,7 +176,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['PW']) && strlen(trim(_stripslashes($_POST['PW']))) > 0) {
 
-        $new_user['PW'] = trim(_stripslashes(_stripslashes($_POST['PW'])));
+        $new_user['PW'] = trim(_stripslashes($_POST['PW']));
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['PW'])) {
             $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
@@ -196,7 +196,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['CPW']) && strlen(trim(_stripslashes($_POST['CPW']))) > 0) {
 
-        $new_user['CPW'] = trim(_stripslashes(_stripslashes($_POST['CPW'])));
+        $new_user['CPW'] = trim(_stripslashes($_POST['CPW']));
 
         if (_htmlentities($new_user['CPW']) != $new_user['CPW']) {
             $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
@@ -211,7 +211,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['NICKNAME']) && strlen(trim(_stripslashes($_POST['NICKNAME']))) > 0) {
 
-        $new_user['NICKNAME'] = trim(_stripslashes(_stripslashes($_POST['NICKNAME'])));
+        $new_user['NICKNAME'] = trim(_stripslashes($_POST['NICKNAME']));
 
     }else {
 
@@ -221,7 +221,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['EMAIL']) && strlen(trim(_stripslashes($_POST['EMAIL']))) > 0) {
 
-        $new_user['EMAIL'] = trim(_stripslashes(_stripslashes($_POST['EMAIL'])));
+        $new_user['EMAIL'] = trim(_stripslashes($_POST['EMAIL']));
 
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $new_user['EMAIL'])) {
 
@@ -237,9 +237,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $new_user['DOB_DAY']   = trim(_stripslashes(_stripslashes($_POST['dob_day'])));
-        $new_user['DOB_MONTH'] = trim(_stripslashes(_stripslashes($_POST['dob_month'])));
-        $new_user['DOB_YEAR']  = trim(_stripslashes(_stripslashes($_POST['dob_year'])));
+        $new_user['DOB_DAY']   = trim(_stripslashes($_POST['dob_day']));
+        $new_user['DOB_MONTH'] = trim(_stripslashes($_POST['dob_month']));
+        $new_user['DOB_YEAR']  = trim(_stripslashes($_POST['dob_year']));
 
         $new_user['DOB'] = "{$new_user['DOB_YEAR']}-{$new_user['DOB_MONTH']}-{$new_user['DOB_DAY']}";
         $new_user['DOB_BLANK_FIELDS'] = ($new_user['DOB_YEAR'] == 0 || $new_user['DOB_MONTH'] == 0 || $new_user['DOB_DAY'] == 0) ? true : false;
@@ -251,13 +251,13 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['FIRSTNAME']) && strlen(trim(_stripslashes($_POST['FIRSTNAME']))) > 0) {
-        $new_user['FIRSTNAME'] = trim(_stripslashes(_stripslashes($_POST['FIRSTNAME'])));
+        $new_user['FIRSTNAME'] = trim(_stripslashes($_POST['FIRSTNAME']));
     }else {
         $new_user['FIRSTNAME'] = "";
     }
 
     if (isset($_POST['LASTNAME']) && strlen(trim(_stripslashes($_POST['LASTNAME']))) > 0) {
-        $new_user['LASTNAME'] = trim(_stripslashes(_stripslashes($_POST['LASTNAME'])));
+        $new_user['LASTNAME'] = trim(_stripslashes($_POST['LASTNAME']));
     }else {
         $new_user['LASTNAME'] = "";
     }
@@ -496,7 +496,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['registration
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" width=\"250\">&nbsp;{$lang['username']}:</td>\n";
-echo "                  <td>", form_input_text("LOGON", (isset($new_user['LOGON']) ? $new_user['LOGON'] : ""), 35, 32), "</td>\n";
+echo "                  <td>", form_input_text("LOGON", (isset($new_user['LOGON']) ? _htmlentities($new_user['LOGON']) : ""), 35, 32), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['passwd']}:</td>\n";
@@ -508,15 +508,15 @@ echo "                  <td>", form_input_password("CPW", "", 35, 32), "</td>\n"
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['nickname']}:</td>\n";
-echo "                  <td>", form_input_text("NICKNAME", (isset($new_user['NICKNAME']) ? $new_user['NICKNAME'] : ""), 35, 32), "</td>\n";
+echo "                  <td>", form_input_text("NICKNAME", (isset($new_user['NICKNAME']) ? _htmlentities($new_user['NICKNAME']) : ""), 35, 32), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['email']}:</td>\n";
-echo "                  <td>", form_input_text("EMAIL", (isset($new_user['EMAIL']) ? $new_user['EMAIL'] : ""), 35, 80), "</td>\n";
+echo "                  <td>", form_input_text("EMAIL", (isset($new_user['EMAIL']) ? _htmlentities($new_user['EMAIL']) : ""), 35, 80), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['dateofbirth']}:</td>\n";
-echo "                  <td>", form_dob_dropdowns((isset($new_user['DOB_YEAR']) ? $new_user['DOB_YEAR'] : 0), (isset($new_user['DOB_MONTH']) ? $new_user['DOB_MONTH'] : 0), (isset($new_user['DOB_DAY']) ? $new_user['DOB_DAY'] : 0), true), "</td>\n";
+echo "                  <td>", form_dob_dropdowns((isset($new_user['DOB_YEAR']) ? _htmlentities($new_user['DOB_YEAR']) : 0), (isset($new_user['DOB_MONTH']) ? _htmlentities($new_user['DOB_MONTH']) : 0), (isset($new_user['DOB_DAY']) ? _htmlentities($new_user['DOB_DAY']) : 0), true), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -530,15 +530,15 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['profileinfor
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['firstname']}:</td>\n";
-echo "                  <td>", form_field("FIRSTNAME", (isset($new_user['FIRSTNAME']) ? $new_user['FIRSTNAME'] : ""), 35, 32), "</td>\n";
+echo "                  <td>", form_field("FIRSTNAME", (isset($new_user['FIRSTNAME']) ? _htmlentities($new_user['FIRSTNAME']) : ""), 35, 32), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['lastname']}:</td>\n";
-echo "                  <td>", form_field("LASTNAME", (isset($new_user['LASTNAME']) ? $new_user['LASTNAME'] : ""), 35, 32), "</td>\n";
+echo "                  <td>", form_field("LASTNAME", (isset($new_user['LASTNAME']) ? _htmlentities($new_user['LASTNAME']) : ""), 35, 32), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" valign=\"top\">&nbsp;{$lang['signature']}:</td>\n";
-echo "                  <td>", form_textarea("SIG_CONTENT", (isset($new_user['SIG_CONTENT']) ? $new_user['SIG_CONTENT'] : ""), 6, 32), "</td>\n";
+echo "                  <td>", form_textarea("SIG_CONTENT", (isset($new_user['SIG_CONTENT']) ? _htmlentities($new_user['SIG_CONTENT']) : ""), 6, 32), "</td>\n";
 echo "                </tr>\n";
 echo "               <tr>\n";
 echo "                 <td>&nbsp;</td>\n";

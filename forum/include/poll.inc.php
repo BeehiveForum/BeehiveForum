@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.118 2004-05-30 19:35:17 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.119 2004-05-30 20:24:41 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -160,14 +160,13 @@ function poll_get($tid)
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER.RELATIONSHIP, ";
     $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, ";
     $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, ";
-    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, ";
-    $sql.= "POST.IPADDRESS, THREAD.FID FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (POST.TID = POLL.TID) ";
     $sql.= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POLL.TID) ";
     $sql.= "ON (USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
@@ -553,6 +552,21 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         $polldata['CONTENT'].= "        <tr>\n";
         $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
         $polldata['CONTENT'].= "        </tr>\n";
+
+        if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
+
+          $polldata['CONTENT'].= "        <tr>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>";
+          $polldata['CONTENT'].= "        </tr>\n";
+          $polldata['CONTENT'].= "        <tr>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
+          $polldata['CONTENT'].= "            ". form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+          $polldata['CONTENT'].= "          </td>\n";
+          $polldata['CONTENT'].= "        </tr>\n";
+          $polldata['CONTENT'].= "        <tr>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>";
+          $polldata['CONTENT'].= "        </tr>\n";
+        }
 
         if (is_array($userpolldata)) {
 

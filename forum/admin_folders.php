@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.37 2003-09-21 12:57:57 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.38 2003-11-09 18:02:17 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -121,8 +121,6 @@ if ($folder_array = folder_get_all()) {
 
     for ($i = 0; $i < sizeof($folder_array); $i++) {
 
-        // if the thread count is 1, then it's probably 0.
-        if ($folder_array[$i]['THREAD_COUNT'] == 1) $folder_array[$i]['THREAD_COUNT'] = 0;
         if (!isset($folder_array[$i]['DESCRIPTION']) || is_null($folder_array[$i]['DESCRIPTION'])) $folder_array[$i]['DESCRIPTION'] = "";
         if (!isset($folder_array[$i]['ALLOWED_TYPES']) || is_null($folder_array[$i]['ALLOWED_TYPES'])) $folder_array[$i]['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
 

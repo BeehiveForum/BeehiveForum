@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.333 2005-03-09 23:26:52 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.334 2005-03-13 15:12:51 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -299,6 +299,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     // Check for words that should be filtered ---------------------------------
 
     $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
+
+    // Check for emoticons bug in Safari
+
+    if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
+        $message['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1&nbsp;</span>", $message['CONTENT']);
+    }
 
     // Convert any WikiWords to hyperlinks -------------------------------------
 

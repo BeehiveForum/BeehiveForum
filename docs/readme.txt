@@ -448,6 +448,8 @@ Mark Rendle - taking time out
 4.7 Thanks to
 =============
 
+- Mike Franklin, Pete Kelly, Jon Cooper and Yvonne for just being who you are.
+
 - The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.73 2003-12-02 22:16:23 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.74 2004-01-04 17:04:39 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -180,11 +180,25 @@ function html_draw_top()
         $stylesheet = "styles/style.css";
     }
 
-    echo "<link rel=\"stylesheet\" href=\"", $stylesheet, "\" type=\"text/css\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
+
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    if (bh_session_get_value('FONT_SIZE') && bh_session_get_value('FONT_SIZE') != '10') {
+    $fontsize = bh_session_get_value('FONT_SIZE');
+    
+    if ($fontsize && $fontsize != '10') {
         echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";
+    }
+    
+    if (isset($HTTP_GET_VARS['fontresize'])) {
+       
+        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n\n";
+        echo "top.document.body.rows='60,' + $fontsize * 2 + ',*';\n";
+	echo "top.frames['main'].frames['left'].location.reload();\n";
+	echo "top.frames['fnav'].location.reload();\n\n";
+        echo "//-->\n";
+        echo "</script>\n";	
     }
 
     if (!stristr($HTTP_SERVER_VARS['PHP_SELF'], 'pm') && !stristr($HTTP_SERVER_VARS['PHP_SELF'], 'nav.php')) {

@@ -22,6 +22,7 @@ USA
 function fontResize (size) {
 
     top.document.body.rows='60,' + size * 2 + ',*';
-    top.frames['main'].frames['left'].location.reload();
-    top.frames['fnav'].location.reload();
+    top.frames['main'].frames['left'].location.replace(top.frames['main'].frames['left'].location);
+    top.frames['fnav'].location.replace(top.frames['fnav'].location);
+    return true;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.103 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: messages.php,v 1.104 2004-01-04 17:04:39 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -119,8 +119,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
 }
 
-// Output XHTML header
-html_draw_top("openprofile.js", "fontsize.js", "basetarget=_blank");
+html_draw_top("openprofile.js", "basetarget=_blank");
 
 if (bh_session_get_value('POSTS_PER_PAGE')) {
     $ppp = bh_session_get_value('POSTS_PER_PAGE');

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.215 2004-08-15 00:35:29 tribalonline Exp $ */
+/* $Id: post.php,v 1.216 2004-08-16 22:07:13 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -228,7 +228,7 @@ if (isset($_POST['t_post_emots'])) {
                 $emots_enabled = true;
         }
 } else {
-	$emots_enabled = true;
+        $emots_enabled = true;
 }
 if (isset($_POST['t_post_links'])) {
         if ($_POST['t_post_links'] == "enabled") {
@@ -237,41 +237,41 @@ if (isset($_POST['t_post_links'])) {
                 $links_enabled = false;
         }
 } else {
-	$links_enabled = false;
+        $links_enabled = false;
 }
 if (isset($_POST['t_post_interest'])) {
-		if ($_POST['t_post_interest'] == "high") {
-				$high_interest = true;
-		} else {
-				$high_interest = false;
-		}
+                if ($_POST['t_post_interest'] == "high") {
+                                $high_interest = true;
+                } else {
+                                $high_interest = false;
+                }
 } else {
-	$high_interest = false;
+        $high_interest = false;
 }
 
 if (isset($_POST['t_post_html'])) {
 
-	$t_post_html = $_POST['t_post_html'];
+        $t_post_html = $_POST['t_post_html'];
 
-	if ($t_post_html == "enabled_auto") {
-		$post_html = 1;
-	} else if ($t_post_html == "enabled") {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
+        if ($t_post_html == "enabled_auto") {
+                $post_html = 1;
+        } else if ($t_post_html == "enabled") {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
 } else {
-	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-		$post_html = 1;
-	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
+        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+                $post_html = 1;
+        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
 
-	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-	$links_enabled = ($page_prefs & POST_AUTO_LINKS);
-	$high_interest = bh_session_get_value('MARK_AS_OF_INT');
+        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+        $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+        $high_interest = bh_session_get_value('MARK_AS_OF_INT');
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -282,19 +282,19 @@ if (isset($_POST['t_sig_html'])) {
         $sig_html = 2;
     }
 
-	$fetched_sig = false;
+        $fetched_sig = false;
 
 } else {
-	// Fetch the current user's sig
-	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+        // Fetch the current user's sig
+        user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 
-	if ($t_sig_html != "N") {
-		$sig_html = 2;
-	}
+        if ($t_sig_html != "N") {
+                $sig_html = 2;
+        }
 
-	$t_sig = tidy_html($t_sig, false);
+        $t_sig = tidy_html($t_sig, false);
 
-	$fetched_sig = true;
+        $fetched_sig = true;
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -457,21 +457,21 @@ $allow_html = true;
 $allow_sig = true;
 
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
-	$allow_html = false;
+        $allow_html = false;
 }
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
-	$allow_sig = false;
+        $allow_sig = false;
 }
 
 if ($allow_html == false) {
-	if ($post->getHTML() > 0) {
-		$post->setHTML(false);
-		$t_content = $post->getContent();
-	}
-	if ($sig->getHTML() > 0) {
-		$sig->setHTML(false);
-		$t_sig = $sig->getContent();
-	}
+        if ($post->getHTML() > 0) {
+                $post->setHTML(false);
+                $t_content = $post->getContent();
+        }
+        if ($sig->getHTML() > 0) {
+                $sig->setHTML(false);
+                $t_sig = $sig->getContent();
+        }
 }
 
 
@@ -773,8 +773,8 @@ echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClic
 if (perm_is_moderator($t_fid)) {
 
     echo "<h2>".$lang['admin'].":</h2>\n";
-    echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
-    echo "<br />".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
+    echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
+    echo form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br /><br />\n";
     echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
     echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
 }
@@ -833,19 +833,19 @@ if ($post->isDiff()) {
 
 if ($allow_html == true) {
 
-	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-	$tph_radio = $post->getHTML();
+        $tph_radio = $post->getHTML();
 
-	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
 
 } else {
 
-	echo form_input_hidden("t_post_html", "disabled");
+        echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
@@ -867,19 +867,19 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_pe
 
 if ($allow_sig == true) {
 
-	echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
+        echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-	$t_sig = $sig->getTidyContent();
+        $t_sig = $sig->getTidyContent();
 
-	echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+        echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-	echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+        echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-	if ($sig->isDiff() && !$fetched_sig) {
+        if ($sig->isDiff() && !$fetched_sig) {
 
-		echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+                echo $tools->compare_original("t_sig", $sig->getOriginalContent());
 
-	}
+        }
 }
 
 echo "</td></tr>\n";

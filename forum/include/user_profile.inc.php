@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.28 2004-04-24 18:42:47 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.29 2004-08-16 22:07:13 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/profile.inc.php");
@@ -43,6 +43,62 @@ function user_profile_update($uid, $piid, $entry)
         $sql.= "VALUES ($uid, $piid, '$entry')";
 
         return db_query($sql, $db_user_profile_update);
+    }
+
+    return false;
+}
+
+function user_get_profile($uid)
+{
+    $db_user_get_profile = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    // UID of the user viewing the profile data
+
+    $peer_uid = bh_session_get_value('UID');
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $user_prefs = user_get_prefs($uid);
+
+    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "COUNT(POST.FROM_UID) AS POST_COUNT FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
+    $sql.= "ON (VISITOR_LOG.UID = USER.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ";
+    $sql.= "ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "WHERE USER.UID = '$uid' ";
+    $sql.= "GROUP BY USER.UID";
+
+    $result = db_query($sql, $db_user_get_profile);
+
+    if (db_num_rows($result) > 0) {
+
+        $user_profile = db_fetch_array($result);
+
+        if (isset($last_logon['ANON_LOGON']) && $last_logon['ANON_LOGON'] <> 0) {
+            $user_profile['LAST_LOGON'] = "Unknown";
+        }else {
+            $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_LOGON']);
+        }
+
+        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 2 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
+            $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
+        }
+
+        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] > 0 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
+            $user_profile['AGE'] = format_age($user_prefs['DOB']);
+        }
+
+        if (isset($user_prefs['PIC_URL']) && strlen($user_prefs['PIC_URL']) > 0) {
+            $user_profile['PIC_URL'] = $user_prefs['PIC_URL'];
+        }
+
+        return $user_profile;
     }
 
     return false;

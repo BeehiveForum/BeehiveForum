@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.18 2003-12-16 00:30:34 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.19 2003-12-17 18:50:50 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -135,7 +135,7 @@ function light_form_radio($name, $value, $text, $checked = false)
     return $html . " />$text</span>";
 }
 
-function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
+function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
     global $HTTP_SERVER_VARS, $lang;
 
@@ -348,13 +348,12 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
     // Work out what relationship the user has to the user who posted the poll
     $polldata['FROM_RELATIONSHIP'] = user_rel_get(bh_session_get_value('UID'), $polldata['FROM_UID']);
 
-    light_message_display($tid, $polldata, $msg_count, $first_msg, $in_list, $closed, $limit_text, true);
+    light_message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
 
 }
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
 {
-
     global $maximum_post_length, $attachment_dir, $lang;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
@@ -436,15 +435,25 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} ".$message['PID'] . " {$lang['of']} " . $msg_count."</i></p>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-            $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
-            $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
-            $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
-            $message['CONTENT'] = "";
-            for ($i=0; $i<count($msg_split); $i++) {
-                if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-                $message['CONTENT'] .= $msg_split[$i];
-            }
-            $message['CONTENT'] .= "</div>";
+	    
+	    if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
+		
+		$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
+
+		$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split) - 1]);
+
+		$msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
+
+		$message['CONTENT'] = "";
+
+		for ($i = 0; $i < count($msg_split); $i++) {
+
+		    if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
+		    $message['CONTENT'].= $msg_split[$i];
+		}
+		
+		$message['CONTENT'].= "</div>";
+	    }
         }
 
         echo "<p>". $message['CONTENT']. "</p>\n";
@@ -452,15 +461,14 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         echo "<p>\n";
 
-        if($in_list && $limit_text != false){
+        if ($in_list && $limit_text != false) {
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
                 echo "<a href=\"lpost.php?replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
 
             }
-
-
         }
+
         echo "</p>\n";
         echo "<hr />";
 }

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.21 2003-11-27 19:36:06 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.22 2003-12-17 18:50:49 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -76,6 +76,8 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     header_redirect($uri);
 
 }
+
+$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
@@ -454,11 +456,11 @@ if (!$newthread) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      light_poll_display($reply_to_tid,$threaddata['LENGTH'],0,false,false,false);
+      light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
 
     }else {
 
-      light_message_display(0,$threaddata['LENGTH'],0,0,true,false,false,false,false);
+      light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
 
     }
 

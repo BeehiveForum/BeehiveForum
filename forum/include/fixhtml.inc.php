@@ -63,21 +63,30 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				}
 				$tag = strtolower($tag);
 				if (in_array($tag, $htmltags)) {
-					if ($tag == "code") {
+					if ($tag == "code" && $close == true) {
+						$html_parts[$i] = "/pre";
+					} else if ($tag == "code") {
 						$tmpcode = "";
 						$html_parts[$i] = "pre class=\"code\"";
+						$open_code = 1;
 						for ($j=$i+1;$j<count($html_parts);$j++) {
 							if ($j%2) {
 								if (substr($html_parts[$j], 0, 5) == "/code") {
-									$html_parts[$j] = "/pre";
-//									$tmpcode = preg_replace("/([^\n]{80})/", "$1\n", $tmpcode);
-									array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
-									$tmpcode = "<closed>";
-									break;
+									if ($open_code == 1) {
+										$html_parts[$j] = "/pre";
+	//									$tmpcode = preg_replace("/([^\n]{80})/", "$1\n", $tmpcode);
+										array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
+										$tmpcode = "<closed>";
+										break;
+									} else {
+										$open_code--;
+									}
 
-								} else {
-									$tmpcode .= htmlspecialchars("<".$html_parts[$j].">");
+								} else if (substr($html_parts[$j], 0, 4) == "code") {
+									$open_code++;
 								}
+								$tmpcode .= htmlspecialchars("<".$html_parts[$j].">");
+
 							} else {
 								$tmpcode .= $html_parts[$j];
 							}
@@ -546,7 +555,7 @@ function tidy_html ($html, $linebreaks = true) {
 	// make <quote source=".." url="..">..</quote> tag
 	$html_left = "";
 	$html_right = $html;
-	while ($pos = strpos($html_right, "<div class=\"quotetext\"><b>quote: </b>")) {
+	while (($pos = strpos($html_right, "<div class=\"quotetext\"><b>quote: </b>")) > -1) {
 		$html_left .= substr($html_right, 0, $pos);
 		$matches = array();
 

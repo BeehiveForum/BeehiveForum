@@ -4,7 +4,7 @@
 # http://phpmyadmin.sourceforge.net/ (download page)
 #
 # Host: mysql.sourceforge.net
-# Generation Time: May 24, 2002 at 03:46 AM
+# Generation Time: May 28, 2002 at 04:16 AM
 # Server version: 3.23.36
 # PHP Version: 4.0.6
 # Database : `beehiveforum`
@@ -132,6 +132,7 @@ CREATE TABLE USER (
   NICKNAME varchar(32) default NULL,
   EMAIL varchar(80) default NULL,
   STATUS int(16) default NULL,
+  LAST_LOGON timestamp(14) NOT NULL,
   PRIMARY KEY  (UID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

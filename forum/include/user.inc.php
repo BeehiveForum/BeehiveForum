@@ -108,6 +108,7 @@ function user_logon($logon,$password)
     } else {
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
+        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid",$db);
     }
 
     db_disconnect($db);

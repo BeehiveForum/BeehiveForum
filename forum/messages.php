@@ -26,6 +26,8 @@ require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/messages.inc.php"); // Message processing functions
 require_once("./include/folder.inc.php"); // Folder processing functions
+require_once("./include/beehive.inc.php"); // Beehive stuff
+require_once("./include/constants.inc.php");
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -54,6 +56,8 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
 
 $messages = messages_get($tid,$pid,$ppp);
 $threaddata = thread_get($tid);
+$closed = isset($threaddata['CLOSED']);
+if($closed) echo "<p>closed</p>";
 $foldertitle = folder_get_title($threaddata['FID']);
 
 $msg_count = count($messages);
@@ -63,13 +67,30 @@ messages_top($foldertitle,stripslashes($threaddata['TITLE']));
 if($msg_count>0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
-        message_display($tid,$message,$threaddata['LENGTH'],$first_msg);
+        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed);
         $last_pid = $message['PID'];
     }
 }
 
+if($last_pid < $threaddata['LENGTH']){
+    $npid = $last_pid + 1;
+    echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
+    echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?msg=$tid.$npid\">\n";
+    echo "<button class=\"button\">Keep reading</button>\n</a></td></tr></table>\n";
+}
+
+messages_start_panel();
+
 messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
-messages_bottom();
+messages_interest_form($tid,$pid);
+
+if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+    messages_admin_form($tid,$pid);
+}
+
+messages_end_panel();
+
+draw_beehive_bar();
 html_draw_bottom();
 
 if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid'])){

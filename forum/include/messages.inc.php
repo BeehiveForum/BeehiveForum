@@ -201,10 +201,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
+    
+    // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
+    if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+        $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
+        $temp_ignore = true;
+    }
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
-    } else if($message['FROM_RELATIONSHIP'] & USER_IGNORED) {
+    } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
         echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
     }
 

@@ -25,6 +25,7 @@ USA
 
 require_once('./include/messages.inc.php');
 require_once('./include/thread.inc.php');
+require_once('./include/user_rel.inc.php');
 
 function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $show_results)
 {
@@ -370,6 +371,9 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
     $polldata['CONTENT'].= "<br><br>\n";
+    
+    // Work out what relationship the user has to the user who posted the poll
+    $polldata['FROM_RELATIONSHIP'] = user_rel_get($HTTP_COOKIE_VARS['bh_sess_uid'], $polldata['FROM_UID']);
 
     message_display($tid, $polldata, $msg_count, $first_msg, $in_list, $closed, $limit_text, true);
 

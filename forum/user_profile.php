@@ -141,38 +141,6 @@ if ($uid != $your_uid) {
     
     echo "<tr><td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td></tr>";
 }
-/*
-$sql = "select RELATIONSHIP from " . forum_table("USER_PEER") . " USER_PEER ";
-$sql.= "where UID = '" . $HTTP_COOKIE_VARS['bh_sess_uid'] . "' ";
-$sql.= "and PEER_UID = '$uid'";
-
-$result = db_query($sql,$db);
-$row = db_fetch_array($result);
-
-if($row['RELATIONSHIP'] != 1){
-    $setrel = 1;
-    $text = "Add to friends";
-} else {
-    $setrel = 0;
-    $text = "Remove from friends";
-}
-
-echo "<tr><td><a href=\"./set_relation.php?uid=$uid&rel=$setrel&ret=";
-echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?uid=$uid&psid=$psid";
-echo "\">$text</a></td></tr>\n";
-
-if($row['RELATIONSHIP'] != -1){
-    $setrel = -1;
-    $text = "Ignore user";
-} else {
-    $setrel = 0;
-    $text = "Stop ignoring user";
-}
-
-echo "<tr><td><a href=\"./set_relation.php?uid=$uid&rel=$setrel&ret=";
-echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?uid=$uid&psid=$psid";
-echo "\">$text</a></td></tr>\n";
-*/
 
 echo "</table>";
 html_draw_bottom();

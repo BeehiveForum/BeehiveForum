@@ -82,7 +82,7 @@ html_draw_top_script();
 
 $rel = user_rel_get($my_uid, $uid);
 
-echo "<h1>User Relationship: $uname</h1>\n";
+echo "<h1>User Relationship: $uname - $rel</h1>\n";
 ?>
 
 <div class="postbody">
@@ -98,7 +98,7 @@ echo "<h1>User Relationship: $uname</h1>\n";
         <td width="370">: User's posts marked with a &quot;Friend&quot; icon.</td>
       </tr>
       <tr>
-        <td width="130"><?php echo form_radio("rel", "0", "Normal", $rel ^ USER_IGNORED && $rel ^ USER_FRIEND ? true : false); ?></td>
+        <td width="130"><?php echo form_radio("rel", "0", "Normal", !(($rel & USER_IGNORED) || ($rel & USER_FRIEND)) ? true : false); ?></td>
         <td width="370">: User's posts appear as normal.</td>
       </tr>
       <tr>

@@ -45,7 +45,23 @@ html_draw_top();
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-  echo "Yes, thats right, this doesn't do anything at the moment, but it certainly had you going didn't it?";
+  echo "Yes, thats right, this doesn't do anything at the moment, but it certainly had you going didn't it?<br /><br />";
+  echo "Method: ". $HTTP_POST_VARS['method']. "<br />\n";
+  echo "Search String: ". $HTTP_POST_VARS['search_string']. "<br />\n";
+  echo "Folder ID: ". $HTTP_POST_VARS['t_fid']. "<br />\n";
+
+  if (isset($HTTP_POST_VARS['to_other'])) {
+    echo "Messages To User: ". $HTTP_POST_VARS['to_other']. "<br />\n";
+  }else{
+    echo "Messages To User: ". $HTTP_POST_VARS['t_to_uid']. "<br />\n";
+  }
+  
+  echo "Date From: ". $HTTP_POST_VARS['posted_from']. "<br />\n";
+  echo "Date To: ". $HTTP_POST_VARS['posted_to']. "<br />\n";
+  echo "Order By: ". $HTTP_POST_VARS['order_by']. "<br />\n";
+  
+  if (isset($HTTP_POST_VARS['me_only'])) echo "Me only<br />\n";
+
   html_draw_bottom();
   exit;
   
@@ -60,7 +76,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td><?php echo form_dropdown_array("method", range(1,3), array("Containing all of the words", "Containing any of the words", "Containing the exact phrase"), 1). "&nbsp;". form_input_text("searchstring", "", 20). "&nbsp;". form_submit("submit", "Find"); ?></td>
+    <td><?php echo form_dropdown_array("method", range(1,3), array("Containing all of the words", "Containing any of the words", "Containing the exact phrase"), 1). "&nbsp;". form_input_text("search_string", "", 20). "&nbsp;". form_submit("submit", "Find"); ?></td>
   </tr>
   <tr>
     <td class="postbody" colspan="2">&nbsp;</td>
@@ -82,11 +98,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
   <tr>
     <td align="right" class="postbody">Posted From:</td>
-    <td><?php echo form_dropdown_array("posted_from", range(1, 12), array("Today", "Yesterday", "Day before yesterday", "1 week", "2 weeks", "3 weeks", "1 month", "2 months", "3 months", "6 months", "1 year", "Beginning of time"), 1); ?></td>
+    <td><?php echo form_dropdown_array("date_from", range(1, 12), array("Today", "Yesterday", "Day before yesterday", "1 week", "2 weeks", "3 weeks", "1 month", "2 months", "3 months", "6 months", "1 year", "Beginning of time"), 1); ?></td>
   </tr>
   <tr>
     <td align="right" class="postbody">Posted To:</td>
-    <td><?php echo form_dropdown_array("posted_from", range(1, 13), array("Now", "Today", "Yesterday", "Day before yesterday", "1 week", "2 weeks", "3 weeks", "1 month", "2 months", "3 months", "6 months", "1 year", "Beginning of time"), 2); ?></td>
+    <td><?php echo form_dropdown_array("date_to", range(1, 13), array("Now", "Today", "Yesterday", "Day before yesterday", "1 week", "2 weeks", "3 weeks", "1 month", "2 months", "3 months", "6 months", "1 year", "Beginning of time"), 2); ?></td>
   </tr>
   <tr>
     <td align="right" class="postbody">Order by:</td>
@@ -94,7 +110,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td><?php echo form_checkbox("from_to_me_only", "Y", "Only show messages to or from me", false); ?></td>
+    <td><?php echo form_checkbox("me_only", "Y", "Only show messages to or from me", false); ?></td>
   </tr>
   <tr>
     <td>&nbsp;</td>

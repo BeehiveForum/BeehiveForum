@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.18 2004-03-19 15:00:15 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.19 2004-03-19 15:27:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -67,21 +67,21 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
     if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
         foreach ($HTTP_POST_VARS['match'] as $key => $value) {
-            $preg_expr = (isset($HTTP_POST_VARS['preg_expr'][$key]) && $HTTP_POST_VARS['preg_expr'][$key] == "Y") ? 1 : 0;
+            $filter_option = (isset($HTTP_POST_VARS['filter_option'][$key])) ? $HTTP_POST_VARS['filter_option'][$key] : 0;
             if (isset($HTTP_POST_VARS['replace'][$key]) && trim(strlen($HTTP_POST_VARS['replace'][$key])) > 0) {
-                user_add_word_filter($HTTP_POST_VARS['match'][$key], $HTTP_POST_VARS['replace'][$key], $preg_expr);
+                user_add_word_filter($HTTP_POST_VARS['match'][$key], $HTTP_POST_VARS['replace'][$key], $filter_option);
             }else {
-                user_add_word_filter($HTTP_POST_VARS['match'][$key], "", $preg_expr);
+                user_add_word_filter($HTTP_POST_VARS['match'][$key], "", $filter_option);
             }
         }
     }
     
     if (isset($HTTP_POST_VARS['new_match']) && strlen(trim($HTTP_POST_VARS['new_match'])) > 0) {
-        $preg_expr = (isset($HTTP_POST_VARS['new_preg_expr']) && $HTTP_POST_VARS['new_preg_expr'] == "Y") ? 1 : 0;
+        $filter_option = (isset($HTTP_POST_VARS['new_filter_option'])) ? $HTTP_POST_VARS['new_filter_option'][$key] : 0;
         if (isset($HTTP_POST_VARS['new_replace']) && strlen(trim($HTTP_POST_VARS['new_replace'])) > 0) {
-            user_add_word_filter($HTTP_POST_VARS['new_match'], $HTTP_POST_VARS['new_replace'], $preg_expr);
+            user_add_word_filter($HTTP_POST_VARS['new_match'], $HTTP_POST_VARS['new_replace'], $filter_option);
         }else {
-            user_add_word_filter($HTTP_POST_VARS['new_match'], "", $preg_expr);
+            user_add_word_filter($HTTP_POST_VARS['new_match'], "", $filter_option);
         }
     }
     
@@ -127,7 +127,7 @@ echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 
 
 echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php?webtag={$webtag['WEBTAG']}\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -136,9 +136,11 @@ echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['matchedtext']}</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['replacementtext']}</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['preg']}</td>\n";
+echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['matchedtext']}&nbsp;</td>\n";
+echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['replacementtext']}&nbsp;</td>\n";
+echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['all']}&nbsp;</td>\n";
+echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['wholeword']}&nbsp;</td>\n";
+echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['preg']}&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" width=\"75\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
@@ -155,7 +157,9 @@ foreach ($word_filter_array as $key => $word_filter) {
         echo "                  <td>&nbsp;</td>\n";    
         echo "                  <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
         echo "                  <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
-        echo "                  <td align=\"center\">", form_checkbox("preg_expr[$key]", "Y", "", $word_filter['PREG_EXPR']), "</td>\n";
+        echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "0", "", $word_filter['FILTER_OPTION'] == 0), "</td>\n";
+        echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "1", "", $word_filter['FILTER_OPTION'] == 1), "</td>\n";
+        echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "2", "", $word_filter['FILTER_OPTION'] == 2), "</td>\n";        
         echo "                  <td align=\"center\">", form_submit("delete[$key]", $lang['delete']), "</td>\n";
     }
     
@@ -166,7 +170,9 @@ echo "                <tr>\n";
 echo "                  <td>{$lang['newcaps']}</td>\n";
 echo "                  <td>", form_input_text("new_match", "", 30), "</td>\n";
 echo "                  <td>", form_input_text("new_replace", "", 30), "</td>\n";
-echo "                  <td align=\"center\">", form_checkbox("new_preg_expr", "Y", "", false), "</td>\n";
+echo "                  <td align=\"center\">", form_radio("new_filter_option", "0", "", true), "</td>\n";
+echo "                  <td align=\"center\">", form_radio("new_filter_option", "1", "", false), "</td>\n";
+echo "                  <td align=\"center\">", form_radio("new_filter_option", "2", "", false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -179,7 +185,7 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

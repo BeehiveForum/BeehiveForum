@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.84 2004-03-19 13:53:08 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.85 2004-03-19 15:27:31 decoyduck Exp $ */
 
 // International English language file
 
@@ -320,6 +320,7 @@ $lang['madethreadnonsticky'] = "Made Thread Non-sticky";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
+$lang['wholeword'] = "Whole Word";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

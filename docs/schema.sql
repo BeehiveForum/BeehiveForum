@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Dec 07, 2003 at 21:15 PM
 #
-# $Id: schema.sql,v 1.55 2003-12-07 21:29:36 decoyduck Exp $
+# $Id: schema.sql,v 1.56 2003-12-11 12:49:34 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -74,7 +74,7 @@ CREATE TABLE FOLDER (
   ACCESS_LEVEL tinyint(4) default '0',
   DESCRIPTION varchar(255) default NULL,
   ALLOWED_TYPES tinyint(3) default NULL,
-  POSITION mediumint(8) unsigned default '0',
+  POSITION mediumint(3) unsigned default '0',
   PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
 
@@ -165,8 +165,8 @@ CREATE TABLE PM (
   FROM_UID mediumint(8) unsigned NOT NULL default '0',
   SUBJECT varchar(64) NOT NULL default '',
   CREATED datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (MID),
-  KEY LID (MID)
+  PRIMARY KEY (MID),
+  KEY TO_UID (TO_UID)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -220,7 +220,7 @@ CREATE TABLE POLL (
 CREATE TABLE POLL_VOTES (
   TID mediumint(8) unsigned NOT NULL default '0',
   OPTION_ID mediumint(8) unsigned NOT NULL auto_increment,
-  OPTION_NAME char(255) NOT NULL default '0',
+  OPTION_NAME char(255) NOT NULL default '',
   GROUP_ID mediumint(8) unsigned NOT NULL default '0',
   VOTES mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (TID,OPTION_ID)
@@ -243,8 +243,10 @@ CREATE TABLE POST (
   STATUS tinyint(4) default '0',
   EDITED datetime default NULL,
   EDITED_BY mediumint(8) unsigned NOT NULL default '0',
+  IPADDRESS varchar(15) NOT NULL default '',
   PRIMARY KEY  (TID,PID),
-  KEY TO_UID (TO_UID)
+  KEY TO_UID (TO_UID),
+  KEY IPADDRESS (IPADDRESS)
 ) TYPE=MyISAM;
 
 #
@@ -315,7 +317,7 @@ CREATE TABLE PROFILE_ITEM (
   PSID mediumint(8) unsigned default NULL,
   NAME varchar(64) default NULL,
   TYPE tinyint(3) unsigned default '0',
-  POSITION mediumint(8) unsigned default '0',
+  POSITION mediumint(3) unsigned default '0',
   PRIMARY KEY  (PIID)
 ) TYPE=MyISAM;
 
@@ -338,7 +340,7 @@ INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (6, 1, 'Birthday (DD/MM)');
 CREATE TABLE PROFILE_SECTION (
   PSID mediumint(8) unsigned NOT NULL auto_increment,
   NAME varchar(64) default NULL,
-  POSITION mediumint(8) unsigned default '0',
+  POSITION mediumint(3) unsigned default '0',
   PRIMARY KEY  (PSID)
 ) TYPE=MyISAM;
 

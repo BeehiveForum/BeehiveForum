@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.130 2004-10-07 21:55:36 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.131 2004-10-07 22:13:20 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -129,25 +129,7 @@ function bh_session_check($add_guest_sess = true)
 
                     $result = db_query($sql, $db_bh_session_check);
 
-                    $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
-                    $sql.= "WHERE UID = {$user_sess['UID']} AND FID = '$fid'";
-
-                    $result = db_query($sql, $db_bh_session_check);
-
-                    if (db_num_rows($result) > 0) {
-
-                        $sql = "UPDATE LOW_PRIORITY VISITOR_LOG SET LAST_LOGON = NOW() ";
-                        $sql.= "WHERE UID = {$user_sess['UID']} AND FID = '$fid'";
-
-                        $result = db_query($sql, $db_bh_session_check);
-
-                    }else {
-
-                        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                        $sql.= "VALUES ({$user_sess['UID']}, '$fid', NOW())";
-
-                        $result = db_query($sql, $db_bh_session_check);
-                    }
+                    bh_update_visitor_log($user_sess['UID']);
                 }
 
                 // Everything checks out OK. If the user's session is older
@@ -302,11 +284,59 @@ function bh_session_get_value($session_key)
     return false;
 }
 
+// Delete expired sessions
+
+function bh_remove_stale_sessions()
+{
+    $db_bh_remove_stale_sessions = db_connect();
+
+    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
+
+    $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
+    $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
+
+    return db_query($sql, $db_bh_remove_stale_sessions);
+}
+
+// Updates the visitor log for the current user
+
+function bh_update_visitor_log($uid)
+{
+    if (!is_numeric($uid)) return false;
+
+    $db_bh_update_visitor_log = db_connect();
+
+    if ($table_data = get_table_prefix()) {
+        $fid = $table_data['FID'];
+    }else {
+        $fid = 0;
+    }
+
+    $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
+    $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+
+    $result = db_query($sql, $db_bh_update_visitor_log);
+
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE LOW_PRIORITY VISITOR_LOG SET LAST_LOGON = NOW() ";
+        $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+
+    }else {
+
+        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
+        $sql.= "VALUES ('$uid', '$fid', NOW())";
+    }
+
+    return db_query($sql, $db_bh_update_visitor_log);
+}
+
 // Initialises the session
 
 function bh_session_init($uid)
 {
     $db_bh_session_init = db_connect();
+
     $ipaddress = get_ip_address();
 
     if ($table_data = get_table_prefix()) {
@@ -317,45 +347,35 @@ function bh_session_init($uid)
 
     $forum_settings = get_forum_settings();
 
-    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
+    // Check to see if the user alredy hash a session
+    // and reuse it if we can.
 
-    // Delete expires sessions
-
-    $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
-    $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
-
-    db_query($sql, $db_bh_session_init);
-
-    // Generate a unique random MD5 hash for the user's cookie
-    // from their IP Address.
-
-    $user_hash = md5(uniqid($ipaddress));
-
-    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-    $sql.= "VALUES ('$user_hash', '$uid', '$fid', ";
-    $sql.= "'$ipaddress', NOW())";
-
-    $result = db_query($sql, $db_bh_session_init);
-
-    $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
-    $sql.= "WHERE UID = $uid AND FID = '$fid'";
-
+    $sql = "SELECT HASH FROM SESSIONS WHERE UID = '$uid'";
     $result = db_query($sql, $db_bh_session_init);
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE LOW_PRIORITY VISITOR_LOG SET LAST_LOGON = NOW() ";
-        $sql.= "WHERE UID = $uid AND FID = '$fid'";
+        $user_sess = db_fetch_array($result);
+        $user_hash = $user_sess['HASH'];
 
-        $result = db_query($sql, $db_bh_session_init);
+        $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
+        $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
 
     }else {
 
-        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-        $sql.= "VALUES ($uid, '$fid', NOW())";
+        // Generate a unique random MD5 hash for the user's cookie
+        // from their IP Address.
 
-        $result = db_query($sql, $db_bh_session_init);
+        $user_hash = md5(uniqid($ipaddress));
+
+        $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
+        $sql.= "VALUES ('$user_hash', '$uid', '$fid', ";
+        $sql.= "'$ipaddress', NOW())";
     }
+
+    $result = db_query($sql, $db_bh_session_init);
+
+    bh_update_visitor_log($uid);
 
     bh_setcookie('bh_sess_hash', $user_hash);
 }
@@ -366,7 +386,7 @@ function bh_session_end()
 {
     $db_bh_session_end = db_connect();
 
-    if (isset($_COOKIE['bh_sess_hash'])) {
+    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
 
         $user_hash = $_COOKIE['bh_sess_hash'];
 
@@ -388,6 +408,7 @@ function bh_session_end()
 }
 
 // IIS does not support the REQUEST_URI server var, so we will make one for it
+
 function get_request_uri($rawurlencode = false)
 {
     $request_uri = "{$_SERVER['PHP_SELF']}?";

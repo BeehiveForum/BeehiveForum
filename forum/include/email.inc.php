@@ -64,7 +64,7 @@ function email_sendnotification($tuid, $msg, $fuid)
         		
        		$message = strtoupper($mailfrom['LOGON']). " posted a message to you on Beehive Forum\n\n";
        		$message.= "To read that message and others in the same discussion, go to:\n";
-       		$message.= "http://beehiveforum.sourceforge.net/forum/messages.php?msg=$msg\n\n";
+       		$message.= "http://beehiveforum.sourceforge.net/forum/?msg=$msg\n\n";
        		$message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
        		$message.= "Note: If you do not wish to receive email notifications of Forum messages\n";
        		$message.= "posted to you, go to http://beehiveforum.sourceforge.net/forum/, click\n";

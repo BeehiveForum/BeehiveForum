@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.90 2004-09-08 21:56:55 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.91 2004-09-08 22:37:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -185,7 +185,16 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
         if ($user_prefs['PM_INCLUDE_REPLY'] == 'Y') {
 
-            $t_content = "\n\nIn Reply To:\n============\n\n{$pm_data['CONTENT']}";
+            $t_content_array = explode("\n", wordwrap(trim($pm_data['CONTENT']), 72, "\n", 0));
+
+            foreach($t_content_array as $key => $t_content_line) {
+                $t_content_array[$key] = "> {$t_content_line}";
+            }
+
+            $t_content = format_user_name($pm_data['TLOGON'], $pm_data['TNICK']);
+            $t_content.= " wrote:\n";
+            $t_content.= implode("\n", $t_content_array);
+            $t_content.= "\n\n";
         }
 
     }else {

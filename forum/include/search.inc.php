@@ -183,8 +183,11 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
 
     }elseif ($argarray['method'] == 3) { // EXACT
 
-      $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes(trim($argarray['search_string'])). "%'";
-      $searchsql.= " OR POST_CONTENT.CONTENT LIKE '%". _addslashes(trim($argarray['search_string'])). "%<div class=\"sig\">%')";
+      //$searchsql.= $folders. " AND (THREAD.TITLE LIKE '". _addslashes(trim($argarray['search_string'])). "% '";
+      //$searchsql.= " OR POST_CONTENT.CONTENT LIKE '%". _addslashes(trim($argarray['search_string'])). "% <div class=\"sig\">%')";
+
+      $searchsql.= $folders. " AND INSTR(THREAD.TITLE, ' ". _addslashes(trim($argarray['search_string'])). " ')";
+      $searchsql.= " OR INSTR(POST_CONTENT.CONTENT, ' ". _addslashes(trim($argarray['search_string'])). " ')";
       $searchsql.= $daterange;
 
       if ($argarray['me_only'] == 'Y') {
@@ -207,12 +210,13 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
 
   }
 
+  $searchsql.= " GROUP BY THREAD.TID";
+
   if ($argarray['order_by'] == 2) {
     $searchsql.= " ORDER BY POST.CREATED DESC";
   }elseif($argarray['order_by'] == 3) {
     $searchsql.= " ORDER BY POST.CREATED";
   }
-
   $searchsql.= " LIMIT ". $argarray['sstart']. ", 50";
 
   $urlquery = "&fid=". $argarray['fid']. "&date_from=". $argarray['date_from']. "&date_to=". $argarray['date_to'];

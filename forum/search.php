@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.103 2005-03-07 22:39:54 decoyduck Exp $ */
+/* $Id: search.php,v 1.104 2005-03-09 19:13:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -174,15 +174,19 @@ if (isset($_POST['search_string'])) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_radio("user_include", 1, "Posts from user", true), "&nbsp;", "</td>\n";
+    echo "                  <td>", form_radio("user_include", 1, $lang['postsfromuser'], true), "&nbsp;", "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_radio("user_include", 2, "Posts to user", false), "&nbsp;", "</td>\n";
+    echo "                  <td>", form_radio("user_include", 2, $lang['poststouser'], false), "&nbsp;", "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_radio("user_include", 3, "Posts to and from user", false), "&nbsp;", "</td>\n";
+    echo "                  <td>", form_radio("user_include", 3, $lang['poststoandfromuser'], false), "&nbsp;", "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>", form_radio("user_include", 4, $lang['poststoandfrommeonly'], false), "&nbsp;", "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
@@ -230,20 +234,8 @@ if (isset($_POST['search_string'])) {
     echo "                  <td>", form_dropdown_array("order_by", range(1, 3), array($lang['relevance'], $lang['newestfirst'], $lang['oldestfirst']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;{$lang['search']}:</td>\n";
-    echo "                  <td>", form_radio("include", 1, "Thread Titles only", false), "&nbsp;", "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_radio("include", 2, "Thread Title and Posts only", true), "&nbsp;", "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_checkbox("me_only", "Y", $lang['onlyshowmessagestoorfromme'], false), "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_checkbox("group_by_thread", "Y", $lang['groupsresultsbythread'], false), "&nbsp;</td>\n";
+    echo "                  <td>&nbsp;{$lang['groupbythread']}:</td>\n";
+    echo "                  <td>", form_radio("group_by_thread", "Y", $lang['yes'], true), "&nbsp;", form_radio("group_by_thread", "Y", $lang['no'], false), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";

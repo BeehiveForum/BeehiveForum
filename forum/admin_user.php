@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.96 2004-05-19 00:27:28 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.97 2004-05-19 21:12:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -202,7 +202,7 @@ if (isset($_POST['del'])) {
 
             $t_update_perms_array = $_POST['t_update_perms_array'];
 
-            foreach ($t_update_perms_array as $gid) {
+            foreach ($t_update_perms_array as $gid => $fid) {
 
                 $t_post_read     = (isset($_POST['t_post_read'][$gid]))     ? $_POST['t_post_read'][$gid]     : 0;
                 $t_post_create   = (isset($_POST['t_post_create'][$gid]))   ? $_POST['t_post_create'][$gid]   : 0;
@@ -216,7 +216,7 @@ if (isset($_POST['del'])) {
                 $new_folder_perms = (double)$new_folder_perms | $t_post_edit | $t_post_delete;
                 $new_folder_perms = (double)$new_folder_perms | $t_moderator | $t_post_attach;
 
-                perm_update_perms($gid, $new_folder_perms);
+                perm_user_update_folder_perms($gid, $fid, $new_folder_perms);
                 $updated_folder_perms = true;
             }
         }
@@ -239,7 +239,7 @@ if (isset($_POST['del'])) {
                 $new_folder_perms = (double)$new_folder_perms | $t_post_edit | $t_post_delete | $t_post_attach;
                 $new_folder_perms = (double)$new_folder_perms | $t_moderator | $t_post_attach;
 
-                perm_user_add_perms($uid, $fid, $new_folder_perms);
+                perm_user_add_folder_perms($uid, $fid, $new_folder_perms);
                 $updated_folder_perms = true;
             }
         }
@@ -442,7 +442,7 @@ if (isset($_POST['t_delete_posts'])) {
 
             if ($user_folder_permissions = user_get_folder_perms($uid, $folder['FID'])) {
 
-                echo "                                  ", form_input_hidden("t_update_perms_array[]", $user_folder_permissions['GID']), "\n";
+                echo "                                  ", form_input_hidden("t_update_perms_array[{$user_folder_permissions['GID']}]", $folder['FID']), "\n";
                 echo "                                  <table class=\"posthead\" width=\"100%\">\n";
                 echo "                                    <tr>\n";
                 echo "                                      <td width=\"100\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";

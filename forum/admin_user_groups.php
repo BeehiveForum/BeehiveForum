@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.1 2004-05-19 00:27:28 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.2 2004-05-19 21:12:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -109,6 +109,10 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+if (isset($_POST['addnew'])) {
+    header_redirect("./admin_user_groups_add.php?webtag=$webtag");
+}
+
 html_draw_top('admin.js');
 
 if (!(perm_has_admin_access())) {
@@ -121,7 +125,7 @@ if (!(perm_has_admin_access())) {
 echo "<h1>{$lang['admin']} : {$lang['usergroups']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
+echo "<form name=\"f_folders\" action=\"admin_user_groups.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -131,49 +135,28 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">{$lang['usergroups']}:</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['groups']}</td>\n";
 echo "                </tr>\n";
 
 if ($user_groups_array = perm_get_user_groups()) {
 
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"box\" width=\"90%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td class=\"posthead\">\n";
-    echo "                          <table class=\"posthead\" width=\"100%\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td class=\"subhead\">&nbsp;Group Name</td>\n";
-    echo "                              <td class=\"subhead\">&nbsp;Users in Group</td>\n";
-    echo "                            </tr>\n";
-
     foreach ($user_groups_array as $user_group) {
 
-        echo "                            <tr>\n";
-        echo "                              <td>&nbsp;{$user_group['GROUP_NAME']}</td>\n";
-        echo "                              <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
-        echo "                            </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;<a href=\"admin_user_group_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                </tr>\n";
     }
 
+}else {
 
-    echo "                            <tr>\n";
-    echo "                              <td>&nbsp;</td>\n";
-    echo "                              <td>&nbsp;</td>\n";
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td colspan=\"2\">&nbsp;{$lang['nousergroups']}</td>\n";
     echo "                </tr>\n";
 }
 
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -185,7 +168,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("addnew", $lang['addnewfolder']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("addnew", $lang['addnewgroup']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

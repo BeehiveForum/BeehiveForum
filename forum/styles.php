@@ -25,6 +25,9 @@ USA
 
 require_once("./include/session.inc.php");
 require_once("./include/user.inc.php");
+require_once("./include/header.inc.php");
+
+header_no_cache();
 
 if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 

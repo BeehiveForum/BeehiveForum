@@ -41,8 +41,7 @@ require_once("./include/form.inc.php");
 
 function error_handler($errno, $errstr, $errfile, $errline)
 {
-
-    global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS, $gzip_compress_output;
+    global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS;
 
     $getvars = "";
     foreach ($HTTP_GET_VARS as $key => $value) {
@@ -58,16 +57,7 @@ function error_handler($errno, $errstr, $errfile, $errline)
     srand((double)microtime()*1000000);
 
     ob_end_clean();
-
-    if ($gzip_compress_output) { // && (phpversion() >= '4.2')) {
-        if (isset($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING']) && strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-            ob_start("ob_gzhandler");
-        }else{
-            ob_start();
-        }
-    }else {
-        ob_start();
-    }
+    ob_start("bh_gzhandler");
 
     if (defined("BEEHIVEMODE_LIGHT")) {
 

@@ -22,19 +22,58 @@ USA
 ======================================================================*/
 
 // Compresses the output of the PHP scripts to save bandwidth.
-// Due to problems with the gzip library in PHP 4.1.0 and lower,
-// we only support gzip compression in PHP version 4.2.0 and higher.
 
-require_once("./include/config.inc.php");
+require_once('./include/config.inc.php');
 
-if ($gzip_compress_output) { // && (phpversion() >= '4.2')) {
-    if (isset($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING']) && strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-        ob_start("ob_gzhandler");
-    }else{
-        ob_start();
+function bh_check_gzip()
+{
+    global $HTTP_SERVER_VARS, $gzip_compress_output;
+
+    if (headers_sent() || $gzip_compress_output == false) {
+        return false;
     }
-}else {
-    ob_start();
+
+    if (strpos($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
+    if (strpos($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";
+
+    return false;
 }
+
+function bh_gzhandler($contents)
+{
+    global $gzip_compress_level;
+
+    if ($gzip_compress_level > 9) $gzip_compress_level = 9;
+    if ($gzip_compress_level < 1) $gzip_compress_level = 1;
+
+    if ($encoding = bh_check_gzip()) {
+
+        $contents.= "<!-- bh_gzhandler: $encoding enabled (level: $gzip_compress_level) //-->\n";
+
+        $gzcontent = gzcompress($contents, $gzip_compress_level);
+        $size      = strlen($contents);
+        $crc32     = crc32($contents);
+
+        header("Etag: VT$crc32");
+        header("Content-Encoding: $encoding");
+
+        $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+        $ret.= substr($gzcontent, 0, strlen($gzcontent) - 4);
+        $ret.= pack('V', $crc32);
+        $ret.= pack('V', $size);
+
+        return $ret;
+
+    }else {
+
+        $contents.= "<!-- bh_gzhandler: compression disabled //-->\n";
+        return $contents;
+
+    }
+
+
+}
+
+ob_start("bh_gzhandler");
 
 ?>

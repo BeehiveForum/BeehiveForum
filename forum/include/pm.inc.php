@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.60 2004-04-11 19:47:08 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.61 2004-04-11 21:13:16 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -429,7 +429,6 @@ function draw_pm_message($pm_elements_array)
     global $HTTP_SERVER_VARS, $lang;
 
     $webtag = get_webtag();
-    $forum_settings = get_forum_settings();
 
     $uid = bh_session_get_value('UID');
 

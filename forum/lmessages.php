@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.32 2004-04-10 16:35:00 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.33 2004-04-11 21:13:14 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -34,6 +34,9 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum settings
+$forum_settings = get_forum_settings();
 
 include_once("./include/beehive.inc.php");
 include_once("./include/config.inc.php");
@@ -62,10 +65,6 @@ if (!$user_sess = bh_session_check()) {
 if (!$webtag = get_webtag()) {
     header_redirect("./lforums.php");
 }
-
-// We got this far we should now read the forum settings
-
-$forum_settings = get_forum_settings();
 
 // Load the wordfilter for the current user
 

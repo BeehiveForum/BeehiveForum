@@ -103,95 +103,116 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = 6226)
 {
-
-    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
-
     if(!isset($message['CONTENT']) || $message['CONTENT'] == ""){
         message_display_deleted($tid,$message['PID']);
         return;
     }
 
-    $content_length = strlen($message['CONTENT']);
-    if($content_length > $limit_text && is_integer($limit_text)){
-      $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $limit_text)). "...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">View full message.</a>";
-    }
+	$content_length = strlen($message['CONTENT']);
+	if($content_length > $limit_text && is_integer($limit_text)){
+		$message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $limit_text))
+			."...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=".$tid.".".$message['PID']."\" target=\"_self\">View full message.</a>";
+	}
+
+    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
 
     if($in_list){
         echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a>";
     }
-    echo "<br /><div align=\"center\">\n";
-    echo "<table width=\"96%\"><tr><td class=\"box\">\n";
-    echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
-    echo "<td width=\"4%\" align=\"right\">\n";
-    echo "<p class=\"posttofromlabel\">From:<br />To:</p></td>\n";
-    echo "<td width=\"92%\">\n";
-    echo "<p class=\"posttofrom\">";
-    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['FROM_UID'].")\">";
-    echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a><br />";
-    if($message['TLOGON'] != "ALL"){
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['TO_UID'].")\">";
-        echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a>";
-    } else {
-        echo "ALL";
-    }
-    if(!$message['VIEWED'] && $message['TLOGON'] != "ALL"){
-        echo " <span class=\"smalltext\">(unread)</span>";
-    }
-    echo "</p></td>\n";
-    echo "<td width=\"4%\" align=\"right\" nowrap>\n";
-    if($in_list){
-        $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-        echo "<p class=\"postinfo\">";
-        echo format_time($message['CREATED'], 1);
-        echo "<br />" . $message['PID'] . " of $msg_count</p>";
-    }
-    echo "</td></table>\n";
 
-    if($message['RELATIONSHIP'] < 0 && $limit_text){
-        echo "<table width=\"100%\" border=\"0\"><tr><td>\n";
-        echo "Ignored.</td></tr></table>";
-    } else {
-        echo "<table width=\"100%\" border=\"0\">\n";
-        if($in_list){
-            echo "<tr><td align=\"right\"><p class=\"postnumber\" style=\"text-align:right\">";
-            echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";            
-            //echo "$tid." . $message['PID'];
-            if($message['PID'] > 1){
-                echo " in reply to ";
-                if(intval($message['REPLY_TO_PID']) >= intval($first_msg)){
-                    echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\">";
-                    echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
-                } else {
-                    echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\">";
-                    echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
-                }
-            }
-            echo "</p></td></tr>\n";
-        }
-        echo "<tr><td class=\"postbody\">\n";
-        echo $message['CONTENT'] . "\n";
-        echo "</td></tr>\n";
-        if($in_list && $limit_text != false){
-            echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\">";
-            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))){
-                echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a>";
-            }
-            if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
-                echo "&nbsp;&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"main\">Delete</a>";
-                echo "&nbsp;&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"main\">Edit</a>";
-            }
-            echo "</p></td></tr>";
-        }
-        echo "</table>\n";
-    }
-    echo "</td></tr></table></div>\n";
+	// OUTPUT MESSAGE ----------------------------------------------------------
+
+    echo "<br /><div align=\"center\">\n";
+	echo "<table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
+	echo "<table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\"><tr>\n";
+	echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;From:&nbsp;</span></td>\n";
+	echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
+
+	echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\">";
+	echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span></td>\n";
+
+	echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
+	if($message['RELATIONSHIP'] < 0 && $limit_text){
+		echo "<b>Ignored message</b>";
+	} else {
+		if($in_list){
+			$user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+			echo format_time($message['CREATED'], 1);
+		}
+	}
+	echo "&nbsp;</span></td>\n";
+
+	echo "</tr><tr>\n";
+	echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;To:&nbsp;</span></td>\n";
+
+	echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
+	if($message['TLOGON'] != "ALL"){
+		echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['TO_UID'].")\">";
+		echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
+		if(!$message['VIEWED']){
+			echo " <span class=\"smalltext\">(unread)</span>";
+		}
+	} else {
+		echo "ALL</span>";
+	}
+	echo "</td>\n";
+
+	echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
+	if($message['RELATIONSHIP'] < 0 && $limit_text && $in_list){
+		echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
+		echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
+	} else if($in_list) {
+		echo $message['PID'] . " of " . $msg_count;
+	}
+	echo "&nbsp;</span></td></tr>\n";
+
+	echo "</table></td></tr>\n";
+
+	if(!($message['RELATIONSHIP'] < 0 && $limit_text)){
+		echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
+		if($in_list){
+			echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";            
+			if($message['PID'] > 1){
+				echo " in reply to ";
+				if(intval($message['REPLY_TO_PID']) >= intval($first_msg)){
+					echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\">";
+					echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+				} else {
+					echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\">";
+					echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+				}
+			}
+		}
+		echo "&nbsp;</span></td></tr>\n";
+	}
+
+	if(!($message['RELATIONSHIP'] < 0 && $limit_text)){
+		echo "<tr><td class=\"postbody\">". $message['CONTENT'] ."</td></tr>\n";
+
+		if($in_list && $limit_text != false){
+			echo "<tr><td align=\"center\"><span class=\"postresponse\">";
+			if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))){
+				echo "<img src=\"./images/star.png\" border=\"0\" />";
+				echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
+			}
+			if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
+				echo "&nbsp;&nbsp;<img src=\"./images/folder.png\" border=\"0\" />";
+				echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
+				echo "&nbsp;&nbsp;<img src=\"./images/poll.png\" border=\"0\" />";
+				echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
+			}
+			echo "</span></td></tr>";
+		}
+		echo "</table>\n";
+	}
+	echo "</td></tr></table></div>\n";
 }
 
 function message_display_deleted($tid,$pid)
 {
     echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
-    echo "<table class=\"posthead\" width=\"100%\" border=\"0\"><tr><td>\n";
+    echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
     echo "Message ${tid}.${pid} was deleted\n";
     echo "</td></tr></table>\n";
     echo "</td></tr></table></div>\n";
@@ -457,8 +478,6 @@ function message_fontsize_form($fontsize, $tid, $pid)
       
     }
       
-    echo $fontstrip;
-    
+    echo $fontstrip;   
 }
-
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.112 2004-04-13 14:04:04 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.113 2004-04-15 11:43:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -531,6 +531,8 @@ $lang['pmnotification_5'] = "posted to you, go to";
 $lang['pmnotification_6'] = "click";
 $lang['pmnotification_7'] = "on Preferences, unselect the PM Email Notification checkbox and press Submit.";
 $lang['pmnotification_subject'] = "PM Notification from";
+$lang['hasoptedoutofemail'] = "has opted out of email contact";
+$lang['hasinvalidemailaddress'] = "has an invalid email address";
 
 // Error handler (errorhandler.inc.php) --------------------------------
 
@@ -964,6 +966,7 @@ $lang['popuponnewprivatemessage'] = "Pop up on new Private Message";
 $lang['automatichighinterestonpost'] = "Automatic high interest on post";
 $lang['itemsmarkedwithaasterixarerequired'] = "Items marked with a * are required";
 $lang['confirmpassword'] = "Confirm Password";
+$lang['invalidemailaddressformat'] = "Invalid email address format";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

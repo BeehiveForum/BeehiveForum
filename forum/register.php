@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.82 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: register.php,v 1.83 2004-04-15 11:43:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -206,8 +206,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 
     if (isset($HTTP_POST_VARS['EMAIL']) && strlen(trim($HTTP_POST_VARS['EMAIL'])) > 0) {
-      
+
         $new_user['EMAIL'] = _stripslashes(trim($HTTP_POST_VARS['EMAIL']));
+
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $new_user['EMAIL'])) {
+
+            $error = "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
+            $valid = false;
+        }
         
     }else {
     

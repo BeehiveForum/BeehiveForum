@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.63 2004-04-13 14:04:04 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.64 2004-04-15 11:43:06 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -519,6 +519,8 @@ $lang['pmnotification_5'] = "posté à vous, allez à";
 $lang['pmnotification_6'] = "déclic";
 $lang['pmnotification_7'] = "sur les Préférences, desélectionner le PM la case de pointage de Notification d'E-mail et la presse Soumettent.";
 $lang['pmnotification_subject'] = "PM la Notification de";
+$lang['hasoptedoutofemail'] = "has opted out of email contact";
+$lang['hasinvalidemailaddress'] = "has an invalid email address";
 
 // Error handler (errorhandler.inc.php) --------------------------------
 
@@ -948,6 +950,7 @@ $lang['popuponnewprivatemessage'] = "Revient sur nouveau le Message Privé";
 $lang['automatichighinterestonpost'] = "Automatique l'haut intérêt sur la poste";
 $lang['itemsmarkedwithaasterixarerequired'] = "Les articles ont marqué avec un * sont exigé";
 $lang['confirmpassword'] = "Confirmer le Mot de passe";
+$lang['invalidemailaddressformat'] = "Invalid email address format";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

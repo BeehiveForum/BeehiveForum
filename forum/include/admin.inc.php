@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.10 2003-11-27 12:00:31 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.11 2004-02-02 18:51:45 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -175,10 +175,11 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER.LOGON_FROM, USER.STATUS FROM ". forum_table("USER"). " USER ";
+    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "USER.LOGON_FROM, USER.STATUS, SESSIONS.SESSID FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "ORDER BY USER.$sort_by $sort_dir LIMIT $offset, 20";
+    $sql.= "LEFT JOIN ". forum_table("SESSIONS"). " SESSIONS ON (SESSIONS.UID = USER.UID) ";    
+    $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_get_all);
 
@@ -187,6 +188,18 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     }
 
     return $user_get_all_array;
+}
+
+function admin_session_end($uid)
+{
+    $db_admin_session_end = db_connect();
+    
+    if (!is_numeric($uid)) return false;
+    
+    $sql = "DELETE FROM SESSIONS WHERE UID = '$uid'";
+    $result = db_query($sql, $db_admin_session_end);
+    
+    return (db_affected_rows($db_admin_session_end) > 0);
 }
 
 ?>

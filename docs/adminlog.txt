@@ -6,6 +6,7 @@
 4 - Ban User's IP Address
 5 - Unban User's IP Address
 6 - Deleted a User's attachment
+27 - Ended User's session
 
 
 ---    admin_folders.php     ---

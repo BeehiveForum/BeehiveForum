@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.9 2005-01-26 22:42:24 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.10 2005-01-30 14:10:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -406,6 +406,78 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE PM ADD INDEX (TYPE)";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'Y' WHERE SHOW_STATS = 1;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'N' WHERE SHOW_STATS = 0;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'Y' WHERE SHOW_STATS = 1;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE SHOW_STATS = 0;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_ANON_LOGON SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_ANON_LOGON SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE ANON_LOGON SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE ANON_LOGON SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
 
     if (!$result = db_query($sql, $db_install)) {
 

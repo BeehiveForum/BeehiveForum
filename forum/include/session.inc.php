@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.152 2005-01-24 23:07:59 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.153 2005-01-30 14:10:23 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -257,11 +257,12 @@ function bh_session_check()
                      'START_PAGE'       => 0,
                      'LANGUAGE'         => forum_get_setting('default_language'),
                      'PM_NOTIFY'        => 'N',
-                     'SHOW_STATS'       => 1,
+                     'SHOW_STATS'       => 'Y',
                      'IMAGES_TO_LINKS'  => 'N',
                      'USE_WORD_FILTER'  => 'Y',
                      'USE_ADMIN_FILTER' => 'Y',
-                     'POST_PAGE'        => 0);
+                     'POST_PAGE'        => 0,
+                     'SHOW_THUMBS'      => 'N');
     }
 
     // Delete expired sessions
@@ -309,7 +310,7 @@ function bh_update_visitor_log($uid)
 
     $user_prefs = user_get_prefs($uid);
 
-    if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) {
+    if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") {
 
         $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
         $sql.= "SET LAST_LOGON = NULL WHERE UID = '$uid'";

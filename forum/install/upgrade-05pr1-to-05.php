@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.13 2004-12-22 19:11:46 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.14 2005-01-30 14:10:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -465,8 +465,8 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
         $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-        $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";

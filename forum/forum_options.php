@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.64 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.65 2005-01-30 14:10:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -212,10 +212,23 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['USE_WORD_FILTER'] = false;
     }
 
-    if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
-        $user_prefs['SHOW_STATS'] = 1;
+    if (isset($_POST['show_thumbs']) && $_POST['show_thumbs'] == "Y") {
+        $user_prefs['SHOW_THUMBS'] = "Y";
     }else {
-        $user_prefs['SHOW_STATS'] = 0;
+        $user_prefs['SHOW_THUMBS'] = "N";
+    }
+
+    if (isset($_POST['show_thumbs_global'])) {
+        $user_prefs_global['SHOW_THUMBS'] = ($_POST['show_thumbs_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['SHOW_THUMBS'] = false;
+    }
+
+
+    if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
+        $user_prefs['SHOW_STATS'] = "Y";
+    }else {
+        $user_prefs['SHOW_STATS'] = "N";
     }
 
     if (isset($_POST['show_stats_global'])) {
@@ -476,7 +489,11 @@ echo "                  <td>", form_checkbox("images_to_links", "Y", $lang['conv
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], $user_prefs['IMAGES_TO_LINKS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1) ? true : false), "</td>\n";
+echo "                  <td>", form_checkbox("show_thumbs", "Y", $lang['showattachmentthumbnails'], (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_global", "Y", $lang['setforallforums'], $user_prefs['SHOW_THUMBS_GLOBAL']), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_stats_global", "Y", $lang['setforallforums'], $user_prefs['SHOW_STATS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

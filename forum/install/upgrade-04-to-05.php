@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.17 2005-01-21 21:26:01 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.18 2005-01-30 14:10:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -613,8 +613,8 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PM_AUTO_PRUNE CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  PM_AUTO_PRUNE_LENGTH CHAR(3) NOT NULL DEFAULT '60',";
         $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-        $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
@@ -804,8 +804,8 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
         $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-        $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";

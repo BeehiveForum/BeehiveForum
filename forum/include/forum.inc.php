@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.31 2004-04-06 19:57:37 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.32 2004-04-07 17:47:32 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -32,11 +32,13 @@ include_once("./include/lang.inc.php");
 
 function get_table_prefix()
 {
-    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $lang;
+    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
     
     $db_get_table_prefix = db_connect();    
     
-    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+    if (isset($HTTP_COOKIE_VARS['webtag']) && strlen(trim($HTTP_COOKIE_VARS['webtag'])) > 0) {
+        $webtag = trim($HTTP_COOKIE_VARS['webtag']);
+    }else if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
         $webtag = trim($HTTP_GET_VARS['webtag']);
     }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
         $webtag = trim($HTTP_POST_VARS['webtag']);
@@ -68,11 +70,13 @@ function get_table_prefix()
 
 function get_webtag()
 {
-    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $lang;
+    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
     
     $db_get_table_prefix = db_connect();    
     
-    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+    if (isset($HTTP_COOKIE_VARS['webtag']) && strlen(trim($HTTP_COOKIE_VARS['webtag'])) > 0) {
+        $webtag = trim($HTTP_COOKIE_VARS['webtag']);
+    }else if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
         $webtag = trim($HTTP_GET_VARS['webtag']);
     }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
         $webtag = trim($HTTP_POST_VARS['webtag']);
@@ -86,6 +90,7 @@ function get_webtag()
     // if we found the post table return the webtag
     
     if (db_num_rows($result) > 0) {
+        bh_setcookie("webtag", $webtag);
         return $webtag;
     }
 
@@ -100,7 +105,8 @@ function get_webtag()
     if (in_array($pagename, $page_array)) {
         return false;
     }else {
-        header_redirect("./forums.php");
+        $request_uri = rawurlencode(get_request_uri());
+        header_redirect("./forums.php?final_uri=$request_uri");
 	exit;
     }
 }

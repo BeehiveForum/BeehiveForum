@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.109 2004-01-07 20:24:30 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.110 2004-01-07 20:26:30 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -469,7 +469,7 @@ function user_get_last_logon_time($uid)
 
     $last_logon = db_fetch_array($result);
     
-    if ($last_logon['ANON_LOGON'] <> 0) {
+    if (isset($last_logon['ANON_LOGON']) && $last_logon['ANON_LOGON'] <> 0) {
     
         return $lang['unknown'];
 

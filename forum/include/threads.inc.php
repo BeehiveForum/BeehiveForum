@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.114 2004-04-24 18:42:46 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.115 2004-05-09 18:55:18 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -678,16 +678,26 @@ function threads_get_most_recent()
     }
 }
 
-function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
+// Arrange the results of a query into the right order for display
+
+function threads_process_list($resource_id)
 {
     $max = db_num_rows($resource_id);
 
-    if ($max) { // check that the set of threads returned is not empty
+    // Default to returning no threads.
 
-        // If the user has clicked on a folder header, we want that folder to be first in the list
+    $lst = 0;
+    $folder_order = 0;
+
+    // Check that the set of threads returned is not empty
+
+    if ($max) {
+
+        // If the user has clicked on a folder header, we want
+        // that folder to be first in the list
 
         if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-            $folder_order[] = $_GET['folder'];
+            $folder_order = array($_GET['folder']);
         }
 
         // Loop through the results and construct an array to return
@@ -696,44 +706,57 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
             $thread = db_fetch_array($resource_id);
 
-            // If this folder ID has not been encountered before, make it the next folder in the order to be displayed
-            if(!isset($folder_order)){
-                $folder_order[] = $thread['fid'];
+            // If this folder ID has not been encountered before,
+            // make it the next folder in the order to be displayed
+
+            if (!is_array($folder_order)) {
+                $folder_order = array($thread['fid']);
             }else{
-                if(!in_array($thread['fid'], $folder_order)){
+                if (!in_array($thread['fid'], $folder_order)) {
                     $folder_order[] = $thread['fid'];
                 }
             }
 
-            $lst[$i]['tid'] = $thread['tid'];
-            $lst[$i]['fid'] = $thread['fid'];
-            $lst[$i]['title'] = _stripslashes($thread['title']);
-            $lst[$i]['length'] = $thread['length'];
-            $lst[$i]['poll_flag'] = $thread['poll_flag'];
+            // If the thread has been started by someone in our ignore list
+            // and there are currently no replies (length of 1) then we don't
+            // want to display it.
 
-            if (isset($thread['last_read'])) { // special case - last_read may be NULL, in which case PHP will complain that the array index doesn't exist if we don't do this
-                $lst[$i]['last_read'] = $thread['last_read'];
-            }else{
-                $lst[$i]['last_read'] = 0;
+            if (!($thread['relationship'] & USER_IGNORED) || $thread['length'] > 1) {
+
+                if (!is_array($lst)) $lst = array();
+
+                $lst[$i]['tid'] = $thread['tid'];
+                $lst[$i]['fid'] = $thread['fid'];
+                $lst[$i]['title'] = _stripslashes($thread['title']);
+                $lst[$i]['length'] = $thread['length'];
+                $lst[$i]['poll_flag'] = $thread['poll_flag'];
+
+                // Special case - last_read may be NULL, in which case
+                // PHP will complain that the array index doesn't exist
+                // if we don't do this
+
+                if (isset($thread['last_read'])) {
+                    $lst[$i]['last_read'] = $thread['last_read'];
+                }else{
+                    $lst[$i]['last_read'] = 0;
+                }
+
+                $lst[$i]['interest'] = isset($thread['interest']) ? $thread['interest'] : 0;
+                $lst[$i]['modified'] = $thread['modified'];
+                $lst[$i]['logon'] = $thread['logon'];
+                $lst[$i]['nickname'] = $thread['nickname'];
+                $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
+                $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
+                $lst[$i]['sticky'] = isset($thread['sticky']) ? $thread['sticky'] : 0;
             }
-
-            $lst[$i]['interest'] = isset($thread['interest']) ? $thread['interest'] : 0;
-            $lst[$i]['modified'] = $thread['modified'];
-            $lst[$i]['logon'] = $thread['logon'];
-            $lst[$i]['nickname'] = $thread['nickname'];
-            $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
-            $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
-            $lst[$i]['sticky'] = isset($thread['sticky']) ? $thread['sticky'] : 0;
-
         }
-
-    }else{ // special case - no threads returned, but we have to return something
-        $lst = 0;
-        $folder_order = 0;
     }
 
-    return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
+    // $lst is the array with thread information,
+    // $folder_order is a list of FIDs in the order
+    // in which the folders should be displayed
 
+    return array($lst, $folder_order);
 }
 
 function threads_get_folder_msgs()

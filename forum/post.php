@@ -21,7 +21,7 @@ $valid = true;
 
 if(isset($HTTP_POST_VARS['t_newthread'])){
     $newthread = true;
-    if(isset($HTTP_POST_VARS['t_threadtitle'])){
+    if(isset($HTTP_POST_VARS['t_threadtitle']) && $HTTP_POST_VARS['t_threadtitle'] != ""){
         $t_threadtitle = $HTTP_POST_VARS['t_threadtitle'];
     } else {
         $error_html = "<h2>You must enter a title for the thread</h2>";

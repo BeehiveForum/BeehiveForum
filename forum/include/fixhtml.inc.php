@@ -33,7 +33,6 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 {
 
 	$ret_text = '';
-//	$html = preg_replace("/<(!--[^>]*)>/", "&lt;$1&gt;", $html);
 
 	if (!empty($html)) {
         $html = _stripslashes($html);
@@ -432,7 +431,7 @@ function clean_attributes($tag)
 	$valid["tbody"] = array("char", "charoff", "valign");
 	$valid["tfoot"] = $valid["tbody"];
 	$valid["thead"] = $valid["tbody"];
-	$valid["td"] = array("abbr", "axis", "bgcolor", "char", "charoff", "colspan", "height", "headers", "rowspan", "scope", "valign", "width", "nowrap");
+	$valid["td"] = array("abbr", "axis", "background", "bgcolor", "char", "charoff", "colspan", "height", "headers", "rowspan", "scope", "valign", "width", "nowrap");
 	$valid["th"] = $valid["td"];
 	$valid["tr"] = array("bgcolor", "char", "charoff", "valign");
 
@@ -764,20 +763,13 @@ function add_paragraphs ($html, $base = true, $br_only = true) {
 			$html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/i", "$1\n\n$2", $html_a[$i]);
 			$html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/i", "</p>\n\n$3", $html_a[$i]);
 
-//			$p_open = false;
-
 			$tmp = split("\n", $html_a[$i]);
 			if (count($tmp) > 1) {
 				$p_open = true;
 				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0])) {
 					$tmp[0] = "<p>".$tmp[0];
 				}
-//				if (!preg_match("/<\/p>$/i", $tmp[count($tmp)-1])) {
-//					$tmp[count($tmp)-1] .= "</p>";
-//				}
 			}
-	//		print_r($tmp);
-	//		echo "<br />\n\n";
 
 			for ($j=0; $j<count($tmp)-1; $j++) {
 				if (preg_match("/<\/p>$/i", $tmp[$j])) {
@@ -830,6 +822,7 @@ function add_paragraphs ($html, $base = true, $br_only = true) {
 			$return .= $html_a[$i];
 
 		} else {
+
 			$html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/i", "$1\n$3", $html_a[$i]);
 			$html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/i", "$1\n\n$2", $html_a[$i]);
 			$html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/i", "</p>\n\n$3", $html_a[$i]);
@@ -841,7 +834,7 @@ function add_paragraphs ($html, $base = true, $br_only = true) {
 		}
 	}
 
-	return trim($return);
+	return $return;
 }
 
 // $text to be filtered

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.192 2003-11-09 20:34:07 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.193 2003-11-09 20:34:40 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -51,7 +51,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, ";
+    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY ";
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP ";
     $sql .= "from " . forum_table("POST") . " POST ";

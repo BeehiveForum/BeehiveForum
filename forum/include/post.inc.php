@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.120 2005-04-03 15:34:53 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.121 2005-04-04 02:32:57 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -571,9 +571,12 @@ class MessageTextParse {
         if (count($message) > 1 && substr($message[count($message)-1], -6) == '</div>') {
 
             $sig = '<div class="sig">' . array_pop($message);
+
             do {
+                if (count(explode('<div', $sig)) == count(explode('</div>', $sig))) break;
                 $sig = '<div class="sig">' . array_pop($message) . $sig;
-            } while (count(explode('<div', $sig)) != count(explode('</div>', $sig)));
+            } while (0);
+
             $sig = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', $sig);
 
         } else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.344 2005-04-03 00:55:31 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.345 2005-04-04 02:32:56 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -184,10 +184,13 @@ function message_split_fiddle($content,$emoticons=true,$sig=true)
     if (count($message) > 1 && substr($message[count($message)-1], -6) == '</div>') {
 
         $sig = '<div class="sig">' . array_pop($message);
+
         do {
+            if (count(explode('<div', $sig)) == count(explode('</div>', $sig))) break;
             $sig = '<div class="sig">' . array_pop($message) . $sig;
-        } while (count(explode('<div', $sig)) != count(explode('</div>', $sig)));
-        $sig = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', $sig);
+        } while (0);
+
+//        $sig = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', $sig);
 
     } else {
         $sig = '';

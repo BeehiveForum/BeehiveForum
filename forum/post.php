@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.227 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: post.php,v 1.228 2004-11-18 20:13:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -649,7 +649,7 @@ if ($valid && isset($_POST['submit'])) {
 
 }
 
-html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js");
+html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
 
 echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";

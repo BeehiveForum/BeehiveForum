@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.2 2004-11-18 00:14:21 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.3 2004-11-18 20:13:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -94,7 +94,22 @@ $lang = load_language_file();
 
 // Check we have a webtag
 
-$webtag = get_webtag($webtag_search);
+if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
+}
 
 // Ignored words array
 
@@ -102,24 +117,43 @@ $t_ignored_words_array = array();
 
 // Close the dialog?
 
-if (isset($_POST['body_text']) && strlen(trim(_stripslashes($_POST['body_text']))) > 0) {
+if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
 
-    $t_body_text = trim(_stripslashes($_POST['body_text']));
-    preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $t_body_text, $t_body_text_array);
-    $t_body_text_array = $t_body_text_array[0];
+    $t_content = trim(_stripslashes($_POST['content']));
+    preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $t_content, $t_content_array);
+    $t_content_array = $t_content_array[0];
 
-}else if (isset($_GET['body_text']) && strlen(trim(_stripslashes($_GET['body_text']))) > 0) {
+}else if (isset($_GET['content']) && strlen(trim(_stripslashes($_GET['content']))) > 0) {
 
-    $t_body_text = trim(_stripslashes($_GET['body_text']));
-    preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $t_body_text, $t_body_text_array);
-    $t_body_text_array = $t_body_text_array[0];
+    $t_content = trim(_stripslashes($_GET['content']));
+    preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $t_content, $t_content_array);
+    $t_content_array = $t_content_array[0];
 
 }else {
 
     html_draw_top();
 
     echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>No body text specified to spell check</h2>\n";
+    echo "<h2>No text specified to spell check</h2>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
+if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0) {
+
+    $obj_id = trim(_stripslashes($_POST['obj_id']));
+
+}elseif (isset($_GET['obj_id']) && strlen(trim(_stripslashes($_GET['obj_id']))) > 0) {
+
+    $obj_id = trim(_stripslashes($_GET['obj_id']));
+
+}else {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>No form object specified for return text</h2>\n";
 
     html_draw_bottom();
     exit;
@@ -129,9 +163,26 @@ if (isset($_POST['body_text']) && strlen(trim(_stripslashes($_POST['body_text'])
 
 if (isset($_POST['cancel'])) {
 
-    html_draw_top();
+    html_draw_top('dictionary.js');
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  window.close();\n";
+    echo "</script>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
+// Send the results back to the form
+
+if (isset($_POST['ok'])) {
+
+    html_draw_top('dictionary.js');
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  if (window.opener.updateFormObj) {\n";
+    echo "    window.opener.updateFormObj('$obj_id', '", rawurlencode($t_content), "');\n";
+    echo "  }\n";
     echo "  window.close();\n";
     echo "</script>\n";
 
@@ -197,25 +248,32 @@ if (isset($_POST['ignoreall'])) {
     if (isset($_POST['changeto']) && strlen(trim(_stripslashes($_POST['changeto']))) > 0) {
 
          $changeto = trim(_stripslashes($_POST['changeto']));
-         $t_body_text_array[$current_word] = $changeto;
+         $t_content_array[$current_word] = $changeto;
     }
 
     $current_word++;
 
-    if ($current_word < sizeof($t_body_text_array)) {
+    if ($current_word > (sizeof($t_content_array) - 1)) {
 
-        $t_suggestions_array = dictionary_get_suggestions($t_body_text_array[$current_word]);
+        $check_complete = true;
 
-        while(!$t_suggestions_array && $current_word < sizeof($t_body_text_array)) {
+    }else {
+
+        $t_suggestions_array = dictionary_get_suggestions($t_content_array[$current_word]);
+
+        while(!$t_suggestions_array) {
 
             $current_word++;
 
-            if ($current_word > (sizeof($t_body_text_array) - 1)) {
+            if ($current_word > (sizeof($t_content_array) - 1)) {
+
                 $check_complete = true;
                 break;
             }
 
-            $t_suggestions_array = dictionary_get_suggestions($t_body_text_array[$current_word]);
+            if (!isset($t_content_array[$current_word])) break;
+
+            $t_suggestions_array = dictionary_get_suggestions($t_content_array[$current_word]);
         }
     }
 
@@ -225,20 +283,27 @@ if (isset($_POST['ignoreall'])) {
 
     $current_word++;
 
-    if ($current_word < sizeof($t_body_text_array)) {
+    if ($current_word > (sizeof($t_content_array) - 1)) {
 
-        $t_suggestions_array = dictionary_get_suggestions($t_body_text_array[$current_word]);
+        $check_complete = true;
 
-        while(!$t_suggestions_array && $current_word < sizeof($t_body_text_array)) {
+    }else {
+
+        $t_suggestions_array = dictionary_get_suggestions($t_content_array[$current_word]);
+
+        while(!$t_suggestions_array) {
 
             $current_word++;
 
-            if ($current_word > (sizeof($t_body_text_array) - 1)) {
+            if ($current_word > (sizeof($t_content_array) - 1)) {
+
                 $check_complete = true;
                 break;
             }
 
-            $t_suggestions_array = dictionary_get_suggestions($t_body_text_array[$current_word]);
+            if (!isset($t_content_array[$current_word])) break;
+
+            $t_suggestions_array = dictionary_get_suggestions($t_content_array[$current_word]);
         }
     }
 }
@@ -265,8 +330,9 @@ if ($check_complete) {
 
 echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('obj_id', $obj_id), "\n";
 echo "  ", form_input_hidden('ignored_words', implode(" ", $t_ignored_words_array)), "\n";
-echo "  ", form_input_hidden('body_text', implode("", $t_body_text_array)), "\n";
+echo "  ", form_input_hidden('content', implode("", $t_content_array)), "\n";
 echo "  ", form_input_hidden('current_word', $current_word), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
 echo "    <tr>\n";
@@ -284,7 +350,7 @@ echo "                    <table border=\"0\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"spellcheckbodytext\" valign=\"top\">";
 
-foreach($t_body_text_array as $key => $word) {
+foreach($t_content_array as $key => $word) {
     if ($key == $current_word) {
         echo "<span class=\"highlight\">$word</span>";
     }else {
@@ -322,7 +388,7 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"2\">Not in dictionary</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_input_text("word", isset($t_body_text_array[$current_word]) ? $t_body_text_array[$current_word] : "", 32, false, "style=\"width: 95%\""), "</td>\n";
+echo "                  <td colspan=\"2\">", form_input_text("word", isset($t_content_array[$current_word]) ? $t_content_array[$current_word] : "", 32, false, "style=\"width: 95%\""), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>Change to:</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.25 2004-04-23 11:42:40 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.26 2004-04-23 17:28:48 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
@@ -153,13 +153,14 @@ function get_my_forums()
 
             $folders = threads_get_available_folders();
 
-            $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
+            $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_POST POST ";
+	    $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON ";
+            $sql.= "(THREAD.TID = POST.TID) ";
 	    $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
             $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_POST POST ON ";
-            $sql.= "(POST.TID = THREAD.TID) ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
-            $sql.= "AND (POST.PID > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
+            $sql.= "AND ((USER_THREAD.LAST_READ < THREAD.LENGTH AND USER_THREAD.LAST_READ < POST.PID) ";
+            $sql.= "OR USER_THREAD.LAST_READ IS NULL) ";
 
             $result_post_count = db_query($sql, $db_get_my_forums);
 

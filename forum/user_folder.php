@@ -44,6 +44,6 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
   }
 }
 
-header_redirect($HTTP_SERVER_VARS['HTTP_REFERER']);
+header_redirect("./thread_list.php");
 
 ?>

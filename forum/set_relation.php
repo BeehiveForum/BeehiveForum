@@ -1,4 +1,5 @@
 <?php
+
 /*======================================================================
 Copyright Project BeehiveForum 2002
 
@@ -81,13 +82,9 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
 }
 
 if(isset($HTTP_GET_VARS['ret'])){
-
     header_redirect($HTTP_GET_VARS['ret']);
-
 }else{
-
     header_redirect("./user_profile.php?uid=$uid");
-
 }
 
 ?>

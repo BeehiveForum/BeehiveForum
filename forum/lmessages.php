@@ -72,7 +72,7 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
     unset($userprefs);
 
     bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
-    header_redirect($HTTP_SERVER_VARS['PHP_SELF']. "?msg=$msg");
+    header_redirect(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$msg");
 
 }
 

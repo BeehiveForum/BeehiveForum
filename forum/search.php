@@ -155,7 +155,7 @@ if (isset($searchsql)) {
   echo "  </tr>\n";
   echo "  <tr>\n";
   echo "    <td colspan=\"2\">\n";
-  echo "      <form name=\"f_mode\" method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
+  echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
 
   if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 

@@ -457,7 +457,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if(perm_is_soldier()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"Privileges\" />";
-                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.", $message['PID']. "\" target=\"_self\">Privileges</a>";
+                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\">Privileges</a>";
             }
 
             echo "</span></td></tr>";
@@ -586,7 +586,7 @@ function messages_interest_form($tid,$pid)
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=";
-    echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
+    echo urlencode(basename($HTTP_SERVER_VARS['PHP_SELF'])). "?msg=$tid.$pid";
     echo "\" method=\"post\">\n";
     echo "<p>Rate my interest: \n";
     echo form_radio_array("interest",array(-1,0,1,2),array("Ignore ","Normal ","Interested ","Subscribe "),$interest);
@@ -603,7 +603,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false)
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
-    echo urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid";
+    echo urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid");
     echo "\" method=\"post\">\n";
     echo "<p>Rename thread: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
     echo "<p>Move thread: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", "Move");

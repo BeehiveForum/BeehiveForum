@@ -53,12 +53,14 @@ require_once("./include/edit.inc.php");
 require_once("./include/ip.inc.php");
 require_once("./include/admin.inc.php");
 
-if(isset($HTTP_POST_VARS['cancel'])){
-        header_redirect($HTTP_POST_VARS['ret']);
+if (isset($HTTP_POST_VARS['cancel'])) {
+    header_redirect($HTTP_POST_VARS['ret']);
 }
 
 if (isset($HTTP_GET_VARS['ret'])) {
   $ret = $HTTP_GET_VARS['ret'];
+}elseif (isset($HTTP_POST_VARS['ret'])) {
+  $ret = $HTTP_POST_VARS['ret'];
 }else {
   $ret = "admin_users.php";
 }

@@ -56,7 +56,7 @@ if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
 $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
-if (isset($HTTP_POST_VARS['cancel'])) header_redirect("links.php?fid={$HTTP_POST_VARS['fid']}");
+if (isset($HTTP_POST_VARS['cancel'])) header_redirect("./links.php?fid={$HTTP_POST_VARS['fid']}");
 
 if (isset($HTTP_GET_VARS['mode'])) {
     $mode = $HTTP_GET_VARS['mode'];
@@ -82,7 +82,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
         $name = addslashes(htmlentities($name));
         $description = addslashes(htmlentities($description));
         links_add($uri, $name, $description, $fid, $uid);
-        header_redirect("links.php?fid=$fid");
+        header_redirect("./links.php?fid=$fid");
         exit;
     }
 } elseif (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "folder") {
@@ -92,7 +92,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     if (!$error) {
         $name = addslashes(htmlentities($name));
         links_add_folder($fid, $name, true);
-        header_redirect("links.php?fid=$fid");
+        header_redirect("./links.php?fid=$fid");
         exit;
     }
 } elseif (isset($HTTP_GET_VARS['fid'])) {

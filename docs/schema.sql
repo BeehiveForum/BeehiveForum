@@ -217,6 +217,7 @@ CREATE TABLE USER (
   EMAIL varchar(80) default NULL,
   STATUS int(16) default NULL,
   LAST_LOGON timestamp(14) NOT NULL,
+  LOGON_FROM char(15) NOT NULL default '',
   PRIMARY KEY  (UID)
 ) TYPE=MyISAM;
 

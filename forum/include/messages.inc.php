@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.155 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: messages.inc.php,v 1.156 2003-08-01 19:58:42 hodcroftcj Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -430,7 +430,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
             echo "<tr><td>";
-            if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
+            if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP)) || (bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
                 echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">{$lang['reply']}</a>";

@@ -4,7 +4,7 @@
 #
 # Generation Time: Mar 16, 2004 at 00:17
 #
-# $Id: upgrade-04-to-041.sql,v 1.13 2004-03-17 14:14:28 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.14 2004-03-17 18:23:43 tribalonline Exp $
 #
 # --------------------------------------------------------#
 
@@ -75,6 +75,7 @@ CREATE TABLE FORUM_SETTINGS (
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_name', 'A Beehive Forum');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_email', 'admin@abeehiveforum.net');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_style', 'default');
+INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_emoticons', 'default');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_language', 'en');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_friendly_errors', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'cookie_domain', '');
@@ -126,3 +127,5 @@ INSERT INTO USER_STATUS (UID, FID, STATUS) SELECT UID, 1, STATUS FROM USER;
 ALTER TABLE USER DROP LAST_LOGON;
 ALTER TABLE USER DROP LOGON_FROM;
 ALTER TABLE USER DROP STATUS;
+
+ALTER TABLE `user_prefs` ADD `EMOTICONS` VARCHAR( 255 ) ;

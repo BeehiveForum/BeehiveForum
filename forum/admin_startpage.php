@@ -26,6 +26,9 @@ USA
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");

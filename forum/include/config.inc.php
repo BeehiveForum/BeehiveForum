@@ -99,8 +99,13 @@ $guest_account_enabled = true;  // Enable the use of forum guest account
 // This compresses the output of the PHP scripts using GZIP encoding.
 // Compressing the output of the scripts can save you considerable
 // amounts of bandwidth, but can also increase the CPU load on the
-// server
-
+// server.
+//
+// Since Beehive 0.4 you can change the level of the gzip compression,
+// as long as PHP 4.2.0 is installed. The maximum level of compression
+// available is 9, while the lowest is 1. A higher level will result
+// in increased server load.
+//
 // WARNING: If you are using mod_gzip or any other gzipping module
 //          to handle the compression of PHP scripts on your web
 //          server, do _NOT_ enable the built in GZIP compression
@@ -109,5 +114,6 @@ $guest_account_enabled = true;  // Enable the use of forum guest account
 // To disable GZIP compression change the variable below to false
 
 $gzip_compress_output = true;
+$gzip_compress_level  = 3;
 
 ?>

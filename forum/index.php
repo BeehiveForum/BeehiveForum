@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.74 2004-04-11 22:12:22 decoyduck Exp $ */
+/* $Id: index.php,v 1.75 2004-04-11 22:30:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,15 +111,20 @@ if ($user_sess = bh_session_check()) {
 
         }else {
 
-            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+            if ($start_page = bh_session_get_value('START_PAGE')) {
 
-            if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
-                $final_uri = "./discussion.php?webtag=$webtag";
-            }elseif (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 2) {
-                $final_uri = "./pm.php?webtag=$webtag";
-            }else {
-                $final_uri = "./start.php?webtag=$webtag";
-            }
+	        if ($start_page == 1) {
+	            $final_uri = "./discussion.php?webtag=$webtag";
+	        }elseif ($start_page == 2) {
+	            $final_uri = "./pm.php?webtag=$webtag";
+		}else {
+		    $final_uri = "./start.php?webtag=$webtag";
+		}
+
+	    }else {
+
+	        $final_uri = "./start.php?webtag=$webtag";
+	    }
 
             echo "<frame src=\"", $final_uri, "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 	}
@@ -144,17 +149,7 @@ if ($user_sess = bh_session_check()) {
 
         }else {
 
-            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-
-            if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
-                $final_uri = "./discussion.php";
-            }elseif (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 2) {
-                $final_uri = "./pm.php";
-            }else {
-                $final_uri = "./start.php";
-            }
-
-            echo "<frame src=\"forums.php?final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./forums.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 	}
     }
 

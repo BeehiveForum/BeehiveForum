@@ -61,10 +61,12 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
   if (isset($HTTP_POST_VARS['old_aid'])) {
 
     unlink(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $HTTP_POST_VARS['old_aid']. '/'. md5($HTTP_POST_VARS['old_aid']. $HTTP_POST_VARS['userfile']));
+    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['old_aid'], $HTTP_POST_VARS['userfile']);
     
   }else{
   
     unlink(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid. '/'. md5($aid. $HTTP_POST_VARS['userfile']));
+    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_VARS['userfile']);
     
   }
   

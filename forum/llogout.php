@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.16 2004-04-10 18:38:49 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.17 2004-04-11 21:13:14 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -34,6 +34,9 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum settings
+$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -54,7 +57,6 @@ if (!$user_sess = bh_session_check()) {
 // Check we have a webtag
 
 $webtag = get_webtag();
-$forum_settings = get_forum_settings();
 
 // Load the wordfilter for the current user
 

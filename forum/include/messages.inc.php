@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.260 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.261 2004-04-11 21:13:15 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -158,7 +158,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     global $HTTP_SERVER_VARS, $lang;
 
     $webtag = get_webtag();
-    $forum_settings = get_forum_settings();
     
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
@@ -864,7 +863,6 @@ function messages_forum_stats($tid, $pid)
     global $lang;
     
     $webtag = get_webtag();
-    $forum_settings = get_forum_settings();
 
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");

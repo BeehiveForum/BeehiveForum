@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.48 2004-04-11 20:16:32 decoyduck Exp $ */
+/* $Id: logout.php,v 1.49 2004-04-11 21:13:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,6 +31,9 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum settings
+$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -45,10 +48,9 @@ include_once("./include/user.inc.php");
 
 $user_sess = bh_session_check();
 
-// Fetch the forum webtag and settings
+// Fetch the forum webtag
 
 $webtag = get_webtag();
-$forum_settings = get_forum_settings();
 
 // Load the wordfilter for the current user
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.173 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.174 2004-03-10 20:24:02 decoyduck Exp $ */
 
 //Multiple forum support
 require_once("./include/forum.inc.php");
@@ -565,7 +565,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             echo " {$lang['threads']}</a></td>\n";
             echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-left: 1px" : "border-right: 1px", "\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"";
             echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
-            echo "?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a></td>\n";
+            echo "&fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a></td>\n";
             echo "  </tr>\n";
 
         }

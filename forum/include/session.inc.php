@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.116 2004-05-15 14:43:42 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.117 2004-06-18 19:56:30 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -85,68 +85,87 @@ function bh_session_check($add_guest_sess = true)
 
 	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
-            // If the user is not logged into the current forum, we should
-            // do that now for them.
+	    if (is_numeric($table_data['FID'])) {
 
-            if ($user_sess['FID'] != $table_data['FID']) {
+                // If the user is not logged into the current forum, we should
+                // do that now for them.
 
-                $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash' ";
-                $sql.= "AND FID = '{$table_data['FID']}'";
+                if ($user_sess['FID'] != $table_data['FID']) {
 
-                $result = db_query($sql, $db_bh_session_check);
+                    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash' ";
+                    $sql.= "AND FID = '{$table_data['FID']}'";
 
-                $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-                $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
-                $sql.= "'$ipaddress', NOW())";
+                    $result = db_query($sql, $db_bh_session_check);
 
-                $result = db_query($sql, $db_bh_session_check);
+                    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
+                    $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
+                    $sql.= "'$ipaddress', NOW())";
 
-                $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
-                $sql.= "WHERE UID = {$user_sess['UID']} AND FID = {$table_data['FID']}";
+                    $result = db_query($sql, $db_bh_session_check);
 
-                $result = db_query($sql, $db_bh_session_check);
-
-                if (db_num_rows($result) > 0) {
-
-                    $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
+                    $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
                     $sql.= "WHERE UID = {$user_sess['UID']} AND FID = {$table_data['FID']}";
 
                     $result = db_query($sql, $db_bh_session_check);
 
-                }else {
+                    if (db_num_rows($result) > 0) {
 
-                    $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                    $sql.= "VALUES ({$user_sess['UID']}, {$table_data['FID']}, NOW())";
+                        $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
+                        $sql.= "WHERE UID = {$user_sess['UID']} AND FID = {$table_data['FID']}";
+
+                        $result = db_query($sql, $db_bh_session_check);
+
+                    }else {
+
+                        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
+                        $sql.= "VALUES ({$user_sess['UID']}, {$table_data['FID']}, NOW())";
+
+                        $result = db_query($sql, $db_bh_session_check);
+                    }
+		}
+
+                // Everything checks out OK. If the user's session is older
+                // then 5 minutes we should update it.
+
+                if ($current_time - $user_sess['TIME'] > 300) {
+
+                    // Update the session for the current forum
+
+                    $sql = "UPDATE SESSIONS ";
+                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$table_data['FID']}' ";
+                    $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
 
                     $result = db_query($sql, $db_bh_session_check);
-                }
-            }
+		}
 
-            // Everything checks out OK. If the user's session is older
-            // then 5 minutes we should update it.
+	    }else {
 
-            if ($current_time - $user_sess['TIME'] > 300) {
+                // Everything checks out OK. If the user's session is older
+                // then 5 minutes we should update it.
 
-                // Update the session
+                if ($current_time - $user_sess['TIME'] > 300) {
 
-                $sql = "UPDATE SESSIONS ";
-                $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$table_data['FID']}' ";
-                $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
+                    // Update the main user session
 
-                db_query($sql, $db_bh_session_check);
+                    $sql = "UPDATE SESSIONS ";
+                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
+                    $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
 
-                // Delete expires sessions
+                    $result = db_query($sql, $db_bh_session_check);
+		}
+	    }
 
-                $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
+            // Delete expires sessions
 
-                $sql = "DELETE FROM SESSIONS WHERE ";
-                $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
+            $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
-                db_query($sql, $db_bh_session_check);
+            $sql = "DELETE FROM SESSIONS WHERE ";
+            $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
-                if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
-                    update_stats();
-                }
+            db_query($sql, $db_bh_session_check);
+
+            if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
+                update_stats();
             }
 
             return $user_sess;

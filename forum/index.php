@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.79 2004-04-24 18:42:17 decoyduck Exp $ */
+/* $Id: index.php,v 1.80 2004-04-24 18:48:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -156,6 +156,10 @@ if ($user_sess = bh_session_check()) {
 
 }else {
 
+    // Load language file
+
+    $lang = load_language_file();
+
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
@@ -170,10 +174,6 @@ if ($user_sess = bh_session_check()) {
     if (!isset($_COOKIE['bh_logon']) && user_guest_enabled() && $auto_logon) {
 
         bh_session_init(0); // auto login as guest
-
-        // Load language file
-
-        $lang = load_language_file();
 
         // Fetch the forum settings
 

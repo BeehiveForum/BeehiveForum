@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.28 2004-01-26 19:40:18 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.29 2004-03-03 23:15:17 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -97,7 +97,7 @@ if (isset($HTTP_POST_VARS['clear'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['adminaccesslog']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['adminaccesslog']}</h1>\n";
 echo "<p>{$lang['adminlogexp']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.20 2004-01-26 19:40:16 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.21 2004-03-03 23:15:17 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -97,7 +97,7 @@ if (isset($HTTP_POST_VARS['save'])) {
 }
 
 echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php\">\n";
-echo "<h1>{$lang['editstartpage']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.46 2004-03-01 22:58:02 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.47 2004-03-03 23:15:17 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -101,7 +101,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['managefolders']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";

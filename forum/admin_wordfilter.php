@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.17 2004-03-02 23:25:24 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.18 2004-03-03 23:15:17 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -65,20 +65,22 @@ if (isset($HTTP_POST_VARS['save'])) {
     if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
         for ($i = 0; $i < sizeof($HTTP_POST_VARS['match']); $i++) {
             if (isset($HTTP_POST_VARS['match'][$i]) && trim(strlen($HTTP_POST_VARS['match'][$i])) > 0) {
+                $preg_expr = (isset($HTTP_POST_VARS['preg_expr'][$i]) && $HTTP_POST_VARS['preg_expr'][$i] == "Y") ? 1 : 0;
                 if (isset($HTTP_POST_VARS['replace'][$i])) {
-                    user_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i]);
+                    admin_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i], $preg_expr);
                 }else {
-                    user_add_word_filter($HTTP_POST_VARS['match'][$i], "");
+                    admin_add_word_filter($HTTP_POST_VARS['match'][$i], "", $preg_expr);
                 }
             }
         }
     }
     
     if (isset($HTTP_POST_VARS['new_match']) && strlen(trim($HTTP_POST_VARS['new_match'])) > 0) {
+        $preg_expr = (isset($HTTP_POST_VARS['new_preg_expr']) && $HTTP_POST_VARS['new_preg_expr'] == "Y") ? 1 : 0;
         if (isset($HTTP_POST_VARS['new_replace']) && strlen(trim($HTTP_POST_VARS['new_replace'])) > 0) {
-            admin_add_word_filter($HTTP_POST_VARS['new_match'], $HTTP_POST_VARS['new_replace']);
+            admin_add_word_filter($HTTP_POST_VARS['new_match'], $HTTP_POST_VARS['new_replace'], $preg_expr);
         }else {
-            admin_add_word_filter($HTTP_POST_VARS['new_match'], "");
+            admin_add_word_filter($HTTP_POST_VARS['new_match'], "", $preg_expr);
         }
     }
 
@@ -87,14 +89,15 @@ if (isset($HTTP_POST_VARS['save'])) {
 
 $word_filter_array = admin_get_word_filter();
 
-echo "<h1>{$lang['editwordfilter']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['editwordfilter']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;
 
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
+echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 echo "<div class=\"postbody\">\n";
 echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
 echo "          <table class=\"box\" width=\"100%\">\n";
@@ -105,6 +108,7 @@ echo "                  <tr>\n";
 echo "                    <td class=\"subhead\">&nbsp;</td>\n";
 echo "                    <td class=\"subhead\">Matched Text</td>\n";
 echo "                    <td class=\"subhead\">Replacement Text</td>\n";
+echo "                    <td class=\"subhead\">&nbsp;PREG Expr.</td>\n";
 echo "                  </tr>\n";
 
 foreach ($word_filter_array as $word_filter) {
@@ -112,6 +116,7 @@ foreach ($word_filter_array as $word_filter) {
     echo "                    <td>&nbsp;</td>\n";
     echo "                    <td>", form_input_text("match[]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
     echo "                    <td>", form_input_text("replace[]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
+    echo "                    <td align=\"center\">", form_checkbox("preg_expr[]", "Y", "", $word_filter['PREG_EXPR']), "</td>\n";
     echo "                  </tr>\n";    
 }
 
@@ -119,6 +124,7 @@ echo "                  <tr>\n";
 echo "                    <td>{$lang['newcaps']}</td>\n";
 echo "                    <td>", form_input_text("new_match", "", 30), "</td>\n";
 echo "                    <td>", form_input_text("new_replace", "", 30), "</td>\n";
+echo "                    <td align=\"center\">", form_checkbox("new_preg_expr", "Y", "", false), "</td>\n";
 echo "                  </tr>\n"; 
 echo "                  <tr>\n";
 echo "                    <td>&nbsp;</td>\n";

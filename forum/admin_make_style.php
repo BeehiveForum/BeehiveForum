@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.26 2004-02-11 11:17:44 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.27 2004-03-03 23:15:17 decoyduck Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -176,7 +176,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 html_draw_top();
 
-echo "<h1>{$lang['createforumstyle']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['createforumstyle']}</h1>\n";
 
 // Check to see if any of the required variables were passed via the URL Query or POST_VARS
 // Otherwise create some random numbers to work with.

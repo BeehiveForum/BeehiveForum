@@ -30,7 +30,7 @@ function load_language_file($filename)
 }
 
 $en_lang = load_language_file("en.inc.php");
-$ga_lang = load_language_file("gangsta.inc.php");
+$ga_lang = load_language_file("x-hacker.inc.php");
 
 foreach ($en_lang as $key => $value) {
 

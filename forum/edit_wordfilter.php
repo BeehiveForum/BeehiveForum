@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.3 2004-03-03 22:43:25 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.4 2004-03-03 23:15:17 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -126,13 +126,14 @@ echo "                  </tr>\n";
 foreach ($word_filter_array as $word_filter) {
 
     echo "                  <tr>\n";
-    echo "                    <td>&nbsp;</td>\n";
     
     if ($word_filter['UID'] == 0) {
+        echo "                    <td align=\"center\"><sup>[A]</sup></td>\n";    
         echo "                    <td>", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
         echo "                    <td>", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), "</td>\n";
-        echo "                    <td><sup>[A]</sup></td>\n";
+        echo "                    <td>&nbsp;</td>\n";
     }else {
+        echo "                    <td>&nbsp;</td>\n";    
         echo "                    <td>", form_input_text("match[]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
         echo "                    <td>", form_input_text("replace[]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
         echo "                    <td align=\"center\">", form_checkbox("preg_expr[]", "Y", "", $word_filter['PREG_EXPR']), "</td>\n";

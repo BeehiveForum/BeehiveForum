@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.31 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.32 2004-12-05 19:31:47 decoyduck Exp $ */
 
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
@@ -152,7 +152,7 @@ function get_my_forums()
 
             // Get any unread messages
 
-            $folders = threads_get_available_folders();
+            $folders = folder_get_available();
 
             $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_POST POST ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON ";

@@ -43,6 +43,21 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
+// Get the Message ID (MID)
+
+if (isset($HTTP_GET_VARS['replyto'])) {
+    $mid = $HTTP_GET_VARS['replyto'];
+}elseif (isset($HTTP_POST_VARS['replyto'])) {
+    $mid = $HTTP_POST_VARS['replyto'];
+}
+
+if (isset($mid) && !($pm_elements_array = pm_single_get($mid, PM_FOLDER_INBOX, bh_session_get_value('UID')))) {
+    html_draw_top();
+    pm_error_refuse();
+    html_draw_bottom();
+    exit;
+}
+
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/fixhtml.inc.php");
@@ -52,11 +67,6 @@ require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
 require_once("./include/email.inc.php");
 require_once("./include/attachments.inc.php");
-
-// Get the Message ID (MID)
-
-if (isset($HTTP_GET_VARS['replyto']))  $mid = $HTTP_GET_VARS['replyto'];
-if (isset($HTTP_POST_VARS['replyto'])) $mid = $HTTP_POST_VARS['replyto'];
 
 // User clicked cancel
 
@@ -235,39 +245,39 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     if ($HTTP_POST_VARS['t_to_uid'] == 0) {
 
-        $pm_elements_array['TLOGON'] = "ALL";
-        $pm_elements_array['TNICK']  = "ALL";
-        $pm_elements_array['TO_UID'] = 0;
+        $pm_preview_array['TLOGON'] = "ALL";
+        $pm_preview_array['TNICK']  = "ALL";
+        $pm_preview_array['TO_UID'] = 0;
 
     }else{
 
         $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
 
-        $pm_elements_array['TLOGON'] = $preview_tuser['LOGON'];
-        $pm_elements_array['TNICK']  = $preview_tuser['NICKNAME'];
-        $pm_elements_array['TO_UID'] = $preview_tuser['UID'];
+        $pm_preview_array['TLOGON'] = $preview_tuser['LOGON'];
+        $pm_preview_array['TNICK']  = $preview_tuser['NICKNAME'];
+        $pm_preview_array['TO_UID'] = $preview_tuser['UID'];
 
     }
 
     $preview_fuser = user_get(bh_session_get_value('UID'));
 
-    $pm_elements_array['FLOGON'] = $preview_tuser['LOGON'];
-    $pm_elements_array['FNICK'] = $preview_tuser['NICKNAME'];
-    $pm_elements_array['FROM_UID'] = $preview_tuser['UID'];
+    $pm_preview_array['FLOGON'] = $preview_tuser['LOGON'];
+    $pm_preview_array['FNICK']  = $preview_tuser['NICKNAME'];
+    $pm_preview_array['FROM_UID'] = $preview_tuser['UID'];
 
-    $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
-    $pm_elements_array['CREATED'] = mktime();
-    $pm_elements_array['AID'] = $aid;
+    $pm_preview_array['SUBJECT'] = _htmlentities($t_subject);
+    $pm_preview_array['CREATED'] = mktime();
+    $pm_preview_array['AID'] = $aid;
 
-    $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
+    $pm_preview_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
     if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-        $pm_elements_array['CONTENT'] = make_html($t_content);
+        $pm_preview_array['CONTENT'] = make_html($t_content);
     }else {
-        $pm_elements_array['CONTENT'] = $t_content;
+        $pm_preview_array['CONTENT'] = $t_content;
     }
 
-    draw_pm_message($pm_elements_array);
+    draw_pm_message($pm_preview_array);
     echo "<br />\n";
 
 }
@@ -322,7 +332,6 @@ echo "</form>\n";
 
 if (isset($mid)) {
 
-    $pm_elements_array = pm_single_get($mid, 0, bh_session_get_value('UID'));
     echo "<p>in reply to:</p>";
     draw_pm_message($pm_elements_array);
 

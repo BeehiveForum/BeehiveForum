@@ -55,6 +55,16 @@ function pm_edit_refuse()
 
 }
 
+function pm_error_refuse()
+{
+    global $lang;
+    echo "<div align=\"center\">";
+    echo "<h1>{$lang['error']}</h1>";
+    echo "<p>{$lang['cannotviewpm']}</p>";
+    echo form_quick_button("pm.php", $lang['back'], "folder", "1");
+    echo "</div>";
+}
+
 function pm_add_sentitem($mid)
 {
     $db_pm_add_sentitem = db_connect();

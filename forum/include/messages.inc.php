@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.294 2004-08-26 17:22:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.295 2004-08-26 19:14:29 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -211,17 +211,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         foreach ($highlight_array as $key => $word) {
 
-            $word = preg_quote($word, '/');
+            $highlight_word = preg_quote($word, "/");
 
-            $highlight_pattern[$key] = "/($word)/i";
-            $highlight_replace[$key] = "<span class=\"highlight\">$word</span>\n";
+            $highlight_pattern[$key] = "/($highlight_word)/i";
+            $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
         }
 
         $message_parts = preg_split('/([<|>])/', $message['CONTENT'], -1, PREG_SPLIT_DELIM_CAPTURE);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
             if (!($i % 4)) {
-                $message_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $message_parts[$i]);
+                $message_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $message_parts[$i], 1);
             }
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.97 2004-04-10 12:20:57 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.98 2004-04-10 21:27:44 decoyduck Exp $ */
 
 // International English language file
 
@@ -172,12 +172,14 @@ $lang['newfolder'] = "New Folder";
 $lang['forumadmin'] = "Forum Admin";
 $lang['adminexp_1'] = "Use the menu on the left to manage things in your forum.";
 $lang['adminexp_2'] = "<b>Users</b> allows you to set user permissions, including appointing Editors and gagging people.";
-$lang['adminexp_3'] = "Use <b>Folders</b> to add new folders or change the names of existing ones.";
-$lang['adminexp_4'] = "<b>Profiles</b> lets you change the items appearing in user profiles.";
-$lang['adminexp_5'] = "Choose <b>Start Page</b> to edit the forum start page.";
-$lang['adminexp_6'] = "Using <b>Forum Style</b> allows you to create new colour schemes for the forum.";
-$lang['adminexp_7'] = "The words in the <b>Word Filter</b> can be edited.";
-$lang['adminexp_8'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";
+$lang['adminexp_3'] = "Use <b>Manage Forums</b> to add new forums or change existing ones.";
+$lang['adminexp_4'] = "<b>Forum Settings</b> allows you to change the current forums settings.";
+$lang['adminexp_5'] = "Use <b>Folders</b> to add new folders or change the names of existing ones.";
+$lang['adminexp_6'] = "<b>Profiles</b> lets you change the items appearing in user profiles.";
+$lang['adminexp_7'] = "Choose <b>Start Page</b> to edit the forum start page.";
+$lang['adminexp_8'] = "Using <b>Forum Style</b> allows you to create new colour schemes for the forum.";
+$lang['adminexp_9'] = "The words in the <b>Word Filter</b> can be edited.";
+$lang['adminexp_10'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";
@@ -623,6 +625,19 @@ $lang['usingaPDA'] = "Using a PDA?";
 $lang['lightHTMLversion'] = "Light HTML version";
 $lang['youhaveloggedout'] = "You have logged out.";
 $lang['currentlyloggedinas'] = "You are currently logged in as";
+
+// My Forums (forums.php) ---------------------------------------------------------
+
+$lang['myforums'] = "My Forums";
+$lang['availableforums'] = "Available Forums";
+$lang['favouriteforums'] = "Favourite Forums";
+$lang['lastvisited'] = "Last Visited";
+$lang['newmessages'] = "New Messages";
+$lang['removefromfavourites'] = "Remove From Favourites";
+$lang['addtofavourites'] = "Add To Favourites";
+$lang['availableforums'] = "Available Forums";
+$lang['noforumsavailable'] = "There are no forums available.";
+$lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 

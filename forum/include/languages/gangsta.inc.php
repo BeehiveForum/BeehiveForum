@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.48 2004-04-10 12:26:17 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.49 2004-04-10 21:27:44 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -169,15 +169,16 @@ $lang['open'] = "Opizen";
 $lang['restricted'] = "Restrizicted";
 $lang['newfolder'] = "New Fizolder";
 $lang['forumadmin'] = "Fizorum Admin";
-$lang['adminexp_1'] = "Use tha menu on tha left to fuck wit things in yo forum.";
-$lang['adminexp_2'] = "<b>Homies</b> allizows yo to fuck wit homiez permissions, includin' fuckin' wit tha Man and beating motherfuckaz down.";
-$lang['adminexp_3'] = "Use <b>Fo'daz</b> to fuck wit yo fo'daz or fuck wit tha tags of tha ones yo ass alrizeady got.";
-$lang['adminexp_4'] = "<b>Profiziles</b> lets you fuck wit tha shit appizearing in homiez prizofiziles.";
-$lang['adminexp_5'] = "Chizoose <b>Crib</b> to fuck wit tha fizorum Crib.";
-$lang['adminexp_6'] = "Using <b>Forum Stizyle</b> allizows you to fuck wit yo colourz.";
-$lang['adminexp_7'] = "tha wordz in tha <b>Wizord Fizilter</b> can be fucked wit.";
-$lang['adminexp_8'] = "Peep yo ass at <b>Tha Man Lizog</b> to see whizat shit went dizown.";
-$lang['createforumstyle'] = "Crizeatize a geek-ass Fizorum Stizyle";
+$lang['adminexp_1'] = "Use the menu on the left to manage things in your forum.";
+$lang['adminexp_2'] = "<b>Users</b> allows you to set user permissions, including appointing Editors and gagging people.";
+$lang['adminexp_3'] = "Use <b>Manage Forums</b> to add new forums or change existing ones.";
+$lang['adminexp_4'] = "<b>Forum Settings</b> allows you to change the current forums settings.";
+$lang['adminexp_5'] = "Use <b>Folders</b> to add new folders or change the names of existing ones.";
+$lang['adminexp_6'] = "<b>Profiles</b> lets you change the items appearing in user profiles.";
+$lang['adminexp_7'] = "Choose <b>Start Page</b> to edit the forum start page.";
+$lang['adminexp_8'] = "Using <b>Forum Style</b> allows you to create new colour schemes for the forum.";
+$lang['adminexp_9'] = "The words in the <b>Word Filter</b> can be edited.";
+$lang['adminexp_10'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";$lang['createforumstyle'] = "Crizeatize a geek-ass Fizorum Stizyle";
 $lang['newstyle'] = "New punk-ass stizyle";
 $lang['successfullycreated'] = "Thizat shit be fly.";
 $lang['stylesdirnotwritable'] = "tha stizyles dirizectizory ain't writin' on yo ass. If yo a geek-ass fucka, then CHMOD tha stizyles dirizectizory and try that mofucker agizain.";

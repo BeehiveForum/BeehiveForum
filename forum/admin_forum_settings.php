@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.20 2004-04-10 16:34:59 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.21 2004-04-10 21:27:43 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -83,10 +83,7 @@ if (!$user_sess = bh_session_check()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
-}
+$webtag = get_webtag();
 
 // We got this far we should now read the forum settings
 
@@ -109,7 +106,6 @@ $error_html = "";
 // Languages
 
 $available_langs = lang_get_available(); // get list of available languages
-
 
 if (isset($HTTP_POST_VARS['submit'])) {
 

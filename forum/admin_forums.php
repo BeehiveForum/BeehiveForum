@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.30 2005-03-13 20:15:19 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.31 2005-03-13 22:42:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -91,17 +91,7 @@ if (isset($_POST['submit'])) {
 
         foreach($_POST['t_access'] as $fid => $new_access) {
 
-            $new_password = false;
-
-            if (isset($_POST['t_password'][$fid]) && strlen(trim(_stripslashes($_POST['t_password'][$fid]))) > 0) {
-                $new_password = trim(_stripslashes($_POST['t_password'][$fid]));
-            }
-
-            if ($new_password) {
-                forum_update_access($fid, $new_access, $new_password);
-            }else {
-                forum_update_access($fid, $new_access);
-            }
+            forum_update_access($fid, $new_access);
         }
     }
 
@@ -221,7 +211,7 @@ if (sizeof($forums_array) > 0) {
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" width=\"150\">&nbsp;{$lang['webtag']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['name']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['messages']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['allow']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['access']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['delete']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['defaultforum']}</td>\n";
     echo "                </tr>\n";
@@ -233,7 +223,7 @@ if (sizeof($forums_array) > 0) {
         echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
         echo "                  <td align=\"left\">{$forum['FORUM_NAME']}</td>\n";
         echo "                  <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
-        echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0), array($lang['closed'], $lang['open']), $forum['ACCESS_LEVEL']), "</td>\n";
+        echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), $forum['ACCESS_LEVEL']), "</td>\n";
         echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", $lang['deleteforum']), "</td>\n";
 
         if ($forum['DEFAULT_FORUM'] == 1) {

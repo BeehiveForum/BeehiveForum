@@ -178,7 +178,7 @@ function user_get_prefs($uid)
     return $fa;
 }
 
-function user_insert_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
+/*function user_insert_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
                            $posts_per_page,$font_size)
 {
@@ -193,27 +193,30 @@ function user_insert_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
     $result = db_query($sql, $db_user_insert_prefs);
 
     return $result;
-}
+} */
 
 function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
-                        $email_notify,$timezone,$dl_saving,$mark_as_of_int,$posts_per_page, $font_size)
+                           $email_notify,$timezone,$dl_saving,$mark_as_of_int,
+                           $posts_per_page, $font_size)
 {
 
     $db_user_update_prefs = db_connect();
+    
+    $sql = "delete from ". forum_table("USER_PREFS"). " where UID = $uid";
+    $result = db_query($sql, $db_user_update_prefs);
 
-    $sql = "update " . forum_table("USER_PREFS") . " set";
-    $sql .= " FIRSTNAME = \"". htmlspecialchars($firstname). "\", LASTNAME = \"". htmlspecialchars($lastname). "\",";
-    $sql .= " HOMEPAGE_URL = \"". htmlspecialchars($homepage_url). "\", PIC_URL = \"". htmlspecialchars($pic_url). "\",";
-    $sql .= " EMAIL_NOTIFY = \"". htmlspecialchars($email_notify). "\", TIMEZONE = $timezone, DL_SAVING = \"$dl_saving\",";
-    $sql .= " MARK_AS_OF_INT = \"$mark_as_of_int\", POSTS_PER_PAGE = $posts_per_page, FONT_SIZE = $font_size";
-    $sql .= " where UID = $uid";
+    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
+    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE)";
+    $sql .= " values ($uid, \"". htmlspecialchars($firstname). "\", \"". htmlspecialchars($lastname). "\",";
+    $sql .= " \"". htmlspecialchars($homepage_url). "\", \"". htmlspecialchars($pic_url). "\",";
+    $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page, $font_size)";
 
     $result = db_query($sql, $db_user_update_prefs);
 
     return $result;
 }
 
-function user_insert_sig($uid,$content,$html){
+/*function user_insert_sig($uid,$content,$html){
 
     $content = mysql_escape_string($content);
     $db_user_insert_sig = db_connect();
@@ -224,16 +227,18 @@ function user_insert_sig($uid,$content,$html){
     $result = db_query($sql, $db_user_insert_sig);
 
     return $result;
-}
+} */
 
 function user_update_sig($uid,$content,$html){
 
     $content = mysql_escape_string($content);
     $db_user_update_sig = db_connect();
+    
+    $sql = "delete from ". forum_table("USER_SIG"). " where UID = $uid";
+    $result = db_query($sql, $db_user_update_sig);
 
-    $sql = "update " . forum_table("USER_SIG") . " set";
-    $sql .= " CONTENT = \"$content\", HTML = \"$html\"";
-    $sql .= " where UID = $uid";
+    $sql = "insert into " . forum_table("USER_SIG") . " (UID, CONTENT, HTML)";
+    $sql .= " values ($uid, \"$content\", \"$html\")";
 
     $result = db_query($sql, $db_user_update_sig);
 

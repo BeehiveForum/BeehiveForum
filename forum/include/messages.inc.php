@@ -433,28 +433,12 @@ function message_fontsize_form($fontsize, $tid, $pid)
       }
     }
     
-    if (empty($user_prefs['FONT_SIZE'])) {
-    
-      $user_prefs = array('FIRST_NAME' => '', 'LAST_NAME'      => '', 'HOMEPAGE_URL'   => '',
-                          'PIC_URL'    => '', 'EMAIL_NOTIFY'   => '', 'TIMEZONE'       => 0,
-                          'DL_SAVING'  => '', 'MARK_AS_OF_INT' => '', 'POSTS_PER_PAGE' => 5,
-                          'FONT_SIZE'  => $fontsize);
-
-      user_insert_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
-                        $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
-                        $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
-                        $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
-                        $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
-                        $user_prefs['FONT_SIZE']);
-    }else {
-
-      user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
-                        $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
-                        $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
-                        $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
-                        $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
-                        $fontsize);
-    }
+    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
+                      $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
+                      $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
+                      $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
+                      $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
+                      $fontsize);
     
     $fontstrip = "Adjust text size: ";
     

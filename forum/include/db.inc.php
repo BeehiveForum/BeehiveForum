@@ -47,7 +47,7 @@ function db_query ($sql, $connection_id)
 {
 	
 	global $HTTP_SERVER_VARS;
-	$resource_id = mysql_query($sql, $connection_id); // or die("Invalid query:" . $sql . "<br />\n<br />\nMySQL Said: ". mysql_error(). "<br />\n<br />Page: \n". $HTTP_SERVER_VARS['PHP_SELF']);
+	$resource_id = mysql_query($sql, $connection_id) or die("Invalid query:" . $sql . "<br />\n<br />\nMySQL Said: ". mysql_error(). "<br />\n<br />Page: \n". $HTTP_SERVER_VARS['PHP_SELF']);
 	return $resource_id;
 }
 

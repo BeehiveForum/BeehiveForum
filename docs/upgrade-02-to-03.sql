@@ -3,6 +3,9 @@
 # http://beehiveforum.sourceforge.net/
 #
 # Generation Time: Jan 14, 2003 at 10:56 PM
+#
+# $Id: upgrade-02-to-03.sql,v 1.2 2003-11-09 17:53:41 decoyduck Exp $
+#
 # --------------------------------------------------------#
 
 CREATE TABLE BANNED_IP (

@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.52 2003-09-29 09:32:58 decoyduck Exp $
+# $Id: schema.sql,v 1.53 2003-11-09 17:53:41 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -417,7 +417,7 @@ CREATE TABLE USER (
   NICKNAME varchar(32) default NULL,
   EMAIL varchar(80) default NULL,
   STATUS int(16) default NULL,
-  LAST_LOGON timestamp(14) NOT NULL,
+  LAST_LOGON datetime NOT NULL,
   LOGON_FROM varchar(15) default NULL,
   PRIMARY KEY  (UID)
 ) TYPE=MyISAM;
@@ -467,7 +467,7 @@ CREATE TABLE USER_POLL_VOTES (
   UID mediumint(8) unsigned NOT NULL default '0',
   PTUID varchar(32) NOT NULL default '',
   OPTION_ID mediumint(8) unsigned NOT NULL default '0',
-  TSTAMP timestamp(14) NOT NULL,
+  TSTAMP datetime NOT NULL,
   PRIMARY KEY  (ID,TID,PTUID)
 ) TYPE=MyISAM;
 

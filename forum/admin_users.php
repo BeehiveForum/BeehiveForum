@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.86 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.87 2004-08-17 10:52:23 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -108,7 +108,7 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-html_draw_top();
+html_draw_top("openprofile.js");
 
 if (!(perm_has_admin_access())) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";

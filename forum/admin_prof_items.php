@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.64 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.65 2004-08-17 10:52:22 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -118,7 +118,7 @@ if (!(perm_has_admin_access())) {
 }
 
 if (isset($_POST['cancel'])) {
-    header_redirect('./admin_prof_sect.php');
+    header_redirect("./admin_prof_sect.php?webtag=$webtag");
 }
 
 if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.11 2004-08-07 22:39:39 tribalonline Exp $ */
+/* $Id: admin_folder_add.php,v 1.12 2004-08-17 10:52:22 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -186,6 +186,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
 
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_add.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

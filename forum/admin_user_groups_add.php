@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.9 2004-08-07 22:39:47 tribalonline Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.10 2004-08-17 10:52:23 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -193,7 +193,7 @@ if (isset($_POST['submit'])) {
             }
 
             $group_name = rawurlencode($t_name);
-            header_redirect("./admin_user_groups.php?add_success=$group_name");
+            header_redirect("./admin_user_groups.php?webtag=$webtag&add_success=$group_name");
         }
     }
 }

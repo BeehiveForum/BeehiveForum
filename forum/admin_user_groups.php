@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.8 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.9 2004-08-17 10:52:23 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -123,7 +123,7 @@ if (isset($_POST['addnew'])) {
 if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
 
     list($gid) = array_keys($_POST['edit_users']);
-    header_redirect("./admin_user_groups_edit_users.php?gid=$gid");
+    header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
 }
 
 html_draw_top('admin.js');
@@ -179,7 +179,7 @@ if ($user_groups_array = perm_get_user_groups()) {
     foreach ($user_groups_array as $user_group) {
 
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;", form_checkbox("delete_group[]", $user_group['GID'], "", false), "&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                  <td>&nbsp;", form_checkbox("delete_group[]", $user_group['GID'], "", false), "&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
         echo "                  <td>&nbsp;{$user_group['GROUP_DESC']}</td>\n";
         echo "                  <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
         echo "                  <td align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.19 2005-02-13 16:46:43 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.20 2005-02-13 19:11:17 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -353,6 +353,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // 0.4 and 0.5 had problems where you could vote for the same poll
     // option multiple times.
 
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES_NEW";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
     $sql = "CREATE TABLE {$forum_webtag}_USER_POLL_VOTES_NEW (";
     $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
     $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -399,6 +408,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 return;
             }
         }
+    }
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES_NEW RENAME {$forum_webtag}_USER_POLL_VOTES";

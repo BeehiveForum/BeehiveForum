@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.192 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: post.php,v 1.193 2004-05-11 15:51:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -232,29 +232,38 @@ if (isset($_POST['t_sig_html'])) {
 if (!isset($post_html)) $post_html = 0;
 if (!isset($sig_html)) $sig_html = 0;
 
-if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
-    $t_content = $_POST['t_content'];
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-    if ($post_html && attachment_embed_check($t_content)) {
+        $t_content = trim(_stripslashes($_POST['t_content']));
 
-        $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-        $valid = false;
+        if (strlen($t_content) >= 65535) {
+            $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+            $valid = false;
+        }
+
+        if ($post_html && attachment_embed_check($t_content)) {
+
+            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $valid = false;
+        }
+
     }
 
-}else if (isset($_POST['submit']) || isset($_POST['preview'])) {
+    if (isset($_POST['t_sig'])) {
 
-    $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-    $valid = false;
-}
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
 
-if (isset($_POST['t_sig'])) {
+        if (strlen($t_sig) >= 65535) {
+            $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+            $valid = false;
+        }
 
-    $t_sig = $_POST['t_sig'];
-
-    if ($sig_html && attachment_embed_check($t_sig)) {
-        $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
-        $valid = false;
+        if ($sig_html && attachment_embed_check($t_sig)) {
+            $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
+            $valid = false;
+        }
     }
 }
 
@@ -266,16 +275,6 @@ $sig = new MessageText($sig_html, $t_sig);
 
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();
-
-if (strlen($t_content) >= 65535) {
-    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-    $valid = false;
-}
-
-if (strlen($t_sig) >= 65535) {
-    $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-    $valid = false;
-}
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
@@ -692,7 +691,7 @@ if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-//$t_sig = $sig->getTidyContent();
+$t_sig = $sig->getTidyContent();
 
 echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.110 2004-05-09 00:57:47 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.111 2004-05-11 15:51:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -203,7 +203,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
 
-        $t_message_text = trim($_POST['t_message_text']);
+        $t_message_text = trim(_stripslashes($_POST['t_message_text']));
 
         if (strlen($t_message_text) >= 65535) {
             $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
@@ -216,7 +216,7 @@ if (isset($_POST['cancel'])) {
         }
     }
 
-    if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+    if (isset($_POST['t_sig'])) {
 
         $t_sig = trim(_stripslashes($_POST['t_sig']));
 
@@ -250,6 +250,9 @@ if (!isset($t_sig)) $t_sig = "";
 
 $post = new MessageText($post_html, $t_message_text);
 $sig = new MessageText($sig_html, $t_sig);
+
+$t_message_text = $post->getContent();
+$t_sig = $sig->getContent();
 
 if ($valid && isset($_POST['submit'])) {
 
@@ -454,7 +457,7 @@ if ($valid && isset($_POST['preview'])) {
 
     if (strlen($t_message_text) > 0) {
 
-        $polldata['CONTENT'] = $t_message_text."<div class=\"sig\">". $t_sig. "</div>";
+        $polldata['CONTENT'] = $t_message_text."<div class=\"sig\">$t_sig</div>";
         message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
     }
 }
@@ -655,6 +658,8 @@ echo "          </tr>\n";
 
 $tools = new TextAreaHTML("f_poll");
 
+$t_message_text = $post->getTidyContent();
+
 echo "          <tr>\n";
 echo "            <td>", $tools->toolbar(), "</td>\n";
 echo "          </tr>\n";
@@ -689,6 +694,8 @@ if (forum_get_setting('attachments_enabled', 'Y', false)) {
 }
 
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
+
+$t_sig = $sig->getTidyContent();
 
 echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 

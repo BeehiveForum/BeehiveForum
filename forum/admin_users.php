@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.71 2004-04-17 17:39:25 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.72 2004-04-17 18:41:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -88,10 +88,6 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
-
-// Load the wordfilter for the current user
-
-$user_wordfilter = load_wordfilter();
 
 html_draw_top();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.50 2004-04-17 17:39:27 decoyduck Exp $ */
+/* $Id: logout.php,v 1.51 2004-04-17 18:41:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,10 +51,6 @@ $user_sess = bh_session_check();
 // Fetch the forum webtag
 
 $webtag = get_webtag();
-
-// Load the wordfilter for the current user
-
-$user_wordfilter = load_wordfilter();
 
 // User was a guest that now wants to logon
 

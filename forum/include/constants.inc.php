@@ -21,29 +21,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.29 2004-04-11 22:01:19 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.30 2004-05-15 14:43:42 decoyduck Exp $ */
 
-// Beehive Constants
+// Beehive Version
 
 define("BEEHIVE_VERSION", "0.5-alpha");
 
-define("YEAR_IN_SECONDS",31536000);
+// Constants for date / time.
+
+define("YEAR_IN_SECONDS", 31536000);
 define("DAY_IN_SECONDS", 86400);
 define("HOUR_IN_SECONDS", 3600);
 
-define("USER_PERM_SPLAT",1);
-define("USER_PERM_WASP",2);
-define("USER_PERM_WORM",4);
-define("USER_PERM_WORKER",8);
-define("USER_PERM_SOLDIER",16);
-define("USER_PERM_QUEEN",32);
+// Constants for user permissions
 
-define("USER_FRIEND",1);
-define("USER_IGNORED",2);
-define("USER_IGNORED_SIG",4);
+define("USER_PERM_BANNED", 1);
+define("USER_PERM_WORMED", 2);
+define("USER_PERM_POST_READ", 4);
+define("USER_PERM_POST_CREATE", 8);
+define("USER_PERM_THREAD_CREATE", 16);
+define("USER_PERM_POST_EDIT", 32);
+define("USER_PERM_POST_DELETE", 64);
+define("USER_PERM_POST_ATTACHMENTS", 128);
+define("USER_PERM_MODERATOR", 256);
+define("USER_PERM_ADMIN_TOOLS", 512);
+define("USER_PERM_FORUM_TOOLS", 1024);
 
-define("PERM_CHECK_WORKER",USER_PERM_WORKER|USER_PERM_SOLDIER|USER_PERM_QUEEN);
-define("PERM_CHECK_SOLDIER",USER_PERM_SOLDIER|USER_PERM_QUEEN);
+// OLD VALUES - PRE-BH-0.5
+
+//define("PERM_CHECK_WORKER",USER_PERM_WORKER|USER_PERM_SOLDIER|USER_PERM_QUEEN);
+//define("PERM_CHECK_SOLDIER",USER_PERM_SOLDIER|USER_PERM_QUEEN);
+
+// Constants for relationship system
+
+define("USER_FRIEND", 1);
+define("USER_IGNORED", 2);
+define("USER_IGNORED_SIG", 4);
 
 // Constants for error handler
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.115 2004-04-29 21:01:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.116 2004-05-15 14:43:42 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -60,23 +60,22 @@ function bh_session_check($add_guest_sess = true)
 
         if ($table_data = get_table_prefix()) {
 
-	    $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
+	    $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
 	    $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
 	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$table_data['FID']}) ";
+	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
+	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
+	    $sql.= "GROUP BY USER.UID";
 
 	}else {
 
-	    $table_data['FID'] = 0;
-
-	    $sql = "SELECT USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, SESSIONS.UID, ";
+	    $sql = "SELECT USER.LOGON, USER.PASSWD, SESSIONS.UID, ";
 	    $sql.= "SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
 	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = 0) ";
 	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 	}
 

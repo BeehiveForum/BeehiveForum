@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.282 2004-05-09 20:58:31 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.283 2004-05-15 14:43:42 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -43,8 +43,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
     $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
     $sql .= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
-    $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP ";
-    $sql .= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
+    $sql .= "THREAD.FID FROM {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql .= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
@@ -52,6 +52,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
     $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql .= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
     $sql .= "WHERE POST.TID = '$tid' ";
     $sql .= "AND POST.PID >= '$pid' ";
     $sql .= "ORDER BY POST.PID ";
@@ -65,6 +66,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
 
+            $messages[$i]['FID'] = $message['FID'];
             $messages[$i]['PID'] = $message['PID'];
             $messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
             $messages[$i]['FROM_UID'] = $message['FROM_UID'];
@@ -167,7 +169,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if (bh_session_get_value('UID') != $message['FROM_UID']) {
-      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
+      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
         message_display_deleted($tid, $message['PID']);
         return;
       }
@@ -177,7 +179,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['FROM_RELATIONSHIP'] = 0;
     }
 
-    if(!isset($message['TO_RELATIONSHIP'])) {
+    if (!isset($message['TO_RELATIONSHIP'])) {
         $message['TO_RELATIONSHIP'] = 0;
     }
 
@@ -284,7 +286,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     } else {
         if ($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>{$lang['wormeduser']}</b> ";
+            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
             echo format_time($message['CREATED'], 1);
         }
@@ -440,29 +442,33 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "  <td width=\"25%\">&nbsp;</td>\n";
             echo "  <td width=\"50%\" nowrap=\"nowrap\">";
 
-            if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP)) || (bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
+            if ((!$closed && perm_check_folder_permissions($message['FID'], USER_PERM_POST_CREATE)) || perm_is_moderator($message['FID'])) {
 
-                echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
-                echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.".$message['PID']."\" target=\"_parent\">{$lang['reply']}</a>";
-
+                echo "<img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
+                echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\">{$lang['reply']}</a>";
             }
-            if(bh_session_get_value('UID') == $message['FROM_UID'] || perm_is_moderator()){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
-                echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
 
-                if (perm_is_moderator() || ((((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS)) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) {
-                    if ($is_poll && $message['PID'] == 1) {
-                        if (!poll_is_closed($tid) || perm_is_moderator()) {
+            if ((bh_session_get_value('UID') == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_DELETE)) || perm_is_moderator($message['FID'])) {
 
-                            echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
-                            echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
-                        }
-                    }else {
+                echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
+                echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
+            }
 
-                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
-                      echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
+            if ((bh_session_get_value('UID') == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) || perm_is_moderator($message['FID'])) {
 
+                if ($is_poll && $message['PID'] == 1) {
+
+                    if (!poll_is_closed($tid) || perm_is_moderator($message['FID'])) {
+
+                        echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
+                        echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
                     }
+
+                }else {
+
+                    echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
+                    echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
+
                 }
             }
 
@@ -477,7 +483,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=", $message['FROM_UID'], "&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
             }
 
-            if (perm_is_soldier()){
+            if (perm_is_moderator($message['FID'])){
 
                 echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
@@ -635,64 +641,6 @@ function messages_interest_form($tid,$pid)
     echo form_input_hidden("tid",$tid);
     echo form_submit("submit", $lang['apply']);
     echo "</p>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-}
-
-function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false, $sticky_until = false, $locked = false)
-{
-    $lang = load_language_file();
-
-    $webtag = get_webtag($webtag_search);
-
-    echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?msg=$tid.$pid\" method=\"post\">\n";
-    echo form_input_hidden('webtag', $webtag), "\n";
-
-    if (thread_is_poll($tid)) {
-        echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
-    }else {
-        echo "<p>{$lang['renamethread']}: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", $lang['apply']). "</p>\n";
-    }
-
-    echo "<p>{$lang['movethread']}: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", $lang['move']);
-
-    if ($closed) {
-        echo "&nbsp;".form_submit("reopen",$lang['reopenforposting']);
-    } else {
-        echo "&nbsp;".form_submit("close",$lang['closeforposting']);
-    }
-
-    if ($locked) {
-        echo "&nbsp;".form_submit("unlock", $lang['allowediting']);
-    } else {
-        echo "&nbsp;".form_submit("lock", $lang['preventediting']);
-    }
-
-    echo "</p>\n";
-
-    echo "<p>";
-    if ($sticky) {
-            echo "&nbsp;".form_submit("nonsticky",$lang['makenonsticky']);
-            if ($sticky_until) echo "&nbsp;{$lang['stickyuntil']} ".format_time($sticky_until, false);
-    } else {
-            echo "&nbsp;".form_submit("sticky",$lang['makesticky']);
-            if ($sticky_until) {
-                $year = date("Y", $sticky_until);
-                $month = date("n", $sticky_until);
-                $day = date("j", $sticky_until);
-            } else {
-                $year = 0;
-                $month = 0;
-                $day = 0;
-            }
-            echo "&nbsp;{$lang['until']}&nbsp;".form_date_dropdowns($year, $month, $day, "sticky_");
-    }
-
-    echo "</p>\n";
-
-    echo form_input_hidden("t_tid",$tid);
-    echo form_input_hidden("t_pid",$pid);
     echo "</form>\n";
     echo "</div>\n";
 }

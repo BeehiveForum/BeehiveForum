@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.54 2004-05-04 17:10:20 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.55 2004-05-15 14:43:42 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -126,6 +126,28 @@ function thread_get_author($tid)
     $author = db_fetch_array($result);
 
     return format_user_name($author['LOGON'], $author['NICKNAME']);
+}
+
+function thread_get_folder($tid)
+{
+    $db_thread_get_folder = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($tid)) return false;
+
+    $sql = "SELECT FID FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "WHERE TID = '$tid'";
+
+    $result = db_query($sql, $db_thread_get_folder);
+
+    if (db_num_rows($result) > 0) {
+
+        $folder = db_fetch_array($result);
+        return $folder['FID'];
+    }
+
+    return false;
 }
 
 function thread_get_length($tid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.68 2004-05-10 13:56:21 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.69 2004-05-15 14:43:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -150,7 +150,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 // or that it is an admin if we're viewing another user's
 // attachments.
 
-if (($uid != bh_session_get_value('UID')) && !(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
+if (($uid != bh_session_get_value('UID')) && !(perm_is_moderator())) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();

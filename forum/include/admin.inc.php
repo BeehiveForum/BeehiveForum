@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.37 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.38 2004-05-15 14:43:41 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -55,13 +55,10 @@ function admin_clearlog()
 {
     $db_admin_clearlog = db_connect();
 
-    if ((bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
+    if (!$table_data = get_table_prefix()) return false;
 
-        if (!$table_data = get_table_prefix()) return false;
-
-        $sql = "DELETE FROM {$table_data['PREFIX']}ADMIN_LOG";
-	$result = db_query($sql, $db_admin_clearlog);
-    }
+    $sql = "DELETE FROM {$table_data['PREFIX']}ADMIN_LOG";
+    $result = db_query($sql, $db_admin_clearlog);
 }
 
 function admin_get_log_entries($offset, $sort_by, $sort_dir)
@@ -171,8 +168,7 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
 {
     $db_user_search = db_connect();
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS',
-                        'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
 
     $usersearch = addslashes($usersearch);
 
@@ -190,12 +186,14 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
     if ($table_data = get_table_prefix()) {
 
         $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "USER_STATUS.STATUS FROM USER USER ";
+        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM USER USER ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
+	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
+	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
         $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
         $sql.= "ORDER BY $sort_by $sort_dir ";
+        $sql.= "GROUP BY USER.UID ";
         $sql.= "LIMIT $offset, 20";
 
     }else {
@@ -227,8 +225,7 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS',
-                        'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
@@ -243,17 +240,18 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     if ($table_data = get_table_prefix()) {
 
         $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
+        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, SESSIONS.SESSID FROM USER USER ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
+	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
+	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
         $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
         $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 
-        $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
+        $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, SESSIONS.SESSID FROM USER USER ";
         $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
         $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";

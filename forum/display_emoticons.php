@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.3 2004-03-23 03:54:06 tribalonline Exp $ */
+/* $Id: display_emoticons.php,v 1.4 2004-03-23 04:11:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -102,10 +102,13 @@ if ($pack != "user") {
 	echo "                </td>\n";
 }
 
-if (in_array($pack, $available_emots)) {
+if ($pack == "user") {
+    $user_emots = bh_session_get_value('EMOTICONS');
+    $user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons');
+
+	$path = "emoticons/".$user_emots;
+} else if (in_array($pack, $available_emots)) {
 	$path = "emoticons/".$pack;
-} else if ($pack == "user") {
-	$path = "emoticons/".forum_get_setting('default_emoticons');
 } else {
 	$path = "emoticons/".$available_emots[0];
 }
@@ -126,6 +129,7 @@ for ($i=0; $i<count($matches[1]); $i++) {
 		$emot_image[] = $matches[2][$i];
 	}
 }
+
 array_multisort($emot_match, $emot_text, $emot_image);
 
 echo "                <td>\n";

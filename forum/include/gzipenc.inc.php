@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.32 2004-05-10 15:56:49 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.33 2004-05-19 21:12:59 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -116,7 +116,16 @@ function bh_gzhandler($contents)
 
         }else {
 
-            // compression failed so return uncompressed string
+            // get the length of the un-compressed page
+
+            $length = strlen($contents);
+
+            // sends the headers to the client while making
+            // sure they are only sent once.
+
+            header("Content-Length: $length", true);
+
+            // return the un-compressed text to PHP.
 
             return $contents;
         }
@@ -126,6 +135,17 @@ function bh_gzhandler($contents)
         // return the text uncompressed as the client
         // doesn't support it or it has been disabled
         // in config.inc.php.
+
+        // get the length of the un-compressed page
+
+        $length = strlen($contents);
+
+        // sends the headers to the client while making
+        // sure they are only sent once.
+
+        header("Content-Length: $length", true);
+
+        // return the un-compressed text to PHP.
 
         return $contents;
     }

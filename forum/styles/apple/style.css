@@ -45,6 +45,12 @@ frame {
     float: right;
 }
 
+.forumlinks {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #FFFFFF;
+    background-color: #5483B1;
+}
+
 p, h1, h2,  .form {
     background-color: transparent;
     font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -152,7 +158,47 @@ a {
 .threads_left {
     font-style: normal;
     font-size: 10pt;
-    background-color: #C8D7E6;
+    background-color: #A5D149;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 1px
+}
+
+.threads_right {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #A5D149;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px
+}
+
+.threads_top_left {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #A5D149;
     margin-top: 4px;
     margin-right: 4px;
     margin-bottom: 4px;
@@ -169,10 +215,10 @@ a {
     border-left-width: 1px
 }
 
-.threads_right {
+.threads_top_right {
     font-style: normal;
     font-size: 10pt;
-    background-color: #C8D7E6;
+    background-color: #A5D149;
     margin-top: 4px;
     margin-right: 4px;
     margin-bottom: 4px;
@@ -192,7 +238,87 @@ a {
 .threads_bottom_left {
     font-style: normal;
     font-size: 10pt;
-    background-color: #C8D7E6;
+    background-color: #A5D149;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 1px
+}
+
+.threads_bottom_right {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #A5D149;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 0px
+}
+
+.threads_left_right {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #A5D149;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 1px
+}
+
+.threads_left_right_bottom {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #A5D149;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px
+}
+
+.threads_top_left_bottom {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #A5D149;
     margin-top: 4px;
     margin-right: 4px;
     margin-bottom: 4px;
@@ -209,10 +335,10 @@ a {
     border-left-width: 1px
 }
 
-.threads_bottom_right {
+.threads_top_right_bottom {
     font-style: normal;
     font-size: 10pt;
-    background-color: #C8D7E6;
+    background-color: #A5D149;
     margin-top: 4px;
     margin-right: 4px;
     margin-bottom: 4px;
@@ -227,26 +353,6 @@ a {
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 0px
-}
-
-.threads_prev {
-    font-style: normal;
-    font-size: 10pt;
-    background-color: #C8D7E6;
-    margin-top: 4px;
-    margin-right: 4px;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    padding-top: 2px;
-    padding-right: 2px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    border: #000000;
-    border-style: solid;
-    border-top-width: 0px;
-    border-right-width: 1px;
-    border-bottom-width: 0px;
-    border-left-width: 1px
 }
 
 .folderinfo {

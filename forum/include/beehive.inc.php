@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.38 2004-12-17 18:48:01 tribalonline Exp $ */
+/* $Id: beehive.inc.php,v 1.39 2005-02-14 16:03:58 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 
@@ -36,7 +36,8 @@ function draw_beehive_bar()
     echo "      Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://www.beehiveforum.net/faq/\" target=\"_blank\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://sourceforge.net/docman/?group_id=50772\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
-    echo "      <a href=\"http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926\" target=\"_blank\">{$lang['support']}</a>\n";
+    echo "      <a href=\"http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926\" target=\"_blank\">{$lang['support']}</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://sourceforge.net/donate/?group_id=50772\" target=\"_blank\">{$lang['donateexcmark']}</a>\n";
     echo "    </td>\n";
     echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date("Y", mktime()), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></td>\n";
     echo "  </tr>\n";

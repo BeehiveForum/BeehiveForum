@@ -1,4 +1,4 @@
-BODY {
+body {
     background-color: #EAEFF4;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -17,18 +17,19 @@ frame {
     border-style: none;
     border-width: 0px;
     border-color: #000000;
-    margin: 0px    0px    0px    0px;
-    padding: 0px    0px    0px    0px;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
 }
 
 .navpage {
+    color: #000000;
     font-size: 10px;
     font-weight: bold;
     margin: 0px;
     text-decoration: none;
 }
 
-.navpage A {
+.navpage a {
     color: #000000;
     text-decoration: none;
 }
@@ -42,18 +43,23 @@ frame {
     float: right;
 }
 
-P, H1, H2, .form {
+.forumlinks {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #FFFFFF;
+}
+
+p, h1, h2, .form {
     background-color: transparent;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     text-decoration: none;
 }
 
-P {
+p {
     color: #000000;
     font-size: 10pt;
 }
 
-H1 {
+h1 {
     background-color: #C8D7E6;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     text-decoration: none;
@@ -65,7 +71,7 @@ H1 {
     width: 100%
 }
 
-H2 {
+h2 {
     background-color: transparent;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     text-decoration: none;
@@ -78,17 +84,17 @@ H2 {
     margin-right: 05px;
 }
 
-A {
+a {
     background-color: transparent;
     color: #000000;
     text-decoration: underline;
 }
 
-.smalltext {
+.smalltext{
     font-size: 9pt;
 }
 
-.box {
+.box{
     background-color: #FFFFFF;
     border-style: solid;
     border-width: 1px;
@@ -96,7 +102,7 @@ A {
     padding: 0px;
 }
 
-.thread_list_folder {
+.thread_list_folder{
     background-color: #CCCCCC;
     border-style: solid;
     border-top-width: 00px;
@@ -121,7 +127,7 @@ A {
     margin-right: 05px;
 }
 
-.thread_list_thread {
+.thread_list_thread{
     border-style: none;
     vertical-align: middle;
 }
@@ -140,7 +146,7 @@ A {
     padding-left: 2px;
     border: #000000;
     border-style: solid;
-    border-top-width: 0px;
+    border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px
@@ -160,13 +166,53 @@ A {
     padding-left: 2px;
     border: #000000;
     border-style: solid;
-    border-top-width: 1px;
+    border-top-width: 0px;
     border-right-width: 0px;
     border-bottom-width: 0px;
     border-left-width: 1px
 }
 
 .threads_right {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #C8D7E6;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px
+}
+
+.threads_top_left {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #C8D7E6;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 1px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 1px
+}
+
+.threads_top_right {
     font-style: normal;
     font-size: 10pt;
     background-color: #C8D7E6;
@@ -200,7 +246,7 @@ A {
     padding-left: 2px;
     border: #000000;
     border-style: solid;
-    border-top-width: 1px;
+    border-top-width: 0px;
     border-right-width: 0px;
     border-bottom-width: 1px;
     border-left-width: 1px
@@ -220,13 +266,13 @@ A {
     padding-left: 2px;
     border: #000000;
     border-style: solid;
-    border-top-width: 1px;
+    border-top-width: 0px;
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 0px
 }
 
-.threads_prev {
+.threads_left_right {
     font-style: normal;
     font-size: 10pt;
     background-color: #C8D7E6;
@@ -244,6 +290,66 @@ A {
     border-right-width: 1px;
     border-bottom-width: 0px;
     border-left-width: 1px
+}
+
+.threads_left_right_bottom {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #C8D7E6;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px
+}
+
+.threads_top_left_bottom {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #C8D7E6;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 1px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 1px
+}
+
+.threads_top_right_bottom {
+    font-style: normal;
+    font-size: 10pt;
+    background-color: #C8D7E6;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    border: #000000;
+    border-style: solid;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 0px
 }
 
 .folderinfo {
@@ -315,7 +421,6 @@ A {
     padding: 0px;
     height: 20px;
 }
-
 .postbody {
     font-size: 10pt;
     padding-top: 2px;
@@ -351,7 +456,7 @@ A {
     font-size: 10pt;
     font-style: normal;
     color: #000000;
-    border-top: 1px    #C8D7E6    solid;
+    border-top: 1px #C8D7E6 solid;
     text-align: center;
     padding-top: 1px;
     padding-bottom: 1px;
@@ -384,8 +489,8 @@ A {
     padding-top: 3px;
     padding-right: 3px;
     padding-bottom: 3px;
-    padding-left: 3px;    top: 20px;
-    clip: rect(    )
+    padding-left: 3px; top: 20px;
+    clip:   rect(   )
 }
 
 .button {
@@ -399,7 +504,7 @@ A {
     border-bottom-width: 1px;
     border-left-width: 1px;
     text-decoration: none;
-    cursor: pointer;
+    cursor: pointer
 }
 
 .smallbutton {
@@ -478,10 +583,9 @@ A {
     margin-right: 10px;
     padding: 3px;
 }
-
 .code {
     font-family: monospace;
-    border: 1px    solid    #CCCCCC;
+    border: 1px solid #CCCCCC;
     background-color: #EEEEEE;
     margin-top: 0px;
     margin-bottom: 10px;
@@ -490,10 +594,9 @@ A {
     padding: 3px;
     overflow: auto;
 }
-
 .quote {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    border: 1px    solid    #CCCCCC;
+    border: 1px solid #CCCCCC;
     background-color: #EEEEEE;
     margin-top: 0px;
     margin-bottom: 10px;
@@ -501,10 +604,9 @@ A {
     margin-right: 10px;
     padding: 3px;
 }
-
 .spoiler {
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    border: 1px    solid    #CCCCCC;
+    border: 1px solid #CCCCCC;
     color: #EEEEEE;
     background-color: #EEEEEE;
     margin-top: 0px;
@@ -524,7 +626,7 @@ A {
 }
 
 .tools_up {
-    border: 1px    solid    #C8D7E6;
+    border: 1px solid #C8D7E6;
     margin-left: 1px;
     margin-right: 1px;
     width: 18px;
@@ -532,10 +634,10 @@ A {
 }
 
 .tools_over {
-    border-top: 1px    solid    buttonhighlight;
-    border-left: 1px    solid    buttonhighlight;
-    border-bottom: 1px    solid    buttonshadow;
-    border-right: 1px    solid    buttonshadow;
+    border-top: 1px solid buttonhighlight;
+    border-left: 1px solid buttonhighlight;
+    border-bottom: 1px solid buttonshadow;
+    border-right: 1px solid buttonshadow;
     margin-left: 1px;
     margin-right: 1px;
     width: 18px;
@@ -543,10 +645,10 @@ A {
 }
 
 .tools_down {
-    border-top: 1px    solid    buttonshadow;
-    border-left: 1px    solid    buttonshadow;
-    border-bottom: 1px    solid    buttonhighlight;
-    border-right: 1px    solid    buttonhighlight;
+    border-top: 1px solid buttonshadow;
+    border-left: 1px solid buttonshadow;
+    border-bottom: 1px solid buttonhighlight;
+    border-right: 1px solid buttonhighlight;
     margin-left: 1px;
     margin-right: 1px;
     width: 18px;
@@ -554,10 +656,10 @@ A {
 }
 
 .spellcheckbodytext {
-    border-top: 1px    solid    buttonshadow;
-    border-left: 1px    solid    buttonshadow;
-    border-bottom: 1px    solid    buttonhighlight;
-    border-right: 1px    solid    buttonhighlight;
+    border-top: 1px solid buttonshadow;
+    border-left: 1px solid buttonshadow;
+    border-bottom: 1px solid buttonhighlight;
+    border-right: 1px solid buttonhighlight;
     background-color: #FFFFFF;
     margin-left: 1px;
     margin-right: 1px;
@@ -580,8 +682,12 @@ A {
     background-color: #FFFFFF;
 }
 
-.emoticon_preview    img {
+.emoticon_preview img {
     cursor: pointer;
+}
+
+.pmnewcount {
+    font-size: 8pt;
 }
 
 .pmbar_text {
@@ -591,7 +697,7 @@ A {
 .pmbar_container {
     height: 13px;
     width: 100%;
-    border: 1px    solid    #686868;
+    border: 1px solid #686868;
     background-color: #FFFFFF;
 }
 
@@ -606,13 +712,11 @@ A {
     font-size: 8pt;
 }
 
-.pagenum_text    a {
+.pagenum_text a {
     text-decoration: none;
 }
 
 .admin_folder_perms {
-    width: 500px;
-    height: 120px;
     overflow: auto;
     padding: 2px;
 }
@@ -623,7 +727,7 @@ A {
 
 .attachment_thumb {
     float: left;
-    border: 1px    solid    #777777;
+    border: 1px solid #777777;
     padding: 5px;
     margin: 5px;
 }
@@ -738,4 +842,3 @@ A {
 .approved_text {
     font-size: 10px;
 }
-

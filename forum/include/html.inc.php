@@ -17,28 +17,55 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-function html_draw_top ()
+function _html_draw_top1($title)
 {
-	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-	?>
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-		<head>
-			<title>Project Beehive</title>
-			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-			<link rel="stylesheet" href="./styles/style.css" type="text/css"/>
-		</head>
-		<body>
-<?
+	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
+	echo "\t<head>\n";
+	echo "\t\t<title>$title</title>\n";
+	echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
+	echo "\t\t<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\"/>\n";
+}
+
+function _html_draw_top2()
+{
+	echo "\t</head>\n";
+	echo "<body>\n";
+}
+
+function _html_draw_top_script()
+{
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "<!--\n";
+    echo "function openProfile(uid)\n";
+    echo "{\n";
+    echo "window.open('user_profile.php?uid=' + uid,'bh_profile','width=400,height=400,toolbars=no');\n";
+    echo "}\n";
+    echo "-->\n";
+    echo "</script>\n";
+}
+
+function html_draw_top($title = "Beehive Forum")
+{
+    _html_draw_top1($title);
+    _html_draw_top2();
+}
+
+function html_draw_top_script($title = "Beehive Forum")
+{
+    _html_draw_top1($title);
+    _html_draw_top_script();
+    _html_draw_top2();
 }
 
 function html_draw_bottom ()
 {
-	echo "</body>";
-	echo "</html>";
+	echo "</body>\n";
+	echo "</html>\n";
 }
 ?>

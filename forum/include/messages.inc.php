@@ -118,8 +118,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<p class=\"posttofromlabel\">From:<br />To:</p></td>\n";
     echo "<td width=\"92%\">\n";
     echo "<p class=\"posttofrom\">";
-    echo format_user_name($message['FLOGON'], $message['FNICK']) . "<br />";
-    echo format_user_name($message['TLOGON'], $message['TNICK']);
+    echo "<a href=\"#\" onclick=\"openProfile(".$message['FROM_UID'].")\">";
+    echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a><br />";
+    if($message['TLOGON'] != "ALL"){
+        echo "<a href=\"#\" onclick=\"openProfile(".$message['TO_UID'].")\">";
+        echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a>";
+    } else {
+        echo "ALL";
+    }
     if(!$message['VIEWED'] && $message['TLOGON'] != "ALL"){
         echo " <span class=\"smalltext\">(unread)</span>";
     }

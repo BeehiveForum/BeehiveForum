@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.14 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: light.inc.php,v 1.15 2003-09-09 11:07:58 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -137,46 +137,38 @@ function light_form_radio($name, $value, $text, $checked = false)
 
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
 {
-
     global $HTTP_SERVER_VARS, $lang;
+
     $uid = bh_session_get_value('UID');
 
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
     $userpolldata = poll_get_user_vote($tid);
 
-    $totalvotes   = 0;
-
-    for ($i = 1; $i <= sizeof($pollresults); $i++) {
-      $totalvotes = $totalvotes + $pollresults[$i]['VOTES'];
-    }
+    $totalvotes       = 0;
+    $poll_group_count = 1;
 
     $polldata['CONTENT'] = "<form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
     $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
 
-    $max_value = 0;
-
-    for ($i = 1; $i <= sizeof($pollresults); $i++) {
-
-      if (!empty($pollresults[$i]['OPTION_NAME'])) {
-
-        if ($pollresults[$i]['VOTES'] > $max_value) $max_value = $pollresults[$i]['VOTES'];
-        if(!isset($optioncount)) { $optioncount = 1; } else { $optioncount++; }
-
-      }
-
-    }
-
     if ($in_list) {
 
-      if ((!isset($userpolldata['OPTION_ID']) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
+      if ((!is_array($userpolldata) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
 
-        for ($i = 1; $i <= sizeof($pollresults); $i++) {
+        for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-          if (!empty($pollresults[$i]['OPTION_NAME'])) {
+          if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
 
-            $polldata['CONTENT'].= light_form_radio("pollvote", $pollresults[$i]['OPTION_ID'], '', false). "&nbsp;". $pollresults[$i]['OPTION_NAME']. "<br />\n";
+          if (strlen(trim($pollresults['OPTION_NAME'][$i])) > 0) {
+
+            if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+                $polldata['CONTENT'].= "<hr />\n";
+                $poll_group_count++;
+            }
+
+            $polldata['CONTENT'].= light_form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "&nbsp;". $pollresults['OPTION_NAME'][$i]. "<br />\n";
+            $poll_previous_group = $pollresults['GROUP_ID'][$i];
 
           }
 
@@ -186,20 +178,38 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
         if ($polldata['SHOWRESULTS'] == 1) {
 
-          for ($i = 1; $i <= sizeof($pollresults); $i++) {
+          for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-              $polldata['CONTENT'] .= $pollresults[$i]['OPTION_NAME'] . ": " . $pollresults[$i]['VOTES'] . " votes <br />\n";
+            if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
+
+            if (strlen(trim($pollresults['OPTION_NAME'][$i])) > 0) {
+
+              if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+                  $polldata['CONTENT'].= "<hr />\n";
+                  $poll_group_count++;
+              }
+
+              $polldata['CONTENT'] .= $pollresults['OPTION_NAME'][$i] . ": " . $pollresults['VOTES'][$i] . " votes <br />\n";
+              $poll_previous_group = $pollresults['GROUP_ID'][$i];
+            }
 
           }
 
         }else {
 
-          for ($i = 1; $i <= sizeof($pollresults); $i++) {
+          for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-            if (!empty($pollresults[$i]['OPTION_NAME'])) {
+            if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
 
-              $polldata['CONTENT'].= $pollresults[$i]['OPTION_NAME']. "<br />\n";
+            if (strlen(trim($pollresults['OPTION_NAME'][$i])) > 0) {
 
+              if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+                  $polldata['CONTENT'].= "<hr />\n";
+                  $poll_group_count++;
+              }
+
+              $polldata['CONTENT'].= $pollresults['OPTION_NAME'][$i]. "<br />\n";
+              $poll_previous_group = $pollresults['GROUP_ID'][$i];
             }
 
           }
@@ -210,12 +220,19 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
     }else {
 
-      for ($i = 1; $i <= sizeof($pollresults); $i++) {
+      for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-        if (!empty($pollresults[$i]['OPTION_NAME'])) {
+        if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
 
-          $polldata['CONTENT'].= $pollresults[$i]['OPTION_NAME']. "<br />\n";
+        if (!empty($pollresults['OPTION_NAME'][$i])) {
 
+          if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+              $polldata['CONTENT'].= "<hr />\n";
+              $poll_group_count++;
+          }
+
+          $polldata['CONTENT'].= $pollresults['OPTION_NAME'][$i]. "<br />\n";
+          $poll_previous_group = $pollresults['GROUP_ID'][$i];
         }
 
       }
@@ -224,7 +241,21 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
     if ($in_list) {
 
-    $polldata['CONTENT'] .= "<p>";
+      $group_array = array();
+
+      for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
+
+        $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
+
+        if (!in_array($pollresults['GROUP_ID'][$i], $group_array)) {
+            $group_array[] = $pollresults['GROUP_ID'][$i];
+        }
+      }
+
+      $poll_group_count = sizeof($group_array);
+      $totalvotes = ceil($totalvotes / $poll_group_count);
+
+      $polldata['CONTENT'] .= "<p>";
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
@@ -262,21 +293,51 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
         $polldata['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
 
-        if (isset($userpolldata['OPTION_ID'])) {
-          $polldata['CONTENT'].= "<p>{$lang['yourvotewas']} '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' {$lang['on']} ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</p>\n";
+        if (is_array($userpolldata)) {
+
+          $userpollvotes_array = array();
+
+          for ($i = 0; $i < sizeof($userpolldata); $i++) {
+            for ($j = 0; $j < sizeof($pollresults['OPTION_ID']); $j++) {
+              if ($userpolldata[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
+                if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
+                  $userpollvotes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
+                }else {
+                  $userpollvotes_array[] = "Option {$userpolldata[$i]['OPTION_ID']}";
+                }
+              }
+            }
+          }
+
+          $polldata['CONTENT'].= "<p>{$lang['youvotedfor']}: ". implode(" & ", $userpollvotes_array);
+          $polldata['CONTENT'].= " {$lang['on']} ". gmdate("jS M Y", $userpolldata[0]['TSTAMP']). "</p>\n";
+
         }
 
       }else {
 
-        if (isset($userpolldata['OPTION_ID'])) {
+        if (is_array($userpolldata)) {
 
-          $polldata['CONTENT'].= "<p>{$lang['yourvotewas']} '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' {$lang['on']} ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</p>\n";
+          $userpollvotes_array = array();
+
+          for ($i = 0; $i < sizeof($userpolldata); $i++) {
+            for ($j = 0; $j < sizeof($pollresults['OPTION_ID']); $j++) {
+              if ($userpolldata[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
+                if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
+                  $userpollvotes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
+                }else {
+                  $userpollvotes_array[] = "Option {$userpolldata[$i]['OPTION_ID']}";
+                }
+              }
+            }
+          }
+
+          $polldata['CONTENT'].= "<p>{$lang['youvotedfor']}: ". implode(" & ", $userpollvotes_array);
+          $polldata['CONTENT'].= " {$lang['on']} ". gmdate("jS M Y", $userpolldata[0]['TSTAMP']). "</p>\n";
 
         }elseif (bh_session_get_value('UID') > 0) {
 
-
           $polldata['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>\n";
-
 
         }
 

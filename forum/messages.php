@@ -44,7 +44,7 @@ $tid = $tidpid[0];
 $pid = $tidpid[1];
 
 // Output XHTML header
-html_draw_top();
+html_draw_top_script();
 
 if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
     $ppp = $HTTP_COOKIE_VARS['bh_sess_ppp'];

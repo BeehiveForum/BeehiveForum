@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: header.inc.php,v 1.11 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // header.inc.php:
 // Functions for manipulating the HTTP header
 // These must be called BEFORE anything is output to the page - including blank lines outside PHP

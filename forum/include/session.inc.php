@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: session.inc.php,v 1.38 2003-07-27 12:42:05 hodcroftcj Exp $ */
+
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/user.inc.php");

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: links.inc.php,v 1.16 2003-07-27 12:42:05 hodcroftcj Exp $ */
+
 // Functions for the links database
 
 require_once('./include/db.inc.php');

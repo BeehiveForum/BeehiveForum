@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: poll.inc.php,v 1.53 2003-07-27 12:42:05 hodcroftcj Exp $ */
+
 // Author: Matt Beale
 
 require_once('./include/messages.inc.php');

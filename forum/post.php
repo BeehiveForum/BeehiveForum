@@ -23,6 +23,8 @@ USA
 
 ======================================================================*/
 
+/* $Id: post.php,v 1.102 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
 

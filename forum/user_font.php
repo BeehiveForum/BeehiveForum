@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: user_font.php,v 1.5 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // Changes the user's fontsize. Moved from messages.php (02.05.2003)
 
 require_once("./include/user.inc.php");

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: threads.inc.php,v 1.81 2003-07-27 12:42:05 hodcroftcj Exp $ */
+
 // Included functions for displaying threads in the left frameset.
 
 require_once("./include/db.inc.php");

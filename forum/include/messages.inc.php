@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: messages.inc.php,v 1.152 2003-07-27 12:42:05 hodcroftcj Exp $ */
+
 // Included functions for displaying messages in the main frameset.
 
 require_once("./include/db.inc.php"); // Database functions

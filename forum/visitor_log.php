@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: visitor_log.php,v 1.8 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
 

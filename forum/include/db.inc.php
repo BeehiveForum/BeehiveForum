@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: db.inc.php,v 1.31 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // PROVIDES BASIC DATABASE FUNCTIONALITY
 // This is desgined to be be referenced in an include() or require() statement
 // in any script where access to the database is needed. Use these functions

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: prefs.php,v 1.62 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
 
@@ -78,6 +80,8 @@ if ($dir = @opendir('styles')) {
 array_multisort($style_names, $available_styles);
 
 $available_langs = lang_get_available(); // get list of available languages
+$available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
+array_unshift($available_langs, "");
 
 $timezones = array("GMT - 11 {$lang['hours']}", "GMT - 10 {$lang['hours']}", "GMT - 9 {$lang['hours']}",
                    "GMT - 8 {$lang['hours']}", "GMT - 7 {$lang['hours']}", "GMT - 6 {$lang['hours']}",
@@ -412,7 +416,7 @@ if(!empty($error_html)) {
       </tr>
       <tr>
         <td><?php echo $lang['preferredlang']; ?></td>
-        <td><?php echo form_dropdown_array("language", $available_langs, NULL, bh_session_get_value("LANGUAGE")); ?></td>
+        <td><?php echo form_dropdown_array("language", $available_langs, $available_langs_labels, bh_session_get_value("LANGUAGE")); ?></td>
       </tr>
       <tr>
         <td><?php echo $lang['startpage']; ?></td>

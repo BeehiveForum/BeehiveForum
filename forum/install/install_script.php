@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.16 2004-08-14 20:24:06 tribalonline Exp $ */
+/* $Id: install_script.php,v 1.17 2004-08-14 21:40:37 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -644,6 +644,13 @@ if(!$result = mysql_query($sql, $db_install)) {
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'show_pms', 'Y');";
+
+if(!$result = mysql_query($sql, $db_install)) {
+    $valid = false;
+}
+
+$sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+$sql.= "VALUES (1, 'pm_max_user_messages', '100');";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;

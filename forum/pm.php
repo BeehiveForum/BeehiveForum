@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.64 2004-08-10 21:43:11 decoyduck Exp $ */
+/* $Id: pm.php,v 1.65 2004-08-14 21:40:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -336,9 +336,9 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     // Fetch the free PM space and calculate it as a percentage.
 
     $pm_free_space = pm_get_free_space();
-    $max_pm_space = forum_get_setting('pm_max_user_space', false, 102400);
+    $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 
-    $pm_free_percent = ceil((100 / $max_pm_space) * ($max_pm_space - $pm_free_space));
+    $pm_free_percent = ceil((100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space));
 
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";

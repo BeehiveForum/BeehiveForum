@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.101 2004-08-14 15:11:45 hodcroftcj Exp $ */
+/* $Id: fr.inc.php,v 1.102 2004-08-14 21:40:37 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -453,7 +453,7 @@ $lang['showdeletedattachments'] = "Show Deleted Attachments in messages";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments in messages / signatures";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
-$lang['pmuserspace'] = "PM space per user";
+$lang['pmusermessages'] = "PM messages per user";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.54 2004-04-11 22:49:26 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.55 2004-04-11 23:41:09 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -148,6 +148,8 @@ $lang['emoticons'] = "Emoticons";
 $lang['savechanges'] = "Save Changes";
 $lang['webtag'] = "Webtag";
 $lang['default'] = "Default";
+$lang['makedefault'] = "Make Default";
+$lang['unsetdefault'] = "Unset Default";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 

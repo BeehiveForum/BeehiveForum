@@ -132,7 +132,7 @@ for($i=0;$i<$result_count;$i++){
     echo "<td valign=\"top\">".form_field("t_name_$i",$row['NAME'],64,64);
     echo form_input_hidden("t_old_name_$i", $row['NAME'])."</td>";
     echo "<td valign=\"top\">".profile_section_dropdown($psid,"t_move","_$i")."</td>";
-    echo "<td valign=\"top\">". form_input_hidden("t_psid", $HTTP_GET_VARS['psid']). form_input_hidden("piid", $row['PIID']). form_submit("submit", "Delete"). "</td></tr>";
+    echo "<td valign=\"top\">". form_input_hidden("t_psid", $psid). form_input_hidden("piid", $row['PIID']). form_submit("submit", "Delete"). "</td></tr>";
 
 }
 

@@ -113,7 +113,7 @@ if(isset($HTTP_POST_VARS['t_newthread'])) {
         $valid = false;
     }
 
-    if(isset($HTTP_POST_VARS['t_content'])) {
+    if(isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
         $t_content = $HTTP_POST_VARS['t_content'];
     }else{
         $error_html = "<h2>You must enter some content for the post</h2>";

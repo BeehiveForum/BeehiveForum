@@ -97,7 +97,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
     $edit_msg = $HTTP_POST_VARS['t_msg'];
     $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");   
 
-    if (isset($HTTP_POST_VARS['t_content'])) {
+    if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
     
         $t_content = $HTTP_POST_VARS['t_content'];
 
@@ -133,7 +133,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
 } elseif (isset($HTTP_POST_VARS['submit'])) {
 
-    if (isset($HTTP_POST_VARS['t_content'])) {
+    if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
     
         $t_content = $HTTP_POST_VARS['t_content'];
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.22 2004-05-20 22:17:49 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.23 2004-05-21 16:55:22 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -184,6 +184,34 @@ function perm_add_group($group_name, $group_desc, $perm)
     return false;
 }
 
+function perm_update_group($gid, $group_name, $group_desc, $perm)
+{
+    $db_perm_update_group = db_connect();
+
+    if (!is_numeric($gid)) return false;
+    if (!is_numeric($perm)) return false;
+
+    $group_name = addslashes(_htmlentities($group_name));
+    $group_desc = addslashes(_htmlentities($group_desc));
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (perm_is_group($gid)) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}GROUPS SET GROUP_NAME = '$group_name', ";
+        $sql.= "GROUP_DESC = '$group_desc' WHERE GID = '$gid'";
+
+        $result = db_query($sql, $db_perm_update_group);
+
+        $sql = "UPDATE {$table_data['PREFIX']}GROUP_PERMS SET PERM = '$perm' ";
+        $sql.= "WHERE GID = '$gid' AND FID = '0'";
+
+        return db_query($sql, $db_perm_update_group);
+    }
+
+    return false;
+}
+
 function perm_remove_group($gid)
 {
     $db_perm_remove_group = db_connect();
@@ -297,19 +325,25 @@ function perm_get_group_folder_perms($gid, $fid)
 
     if (perm_is_group($gid)) {
 
-        $sql = "SELECT PERM FROM {$table_data['PREFIX']}GROUP_PERMS WHERE GID = $gid AND FID = $fid";
+        $sql = "SELECT FOLDER.PERM AS FOLDER_PERM, GROUP_PERMS.PERM AS GROUP_PERM, ";
+        $sql.= "GROUP_PERMS.GID FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = '$gid') ";
+        $sql.= "WHERE FOLDER.FID = '$fid' ";
+        $sql.= "GROUP BY GROUP_PERMS.PERM, FOLDER.PERM, FOLDER.FID ";
+
         $result = db_query($sql, $db_perm_get_group_folder_perms);
 
         if (db_num_rows($result) > 0) {
 
             $row = db_fetch_array($result);
-            return $row['PERM'];
-        }
 
-        return 0;
+            if (!is_null($row['GROUP_PERM'])) return array('GID' => $row['GID'], 'STATUS' => $row['GROUP_PERM']);
+            if (!is_null($row['FOLDER_PERM'])) return array('STATUS' => $row['FOLDER_PERM']);
+        }
     }
 
-    return false;
+    return array('STATUS' => 0);
 }
 
 function perm_add_user_to_group($uid, $gid)
@@ -473,6 +507,27 @@ function perm_add_group_folder_perms($gid, $fid, $perm)
         $sql.= "VALUES ('$gid', '$fid', '$perm')";
 
         return db_query($sql, $db_perm_add_group_folder_perms);
+    }
+
+    return false;
+}
+
+function perm_update_group_folder_perms($gid, $fid, $perm)
+{
+    $db_perm_update_group_folder_perms = db_connect();
+
+    if (!is_numeric($gid)) return false;
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($perm)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (perm_is_group($gid)) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}GROUP_PERMS ";
+        $sql.= "SET PERM = '$perm' WHERE GID = '$gid' AND FID = '$fid'";
+
+        return db_query($sql, $db_perm_update_group_folder_perms);
     }
 
     return false;

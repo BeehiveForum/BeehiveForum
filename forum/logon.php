@@ -186,23 +186,24 @@ if (isset($HTTP_POST_VARS['submit'])) {
             $pwcookie = array_splice($password_array, $key, 1);
             $phcookie = array_splice($passhash_array, $key, 1);
 
-            array_unshift($username_array, $uncookie[0]);
+            if (isset($uncookie[0]) && isset($pwcookie[0]) && isset($phcookie[0])) {
 
-            if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-              if ($pwcookie[0] == str_repeat(chr(255), 4)) {
-                array_unshift($password_array, $passw);
-                array_unshift($passhash_array, $passh);
+              array_unshift($username_array, $uncookie[0]);
+
+              if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+                if (isset($pwcookie[0]) && $pwcookie[0] == str_repeat(chr(255), 4)) {
+                  array_unshift($password_array, $passw);
+                  array_unshift($passhash_array, $passh);
+                }else {
+                  array_unshift($password_array, $pwcookie[0]);
+                  array_unshift($passhash_array, $phcookie[0]);
+                }
               }else {
-                array_unshift($password_array, $pwcookie[0]);
-                array_unshift($passhash_array, $phcookie[0]);
+                array_unshift($password_array, str_repeat(chr(255), 4));
+                array_unshift($passhash_array, str_repeat(chr(255), 4));
               }
-            }else {
-              array_unshift($password_array, str_repeat(chr(255), 4));
-              array_unshift($passhash_array, str_repeat(chr(255), 4));
             }
-
           }
-
         }
 
         // Set the cookies

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.20 2005-01-30 14:10:24 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.21 2005-01-30 18:56:26 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -733,6 +733,7 @@ $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  SHOW_THUMBS CHAR(2) NOT NULL DEFAULT '2',";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MyISAM";
 
@@ -821,8 +822,7 @@ $forum_settings = array('1' => array('forum_name'             => 'A Beehive Foru
 
                         '0' => array('show_pms'                   => 'Y',
                                      'pm_max_user_messages'       => '100',
-                                     'pm_auto_prune'              => 'N',
-                                     'pm_auto_prune_length'       => '60',
+                                     'pm_auto_prune'              => '-60',
                                      'pm_allow_attachments'       => 'Y',
                                      'search_min_word_length'     => '3',
                                      'session_cutoff'             => '86400',
@@ -954,8 +954,7 @@ $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  PM_AUTO_PRUNE CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  PM_AUTO_PRUNE_LENGTH CHAR(3) NOT NULL DEFAULT '60',";
+$sql.= "  PM_AUTO_PRUNE CHAR(3) NOT NULL DEFAULT 'N',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
 $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
@@ -965,6 +964,7 @@ $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  POST_PAGE CHAR(3) DEFAULT '0',";
+$sql.= "  SHOW_THUMBS CHAR(2) NOT NULL DEFAULT '2',";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= "  ) TYPE=MYISAM;";
 

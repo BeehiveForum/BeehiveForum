@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.10 2005-01-25 12:51:12 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.11 2005-01-30 18:56:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -141,16 +141,27 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['pm_max_user_messages'] = 100;
     }
 
-    if (isset($_POST['pm_auto_prune']) && $_POST['pm_auto_prune'] == "Y") {
-        $new_forum_settings['pm_auto_prune'] = "Y";
-    }else {
-        $new_forum_settings['pm_auto_prune'] = "N";
-    }
+    if (isset($_POST['pm_auto_prune_enabled']) && $_POST['pm_auto_prune_enabled'] == "Y") {
 
-    if (isset($_POST['pm_auto_prune_length']) && is_numeric($_POST['pm_auto_prune_length'])) {
-        $new_forum_settings['pm_auto_prune_length'] = $_POST['pm_auto_prune_length'];
+        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
+
+            $new_forum_settings['pm_auto_prune'] = $_POST['pm_auto_prune'];
+
+        }else {
+
+            $new_forum_settings['pm_auto_prune'] = "-60";
+        }
+
     }else {
-        $new_forum_settings['pm_auto_prune_length'] = 60;
+
+        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
+
+            $new_forum_settings['pm_auto_prune'] = $_POST['pm_auto_prune'] * -1;
+
+        }else {
+
+            $new_forum_settings['pm_auto_prune'] = "-60";
+        }
     }
 
     if (isset($_POST['pm_allow_attachments']) && $_POST['pm_allow_attachments'] == "Y") {
@@ -425,8 +436,8 @@ echo "                                <td class=\"admin_settings_text\">&nbsp;{$
 echo "                                <td>", form_input_text("pm_max_user_messages", (isset($default_forum_settings['pm_max_user_messages'])) ? $default_forum_settings['pm_max_user_messages'] : "", 10, 32), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td>", form_checkbox("pm_auto_prune", "Y", $lang['autopruneuserspmfoldersevery'], (isset($default_forum_settings['pm_auto_prune'])) ? ($default_forum_settings['pm_auto_prune'] == 'Y') : false), "&nbsp;</td>\n";
-echo "                                <td>", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), (isset($default_forum_settings['pm_auto_prune_length'])) ? $default_forum_settings['pm_auto_prune_length'] : ""), " <span class=\"admin_settings_text\">{$lang['days']}</span>&nbsp;</td>\n";
+echo "                                <td>", form_checkbox("pm_auto_prune_enabled", "Y", $lang['autopruneuserspmfoldersevery'], (isset($default_forum_settings['pm_auto_prune']) && $default_forum_settings['pm_auto_prune'] > 0) ? true : false), "&nbsp;</td>\n";
+echo "                                <td>", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($default_forum_settings['pm_auto_prune']) ? ($default_forum_settings['pm_auto_prune'] > 0 ? $default_forum_settings['pm_auto_prune'] : $default_forum_settings['pm_auto_prune'] * -1) : 4)), " <span class=\"admin_settings_text\">{$lang['days']}</span>&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
 echo "                                <td colspan=\"2\">", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], (isset($default_forum_settings['pm_allow_attachments'])) ? ($default_forum_settings['pm_allow_attachments'] == 'Y') : false), "&nbsp;</td>\n";

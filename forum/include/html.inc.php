@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.144 2004-12-22 19:27:50 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.145 2005-01-07 09:22:21 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -474,15 +474,23 @@ function href_remove_query_keys($uri, $remove_keys)
 
     if (isset($uri_array['query'])) {
 
+        $uri_array['query'] = preg_replace("/&$/", "", $uri_array['query']);
+        $uri_array['query'] = preg_replace("/&amp;$/", "", $uri_array['query']);
+        $uri_array['query'] = preg_replace("/&+/", "", $uri_array['query']);
+        $uri_array['query'] = preg_replace("/[&amp;]+$/", "", $uri_array['query']);
+
         parse_str($uri_array['query'], $uri_query_array);
 
         $new_uri_query = "";
 
         foreach($uri_query_array as $key => $value) {
 
-            if ((is_array($remove_keys) && !in_array($key, $keys)) || ($key != $remove_keys)) {
+            if (strlen($key) > 0 && strlen($value) > 0) {
 
-                $new_uri_query.= "{$key}={$value}&amp;";
+                if ((is_array($remove_keys) && !in_array($key, $remove_keys)) || ($key != $remove_keys)) {
+
+                    $new_uri_query.= "{$key}={$value}&amp;";
+                }
             }
         }
 

@@ -21,11 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.67 2005-03-15 21:29:46 decoyduck Exp $ */
-
-if (@file_exists("./include/config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
-}
+/* $Id: errorhandler.inc.php,v 1.68 2005-03-29 00:42:02 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
@@ -48,7 +44,9 @@ error_reporting(E_ALL);
 
 function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
-    global $show_friendly_errors;
+    if (@file_exists("./include/config.inc.php")) {
+        include(BH_INCLUDE_PATH. "config.inc.php");
+    }
 
     // Bad Coding Practises Alert!!
     // We're going to ignore any E_STRICT error messages

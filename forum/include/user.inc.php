@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.103 2003-10-05 16:53:20 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.104 2003-11-09 23:15:56 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -473,6 +473,7 @@ function user_get_forthcoming_birthdays()
     $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
     $sql .= "FROM " . forum_table("USER"). " U, ". forum_table("USER_PREFS") . " UP ";
     $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
+    $sql .= "AND MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW())+ 365, 365) > 0 "; 
     $sql .= "ORDER BY DAYS_TO_BIRTHDAY ASC ";
     $sql .= "LIMIT 0, 5";
 
@@ -483,10 +484,10 @@ function user_get_forthcoming_birthdays()
         while ($row = db_fetch_array($result)) {
             $birthdays[] = $row;
         }
-    } else {
+	return $birthdays;
+    }else {
         return false;
     }
-    return $birthdays;
 }
 
 function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $offset = 0)

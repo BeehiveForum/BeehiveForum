@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.150 2004-09-09 13:19:51 rowan_hill Exp $ */
+/* $Id: edit.php,v 1.151 2004-09-13 13:17:34 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -679,9 +679,13 @@ echo form_input_hidden("t_to_uid", $to_uid);
 echo form_input_hidden("t_from_uid", $from_uid);
 
 echo "<h2>".$lang['to'].":</h2>\n";
-echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
-echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
-echo "</a><br /><br />\n";
+if ($preview_message['TLOGON'] != "ALL") {
+	echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
+	echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
+	echo "</a><br /><br />\n";
+} else {
+	echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
+}
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 

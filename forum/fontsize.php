@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fontsize.php,v 1.37 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: fontsize.php,v 1.38 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -95,6 +95,13 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
 header("Content-Type: text/css");
 
 $fontsize = bh_session_get_value('FONT_SIZE');
@@ -132,9 +139,9 @@ if ($fontsize <> 10) {
     echo ".button            { font-size: ", floor($fontsize * 0.9), "pt }\n";
     echo ".smallbutton       { font-size: ", floor($fontsize * 0.8), "pt }\n";
     echo ".subhead           { font-size: ", $fontsize, "pt }\n";
-    echo ".bhinputtext	     { font-size: ", floor($fontsize * 0.9), "pt }\n";
-    echo ".bhtextarea	     { font-size: ", floor($fontsize * 0.9), "pt }\n";
-    echo ".bhselect	     { font-size: ", floor($fontsize * 0.9), "pt }\n";
+    echo ".bhinputtext       { font-size: ", floor($fontsize * 0.9), "pt }\n";
+    echo ".bhtextarea        { font-size: ", floor($fontsize * 0.9), "pt }\n";
+    echo ".bhselect          { font-size: ", floor($fontsize * 0.9), "pt }\n";
     echo ".bhinputcheckbox   { font-size: ", floor($fontsize * 0.8), "pt }\n";
     echo ".bhinputradio      { font-size: ", floor($fontsize * 0.8), "pt }\n";
     echo ".highlight         { font-size: ", $fontsize, "pt }\n";

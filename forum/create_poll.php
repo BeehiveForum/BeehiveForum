@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.120 2004-07-31 20:22:35 rowan_hill Exp $ */
+/* $Id: create_poll.php,v 1.121 2004-08-04 23:46:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -105,6 +105,13 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
 if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
@@ -155,7 +162,7 @@ if (isset($_POST['t_sig_html'])) {
     $t_sig_html = $_POST['t_sig_html'];
 
     if ($t_sig_html != "N") {
-	$sig_html = 2;
+        $sig_html = 2;
     }
 }
 
@@ -284,12 +291,12 @@ $t_message_text = $post->getContent();
 $t_sig = $sig->getContent();
 
 if (strlen($t_message_text) >= 65535) {
-	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
-	$valid = false;
+        $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
+        $valid = false;
 }
 if (strlen($t_sig) >= 65535) {
-	$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-	$valid = false;
+        $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+        $valid = false;
 }
 
 if ($valid && isset($_POST['submit'])) {
@@ -319,7 +326,7 @@ if ($valid && isset($_POST['submit'])) {
             $ans_h = 2;
         }
 
-	foreach($_POST['answers'] as $key => $poll_answer) {
+        foreach($_POST['answers'] as $key => $poll_answer) {
             $answers[$key] = new MessageText($ans_h, _stripslashes($poll_answer));
             $_POST['answers'][$key] = $answers[$key]->getContent();
         }

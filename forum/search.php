@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.88 2004-07-07 19:34:28 tribalonline Exp $ */
+/* $Id: search.php,v 1.89 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,6 +104,13 @@ $lang = load_language_file();
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
@@ -414,14 +421,14 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     switch($error) {
 
         case SEARCH_USER_NOT_FOUND:
-	    echo "<h2>{$lang['usernamenotfound']}</h2>\n";
-	    break;
-	case SEARCH_NO_KEYWORDS:
-	    echo "<h2>{$lang['notexttosearchfor_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['notexttosearchfor_2']}.</h2>\n";
-	    break;
-	case SEARCH_NO_MATCHES:
-	    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
-	    break;
+            echo "<h2>{$lang['usernamenotfound']}</h2>\n";
+            break;
+        case SEARCH_NO_KEYWORDS:
+            echo "<h2>{$lang['notexttosearchfor_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['notexttosearchfor_2']}.</h2>\n";
+            break;
+        case SEARCH_NO_MATCHES:
+            echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
+            break;
     }
 }
 

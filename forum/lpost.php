@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.51 2004-06-13 11:49:07 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.52 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -76,6 +76,12 @@ $lang = load_language_file();
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
+    header_redirect("./lforums.php");
+}
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
     header_redirect("./lforums.php");
 }
 
@@ -170,9 +176,9 @@ if (isset($_POST['t_newthread'])) {
         }
 
         if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
-	    $t_post_html = "Y";
-	}else {
-	    $t_post_html = "N";
+            $t_post_html = "Y";
+        }else {
+            $t_post_html = "N";
         }
 
         if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {

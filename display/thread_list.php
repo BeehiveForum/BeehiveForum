@@ -1,13 +1,31 @@
 <?php
 
-//Thread List - Written by Benjamin Sekulowicz
-//Intended for use within Project Beehive free forum project.
+/*======================================================================
+Copyright Ben Sekulowicz <me@beseku.com> 2002
 
+This file is part of Beehive.
+
+Beehive is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Beehive is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+======================================================================*/
+
+// Thread List displayererer
 //IMPORTANT - As I have no idea how the login will work, $user (The user integer ID field MUST be passed to this document so that the mark as read malarkey works.
 
-include "includes/inc_connect.php";
-include "includes/inc_draw.php";
-include "includes/inc_gets.php";
+include "../include/html.inc.php";
+include "../include/threads.inc.php";
 
 //Draw top of HTML Document - XHTML 1 Header
 draw_top();

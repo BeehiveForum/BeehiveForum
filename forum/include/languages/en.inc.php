@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.165 2004-08-18 00:03:14 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.166 2004-08-29 18:06:20 decoyduck Exp $ */
 
 // International English language file
 
@@ -572,30 +572,36 @@ $lang['entercontentformessage'] = "Enter some content for the message";
 $lang['msgsentfrombeehiveforumby'] = "This message was sent from a Beehive Forum by";
 $lang['subject'] = "Subject";
 $lang['send'] = "Send";
-$lang['msgnotificationemail_1'] = "posted a message to you on";
-$lang['msgnotificationemail_2'] = "The subject is";
-$lang['msgnotificationemail_3'] = "To read that message and others in the same discussion, go to";
-$lang['msgnotificationemail_4'] = "Note: If you do not wish to receive email notifications of Forum messages";
-$lang['msgnotificationemail_5'] = "posted to you, go to";
-$lang['msgnotificationemail_6'] = "click";
-$lang['msgnotificationemail_7'] = "on Preferences, unselect the Email Notification checkbox and press Submit.";
-$lang['msgnotification_subject'] = "Message Notification from";
-$lang['subnotification_1'] = "posted a message in a thread you";
-$lang['subnotification_2'] = "have subscribed to on";
-$lang['subnotification_3'] = "The subject is";
-$lang['subnotification_4'] = "To read that message and others in the same discussion, go to";
-$lang['subnotification_5'] = "Note: If you do not wish to receive email notifications of new messages";
-$lang['subnotification_6'] = "in this thread, go to";
-$lang['subnotification_7'] = "and adjust your Interest level at the end of the page.";
-$lang['subnotification_subject'] = "Subscription Notification from";
-$lang['pmnotification_1'] = "posted a PM to you on";
-$lang['pmnotification_2'] = "The subject is";
-$lang['pmnotification_3'] = "To read the message go to";
-$lang['pmnotification_4'] = "Note: If you do not wish to receive email notifications of PM messages";
-$lang['pmnotification_5'] = "posted to you, go to";
-$lang['pmnotification_6'] = "click";
-$lang['pmnotification_7'] = "on Preferences, unselect the PM Email Notification checkbox and press Submit.";
-$lang['pmnotification_subject'] = "PM Notification from";
+
+$lang['msgnotification_subject'] = "Message Notification from ";
+
+$lang['msgnotificationemail_1'] = "posted a message to you on ";
+$lang['msgnotificationemail_2'] = "The subject is: ";
+$lang['msgnotificationemail_3'] = "To read that message and others in the same discussion, go to:\n";
+$lang['msgnotificationemail_4'] = "Note: If you do not wish to receive email notifications of forum\n";
+$lang['msgnotificationemail_5'] = "messages posted to you, go to: ";
+$lang['msgnotificationemail_6'] = "click on My Controls then Email and Privacy, unselect the Email\n";
+$lang['msgnotificationemail_7'] = "Notification checkbox and press Submit.\n";
+
+$lang['subnotification_subject'] = "Subscription Notification from ";
+
+$lang['subnotification_1'] = "posted a message in a thread you have subscribed to on ";
+$lang['subnotification_2'] = "The subject is: ";
+$lang['subnotification_3'] = "To read that message and others in the same discussion, go to:\n";
+$lang['subnotification_4'] = "Note: If you do not wish to receive email notifications of new\n";
+$lang['subnotification_5'] = "messages in this thread, go to: ";
+$lang['subnotification_6'] = "and adjust your Interest level at the bottom of the page.\n";
+
+$lang['pmnotification_subject'] = "PM Notification from ";
+
+$lang['pmnotification_1']  = "posted a PM to you on ";
+$lang['pmnotification_2']  = "The subject is: ";
+$lang['pmnotification_3']  = "To read the message go to:\n";
+$lang['pmnotification_4']  = "Note: If you do not wish to receive email notifications of new PM\n";
+$lang['pmnotification_5']  = "messages posted to you, go to: ";
+$lang['pmnotification_6']  = "click My Controls then Email and Privacy, unselect the PM\n";
+$lang['pmnotification_7']  = "Notification checkbox and press Submit.\n";
+
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
 $lang['hasinvalidemailaddress'] = "has an invalid email address";
 

@@ -271,6 +271,8 @@ function add_tag (tag, a, v, enclose) {
 	var re = new RegExp("<\/" + tag + "( [^<>]*)?>(<[^<>]+>)*$", "i");
 	var close = re.exec(str);
 
+	var list_tmp = 0;
+
 	if (open != null && close != null && enclose != true) {
 		if (a != null) {
 			var newstr = change_attribute(open[2], a, v);
@@ -343,7 +345,9 @@ function add_tag (tag, a, v, enclose) {
 				var open_tag = "";
 				var close_tag = "";
 
-				str_mid = parse_list(str_mid, a);
+				var list_tmp = parse_list(str_mid, a);
+				str_mid = list_tmp;
+				list_tmp = list_tmp.split("\n").length - 1;
 			} else if (tag == "quote") {
 				var open_tag = "<quote source=\"\" url=\"\">";
 				var close_tag = "</quote>";
@@ -371,10 +375,13 @@ function add_tag (tag, a, v, enclose) {
 				var close_tag = "";
 
 				if (/^<[^<>]+>$/.test(str_enclose) == false) {
-					str_enclose = parse_list(str_enclose, a);
+					var list_tmp = parse_list(str_enclose, a);
+					str_enclose = list_tmp;
 				} else {
-					str_enclose += parse_list("", a);
+					var list_tmp = parse_list("", a)
+					str_enclose += list_tmp;
 				}
+				list_tmp = list_tmp.split("\n").length - 1;
 			} else if (tag == "quote") {
 				var open_tag = "<quote source=\"\" url=\"\">";
 				var close_tag = "</quote>";
@@ -396,14 +403,14 @@ function add_tag (tag, a, v, enclose) {
 		}
 	}
 
-	ss -= active_field.value.substr(0, ss+1).split(/\n/).length-1;
-	se -= active_field.value.substr(0, se+1).split(/\n/).length-1;
-
 	if (active_field.setSelectionRange) {
 		active_field.focus();
 		active_field.setSelectionRange(ss, se);
 
 	} else if (active_field.createTextRange) {
+		ss -= active_field.value.substr(0, ss+1).split(/\n/).length-1;
+		se -= active_field.value.substr(0, se+1).split(/\n/).length-1;
+		se += list_tmp;
 		var range = active_field.createTextRange();
 		range.collapse(true);
 		range.moveEnd('character', se);
@@ -492,72 +499,77 @@ function parse_list (a, num) {
 
 	var type = 3;
 	var start = 1;
-	if (result != null) {
-		var n = result[1];
-		if (!isNaN(parseInt(n))) {
-			type = 0;
-		} else {
-			var c = 0; // lowercase
-			if (n.toLowerCase() != n) {
-				c = 1; // uppercase
-				n = n.toLowerCase();
-			}
-			
-			if (n.length == 1) {
-				if (roman(re.exec(nl[1])[1]) == roman(n) + 1) {
-					type = 2;
-				} else {
-					type = 1;
-				}
+	if (num == true) {
+		if (result != null) {
+			var n = result[1];
+			if (!isNaN(parseInt(n))) {
+				type = 0;
 			} else {
-				type = 2;
+				var c = 0; // lowercase
+				if (n.toLowerCase() != n) {
+					c = 1; // uppercase
+					n = n.toLowerCase();
+				}
+				
+				if (n.length == 1) {
+					if (roman(re.exec(nl[1])[1]) == roman(n) + 1) {
+						type = 2;
+					} else {
+						type = 1;
+					}
+				} else {
+					type = 2;
+				}
+			}
+			start = eval(funcs[type])(n);
+			var count = start;
+
+			for (var i=1; i<nl.length; i++) {
+				n = re.exec(nl[i])[1];
+				if (eval(funcs[type])(n) != ++count) {
+					type = 3;
+					break
+				}
 			}
 		}
-		start = eval(funcs[type])(n);
-		var count = start;
 
-		for (var i=1; i<nl.length; i++) {
-			n = re.exec(nl[i])[1];
-			if (eval(funcs[type])(n) != ++count) {
-				type = 3;
-				break
+		if (type < 3) {
+			var types = ["1", "a", "A", "i", "I"];
+			if (type > 0) {
+				type = " type=\"" + types[(type*2 - 1) + c] + "\"";
+			} else {
+				type = "";
 			}
-		}
-	}
 
-	if (type < 3) {
-		var types = ["1", "a", "A", "i", "I"];
-		if (type > 0) {
-			type = " type=\"" + types[(type*2 - 1) + c] + "\"";
+			if (start > 1) {
+				start = " start=\"" + start + "\"";
+			} else {
+				start = "";
+			}
+
+			var str = "<ol" + type + start + ">\n";
+			for (i=0; i<nl.length; i++) {
+				nl[i] = nl[i].replace(re, "");
+				nl[i] = "<li>" + nl[i] + "</li>\n";
+				
+				str += nl[i];
+			}
+			str += "</ol>";
 		} else {
-			type = "";
+			var str = "<ol>\n";
+			for (i=0; i<nl.length; i++) {
+				nl[i] = "<li>" + nl[i] + "</li>\n";
+				str += nl[i];
+			}
+			str += "</ol>";
 		}
-
-		if (start > 1) {
-			start = " start=\"" + start + "\"";
-		} else {
-			start = "";
-		}
-
-		var str = "<ol" + type + start + ">\n";
-		for (i=0; i<nl.length; i++) {
-			nl[i] = nl[i].replace(re, "");
-			nl[i] = "<li>" + nl[i] + "</li>\n";
-			
-			str += nl[i];
-		}
-		str += "</ol>";
 	} else {
-		var tag = "ol";
-		if (num == null) {
-			tag = "ul";
-		}
-		var str = "<"+tag+">\n";
+		var str = "<ul>\n";
 		for (i=0; i<nl.length; i++) {
 			nl[i] = "<li>" + nl[i] + "</li>\n";
 			str += nl[i];
 		}
-		str += "</"+tag+">";
+		str += "</ul>";
 	}
 
 	return str;

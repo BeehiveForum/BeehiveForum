@@ -34,14 +34,14 @@ if (file_exists('./geshi/geshi.php')) {
 
     $path = 'geshi/geshi';
 
-    $code_highlighter = new GeSHi('//', 'php', $path); 
+    $code_highlighter = new GeSHi('//', 'php', $path);
     $code_highlighter->set_link_target('_blank');
 
     /* To save speed/bandwidth, several highlighting features can be disabled/limited.
     See: http://qbnz.com/highlighter/geshi-doc.html#disabling-lexics
 
-    $code_highlighter->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS); 
-    $code_highlighter->set_line_style('background: #555555;', true); 
+    $code_highlighter->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+    $code_highlighter->set_line_style('background: #555555;', true);
 
     $code_highlighter->set_keyword_group_highlighting($group, $flag);
     $code_highlighter->set_comments_highlighting($group, $flag);
@@ -54,25 +54,34 @@ if (file_exists('./geshi/geshi.php')) {
     $code_highlighter->set_methods_highlighting($flag);
     */
 
-} else {
+}else {
 
-    class fake_geshi
-    {
+    class fake_geshi {
+
         var $source = '';
+
         function fake_geshi() {
+
+            return;
         }
+
         function set_source($source) {
+
             $this->source = $source;
         }
+
         function set_language($lang) {
+
+            return;
         }
+
         function parse_code() {
+
             return _htmlentities($this->source);
         }
     }
 
     $code_highlighter = new fake_geshi();
-
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.72 2005-03-13 20:15:20 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.73 2005-03-14 13:11:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -344,7 +344,7 @@ echo "                <tr>\n";
 
 list ($boxr, $boxg, $boxb) = hexToDec($elements['box']);
 
-if (($boxr < 150 and $boxg < 150 and $boxb < 150) or (($boxr + $boxg + $boxb) / 3) < 85) {
+if (($boxr < 150 && $boxg < 150 && $boxb < 150) || (($boxr + $boxg + $boxb) / 3) < 85) {
     $text_colour = "#ffffff";
 } else {
     $text_colour = "#000000";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.59 2005-03-13 22:17:18 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.60 2005-03-14 13:11:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -434,6 +434,16 @@ if ($current_forum_settings['access_level'] == 1) {
     echo "                      </tr>\n";
 }
 
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_33']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_34']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_35']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_36']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_37']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_38']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";

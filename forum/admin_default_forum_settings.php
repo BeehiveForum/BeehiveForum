@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.17 2005-03-13 20:15:17 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.18 2005-03-14 13:11:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -85,7 +85,7 @@ $available_langs = lang_get_available(); // get list of available languages
 
 // Default Forum Settings
 
-$default_forum_settings = get_default_forum_settings();
+$default_forum_settings = forum_get_default_settings();
 
 if (isset($_POST['submit'])) {
 
@@ -238,7 +238,7 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        save_default_forum_settings($new_forum_settings);
+        forum_save_default_settings($new_forum_settings);
 
         $uid = bh_session_get_value('UID');
         admin_add_log_entry(EDIT_FORUM_SETTINGS);

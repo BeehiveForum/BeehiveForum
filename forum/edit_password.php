@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.35 2005-03-13 20:15:27 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.36 2005-03-14 13:11:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,7 +139,7 @@ if (isset($_POST['submit'])) {
 
         $uid = bh_session_get_value('UID');
 
-        // Update the password (and cookie)
+        // Update the password and cookie
 
         user_change_pass($uid, $t_password, $t_passhash);
 

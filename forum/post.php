@@ -397,6 +397,15 @@ if(!isset($t_threadtitle)){
     $t_threadtitle = "";
 }
 
+$reply_message = messages_get($reply_to_tid, $reply_to_pid);
+$reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
+
+if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+    echo "<h2>Message has been deleted.</h2>\n";
+    html_draw_bottom();
+    exit;
+}
+
 if($newthread) {
 
     echo "<table>\n";
@@ -469,8 +478,6 @@ echo "</form>\n";
 if(!$newthread) {
 
     echo "<p>In reply to:</p>\n";
-    $reply_message = messages_get($reply_to_tid, $reply_to_pid);
-    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     message_display(0,$reply_message,0,0,false,false,false);
     echo "<p>&nbsp;&nbsp;</p>\n";
     

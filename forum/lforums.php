@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.7 2004-04-24 18:42:17 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.8 2004-04-25 13:40:26 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -64,56 +64,84 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 
     if ($forums_array = get_my_forums()) {
 
-        echo "<h2>My Forums</h2>\n";
+        echo "<h2>{$lang['myforums']}</h2>\n";
 
-        if (sizeof($forums_array['FAVOURITES']) > 0) {
+        if (sizeof($forums_array['FAV_FORUMS']) > 0) {
 
-            foreach ($forums_array['FAVOURITES'] as $forum) {
+            echo "<h3>{$lang['favouriteforums']}</h3>\n";
+
+            foreach ($forums_array['FAV_FORUMS'] as $forum) {
 
                 echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
 
 	        if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "<p>{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</p>\n";
+                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
 	        }else {
-                    echo "<p>{$forum['NEW_MESSAGES']} New Messages</p>\n";
+                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
-                echo "<p>Last Visit: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
 	    }
         }
 
-        if (sizeof($forums_array['FORUMS']) > 0) {
+        if (sizeof($forums_array['RECENT_FORUMS']) > 0) {
 
-            foreach ($forums_array['FORUMS'] as $forum) {
+            echo "<h3>{$lang['recentlyvisitedforums']}</h3>\n";
+
+            foreach ($forums_array['RECENT_FORUMS'] as $forum) {
 
                 echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
 
 	        if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "<p>{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</p>\n";
+                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
 	        }else {
-                    echo "<p>{$forum['NEW_MESSAGES']} New Messages</p>\n";
+                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
-                echo "<p>Last Visit: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+	    }
+        }
+
+        if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
+
+            echo "<h3>{$lang['availableforums']}</h3>\n";
+
+            foreach ($forums_array['OTHER_FORUMS'] as $forum) {
+
+                echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+
+	        if ($forum['UNREAD_TO_ME'] > 0) {
+                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
+	        }else {
+                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']}</p>\n";
+                }
+
+                echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
 	    }
         }
 
     }else {
 
-        echo "<h2>My Forums</h2>\n";
-        echo "<h2>There are no forums available.</h2>\n";
+        echo "<h2>{$lang['myforums']}</h2>\n";
+        echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
     }
 
 }else {
 
-    $forums_array = get_forum_list();
+    if ($forums_array = get_forum_list()) {
 
-    echo "<h2>Available Forums</h2>\n";
+        echo "<h2>{$lang['availableforums']}</h2>\n";
 
-    foreach ($forums_array as $forum) {
+        foreach ($forums_array as $forum) {
 
-        echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-        echo "<p>{$forum['MESSAGES']} Messages</p>\n";
+            echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+            echo "<p>{$forum['MESSAGES']} {$lang['messages']}</p>\n";
+        }
+
+    }else {
+
+        echo "<h2>{$lang['availableforums']}</h2>\n";
+        echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
     }
 }
 

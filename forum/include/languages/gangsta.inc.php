@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.64 2004-04-17 20:17:47 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.65 2004-04-17 20:21:47 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -271,7 +271,8 @@ $lang['forumdeletewarning'] = "Are you sure you want to delete the selected foru
 $lang['deleteforum'] = "Delete Forum";
 $lang['defaultforum'] = "Default Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum $new_webtag";
-$lang['failedtocreateforum'] = "Failed to create forum $new_webtag. Please check to make sure the webtag and table names aren't already in use.";
+$lang['failedtocreateforum_1'] = "Failed to create forum"; 
+$lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

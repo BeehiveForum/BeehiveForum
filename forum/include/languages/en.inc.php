@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.115 2004-04-17 20:17:47 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.116 2004-04-17 20:21:47 decoyduck Exp $ */
 
 // International English language file
 
@@ -347,8 +347,9 @@ $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expres
 $lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
 $lang['deleteforum'] = "Delete Forum";
 $lang['defaultforum'] = "Default Forum";
-$lang['successfullycreatedforum'] = "Successfully created forum $new_webtag";
-$lang['failedtocreateforum'] = "Failed to create forum $new_webtag. Please check to make sure the webtag and table names aren't already in use.";
+$lang['successfullycreatedforum'] = "Successfully created forum";
+$lang['failedtocreateforum_1'] = "Failed to create forum"; 
+$lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

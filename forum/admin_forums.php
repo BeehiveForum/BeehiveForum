@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.10 2004-04-17 20:17:32 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.11 2004-04-17 20:21:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -131,9 +131,9 @@ if (isset($_POST['submit'])) {
 
 	if ($valid) {
             if ($new_fid = forum_create($new_webtag, $new_name, $new_access)) {
-	        $message_html = "<h2>{$lang['successfullycreatedforum']}</h2>\n";
+	        $message_html = "<h2>{$lang['successfullycreatedforum']} '$new_webtag'</h2>\n";
 	    }else {
-	        $message_html = "<h2>{$lang['failedtocreateforum']}</h2>\n";
+	        $message_html = "<h2>{$lang['failedtocreateforum_1']} '$new_webtag'. {$lang['failedtocreateforum_2']}</h2>\n";
 	    }
 	}
     }

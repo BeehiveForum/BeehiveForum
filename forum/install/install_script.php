@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.31 2004-10-29 20:26:26 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.32 2004-11-10 17:57:29 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -46,7 +46,10 @@ $sql.= "  PRIMARY KEY  (LOG_ID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_BANNED_IP (";
@@ -55,7 +58,10 @@ $sql.= "  PRIMARY KEY  (IP)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_DEDUPE (";
@@ -65,7 +71,10 @@ $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_FILTER_LIST (";
@@ -78,7 +87,10 @@ $sql.= "  PRIMARY KEY  (ID,UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_FOLDER (";
@@ -91,14 +103,20 @@ $sql.= "  PRIMARY KEY  (FID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
 $sql.= "VALUES ('General', NULL, NULL, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_FORUM_LINKS (";
@@ -110,28 +128,40 @@ $sql.= "  PRIMARY KEY  (LID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
 $sql.= "VALUES (1, 'Forum Links:', NULL)";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
 $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
 $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_GROUP_PERMS (";
@@ -142,25 +172,37 @@ $sql.= "  PRIMARY KEY  (GID,FID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 0, 1792);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 1, 6652);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 6396);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_GROUP_USERS (";
@@ -170,13 +212,19 @@ $sql.= "  PRIMARY KEY  (GID,UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS VALUES (1, 1);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_GROUPS (";
@@ -188,14 +236,20 @@ $sql.= "  PRIMARY KEY  (GID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_GROUPS (GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
 $sql.= "VALUES ('Queen', NULL, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_LINKS (";
@@ -213,7 +267,10 @@ $sql.= "  KEY FID (FID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_LINKS_COMMENT (";
@@ -227,7 +284,10 @@ $sql.= "  KEY LID (LID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_LINKS_FOLDERS (";
@@ -239,14 +299,20 @@ $sql.= "  PRIMARY KEY  (FID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) ";
 $sql.= "VALUES (NULL, 'Top Level', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_LINKS_VOTE (";
@@ -258,7 +324,10 @@ $sql.= "  PRIMARY KEY  (LID,UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_PM (";
@@ -274,7 +343,10 @@ $sql.= "  KEY TO_UID (TO_UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_PM_ATTACHMENT_IDS (";
@@ -285,7 +357,10 @@ $sql.= "  KEY AID (AID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_PM_CONTENT (";
@@ -296,7 +371,10 @@ $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_POLL (";
@@ -311,7 +389,10 @@ $sql.= "  PRIMARY KEY  (TID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_POLL_VOTES (";
@@ -323,7 +404,10 @@ $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_POST (";
@@ -344,7 +428,10 @@ $sql.= "  KEY IPADDRESS (IPADDRESS)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_POST ";
@@ -352,7 +439,10 @@ $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, EDITED, E
 $sql.= "VALUES (1, 0, 1, 0, NULL, NOW(), 0, NULL, 0, '');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_FILES (";
@@ -370,7 +460,10 @@ $sql.= "  KEY HASH (HASH)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_IDS (";
@@ -382,7 +475,10 @@ $sql.= "  KEY AID (AID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_POST_CONTENT (";
@@ -394,13 +490,19 @@ $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_POST_CONTENT VALUES (1, 1, 'Welcome to your new Beehive Forum');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_PROFILE_ITEM (";
@@ -413,38 +515,56 @@ $sql.= "  PRIMARY KEY  (PIID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
 $sql.= "VALUES (1, 'Location', 0, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (2, 1, 'Age', 0, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (3, 1, 'Gender', 0, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (4, 1, 'Quote', 0, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (5, 1, 'Occupation', 0, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_PROFILE_SECTION (";
@@ -455,14 +575,20 @@ $sql.= "  PRIMARY KEY  (PSID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_SECTION (NAME, POSITION) ";
 $sql.= "VALUES ('Personal', 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_STATS (";
@@ -475,7 +601,10 @@ $sql.= "  PRIMARY KEY  (ID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_THREAD (";
@@ -497,7 +626,10 @@ $sql.= "  FULLTEXT KEY TITLE (TITLE)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO {$forum_webtag}_THREAD ";
@@ -505,7 +637,10 @@ $sql.= "(FID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, 
 $sql.= "VALUES (1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_FOLDER (";
@@ -516,7 +651,10 @@ $sql.= "  PRIMARY KEY  (UID,FID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_PEER (";
@@ -527,7 +665,10 @@ $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_POLL_VOTES (";
@@ -541,7 +682,10 @@ $sql.= "  PRIMARY KEY  (ID,TID,PTUID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_PREFS (";
@@ -575,7 +719,10 @@ $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_PROFILE (";
@@ -586,7 +733,10 @@ $sql.= "  PRIMARY KEY  (UID,PIID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_SIG (";
@@ -597,7 +747,10 @@ $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_THREAD (";
@@ -610,7 +763,10 @@ $sql.= "  PRIMARY KEY  (UID,TID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE FORUM_SETTINGS (";
@@ -621,168 +777,240 @@ $sql.= "  PRIMARY KEY (FID, SNAME)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'forum_name', 'A Beehive Forum');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'forum_email', 'admin@abeehiveforum.net');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'default_style', 'default');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'default_emoticon', 'default');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'default_language', 'en');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'show_stats', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'show_links', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'auto_logon', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'show_pms', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'pm_max_user_messages', '100');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'pm_allow_attachments', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'maximum_post_length', '6226');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'allow_post_editing', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'post_edit_time', '0');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'allow_polls', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'search_min_word_length', '3');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'attachments_enabled', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'attachments_dir', 'attachments');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'attachments_allow_embed', 'N');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'attachments_use_old_method', 'N');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'guest_account_active', 'Y');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'session_cutoff', '86400');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
 $sql.= "VALUES (1, 'active_session_cutoff', '900');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE FORUMS (";
@@ -795,14 +1023,20 @@ $sql.= "  PRIMARY KEY  (FID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM, ACCESS_LEVEL) ";
 $sql.= "VALUES ('{$forum_webtag}', 1, 0);";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE SESSIONS (";
@@ -816,7 +1050,10 @@ $sql.= "  KEY SESSION_HASH_UID_IP (HASH, UID, IPADDRESS)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE USER (";
@@ -829,14 +1066,20 @@ $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
 $sql.= "VALUES ('$admin_username', MD5('$admin_password'), '$admin_username', '$admin_email');";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE USER_FORUM (";
@@ -848,7 +1091,10 @@ $sql.= "  PRIMARY KEY  (UID,FID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE USER_PREFS (";
@@ -888,7 +1134,10 @@ $sql.= "  PRIMARY KEY (UID)";
 $sql.= "  ) TYPE=MYISAM;";
 
 if(!$result = db_query($sql, $db_install)) {
-    die($sql. "<br />\n". mysql_error());
+
+    $error_html.= db_error($db_install);
+    $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
@@ -898,7 +1147,10 @@ $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 
 if(!$result = db_query($sql, $db_install)) {
+
+    $error_html.= db_error($db_install);
     $valid = false;
+    return;
 }
 
 ?>

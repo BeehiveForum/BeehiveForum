@@ -28,8 +28,9 @@ require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/constants.inc.php");
 
-function search_construct_query($argarray, &$searchsql, &$urlquery)
+function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
 {
 
   global $HTTP_COOKIE_VARS, $search_min_word_length;
@@ -51,14 +52,24 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
       $fromtouser = "AND POST.TO_UID = ". $argarray['to_uid'];
   }elseif (!empty($argarray['to_other'])) {
       $touid = user_get_uid($argarray['to_other']);
-      if ($touid > -1) $fromtouser = "AND POST.TO_UID = ". $touid;
+      if ($touid > -1) {
+        $fromtouser = "AND POST.TO_UID = ". $touid;
+      }else {
+        $error = SEARCH_USER_NOT_FOUND;
+        return false;
+      }
   }
 
   if (empty($argarray['from_other']) && $argarray['from_uid'] > 0) {
     $fromtouser.= " AND POST.FROM_UID = ". $argarray['from_uid'];
   }elseif (!empty($argarray['from_other'])) {
     $fromuid = user_get_uid($argarray['from_other']);
-    if ($fromuid > -1) $fromtouser.= " AND POST.FROM_UID = ". $fromuid;
+    if ($fromuid > -1) {
+      $fromtouser.= " AND POST.FROM_UID = ". $fromuid;
+    }else {
+      $error = SEARCH_USER_NOT_FOUND;
+      return false;
+    }
   }
 
   if (strlen(trim($argarray['search_string'])) > 0) {
@@ -110,6 +121,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       }else {
 
+        $error = SEARCH_NO_KEYWORDS;
         return false;
 
       }
@@ -161,6 +173,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       }else {
 
+        $error = SEARCH_NO_KEYWORDS;
         return false;
 
       }
@@ -186,6 +199,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
   }else {
 
+    $error = SEARCH_NO_KEYWORDS;
     return false;
 
   }

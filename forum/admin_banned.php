@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.3 2005-01-24 23:00:37 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.4 2005-01-24 23:13:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,21 +104,18 @@ if (isset($_GET['ban_ipaddress']) && strlen(trim(_stripslashes($_GET['ban_ipaddr
 
 // Are we returning somewhere?
 
-if (isset($_GET['ret'])) {
-
-    $ret = $_GET['ret'];
-
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $ret = "./messages.php?webtag=$webtag&msg={$_GET['msg']}";
 }elseif (isset($_POST['ret'])) {
-
     $ret = $_POST['ret'];
+}else {
+    $ret = "./admin_banned.php?webtag=$webtag";
 }
 
 // Return to the page we came from.
 
-if (isset($_POST['back']) && isset($ret)) {
-
+if (isset($_POST['back'])) {
     header_redirect($ret);
-    exit;
 }
 
 if (isset($_POST['add_ipaddress'])) {
@@ -294,9 +291,7 @@ if (sizeof($ban_list_array['EMAIL'])     < 1) $ban_list_array['EMAIL']     = arr
 
 echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-
-if (isset($ret)) echo "  ", form_input_hidden("ret", $ret), "\n";
-
+echo "  ", form_input_hidden("ret", $ret), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"670\">\n";
 echo "    <tr>\n";
 echo "      <td colspan=\"2\"><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
@@ -519,14 +514,9 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
-
-if (isset($ret)) {
-
-    echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-    echo "    </tr>\n";
-}
-
+echo "    <tr>\n";
+echo "      <td colspan=\"2\" align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.81 2005-03-28 23:45:12 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.82 2005-04-05 18:03:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -168,8 +168,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
     foreach ($admin_log_array['admin_log_array'] as $admin_log_entry) {
 
         echo "                  <tr>\n";
-        echo "                    <td class=\"posthead\" align=\"left\">", format_time($admin_log_entry['CREATED']), "</td>\n";
-        echo "                    <td class=\"posthead\" align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), "</a></td>\n";
+        echo "                    <td class=\"posthead\" align=\"left\" valign=\"top\">", format_time($admin_log_entry['CREATED']), "</td>\n";
+        echo "                    <td class=\"posthead\" align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), "</a></td>\n";
 
         $entry_array = explode("\x00", $admin_log_entry['ENTRY']);
 
@@ -317,12 +317,12 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case DELETE_POST:
 
-                $action_text = sprintf($lang['deletedpost'], $entry_array[0], $entry_array[0]);
+                $action_text = sprintf($lang['deletedpost'], $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
                 break;
 
             case EDIT_POST:
 
-                $action_text = sprintf($lang['editedpost'], $entry_array[0], $entry_array[0]);
+                $action_text = sprintf($lang['editedpost'], $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
                 break;
 
             case EDIT_WORD_FILTER:

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.259 2005-04-04 17:29:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.260 2005-04-05 18:03:33 decoyduck Exp $ */
 
 // International English language file
 
@@ -554,8 +554,8 @@ $lang['deletedattachmentfrompost'] = "Deleted attachment '%s' from post '<a href
 
 $lang['editedforumlinks'] = "Edited Forum Links";
 
-$lang['deletedpost'] = "Deleted Post '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['editedpost'] = "Edited Post '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['deletedpost'] = "Deleted Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['editedpost'] = "Edited Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
 
 $lang['madethreadsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' sticky";
 $lang['madethreadnonsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' non-sticky";

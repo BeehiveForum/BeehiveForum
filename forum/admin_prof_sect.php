@@ -124,7 +124,7 @@ for($i = 0; $i < $result_count; $i++){
     
     if (db_num_rows($psid_result) == 0) {
     
-      echo "<form method=\"POST\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\">". form_input_hidden("psid", $row['PSID']). form_submit("submit", "Delete"). "</form>";
+      echo form_input_hidden("psid", $row['PSID']). form_submit("submit", "Delete");
       
     }else{
     

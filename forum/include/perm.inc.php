@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.43 2004-07-28 19:31:25 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.44 2004-08-01 13:31:23 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -40,7 +40,11 @@ function perm_is_moderator($fid = 0)
 
     $row = db_fetch_array($result);
 
-    return ($row['STATUS'] & USER_PERM_FOLDER_MODERATE);
+    if (($row['STATUS'] & USER_PERM_FOLDER_MODERATE) > 0) return true;
+    if (($row['STATUS'] & USER_PERM_ADMIN_TOOLS) > 0) return true;
+    if (($row['STATUS'] & USER_PERM_FORUM_TOOLS) > 0) return true;
+
+    return false;
 }
 
 function perm_has_admin_access()

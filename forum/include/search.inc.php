@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.98 2005-03-09 09:24:38 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.99 2005-03-09 18:19:18 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -64,16 +64,13 @@ function search_execute($argarray, &$urlquery, &$error)
         $argarray['forums'] = implode(",", $forum_fids);
     }
 
-    $search_sql = "SELECT THREAD.FID, THREAD.TITLE, POST.TID, POST.PID, ";
-    $search_sql.= "POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
-    $search_sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
-    $search_sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (THREAD.TID = POST.TID) ";
-    $search_sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ";
-    $search_sql.= "ON (SEARCH_MATCH.TID = POST.TID AND SEARCH_MATCH.PID = POST.PID) ";
-    $search_sql.= "LEFT JOIN SEARCH_KEYWORDS SEARCH_KEYWORDS ";
-    $search_sql.= "ON (SEARCH_KEYWORDS.WID = SEARCH_MATCH.WID) ";
+    $search_sql = "SELECT THREAD.FID, SEARCH_MATCH.TID, SEARCH_MATCH.PID, ";
+    $search_sql.= "THREAD.TITLE, POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
+    $search_sql.= "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
+    $search_sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
+    $search_sql.= "LEFT JOIN DEFAULT_THREAD THREAD ON (THREAD.TID = SEARCH_MATCH.TID) ";
+    $search_sql.= "LEFT JOIN DEFAULT_POST POST ON (POST.TID = SEARCH_MATCH.TID AND POST.PID = SEARCH_MATCH.PID) ";
+    $search_sql.= "LEFT JOIN DEFAULT_USER_PEER USER_PEER ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
     $search_sql.= "WHERE SEARCH_MATCH.FID IN ({$argarray['forums']}) ";
     $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";

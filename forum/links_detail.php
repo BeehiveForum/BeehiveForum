@@ -122,7 +122,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
     echo "<tr class=\"posthead\">\n";
     echo "<td>Rate {$link['TITLE']}: </td>";
     echo "<td><b>Bad (0)</b>&nbsp;</td>\n";
-    echo "<td>" . form_radio_array("vote", range(0, 10), array_fill(0, 10, "&nbsp;"), $vote) . "&nbsp;</td>\n";
+    echo "<td>" . form_radio_array("vote", range(0, 10), array(0 => "&nbsp;", 1 => "&nbsp;", 2 => "&nbsp;", 3 => "&nbsp;", 4 => "&nbsp;", 5 => "&nbsp;", 6 => "&nbsp;", 7 => "&nbsp;", 8 => "&nbsp;", 9 => "&nbsp;", 10 => "&nbsp;"), $vote) . "&nbsp;</td>\n";
     echo "<td><b>(10) Good</b>&nbsp;</td>\n";
     echo "<td>" . form_submit("submit", "Vote!") . "</td>\n";
     echo "</tr>";

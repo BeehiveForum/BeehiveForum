@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.88 2004-09-13 15:59:20 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.89 2004-09-14 12:14:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -180,8 +180,7 @@ echo "<h1>{$lang['admin']} : {$lang['manageusers']}</h1>\n";
 if (isset($_POST['t_kick'])) {
     list($user_uid) = array_keys($_POST['t_kick']);
     if (admin_session_end($user_uid)) {
-        $admin_uid = bh_session_get_value('UID');
-        admin_addlog($admin_uid, 0, 0, 0, 0, $user_uid, 27);
+        admin_addlog($user_uid, 0, 0, 0, 0, 0, 27);
         echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">", user_get_logon($user_uid), "</a></b></p>\n";
     }
 }

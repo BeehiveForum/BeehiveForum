@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.81 2004-08-17 11:21:28 rowan_hill Exp $ */
+/* $Id: forum.inc.php,v 1.82 2004-08-17 21:08:09 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -379,7 +379,7 @@ function forum_create($webtag, $forum_name, $access)
         // Beehive Table Names
 
         $table_array = array('ADMIN_LOG', 'BANNED_IP', 'DEDUPE',
-                             'FILTER_LIST', 'FOLDER', 'LINKS',
+                             'FILTER_LIST', 'FOLDER', 'FORUM_LINKS', 'LINKS',
                              'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
                              'PM', 'PM_ATTACHMENT_IDS', 'PM_CONTENT',
                              'POLL', 'POLL_VOTES', 'POST',
@@ -462,6 +462,19 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= ") TYPE=MYISAM;";
 
         $result = db_query($sql, $db_forum_create);
+
+		// Create FORUM_LINKS table
+
+		$sql = "CREATE TABLE {$webtag}_FORUM_LINKS (";
+		$sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+		$sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  URI VARCHAR(255) DEFAULT NULL,";
+		$sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
+		$sql.= "  PRIMARY KEY  (LID)";
+		$sql.= ") TYPE=MYISAM;";
+
+		$result = db_query($sql, $db_forum_create);
+
 
                 // Create GROUP_PERMS table
 
@@ -846,6 +859,23 @@ function forum_create($webtag, $forum_name, $access)
 
         $result = db_query($sql, $db_forum_create);
 
+		// Add some default forum links
+
+		$sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+		$sql.= "VALUES (1, 'Forum Links:', NULL)";
+
+        $result = db_query($sql, $db_forum_create);
+
+			$sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+			$sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
+
+			$result = db_query($sql, $db_forum_create);
+
+			$sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+			$sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
+
+			$result = db_query($sql, $db_forum_create);
+
                 // Create default group
 
                 $sql = "INSERT INTO {$webtag}_GROUPS (GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
@@ -917,7 +947,7 @@ function forum_delete($fid)
             $result = db_query($sql, $db_forum_delete);
 
             $table_array = array('ADMIN_LOG', 'BANNED_IP', 'DEDUPE',
-                                 'FILTER_LIST', 'FOLDER', 'LINKS',
+                                 'FILTER_LIST', 'FOLDER', 'FORUM_LINKS', 'LINKS',
                                  'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
                                  'PM', 'PM_ATTACHMENT_IDS', 'PM_CONTENT',
                                  'POLL', 'POLL_VOTES', 'POST',

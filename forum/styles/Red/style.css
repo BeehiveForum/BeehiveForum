@@ -25,7 +25,7 @@ frame           {
 .navpage        {
                 font-size: 10px;
                 font-weight: bold;
-                margin: 4px 1px 1px 4px;
+                margin: 0px;
                 text-decoration: none;
 		background-color: #AA0037;
 		color:#FFFFFF;
@@ -35,6 +35,14 @@ frame           {
 		color: #FFFFFF;
 		text-decoration: none;
 		}
+
+.navleft {
+		float: left;
+		margin: 4px;
+}
+.navright {
+		float: right;
+}
 
 P, H1, H2,  .form	{
 		background-color: transparent;

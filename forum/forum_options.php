@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.46 2004-08-02 13:40:48 tribalonline Exp $ */
+/* $Id: forum_options.php,v 1.47 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -97,6 +97,13 @@ $lang = load_language_file();
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
@@ -212,26 +219,26 @@ if (isset($_POST['submit'])) {
         $user_prefs['START_PAGE'] = 0;
     }
 
-	$user_prefs['POST_PAGE'] = 0;
-	// toolbar_toggle emots_toggle emots_disable  post_html
-	if (isset($_POST['toolbar_toggle']) && $_POST['toolbar_toggle'] == "Y") {
-		$user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
-	}
-	if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
-		$user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
-	}
-	if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
-		$user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
-	}
-	if (isset($_POST['post_html'])) {
-		if ($_POST['post_html'] == 0) {
-			$user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
-		} else if ($_POST['post_html'] == 1) {
-			$user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
-		} else {
-			$user_prefs['POST_PAGE'] |= POST_HTML_DEFAULT;
-		}
-	}
+        $user_prefs['POST_PAGE'] = 0;
+        // toolbar_toggle emots_toggle emots_disable  post_html
+        if (isset($_POST['toolbar_toggle']) && $_POST['toolbar_toggle'] == "Y") {
+                $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
+        }
+        if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
+                $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
+        }
+        if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
+                $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
+        }
+        if (isset($_POST['post_html'])) {
+                if ($_POST['post_html'] == 0) {
+                        $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
+                } else if ($_POST['post_html'] == 1) {
+                        $user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
+                } else {
+                        $user_prefs['POST_PAGE'] |= POST_HTML_DEFAULT;
+                }
+        }
 
     // User's UID for updating with.
 
@@ -414,7 +421,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 if ($user_prefs['POST_PAGE'] == 0) {
-	$user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -441,11 +448,11 @@ echo "                  <td>", form_checkbox("emots_disable", "Y", $lang['disabl
 echo "                </tr>\n";
 echo "                <tr>\n";
 if (($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0) {
-	$post_html = 1;
+        $post_html = 1;
 } else if (($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0) {
-	$post_html = 2;
+        $post_html = 2;
 } else {
-	$post_html = 0;
+        $post_html = 0;
 }
 echo "                  <td>", form_radio("post_html", "0", $lang['postinplaintextbydefault'], $post_html == 0), "</td>\n";
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.56 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: email.php,v 1.57 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -100,6 +100,13 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
 if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
@@ -147,7 +154,7 @@ if (isset($_POST['submit'])) {
 
     if (!user_allow_email($to_user['UID'])) {
         $error = "<h2>{$lang['user']} {$to_user['LOGON']} {$lang['hasoptedoutofemail']}</h2>\n";
-	$valid = false;
+        $valid = false;
     }
 
     if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.85 2004-07-07 13:59:21 tribalonline Exp $ */
+/* $Id: start_left.php,v 1.86 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,6 +104,13 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
 html_draw_top("openprofile.js", "robots=noindex,follow");
 
 echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -143,10 +150,10 @@ if ($thread_array = threads_get_most_recent()) {
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
-	if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
+        if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
         if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" align=\"middle\" /> ";
-	if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
-	if (isset($thread['ATTACHMENTS']) && !empty($thread['ATTACHMENTS'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+        if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
+        if (isset($thread['ATTACHMENTS']) && !empty($thread['ATTACHMENTS'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
         echo "          </td>\n";
         echo "        </tr>\n";

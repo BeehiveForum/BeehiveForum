@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.215 2004-07-30 00:00:23 rowan_hill Exp $ */
+/* $Id: thread_list.php,v 1.216 2004-08-04 23:46:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -101,6 +101,13 @@ $lang = load_language_file();
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
@@ -291,9 +298,9 @@ if (isset($folder)) {
         case 16: // Unread today
             list($thread_info, $folder_order) = threads_get_unread_by_days($uid);
             break;
-	default: // Default to all threads
-	    list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
-	    break;
+        default: // Default to all threads
+            list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
+            break;
     }
 }
 
@@ -348,16 +355,16 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                 array_unshift($folder_order, $thread['fid']);
 
-		if (!is_array($thread_info)) $thread_info = array();
+                if (!is_array($thread_info)) $thread_info = array();
 
                 foreach ($thread_info as $key => $thread_data) {
                     if ($thread_data['tid'] == $tid) {
                         unset($thread_info[$key]);
-			break;
+                        break;
                     }
                 }
 
-		array_unshift($thread_info, $thread);
+                array_unshift($thread_info, $thread);
             }
         }
     }
@@ -509,7 +516,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                         echo "        <tr>\n";
                         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
-			echo "<a href=\"thread_options.php?webtag=$webtag&amp;tid={$thread['tid']}\" target=\"right\">";
+                        echo "<a href=\"thread_options.php?webtag=$webtag&amp;tid={$thread['tid']}\" target=\"right\">";
 
                         if ($thread['last_read'] == 0) {
 
@@ -560,7 +567,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                         }
 
-			echo "</a>";
+                        echo "</a>";
 
                         // work out how long ago the thread was posted and format the time to display
                         $thread_time = format_time($thread['modified']);

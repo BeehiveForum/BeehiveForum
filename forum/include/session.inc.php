@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.120 2004-08-02 00:32:30 tribalonline Exp $ */
+/* $Id: session.inc.php,v 1.121 2004-08-04 23:46:35 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -60,39 +60,39 @@ function bh_session_check($add_guest_sess = true)
 
         if ($table_data = get_table_prefix()) {
 
-	    $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, ";
-	    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
+            $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, ";
+            $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
             $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-	    $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
-	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-	    $sql.= "ON (GROUP_USERS.UID = SESSIONS.UID) ";
-	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-	    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
+            $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
+            $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+            $sql.= "ON (GROUP_USERS.UID = SESSIONS.UID) ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+            $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
-	    $sql.= "GROUP BY USER.UID";
+            $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
+            $sql.= "GROUP BY USER.UID";
 
-	}else {
+        }else {
 
-	    $sql = "SELECT USER.LOGON, USER.PASSWD, SESSIONS.UID, ";
-	    $sql.= "SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
-	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
-	}
+            $sql = "SELECT USER.LOGON, USER.PASSWD, SESSIONS.UID, ";
+            $sql.= "SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
+            $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+            $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+        }
 
-	$result = db_query($sql, $db_bh_session_check);
+        $result = db_query($sql, $db_bh_session_check);
 
-	if (db_num_rows($result) > 0) {
+        if (db_num_rows($result) > 0) {
 
-	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
+            $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
             // We need to check here to see if the user is
-	    // banned from this forum as the login check
-	    // may have failed because they weren't logging
-	    // in to a specific forum.
+            // banned from this forum as the login check
+            // may have failed because they weren't logging
+            // in to a specific forum.
 
             if ($user_sess['USER_PERM_COUNT'] > 0 && $user_sess['STATUS'] & USER_PERM_BANNED) {
 
@@ -104,7 +104,7 @@ function bh_session_check($add_guest_sess = true)
                 exit;
             }
 
-	    if (is_numeric($table_data['FID'])) {
+            if (is_numeric($table_data['FID'])) {
 
                 // If the user is not logged into the current forum, we should
                 // do that now for them.
@@ -141,7 +141,7 @@ function bh_session_check($add_guest_sess = true)
 
                         $result = db_query($sql, $db_bh_session_check);
                     }
-		}
+                }
 
                 // Everything checks out OK. If the user's session is older
                 // then 5 minutes we should update it.
@@ -155,9 +155,9 @@ function bh_session_check($add_guest_sess = true)
                     $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
 
                     $result = db_query($sql, $db_bh_session_check);
-		}
+                }
 
-	    }else {
+            }else {
 
                 // Everything checks out OK. If the user's session is older
                 // then 5 minutes we should update it.
@@ -171,8 +171,8 @@ function bh_session_check($add_guest_sess = true)
                     $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
 
                     $result = db_query($sql, $db_bh_session_check);
-		}
-	    }
+                }
+            }
 
             // Delete expires sessions
 
@@ -189,10 +189,10 @@ function bh_session_check($add_guest_sess = true)
 
             return $user_sess;
 
-	}else {
+        }else {
 
-	    return false;
-	}
+            return false;
+        }
     }
 
     if ($add_guest_sess) {
@@ -247,7 +247,7 @@ function bh_session_check($add_guest_sess = true)
                  'IMAGES_TO_LINKS'  => 'N',
                  'USE_WORD_FILTER'  => 'Y',
                  'USE_ADMIN_FILTER' => 'Y',
-				 'POST_PAGE'		=> 0);
+                                 'POST_PAGE'            => 0);
 }
 
 // Fetches a value from the session

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.38 2004-07-08 02:28:58 tribalonline Exp $ */
+/* $Id: edit_signature.php,v 1.39 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -99,6 +99,13 @@ $lang = load_language_file();
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
@@ -256,15 +263,15 @@ echo "                  <td>\n";
 echo $tools->toolbar();
 
 if (isset($t_sig_html)) {
-	$sig_html = ($t_sig_html == "Y");
+        $sig_html = ($t_sig_html == "Y");
 } else {
-	$sig_html = ($user_sig['SIG_HTML'] == "Y");
+        $sig_html = ($user_sig['SIG_HTML'] == "Y");
 }
 
 if (isset($t_sig_content)) {
-	$sig_code = _htmlentities($sig_html == "Y" ? tidy_html($t_sig_content, false) : $t_sig_content);
+        $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($t_sig_content, false) : $t_sig_content);
 } else {
-	$sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
+        $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
 }
 
 echo $tools->textarea("sig_content", $sig_code, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."</td>\n";
@@ -279,7 +286,7 @@ echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
 
 echo $tools->assign_checkbox("sig_html");
 
-echo "					</td>\n";
+echo "                                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

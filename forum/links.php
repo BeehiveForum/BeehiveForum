@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.63 2004-07-07 19:34:28 tribalonline Exp $ */
+/* $Id: links.php,v 1.64 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,6 +96,13 @@ $lang = load_language_file();
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
@@ -295,11 +302,11 @@ if (sizeof($links['links_array']) > 0 ) {
         echo "    <td class=\"postbody\" width=\"50%\" valign=\"top\">", _stripslashes($link['DESCRIPTION']), "</td>\n";
         echo "    <td class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
 
-	if (isset($link['RATING']) && $link['RATING'] != "") {
+        if (isset($link['RATING']) && $link['RATING'] != "") {
             echo "    <td class=\"postbody\" valign=\"top\">", round($link['RATING'], 1), "</td>\n";
-	}else {
-	    echo "    <td class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
-	}
+        }else {
+            echo "    <td class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
+        }
 
         echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
         echo "  </tr>\n";

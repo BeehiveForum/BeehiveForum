@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.83 2004-07-07 19:04:37 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.84 2004-08-04 23:46:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -106,6 +106,13 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
 if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
@@ -127,9 +134,9 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     @list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (is_numeric($tid) && is_numeric($pid)) {
-    	if ($threaddata = thread_get($tid)) {
-   	   $t_subject = "Re:".$threaddata['TITLE']." [$tid.$pid]";
-  	  }
+        if ($threaddata = thread_get($tid)) {
+           $t_subject = "Re:".$threaddata['TITLE']." [$tid.$pid]";
+          }
     }
 }
 
@@ -243,16 +250,16 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                         if (!user_allow_pm($to_user['UID'])) {
 
-		            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
-			    $valid = false;
-		        }
+                            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
+                            $valid = false;
+                        }
 
-		        if (pm_get_free_space($to_user['UID']) < (strlen(trim($t_subject)) + strlen(trim($t_content)))) {
+                        if (pm_get_free_space($to_user['UID']) < (strlen(trim($t_subject)) + strlen(trim($t_content)))) {
 
-		            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
-			    $valid = false;
-		        }
-		    }
+                            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
+                            $valid = false;
+                        }
+                    }
 
                 }elseif ($valid) {
 
@@ -330,7 +337,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($new_mid = pm_send_message($t_to_uid, $t_rmid, $t_subject, $t_content)) {
                 if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
-		email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+                email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
             }else {
                 $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                 $valid = false;
@@ -342,7 +349,7 @@ if ($valid && isset($_POST['submit'])) {
 
                 if ($new_mid = pm_send_message($t_to_uid, $t_rmid, $t_subject, $t_content)) {
                     if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
-		    email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+                    email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
                 }else {
                     $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                     $valid = false;

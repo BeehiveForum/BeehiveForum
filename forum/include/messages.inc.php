@@ -389,4 +389,56 @@ function messages_get_most_recent($uid)
     
     return $return;
 }
+
+function message_fontsize_form($fontsize, $tid, $pid)
+{
+
+    global $HTTP_COOKIE_VARS;
+    $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+    
+    if (isset($user_prefs['FONT_SIZE'])) {
+    
+      if (($fontsize != $user_prefs['FONT_SIZE']) && ($fontsize != '')) {
+      
+        user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
+                          $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
+                          $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
+                          $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
+                          $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
+                          $fontsize);
+                          
+      }elseif ($fontsize == '') {
+      
+        $fontsize = $user_prefs['FONT_SIZE'];
+        
+      }
+    
+      $fontstrip = "Adjust text size: ";
+    
+      if (($user_prefs['FONT_SIZE'] > 1) && ($user_prefs['FONT_SIZE'] < 15)) {
+    
+        $fontsmaller = $fontsize - 1;
+        $fontlarger = $fontsize + 1;
+        
+        if ($fontsmaller < 1) $fontsmaller = 1;
+        if ($fontlarger > 15) $fontlarger = 15;
+        
+        $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\">Smaller</a> ". $fontsize. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\">Larger</a>";
+      
+      }elseif ($user_prefs['FONT_SIZE'] == 1) {
+    
+        $fontstrip.= $fontsize. "<a href=\"messages.php?msg=$tid.$pid&fontsize=2\">Larger</a>";
+      
+      }elseif ($user_prefs['FONT_SIZE'] == 15) {
+    
+        $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=14\">Smaller</a> ". $fontsize;
+      
+      }
+      
+    }    
+    
+    echo $fontstrip;
+    
+}
+
 ?>

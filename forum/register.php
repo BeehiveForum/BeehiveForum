@@ -112,6 +112,8 @@ if($valid){
 if($valid){
     $new_uid = user_create($logon,$password,$nickname,$email);
     if($new_uid > -1){
+        user_insert_prefs($new_uid, '', '', '', '', ,'N', 0, 'N', 'Y', 5, 10);
+        user_insert_sig($new_uid, '', 'N');
         bh_session_init($new_uid);
     } else {
         $error_html = "<h2>Error creating user record</h2>";

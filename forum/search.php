@@ -206,12 +206,14 @@ if (isset($searchsql)) {
 
     // trunicate the search result at the last space in the first 50 chars.
 
-    if (strlen($message['TITLE']) > 15) {
+    if (strlen($message['TITLE']) > 20) {
+
+      $message['TITLE'] = substr($message['TITLE'], 0, 20);
 
       if ($schar = strrpos($message['TITLE'], ' ')) {
         $message['TITLE'] = substr($message['TITLE'], 0, $schar);
       }else {
-        $message['TITLE'] = substr($message['TITLE'], 0, 12). "...";
+        $message['TITLE'] = substr($message['TITLE'], 0, 17). "...";
       }
 
     }

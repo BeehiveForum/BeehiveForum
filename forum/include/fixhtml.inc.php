@@ -586,6 +586,7 @@ function tidy_html ($html, $linebreaks = true) {
 			}
 
 			$html_left .= substr($html_right, $first, $j-$first)."</quote>";
+			$html_left = tidy_html($html_left);
 			$html_right = substr($html_right, $j + strlen("</div>"));
 
 		} else {

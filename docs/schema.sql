@@ -230,8 +230,8 @@ CREATE TABLE USER (
 # Dumping data for table `USER`
 #
 
-INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('GUEST', MD5('guest'), 'Guest', 'guest@email.com', 0, NOW());
 INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('ADMIN', MD5('honey'), 'Administrator', 'your@email.com', 56, NOW());
+INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('GUEST', MD5('guest'), 'Guest', 'guest@email.com', 0, NOW());
 # --------------------------------------------------------
 
 #

@@ -62,7 +62,7 @@ $sql.= "on (T.TID = UT.TID and UT.UID = $uid) ";
 $sql.= "order by T.MODIFIED desc ";
 $sql.= "limit 0, 10";
 
-$result = db_query($sql,$db);
+$result = db_query($sql, $db);
 
 echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
@@ -104,7 +104,7 @@ $sql.= "from ".forum_table("USER")." U ";
 $sql.= "order by U.LAST_LOGON desc ";
 $sql.= "limit 0, 10";
 
-$result = db_query($sql,$db);
+$result = db_query($sql, $db);
 
 echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
 

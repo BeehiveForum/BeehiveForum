@@ -31,10 +31,10 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
     
     global $HTTP_SERVER_VARS;
 
-    $db = db_connect();
+    $db_email_sendnotification = db_connect();
 
     $sql = "select LOGON from ". forum_table("USER") . " where UID = $fuid";
-    $resultfrom = db_query($sql, $db);
+    $resultfrom = db_query($sql, $db_email_sendnotification);
     if(db_num_rows($resultfrom)){
         $mailfrom = db_fetch_array($resultfrom);
     } else {
@@ -50,7 +50,7 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
     $sql.= "where PROFILE.UID = $tuid ";
     $sql.= "and PROFILE.UID = PREFS.UID";
 
-    $result = db_query($sql, $db);
+    $result = db_query($sql, $db_email_sendnotification);
 
     if(db_num_rows($result)){
 
@@ -100,7 +100,7 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
     $sql.= "and USER_THREAD.INTEREST = 2 ";
     $sql.= "and USER.UID = USER_THREAD.UID";
 
-    $result = db_query($sql, $db);
+    $result = db_query($sql, $db_email_sendnotification);
 
     for($i=0;$i<db_num_rows($result);$i++){
 
@@ -135,7 +135,6 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
         }
     }
 
-    db_disconnect($db);
 }
 
 ?>

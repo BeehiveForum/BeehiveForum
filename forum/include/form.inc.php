@@ -71,9 +71,9 @@ function form_dropdown_sql($name, $sql, $default)
 {
     $html = "<select name=\"$name\" class=\"bhselect\">\n";
 
-    $db = db_connect();
+    $db_form_dropdown_sql = db_connect();
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_form_dropdown_sql);
 
     while($row = db_fetch_array($result)){
         $sel = ($row[0] == $default) ? " selected" : "";
@@ -83,8 +83,6 @@ function form_dropdown_sql($name, $sql, $default)
             $html.= "<option$sel>".$row[0]."</option>";
         }
     }
-
-    db_disconnect($db);
 
     return $html."</select>";
 }

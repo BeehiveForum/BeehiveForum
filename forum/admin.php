@@ -56,8 +56,11 @@ if(!$HTTP_COOKIE_VARS[bh_sess_ustatus] & USER_PERM_SOLDIER){
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
-    <frameset cols="150,*" border="1">
-    <frame src="./admin_menu.php" name="left" border="1">
-    <frame src="./admin_main.php" name="right" border="1">
+    <frameset rows="20,*" border="0">
+      <frame src="./nav.php" name="nav" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
+      <frameset cols="150,*" border="1">
+        <frame src="./admin_menu.php" name="left" border="1">
+        <frame src="./admin_main.php" name="right" border="1">
+      </frameset>
     </frameset>
 </html>

@@ -26,70 +26,65 @@ require_once("./include/db.inc.php");
 
 function profile_section_get_name($psid)
 {
-   $db = db_connect();
+   $db_profile_section_get_name = db_connect();
    $sql = "select PROFILE_SECTION.NAME from " . forum_table("PROFILE_SECTION") . " where PSID = $psid";
-   $resource_id = db_query($sql,$db);
+   $resource_id = db_query($sql, $db_profile_section_get_name);
    if(!db_num_rows($resource_id)){
      $sectionname = "The Unknown Section";
    } else {
      $data = db_fetch_array($resource_id);
      $sectionname = $data['NAME'];
    }
-   db_disconnect($db);
    return $sectionname;
 }
 
 function profile_section_create($name)
 {
-    $db = db_connect();
+    $db_profile_section_create = db_connect();
     $sql = "insert into " . forum_table("PROFILE_SECTION") . " (NAME) ";
     $sql.= "values (\"$name\")";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_profile_section_create);
     return $result;
 }
 
 function profile_section_update($psid,$name)
 {
-    $db = db_connect();
+    $db_profile_section_update = db_connect();
     $sql = "update " . forum_table("PROFILE_SECTION") . " ";
     $sql.= "set NAME = \"$name\" ";
     $sql.= "where PSID = $psid";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_profile_section_update);
     return $result;
 }
 
 function profile_item_create($psid,$name)
 {
-    $db = db_connect();
+    $db_profile_item_create = db_connect();
     $sql = "insert into " . forum_table("PROFILE_ITEM") . " (PSID,NAME) ";
     $sql.= "values ($psid,\"$name\")";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_profile_item_create);
     return $result;
 }
 
 function profile_item_update($piid,$psid,$name)
 {
-    $db = db_connect();
+    $db_profile_item_update = db_connect();
     $sql = "update " . forum_table("PROFILE_ITEM") . " ";
     $sql.= "set PSID = $psid, ";
     $sql.= "NAME = \"$name\" ";
     $sql.= "where PIID = $piid";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_profile_item_update);
     return $result;
 }
 
 function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
 {
     $html = "<select name=\"${field_name}${suffix}\">";
-    $db = db_connect();
+    $db_profile_section_dropdown = db_connect();
 
     $sql = "select PSID, NAME from " . forum_table("PROFILE_SECTION");
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_profile_section_dropdown);
 
     $i = 0;
     while($row = db_fetch_array($result)){
@@ -99,8 +94,6 @@ function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
         }
         $html .= ">" . $row['NAME'] . "</option>";
     }
-
-    db_disconnect($db);
 
     $html .= "</select>";
     return $html;

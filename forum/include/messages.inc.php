@@ -38,7 +38,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
     if(!$uid) $uid = 0;
 
-	$db = db_connect();
+	$db_message_get = db_connect();
 
     $tbl_post = forum_table("POST");
 
@@ -59,7 +59,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	$sql .= "order by POST.PID ";
 	$sql .= "limit 0, " . $limit;
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_message_get);
 
 	// Loop through the results and construct an array to return
 	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
@@ -86,7 +86,6 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
         }
 	}
 
-	db_disconnect($db);
 	return $messages;
 }
 
@@ -319,11 +318,11 @@ function mess_nav_range($from,$to)
 
 function message_get_user($tid,$pid)
 {
-    $db = db_connect();
+    $db_message_get_user = db_connect();
 
     $sql = "select from_uid from " . forum_table("POST") . " where tid = $tid and pid = $pid";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_message_get_user);
 
     if($result){
         $fa = db_fetch_array($result);
@@ -332,19 +331,17 @@ function message_get_user($tid,$pid)
         $uid = "";
     }
 
-    db_disconnect($db);
-
     return $uid;
 }
 
 function messages_update_read($tid,$pid,$uid,$spid = 1)
 {
-    $db = db_connect();
+    $db_message_update_read = db_connect();
 
     // Check for existing entry in USER_THREAD
     $sql = "select LAST_READ from " . forum_table("USER_THREAD") . " where UID = $uid and TID = $tid";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_message_update_read);
 
     if(db_num_rows($result)){
         // Update if already existing
@@ -353,34 +350,33 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
             $sql = "update " . forum_table("USER_THREAD") . " set LAST_READ = $pid, LAST_READ_AT = NOW() ";
             $sql .= "where UID = $uid and TID = $tid";
             //echo "<p>$sql</p>";
-            db_query($sql,$db);
+            db_query($sql, $db_message_update_read);
         }
     } else {
         // Create new USER_THREAD entry
         $sql = "insert into " . forum_table("USER_THREAD") . " (UID,TID,LAST_READ,LAST_READ_AT,INTEREST) ";
         $sql .= "values ($uid, $tid, $pid, NOW(), 0)";
-        db_query($sql,$db);
+        db_query($sql, $db_message_update_read);
     }
 
     // Mark posts as Viewed...
     $sql = "update POST set VIEWED = NOW() where TID = $tid and PID between $spid and $pid and TO_UID = $uid and VIEWED is null";
-    db_query($sql,$db);
+    db_query($sql, $db_message_update_read);
 
-    db_disconnect($db);
 }
 
 function messages_get_most_recent($uid)
 {
     $return = "1.1";
 
-    $db = db_connect();
+    $db_messages_get_most_recent = db_connect();
 
     $sql = "select THREAD.TID, THREAD.MODIFIED, USER_THREAD.LAST_READ ";
     $sql .= "from " . forum_table("THREAD") . " THREAD ";
     $sql .= "left join " . forum_table("USER_THREAD") . " USER_THREAD on (USER_THREAD.TID = THREAD.TID and USER_THREAD.UID = $uid) ";
     $sql .= "order by THREAD.MODIFIED DESC LIMIT 0,1";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_messages_get_most_recent);
 
     if(db_num_rows($result)){
         $fa = db_fetch_array($result);
@@ -390,6 +386,7 @@ function messages_get_most_recent($uid)
             $return = $fa['TID'] . ".1";
         }
     }
+    
     return $return;
 }
 ?>

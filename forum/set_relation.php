@@ -44,7 +44,6 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])){
 
     db_query($sql,$db);
 
-    db_disconnect($db);
 }
 
 if(isset($HTTP_GET_VARS['ret'])){

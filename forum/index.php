@@ -39,15 +39,14 @@ if(!$logged_in){
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
-	<frameset rows="60,20,*" border="0">
-		<frame src="./top.html" name="top" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
-		<frame src="./nav.php" name="nav" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
+	<frameset rows="60,*" border="0">
+	  <frame src="./top.html" name="top" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
 <?
 if($logged_in){
     if($HTTP_GET_VARS['msg']){
-        echo "<frame src=\"./discussion.php?msg=".$HTTP_GET_VARS['msg'];
+        echo "          <frame src=\"./discussion.php?msg=".$HTTP_GET_VARS['msg'];
     } else {
-        echo "<frame src=\"./start.php";
+        echo "          <frame src=\"./start.php";
     }
     echo "\" name=\"main\" border=\"1\">";
 } else {
@@ -57,7 +56,7 @@ if($logged_in){
     } else {
         echo urlencode(dirname($HTTP_SERVER_VARS['PHP_SELF'])."/start.php");
     }
-    echo "\" name=\"main\" border=\"1\">";
+    echo "\" name=\"main\" border=\"1\">\n";
 }
 ?>
 	</frameset>

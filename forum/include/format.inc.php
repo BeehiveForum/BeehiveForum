@@ -143,7 +143,11 @@ function timestamp_amend_bst($timestamp)
 
 }
 
-// Performs the reverse of _htmlspecialchars
+// Cut down version of PHP's own htmlspecialchars that *only*
+// converts ", < and > (quote, open and close brackets) to
+// their HTML entities. This is needed so Beehive can remain
+// Cyrillic (plus other) character set compatible, even if the
+// PHP version and/or server OS isn't.
 
 function _htmlspecialchars($text)
 {
@@ -157,15 +161,17 @@ function _htmlspecialchars($text)
 
 }
 
+// Reverses Beehive's _htmlspecialchars function.
+// Converts the entities &quot;, &lt; and &gt; back to
+// ", < and > (quote, open and close brackets)
+
 function _htmlspecialchars_reverse($text)
 {
 
-    $search = array ("'&(quot|#34);'i", "'&(amp|#38);'i", "'&(lt|#60);'i", "'&(gt|#62);'i",
-                     "'&(nbsp|#160);'i", "'&(iexcl|#161);'i", "'&(cent|#162);'i", "'&(pound|#163);'i",
-                     "'&(copy|#169);'i");
+    $search  = array("'&(quot|#34);'i", "'&(lt|#60);'i", "'&(gt|#62);'i");
+    $replace = array("\"", "<", ">");
 
-    $replace = array ("\"", "&", "<", ">", " ", chr(161), chr(162), chr(163), chr(169));
-    $retval = preg_replace ($search, $replace, $text);
+    $retval = preg_replace($search, $replace, $text);
 
     return $retval;
 

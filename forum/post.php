@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.143 2004-01-03 20:54:30 decoyduck Exp $ */
+/* $Id: post.php,v 1.144 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -455,7 +455,7 @@ if (!isset($HTTP_POST_VARS['aid'])) {
 }
 
 echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
-echo "<br /><form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo "<br /><form name=\"f_post\" action=\"./post.php\" method=\"post\" target=\"_self\">\n";
 
 if (!$newthread) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.41 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: delete.php,v 1.42 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -172,7 +172,7 @@ if ($valid) {
 if(isset($error_html)) echo $error_html;
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"f_delete\" action=\"./delete.php\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    <p>", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
 echo "  </form>\n";

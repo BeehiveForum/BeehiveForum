@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.34 2004-01-03 20:54:30 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.35 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -348,7 +348,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 if (isset($error_html)) echo $error_html;
 
-echo "<form name=\"f_edit_poll\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"f_edit_poll\" action=\"./edit_poll.php\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo "<p>{$lang['editpollwarning']}</p>\n";
 

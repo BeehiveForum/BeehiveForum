@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.39 2003-12-15 16:37:31 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.40 2004-01-14 20:42:26 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -67,7 +67,7 @@ function email_sendnotification($tuid, $msg, $fuid)
             $message.= "{$lang['msgnotificationemail_3']}:\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
-            if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
@@ -136,7 +136,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $message.= "{$lang['subnotification_4']}:\n";
         $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
-        if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+        if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
           $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
         }
 
@@ -200,7 +200,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $message.= "{$lang['pmnotification_3']}:\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
-            if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
@@ -255,7 +255,7 @@ function email_send_pw_reminder($logon)
             $message.= "{$lang['forgotpwemail_3']}:\n\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
-            if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
                 $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 

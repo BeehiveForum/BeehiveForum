@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.52 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.53 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -188,7 +188,7 @@ echo "<div align=\"center\">\n";
 
 if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
-    echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\">\n";
+    echo "<form name=\"f_user\" action=\"./admin_user.php\" method=\"post\">\n";
     echo "<table width=\"50%\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"box\">\n";
@@ -215,7 +215,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
-    echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"get\">\n";
+    echo "<form name=\"f_user\" action=\"./admin_user.php\" method=\"get\">\n";
     echo "<table width=\"50%\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"box\">\n";
@@ -236,7 +236,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
 }else {
 
-    echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\">\n";
+    echo "<form name=\"f_user\" action=\"./admin_user.php\" method=\"post\">\n";
     echo "<table width=\"50%\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"box\">\n";

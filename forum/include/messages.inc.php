@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.214 2004-01-08 20:17:45 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.215 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -357,9 +357,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if($in_list && $msg_count > 0) {
 
             if ($is_preview) {
-                echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"./messages.php/?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
             }else {
-                echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"./messages.php/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             }
 
             if($message['PID'] > 1) {
@@ -371,10 +371,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                 }else {
                     if ($is_preview) {
-                        echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_blank\">";
+                        echo "<a href=\"./messages.php?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_blank\">";
                         echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                     }else {
-                        echo "<a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
+                        echo "<a href=\"./messages.php?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
                         echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                     }
                 }
@@ -414,7 +414,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
                     echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\"";
 
-                    if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                    if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
                         echo " target=\"_blank\"";
                     }else {
                         echo " target=\"_self\"";

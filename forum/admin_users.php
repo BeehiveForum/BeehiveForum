@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.41 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.42 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -118,33 +118,33 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
 }
 
 if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
 }
 
 if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"./admin_users.php?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -239,7 +239,7 @@ echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinl
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
-echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
+echo "            <form method=\"get\" action=\"./admin_users.php\">\n";
 echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
 echo "              ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
 echo "            </form>\n";

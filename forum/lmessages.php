@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.14 2003-11-17 16:01:42 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.15 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -61,26 +61,6 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     } else {
         $msg = "1.1";
     }
-}
-
-if (isset($HTTP_GET_VARS['fontsize']) && is_numeric($HTTP_GET_VARS['fontsize'])) {
-
-    $userprefs = user_get_prefs(bh_session_get_value('UID'));
-
-    user_update_prefs(bh_session_get_value('UID'), $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
-                      $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
-                      $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
-                      $userprefs['MARK_AS_OF_INT'], $userprefs['POST_PER_PAGE'],
-                      $HTTP_GET_VARS['fontsize'], $userprefs['STYLE'], $userprefs['VIEW_SIGS'],
-                      $userprefs['START_PAGE'], $userprefs['LANGUAGE'], $userprefs['PM_NOTIFY'],
-                      $userprefs['PM_NOTIFY_EMAIL'], $userprefs['DOB_DISPLAY'], $userprefs['ANON_LOGON'],
-                      $userprefs['SHOW_STATS']);
-
-    unset($userprefs);
-
-    bh_session_init(bh_session_get_value('UID'));
-    header_redirect(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$msg");
-
 }
 
 list($tid, $pid) = explode('.', $msg);
@@ -180,7 +160,7 @@ unset($messages, $message);
 
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;
-    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], $lang['keepreading'], "msg", "$tid.$npid");
+    echo form_quick_button("./lmessages.php", $lang['keepreading'], "msg", "$tid.$npid");
 }
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);

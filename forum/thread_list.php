@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.158 2004-01-04 17:04:39 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.159 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -148,7 +148,7 @@ function change_current_thread (thread_id) {
     <td colspan="2">
 <?
 
-echo "      <form name=\"f_mode\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n        ";
+echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
 
 if (bh_session_get_value('UID') == 0) {
 
@@ -347,14 +347,14 @@ if (bh_session_get_value('UID') > 0) {
 
 if (!$thread_info) {
     echo "  <tr>\n";
-    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['nomessagesinthiscategory']} <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</td>\n";
+    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['nomessagesinthiscategory']} <a href=\"./thread_list.php?mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td>&nbsp;</td>\n";
     echo "  </tr>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></td></tr><tr><td>&nbsp;</td></tr>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./thread_list.php?mode=0&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></td></tr><tr><td>&nbsp;</td></tr>\n";
 
 // Iterate through the information we've just got and display it in the right order
 
@@ -366,7 +366,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "        <tr>\n";
     echo "          <td class=\"foldername\">\n";
     echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
-    echo "            <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number. "\" title=\""._htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))."\">". _htmlentities($folder_info[$folder_number]['TITLE']). "</a>\n";
+    echo "            <a href=\"./thread_list.php?mode=0&amp;folder=".$folder_number. "\" title=\""._htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))."\">". _htmlentities($folder_info[$folder_number]['TITLE']). "</a>\n";
     echo "          </td>\n";
 
     if (bh_session_get_value('UID') > 0) {
@@ -399,7 +399,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo "  <tr>\n";
-            echo "    <td class=\"threads\" style=\"", ($visible_threads ? "border-bottom: 0px; " : ""), ($lang['_textdir'] == "ltr") ? "border-right: 0px" : "border-left: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\" style=\"", ($lang['_textdir'] == "ltr") ? "text-align: left; float: left" : "text-align: right; float: right", "\">";
+            echo "    <td class=\"threads\" style=\"", ($visible_threads ? "border-bottom: 0px; " : ""), ($lang['_textdir'] == "ltr") ? "border-right: 0px" : "border-left: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"./thread_list.php?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\" style=\"", ($lang['_textdir'] == "ltr") ? "text-align: left; float: left" : "text-align: right; float: right", "\">";
 
             if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
                 echo $folder_msgs[$folder_number];
@@ -415,7 +415,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
             if ($start_from != 0 && isset($folder) && $folder_number == $folder) {
                 echo "  <tr>\n";
-                echo "    <td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\" colspan=\"2\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">{$lang['prev50threads']}</a></td>\n";
+                echo "    <td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\" colspan=\"2\"><a href=\"./thread_list.php?mode=0&amp;folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">{$lang['prev50threads']}</a></td>\n";
                 echo "  </tr>\n";
             }
 
@@ -428,7 +428,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 while (list($key2, $thread) = each($thread_info)) {
 
                     if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
-                    if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
+                    if (!in_array("{$thread['tid']}.{$thread['length']}", $visiblethreads)) $visiblethreads[] = "{$thread['tid']}.{$thread['length']}";
 
                     if ($thread['fid'] == $folder_number) {
 
@@ -510,13 +510,13 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                     if ($more_threads > 0 && $more_threads <= 50) {
                         echo "        <tr>\n";
-                        echo "          <td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next']} $more_threads {$lang['threads']}</a></td>\n";
+                        echo "          <td colspan=\"3\"><a href=\"./thread_list.php?mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next']} $more_threads {$lang['threads']}</a></td>\n";
                         echo "        </tr>\n";
                     }
 
                     if ($more_threads > 50) {
                         echo "        <tr>\n";
-                        echo "          <td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next50threads']}</a></td>\n";
+                        echo "          <td colspan=\"3\"><a href=\"./thread_list.php?mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next50threads']}</a></td>\n";
                         echo "        </tr>\n";
                     }
 
@@ -533,7 +533,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             // Only display the additional folder info if the user _DOESN'T_ have the folder on ignore
 
             echo "  <tr>\n";
-            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-right: 1px" : "border-left: 1px", "\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\">";
+            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-right: 1px" : "border-left: 1px", "\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"./thread_list.php?mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\">";
 
             if (isset($folder_msgs[$folder_number])) {
                 echo $folder_msgs[$folder_number];
@@ -565,8 +565,8 @@ if ($mode == 0 && !isset($folder)) {
       }
 
       $more_threads = $total_threads - $start_from - 50;
-      if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</td></tr>\n";
-      if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></td></tr>\n";
+      if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./thread_list.php?mode=0&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</td></tr>\n";
+      if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./thread_list.php?mode=0&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></td></tr>\n";
 
     }
 }
@@ -586,7 +586,7 @@ if (bh_session_get_value('UID') != 0) {
     echo "  <tr>\n";
     echo "    <td>&nbsp;</td>\n";
     echo "    <td class=\"smalltext\">\n";
-    echo "      <form name=\"f_mark\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
+    echo "      <form name=\"f_mark\" method=\"get\" action=\"./thread_list.php\">\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
 

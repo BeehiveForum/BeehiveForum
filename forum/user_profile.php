@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.46 2004-01-07 20:35:36 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.47 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -138,7 +138,7 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
     echo "    <td width=\"25%\" align=\"center\">";
 
     if ($profile_sections[$i]['PSID'] != $psid) {
-        echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
+        echo "<a href=\"./user_profile.php?uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
         echo _stripslashes($profile_sections[$i]['NAME']) . "</a></td>\n";
     } else {
         echo "<b>" . _stripslashes($profile_sections[$i]['NAME']) . "</b></td>\n";
@@ -224,7 +224,7 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
+        echo "                  <td><a href=\"./user_profile.php?uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
 
         if ($relationship & USER_IGNORED) {
@@ -236,7 +236,7 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
+        echo "                  <td><a href=\"./user_profile.php?uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.85 2004-01-04 15:28:37 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.86 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -448,7 +448,7 @@ if (!empty($error_html)) {
 
 echo "<br />\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"prefs\" action=\"{$HTTP_SERVER_VARS['PHP_SELF']}\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"prefs\" action=\"./prefs.php\" method=\"post\" target=\"_self\">\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";

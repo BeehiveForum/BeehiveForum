@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.27 2003-07-28 17:09:23 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.28 2003-07-30 21:48:31 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -38,6 +38,8 @@ require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/user_profile.inc.php");
+require_once("./include/profile.inc.php");
 
 if (isset($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
@@ -58,21 +60,9 @@ if (!isset($uid)) {
 $user = user_get($uid);
 $your_uid = bh_session_get_value('UID');
 
-html_draw_top(format_user_name($user['LOGON'],$user['NICKNAME']));
+html_draw_top(format_user_name($user['LOGON'], $user['NICKNAME']));
 
-$db = db_connect();
-
-$sql = "SELECT DISTINCT PS.PSID, PS.NAME FROM ";
-$sql.= forum_table("PROFILE_SECTION") . " PS, ";
-$sql.= forum_table("PROFILE_ITEM") . " PI ";
-$sql.= "WHERE PS.PSID = PI.PSID ";
-$sql.= "ORDER BY PS.PSID";
-
-$result = db_query($sql,$db);
-
-$row_count = db_num_rows($result);
-
-if($row_count == 0){
+if (!$profile_sections = profile_sections_get()) {
     echo "<h1>{$lang['error']}:</h1>";
     echo "<p>{$lang['profilesnotsetup']}</p>";
     html_draw_bottom();
@@ -125,14 +115,12 @@ echo "        </table>\n";
 echo "        <table width=\"100%\" class=\"subhead\" border=\"0\">\n";
 echo "          <tr>\n";
 
-for ($i = 0; $i < $row_count; $i++) {
-
-    $row = db_fetch_array($result);
+for ($i = 0; $i < sizeof($profile_sections); $i++) {
 
     if ($i == 0) {
 
         if (!isset($psid)) {
-            $psid = $row['PSID'];
+            $psid = $profile_sections[$i]['PSID'];
         }
 
     } else if(!($i % 4)){ // Start new row every 4 sections
@@ -142,11 +130,11 @@ for ($i = 0; $i < $row_count; $i++) {
 
     echo "    <td width=\"25%\" align=\"center\">";
 
-    if($row['PSID'] != $psid){
-        echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&psid=" . $row['PSID'] . "\">";
-        echo _stripslashes($row['NAME']) . "</a></td>\n";
+    if ($profile_sections[$i]['PSID'] != $psid) {
+        echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\">";
+        echo _stripslashes($profile_sections[$i]['NAME']) . "</a></td>\n";
     } else {
-        echo "<b>" . _stripslashes($row['NAME']) . "</b></td>\n";
+        echo "<b>" . _stripslashes($profile_sections[$i]['NAME']) . "</b></td>\n";
     }
 }
 
@@ -162,40 +150,39 @@ echo "          <tr>\n";
 echo "            <td width=\"75%\" valign=\"top\">\n";
 echo "              <table width=\"100%\">\n";
 
-$sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM " . forum_table("PROFILE_ITEM") . " PI ";
-$sql.= "LEFT JOIN " . forum_table("USER_PROFILE") . " UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
-$sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
+$user_profile_array = user_get_profile_entries($uid, $psid);
 
-$result = db_query($sql,$db);
+foreach ($user_profile_array as $profile_entry) {
 
-while ($row = db_fetch_array($result)) {
-    if (($row['TYPE'] == PROFILE_ITEM_RADIO) || ($row['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+    if (($profile_entry['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_entry['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
-        list($field_name, $field_values) = explode(':', $row['NAME']);
+        list($field_name, $field_values) = explode(':', $profile_entry['NAME']);
         $field_values = explode(';', $field_values);
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">", $field_name, "</td>\n";
-        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($field_values[$row['ENTRY']]) ? $field_values[$row['ENTRY']] : "", "</td>\n";
+        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($field_values[$profile_entry['ENTRY']]) ? $field_values[$profile_entry['ENTRY']] : "", "</td>\n";
         echo "                </tr>\n";
     }else {
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $row['NAME'] . "</td>\n";
-        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($row['ENTRY']) ? nl2br(_stripslashes($row['ENTRY'])) : "", "</td>\n";
+        echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $profile_entry['NAME'] . "</td>\n";
+        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(_stripslashes($profile_entry['ENTRY'])) : "", "</td>\n";
         echo "                </tr>\n";
     }
 }
-
-$sql = "select PIC_URL from ". forum_table("USER_PREFS"). " where UID = $uid";
-$result = db_query($sql, $db);
-$row = db_fetch_array($result);
 
 echo "              </table>\n";
 echo "            </td>\n";
 echo "            <td valign=\"top\">\n";
 echo "              <table width=\"100%\" class=\"subhead\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\">", (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) ? "<img src=\"". $row['PIC_URL']. "\" width=\"110\" height=\"110\" />" : "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", "</td>\n";
+
+if ($profile_image = user_get_profile_image($uid)) {
+    echo "                  <td align=\"center\"><img src=\"{$profile_image}\" width=\"110\" height=\"110\" /></td>\n";
+}else {
+    echo "                  <td align=\"center\">&nbsp;</td>\n";
+}
+
 echo "                </tr>\n";
 
 if (bh_session_get_value('UID') <> 0) {

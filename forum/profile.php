@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.php,v 1.18 2003-07-28 17:09:22 decoyduck Exp $ */
+/* $Id: profile.php,v 1.19 2003-07-30 21:48:31 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -55,6 +55,7 @@ require_once("./include/user_profile.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/profile.inc.php");
 
 html_draw_top();
 
@@ -79,22 +80,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "<br />\n";
 }
 
-$db = db_connect();
-
-$sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
-$sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";
-$sql.= "USER_PROFILE.PIID AS CHECK_PIID, USER_PROFILE.ENTRY ";
-$sql.= "FROM " . forum_table("PROFILE_SECTION") . " PROFILE_SECTION, ";
-$sql.= forum_table("PROFILE_ITEM") . " PROFILE_ITEM ";
-$sql.= "LEFT JOIN " . forum_table("USER_PROFILE") . " USER_PROFILE ";
-$sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = $uid) ";
-$sql.= "WHERE PROFILE_ITEM.PSID = PROFILE_SECTION.PSID ";
-$sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID, ";
-$sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
-
-$result = db_query($sql, $db);
-
-if (db_num_rows($result)) {
+if ($profile_values = profile_get_user_values($uid)) {
 
     // Draw the form
     echo "<form name=\"f_profile\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\" target=\"_self\">\n";
@@ -108,43 +94,41 @@ if (db_num_rows($result)) {
 
     $last_psid = false;
 
-    for ($i = 0; $i < db_num_rows($result); $i++) {
+    for ($i = 0; $i < sizeof($profile_values); $i++) {
 
-        $row = db_fetch_array($result);
+        $new = isset($profile_values[$i]['CHECK_PIID']) ? "N" : "Y";
+        $row['ENTRY'] = isset($profile_values[$i]['ENTRY']) ? _stripslashes($profile_values[$i]['ENTRY']) : "";
 
-        $new = isset($row['CHECK_PIID']) ? "N" : "Y";
-        $row['ENTRY'] = isset($row['ENTRY']) ? _stripslashes($row['ENTRY']) : "";
-
-        if ($row['PSID'] != $last_psid) {
+        if ($profile_values[$i]['PSID'] != $last_psid) {
             echo "                <tr>\n";
-            echo "                  <td class=\"subhead\" colspan=\"2\">", $row['SECTION_NAME'], "</td>\n";
+            echo "                  <td class=\"subhead\" colspan=\"2\">", $profile_values[$i]['SECTION_NAME'], "</td>\n";
             echo "                </tr>\n";
         }
 
-        $last_psid = $row['PSID'];
+        $last_psid = $profile_values[$i]['PSID'];
 
-        if (($row['TYPE'] == PROFILE_ITEM_RADIO) || ($row['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+        if (($profile_values[$i]['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_values[$i]['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
-            list($field_name, $field_values) = explode(':', $row['ITEM_NAME']);
+            list($field_name, $field_values) = explode(':', $profile_values[$i]['ITEM_NAME']);
             $field_values = explode(';', $field_values);
 
             echo "                <tr>\n";
-            echo "                  <td width=\"150\">", $field_name, form_input_hidden("t_piid[$i]", $row['PIID']), ":</td>\n";
+            echo "                  <td width=\"150\">", $field_name, form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
             echo "                  <td nowrap=\"nowrap\">";
 
-            if ($row['TYPE'] == PROFILE_ITEM_RADIO) {
-                echo form_radio_array("t_entry[$i]", array_keys($field_values), $field_values, $row['ENTRY']);
+            if ($profile_values[$i]['TYPE'] == PROFILE_ITEM_RADIO) {
+                echo form_radio_array("t_entry[$i]", array_keys($field_values), $field_values, $profile_values[$i]['ENTRY']);
             }else {
-                echo form_dropdown_array("t_entry[$i]", array_keys($field_values), $field_values, $row['ENTRY']);
+                echo form_dropdown_array("t_entry[$i]", array_keys($field_values), $field_values, $profile_values[$i]['ENTRY']);
             }
 
-            echo form_input_hidden("t_old_entry[$i]", $row['ENTRY']), form_input_hidden("t_new[$i]", $new), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+            echo form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 
-        }elseif ($row['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
+        }elseif ($profile_values[$i]['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" width=\"150\">", $row['ITEM_NAME'], form_input_hidden("t_piid[$i]", $row['PIID']), ":</td>\n";
-            echo "                  <td nowrap=\"nowrap\">", form_textarea("t_entry[$i]", $row['ENTRY'], 4, 57), form_input_hidden("t_old_entry[$i]", $row['ENTRY']), form_input_hidden("t_new[$i]", $new), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+            echo "                  <td valign=\"top\" width=\"150\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
+            echo "                  <td nowrap=\"nowrap\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 57), form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
             echo "                </tr>\n";
 
         }else {
@@ -152,8 +136,8 @@ if (db_num_rows($result)) {
             $text_width = array(60, 30, 10);
 
             echo "                <tr>\n";
-            echo "                  <td width=\"150\">", $row['ITEM_NAME'], form_input_hidden("t_piid[$i]", $row['PIID']), ":</td>\n";
-            echo "                  <td nowrap=\"nowrap\">", form_field("t_entry[$i]", $row['ENTRY'], $text_width[$row['TYPE']], 255), form_input_hidden("t_old_entry[$i]", $row['ENTRY']), form_input_hidden("t_new[$i]", $new), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+            echo "                  <td width=\"150\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
+            echo "                  <td nowrap=\"nowrap\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
             echo "                </tr>\n";
 
         }

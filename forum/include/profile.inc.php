@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.13 2003-07-30 19:53:18 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.14 2003-07-30 21:48:36 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -172,7 +172,7 @@ function profile_item_delete($piid)
     return db_query($sql, $db);
 }
 
-function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
+function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="")
 {
     $html = "<select name=\"${field_name}${suffix}\">";
     $db_profile_section_dropdown = db_connect();
@@ -192,6 +192,34 @@ function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
 
     $html .= "</select>";
     return $html;
+}
+
+function profile_get_user_values($uid)
+{
+    $db_profile_get_user_values = db_connect();
+
+    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
+    $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";
+    $sql.= "USER_PROFILE.PIID AS CHECK_PIID, USER_PROFILE.ENTRY ";
+    $sql.= "FROM ". forum_table("PROFILE_SECTION"). " PROFILE_SECTION, ";
+    $sql.= forum_table("PROFILE_ITEM"). " PROFILE_ITEM ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PROFILE"). " USER_PROFILE ";
+    $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = $uid) ";
+    $sql.= "WHERE PROFILE_ITEM.PSID = PROFILE_SECTION.PSID ";
+    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID, ";
+    $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
+
+    $result = db_query($sql, $db_profile_get_user_values);
+
+    if (db_num_rows($result)) {
+        $profile_values_array = array();
+        while($row = db_fetch_array($result)) {
+	  $profile_values_array[] = $row;
+	}
+	return $profile_values_array;
+    }else {
+        return false;
+    }
 }
 
 ?>

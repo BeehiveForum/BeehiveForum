@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.51 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: start.php,v 1.52 2005-01-19 21:49:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -46,42 +46,19 @@ include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/session.inc.php");
 
+// Check we're logged in correctly
+
 if (!$user_sess = bh_session_check()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    $webtag = get_webtag($webtag_search);
+    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+}
 
-    html_draw_top();
+// Check we have a webtag
 
-    if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
-
-        if (perform_logon(false)) {
-
-            $lang = load_language_file();
-            $webtag = get_webtag($webtag_search);
-
-            echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
-            echo "<div align=\"center\">\n";
-            echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
-
-            $request_uri = get_request_uri();
-
-            echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-            echo form_input_hidden('webtag', $webtag);
-
-            foreach($_POST as $key => $value) {
-                echo form_input_hidden($key, _htmlentities(_stripslashes($value)));
-            }
-
-            echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
-            echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
-            echo "</form>\n";
-
-            html_draw_bottom();
-            exit;
-        }
-    }
-
-    draw_logon_form(false);
-    html_draw_bottom();
-    exit;
+if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 // Load language file
@@ -91,13 +68,6 @@ $lang = load_language_file();
 // Forum Name
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-
-// Check we have a webtag
-
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
-}
 
 // Check that we have access to this forum
 

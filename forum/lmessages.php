@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.46 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.47 2005-01-19 21:49:29 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -60,20 +60,21 @@ include_once("./include/thread.inc.php");
 include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    $webtag = get_webtag($webtag_search);
+    header_redirect("./llogon.php?webtag=$webtag&final_uri=$request_uri");
+}
 
-    $uri = "./llogon.php?webtag=$webtag&final_uri=". rawurlencode(get_request_uri(true));
-    header_redirect($uri);
+// Check we have a webtag
+
+if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./lforums.php?final_uri=$request_uri");
 }
 
 // Load language file
 
 $lang = load_language_file();
-
-// Check we have a webtag
-
-if (!$webtag = get_webtag($webtag_search)) {
-    header_redirect("./lforums.php");
-}
 
 // Check that we have access to this forum
 

@@ -65,16 +65,46 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $valid = false;
   }
 
-  if ($valid && empty($HTTP_POST_VARS['answers'][0])) {
+  if ($valid && strlen($HTTP_POST_VARS['answers'][0]) == 0) {
     $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
     $valid = false;
   }
 
-  if ($valid && empty($HTTP_POST_VARS['answers'][1])) {
+  if ($valid && strlen($HTTP_POST_VARS['answers'][0]) == 0) {
     $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
     $valid = false;
   }
 
+  $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
+  $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
+
+}
+
+$t_message_html = @$HTTP_POST_VARS['t_message_html'];
+
+if($valid) {
+
+    if($t_message_html == "Y") {
+        $messagetext = fix_html($HTTP_POST_VARS['messagetext']);
+    }
+
+    if(isset($t_sig)) {
+        if($t_sig_html == "Y") {
+            $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+        }
+    }
+
+}else {
+
+    if($t_message_html == "Y") {
+        $messagetext = _stripslashes($HTTP_POST_VARS['messagetext']);
+    }
+
+    if(isset($t_sig)) {
+        if($t_sig_html == "Y") {
+          $t_sig = _stripslashes($HTTP_POST_VARS['t_sig']);
+        }
+    }
 }
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
@@ -134,6 +164,10 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
 
+    if (isset($HTTP_POST_VARS['messagetext'])) {
+      post_create($tid, 1, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, $HTTP_POST_VARS['messagetext']);
+    }
+
     if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($tid, 1, true);
 
   }
@@ -171,7 +205,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "            <ul>\n";
 
   for ($i = 0; $i < 5; $i++) {
-    if (!empty($HTTP_POST_VARS['answers'][$i])) {
+    if (strlen($HTTP_POST_VARS['answers'][$i]) > 0) {
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
         $polldata['CONTENT'].= "          <li>". fix_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
       }else {
@@ -208,6 +242,29 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   message_display(0, $polldata, 0, 0, false, false, false);
 
+  if (strlen($HTTP_POST_VARS['messagetext']) > 0) {
+
+    if($t_message_html != "Y") {
+      $polldata['CONTENT'] = make_html($HTTP_POST_VARS['messagetext']);
+    }else{
+      $polldata['CONTENT'] = _stripslashes($HTTP_POST_VARS['messagetext']);
+    }
+
+    if($t_sig) {
+      if($t_sig_html != "Y") {
+        $preview_sig = make_html($t_sig);
+      }else{
+        $preview_sig = $t_sig;
+      }
+      $polldata['CONTENT'].= "<div class=\"sig\">". $preview_sig. "</div>";
+    }else{
+      $t_sig = " ";
+    }
+
+    message_display(0, $polldata, 0, 0, false, false, false);
+
+  }
+
 }
 
 if(isset($error_html)) echo $error_html. "\n";
@@ -221,6 +278,15 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
 }else{
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
+
+if(!isset($t_sig) || !$t_sig) {
+    $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'], $t_sig, $t_sig_html);
+}else{
+    $has_sig = true;
+}
+
+if($t_post_html != "Y") $t_content = isset($HTTP_POST_VARS['messagetext']) ? _stripslashes($HTTP_POST_VARS['messagetext']) : "";
+if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
 
 ?>
   <table border="0" cellpadding="0" cellspacing="0" width="500">
@@ -243,7 +309,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
   <table class="box" cellpadding="0" cellspacing="0" width="500">
     <tr>
       <td>
-        <table border="0" class="posthead">
+        <table border="0" class="posthead" width="500">
           <tr>
             <td><h2>Possible Answers</h2></td>
           </tr>
@@ -358,7 +424,22 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
             <td><?php echo form_dropdown_array('closepoll', range(0, 4), array('One Day', 'Three Days', 'Seven Days', 'Thirty Days', 'Never'), 4); ?></td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><hr /></td>
+          </tr>
+	  <tr>
+	    <td><h2>Additional Message (Optional)</h2></td>
+	  </tr>
+          <tr>
+            <td>Do you want to include an additional post after the poll?</td>
+          </tr>
+	  <tr>
+	    <td><?php echo form_textarea("messagetext", htmlspecialchars($t_content), 15, 75); ?>
+	  </tr>
+          <tr>
+            <td>Signature:<br /><?php echo form_textarea("t_sig", htmlspecialchars($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>
+          </tr>
+          <tr>
+            <td><?php echo form_checkbox("t_message_html", "Y", "Message Contain HTML (not including signature)", ($HTTP_POST_VARS['t_message_html'] == "Y")); ?></td>
           </tr>
         </table>
       </td>

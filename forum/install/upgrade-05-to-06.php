@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.40 2005-03-29 18:25:58 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.41 2005-03-29 21:49:14 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -319,7 +319,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $upft = USER_PERM_FORUM_TOOLS;
     $upat = USER_PERM_ADMIN_TOOLS;
 
-    $sql = "SELECT GID, PERM FROM {$forum_webtag}_GROUP_PERMS ";
+    $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.PERM, GROUP_USERS.UID ";
+    $sql.= "FROM {$forum_webtag}_GROUP_PERMS GROUP_PERMS ";
+    $sql.= "LEFT JOIN {$forum_webtag)_GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE (PERM & $upft > 0 OR PERM & $upat > 0) ";
     $sql.= "AND FID = 0";
 
@@ -327,13 +330,30 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         while ($user_data = db_fetch_array($result)) {
 
-            $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
-            $sql.= "VALUES ('{$user_data['GID']}', 0, 0, '{$user_data['PERM']}')";
+            $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) ";
+            $sql.= "VALUES (0, 1)";
 
-            if (!$result = @db_query($sql, $db_install)) {
+            if ($result_group = @db_query($sql, $db_instal)) {
 
-                $valid = false;
-                return;
+                $new_group_gid = db_insert_id($db_install);
+
+                $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
+                $sql.= "VALUES ($new_group_gid, 0, 0, {$user_data['PERM']})";
+
+                if (!$result = @db_query($sql, $db_install)) {
+
+                    $valid = false;
+                    return;
+                }
+
+                $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
+                $sql.= "VALUES ($new_group_gid, {$user_data['UID']})";
+
+                if (!$result = @db_query($sql, $db_install)) {
+
+                    $valid = false;
+                    return;
+                }
             }
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.69 2005-03-29 18:25:56 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.70 2005-03-29 21:48:44 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -199,6 +199,31 @@ function perm_check_folder_permissions($fid, $access_level)
             $folder_fid = $fid;
             $user_status = $row['FOLDER_PERMS'];
         }
+    }
+
+    return ($user_status & $access_level) == $access_level;
+}
+
+function perm_check_global_permissions($access_level)
+{
+    static $user_status = false;
+
+    if (!$user_status) {
+
+        $db_perm_get_global_permissions = db_connect();
+
+        if (!is_numeric($access_level)) return false;
+
+        $uid = bh_session_get_value('UID');
+
+        $sql = "SELECT GROUP_PERMS.PERM FROM GROUPS ";
+        $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+        $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
+        $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
+        $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_USERS.UID = $uid ";
+
+        $result = db_query($sql, $db_perm_get_global_permissions);
+        list($user_status) = db_fetch_array($result, DB_RESULT_NUM);
     }
 
     return ($user_status & $access_level) == $access_level;
@@ -450,11 +475,7 @@ function perm_get_global_user_permissions($uid)
 
     if (!is_numeric($uid)) return 0;
 
-    $user_search_array = array();
-    $user_search_count = 0;
-
-    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
-                                                        'user_array' => array());
+    if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT GROUP_PERMS.PERM FROM GROUPS ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
@@ -1112,15 +1133,22 @@ function perm_user_cancel_email_confirmation($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $perm = USER_PERM_EMAIL_CONFIRM;
-
     if ($gid = perm_get_global_user_gid($uid)) {
 
-        $sql = "UPDATE GROUP_PERMS SET PERM = PERM ^ $perm ";
-        $sql.= "WHERE GID = $gid";
+        $sql = "SELECT PERM FROM GROUP_PERMS WHERE GID = $gid";
+        $result = db_query($sql, $db_perm_user_cancel_email_confirmation);
 
+        list($perm) = db_fetch_array($result, DB_RESULT_NUM);
+
+        if ($perm & USER_PERM_EMAIL_CONFIRM) {
+            $perm = $perm ^ USER_PERM_EMAIL_CONFIRM;
+        }
+
+        $sql = "UPDATE GROUP_PERMS SET PERM = $perm WHERE GID = $gid";
         return db_query($sql, $db_perm_user_cancel_email_confirmation);
     }
+
+    echo $uid; exit;
 
     return false;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.150 2005-03-26 18:16:42 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.151 2005-03-29 21:48:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -226,6 +226,17 @@ if (!isset($_POST['aid'])) {
 }
 
 if (!isset($sig_html)) $sig_html = 0;
+
+if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
+}
 
 if (isset($_POST['cancel'])) {
 

@@ -90,19 +90,19 @@ function form_dropdown_sql($name, $sql, $default)
 }
 
 // create a <select> dropdown with values from array(s)
-function form_dropdown_array($name, $value, $label, $default)
+function form_dropdown_array($name, $value, $label, $default = "", $custom_html = "")
 {
-    $html = "<select name=\"$name\" class=\"bhselect\">\n";
+    $html = "<select name=\"$name\" class=\"bhselect\" $custom_html>\n";
 
     for($i=0;$i<count($value);$i++){
         $sel = ($value[$i] == $default) ? " selected" : "";
         if($label[$i]){
-            $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>";
+            $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>\n";
         } else {
-            $html.= "<option$sel>".$value[$i]."</option>";
+            $html.= "<option$sel>".$value[$i]."</option>\n";
         }
     }
-    return $html."</select>";
+    return $html."</select>\n";
 }
 
 // create a <input type="checkbox">
@@ -137,9 +137,9 @@ function form_submit($name = "submit", $value = "Submit", $class = "button")
 }
 
 // create a form just to be a link button
-function form_quick_button($href,$label,$var = 0,$value = 0)
+function form_quick_button($href,$label,$var = 0,$value = 0,$target = "_self")
 {
-    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\">\n";
+    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" target=\"$target\">\n";
 
     if($var){
         if(isarray($var)){

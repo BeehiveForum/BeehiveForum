@@ -199,9 +199,9 @@ if(!$t_sig){
 }
 
 if($newthread){
-    echo "<h2>Create new thread</h2>\n";
+    echo "<h1>Create new thread</h1>\n";
 } else {
-    echo "<h2>Post reply</h2>\n";
+    echo "<h1>Post reply</h1>\n";
 }
 if(isset($error_html)){
     echo $error_html . "\n";
@@ -226,7 +226,7 @@ echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
 echo "<td>To: \n";
 echo post_draw_to_dropdown($t_to_uid);
 echo "</td></tr></table>\n";
-echo "<table border=\"0\">\n";
+echo "<table border=\"0\" bgcolor=\"#DCE0F3\">\n";
 if(isset($t_content)){
     if($t_post_html == "Y"){
         $t_content = stripslashes(htmlentities($t_content));
@@ -234,8 +234,8 @@ if(isset($t_content)){
         $t_content = stripslashes($t_content);
     }
 }
-echo "<tr><td>".form_textarea("t_content",$t_content,10,60)."</tr></td>";
-echo "<tr><td>".form_textarea("t_sig",$t_sig,4,60);
+echo "<tr><td>".form_textarea("t_content",$t_content,12,80)."</tr></td>";
+echo "<tr><td>".form_textarea("t_sig",$t_sig,4,80);
 echo form_input_hidden("t_sig_html",$t_sig_html)."</td></tr>\n";
 echo "<tr><td>".form_checkbox("t_post_html","Y","Contains HTML",($t_post_html == "Y"))."</td></tr>\n";
 echo "</table>\n";

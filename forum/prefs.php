@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.70 2003-09-01 17:42:04 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.71 2003-09-01 18:04:35 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -42,9 +42,9 @@ if(!bh_session_check()){
 
 require_once("./include/html.inc.php");
 
-if(bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/user.inc.php");
@@ -272,6 +272,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if ($valid) {
 
+        // User's UID for updating with.
+
+        $uid = bh_session_get_value('UID');
+
+        // Check the signature code to see if it needs running through fix_html
+
         if ($t_sig_html == "Y") {
             $t_sig_content = fix_html($t_sig_content);
         }else {
@@ -280,13 +286,24 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         // Update basic settings in USER table
 
-        user_update(bh_session_get_value('UID'), $t_nickname, $t_email);
+        user_update($uid, $t_nickname, $t_email);
+
+        // Update USER_PREFS
+
+        user_update_prefs($uid, $t_firstname, $t_lastname, $t_user_dob,
+                          $t_homepage_url, $t_pic_url, $t_email_notify, $t_timezone, $t_dl_saving,
+                          $t_mark_as_of_int, $t_posts_per_page, $t_font_size, $t_style, $t_view_sigs,
+                          $t_start_page, $t_language, $t_pm_notify, $t_pm_notify_email, $t_dob_display);
+
+        // Update USER_SIG
+
+        user_update_sig($uid, $t_sig_content, $t_sig_html);
 
         // Update the password (and cookie)
 
         if ($update_password) {
 
-            user_change_pw(bh_session_get_value('UID'), $t_password);
+            user_change_pw($uid, $t_password);
 
             // Username array
 
@@ -326,24 +343,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
             }
         }
 
-        // Update USER_PREFS
+        // Reinitialize the User's Session to save them having to logout and back in
 
-        // Check the checkbox variables are actually set.
-        // Older versions of PHP do not set the variables
-        // if the checkbox is left unticked.
-
-        user_update_prefs(bh_session_get_value('UID'), $t_firstname, $t_lastname, $t_user_dob,
-                          $t_homepage_url, $t_pic_url, $t_email_notify, $t_timezone, $t_dl_saving,
-                          $t_mark_as_of_int, $t_posts_per_page, $t_font_size, $t_style, $t_view_sigs,
-                          $t_start_page, $t_language, $t_pm_notify, $t_pm_notify_email, $t_dob_display);
-
-        // Update USER_SIG
-
-        user_update_sig(bh_session_get_value('UID'), $t_sig_content, $t_sig_html);
-
-        // Update the User's Session to save them having to logout and back in
-
-        bh_session_init(bh_session_get_value('UID'));
+        bh_session_init($uid);
 
         // IIS bug prevents redirect at same time as setting cookies.
 

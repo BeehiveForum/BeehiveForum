@@ -64,7 +64,7 @@ $sql.= "limit 0, 10";
 
 $result = db_query($sql,$db);
 
-echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
+echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
 while($row = db_fetch_array($result)){
     $tid = $row['TID'];
@@ -75,13 +75,15 @@ while($row = db_fetch_array($result)){
     }
     echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
     
-    if (($row['last_read'] == 0) || ($row['last_read'] < $row['length'])) {
-        echo "<img src=\"./images/star.png\" name=\"t".$row['tid']."\" align=\"absmiddle\" />";
-    } elseif ($row['last_read'] < $row['length']) {
-        echo "<img src=\"./images/bullet.png\" name=\"t".$row['tid']."\" align=\"absmiddle\" />";
-    }    
+    if (($row['LAST_READ'] == 0) || ($row['LAST_READ'] < $row['LENGTH'])) {
+        echo "<img src=\"./images/star.png\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
+    } elseif ($row['LAST_READ'] == $row['LENGTH']) {
+        echo "<img src=\"./images/bullet.png\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
+    }
     
-    echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\">";
+    $thread_author = thread_get_author($tid);
+    
+    echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\"onmouseOver=\"status='#$tid Started by $thread_author';return true\" onmouseOut=\"window.status='';return true\" title=\"#$tid Started by $thread_author\">";
     echo stripslashes($row['TITLE'])."</a></td></tr>\n";
 }
 
@@ -107,7 +109,7 @@ $result = db_query($sql,$db);
 echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
 
 while($row = db_fetch_array($result)){
-    echo "<tr><td><img src=\"images/bullet.png\" width=\"12\" height=\"16\" /></td>";
+    echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\"><img src=\"images/bullet.png\" width=\"12\" height=\"16\" /></td>";
     echo "<td><a href=\"#\" onclick=\"openProfile(".$row['UID'].")\">";
     echo format_user_name($row['LOGON'], $row['NICKNAME']) . "</a>";
     echo "</td><td align=\"right\" nowrap=\"nowrap\">". format_time($row['LAST_LOGON']). "&nbsp;</td></tr>\n";

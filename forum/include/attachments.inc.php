@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.58 2004-04-13 14:16:45 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.59 2004-04-14 19:21:26 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/perm.inc.php");
@@ -169,42 +169,56 @@ function delete_attachment($uid, $hash)
     $db_delete_attachment = db_connect();
 
     if(!$table_data = get_table_prefix()) return false;
-    
-    $hash = addslashes($hash);
-    
+   
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    if (perm_is_moderator()) {
-    
-        $sql = "SELECT PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
-        $sql.= "ON (PAI.AID = PAF.AID) WHERE PAF.HASH = '$hash'";
-    
-    }else {
+    // Fetch the attachment to make sure the user
+    // is able to delete it, i.e. it belongs to them.
 
-        $sql = "SELECT PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
-        $sql.= "ON (PAI.AID = PAF.AID) WHERE PAF.HASH = '$hash' AND PAF.UID = '$uid'";
-    }
+    $sql = "SELECT PAF.AID, PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
+    $sql.= "ON (PAI.AID = PAF.AID) WHERE PAF.HASH = '$hash' AND PAF.UID = '$uid'";
     
     $result = db_query($sql, $db_delete_attachment);
     
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) > 0 || perm_is_moderator()) {
 
         $row = db_fetch_array($result);
 
+	// Mark the related post as edited
+	
 	if (isset($row['TID']) && isset($row['PID'])) {
 	    post_add_edit_text($row['TID'], $row['PID']);
 	}
 
-        $sql = "UPDATE {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-	$sql.= "SET DELETED = 1 WHERE HASH = '$hash'";
+	// Delete the attachment record from the database
+
+	$sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+	$sql.= "WHERE HASH = '$hash'";
 
 	$result = db_query($sql, $db_delete_attachment);
 
-	if (perm_is_moderator()) {
-	    @unlink(forum_get_setting('attachment_dir'). '/'. $hash);
+	// Check to see if there are anymore attachments with the same AID
+
+        $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+	$sql.= "WHERE AID = '{$row['AID']}'";
+
+	$result = db_query($sql, $db_delete_attachment);
+
+	// No more attachments connected to the AID, so we can remove it from
+	// the PAI database.
+
+	if (db_num_rows($result) == 0) {
+
+	    $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
+	    $sql.= "WHERE AID = '{$row['AID']}'";
+
+	    $result = db_query($sql, $db_delete_attachment);
 	}
+
+	// Finally delete the file
+
+        @unlink("$attachment_dir/$hash");
     }    
 }
 

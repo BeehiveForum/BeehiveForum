@@ -228,7 +228,7 @@ function links_add_comment($lid, $uid, $comment)
 function links_get_comments($lid)
 {
     $db_links_get_comments = db_connect();
-    $sql  = "SELECT USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
+    $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
     $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT ";
     $sql .= "FROM " . forum_table("LINKS_COMMENT") . " LINKS_COMMENT JOIN " . forum_table("USER") . " USER ";
     $sql .= "WHERE USER.UID = LINKS_COMMENT.UID AND LINKS_COMMENT.LID = $lid ORDER BY CREATED ASC";
@@ -282,5 +282,23 @@ function links_update($lid, $fid, $title, $uri, $description)
     $sql = "UPDATE " . forum_table("LINKS") . " SET LID = $lid, FID = $fid, TITLE = '$title', URI = '$uri', DESCRIPTION = '$description' WHERE LID = $lid";
     $result_id = db_query($sql, $db_links_update);
     return $result_id;
+}
+
+function links_get_creator_uid($lid)
+{
+	$db_links_get_creator_uid = db_connect();
+	$sql = "SELECT UID FROM " . forum_table("LINKS") . " WHERE LID = $lid";
+	$result_id = db_query($sql, $db_links_get_creator_uid);
+	$result = db_fetch_array($result_id);
+	return $result;
+}
+
+function links_get_comment_uid($cid)
+{
+	$db_links_get_comment_uid = db_connect();
+	$sql = "SELECT UID FROM " . forum_table("LINKS_COMMENT") . " WHERE CID = $cid";
+	$result_id = db_query($sql, $db_links_get_comment_uid);
+	$result = db_fetch_array($result_id);
+	return $result;
 }
 ?>

@@ -53,8 +53,8 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
         }
         $lid = $HTTP_POST_VARS['lid'];
     } elseif ($HTTP_POST_VARS['type'] == "moderation") {
-        $link = links_get_single($HTTP_POST_VARS['lid']);
-        if (perm_is_moderator() || $link['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) {
+        $creator = links_get_creator_uid($HTTP_POST_VARS['lid']);
+        if (perm_is_moderator() || $creator['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) {
             if ($HTTP_POST_VARS['delete'] == "confirm") {
                 links_delete($HTTP_POST_VARS['lid']);
                 header_redirect("links.php");
@@ -67,9 +67,10 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
     }
 }
 
-if (isset($HTTP_GET_VARS['action']) && perm_is_moderator()) {
+if (isset($HTTP_GET_VARS['action'])) {
     if ($HTTP_GET_VARS['action'] == "delete_comment") {
-        links_delete_comment($HTTP_GET_VARS['cid']);
+        $creator = links_get_comment_uid($HTTP_GET_VARS['cid']);
+        if (perm_is_moderator() || $creator['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) links_delete_comment($HTTP_GET_VARS['cid']);
     }
 }
 
@@ -144,7 +145,7 @@ if ($comments) {
     echo "<table width=\"90%\" align=\"center\">\n";
     while (list($key, $val) = each($comments)) {
         echo "<tr class=\"subhead\"><td>Comment by " . format_user_name($val['LOGON'], $val['NICKNAME']) . " [" . format_time($val['CREATED'], true) . "]";
-        if (perm_is_moderator()) echo " <a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[delete]</a>";
+        if (perm_is_moderator() || $val['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) echo " <a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[delete]</a>";
         echo "</td></tr>\n";
         echo "<tr class=\"posthead\"><td>" . _stripslashes($val['COMMENT']) . "</td></tr>\n";
     }

@@ -20,9 +20,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.91 2005-03-02 00:45:29 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.92 2005-03-13 20:24:18 tribalonline Exp $ */
 
-include_once("./include/beautifier.inc.php");
+include_once("./include/geshi.inc.php");
 include_once("./include/emoticons.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
@@ -42,7 +42,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
     global $fix_html_quote_text;
     global $fix_html_spoiler_text;
 
-    global $beaut_highlighter;
+    global $code_highlighter;
 
     $ret_text = '';
 
@@ -113,16 +113,13 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $html_parts[$j] = "/pre";
 
-                                        if (isset($beaut_highlighter[strtolower($lang)])) {
+                                        $code_highlighter->set_source($tmpcode);
+                                        $code_highlighter->set_language(strtolower($lang));
 
-                                            set_error_handler("fix_html_error_handler");
-                                            $tmpcode = $beaut_highlighter[strtolower($lang)] -> highlight_text($tmpcode);
-                                            restore_error_handler();
+                                        // preg_replace for the HTML geshi wraps it's output with by default
+                                        $tmpcode = preg_replace("/(^<pre>)|(\s*(&nbsp;)?<\/pre>$)/", "", $code_highlighter->parse_code());
 
-                                        } else {
-
-                                            $tmpcode = _htmlentities($tmpcode);
-                                        }
+                                        //echo "<xmp>___".$tmpcode."___</xmp>";
 
                                         array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
 
@@ -154,9 +151,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                             $i += 2;
                         }
 
-                        if ($lang != "") $lang = "-".$lang;
-
-                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code$lang\"", "", "b", $fix_html_code_text, "/b", "", "/div", ""));
+                        array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code-$lang\"", "", "b", $lang.' '.$fix_html_code_text, "/b", "", "/div", ""));
 
                         $i += 10;
 
@@ -842,7 +837,7 @@ function tidy_html ($html, $linebreaks = true, $links = true)
 
     // make <code>..</code> tag, and html_entity_decode
 
-    $html = preg_replace_callback("/<div class=\"quotetext\" id=\"code(-[^\"]+)?\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback", $html);
+    $html = preg_replace_callback("/<div class=\"quotetext\" id=\"code-([^\"]*)\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback", $html);
 
     // make <quote source=".." url="..">..</quote> tag
 
@@ -978,9 +973,9 @@ function tidy_html_callback($matches)
 {
     $lang = "";
 
-    if (isset($matches[1])) $lang = substr($matches[1], 1);
+   // if (isset($matches[1])) $lang = substr($matches[1], 1);
 
-    return "<code language=\"$lang\">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
+    return "<code language=\"{$matches[1]}\">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
 }
 
 function clean_emoticons($html)

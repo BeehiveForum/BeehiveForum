@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.65 2004-05-31 12:31:54 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.66 2004-06-03 08:54:45 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -450,30 +450,49 @@ function folder_search_dropdown()
 
     $access_allowed = USER_PERM_POST_READ;
 
-    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.GID = '$uid') ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = FOLDER.FID) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 AND GROUP_PERMS.PERM IS NOT NULL) ";
-    $sql.= "OR (FOLDER.PERM & $access_allowed > 0 AND FOLDER.PERM IS NOT NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "OR (FOLDER.PERM IS NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "GROUP BY GROUP_PERMS.PERM, FOLDER.PERM, FOLDER.FID ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_folder_search_dropdown);
 
-    $fids[] = 0;
-    $titles[] = $lang['all_caps'];
+    $fid_array = array(0);
+    $title_array = array($lang['all_caps']);
 
-    while($row = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
 
-      $fids[]   = $row['FID'];
-      $titles[] = $row['TITLE'];
+        while($row = db_fetch_array($result, MYSQL_ASSOC)) {
 
+            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
+
+                $fid_array[] = $row['FID'];
+                $title_array[] = $row['TITLE'];
+
+            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_STATUS'] & $access_allowed) == $access_allowed)) {
+
+                $fid_array[] = $row['FID'];
+                $title_array[] = $row['TITLE'];
+
+            }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+
+                $fid_array[] = $row['FID'];
+                $title_array[] = $row['TITLE'];
+            }
+        }
     }
 
-    return form_dropdown_array("fid", $fids, $titles, 0, "style=\"width: 175px\"");
+    return form_dropdown_array("fid", $fid_array, $title_array, 0, "style=\"width: 175px\"");
 }
 
 function search_draw_user_dropdown($name)

@@ -1,43 +1,95 @@
 Beehive Forum Release Notes
 
-What's new in 0.4.1 ("TBD", released 5th Never)
-===================
+What's new in 0.5 ("TBD", released 5th Never)
+=================
 
 - Brand new features
         - Multiple Forum support. Yes, finally you can run more than one
-          forum on your web space using a single Beehive installation.
+          forum on your web space using a single Beehive installation, under
+	  a 'My Forums' linking system.
+	- Forums can be open/closed/restricted/passworded.
+	- Comprehensive user permissions - users can be given/denied access
+	  to post/read/etc. in specific folders, as well as having HTML/sig
+	  privileges given/denied.
+	- User groups can be created to help moderation of large forums.
+	- New 'Forum Links' drop-down in the top frame allows for linking
+	  other Beehive forums and sites easily.
         - New 'My Controls' replaces the old preferences and profile
           sections, incorporating them into a single location.
-        - Emoticons. Don't worry you can turn them off if you want to.
+        - Emoticons. Really fancy emoticons. With per-user options to display
+	  any of several graphical sets, or plain-text, or nothing at all.
+	- Emoticon preview pane on post page for quick reference.
         - Users can now perform basic moderation duties on their own
-          posts, including changing the thread title and moving the
-          thread to different folders. Admins can prevent this functionality
-          by 'edit locking' the thread to prevent it from being changed.
-        - New icons to display a closed / edit locked thread.
+          posts on the new 'Thread Options' page, including changing the thread 
+	  title and moving the thread to different folders. Admins can prevent 
+	  this functionality by 'edit locking' the thread to prevent it from 
+	  being changed.
+	- Users can access 'Thread Options' by clicking the icon to the left
+	  of every thread title in the thread list frame. From here a thread can
+	  be ignored without ever reading it.
+	- Posts can now be marked as unread, for later reading.
+	- New 'Reply as PM' link on every post will quickly create a new PM
+	  addressed to the post author, with the thread title as the subject.
+	- Number of PMs per user can be restricted by the admin.
         - New user option to change all images embedded into a post by users
           (inc. signature images) into clickable links.
-        
-- Enhances old features
-        - Improved word filter that allows you to find and replace
-          rather than obscure the filtered words with asterix.
-        - Word filter can now be disable without having to clear the
-          filter list of the current entries. Useful if browsing from
-          different places such as home and work.
-        - Many pages have had their output tweaked so they fit in
-          with the overall style of beehive.
-        - Attachments now support the uploading of multiple files
-          at the same time. Useful for dial-up users who want
-          to attach multiple files without having to do each file
-          in turn.
-        - The forum owner can now choose to have deleted attachments
-          still show (with the link removed) in posts.
-        - Alternative attachment method which allows Beehive to make
-          use of the old 0.3 and older attachment retrieval method
-          for servers that can't handle the newer method.
+	- 'Reply to all' allows a user to reply to an entire thread instead of
+	  a specific post.
+	- New tabular polls to compare votes from different poll groups.
+	- Quick search.
+	- Per-user word filter.
+	- Beautifier (www.beautifier.org) integration with BH <code> tag.
+	- <spoiler> tag to hide text which may otherwise spoil that movie
+	  you're planning on seeing tonight's killer plot twist. <spoiler>He
+	  was dead all along!!</spoiler>
+	- <noemots> tag to prevent anything within it from being converted to
+	  an emoticon.
+	- New post page preferences which allow you to toggle the HTML toolbar,
+	  the emoticons preview pane and the signature textfield. You can also
+	  choose an HTML mode by default; you can choose to enable/disable
+	  emoticons in your messages by default and so on.
+	- Guest account no longer requires cookies, so that search engines can
+	  spider Beehive forums. A robots.txt file is also included to help
+	  search engines spider the right content.
+	- A user can now set their default start page to be the thread list in
+	  the left frame, and the forum start page in the right frame.
+	- New thread_rss.php allows recent Beehive threads to be loaded into an
+	  RSS reader.
+
+- Enhanced old features
+        - HTML toolbar is now present for post creation; post editing; poll
+	  creation; signature editing; PM creation; PM editing; start page
+	  editing. Can't get enough of that HTML toolbar.
+	- Slicker HTML integration - <quote>/<code>/<spoiler> tags won't show
+	  their innards, for example.
+	- Better editing page. No longer will you have to toggle between a 
+	  plain-text/HTML version of your post - BH will automatically 
+	  approximoguesstimate what settings you originally posted your message
+	  with.
+	- Polls can now be 'soft-edited' - minor edits which won't reset the
+	  votes.
+	- Poll options can either be displayed as radio buttons (as before) or
+	  as a drop-down list.
+        - Improved word filter that allows you to find and replace rather than 
+          obscure the filtered words with asterix.
+        - Word filter can now be disable without having to clear the filter 
+          list of the current entries. Useful if browsing from different places 
+          such as home and work.
+        - Many pages have had their output tweaked so they fit in with the 
+          overall style of beehive.
+        - Attachments now support the uploading of multiple files at the same 
+          time. Useful for dial-up users who want to attach multiple files 
+          without having to do each file in turn.
+        - The forum owner can now choose to have deleted attachments still 
+          show (with the link removed) in posts.
+        - Alternative attachment method which allows Beehive to make use of the 
+          old 0.3 and older attachment retrieval method for servers that can't 
+          handle the newer method.
         - 
-          
+
 - Fixes
         - Lots and lots!
+
 
 What's new in 0.4 ("In The Flesh", released 10th December 2003)
 =================

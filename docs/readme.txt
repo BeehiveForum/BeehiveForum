@@ -24,18 +24,17 @@ A list of changes since previous Beehive versions can be found in release.txt.
     1.3.3    The top frame
     1.3.4    Emoticons
     1.3.5    Beautifier
-  1.4    Upgrading 0.4.1 to 0.5
+  1.4    Upgrading 0.4 to 0.5
     1.4.1    Make a back up of your database
     1.4.2    Back up your files
     1.4.3    Upload new forum files
     1.4.4    Run the upgrade script
-  1.5    Upgrading 0.4 to 0.4.1
+  1.5    Upgrading 0.3 to 0.4.
     1.5.1    Update the database
     1.5.2    Update the config file
-  1.6    Upgrading from 0.3 to 0.4
-  1.7    Upgrading from 0.2 to 0.3
-  1.8    Upgrading from 0.1 / 0.1.1 to 0.2
-  1.9    Upgrading from 0.1 or 0.2 to 0.4
+  1.6    Upgrading from 0.2 to 0.3
+  1.7    Upgrading from 0.1 / 0.1.1 to 0.2
+  1.8    Upgrading from 0.1 or 0.2 to 0.4
 
 2.    Known Issues
 
@@ -436,17 +435,17 @@ Make sure you select 'Upgrade' from the installation method drop-down list, and
 then follow the instructions.
 
 
-1.5 Upgrading from 0.4 to 0.4.1
-===============================
+1.5 Upgrading from 0.3 to 0.4
+=============================
 
-If you are already using 0.4 of Beehive Forum, you will need to update your
-database. You can do this by following the steps in 1.4.1.
+If you are already using 0.3 of Beehive Forum, you will need to update your
+database. You should first backup by following the steps in 1.4.1.
 
 
 1.5.1 Update the database
 =========================
 
-Simply run the /docs/update-04-to-041.sql script against the database using phpMyAdmin or
+Simply run the /docs/update-03-to-04.sql script against the database using phpMyAdmin or
 MySQL directly.
 
 
@@ -455,12 +454,6 @@ MySQL directly.
 
 Probably the easiest way to do this is to edit the config.inc.php in the 0.4 download
 and set the relevant variables again.
-
-IMPORTANT: As of BeehiveForum 0.4.1 the additional settings in config.inc.php have
-           been moved to a database table. If you are upgrading to 0.4.1 any
-           settings you have in your config.inc.php file will be ignored and you
-           will need to log into your forum and visit the Admin section to restore
-           them to their old values.
 
 
 1.6 Upgrading from 0.2 to 0.3
@@ -477,24 +470,19 @@ Follow the same procedure as detailed above, but you must run /docs/upgrade-01-t
 beforehand
 
 
-1.8 Upgrading from 0.1 or 0.2 to 0.4.1
-======================================
+1.8 Upgrading from 0.1 or 0.2 to 0.4
+====================================
 
-No direct route exists for 0.1 or 0.2 to be upgraded to 0.4.1. To upgrade either of these
-versions to 0.4.1 you will need to run the relevant schema files in order. 
+No direct route exists for 0.1 or 0.2 to be upgraded to 0.4. To upgrade either of these
+versions to 0.4 you will need to run the relevant schema files in order. 
 
 For example if you are using Beehive 0.1 you will need to run:
 
 upgrade-01-to-02.sql followed by..
 upgrade-02-to-03.sql followed by..
-upgrade-03-to-04.sql and finally..
-upgrade-04-to-041.sql.
+upgrade-03-to-04.sql.
 
-This will bring the database up to date. Likewise to upgrade from 0.3 you will
-need to run:
-
-upgrade-03-to-04.sql followed by..
-upgrade-04-to-041.sql.
+This will bring the database up to date.
 
 
 2 Known Issues

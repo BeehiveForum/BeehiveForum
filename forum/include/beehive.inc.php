@@ -28,14 +28,14 @@ function draw_beehive_bar()
 <td width="60%" class="smalltext">
 Beehive Forum 0.2
 &nbsp;|&nbsp;
-<a href="http://beehiveforum.sf.net/faq" target="_blank">FAQ</a>
+<a href="http://beehiveforum.net/faq" target="_blank">FAQ</a>
 &nbsp;|&nbsp;
 <a href="http://sourceforge.net/docman/?group_id=50772" target="_blank">Docs</a>
 &nbsp;|&nbsp;
 <a href="http://sourceforge.net/tracker/?group_id=50772&atid=460926" target="_blank">Support</a>
 </td>
 <td width="40%" align="right" class="smalltext">&copy;2002
-<a href="http://beehiveforum.sourceforge.net/" target="_blank">Project BeehiveForum</a>
+<a href="http://beehiveforum.net/" target="_blank">Project BeehiveForum</a>
 </td></tr></table></div>
 <?php
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.32 2003-08-31 16:21:07 hodcroftcj Exp $ */
+/* $Id: form.inc.php,v 1.33 2003-08-31 18:15:12 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -220,9 +220,11 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 
 function form_input_hidden_array($name, $value)
 {
+    if (!isset($return)) $return = "";
+
     if (is_array($value)) {
         foreach ($value as $array_key => $array_value) {
-            form_input_hidden_array("$name[$array_key]", $array_value);
+            $return.= form_input_hidden_array("$name[$array_key]", $array_value);
         }
     }else {
         $return.= form_input_hidden($name, _stripslashes($value));
@@ -233,7 +235,7 @@ function form_input_hidden_array($name, $value)
 
 function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = "")
 {
-	global $lang;
+    global $lang;
 
     $days   = array_merge(" ", range(1,31));
     $months = array(" ", $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
@@ -245,7 +247,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = "")
     $output .= form_dropdown_array($prefix."month", range(0, 12), $months, $month);
     $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
     $output .= form_dropdown_array($prefix."year", $years_values, $years, $year);
-    
+
     return $output;
 }
 

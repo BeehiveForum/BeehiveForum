@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.25 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.26 2003-08-31 18:15:12 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -44,8 +44,6 @@ function post_update($tid, $pid, $content)
 
 function post_delete($tid, $pid)
 {
-    if (!($tid && $pid)) return false;
-
     $db_post_delete = db_connect();
 
     if (thread_is_poll($tid) && $pid == 1) {
@@ -53,12 +51,12 @@ function post_delete($tid, $pid)
         $result = db_query($sql, $db_post_delete);
     }
 
+    $sql = "DELETE FROM ". forum_table("THREAD"). " WHERE TID = $tid AND LENGTH = 1";
+    $result = db_query($sql, $db_post_delete);
+
     $sql = "UPDATE ". forum_table("POST_CONTENT"). " SET CONTENT = NULL ";
     $sql.= "WHERE TID = $tid AND PID = $pid";
 
-    $result = db_query($sql, $db_post_delete);
-
-    $sql = "DELETE FROM ". forum_table("THREAD"). " WHERE TID = $tid AND LENGTH = 1";
     $result = db_query($sql, $db_post_delete);
 
     return (db_affected_rows($db_post_delete) > 0);

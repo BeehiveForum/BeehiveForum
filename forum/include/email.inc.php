@@ -70,9 +70,9 @@ function email_sendnotification($tuid, $msg, $fuid)
             $message.= "posted to you, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, click\n";
             $message.= "on Preferences, unselect the Email Notification checkbox and press Submit.\n";
 
-            $header = "From: \"$forum_name\" <$forum_email>\r\n";
-            $header.= "Reply-To: \"$forum_name\" <$forum_email>\r\n";
-            $header.= "X-Mailer: PHP/". phpversion(). "\r\n";
+            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+            $header.= "X-Mailer: PHP/". phpversion(). "\n";
 
             mail($mailto['EMAIL'], "Message Notification from $forum_name", $message, $header);
 
@@ -131,9 +131,9 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $message.= "in this thread, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";
         $message.= "and adjust your Interest level at the end of the page.\n";
 
-        $header = "From: \"$forum_name\" <$forum_email>\r\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\r\n";
-        $header.= "X-Mailer: PHP/". phpversion(). "\r\n";
+        $header = "From: \"$forum_name\" <$forum_email>\n";
+        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+        $header.= "X-Mailer: PHP/". phpversion(). "\n";
 
         mail($mailto['EMAIL'], "Subscription Notification from $forum_name", $message, $header);
 

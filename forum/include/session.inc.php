@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.134 2004-10-11 09:33:49 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.135 2004-10-16 13:04:15 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -203,48 +203,32 @@ function bh_session_check($add_guest_sess = true)
         // from a single IP address.
 
         if ($table_data = get_table_prefix()) {
-
             $fid = $table_data['FID'];
-
-            $sql = "SELECT UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
-            $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress' ";
-            $sql.= "AND SESSIONS.FID = '$fid'";
-
         }else {
-
-            $sql = "SELECT UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
-            $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress'";
+            $fid = 0;
         }
+
+        $sql = "SELECT * FROM SESSIONS WHERE UID = '0' ";
+        $sql.= "AND IPADDRESS = '$ipaddress'";
 
         $result = db_query($sql, $db_bh_session_check);
 
         if (db_num_rows($result) > 0) {
 
-            $user_sess = db_fetch_array($result, MYSQL_ASSOC);
+            $user_sess = db_fetch_array($result);
 
-            if ($current_time - $user_sess['TIME'] > 300) {
+            if (($current_time - $user_sess['TIME']) > 300) {
 
-                if (isset($fid) && is_numeric($fid)) {
-
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW() ";
-                    $sql.= "WHERE IPADDRESS = '$ipaddress' ";
-                    $sql.= "AND FID = '$fid'";
-
-                }else {
-
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW() ";
-                    $sql.= "WHERE IPADDRESS = '$ipaddress'";
-                }
+                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), ";
+                $sql.= "FID = '$fid' WHERE UID = 0 AND IPADDRESS = '$ipaddress'";
 
                 $result = db_query($sql, $db_bh_session_check);
             }
 
         }else {
 
-            $sql = "INSERT INTO SESSIONS (UID, FID, IPADDRESS, TIME) ";
-            $sql.= "VALUES (0, '$fid', '$ipaddress', NOW())";
+            $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
+            $sql.= "VALUES ('', 0, '$fid', '$ipaddress', NOW())";
 
             $result = db_query($sql, $db_bh_session_check);
         }
@@ -367,7 +351,8 @@ function bh_session_init($uid)
             $user_hash = md5(uniqid($ipaddress));
 
             $sql = "UPDATE LOW_PRIORITY SESSIONS SET HASH = '$user_hash' ";
-            $sql.= "WHERE UID = '$uid' AND IPADDRESS = '$ipaddress'";
+            $sql.= "WHERE UID = '$uid' AND IPADDRESS = '$ipaddress' ";
+            $sql.= "AND FID = '$fid'";
 
             $result = db_query($sql, $db_bh_session_init);
         }

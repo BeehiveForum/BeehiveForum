@@ -73,15 +73,15 @@ function threads_get_folders()
     $result = db_query($sql, $db_threads_get_folders);
 
     if (!db_num_rows($result)) {
-         $folder_titles = FALSE;
+         $folder_info = FALSE;
     } else {
         while($query_data = db_fetch_array($result)) {
-            $folder_titles[$query_data['FID']]['TITLE'] = $query_data['TITLE'];
-	    $folder_titles[$query_data['FID']]['INTEREST'] = $query_data['INTEREST'];
+	    //$folder_info[$query_data['FID']] = $query_data['TITLE'];
+            $folder_info[$query_data['FID']] = array('TITLE' => $query_data['TITLE'], 'INTEREST' => $query_data['INTEREST']);
         }
     }
 
-    return $folder_titles;
+    return $folder_info;
 }
 
 function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
@@ -98,8 +98,11 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -118,15 +121,18 @@ function threads_get_unread($uid) // get unread messages for $uid
     // Formulate query
 
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
-    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
-    $sql .= "FROM " . forum_table("THREAD") . " THREAD, " . forum_table("USER_FOLDER") . " USER_FOLDER ";
+    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+    $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
-    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid AND USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
+    $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
-    $sql .= "ORDER BY USER_FOLDER.INTEREST DESC "; //THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
@@ -176,9 +182,12 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 

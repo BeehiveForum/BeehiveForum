@@ -237,10 +237,21 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
 }
 
-// Work out if any folders have no messages - if so, they still need to be displayed, so add them to $folder_order
-while (list($fid, $title) = each($folder_info)) {
-	if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+// Work out if any folders have no messages and add them.
+// Seperate them by INTEREST level
+
+while (list($fid, $folder) = each($folder_info)) {
+  if (!$folder['INTEREST']) {
+    if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+  }else {
+    $ignored_folders[] = $fid;
+  }
 }
+
+// Append ignored folders onto the end of the folder list.
+// This will make them appear at the bottom of the thread list.
+
+$folder_order = array_merge($folder_order, $ignored_folders);
 
 // If no threads are returned, say something to that effect
 
@@ -256,6 +267,7 @@ if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"sma
 
 // Iterate through the information we've just got and display it in the right order
 while (list($key1, $folder_number) = each($folder_order)) {
+
 	echo "<tr>\n";
 	echo "<td colspan=\"2\">\n";
 	echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -278,7 +290,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (!$folder_info[$folder_number]['INTEREST']) {
+	if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2)) {
 
             if (is_array($thread_info)) {
 
@@ -385,6 +397,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 	if (is_array($thread_info)) reset($thread_info);
 }
+
 if ($mode == 0 && !isset($folder)) {
     $total_threads = 0;
     while (list($fid, $num_threads) = each($folder_msgs)) {
@@ -394,6 +407,7 @@ if ($mode == 0 && !isset($folder)) {
   if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
   if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
 }
+
 echo "<tr>\n<td colspan=\"2\">&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark discussions as read</a></td></tr>\n";
 echo "</table>\n";
 echo "<script language=\"JavaScript\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.87 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.88 2004-03-21 18:25:26 tribalonline Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -191,6 +191,16 @@ function html_draw_top()
     }
 
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
+
+    if (forum_get_setting('default_emoticons')) {
+
+        $user_emots = bh_session_get_value('EMOTICONS');
+        $user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons');
+
+        if (is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
+            echo "<link rel=\"stylesheet\" href=\"emoticons/$user_emots/style.css\" type=\"text/css\" />\n";
+        }
+    }
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 

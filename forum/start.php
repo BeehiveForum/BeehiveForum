@@ -17,9 +17,12 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
+
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -34,7 +37,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/config.inc.php");
@@ -42,14 +45,14 @@ require_once("./include/config.inc.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<title><?= $forum_name ?></title>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link rel="stylesheet" href="./styles/style.css" type="text/css">
-	</head>
+        <head>
+                <title><?= $forum_name ?></title>
+                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                <link rel="stylesheet" href="./styles/style.css" type="text/css">
+        </head>
         <frameset cols="250,*" border="1">
           <frame src="./start_left.php" name="left" border="1">
           <frame src="./start_main.php" name="right" border="1">
         </frameset>
-        
+
 </html>

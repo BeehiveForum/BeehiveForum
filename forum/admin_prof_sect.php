@@ -23,6 +23,9 @@ USA
 
 // Frameset for thread list and messages
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 

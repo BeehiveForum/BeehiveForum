@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
@@ -48,11 +51,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 $msg = "You requested this e-mail from $forum_name because you have forgotten your password.\n\n";
                 $msg.= "Click the link below (or copy and paste it into your browser) to reset your password:\n\n";
                 $msg.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
-                
+
                 if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
                   $msg.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
                 }
-                
+
                 $msg.= "/change_pw.php?u={$fa['UID']}&h={$fa['PASSWD']}";
 
                 $header = "From: \"$forum_name\" <$forum_email>\n";

@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
@@ -86,37 +89,37 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         }
 
-	if (!is_array($usernames)) $usernames = array();
-	if (!is_array($passwords)) $passwords = array();
+        if (!is_array($usernames)) $usernames = array();
+        if (!is_array($passwords)) $passwords = array();
 
         if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
 
           array_unshift($usernames, $HTTP_POST_VARS['logon']);
 
-	  if(isset($HTTP_POST_VARS['remember_user'])) {
-	    array_unshift($passwords, $HTTP_POST_VARS['password']);
-	  }else {
-	    array_unshift($passwords, str_repeat(chr(255), 4));
-	  }
+          if(isset($HTTP_POST_VARS['remember_user'])) {
+            array_unshift($passwords, $HTTP_POST_VARS['password']);
+          }else {
+            array_unshift($passwords, str_repeat(chr(255), 4));
+          }
 
         }else {
 
-	  if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
+          if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
 
-	    array_splice($usernames, $key, 1);
-	    array_splice($passwords, $key, 1);
+            array_splice($usernames, $key, 1);
+            array_splice($passwords, $key, 1);
 
             array_unshift($usernames, $HTTP_POST_VARS['logon']);
 
             if(isset($HTTP_POST_VARS['remember_user'])) {
-	      array_unshift($passwords, $HTTP_POST_VARS['password']);
-	    }else {
-	      array_unshift($passwords, str_repeat(chr(255), 4));
-	    }
+              array_unshift($passwords, $HTTP_POST_VARS['password']);
+            }else {
+              array_unshift($passwords, str_repeat(chr(255), 4));
+            }
 
-	  }
+          }
 
-	}
+        }
 
         for ($i = 0; $i < sizeof($usernames); $i++) {
 

@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 require_once("./include/html.inc.php");
@@ -48,7 +51,7 @@ $folders = links_folders_get(perm_is_moderator());
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
     html_guest_error();
-	exit;
+        exit;
 }
 
 $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];

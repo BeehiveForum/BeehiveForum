@@ -23,6 +23,9 @@ USA
 
 // Frameset for thread list and messages
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
@@ -34,7 +37,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/perm.inc.php");

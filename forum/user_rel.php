@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.65 2005-04-03 16:08:59 rowan_hill Exp $ */
+/* $Id: user_rel.php,v 1.66 2005-04-03 17:38:11 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
-* 
+*
 * Generates the forms relating to the user relationship settings, and handles their sumbission.
 */
 
@@ -205,8 +205,6 @@ $user_prefs = user_get_prefs($uid);
 $user_perms = perm_get_user_permissions($uid);
 $user_peer_perms = perm_get_user_permissions($peer_uid);
 
-
-
 echo "<h1>{$lang['userrelationship']}: <a href=\"javascript:void(0);\" onclick=\"openProfile($peer_uid, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></h1>\n";
 echo "<br />\n";
 echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
@@ -235,21 +233,26 @@ if (isset($peer_uid)) {
     echo "                  <td width=\"200\">", form_radio("rel", "0", $lang['normal'], !(($rel & USER_IGNORED) || ($rel & USER_FRIEND) || ($rel & USER_IGNORED_COMPLETELY)) ? true : false), "</td>\n";
     echo "                  <td width=\"400\">: {$lang['normal_exp']}</td>\n";
     echo "                </tr>\n";
-    if ((($user_peer_perms & USER_PERM_FOLDER_MODERATE) && ($user_perms & USER_PERM_CAN_IGNORE_ADMIN)) || !($user_peer_perms & USER_PERM_FOLDER_MODERATE)) {
+
+    if ((($user_peer_perms & USER_PERM_FOLDER_MODERATE) && ($user_perms & USER_PERM_CAN_IGNORE_ADMIN)) || !($user_peer_perms & USER_PERM_FOLDER_MODERATE) ||) {
+
         echo "                <tr>\n";
-    	echo "                  <td width=\"200\">", form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false), "</td>\n";
-    	echo "                  <td width=\"400\">: {$lang['ignore_exp']}</td>\n";
-    	echo "                </tr>\n";
-    	echo "                <tr>\n";
-    	echo "                  <td width=\"200\">", form_radio("rel", "8", $lang['ignoredcompletely'], $rel & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
-    	echo "                  <td width=\"400\">: {$lang['ignore_completely_exp']}</td>\n";
-   	echo "                </tr>\n";
-    } else {
-     	echo "                <tr>\n";
-    	echo "                  <td width=\"200\">&nbsp;</td>\n";
-    	echo "                  <td width=\"400\">{$lang['cannotignoremod']}</td>\n";
-     	echo "                </tr>\n";
+        echo "                  <td width=\"200\">", form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false), "</td>\n";
+        echo "                  <td width=\"400\">: {$lang['ignore_exp']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td width=\"200\">", form_radio("rel", "8", $lang['ignoredcompletely'], $rel & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
+        echo "                  <td width=\"400\">: {$lang['ignore_completely_exp']}</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td width=\"200\">&nbsp;</td>\n";
+        echo "                  <td width=\"400\">{$lang['cannotignoremod']}</td>\n";
+        echo "                </tr>\n";
     }
+
     echo "                <tr>\n";
     echo "                  <td colspan=\"2\">&nbsp;</td>\n";
     echo "                </tr>\n";

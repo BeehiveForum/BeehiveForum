@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.126 2004-09-14 17:42:15 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.127 2004-09-29 19:47:58 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -61,10 +61,9 @@ function bh_session_check($add_guest_sess = true)
 
         if ($table_data = get_table_prefix()) {
 
-
             $sql = "SELECT USER.LOGON, USER.PASSWD, ";
             $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
-        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+            $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
             $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
             $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
@@ -201,6 +200,7 @@ function bh_session_check($add_guest_sess = true)
 
         }else {
 
+            bh_session_end();
             return false;
         }
     }

@@ -37,7 +37,7 @@ INSERT INTO FOLDER VALUES (1, 'General', 0);
 # --------------------------------------------------------
 
 #
-# Table structure for table `poll`
+# Table structure for table `POLL`
 #
 
 CREATE TABLE POLL (
@@ -53,14 +53,15 @@ CREATE TABLE POLL (
 # --------------------------------------------------------
 
 #
-# Table structure for table `poll_votes`
+# Table structure for table `POLL_VOTES`
 #
 
 CREATE TABLE POLL_VOTES (
   TID mediumint(8) unsigned NOT NULL default '0',
-  OPTION_ID mediumint(8) unsigned NOT NULL default '0',
+  OPTION_ID mediumint(8) unsigned NOT NULL auto_increment,
   OPTION_NAME char(255) NOT NULL default '',
-  VOTES mediumint(8) unsigned NOT NULL default '0'
+  VOTES mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY  (TID, OPTION_ID)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -276,7 +277,7 @@ CREATE TABLE USER_PREFS (
 #---------------------------------------------------------
 
 #
-# Table structure for table `user_poll_votes`
+# Table structure for table `USER_POLL_VOTES`
 #
 
 CREATE TABLE USER_POLL_VOTES (

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.43 2005-01-30 14:10:23 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.44 2005-02-01 23:15:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -312,7 +312,7 @@ function get_month_post_tallys()
     $result = db_query($sql, $db_get_month_post_tallys);
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(PID) AS POST_COUNT ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
     $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
@@ -354,7 +354,7 @@ function get_week_post_tallys()
     $result = db_query($sql, $db_get_week_post_tallys);
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(PID) AS POST_COUNT ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
     $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
@@ -389,7 +389,7 @@ function get_day_post_tallys()
     $result = db_query($sql, $db_get_day_post_tallys);
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(PID) AS POST_COUNT ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
     $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
@@ -424,7 +424,7 @@ function get_hour_post_tallys()
     $result = db_query($sql, $db_get_hour_post_tallys);
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(PID) AS POST_COUNT ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
     $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";

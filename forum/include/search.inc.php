@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.101 2005-03-09 19:13:14 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.102 2005-03-10 21:17:51 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -71,10 +71,6 @@ function search_execute($argarray, &$urlquery, &$error)
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = SEARCH_MATCH.TID AND POST.PID = SEARCH_MATCH.PID) ";
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
     $search_sql.= "WHERE SEARCH_MATCH.FID IN ({$argarray['forums']}) ";
-    $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
-    $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
-    $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
         $search_sql.= "AND THREAD.FID = {$argarray['fid']} ";
@@ -91,6 +87,11 @@ function search_execute($argarray, &$urlquery, &$error)
         $search_sql.= "OR POST.FROM_UID = '$uid') ";
 
     }else {
+
+        $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+        $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+        $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+        $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
 
         if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
@@ -168,18 +169,16 @@ function search_execute($argarray, &$urlquery, &$error)
     }
 
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
-        $search_sql.= " GROUP BY SEARCH_MATCH.TID";
-    }else {
-        $search_sql.= " GROUP BY SEARCH_MATCH.PID";
+        $search_sql.= "GROUP BY SEARCH_MATCH.TID ";
     }
 
     if ($argarray['order_by'] == 2) {
-        $search_sql.= " ORDER BY CREATED DESC";
+        $search_sql.= "ORDER BY CREATED DESC ";
     }elseif($argarray['order_by'] == 3) {
-        $search_sql.= " ORDER BY CREATED";
+        $search_sql.= "ORDER BY CREATED ";
     }
 
-    $search_sql.= " LIMIT {$argarray['sstart']}, 50";
+    $search_sql.= "LIMIT {$argarray['sstart']}, 50";
     $search_sql = preg_replace("/ +/", " ", $search_sql);
 
     $result = db_query($search_sql, $db_search_execute);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.104 2005-03-05 22:36:43 decoyduck Exp $ */
+/* $Id: index.php,v 1.105 2005-03-10 21:17:51 decoyduck Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -218,19 +218,21 @@ echo "<body>\n";
 
 define('BEEHIVE_LIGHT_INCLUDE', true);
 
-if (!$user_sess) {
+if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (user_guest_enabled() && $auto_logon && !isset($_COOKIE['bh_logon']))) {
 
     light_draw_logon_form();
 
 }else {
 
-    if (!$webtag = get_webtag($webtag_search)) {
-        include("./lforums.php");
+    if ($webtag = get_webtag($webtag_search)) {
+        light_draw_thread_list();
     }else {
-        include("./lthread_list.php");
+        light_draw_my_forums();
     }
 }
 
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
+echo "</body>\n";
 echo "</noframes>\n";
 echo "</frameset>\n";
 echo "</html>\n";

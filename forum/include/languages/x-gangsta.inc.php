@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.34 2004-08-14 23:40:56 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.35 2004-08-17 10:03:41 rowan_hill Exp $ */
 
 // Gangsta language file
 
@@ -744,6 +744,7 @@ $lang['usersinthread'] = "Homies in thread";
 $lang['correctedcode'] = "The right shit";
 $lang['submittedcode'] = "Yo shit code";
 $lang['htmlinmessage'] = "Fly-ass code in yo message";
+$lang['emoticonsinmessage'] = "Faces n'shit in yo message";
 $lang['disableemoticonsinmessage'] = "Dizisable faces n'shit in yo message";
 $lang['automaticallyparseurls'] = "Make them hizyperlinks";
 $lang['setthreadtohighinterest'] = "Mark thrizead as shit I'm down wit";

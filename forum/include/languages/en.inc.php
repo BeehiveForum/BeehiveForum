@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.161 2004-08-14 23:40:56 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.162 2004-08-17 10:03:41 rowan_hill Exp $ */
 
 // International English language file
 
@@ -747,6 +747,7 @@ $lang['usersinthread'] = "Users in thread";
 $lang['correctedcode'] = "Corrected code";
 $lang['submittedcode'] = "Submitted code";
 $lang['htmlinmessage'] = "HTML in message";
+$lang['emoticonsinmessage'] = "Emoticons in message";
 $lang['disableemoticonsinmessage'] = "Disable emoticons in message";
 $lang['automaticallyparseurls'] = "Automatically parse URLs";
 $lang['setthreadtohighinterest'] = "Set thread to high interest";

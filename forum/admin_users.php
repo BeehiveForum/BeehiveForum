@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.73 2004-04-20 09:08:15 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.74 2004-04-20 10:01:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -176,7 +176,7 @@ echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "               <table width=\"100%\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                 <tr>\n";
 
 if ($sort_by == 'USER.UID' && $sort_dir == 'ASC') {
@@ -324,7 +324,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">Pages: ";
+echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ";
 
 $page_count = ceil($admin_user_array['user_count'] / 20);
 
@@ -354,7 +354,7 @@ echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "              <table width=\"100%\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
 echo "                </tr>\n";

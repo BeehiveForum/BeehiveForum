@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.117 2004-04-19 20:29:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.118 2004-04-20 10:01:33 decoyduck Exp $ */
 
 // International English language file
 
@@ -151,6 +151,7 @@ $lang['default'] = "Default";
 $lang['makedefault'] = "Make Default";
 $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
+$lang['pages'] = "Pages";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -293,6 +294,7 @@ $lang['renamedthread'] = "Renamed Thread";
 $lang['lockedthreadtitlefolder'] = "Locked Thread Title/Folder";
 $lang['unlockedthreadtitlefolder'] = "Unlocked Thread Title/Folder";
 $lang['userspostsdeletedinthread'] = "User's Posts Deleted in Thread";
+$lang['deleteduserattachmentfrompost'] = "Deleted User's Attachment From Post";
 $lang['threaddeleted'] = "Thread Deleted";
 $lang['deletedpost'] = "Deleted Post";
 $lang['editedpost'] = "Edited Post";

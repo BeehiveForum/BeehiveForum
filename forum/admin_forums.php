@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.12 2004-04-19 20:44:15 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.13 2004-04-20 10:01:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -156,7 +156,7 @@ if (isset($_POST['submit'])) {
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
-    echo "              <table width=\"100%\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\"><h2>{$lang['warning_caps']}</h2></td>\n";
     echo "                </tr>\n";
@@ -220,7 +220,7 @@ if (sizeof($forums_array) > 0) {
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
-    echo "              <table width=\"100%\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" width=\"150\">&nbsp;{$lang['webtag']}</td>\n";
@@ -285,7 +285,7 @@ echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "              <table width=\"100%\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\">&nbsp;</td>\n";
 echo "                  <td class=\"subhead\">&nbsp;{$lang['webtag']}</td>\n";

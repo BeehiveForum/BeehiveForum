@@ -80,7 +80,9 @@ function get_all_attachments($uid, $aid) {
         if (file_exists($attachments_dir. '/'. $row['FILENAME'])) {
     
           $userattachments[] = array("filename" => $row['FILENAME'],
-                                     "filesize" => filesize($attachments_dir. '/'. $row['FILENAME']));
+                                     "filesize" => filesize($attachments_dir. '/'. $row['FILENAME']),
+                                     "aid"      => $row['AID']);
+                                     
         }else {
         
           delete_attachment($uid, $row['FILENAME']);
@@ -171,7 +173,27 @@ function get_attachment_id($tid, $pid) {
       
     }
     
-}    
+}
+
+function get_message_tidpid($aid) {
+
+    $db = db_connect();
+    
+    $sql = "select * from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
+    $result = db_query($sql, $db);
+    
+    if (db_num_rows($result) > 0) {
+    
+      $tidpid = db_fetch_array($result);
+      return $tidpid['TID']. ".". $tidpid['PID'];
+      
+    }else{
+    
+      return "";
+      
+    }
+    
+}
 
 function download_attachment($uid, $filename) {
 

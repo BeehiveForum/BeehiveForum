@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.67 2003-09-03 15:45:49 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.68 2003-09-03 16:19:26 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -1188,7 +1188,7 @@ function poll_vote($tid, $vote_array)
       foreach ($vote_array as $user_vote) {
 
         $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES + 1 ";
-        $sql.= "where TID = $tid and OPTION_ID = $vote";
+        $sql.= "where TID = $tid and OPTION_ID = $user_vote";
 
         $result = db_query($sql, $db_poll_vote);
       }

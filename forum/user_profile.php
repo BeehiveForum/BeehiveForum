@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.45 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.46 2004-01-07 20:35:36 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -97,7 +97,7 @@ if (bh_session_get_value('UID') > 0) {
 }
 
 echo "</h2></td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: ", user_get_last_logon_time($uid), "&nbsp;</td>\n";
 echo "          </tr>\n";
 
 if ($age = user_get_age($uid)) {

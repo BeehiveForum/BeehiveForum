@@ -23,22 +23,32 @@ USA
 
 include_once("./beautifier/language_definitions.inc.php");
 include_once("./beautifier/Beautifier/Init.php");
+
 global $BEAUT_PATH;
+
 include_once("$BEAUT_PATH/Output/Output_HTML.php");
 
 $beaut_highlighter = array();
+
 $_beaut_out = new Output_HTML();
 $_beaut_done = array();
+
 if (!isset($beaut_langs)) $beaut_langs = array();
+
 foreach($beaut_langs as $_beaut_k => $_beaut_v) {
-	$_beaut_k = strtolower($_beaut_k);
-	if (!isset($_beaut_done[$_beaut_v])) {
-		$_beaut_done[$_beaut_v] = $_beaut_k;
-		include_once("$BEAUT_PATH/HFile/$_beaut_v.php");
-		$beaut_highlighter[$_beaut_k] = new Core(new $_beaut_v(), $_beaut_out);
-	} else {
-		$beaut_highlighter[$_beaut_k] = $beaut_highlighter[$_beaut_done[$_beaut_v]];
-	}
+
+    $_beaut_k = strtolower($_beaut_k);
+
+    if (!isset($_beaut_done[$_beaut_v])) {
+
+        $_beaut_done[$_beaut_v] = $_beaut_k;
+        include_once("$BEAUT_PATH/HFile/$_beaut_v.php");
+        $beaut_highlighter[$_beaut_k] = new Core(new $_beaut_v(), $_beaut_out);
+
+    }else {
+
+        $beaut_highlighter[$_beaut_k] = $beaut_highlighter[$_beaut_done[$_beaut_v]];
+    }
 }
 
 unset($_beaut_k);

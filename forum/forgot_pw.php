@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.36 2004-06-03 08:54:45 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.37 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -64,7 +64,7 @@ if (isset($_POST['submit'])) {
 
         $logon = strtoupper($_POST['logon']);
 
-	if (email_send_pw_reminder($logon)) {
+        if (email_send_pw_reminder($logon)) {
 
             html_draw_top();
 
@@ -80,8 +80,8 @@ if (isset($_POST['submit'])) {
 
         }else {
 
-	    $error_html = "<h2>{$lang['couldnotsendpasswordreminder']}</h2>\n";
-	}
+           $error_html = "<h2>{$lang['couldnotsendpasswordreminder']}</h2>\n";
+        }
 
     }else {
 

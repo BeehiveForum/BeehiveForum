@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.27 2004-06-19 11:30:34 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.28 2004-10-27 22:33:17 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -44,7 +44,7 @@ function ip_check()
                 echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
             }
 
-	    exit;
+            exit;
         }
     }
 }

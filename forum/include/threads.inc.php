@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.138 2004-09-16 12:00:01 tribalonline Exp $ */
+/* $Id: threads.inc.php,v 1.139 2004-10-27 22:33:17 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -807,7 +807,7 @@ function threads_process_list($resource_id, $allow_ignored_completely = false)
 
         // Loop through the results and construct an array to return
 
-        for($i = 0; $i < $max; $i++){
+        for ($i = 0; $i < $max; $i++) {
 
             $thread = db_fetch_array($resource_id);
 
@@ -817,48 +817,55 @@ function threads_process_list($resource_id, $allow_ignored_completely = false)
             // and there are currently no replies (length of 1) then we don't
             // want to display it.
 
-            if(!($thread['relationship'] & USER_IGNORED_COMPLETELY) || $allow_ignored_completely)
-            {
-				if (!($thread['relationship'] & USER_IGNORED) || $thread['length'] > 1 || $thread['fid'] == $folder) {
+            if (!($thread['relationship'] & USER_IGNORED_COMPLETELY) || $allow_ignored_completely) {
 
-					// If this folder ID has not been encountered before,
-					// make it the next folder in the order to be displayed
+                if (!($thread['relationship'] & USER_IGNORED) || $thread['length'] > 1 || $thread['fid'] == $folder) {
 
-					if (!is_array($folder_order)) {
-						$folder_order = array($thread['fid']);
-					}else{
-						if (!in_array($thread['fid'], $folder_order)) {
-							$folder_order[] = $thread['fid'];
-						}
-					}
+                    // If this folder ID has not been encountered before,
+                    // make it the next folder in the order to be displayed
 
-					if (!is_array($lst)) $lst = array();
+                    if (!is_array($folder_order)) {
 
-					$lst[$i]['tid'] = $thread['tid'];
-					$lst[$i]['fid'] = $thread['fid'];
-					$lst[$i]['title'] = _stripslashes($thread['title']);
-					$lst[$i]['length'] = $thread['length'];
-					$lst[$i]['poll_flag'] = $thread['poll_flag'];
+                        $folder_order = array($thread['fid']);
 
-					// Special case - last_read may be NULL, in which case
-					// PHP will complain that the array index doesn't exist
-					// if we don't do this
+                    }else {
 
-					if (isset($thread['last_read'])) {
-						$lst[$i]['last_read'] = $thread['last_read'];
-					}else{
-						$lst[$i]['last_read'] = 0;
-					}
+                        if (!in_array($thread['fid'], $folder_order)) {
 
-					$lst[$i]['interest'] = isset($thread['interest']) ? $thread['interest'] : 0;
-					$lst[$i]['modified'] = $thread['modified'];
-					$lst[$i]['logon'] = $thread['logon'];
-					$lst[$i]['nickname'] = $thread['nickname'];
-					$lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
-					$lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
-					$lst[$i]['sticky'] = isset($thread['sticky']) ? $thread['sticky'] : 0;
-				}
-			}
+                            $folder_order[] = $thread['fid'];
+                        }
+                    }
+
+                    if (!is_array($lst)) $lst = array();
+
+                    $lst[$i]['tid'] = $thread['tid'];
+                    $lst[$i]['fid'] = $thread['fid'];
+                    $lst[$i]['title'] = _stripslashes($thread['title']);
+                    $lst[$i]['length'] = $thread['length'];
+                    $lst[$i]['poll_flag'] = $thread['poll_flag'];
+
+                    // Special case - last_read may be NULL, in which case
+                    // PHP will complain that the array index doesn't exist
+                    // if we don't do this
+
+                    if (isset($thread['last_read'])) {
+
+                        $lst[$i]['last_read'] = $thread['last_read'];
+
+                    }else {
+
+                        $lst[$i]['last_read'] = 0;
+                    }
+
+                    $lst[$i]['interest'] = isset($thread['interest']) ? $thread['interest'] : 0;
+                    $lst[$i]['modified'] = $thread['modified'];
+                    $lst[$i]['logon'] = $thread['logon'];
+                    $lst[$i]['nickname'] = $thread['nickname'];
+                    $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
+                    $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
+                    $lst[$i]['sticky'] = isset($thread['sticky']) ? $thread['sticky'] : 0;
+                }
+            }
         }
     }
 
@@ -871,7 +878,6 @@ function threads_process_list($resource_id, $allow_ignored_completely = false)
 
 function threads_get_folder_msgs()
 {
-
     $folder_msgs = array();
     $db_threads_get_folder_msgs = db_connect();
 
@@ -906,7 +912,6 @@ function threads_any_unread()
 
 function threads_mark_all_read()
 {
-
     $uid = bh_session_get_value('UID');
 
     $db_threads_mark_all_read = db_connect();
@@ -964,7 +969,6 @@ function threads_mark_read($tidarray)
 
 function threads_draw_discussions_dropdown($mode)
 {
-
     global $lang;
 
     if (bh_session_get_value('UID') == 0) {
@@ -978,7 +982,7 @@ function threads_draw_discussions_dropdown($mode)
                         $lang['unreadtoday'],$lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
                         $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
                         $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
- 
+
         echo form_dropdown_array("mode",range(0,16),$labels,$mode,"onchange=\"submit()\""). "\n";
 
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.41 2004-08-12 23:54:24 tribalonline Exp $ */
+/* $Id: edit_wordfilter.php,v 1.42 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -115,37 +115,41 @@ $uid = bh_session_get_value('UID');
 
 if (isset($_POST['submit'])) {
 
-	// the /../e preg modifier allows PHP code to be used in the replacement - bad!
-	function filter_limit_preg ($matches) {
-		return preg_replace("/e/i", "", $matches[0]);
-	}
-
     user_clear_word_filter();
 
     $filter_count = 0;
 
     if (isset($_POST['match']) && is_array($_POST['match'])) {
+
         foreach ($_POST['match'] as $key => $value) {
+
             if ($filter_count < 20) {
+
                 $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
-				if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $_POST['match'][$key])) {
-					$_POST['match'][$key] = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $_POST['match'][$key]);
-				}
+
+                if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $_POST['match'][$key])) {
+                    $_POST['match'][$key] = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $_POST['match'][$key]);
+                }
+
                 if (isset($_POST['replace'][$key]) && trim(strlen($_POST['replace'][$key])) > 0) {
                     user_add_word_filter($_POST['match'][$key], $_POST['replace'][$key], $filter_option);
                 }else {
                     user_add_word_filter($_POST['match'][$key], "", $filter_option);
                 }
             }
+
             $filter_count++;
         }
     }
 
     if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0 && $filter_count < 20) {
+
         $filter_option = (isset($_POST['new_filter_option'])) ? $_POST['new_filter_option'] : 0;
-		if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $_POST['new_match'])) {
-			$_POST['new_match'] = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $_POST['new_match']);
-		}
+
+        if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $_POST['new_match'])) {
+            $_POST['new_match'] = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $_POST['new_match']);
+        }
+
         if (isset($_POST['new_replace']) && strlen(trim($_POST['new_replace'])) > 0) {
             user_add_word_filter($_POST['new_match'], $_POST['new_replace'], $filter_option);
         }else {
@@ -166,6 +170,7 @@ if (isset($_POST['submit'])) {
     }
 
     user_update_prefs($uid, $user_prefs);
+
     if (!isset($status_text)) $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
 
 }elseif (isset($_POST['delete'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.19 2004-06-28 21:51:03 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.20 2004-10-27 22:33:18 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -125,6 +125,13 @@ function apply_wordfilter($content)
     }
 
     return $content;
+}
+
+// the /../e preg modifier allows PHP code to be used in the replacement - bad!
+
+function filter_limit_preg ($matches)
+{
+    return preg_replace("/e/i", "", $matches[0]);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.13 2004-08-08 21:11:55 tribalonline Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.14 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -254,7 +254,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-	$group_permissions = perm_get_group_permissions($gid);
+    $group_permissions = perm_get_group_permissions($gid);
 }
 
 echo "<p>&nbsp;</p>\n";

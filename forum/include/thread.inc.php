@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.55 2004-05-15 14:43:42 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.56 2004-10-27 22:33:17 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -330,7 +330,7 @@ function thread_delete_by_user($tid, $uid)
         $sql.= "SET CONTENT = NULL WHERE TID = '{$row['TID']}' ";
         $sql.= "AND PID = '{$row['PID']}'";
 
-	$result = db_query($sql, $db_thread_delete_by_user);
+        $result = db_query($sql, $db_thread_delete_by_user);
     }
 
     return $result;

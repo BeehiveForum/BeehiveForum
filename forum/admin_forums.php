@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.24 2004-08-17 20:38:00 rowan_hill Exp $ */
+/* $Id: admin_forums.php,v 1.25 2004-10-27 22:33:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -124,14 +124,14 @@ if (isset($_POST['submit'])) {
             $new_password = false;
 
             if (isset($_POST['t_password'][$fid]) && strlen(trim($_POST['t_password'][$fid])) > 0) {
-	        $new_password = $_POST['t_password'][$fid];
+                $new_password = $_POST['t_password'][$fid];
             }
 
-	    if ($new_password) {
+            if ($new_password) {
                 forum_update_access($fid, $new_access, $new_password);
-	    }else {
-	        forum_update_access($fid, $new_access);
-	    }
+            }else {
+                forum_update_access($fid, $new_access);
+            }
         }
     }
 
@@ -144,25 +144,25 @@ if (isset($_POST['submit'])) {
             $valid = false;
         }
 
-	if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
-	    $new_name = trim(_stripslashes($_POST['t_name_new']));
-	}else {
-	    $new_name = "";
-	}
+        if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
+            $new_name = trim(_stripslashes($_POST['t_name_new']));
+        }else {
+            $new_name = "";
+        }
 
-	if (isset($_POST['t_access_new']) && is_numeric($_POST['t_access_new'])) {
-	    $new_access = $_POST['t_access_new'];
-	}else {
-	    $new_access = 0;
-	}
+        if (isset($_POST['t_access_new']) && is_numeric($_POST['t_access_new'])) {
+            $new_access = $_POST['t_access_new'];
+        }else {
+            $new_access = 0;
+        }
 
-	if ($valid) {
+        if ($valid) {
             if ($new_fid = forum_create($new_webtag, $new_name, $new_access)) {
-	        $message_html = "<h2>{$lang['successfullycreatedforum']} '$new_webtag'</h2>\n";
-	    }else {
-	        $message_html = "<h2>{$lang['failedtocreateforum_1']} '$new_webtag'. {$lang['failedtocreateforum_2']}</h2>\n";
-	    }
-	}
+                $message_html = "<h2>{$lang['successfullycreatedforum']} '$new_webtag'</h2>\n";
+            }else {
+                $message_html = "<h2>{$lang['failedtocreateforum_1']} '$new_webtag'. {$lang['failedtocreateforum_2']}</h2>\n";
+            }
+        }
     }
 
 }elseif (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
@@ -269,18 +269,18 @@ if (sizeof($forums_array) > 0) {
         if ($forum['ACCESS_LEVEL'] == 1) {
             echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_forum_access.php?fid={$forum['FID']}'\""), "</td>\n";
         }else if ($forum['ACCESS_LEVEL'] == 2) {
-	    echo "                  <td align=\"left\">", form_input_password("t_password[{$forum['FID']}]", ""), "</td>\n";
+            echo "                  <td align=\"left\">", form_input_password("t_password[{$forum['FID']}]", ""), "</td>\n";
         }else {
             echo "                  <td align=\"center\">&nbsp;</td>\n";
         }
 
         echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", $lang['deleteforum']), "</td>\n";
 
-	if ($forum['DEFAULT_FORUM'] == 1) {
-  	    echo "                  <td align=\"left\">", form_submit("t_default[0]", $lang['unsetdefault']), "</td>\n";
-	}else {
-  	    echo "                  <td align=\"left\">", form_submit("t_default[{$forum['FID']}]", $lang['makedefault']), "</td>\n";
-	}
+        if ($forum['DEFAULT_FORUM'] == 1) {
+            echo "                  <td align=\"left\">", form_submit("t_default[0]", $lang['unsetdefault']), "</td>\n";
+        }else {
+            echo "                  <td align=\"left\">", form_submit("t_default[{$forum['FID']}]", $lang['makedefault']), "</td>\n";
+        }
 
         echo "                </tr>\n";
     }

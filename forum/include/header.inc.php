@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.17 2004-08-14 15:11:45 hodcroftcj Exp $ */
+/* $Id: header.inc.php,v 1.18 2004-10-27 22:33:17 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 include_once("./include/html.inc.php");
@@ -41,19 +41,19 @@ function header_no_cache()
 
 function header_redirect($uri)
 {
- 	header("Request-URI: $uri");
-	header("Content-Location: $uri");
-	header("Location: $uri");
-	exit;
+    header("Request-URI: $uri");
+    header("Content-Location: $uri");
+    header("Location: $uri");
+    exit;
 }
 
 function header_redirect_cookie($uri)
 {
     // Microsoft-IIS bug prevents redirect at same time as setting cookies.
 
-	if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
-	   	header_redirect($uri);
-	} else {
+        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+                header_redirect($uri);
+        } else {
         html_draw_top();
 
         // Try a Javascript redirect

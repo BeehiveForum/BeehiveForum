@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.70 2004-07-02 20:08:41 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.71 2004-10-27 22:33:17 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -217,47 +217,47 @@ function delete_attachment($hash)
 
         if (($row['UID'] == $uid) || perm_is_moderator($row['FID'])) {
 
-   	    // Mark the related post as edited
+            // Mark the related post as edited
 
-  	    if (isset($row['TID']) && isset($row['PID'])) {
+            if (isset($row['TID']) && isset($row['PID'])) {
 
-	        post_add_edit_text($row['TID'], $row['PID']);
+                post_add_edit_text($row['TID'], $row['PID']);
 
-	        if (perm_is_moderator($row['FID'])) {
+                if (perm_is_moderator($row['FID'])) {
 
-	            admin_addlog(0, 0, $row['TID'], $row['TID'], 0, 0, 34);
-	        }
-	    }
+                    admin_addlog(0, 0, $row['TID'], $row['TID'], 0, 0, 34);
+                }
+            }
 
-	    // Delete the attachment record from the database
+            // Delete the attachment record from the database
 
-	    $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-	    $sql.= "WHERE HASH = '$hash'";
+            $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+            $sql.= "WHERE HASH = '$hash'";
 
-	    $result = db_query($sql, $db_delete_attachment);
+            $result = db_query($sql, $db_delete_attachment);
 
-	    // Check to see if there are anymore attachments with the same AID
+            // Check to see if there are anymore attachments with the same AID
 
             $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-	    $sql.= "WHERE AID = '{$row['AID']}'";
+            $sql.= "WHERE AID = '{$row['AID']}'";
 
-	    $result = db_query($sql, $db_delete_attachment);
+            $result = db_query($sql, $db_delete_attachment);
 
-	    // No more attachments connected to the AID, so we can remove it from
-	    // the PAI database.
+            // No more attachments connected to the AID, so we can remove it from
+            // the PAI database.
 
-	    if (db_num_rows($result) == 0) {
+            if (db_num_rows($result) == 0) {
 
-	        $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
-	        $sql.= "WHERE AID = '{$row['AID']}'";
+                $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
+                $sql.= "WHERE AID = '{$row['AID']}'";
 
-	        $result = db_query($sql, $db_delete_attachment);
-	    }
+                $result = db_query($sql, $db_delete_attachment);
+            }
 
-	    // Finally delete the file
+            // Finally delete the file
 
             @unlink("$attachment_dir/$hash");
-	}
+        }
     }
 }
 
@@ -330,7 +330,7 @@ function get_folder_fid($aid)
     if (db_num_rows($result) > 0) {
 
         $folder_array = db_fetch_array($result);
-	return $folder_array['FID'];
+        return $folder_array['FID'];
     }
 
     return false;
@@ -417,7 +417,7 @@ function get_attachment_by_hash($hash)
     $result = db_query($sql, $db_get_attachment_by_hash);
 
     if (db_num_rows($result)) {
-	return db_fetch_array($result);
+        return db_fetch_array($result);
     }else {
         return false;
     }

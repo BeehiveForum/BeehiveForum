@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.35 2004-09-14 11:48:00 tribalonline Exp $ */
+/* $Id: stats.inc.php,v 1.36 2004-10-27 22:33:17 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -121,12 +121,17 @@ function get_active_users()
     $result = db_query($sql, $db_get_active_users);
 
     while ($row = db_fetch_array($result)) {
-		$anon = 0;
-		if (isset($row['ANON_LOGON']) && strlen($row['ANON_LOGON']) > 0) {
-			$anon = $row['ANON_LOGON'];
-		} else if (isset($row['ANON_LOGON_GLOBAL'])) {
-			$anon = $row['ANON_LOGON_GLOBAL'];
-		}
+
+        $anon = 0;
+
+        if (isset($row['ANON_LOGON']) && strlen($row['ANON_LOGON']) > 0) {
+
+                $anon = $row['ANON_LOGON'];
+
+        }else if (isset($row['ANON_LOGON_GLOBAL'])) {
+
+                $anon = $row['ANON_LOGON_GLOBAL'];
+        }
 
         if ($row['UID'] == 0) {
 

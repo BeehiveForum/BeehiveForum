@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.80 2004-04-19 02:02:11 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.81 2004-04-20 21:17:59 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -62,6 +62,11 @@ $cookie_domain = "";
 // you could set the $cookie_domain value to "mybeehiveforum.net"
 // and the cookies for both the logon page and the main session cookies
 // will work for both URLs.
+//
+// Alternatively to force Beehive's cookies to only be valid at the
+// second domain in the above list you could set the $cookie_domain
+// value as "www.mybeehiveforum.net/forum/" and your users will then
+// be unable to logon from anywhere but that address.
 //
 // WARNING: Do not change this if you do not understand what it does.
 //          Setting it to an invalid or incorrect value may make it

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.76 2004-04-17 17:39:27 decoyduck Exp $ */
+/* $Id: index.php,v 1.77 2004-04-20 21:18:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -40,8 +40,6 @@ include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
-
-header_no_cache();
 
 if (!isset($_COOKIE['bh_remember_username'])) {
     bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
@@ -66,11 +64,11 @@ if ($user_sess = bh_session_check()) {
     // User is actually logged in. Show them the relevant frameset.
 
     // Fetch the forum settings
-    
+
     $webtag = get_webtag();
 
     // Calculate how tall the nav frameset should be based on the user's fontsize.
-    
+
     $navsize = bh_session_get_value('FONT_SIZE');
     $navsize = ($navsize) ? $navsize * 2 : 20;
 
@@ -171,7 +169,7 @@ if ($user_sess = bh_session_check()) {
         bh_session_init(0); // auto login as guest
 
         // Fetch the forum settings
-    
+
         $webtag = get_webtag();
 
         echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
@@ -228,12 +226,12 @@ if ($user_sess = bh_session_check()) {
     }else {
 
         // Fetch the forum settings
-    
+
         $webtag = get_webtag();
 
         echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
         echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-     
+
         if (isset($_GET['final_uri'])) {
 
             echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=", rawurlencode($_GET['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";

@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.312 2004-12-27 00:20:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.313 2005-01-24 23:07:43 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
+include_once("./include/banned.inc.php");
 include_once("./include/fixhtml.inc.php");
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -563,8 +564,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 }
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
-                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+
+                    if (ip_is_banned($message['IPADDRESS'])) {
+
+                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;ret=messages.php%3Fwebtag%3D$webtag%26amp%3Bmsg%3D$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</span>";
+
+                    }else {
+
+                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;ret=messages.php%3Fwebtag%3D$webtag%26amp%3Bmsg%3D$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a>&nbsp;</span>";
+                    }
+
                 }else {
+
                     echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
                 }
 

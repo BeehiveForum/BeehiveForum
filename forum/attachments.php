@@ -131,8 +131,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
 <form name="f_attach" enctype="multipart/form-data" method="post" action="attachments.php?aid=<?php echo $HTTP_GET_VARS['aid']; ?>">
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
-    <td width="300" class="postbody" valign="top">1. Enter filename to upload :</td>
-    <td class="postbody"><?php echo form_field('userfile', '', '', 0, 'file'); ?></td>
+    <td width="200" class="postbody" valign="top">1. Enter filename to upload :</td>
+    <td class="postbody"><?php echo form_field('userfile', '', 45, 0, 'file'); ?></td>
   </tr>
   <tr>
     <td class="postbody">&nbsp;</td>

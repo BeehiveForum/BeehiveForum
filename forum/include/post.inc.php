@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.44 2003-08-30 00:34:28 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.45 2003-08-30 02:13:30 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -30,7 +30,7 @@ require_once("./include/forum.inc.php");
 function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 {
     $db_post_create = db_connect();
-    $content = _addslashes($content);
+    $content = addslashes($content);
 
     $sql = "insert into " . forum_table("POST");
     $sql.= " (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED) ";
@@ -84,7 +84,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
 function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = false)
 {
-    $title = _addslashes(_htmlentities($title));
+    $title  = addslashes(_htmlentities($title));
     $closed = $closed ? "NOW()" : "NULL";
 
     $db_post_create_thread = db_connect();

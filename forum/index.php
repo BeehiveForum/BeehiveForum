@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.73 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: index.php,v 1.74 2004-04-11 22:12:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -181,6 +181,7 @@ if ($user_sess = bh_session_check()) {
 
         echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
         echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+	echo "<frame src=\"./nav.php?webtag=$webtag\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
 	if ($webtag) {
 

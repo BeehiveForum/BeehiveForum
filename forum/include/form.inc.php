@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.27 2003-08-01 23:52:54 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.28 2003-08-04 22:44:54 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -216,4 +216,16 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 
     return $output;
 }
+
+function form_input_hidden_array($name, $value)
+{
+    if (is_array($value)) {
+        foreach ($value as $array_key => $array_value) {
+            form_input_hidden_array($name, $array_value);
+        }
+    }else {
+        form_input_hidden($name, $value);
+    }
+}
+
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.109 2003-08-04 13:16:48 hodcroftcj Exp $ */
+/* $Id: post.php,v 1.110 2003-08-04 22:44:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -193,6 +193,12 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
 
         if ($newthread) {
+
+            if (isset($HTTP_POST_VARS['t_closed'])) $t_closed = $HTTP_POST_VARS['t_closed'];
+            if (isset($HTTP_POST_VARS['old_t_closed'])) $old_t_closed = $HTTP_POST_VARS['old_t_closed'];
+            if (isset($HTTP_POST_VARS['t_sticky'])) $t_sticky = $HTTP_POST_VARS['t_sticky'];
+            if (isset($HTTP_POST_VARS['old_t_sticky'])) $old_t_sticky = $HTTP_POST_VARS['old_t_sticky'];
+
             if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
                 $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
                 $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";

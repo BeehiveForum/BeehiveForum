@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.64 2004-05-17 17:22:33 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.65 2004-05-17 21:56:24 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -236,14 +236,17 @@ function folder_get_all()
     $result = db_query($sql, $db_folder_get_all);
 
     if (db_num_rows($result)) {
+
         $folder_list = array();
+
         while ($row = db_fetch_array($result)) {
-            $folder_list[] = $row;
+            $folder_list[$row['FID']] = $row;
         }
+
         return $folder_list;
-    }else {
-        return array();
     }
+
+    return false;
 }
 
 function folder_get($fid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.126 2004-09-13 20:45:32 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.127 2004-09-14 11:59:25 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -485,7 +485,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
     $uri = href_remove_query_keys($uri, 'page');
 
-    if ($page_count > 0) {
+    if ($page_count > 1) {
 
         echo "<span class=\"pagenum_text\">{$lang['pages']} (", ($page_count + 1), "): ";
 

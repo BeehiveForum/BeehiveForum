@@ -21,10 +21,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.2 2004-03-12 17:16:58 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.3 2004-03-12 17:30:57 decoyduck Exp $ */
 
 $include_files_dir   = "forum/include";
-$include_files_array = array();
+
+$include_files_array = array("$db_server"                 => "config.inc.php", "$db_username"            => "config.inc.php",
+                             "$db_password"               => "config.inc.php", "$db_database"            => "config.inc.php",
+                             "$forum_name"                => "config.inc.php", "$forum_email"            => "config.inc.php",
+                             "$default_style"             => "config.inc.php", "$default_language"       => "config.inc.php",
+                             "$show_friendly_errors"      => "config.inc.php", "$cookie_domain"          => "config.inc.php",
+                             "$show_stats"                => "config.inc.php", "$show_links"             => "config.inc.php",
+                             "$auto_logon"                => "config.inc.php", "$show_pms"               => "config.inc.php",
+                             "$pm_allow_attachments"      => "config.inc.php", "$maximum_post_length"    => "config.inc.php",
+                             "$allow_post_editing"        => "config.inc.php", "$post_edit_time"         => "config.inc.php",
+                             "$allow_polls"               => "config.inc.php", "$search_min_word_length" => "config.inc.php",
+                             "$attachments_enabled"       => "config.inc.php", "$attachment_dir"         => "config.inc.php",
+                             "$attachments_show_deleted"  => "config.inc.php", "$attachment_allow_embed" => "config.inc.php",
+                             "$attachment_use_old_method" => "config.inc.php", "$guest_account_enabled"  => "config.inc.php",
+                             "$session_cutoff"            => "config.inc.php", "$active_sess_cutoff"     => "config.inc.php",
+                             "$gzip_compress_output"      => "config.inc.php", "$gzip_compress_output"   => "config.inc.php");
+                             
  
 $source_files_dir_array = array("forum", "forum/include");
 $source_files_array     = array();

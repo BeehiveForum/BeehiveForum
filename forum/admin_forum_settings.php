@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.2 2004-03-17 16:15:54 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.3 2004-03-17 16:24:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -64,6 +64,35 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 }
 
 $error_html = "";
+
+// Languages
+
+$available_langs = lang_get_available(); // get list of available languages
+
+// Styles
+
+$available_styles = array();
+$style_names = array();
+
+if ($dir = @opendir('styles')) {
+    while (($file = readdir($dir)) !== false) {
+        if (is_dir("styles/$file") && $file != '.' && $file != '..') {
+            if (@file_exists("./styles/$file/desc.txt")) {
+                if ($fp = fopen("./styles/$file/desc.txt", "r")) {
+                    $available_styles[] = $file;
+                    $style_names[] = _htmlentities(fread($fp, filesize("styles/$file/desc.txt")));
+                    fclose($fp);
+                }else {
+                    $available_styles[] = $file;
+                    $style_names[] = $file;
+                }
+            }
+        }
+    }
+    closedir($dir);
+}
+
+array_multisort($style_names, $available_styles);
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
@@ -116,11 +145,18 @@ echo "                  <td colspan=\"2\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">Default Style:</td>\n";
-echo "                  <td>", form_input_text("default_style", (isset($forum_settings['default_style']) ? $forum_settings['default_style'] : ""), 45, 32), "&nbsp;</td>\n";
+      
+foreach ($available_styles as $key => $style) {
+    if (strtolower($style) == strtolower($forum_settings['default_style'])) {
+        break;
+    }
+}
+      
+echo "                  <td>", form_dropdown_array("default_style", $available_styles, $style_names, $available_styles[$key]), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">Default Language:</td>\n";
-echo "                  <td>", form_input_text("default_language", (isset($forum_settings['default_language']) ? $forum_settings['default_language'] : ""), 45, 32), "&nbsp;</td>\n";
+echo "                  <td>", form_dropdown_array("default_language", $available_langs, $available_langs, (isset($forum_settings['default_language']) ? $forum_settings['default_language'] : "en")), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

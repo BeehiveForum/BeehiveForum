@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.81 2004-06-13 20:02:10 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.82 2004-07-17 11:02:13 hodcroftcj Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -377,11 +377,11 @@ function check_ddkey($ddkey)
 
 class MessageText {
 
-	var $html = "";
-	var $text = "";
-	var $original_text = "";
-	var $diff = false;
-	var $emoticons = true;
+	private $html = "";
+	private $text = "";
+	private $original_text = "";
+	private $diff = false;
+	private $emoticons = true;
 
 	function MessageText ($html = 0, $content = "", $emoticons = true) {
 		$this->diff = false;

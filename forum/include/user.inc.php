@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.77 2003-08-01 23:52:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.78 2003-08-02 18:42:38 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -181,29 +181,23 @@ function user_check_logon($uid, $logon, $md5pass)
 {
     if ($uid > 0) {
 
-      $db_user_check_logon = db_connect();
+        $db_user_check_logon = db_connect();
 
-      $sql = "SELECT STATUS FROM ". forum_table("USER"). " WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
-      $result = db_query($sql, $db_user_check_logon);
+        $sql = "SELECT STATUS FROM ". forum_table("USER"). " WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
+        $result = db_query($sql, $db_user_check_logon);
 
-      if (!db_num_rows($result)) {
-     return false;
-      }else {
-
-     list($status) = db_fetch_array($result);
-
-     if ($status & USER_PERM_SPLAT) {
-       return false;
-     }else {
-       return true;
+        if (db_num_rows($result)) {
+            $user_status = db_fetch_array($result);
+	    if ($user_status['STATUS'] & USER_PERM_SPLAT) {
+                header("HTTP/1.0 500 Internal Server Error");
+                exit;
+	    }
+	}else {
+	    return false;
+	}
      }
-      }
 
-    }else {
-
-      return true;
-
-    }
+     return true;
 }
 
 function user_get($uid, $hash = false)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.59 2003-11-21 18:57:54 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.60 2003-11-27 21:51:50 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -46,6 +46,10 @@ function bh_session_check()
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
 
+    // Current server time.
+
+    $current_time = time();
+
     // Check the current user's cookie data. This is the main session
     // data that Beehive relies on. We only store something in the
     // SESSIONS table in the database for user tracking purposes, e.g:
@@ -55,28 +59,39 @@ function bh_session_check()
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
-	$sql = "SELECT SESSIONS.SESSID, USER.UID, USER.LOGON, USER.PASSWD FROM ". forum_table("SESSIONS"). " SESSIONS ";
+	$sql = "SELECT SESSIONS.SESSID, SESSIONS.TIME, USER.UID, USER.LOGON, ";
+	$sql.= "USER.PASSWD FROM ". forum_table("SESSIONS"). " SESSIONS ";
         $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
 	$result = db_query($sql, $db_bh_session_check);
 
-	if (db_num_rows($result)) {
+	if (db_num_rows($result) > 0) {
 
 	    $user_sess_check = db_fetch_array($result, MYSQL_ASSOC);
 
+	    if (!isset($user_sess_check['UID']) || (isset($user_sess_check['UID']) && (empty($user_sess_check['UID']) || $user_sess_check['UID'] == 0))) {
+	        
+	        $user_sess_check['UID']    = 0;
+                $user_sess_check['LOGON']  = 'GUEST';
+                $user_sess_check['PASSWD'] = md5('GUEST');
+	    }
+
             if (user_check_logon($user_sess_check['UID'], $user_sess_check['LOGON'], $user_sess_check['PASSWD'])) {
 
-                // Everything checks out OK, update the user's SESSION entry
-                // in the database.
+                // Everything checks out OK. If the user's session is older
+                // then 5 minutes we should update it.
 
-                $sql = "UPDATE ". forum_table("SESSIONS"). " ";
-                $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
-                $sql.= "WHERE SESSID = {$user_sess_check['SESSID']}";
+		if ($current_time - $user_sess_check['TIME'] > 300) {
 
-                db_query($sql, $db_bh_session_check);
+                    $sql = "UPDATE ". forum_table("SESSIONS"). " ";
+                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
+                    $sql.= "WHERE SESSID = {$user_sess_check['SESSID']}";
 
-                if ($show_stats) update_stats();
+                    db_query($sql, $db_bh_session_check);
+
+                    if ($show_stats) update_stats();
+		}
 
                 return true;
             }
@@ -162,9 +177,10 @@ function bh_session_init($uid)
 	$result = db_query($sql, $db_bh_session_init);
     }
 
-    // Generate a unique random MD5 hash for the user's cookie.
+    // Generate a unique random MD5 hash for the user's cookie
+    // from their IP Address.
 
-    $user_hash = md5(uniqid(rand()));
+    $user_hash = md5(uniqid($ipaddress));
 
     $sql = "INSERT INTO ". forum_table("SESSIONS"). " (HASH, UID, IPADDRESS, TIME) ";
     $sql.= "VALUES ('$user_hash', '$uid', '$ipaddress', NOW())";

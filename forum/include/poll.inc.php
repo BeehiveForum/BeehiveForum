@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.76 2003-11-27 13:29:06 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.77 2003-11-27 21:51:50 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -174,6 +174,22 @@ function poll_get($tid)
 
     if (!isset($polldata['CLOSES'])) {
         $polldata['CLOSES'] = 0;
+    }
+
+    if (!isset($polldata['CHANGEVOTE'])) {
+        $polldata['CHANGEVOTE'] = 1;
+    }
+
+    if (!isset($polldata['POLLTYPE'])) {
+        $polldata['POLLTYPE'] = 0;
+    }
+
+    if (!isset($polldata['SHOWRESULTS'])) {
+        $polldata['SHOWRESULTS'] = 1;
+    }
+
+    if (!isset($polldata['VOTETYPE'])) {
+        $polldata['VOTETYPE'] = 0;
     }
 
     return $polldata;

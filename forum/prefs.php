@@ -112,7 +112,7 @@ if(isset($HTTP_POST_VARS['submit'])){
         
         bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
         
-        header_redirect("prefs.php");
+        header_redirect("prefs.php?updated=true");
                         
     }
     
@@ -124,9 +124,15 @@ user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'], $user_sig['CONTENT'], $user_sig['
 
 html_draw_top();
 
+echo "<h1>User Preferences</h1>\n";
+
+if(!empty($error_html)) {
+  echo $error_html;
+}elseif (isset($HTTP_GET_VARS['updated'])) {
+  echo "<h2>Preferences were successfully updated.</h2>";  
+}
+
 ?>
-<h1>User Preferences</h1>
-<?php if(!empty($error_html)) echo $error_html; ?>
 <div class="postbody">
   <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
     <table class="posthead" width="400">

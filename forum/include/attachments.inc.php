@@ -46,7 +46,8 @@ function get_attachments($uid, $aid) {
         $userattachments[] = array("filename" => rawurldecode($row['FILENAME']),
                                    "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
                                    "aid"      => $row['AID'],
-                                   "hash"     => $row['HASH']);
+                                   "hash"     => $row['HASH'],
+                                   "mimetype" => $row['MIMETYPE']);
       }
                                  
     }
@@ -75,7 +76,8 @@ function get_all_attachments($uid, $aid) {
         $userattachments[] = array("filename" => rawurldecode($row['FILENAME']),
                                    "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
                                    "aid"      => $row['AID'],
-                                   "hash"     => $row['HASH']);
+                                   "hash"     => $row['HASH'],
+                                   "mimetype" => $row['MIMETYPE']);
       }
       
     }
@@ -158,7 +160,7 @@ function get_attachment_id($tid, $pid) {
       
     }else{
     
-      return -1;
+      return false;
       
     }
     
@@ -192,6 +194,6 @@ function get_num_attachments($aid) {
     $result = db_query($sql, $db);
     return db_num_rows($result);
     
-}
+}  
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.57 2005-03-13 20:18:18 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.58 2005-03-13 20:26:20 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -86,7 +86,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
     list($admin_log_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT ADMIN_LOG.ID, UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED, ";
-    $sql.= "ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.DATA, USER.LOGON, USER.NICKNAME ";
+    $sql.= "ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, USER.LOGON, USER.NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";

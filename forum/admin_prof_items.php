@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.72 2005-03-13 20:15:21 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.73 2005-03-13 20:26:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -188,7 +188,7 @@ if (isset($_POST['submit'])) {
     list($piid) = array_keys($_POST['t_delete']);
 
     $t_section_name = profile_section_get_name($psid);
-    $t_item_name = isset($_POST['t_old_name']) ? $_POST['t_old_name'] : "";
+    $t_item_name = isset($_POST['t_old_name'][$piid]) ? $_POST['t_old_name'][$piid] : "";
 
     profile_item_delete($piid);
 

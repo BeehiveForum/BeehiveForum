@@ -80,8 +80,11 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     }else {
 
-        $valid = false;
-        $error_html = "<h2>No message specified for deleting</h2>";
+        html_draw_top();
+        echo "<h1>Invalid Operation</h1>\n";
+        echo "<h2>No message specified for deleting</h2>";
+        html_draw_bottom();
+        exit;
 
     }
 

@@ -43,7 +43,7 @@ if (isset($HTTP_GET_VARS['psid'])) {
     $psid = $HTTP_GET_VARS['psid'];
 }
 
-if(!$uid){
+if (!isset($uid)) {
     html_draw_top();
     echo "<h1>Error:</h1>";
     echo "<p>No user specified</p>";
@@ -153,7 +153,7 @@ $result = db_query($sql,$db);
 while($row = db_fetch_array($result)){
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $row['NAME'] . "</td>\n";
-    echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">" . _stripslashes($row['ENTRY']) . "</td>\n";
+    echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($row['ENTRY']) ? _stripslashes($row['ENTRY']) : "", "</td>\n";
     echo "                </tr>\n";
 }
 

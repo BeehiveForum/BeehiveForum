@@ -73,9 +73,15 @@ if(isset($HTTP_POST_VARS['cancel'])){
 }
 
 if (isset($HTTP_GET_VARS['uid'])) {
-        $uid = $HTTP_GET_VARS['uid'];
-        $user = user_get($uid);
-        $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
+    $uid = $HTTP_GET_VARS['uid'];
+    $user = user_get($uid);
+    $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
+}else {
+    html_draw_top();
+    echo "<h1>Error:</h1>";
+    echo "<p>No user specified</p>";
+    html_draw_bottom();
+    exit;
 }
 
 if (isset($HTTP_GET_VARS['ret'])) {

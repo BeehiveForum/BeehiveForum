@@ -56,8 +56,11 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
 }else {
 
-  $valid = false;
-  $error_html = "<h2>No message specified for editing</h2>";
+  html_draw_top();
+  echo "<h1>Invalid Operation</h1>\n";
+  echo "<h2>No message specified for editing</h2>";
+  html_draw_bottom();
+  exit;
 
 }
 

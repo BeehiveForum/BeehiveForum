@@ -70,6 +70,14 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
 
         user_rel_update($myuid, $uid, $rel2);
 
+}else {
+
+    html_draw_top();
+    echo "<h1>Invalid Operation</h1>\n";
+    echo "<h2>required information not found</h2>";
+    html_draw_bottom();
+    exit;
+
 }
 
 if(isset($HTTP_GET_VARS['ret'])){

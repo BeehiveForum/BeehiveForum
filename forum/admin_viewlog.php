@@ -280,6 +280,7 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
+echo "<p>&nbsp;</p>\n";
 
 if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN && db_num_rows($result)) {
     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";

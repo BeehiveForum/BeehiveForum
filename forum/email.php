@@ -54,8 +54,14 @@ require_once("./include/format.inc.php");
 
 if (isset($HTTP_GET_VARS['uid'])) {
     $to_uid = $HTTP_GET_VARS['uid'];
-} else if(isset($HTTP_POST_VARS['t_to_uid'])){
+}else if(isset($HTTP_POST_VARS['t_to_uid'])){
     $to_uid = $HTTP_POST_VARS['t_to_uid'];
+}else {
+  html_draw_top();
+  echo "<h1>Invalid Operation</h1>\n";
+  echo "<h2>No user specified for emailing.</h2>";
+  html_draw_bottom();
+  exit;
 }
 
 $to_user = user_get($to_uid);

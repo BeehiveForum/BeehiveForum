@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.77 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.78 2004-06-13 20:02:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -171,14 +171,14 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
     $error_html = "";
 
     if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
-        $t_subject = _htmlentities(trim($_POST['t_subject']));
+        $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
     }else {
         $error_html.= "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
     }
 
     if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
-        $t_content = $_POST['t_content'];
+        $t_content = trim(_stripslashes($_POST['t_content']));
     }elseif ($valid) {
         $error_html.= "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
@@ -433,7 +433,7 @@ echo "        <tr>\n";
 echo "          <td><h2>{$lang['subject']}:</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _stripslashes($t_subject) : "", 42, false, "style=\"width: 190px\""), "</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, "style=\"width: 190px\""), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><h2>{$lang['to']}:</h2></td>\n";

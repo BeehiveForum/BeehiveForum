@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.46 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.47 2004-06-13 20:02:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -146,23 +146,28 @@ if (isset($_POST['t_post_html'])) {
 $post = new MessageText($post_html);
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
+
     if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
-        $t_subject = trim($_POST['t_subject']);
+        $t_subject = trim(_stripslashes($_POST['t_subject']));
     }else {
         $error_html = "<h2>{$lang['entersubjectformessage']}</h2>";
         $valid = false;
     }
 
     if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
-        $t_content = $_POST['t_content'];
-		$post->setContent($t_content);
-		$t_content = $post->getContent();
 
-		if (strlen($t_content) >= 65535) {
-			$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-			$valid = false;
-		}
+        $t_content = trim(_stripslashes($_POST['t_content']));
+
+	$post->setContent($t_content);
+	$t_content = $post->getContent();
+
+	if (strlen($t_content) >= 65535) {
+	    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+	    $valid = false;
+	}
+
     }else {
+
         $error_html = "<h2>{$lang['entercontentformessage']}</h2>";
         $valid = false;
     }
@@ -223,21 +228,23 @@ if ($valid && isset($_POST['preview'])) {
         }
 
         $t_content = clean_emoticons($pm_elements_array['CONTENT']);
-        $t_subject = _stripslashes($pm_elements_array['SUBJECT']);
+        $t_subject = $pm_elements_array['SUBJECT'];
 
-		$t_content = _htmlentities_decode($t_content);
-		$post_html = 0;
-		$t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
-		if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
-			$post_html = 2;
-		} else {
-			$t_content = strip_tags($t_content);
-		}
+	$t_content = _htmlentities_decode($t_content);
+	$post_html = 0;
+	$t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
 
-		$post = new MessageText($post_html, $t_content);
-		$t_content = $post->getContent();
+	if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
+	    $post_html = 2;
+        } else {
+	    $t_content = strip_tags($t_content);
+        }
+
+	$post = new MessageText($post_html, $t_content);
+	$t_content = $post->getContent();
 
     }else {
+
         html_draw_top();
         pm_edit_refuse();
         html_draw_bottom();

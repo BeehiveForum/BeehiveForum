@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.116 2004-06-13 11:49:07 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.117 2004-06-13 20:02:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -242,7 +242,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
 
-        $t_message_text = trim($_POST['t_message_text']);
+        $t_message_text = trim(_stripslashes($_POST['t_message_text']));
 
         if (strlen($t_message_text) >= 65535) {
             $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
@@ -257,7 +257,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim($_POST['t_sig']);
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
 
         if (strlen($t_sig) >= 65535) {
             $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
@@ -320,9 +320,9 @@ if ($valid && isset($_POST['submit'])) {
             $ans_h = 2;
         }
 
-        for ($i = 0; $i < sizeof($_POST['answers']); $i++) {
-            $answers[$i] = new MessageText($ans_h, $_POST['answers'][$i]);
-            $_POST['answers'][$i] = $answers[$i]->getContent();
+	foreach($_POST['answers'] as $key => $poll_answer) {
+            $answers[$key] = new MessageText($ans_h, _stripslashes($poll_answer));
+            $_POST['answers'][$key] = $answers[$key]->getContent();
         }
 
         $_POST['question'] = trim($_POST['question']);
@@ -349,7 +349,6 @@ if ($valid && isset($_POST['submit'])) {
         }
 
         if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, true);
-
     }
 
     if (isset($t_tid) && $t_tid > 0) {
@@ -405,7 +404,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if (strlen(trim($answer_text)) > 0) {
 
-            $answer_tmp = new MessageText($ans_h, $answer_text);
+            $answer_tmp = new MessageText($ans_h, _stripslashes($answer_text));
             $poll_answers_array[$key] = $answer_tmp->getContent();
 
             srand((double)microtime()*1000000);
@@ -473,7 +472,9 @@ if ($valid && isset($_POST['preview'])) {
 
     if (strlen($t_message_text) > 0) {
 
-        $polldata['CONTENT'] = $t_message_text."<div class=\"sig\">$t_sig</div>";
+        $polldata['CONTENT'] = $t_message_text;
+        $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
+
         message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
     }
 }

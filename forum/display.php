@@ -35,6 +35,19 @@ require_once("./include/folder.inc.php"); // Folder processing functions
 require_once("./include/beehive.inc.php"); // Beehive stuff
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/session.inc.php");
+
+if (!bh_session_check()) {
+
+    if (isset($HTTP_GET_VARS['msg'])) {
+      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+    }else {
+      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+    }
+
+    header_redirect($uri);
+
+}
 
 // Check that required variables are set
 if(!isset($HTTP_GET_VARS['msg'])){
@@ -46,6 +59,13 @@ if(!isset($HTTP_GET_VARS['msg'])){
 list($tid, $pid) = explode('.', $msg);
 if (!is_numeric($pid)) $pid = 1;
 if (!is_numeric($tid)) $tid = 1;
+
+if (!thread_can_view($tid, bh_session_get_value('UID'))) {
+    html_draw_top();
+    echo "<h2>You are not authorised to view this thread!</h2>\n";
+    html_draw_bottom();
+    exit;
+}
 
 // Check if the user is viewing signatures.
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));

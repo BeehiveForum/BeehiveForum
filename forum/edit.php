@@ -156,7 +156,13 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $valid = false;
     }
 
-} elseif (isset($HTTP_POST_VARS['submit'])) {
+} elseif (isset($HTTP_POST_VARS['submit']) && is_numeric($tid) && is_numeric($pid)) {
+    
+    $editmessage = messages_get($tid, $pid, 1);
+    if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
+        edit_refuse($tid, $pid);
+        exit;
+    }
 
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
 

@@ -23,14 +23,28 @@ USA
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
-
+require_once("./include/session.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/folder.inc.php");
+require_once("./include/thread.inc.php");
+
+if (!bh_session_check()) {
+
+    if (isset($HTTP_GET_VARS['msg'])) {
+      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+    }else {
+      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+    }
+
+    header_redirect($uri);
+
+}
 
 if(isset($HTTP_POST_VARS['move'])){
-    if(isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move'])){
+    if(isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move']) && is_numeric($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_move']) && folder_is_valid($HTTP_POST_VARS['t_move'])){
         $tid = $HTTP_POST_VARS['t_tid'];
         $fid = $HTTP_POST_VARS['t_move'];
 
@@ -42,7 +56,7 @@ if(isset($HTTP_POST_VARS['move'])){
         admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
 
     }
-} else if(isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid'])){
+} else if(isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){
         $tid = $HTTP_POST_VARS['t_tid'];
 
         $db = db_connect();
@@ -52,7 +66,7 @@ if(isset($HTTP_POST_VARS['move'])){
 
         admin_addlog(0, 0, $tid, 0, 0, 0, 19);
 
-} else if(isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid'])){
+} else if(isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){
         $tid = $HTTP_POST_VARS['t_tid'];
 
         $db = db_connect();
@@ -62,7 +76,7 @@ if(isset($HTTP_POST_VARS['move'])){
 
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
 
-} else if(isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid'])){
+} else if(isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){
         $tid = $HTTP_POST_VARS['t_tid'];
         $name = mysql_escape_string(_htmlentities($HTTP_POST_VARS['t_name']));
 

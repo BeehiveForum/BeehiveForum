@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.109 2005-02-06 21:35:25 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.110 2005-02-17 17:44:38 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -794,7 +794,7 @@ function pm_delete_message($mid)
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, PAF.FILENAME, AT.AID ";
     $sql.= "FROM PM PM ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN PM_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_delete_pm);

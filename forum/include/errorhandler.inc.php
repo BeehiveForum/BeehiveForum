@@ -21,13 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.66 2005-03-14 21:16:35 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.67 2005-03-15 21:29:46 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "/config.inc.php");
+    include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
-include_once(BH_INCLUDE_PATH. "/constants.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // Define PHP 5.0's new E_STRICT constant here if it's not defined.
 // This will be meaningless to PHP versions below 5.0 but it saves
@@ -94,6 +95,8 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         }
 
         while (@ob_end_clean());
+        ob_start("bh_gzhandler");
+        ob_implicit_flush(0);
 
         srand((double)microtime() * 1000000);
 

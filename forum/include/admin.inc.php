@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.59 2005-03-14 13:27:23 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.60 2005-03-15 21:29:45 decoyduck Exp $ */
 
-include_once(BH_INCLUDE_PATH. "/forum.inc.php");
-include_once(BH_INCLUDE_PATH. "/perm.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
 
 function admin_add_log_entry($action, $data = 0)
 {

@@ -52,7 +52,7 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 	</head>
 	<frameset rows="20,*" border="0">
           <frame src="./nav.php" name="nav" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
-          <frame src="./edit_profile.php" name="prefs" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
+          <frame src="./edit_profile.php" name="prefs" border="0" scrolling="auto" marginwidth="0" marginheight="0" noresize>
         </frameset>	
 
 </html>

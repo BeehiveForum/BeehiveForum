@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.229 2004-02-27 22:00:17 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.230 2004-02-29 19:08:05 tribalonline Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -240,7 +240,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
     
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
-        $message['CONTENT'] = preg_replace("/<img.*?src=['\"](.*?)['\"].*?>/is", "<a href=\"\\1\" />\\1</a>", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
     if ((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text) {

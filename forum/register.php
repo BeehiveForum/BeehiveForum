@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.97 2004-12-14 08:33:29 decoyduck Exp $ */
+/* $Id: register.php,v 1.98 2005-01-07 00:49:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -89,14 +89,21 @@ $available_styles = array();
 $style_names = array();
 
 if ($dir = @opendir('styles')) {
+
     while (($file = readdir($dir)) !== false) {
+
         if (is_dir("styles/$file") && $file != '.' && $file != '..') {
+
             if (@file_exists("./styles/$file/desc.txt")) {
-                if ($fp = fopen("./styles/$file/desc.txt", "r")) {
+
+                if (@$fp = fopen("./styles/$file/desc.txt", "r")) {
+
                     $available_styles[] = $file;
                     $style_names[] = _htmlentities(fread($fp, filesize("styles/$file/desc.txt")));
                     fclose($fp);
+
                 }else {
+
                     $available_styles[] = $file;
                     $style_names[] = $file;
                 }
@@ -111,15 +118,22 @@ array_multisort($style_names, $available_styles);
 $available_emots = array();
 $emot_names = array();
 
-if ($dir = @opendir('emoticons')) {
+if (@$dir = opendir('emoticons')) {
+
     while (($file = readdir($dir)) !== false) {
+
         if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
+
             if (@file_exists("./emoticons/$file/desc.txt")) {
-                if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
+
+                if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
+
                     $available_emots[] = $file;
                     $emot_names[] = _htmlentities(fread($fp, filesize("emoticons/$file/desc.txt")));
                     fclose($fp);
+
                 }else {
+
                     $available_emots[] = $file;
                     $emot_names[] = $file;
                 }

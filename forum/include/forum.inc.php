@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.99 2004-12-27 16:19:57 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.100 2005-01-07 00:49:01 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -416,10 +416,21 @@ function load_start_page()
 
 function save_start_page($content)
 {
+    return false;
+
     $webtag = get_webtag($webtag_search);
 
-    if (!is_dir("forums")) mkdir("forums", 0755);
-    if (!is_dir("forums/$webtag")) mkdir("forums/$webtag", 0755);
+    if (!is_dir("forums")) {
+
+        @mkdir("forums", 0755);
+        @chmod("forums", 0777);
+    }
+
+    if (!is_dir("forums/$webtag")) {
+
+        @mkdir("forums/$webtag", 0755);
+        @chmod("forums/$webtag", 0777);
+    }
 
     if (@$fp = fopen("./forums/$webtag/start_main.php", "w")) {
 
@@ -739,6 +750,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
         $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
+        $sql.= "  CREATED DATETIME DEFAULT NULL,";
         $sql.= "  MODIFIED DATETIME DEFAULT NULL,";
         $sql.= "  CLOSED DATETIME DEFAULT NULL,";
         $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
@@ -1149,7 +1161,11 @@ function forum_get_post_count($webtag)
 
 function forum_search($search_string)
 {
+    $fid_array = array();
+
     $uid = bh_session_get_value('UID');
+
+    $lang = load_language_file();
 
     if (strlen(trim($search_string)) > 0) {
 
@@ -1162,51 +1178,130 @@ function forum_search($search_string)
         $db_forum_search = db_connect();
         $forum_search_array = array();
 
-        $sql = "SELECT FORUMS.FID FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
-        $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
+        $sql = "SELECT FORUMS.* FROM FORUMS ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ";
+        $sql.= "ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
+        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ";
+        $sql.= "ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
         $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
         $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1)) ";
-        $sql.= "AND FORUMS.WEBTAG LIKE '%";
+        $sql.= "AND (FORUMS.WEBTAG LIKE '%";
         $sql.= implode("%' OR FORUMS.WEBTAG LIKE '%", $keywords_array);
-        $sql.= "%'";
-
-        $result = db_query($sql, $db_forum_search);
-
-        if (db_num_rows($result) > 0) {
-
-            while($row = db_fetch_array($result)) {
-
-                $fid_array[] = $row['FID'];
-            }
-        }
-
-        $sql = "SELECT FS.FID FROM FORUM_SETTINGS FS ";
-        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
-        $sql.= "(USER_FORUM.FID = FS.FID AND USER_FORUM.UID = '$uid') ";
-        $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
-        $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1)) ";
-        $sql.= "AND FS. SVALUE LIKE '%";
+        $sql.= "%' OR FORUM_SETTINGS.SVALUE LIKE '%";
         $sql.= implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $keywords_array);
-        $sql.= "%'";
+        $sql.= "%')";
 
         $result = db_query($sql, $db_forum_search);
 
         if (db_num_rows($result) > 0) {
 
-            while($row = db_fetch_array($result)) {
+            while ($forum_data = db_fetch_array($result)) {
 
-                $fid_array[] = $row['FID'];
+                $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
+                $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
+
+                $result_forum_name = db_query($sql, $db_forum_search);
+
+                if (db_num_rows($result_forum_name) > 0) {
+
+                    $row = db_fetch_array($result_forum_name);
+                    $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
+
+                }else {
+
+                    $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
+                }
+
+                // Make sure the Forum Interest Level is set.
+
+                if (!isset($forum_data['INTEREST'])) {
+                    $forum_data['INTEREST'] = 0;
+                }
+
+                // Get any unread messages
+
+                $folders = folder_get_available();
+
+                $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_POST POST ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON ";
+                $sql.= "(THREAD.TID = POST.TID) ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
+                $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ";
+                $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+                $sql.= "WHERE THREAD.FID IN ($folders) ";
+                $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+                $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+                $sql.= "AND ((USER_THREAD.LAST_READ < THREAD.LENGTH AND USER_THREAD.LAST_READ < POST.PID) ";
+                $sql.= "OR USER_THREAD.LAST_READ IS NULL) ";
+
+                $result_post_count = db_query($sql, $db_forum_search);
+
+                $row = db_fetch_array($result_post_count);
+                $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
+
+                // Get unread to me message count
+
+                $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
+                $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_POST POST ";
+                $sql.= "ON (POST.TID = THREAD.TID) ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ";
+                $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+                $sql.= "WHERE THREAD.FID IN ($folders) ";
+                $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+                $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+                $sql.= "AND (POST.PID > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
+                $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL";
+
+                $result_unread_to_me = db_query($sql, $db_forum_search);
+
+                $row = db_fetch_array($result_unread_to_me);
+                $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
+
+                // Get Last Visited
+
+                $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
+                $sql.= "FROM {$forum_data['WEBTAG']}_VISITOR_LOG ";
+                $sql.= "WHERE UID = '$uid' AND LAST_LOGON IS NOT NULL ";
+                $sql.= "AND LAST_LOGON > 0";
+
+                $result_last_visit = db_query($sql, $db_forum_search);
+
+                if (db_num_rows($result_last_visit) > 0) {
+
+                    $row = db_fetch_array($result_last_visit);
+                    $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
+
+                }else{
+
+                    $forum_data['LAST_LOGON'] = 0;
+                }
+
+                // Get Forum Description
+
+                $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
+                $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
+                $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
+
+                $result_description = db_query($sql, $db_forum_search);
+
+                if (db_num_rows($result_description) > 0) {
+
+                    $row = db_fetch_array($result_description);
+                    $forum_data['DESCRIPTION'] = $row['SVALUE'];
+
+                }else{
+
+                    $forum_data['DESCRIPTION'] = "";
+                }
+
+                $forum_search_array[$forum_data['FID']] = $forum_data;
             }
+
+            return $forum_search_array;
         }
-
-        foreach ($fid_array as $fid) {
-
-            $forum_search_array[$fid] = $forum_get($fid);
-            $forum_search_array[$fid]['MESSAGES'] = forum_get_post_count($fid);
-        }
-
-        return $forum_search_array;
     }
 
     return false;

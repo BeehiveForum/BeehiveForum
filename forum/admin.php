@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.62 2004-12-10 16:52:15 decoyduck Exp $ */
+/* $Id: admin.php,v 1.63 2005-01-07 00:48:58 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -91,7 +91,10 @@ $lang = load_language_file();
 
 // Check we have a webtag
 
-$webtag = get_webtag($webtag_search);
+if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
 
 if (!perm_has_admin_access()) {
     html_draw_top();
@@ -116,7 +119,17 @@ echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name}
 echo "</head>\n";
 echo "<frameset cols=\"180,*\" border=\"1\">\n";
 echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+if (isset($_GET['page']) && strlen(trim(_stripslashes($_GET['page']))) > 0) {
+
+    $page = trim(_stripslashes($_GET['page']));
+    echo "  <frame src=\"$page\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+}else {
+
+    echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+}
+
 echo "</frameset>\n";
 echo "</html>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.56 2004-11-28 22:57:03 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.57 2005-01-07 00:49:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -100,7 +100,7 @@ $lang = load_language_file();
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(true));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
 }
 
 // Check that we have access to this forum
@@ -122,11 +122,6 @@ if (!(perm_has_admin_access())) {
 
 $allowed_file_exts = array('html', 'htm', 'shtml', 'cgi', 'pl', 'php', 'php3', 'phtml', 'txt');
 
-html_draw_top("dictionary.js", "htmltools.js");
-
-echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
-echo "<p>{$lang['editstartpageexp']}</p>\n";
-
 if (isset($_POST['submit'])) {
 
     if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
@@ -135,13 +130,24 @@ if (isset($_POST['submit'])) {
         $content = "";
     }
 
-    save_start_page($content);
+    if (save_start_page($content)) {
 
-    $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
-    $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
-    $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
+        $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
+        $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
+        $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
 
-    admin_addlog(0, 0, 0, 0, 0, 0, 16);
+        admin_addlog(0, 0, 0, 0, 0, 0, 16);
+
+    }else {
+
+        $length = strlen($content);
+
+        header("Content-Type: application/x-ms-download", true);
+        header("Content-Length: $length", true);
+        header("Content-disposition: attachment; filename=\"start_main.php\"", true);
+        echo $content;
+        exit;
+    }
 
 }elseif (isset($_POST['upload'])) {
 
@@ -173,6 +179,10 @@ if (isset($_POST['submit'])) {
     }
 }
 
+html_draw_top("dictionary.js", "htmltools.js");
+
+echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
+echo "<p>{$lang['editstartpageexp']}</p>\n";
 
 $content = load_start_page();
 

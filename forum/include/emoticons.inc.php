@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.32 2004-12-12 12:40:07 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.33 2005-01-07 00:49:01 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -114,115 +114,136 @@ function emoticons_callback ($matches)
     return urldecode($matches[1])."&nbsp;</span>";
 }
 
-function emoticons_get_sets() {
-        $sets = array();
-        $sets2 = array();
-        if ($dir = @opendir('emoticons')) {
-                while (($file = readdir($dir)) !== false) {
-                        if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
-                                if ($file == "none" || $file == "text") {
-                                        if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
-                                                $content = fread($fp, filesize("emoticons/$file/desc.txt"));
-                                                $content = split("\n", $content);
-                                                $sets2[$file] = _htmlentities($content[0]);
-                                                fclose($fp);
-                                        }else {
-                                                $sets2[$file] = _htmlentities($file);
-                                        }
+function emoticons_get_sets()
+{
+    $sets = array();
+    $sets2 = array();
 
-                                } else if (@file_exists("./emoticons/$file/style.css")) {
-                                        if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
-                                                $content = fread($fp, filesize("emoticons/$file/desc.txt"));
-                                                $content = split("\n", $content);
-                                                $sets[$file] = _htmlentities($content[0]);
-                                                fclose($fp);
-                                        }else {
-                                                $sets[$file] = _htmlentities($file);
-                                        }
-                                }
-                        }
-                }
-                closedir($dir);
+    if (@$dir = opendir('emoticons')) {
+
+        while (($file = readdir($dir)) !== false) {
+
+            if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
+
+                 if ($file == "none" || $file == "text") {
+
+                     if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
+
+                         $content = fread($fp, filesize("emoticons/$file/desc.txt"));
+                         $content = split("\n", $content);
+
+                         $sets2[$file] = _htmlentities($content[0]);
+
+                         fclose($fp);
+
+                     }else {
+
+                         $sets2[$file] = _htmlentities($file);
+                     }
+
+                 }else if (@file_exists("./emoticons/$file/style.css")) {
+
+                     if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
+
+                         $content = fread($fp, filesize("emoticons/$file/desc.txt"));
+                         $content = split("\n", $content);
+
+                         $sets[$file] = _htmlentities($content[0]);
+
+                         fclose($fp);
+
+                     }else {
+
+                         $sets[$file] = _htmlentities($file);
+                     }
+                 }
+             }
         }
 
-        asort($sets);
-        reset($sets);
+        closedir($dir);
+    }
 
-        $sets = array_merge($sets2, $sets);
+    asort($sets);
+    reset($sets);
 
-        return $sets;
+    $sets = array_merge($sets2, $sets);
+
+    return $sets;
 }
 
-function emoticons_set_exists ($set) {
-        if (file_exists('./emoticons/'.$set.'/style.css') || $set == 'text') {
-                return true;
-        }
-        return false;
+function emoticons_set_exists($set)
+{
+    return (file_exists("./emoticons/$set/style.css") || $set == "text");
 }
 
-function emoticons_preview ($set, $width=190, $height=100, $num = 35) {
+function emoticons_preview($set, $width=190, $height=100, $num = 35)
+{
+    global $emoticon_text;
+    global $lang;
+    global $webtag;
 
-        global $emoticon_text;
-        global $lang;
-        global $webtag;
+    $emots_array = array();
 
-        $str = "";
+    $str = "";
 
-        if (!emoticons_set_exists($set)) {
-                $set = forum_get_setting('default_emoticons');
-        }
+    if (!emoticons_set_exists($set)) {
+            $set = forum_get_setting('default_emoticons');
+    }
 
-        if ($set != 'text' && $set != 'none') {
+    if ($set != 'text' && $set != 'none') {
 
-                $path = "./emoticons/$set";
-                $fp = fopen("$path/style.css", "r");
-                $style = fread($fp, filesize("$path/style.css"));
+        $path = "./emoticons/$set";
 
-                preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
+        if (@$fp = fopen("$path/style.css", "r")) {
 
-                for ($i = 0; $i < count($matches[1]); $i++) {
+            $style = fread($fp, filesize("$path/style.css"));
 
-                    if (isset($emoticon_text[$matches[1][$i]])) {
+            preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 
-                        $string_matches = array();
+            for ($i = 0; $i < count($matches[1]); $i++) {
 
-                        for ($j = 0; $j < count($emoticon_text[$matches[1][$i]]); $j++) {
+                if (isset($emoticon_text[$matches[1][$i]])) {
 
-                            $string_matches[] = $emoticon_text[$matches[1][$i]][$j];
-                        }
+                    $string_matches = array();
 
-                        $emots_array[] = array('matches' => $string_matches,
-                                               'text'    => $matches[1][$i],
-                                               'img'     => $matches[2][$i]);
-                    }
-                }
+                    for ($j = 0; $j < count($emoticon_text[$matches[1][$i]]); $j++) {
 
-                array_multisort($emots_array, SORT_DESC);
-
-                $str.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">\n";
-
-                for ($i = 0; $i < min(count($emots_array), $num); $i++) {
-
-                    $emot_tooltip_matches = array();
-
-                    foreach ($emots_array[$i]['matches'] as $key => $emot_match) {
-
-                        $emot_tooltip_matches[] = htmlentities($emot_match);
+                        $string_matches[] = $emoticon_text[$matches[1][$i]][$j];
                     }
 
-                    $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
-
-                    $str.= "<img src=\"$path/{$emots_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode($emots_array[$i]['matches'][0]) ." ');\" /> ";
+                    $emots_array[] = array('matches' => $string_matches,
+                                           'text'    => $matches[1][$i],
+                                           'img'     => $matches[2][$i]);
                 }
-
-                if ($num < count($emots_array)) {
-                        $str.= " <b><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
-                }
-
-                $str.= "</div>";
+            }
         }
 
-        return $str;
+        array_multisort($emots_array, SORT_DESC);
+
+        $str.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">\n";
+
+        for ($i = 0; $i < min(count($emots_array), $num); $i++) {
+
+            $emot_tooltip_matches = array();
+
+            foreach ($emots_array[$i]['matches'] as $key => $emot_match) {
+
+                $emot_tooltip_matches[] = htmlentities($emot_match);
+            }
+
+            $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
+
+            $str.= "<img src=\"$path/{$emots_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode($emots_array[$i]['matches'][0]) ." ');\" /> ";
+        }
+
+        if ($num < count($emots_array)) {
+                $str.= " <b><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
+        }
+
+        $str.= "</div>";
+    }
+
+    return $str;
 }
 
 ?>

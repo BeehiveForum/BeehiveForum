@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.169 2004-12-22 19:27:49 decoyduck Exp $ */
+/* $Id: messages.php,v 1.170 2005-01-07 00:49:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -378,7 +378,7 @@ echo "    <td width=\"33%\"><p><img src=\"". style_image('reply_all.png') ."\" a
 
 echo "    <td width=\"33%\" align=\"center\"><p>";
 if (bh_session_get_value('UID') != 0) {
-        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
+        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
 } else {
         echo "&nbsp;";
 }

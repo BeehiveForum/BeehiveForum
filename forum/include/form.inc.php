@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.36 2003-09-06 01:28:03 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.37 2003-09-07 20:21:51 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -33,9 +33,6 @@ require_once("./include/lang.inc.php");
 function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false)
 {
     global $lang;
-
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
 
     $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" value=\"$value\" ";
 
@@ -85,10 +82,6 @@ function form_textarea($name, $value = false, $rows = false, $cols = false, $wra
 {
     global $lang;
 
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
-    $wrap  = htmlentities(trim($wrap));
-
     $html = "<textarea name=\"$name\" class=\"bhtextarea\" autocomplete=\"off\" ";
 
     if ($custom_html) {
@@ -115,8 +108,6 @@ function form_textarea($name, $value = false, $rows = false, $cols = false, $wra
 function form_dropdown_sql($name, $sql, $default, $custom_html = false)
 {
     global $lang;
-
-    $name = htmlentities(trim($name));
 
     $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
     $html.= "dir=\"{$lang['_textdir']}\" ";
@@ -150,10 +141,6 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 {
     global $lang;
 
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
-    $label = htmlentities(trim($label));
-
     $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
     $html.= "dir=\"{$lang['_textdir']}\" ";
 
@@ -167,9 +154,9 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
     for ($i = 0; $i < count($value); $i++) {
         $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
         if (isset($label[$i])) {
-            $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>";
+            $html.= "<option value=\"". $value[$i]. "\"$sel>". $label[$i]. "</option>";
         }else {
-            $html.= "<option$sel>".$value[$i]."</option>";
+            $html.= "<option$sel>". $value[$i]. "</option>";
         }
     }
 
@@ -181,10 +168,6 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 
 function form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
-    $text  = htmlentities(trim($text));
-
     $checked = ($checked) ? "checked=\"checked\"" : "";
 
     $html = "<span class=\"bhinputcheckbox\">";
@@ -204,10 +187,6 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
 function form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
-    $text  = htmlentities(trim($text));
-
     $checked = ($checked) ? "checked=\"checked\"" : "";
 
     $html = "<span class=\"bhinputradio\">";
@@ -242,12 +221,6 @@ function form_radio_array($name, $value, $text, $checked = false, $custom_html =
 
 function form_submit($name = "submit", $value = "Submit", $custom_html = false, $class = "button")
 {
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
-    $class = htmlentities(trim($class));
-
-    $custom_html = trim($custom_html);
-
     $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" ";
     $html.= "autocomplete=\"off\" class=\"$class\" ";
 
@@ -264,10 +237,6 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 
 function form_reset($name = "reset", $value = "Reset", $custom_html = false, $class = "button")
 {
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
-    $class = htmlentities(trim($class));
-
     $html = "<input type=\"reset\" name=\"$name\" value=\"$value\" ";
     $html.= "autocomplete=\"off\" class=\"$class\" ";
 
@@ -284,10 +253,6 @@ function form_reset($name = "reset", $value = "Reset", $custom_html = false, $cl
 
 function form_button($name, $value, $custom_html, $class="button")
 {
-    $name  = htmlentities(trim($name));
-    $value = htmlentities(trim($value));
-    $class = htmlentities(trim($class));
-
     $html = "<input type=\"button\" name=\"$name\" value=\"$value\" ";
     $html.= "autocomplete=\"off\" class=\"$class\" ";
 

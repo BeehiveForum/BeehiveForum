@@ -26,8 +26,6 @@ function get_forum_list()
     $db_get_forum_list = db_connect();
     $get_forum_list_array = array();
 
-    $uid = bh_session_get_value('UID');
-
     $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUM_SETTINGS.SVALUE AS FORUM_NAME ";
     $sql.= "FROM FORUMS FORUMS LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON ";
     $sql.= "(FORUMS.FID = FORUM_SETTINGS.FID AND FORUM_SETTINGS.SNAME = 'forum_name')";
@@ -36,87 +34,25 @@ function get_forum_list()
 
     while ($row = db_fetch_array($result)) {  
         
-        echo "<pre>\n";
-	print_r($row);
-	echo "</pre>\n";
-        
         $forum_data = $row;
 
 	if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) == 0) {
 	    $forum_data['FORUM_NAME'] = "Unknown Forum";
 	}
 
-	if ($uid <> 0) {
+	// Get number of messages on forum
 
-            // Get unread message count
+        $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+        $result = db_query($sql, $db_get_forum_list);
         
-            $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
-            $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
-            $sql.= "WHERE THREAD.LENGTH > USER_THREAD.LAST_READ ";
-
-            $result = db_query($sql, $db_get_forum_list);
+        if (db_num_rows($result)) {
         
-            if (db_num_rows($result)) {
+            $row = db_fetch_array($result);
+            $forum_data['MESSAGES'] = $row['POST_COUNT'];
         
-                $row = db_fetch_array($result);
-                $unread_message_count = $row['POST_COUNT'];
-		$message_count = 0;
+        }else {
         
-            }else {
-        
-                $unread_message_count = 0;
-		$message_count = 0;
-            }
-
-            // Get unread to me message count
-        
-            $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
-	    $sql.= "WHERE TO_UID = '$uid' AND VIEWED IS NULL";
-
-            $result = db_query($sql, $db_get_forum_list);
-        
-            if (db_num_rows($result)) {
-        
-                $row = db_fetch_array($result);
-                $unread_to_me_message_count = $row['POST_COUNT'];
-        
-            }else {
-        
-                $unread_to_me_message_count = 0;
-            }
-        
-            $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE FID = {$forum_data['FID']} AND UID = '$uid'";
-            $result = db_query($sql, $db_get_forum_list);
-        
-            if (db_num_rows($result)) {
-        
-                $row = db_fetch_array($result);
-                $last_visit = $row['LAST_LOGON'];
-        
-            }else{
-          
-                $last_visit = "Never";
-            }
-
-	}else {
-
-            $unread_message_count = 0;
-	    $unread_to_me_message_count = 0;
-	    $last_visit = "";
-        
-            $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
-            $result = db_query($sql, $db_get_forum_list);
-        
-            if (db_num_rows($result)) {
-        
-                $row = db_fetch_array($result);
-                $message_count = $row['POST_COUNT'];
-        
-            }else {
-        
-                $message_count = 0;
-            }
+            $forum_data['MESSAGES'] = 0;
         }
         
         $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
@@ -128,24 +64,110 @@ function get_forum_list()
         if (db_num_rows($result)) {
             
             $row = db_fetch_array($lv_result);
-            $forum_description = $row['SVALUE'];
+            $forum_data['DESCRIPTION'] = $row['SVALUE'];
             
         }else{
             
-            $forum_description = "";
+            $forum_data['DESCRIPTION'] = "";
         }
 
-	$get_forum_list_array[] = array('FID'         => $forum_data['FID'],
-	                                'WEBTAG'      => $forum_data['WEBTAG'],
-					'FORUM_NAME'  => $forum_data['FORUM_NAME'],
-					'DESCRIPTION' => $forum_description,
-					'MESSAGES'    => $message_count,
-					'UMESSAGES'   => $unread_message_count,
-                                        'UNREADTOME'  => $unread_to_me_message_count,
-                                        'LAST_VISIT'  => $last_visit);
+	$get_forum_list_array[] = $forum_data;
     }
 
     return $get_forum_list_array;
+}
+
+function get_my_forums()
+{
+    $db_get_my_forums = db_connect();
+    $get_my_forums_array = array();
+
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUM_SETTINGS.SVALUE AS FORUM_NAME ";
+    $sql.= "FROM FORUMS FORUMS LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON ";
+    $sql.= "(FORUMS.FID = FORUM_SETTINGS.FID AND FORUM_SETTINGS.SNAME = 'forum_name')";
+
+    $result = db_query($sql, $db_get_my_forums); 
+
+    while ($row = db_fetch_array($result)) {  
+
+        $forum_data = $row;
+
+        // Get unread message count
+        
+        $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+        $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON (THREAD.TID = POST.TID) ";
+        $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
+        $sql.= "(THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
+        $sql.= "WHERE THREAD.LENGTH > USER_THREAD.LAST_READ";
+
+        $result = db_query($sql, $db_get_my_forums);
+        
+        if (db_num_rows($result)) {
+        
+            $row = db_fetch_array($result);
+            $forum_data['UNREAD_MESSAGES'] = $row['POST_COUNT'];
+        
+        }else {
+        
+            $forum_data['UNREAD_MESSAGES'] = 0;
+        }
+
+        // Get unread to me message count
+        
+        $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+        $sql.= "WHERE TO_UID = '$uid' AND VIEWED IS NULL";
+
+        $result = db_query($sql, $db_get_my_forums);
+        
+        if (db_num_rows($result)) {
+        
+            $row = db_fetch_array($result);
+            $forum_data['UNREAD_TO_ME'] = $row['POST_COUNT'];
+        
+        }else {
+        
+            $forum_data['UNREAD_TO_ME'] = 0;
+        }
+
+	// Get Last Visited
+        
+        $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE FID = {$forum_data['FID']} AND UID = '$uid'";
+        $result = db_query($sql, $db_get_my_forums);
+        
+        if (db_num_rows($result)) {
+        
+            $row = db_fetch_array($result);
+            $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
+        
+        }else{
+        
+            $forum_data['LAST_LOGON'] = "Never";
+        }
+
+        // Get Forum Description
+        
+        $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
+        $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
+        $sql.= "FORUM_SETTINGS.SNAME = 'description'";
+
+        $result = db_query($sql, $db_get_my_forums);
+
+        if (db_num_rows($result)) {
+            
+            $row = db_fetch_array($lv_result);
+            $forum_data['DESCRIPTION'] = $row['SVALUE'];
+            
+        }else{
+            
+            $forum_data['DESCRIPTION'] = "";
+        }
+
+	$get_my_forums_array[] = $forum_data;
+    }
+
+    return $get_my_forums_array;
 }
 
 ?>

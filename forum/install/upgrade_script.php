@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.23 2004-09-26 19:35:33 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.24 2004-10-06 20:29:39 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -753,19 +753,38 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
+    $sql = "DELETE FROM SESSIONS";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        $valid = false;
+    }
+
     $sql = "ALTER TABLE SESSIONS ADD FID MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;
     }
 
-    $sql = "ALTER TABLE SESSIONS ADD INDEX (FID)";
+    $sql = "ALTER TABLE SESSIONS DROP INDEX HASH";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;
     }
 
-    $sql = "ALTER TABLE SESSIONS ADD INDEX (UID)";
+    $sql = "ALTER TABLE SESSIONS DROP SESSID";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        $valid = false;
+    }
+
+    $sql = "ALTER TABLE SESSIONS ADD PRIMARY KEY (UID)";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        $valid = false;
+    }
+
+    $sql = "ALTER TABLE SESSIONS ADD INDEX ";
+    $sql.= "SESSION_HASH_UID_IP (HASH, UID, IPADDRESS)";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;

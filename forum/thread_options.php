@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.39 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.40 2005-03-20 21:47:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -202,9 +202,9 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
             post_add_edit_text($tid, 1);
 
-            if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
+            if (perm_is_moderator($fid)) {
 
-                admin_add_log_entry(RENAME_THREAD, array($threaddata['TITLE'], $t_rename));
+                admin_add_log_entry(RENAME_THREAD, array($tid, $threaddata['TITLE'], $t_rename));
             }
 
             $threaddata['TITLE'] = _htmlentities($t_rename);
@@ -227,9 +227,9 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
                 post_add_edit_text($tid, 1);
 
-                if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
+                if (perm_is_moderator($fid)) {
 
-                    admin_add_log_entry(MOVED_THREAD, array($threaddata['TITLE'], $old_folder_title, $new_folder_title));
+                    admin_add_log_entry(MOVED_THREAD, array($tid, $threaddata['TITLE'], $old_folder_title, $new_folder_title));
                 }
 
                 $threaddata['FID'] = $_POST['move'];
@@ -394,7 +394,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td class=\"posthead\">{$lang['movethread']}:</td>\n";
-    echo "                  <td>", folder_draw_dropdown($threaddata['FID'], "move", "", $thread_type), "</td>\n";
+    echo "                  <td>", folder_draw_dropdown($threaddata['FID'], "move", "", $thread_type, "", "post_folder_dropdown"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";

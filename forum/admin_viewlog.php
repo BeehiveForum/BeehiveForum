@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.78 2005-03-20 20:35:22 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.79 2005-03-20 21:47:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -287,102 +287,102 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case EDITED_START_PAGE:
 
-                $action_text = "{$lang['editedstartpage']}";
+                $action_text = sprintf($lang['editedstartpage']);
                 break;
 
             case CREATED_NEW_STYLE:
 
-                $action_text = "{$lang['savednewstyle']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['savednewstyle'], $entry_array[0]);
                 break;
 
             case MOVED_THREAD:
 
-                $action_text = "{$lang['movedthread']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['movedthread'], $entry_array[0], $entry_array[1], $entry_array[2], $entry_array[3]);
                 break;
 
             case CLOSED_THREAD:
 
-                $action_text = "{$lang['closedthread']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['closedthread'], $entry_array[0], $entry_array[1]);
                 break;
 
             case OPENED_THREAD:
 
-                $action_text = "{$lang['openedthread']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['openedthread'], $entry_array[0], $entry_array[1]);
                 break;
 
             case RENAME_THREAD:
 
-                $action_text = "{$lang['renamedthread']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['renamedthread'], $entry_array[1], $entry_array[0], $entry_array[2]);
                 break;
 
             case DELETE_POST:
 
-                $action_text = "{$lang['deletedpost']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedpost'], $entry_array[0], $entry_array[0]);
                 break;
 
             case EDIT_POST:
 
-                $action_text = "{$lang['editedpost']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['editedpost'], $entry_array[0], $entry_array[0]);
                 break;
 
             case EDIT_WORD_FILTER:
 
-                $action_text = "{$lang['editedwordfilter']}";
+                $action_text = sprintf($lang['editedwordfilter']);
                 break;
 
             case CREATE_THREAD_STICKY:
 
-                $action_text = "{$lang['madethreadsticky']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['madethreadsticky'], $entry_array[0], $entry_array[1]);
                 break;
 
             case REMOVE_THREAD_STICKY:
 
-                $action_text = "{$lang['madethreadnonsticky']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['madethreadnonsticky'], $entry_array[0], $entry_array[1]);
                 break;
 
-            case END_USED_SESSION:
+            case END_USER_SESSION:
 
-                $action_text = "{$lang['endedsessionforuser']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['endedsessionforuser'], $entry_array[0]);
                 break;
 
             case EDIT_FORUM_SETTINGS:
 
-                $action_text = "{$lang['editedforumsettings']}";
+                $action_text = sprintf($lang['editedforumsettings']);
                 break;
 
             case LOCKED_THREAD:
 
-                $action_text = "{$lang['lockedthreadtitlefolder']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['lockedthreadtitlefolder'], $entry_array[0], $entry_array[1]);
                 break;
 
             case UNLOCKED_THREAD:
 
-                $action_text = "{$lang['unlockedthreadtitlefolder']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['unlockedthreadtitlefolder'], $entry_array[0], $entry_array[1]);
                 break;
 
             case DELETE_USER_THREAD_POSTS:
 
-                $action_text = "{$lang['userspostsdeletedinthread']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedpostsfrominthread'], $entry_array[2], $entry_array[0], $entry_array[1]);
                 break;
 
             case DELETE_THREAD:
 
-                $action_text = "{$lang['threaddeleted']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedthread'], $entry_array[0], $entry_array[1]);
                 break;
 
             case DELETE_ATTACHMENT:
 
-                $action_text = "{$lang['deleteduserattachmentfrompost']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedattachmentfrompost'], $entry_array[2], $entry_array[0], $entry_array[1], $entry_array[0], $entry_array[1]);
                 break;
 
             case EDIT_FORUM_LINKS:
 
-                $action_text = "{$lang['editedforumlinks']}";
+                $action_text = sprintf($lang['editedforumlinks']);
                 break;
 
             case APPROVED_POST:
 
-                $action_text = "{$lang['approvedpost']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['approvedpost'], $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
                 break;
 
             case CREATE_USER_GROUP:

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.244 2005-03-20 20:35:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.245 2005-03-20 21:47:01 decoyduck Exp $ */
 
 // International English language file
 
@@ -331,24 +331,6 @@ $lang['ip'] = "IP";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
 $lang['deleteduser'] = "Deleted User";
-$lang['editedstartpage'] = "Edited Start Page";
-$lang['savednewstyle'] = "Saved New Style";
-$lang['movedthread'] = "Moved Thread";
-$lang['closedthread'] = "Closed Thread";
-$lang['openedthread'] = "Opened Thread";
-$lang['renamedthread'] = "Renamed Thread";
-$lang['lockedthreadtitlefolder'] = "Locked Thread Title/Folder";
-$lang['unlockedthreadtitlefolder'] = "Unlocked Thread Title/Folder";
-$lang['userspostsdeletedinthread'] = "User's Posts Deleted in Thread";
-$lang['deleteduserattachmentfrompost'] = "Deleted User's Attachment From Post";
-$lang['editedforumlinks'] = "Edited Forum Links";
-$lang['threaddeleted'] = "Thread Deleted";
-$lang['deletedpost'] = "Deleted Post";
-$lang['editedpost'] = "Edited Post";
-$lang['editedwordfilter'] = "Edited Word Filter";
-$lang['adminlogempty'] = "Admin Log is empty";
-$lang['recententries'] = "Recent Entries";
-$lang['clearlog'] = "Clear Log";
 $lang['wordfilterupdated'] = "Word Filter updated";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['wordfilterexp_1'] = "Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.";
@@ -376,12 +358,9 @@ $lang['dropdown'] = "Drop Down";
 $lang['threadcount'] = "Thread Count";
 $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to seperate the fieldname and the values with a colon and each value should be seperated by semi-colons.";
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
-$lang['madethreadsticky'] = "Made Thread Sticky";
-$lang['madethreadnonsticky'] = "Made Thread Non-sticky";
 $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['editedforumsettings'] = "Edited Forum Settings";
 $lang['sessionsuccessfullyended'] = "Session successfully ended for user";
-$lang['endedsessionforuser'] = "Ended session for user";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
@@ -537,6 +516,39 @@ $lang['deletedprofilesection'] = "Deleted Profile Section '%s'";
 $lang['addednewprofileitem'] = "Added New Profile Item '%s' to section '%s'";
 $lang['changedprofileitem'] = "Changed Profile Item '%s'";
 $lang['deletedprofileitem'] = "Deleted Profile Item '%s'";
+
+$lang['editedstartpage'] = "Edited Start Page";
+$lang['savednewstyle'] = "Saved New Style '%s'";
+
+$lang['movedthread'] = "Moved Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' from '%s' to '%s'";
+$lang['closedthread'] = "Closed Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['openedthread'] = "Opened Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['renamedthread'] = "Renamed Thread '%s' to '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['deletedthread'] = "Deleted Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+
+$lang['lockedthreadtitlefolder'] = "Locked thread options on '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['unlockedthreadtitlefolder'] = "Unlocked thread options on '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+
+$lang['deletedpostsfrominthread'] = "Deleted posts from '%s' in thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['deletedattachmentfrompost'] = "Deleted attachment '%s' from post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+
+$lang['editedforumlinks'] = "Edited Forum Links";
+
+$lang['deletedpost'] = "Deleted Post '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['editedpost'] = "Edited Post '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+
+$lang['madethreadsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' sticky";
+$lang['madethreadnonsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' non-sticky";
+
+$lang['endedsessionforuser'] = "Ended session for user '%s'";
+
+$lang['approvedpost'] = "Approved post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+
+$lang['editedwordfilter'] = "Edited Word Filter";
+
+$lang['adminlogempty'] = "Admin Log is empty";
+$lang['recententries'] = "Recent Entries";
+$lang['clearlog'] = "Clear Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 
@@ -997,7 +1009,6 @@ $lang['approvalrequired'] = "Approval Required";
 $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['approvepost'] = "Approve post for display";
-$lang['approvedpost'] = "Approved post";
 $lang['approvedcaps'] = "APPROVED";
 
 // Navigation strip (nav.php) ------------------------------------------

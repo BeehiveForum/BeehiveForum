@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.246 2005-03-20 12:37:33 decoyduck Exp $ */
+/* $Id: post.php,v 1.247 2005-03-20 21:47:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -655,7 +655,7 @@ if (!isset($t_fid)) {
     $t_fid = 1;
 }
 
-if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "class=\"post_folder_dropdown\"")) {
+if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "", "post_folder_dropdown")) {
 
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";

@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.94 2005-03-18 23:58:39 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.95 2005-03-20 21:47:01 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "")
+function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "", $class="bhselect")
 {
     $db_folder_draw_dropdown = db_connect();
 
@@ -90,7 +90,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
         if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
 
-            return form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid, $custom_html);
+            return form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid, $custom_html, $class);
         }
     }
 

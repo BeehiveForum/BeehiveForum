@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.47 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.48 2003-09-21 13:36:36 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -29,41 +29,52 @@ require_once("./include/user.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/ip.inc.php");
 
+// Updates the sessions. Removes stale sessions and checks the stats
+
+function bh_update_session_stats()
+{
+    global $session_cutoff;
+
+    $db_bh_update_session_stats = db_connect();
+
+    $session_stamp = time() - $session_cutoff;
+
+    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE TIME < $session_stamp";
+    $result = db_query($sql, $db_bh_update_session_stats);
+
+    // Fetch the number of active users
+
+    $sql = "SELECT COUNT(UID) AS SCOUNT FROM ". forum_table("SESSIONS");
+    $result = db_query($sql, $db_bh_update_session_stats);
+
+    $sessions = db_fetch_array($result);
+
+    // Fetch the current stat entry from the database
+
+    $sql = "SELECT MOST_USERS_COUNT FROM ". forum_table("STATS");
+    $result = db_query($sql, $db_bh_update_session_stats);
+
+    $most_users = db_fetch_array($result);
+
+    // Check to see if we've got a higher value
+
+    if ($sessions['SCOUNT'] > $most_users['MOST_USERS_COUNT']) {
+
+        $sql = "UPDATE ". forum_table("STATS"). " SET MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = {$sessions['SCOUNT']}";
+        $result = db_query($sql, $db_bh_update_session_stats);
+    }
+}
+
 // Checks the session
 
 function bh_session_check()
 {
-    global $HTTP_COOKIE_VARS, $session_cutoff;
+    global $HTTP_COOKIE_VARS;
 
     ip_check();
 
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
-
-    // Tidy up all the old sessions
-
-    $session_stamp = time() - $session_cutoff;
-
-    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE TIME < $session_stamp";
-    $result = db_query($sql, $db_bh_session_check);
-
-    // Check the number of active users stat
-
-    $sql = "SELECT COUNT(UID) AS SCOUNT FROM ". forum_table("SESSIONS");
-    $result = db_query($sql, $db_bh_session_check);
-
-    $sessions = db_fetch_array($result);
-
-    $sql = "SELECT MOST_USERS_COUNT FROM ". forum_table("STATS");
-    $result = db_query($sql, $db_bh_session_check);
-
-    $most_users = db_fetch_array($result);
-
-    if ($sessions['SCOUNT'] > $most_users['MOST_USERS_COUNT']) {
-
-        $sql = "UPDATE ". forum_table("STATS"). " SET MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = {$sessions['SCOUNT']}";
-        $result = db_query($sql, $db_bh_session_check);
-    }
 
     // Check the current user's cookie data. This is the main session
     // data that Beehive relies on. We only store something in the
@@ -84,10 +95,27 @@ function bh_session_check()
                 // Everything checks out OK, update the user's SESSION entry
                 // in the database.
 
-                $sql = "UPDATE ". forum_table("SESSIONS"). " ";
-                $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() WHERE UID = {$user_sess['UID']}";
+                $sql = "SELECT SESSID FROM ". forum_table("SESSIONS"). " ";
+                $sql.= "WHERE UID = {$user_sess['UID']} AND IPADDRESS = '$ipaddress'";
+
+                $result = db_query($sql, $db_bh_session_check);
+
+                if (db_num_rows($result)) {
+
+                    $sess_array = db_fetch_array($result);
+
+                    $sql = "UPDATE ". forum_table("SESSIONS"). " ";
+                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
+                    $sql.= "WHERE SESSID = {$sess_array['SESSID']}";
+
+                }else {
+
+                    $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
+                    $sql.= "VALUES ('{$user_sess['UID']}', '$ipaddress', NOW())";
+                }
 
                 if (db_query($sql, $db_bh_session_check)) {
+                    bh_update_session_stats();
                     return true;
                 }
             }
@@ -122,25 +150,14 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
 
-    $sql = "SELECT * FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
-    $result = db_query($sql, $db_bh_session_init);
-
-    if (db_num_rows($result)) {
-
-        $sql = "UPDATE ". forum_table("SESSIONS"). " ";
-        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() WHERE UID = $uid";
-
-    }else {
-
-        $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
-        $sql.= "VALUES ('$uid', '$ipaddress', NOW())";
-    }
+    $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
+    $sql.= "VALUES ('$uid', '$ipaddress', NOW())";
 
     $result = db_query($sql, $db_bh_session_init);
 
     $sql = "select USER.UID, USER.LOGON, USER.PASSWD, USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, ";
     $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, ";
-    $sql.= "USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY ";
+    $sql.= "USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, USER_PREFS.SHOW_STATS ";
     $sql.= "from " . forum_table("USER") . " USER left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
     $sql.= "where USER.UID = $uid";
 
@@ -166,7 +183,8 @@ function bh_session_init($uid)
                            'VIEW_SIGS'      => 0,
                            'START_PAGE'     => 0,
                            'LANGUAGE'       => $default_language,
-                           'PM_NOTIFY'      => 'N');
+                           'PM_NOTIFY'      => 'N',
+                           'SHOW_STATS'     => 1);
 
     }
 
@@ -181,14 +199,6 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
-    // Session data in database
-
-    $db_bh_session_end = db_connect();
-    $uid = bh_session_get_value('UID');
-
-    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
-    $result = db_query($sql, $db_bh_session_end);
-
     // Session cookies
 
     bh_setcookie("bh_sess_data", "", time() - YEAR_IN_SECONDS);
@@ -197,7 +207,6 @@ function bh_session_end()
     // Other cookies set by Beehive
 
     bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
-
 }
 
 // IIS does not support the REQUEST_URI server var, so we will make one for it

@@ -4,7 +4,7 @@
 #
 # Generation Time: Nov 09, 2003 at 03:58 PM
 #
-# $Id: upgrade-04-to-041.sql,v 1.8 2004-03-16 19:22:49 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.9 2004-03-16 19:24:49 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -90,7 +90,7 @@ CREATE TABLE USER_STATUS (
   UID MEDIUMINT UNSIGNED NOT NULL,
   FID MEDIUMINT UNSIGNED NOT NULL,
   STATUS INT(16) NOT NULL,
-  PRIMARY KEY (UID)
+  INDEX (UID)
 ) TYPE=MyISAM;
 
 INSERT INTO USER_STATUS (UID, STATUS) SELECT UID, STATUS FROM USER;

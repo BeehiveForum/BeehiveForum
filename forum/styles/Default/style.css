@@ -27,6 +27,11 @@ frame           {
                 margin: 4px 1px 1px 4px;
                 text-decoration: none;
                 }
+                
+.navpage A	{
+		color: #000000;
+		text-decoration: none;
+		}
 
 P, H1, H2,  .form	{
 		background-color: transparent;
@@ -215,8 +220,10 @@ A		{
           font-size: 10pt;
           font-style: normal;
           color: #000000;
-          background-color: #EAEFF4;
+          border-top: 1px #C8D7E6 solid;
           text-align: center;
+          padding-top: 1px;
+          padding-bottom: 1px;
 }
 
 .messagefoot {
@@ -329,4 +336,65 @@ A		{
 
 .highlight { 
           background-color: #C8D7E6
+}
+
+.code {
+		font-family: monospace;
+		border: 1px solid #CCCCCC;
+		background-color: #EEEEEE;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		margin-left: 40px;
+		margin-right: 10px;
+		padding: 3px;
+}
+.quote {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		border: 1px solid #CCCCCC;
+		background-color: #EEEEEE;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		margin-left: 40px;
+		margin-right: 10px;
+		padding: 3px;
+}
+
+.tools {
+		margin: 0;
+		width: 350px;
+		padding: 2px;
+		background: #C8D7E6;
+		border-top: 1px solid buttonhighlight;
+		border-left: 1px solid buttonhighlight;
+		border-bottom: 1px solid buttonshadow;
+		border-right: 1px solid buttonshadow;
+		text-align:left;
+		display: none;
+}
+
+.tools_up {
+		background: #C8D7E6;
+		border: 1px solid #C8D7E6;
+		margin: 1;
+		float:left;
+}
+
+.tools_over {
+		border-top: 1px solid buttonhighlight;
+		border-left: 1px solid buttonhighlight;
+		border-bottom: 1px solid buttonshadow;
+		border-right: 1px solid buttonshadow;
+		background: #C8D7E6;
+		margin:1;
+		float:left;
+}
+
+.tools_down {
+		border-top: 1px solid buttonshadow;
+		border-left: 1px solid buttonshadow;
+		border-bottom: 1px solid buttonhighlight;
+		border-right: 1px solid buttonhighlight;
+		background: #C8D7E6;
+		margin:1;
+		float:left;
 }

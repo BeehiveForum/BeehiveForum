@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.62 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: prefs.php,v 1.63 2003-07-29 16:26:43 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -83,14 +83,14 @@ $available_langs = lang_get_available(); // get list of available languages
 $available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
 array_unshift($available_langs, "");
 
-$timezones = array("GMT - 11 {$lang['hours']}", "GMT - 10 {$lang['hours']}", "GMT - 9 {$lang['hours']}",
-                   "GMT - 8 {$lang['hours']}", "GMT - 7 {$lang['hours']}", "GMT - 6 {$lang['hours']}",
-                   "GMT - 5 {$lang['hours']}", "GMT - 4 {$lang['hours']}", "GMT - 3 {$lang['hours']}",
-                   "GMT - 2 {$lang['hours']}", "GMT - 1 {$lang['hours']}", "GMT",
-                   "GMT + 1 {$lang['hours']}", "GMT + 2 {$lang['hours']}", "GMT + 3 {$lang['hours']}",
-                   "GMT + 4 {$lang['hours']}", "GMT + 5 {$lang['hours']}", "GMT + 6 {$lang['hours']}",
-                   "GMT + 7 {$lang['hours']}", "GMT + 8 {$lang['hours']}", "GMT + 9 {$lang['hours']}",
-                   "GMT + 10 {$lang['hours']}", "GMT + 11 {$lang['hours']}");
+$timezones = array("GMT -12h", "GMT -11h", "GMT -10h", "GMT -9h30m", "GMT -9h", "GMT -8h30m", "GMT -8h",
+                   "GMT -7h", "GMT -6h", "GMT -5h", "GMT -4h", "GMT -3h30m", "GMT -3h", "GMT -2h", "GMT -1h",
+                   "GMT", "GMT +1h", "GMT +2h", "GMT +3h",  "GMT +3h30m","GMT +4h", "GMT +4h30m", "GMT +5h",
+                   "GMT +5h30m", "GMT +6h", "GMT +6h30m", "GMT +7h", "GMT +8h", "GMT +9h", "GMT +9h30m",
+                   "GMT +10h", "GMT +10h30m", "GMT +11h", "GMT +11h30m", "GMT +12h", "GMT +13h", "GMT +14h");
+                   
+$timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
+                        6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
 
 if(isset($HTTP_POST_VARS['submit'])) {
 
@@ -359,7 +359,7 @@ if(!empty($error_html)) {
     <table class="posthead" width="400">
       <tr>
         <td><?php echo $lang['timezonefromGMT']; ?></td>
-        <td><?php echo form_dropdown_array("timezone", range(-11,11), $timezones, $user_prefs['TIMEZONE']); ?></td>
+        <td><?php echo form_dropdown_array("timezone", $timezones_data, $timezones, $user_prefs['TIMEZONE']); ?></td>
       </tr>
       <tr>
         <td><?php echo $lang['postsperpage']; ?></td>

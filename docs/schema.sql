@@ -444,7 +444,7 @@ CREATE TABLE USER_PREFS (
   HOMEPAGE_URL varchar(255) default NULL,
   PIC_URL varchar(255) default NULL,
   EMAIL_NOTIFY char(1) default NULL,
-  TIMEZONE tinyint(4) default NULL,
+  TIMEZONE decimal(2,1) default NULL,
   DL_SAVING char(1) default NULL,
   MARK_AS_OF_INT char(1) default NULL,
   POSTS_PER_PAGE tinyint(3) unsigned default NULL,

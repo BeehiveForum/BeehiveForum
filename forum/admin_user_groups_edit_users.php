@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.4 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.5 2004-08-08 00:49:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -165,7 +165,7 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
 $user_perms = perm_get_user_permissions(bh_session_get_value('UID'));
 $group_permissions = perm_get_group_permissions($gid);
 
-if (!perm_user_in_group(bh_session_get_value('UID'), $gid) && $user_perms['STATUS'] < $group_permissions) {
+if (!perm_user_in_group(bh_session_get_value('UID'), $gid) && $user_perms < $group_permissions) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();

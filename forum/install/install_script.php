@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.17 2004-08-14 21:40:37 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.18 2004-08-15 16:23:07 hodcroftcj Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -832,7 +832,7 @@ $sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
 $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  START_PAGE TINYINT(1) NOT NULL DEFAULT '0',";
+$sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0',";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";

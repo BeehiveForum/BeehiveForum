@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.60 2004-01-19 20:56:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.61 2004-01-24 16:43:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -37,6 +37,7 @@ $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 $lang['add'] = "Add";
 $lang['advanced'] = "Advanced";
 $lang['remove'] = "Remove";
+$lang['style'] = "Style";
 $lang['go'] = "Go";
 $lang['folder'] = "Folder";
 $lang['folders'] = "Folders";
@@ -613,7 +614,21 @@ $lang['nomessagespecifiedforreply'] = "No message specified for reply to";
 $lang['nouserspecified'] = "No user specified.";
 $lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your Inbox now?";
 
-// Preferences (prefs.php) ---------------------------------------------
+// Preferences / Profile (user_*.php) ---------------------------------------------
+
+$lang['mycontrols'] = "My Controls";
+$lang['menu'] = "Menu";
+$lang['userdetails'] = "User Details";
+$lang['userprofile'] = "User Profile";
+$lang['userexp_1'] = "Use the menu on the left to manage your settings.";
+$lang['userexp_2'] = "<b>User Details</b> allows you to change your name, email address and password.";
+$lang['userexp_3'] = "<b>User Profile</b> allows you to edit your user profile.";
+$lang['userexp_4'] = "<b>Forum Options</b> lets you change how the forum looks and works.";
+$lang['userexp_5'] = "<b>Signature</b> lets you edit your signature.";
+$lang['userexp_6'] = "<b>Attachments</b> allows you to edit/delete your attachments.";
+$lang['emailandprivacy'] = "Email & Privacy";
+$lang['userinformation'] = "User Information";
+$lang['changepassword'] = "Change Password";
 $lang['newpasswd'] = "New Password";
 $lang['confirmpasswd'] = "Confirm Password";
 $lang['passwdsdonotmatch'] = "Passwords do not match!";
@@ -633,6 +648,7 @@ $lang['nov'] = "November";
 $lang['dec'] = "December";
 $lang['userpreferences'] = "User Preferences";
 $lang['preferencesupdated'] = "Preferences were successfully updated.";
+$lang['userdetails'] = "User Details";
 $lang['leaveblanktoretaincurrentpasswd'] = "Leave blank to retain current password";
 $lang['firstname'] = "First name";
 $lang['lastname'] = "Last name";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.31 2004-01-21 21:38:27 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.32 2004-01-24 16:43:15 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -50,6 +50,7 @@ function get_attachments($uid, $aid)
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
                                        "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
@@ -85,6 +86,7 @@ function get_all_attachments($uid, $aid)
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
                                        "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
@@ -119,6 +121,7 @@ function get_users_attachments($uid)
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
                                        "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],

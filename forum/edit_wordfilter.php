@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.36 2004-05-04 17:10:18 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.37 2004-05-05 15:29:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,7 +155,7 @@ if (!isset($user_prefs['USE_ADMIN_FILTER'])) $user_prefs['USE_ADMIN_FILTER'] = '
 
 // Get Word Filter
 
-$word_filter_array = user_get_word_filter(($user_prefs['USE_ADMIN_FILTER'] == 'Y'));
+$word_filter_array = user_get_word_filter();
 
 echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
@@ -163,7 +163,6 @@ if (isset($status_text)) echo $status_text;
 
 echo "<p>{$lang['wordfilterexp_3']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
-
 
 echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
@@ -189,11 +188,17 @@ foreach ($word_filter_array as $key => $word_filter) {
     echo "                <tr>\n";
 
     if ($word_filter['UID'] == 0) {
-        echo "                  <td align=\"center\"><sup>[A]</sup></td>\n";
-        echo "                  <td>", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
-        echo "                  <td>", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), "</td>\n";
-        echo "                  <td>&nbsp;</td>\n";
+
+        if (!forum_get_setting('admin_force_word_filter', 'Y', false)) {
+
+            echo "                  <td align=\"center\"><sup>[A]</sup></td>\n";
+            echo "                  <td>", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
+            echo "                  <td>", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), "</td>\n";
+            echo "                  <td>&nbsp;</td>\n";
+        }
+
     }else {
+
         echo "                  <td>&nbsp;</td>\n";
         echo "                  <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
         echo "                  <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
@@ -238,9 +243,14 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "</td>\n";
 echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], (isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";
-echo "                </tr>\n";
+
+if (!forum_get_setting('admin_force_word_filter', 'Y', false)) {
+
+    echo "                <tr>\n";
+    echo "                  <td>", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], (isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.70 2004-05-04 17:10:16 decoyduck Exp $ */
+/* $Id: delete.php,v 1.71 2004-05-05 15:29:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -125,7 +125,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
-    echo "<h2{$lang['nomessagespecifiedfordel']}</h2>";
+    echo "<h2>{$lang['nomessagespecifiedfordel']}</h2>";
     html_draw_bottom();
     exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.87 2004-09-05 17:16:23 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.88 2004-09-14 08:28:58 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -223,7 +223,7 @@ if ($users_array['user_count'] > 0) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$resent_user['UID']}, '$webtag')\">", apply_wordfilter($resent_user['NICKNAME']), "</a></td>\n";
+        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$resent_user['UID']}, '$webtag')\">", apply_wordfilter($resent_user['NICKNAME']), "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($resent_user['LAST_LOGON']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }
@@ -256,7 +256,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", apply_wordfilter($row['NICKNAME']), "</a></td>\n";
+        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", apply_wordfilter($row['NICKNAME']), "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }

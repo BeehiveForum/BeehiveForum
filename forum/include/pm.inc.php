@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.89 2004-09-13 21:23:15 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.90 2004-09-14 08:28:59 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -959,7 +959,6 @@ function pm_user_prune_folders($uid = false)
             $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
             $sql.= "((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
             $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
-            $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid')) ";
             $sql.= "AND PM.CREATED < FROM_UNIXTIME('$pm_prune_length')";
 
             $result = db_query($sql, $db_pm_prune_folders);
@@ -981,11 +980,22 @@ function pm_system_prune_folders()
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
         $sql.= "(PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. ") ";
         $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. ") ";
-        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. ") ";
         $sql.= "AND PM.CREATED < FROM_UNIXTIME('$pm_prune_length')";
 
         $result = db_query($sql, $db_pm_prune_folders);
     }
 }
 
+function pm_auto_prune_enabled()
+{
+    $uid = bh_session_get_value('UID');
+
+    $user_prefs = user_get_prefs($uid);
+
+    if (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == 'Y') return true;
+
+    return forum_get_setting('pm_auto_prune', 'Y', false);
+
+    return false;
+}
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.67 2004-09-13 15:59:20 decoyduck Exp $ */
+/* $Id: pm.php,v 1.68 2004-09-14 08:28:58 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -386,6 +386,18 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+
+if (pm_auto_prune_enabled()) {
+
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "      <td class=\"pmbar_text\" colspan=\"4\"><img src=\"", style_image('warning.png'), "\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['pmpruneexplanation']}');\">?</a>]</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "    <tr>\n";
 echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
 echo "    </tr>\n";

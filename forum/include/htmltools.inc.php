@@ -236,7 +236,7 @@ class TextAreaHTML {
 
         $str = form_radio("co_{$ta}_rb", "correct", $lang['correctedcode'], true, "onClick=\"co_{$ta}_show('correct');\"")."\n";
         $str.= form_radio("co_{$ta}_rb", "submit", $lang['submittedcode'], false, "onClick=\"co_{$ta}_show('submit');\"")."\n";
-        $str.= "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('{$lang['fixhtmlexplanation']}');\">?</a>]\n";
+        $str.= "&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['fixhtmlexplanation']}');\">?</a>]\n";
 
         $str.= form_input_hidden("co_{$ta}_old", _htmlentities($text))."\n";
         $str.= form_input_hidden("co_{$ta}_current", "correct")."\n";;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.209 2005-01-24 22:20:17 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.210 2005-01-24 23:00:42 decoyduck Exp $ */
 
 // International English language file
 
@@ -34,6 +34,7 @@ $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 
 // Common words --------------------------------------------------------
 
+$lang['banned'] = "Banned";
 $lang['locked'] = "Locked";
 $lang['add'] = "Add";
 $lang['advanced'] = "Advanced";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.135 2005-01-21 21:25:52 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.136 2005-01-24 23:00:59 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -36,6 +36,7 @@ $lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
 
 // Common words --------------------------------------------------------
 
+$lang['banned'] = "Banned";
 $lang['locked'] = "Verrouillé";
 $lang['add'] = "Ajouter";
 $lang['advanced'] = "Avançé";
@@ -181,17 +182,18 @@ $lang['forumadmin'] = "Administration de forum";
 $lang['adminexp_1'] = "Use the menu on the left to manage things in your forum.";
 $lang['adminexp_2'] = "<b>Users</b> allows you to set individual user permissions, including appointing Editors and gagging people.";
 $lang['adminexp_3'] = "<b>User Groups</b> allows you to create User Groups to assign permissions to as many or as few users quickly and easily.";
-$lang['adminexp_4'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
-$lang['adminexp_5'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
-$lang['adminexp_6'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
-$lang['adminexp_7'] = "<b>Start Page</b> lets you customise your forum's start page.";
-$lang['adminexp_8'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
-$lang['adminexp_9'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
-$lang['adminexp_10'] = "<b>Posting stats</b> generates a report listing the top 10 posters by month, week, day and hour.";
-$lang['adminexp_11'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
-$lang['adminexp_12'] = "<b>View log</b> lists recent actions by the forum moderators.";
-$lang['adminexp_13'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
-$lang['adminexp_14'] = "<b>Default Forum Settings</b> allows you to modify settings which affect all forums.";$lang['createforumstyle'] = "Créer un Style de Forum";
+$lang['adminexp_4'] = "<b>Ban Controls</b> allows the banning and unbanning of IP Addresses, Usernames, Email addresses and Nicknames.";
+$lang['adminexp_5'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
+$lang['adminexp_6'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
+$lang['adminexp_7'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
+$lang['adminexp_8'] = "<b>Start Page</b> lets you customise your forum's start page.";
+$lang['adminexp_9'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
+$lang['adminexp_10'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
+$lang['adminexp_11'] = "<b>Posting stats</b> generates a report listing the top 10 posters by month, week, day and hour.";
+$lang['adminexp_12'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
+$lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum moderators.";
+$lang['adminexp_14'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
+$lang['adminexp_15'] = "<b>Default Forum Settings</b> allows you to modify settings which affect all forums.";$lang['createforumstyle'] = "Créer un Style de Forum";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['newstyle'] = "Nouveau style";
 $lang['successfullycreated'] = "avec succès créé.";
@@ -441,6 +443,18 @@ $lang['totalpoststhismonth'] = "Total posts this month";
 $lang['totalpoststhisweek'] = "Total posts this week";
 $lang['totalpoststoday'] = "Total posts today";
 $lang['totalpoststhishour'] = "Total posts this hour";
+
+$lang['bancontrols'] = "Ban Controls";
+$lang['bannedipaddresses'] = "Banned IP Addresses";
+$lang['bannedlogons'] = "Banned Logons";
+$lang['bannednicknames'] = "Banned Nicknames";
+$lang['bannedemailaddresses'] = "Banned Email Addresses";
+$lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>\n";
+$lang['ipaddressisalreadybanned'] = "That IP Address is already banned. Check your wildcards to see if they already match it.";
+$lang['logonisalreadybanned'] = "That Logon is already banned. Check your wildcards to see if they already match it.";
+$lang['nicknameisalreadybanned'] = "That Nickname is already banned. Check your wildcards to see if they already match it.";
+$lang['emailisalreadybanned'] = "That Email Address is already banned. Check your wildcards to see if they already match it.";
+$lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 
@@ -931,6 +945,9 @@ $lang['confirmpasswd'] = "Confirmer le Mot de passe";
 $lang['passwdsdonotmatch'] = "Les mots de passe pas allumette!";
 $lang['nicknamerequired'] = "Le surnom est exigé!";
 $lang['emailaddressrequired'] = "Adresse mél est exige!";
+$lang['logonnotpermitted'] = "Logon not permitted. Choose another!";
+$lang['nicknamenotpermitted'] = "Nickname not permitted. Choose another!";
+$lang['emailaddressnotpermitted'] = "Email Address not permitted. Choose another!";
 $lang['relationshipsupdated'] = "Relationships Updated";
 $lang['relationshipupdatefailed'] = "Relationship updated failed!";
 $lang['jan'] = "Janvier";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.120 2005-01-23 23:50:54 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.121 2005-01-24 23:00:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -607,73 +607,6 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                </tr>\n";
     }
 
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['useripaddresses']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"90%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td colspan=\"3\">{$lang['listofthelastknownipaddresses']}</td>\n";
-    echo "                      </tr>\n";
-
-    if ($user_ip_address_array = user_get_ip_addresses($user['UID'])) {
-
-        if (sizeof($user_ip_address_array) > 0) {
-
-            echo "                      <tr>\n";
-            echo "                        <td>&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-
-            $user_ip_address_count = 1;
-
-            foreach ($user_ip_address_array as $ip_address) {
-
-                if (ip_is_banned($ip_address)) {
-                    echo "                        <td align=\"left\" width=\"33%\">", form_input_hidden("t_ip_banned[]", $ip_address), form_checkbox("t_ban_ipaddress[]", $ip_address, $ip_address, true), "</td>\n";
-                }else {
-                    echo "                        <td align=\"left\" width=\"33%\">", form_checkbox("t_ban_ipaddress[]", $ip_address, $ip_address, false), "</td>\n";
-                }
-
-                if (!($user_ip_address_count % 3)) {
-
-                    echo "                      </tr>\n";
-                    echo "                      <tr>\n";
-                }
-
-                $user_ip_address_count++;
-            }
-        }
-
-    }else {
-
-        echo "                      <tr>\n";
-        echo "                        <td colspan=\"3\">{$lang['nomatches']}</td>\n";
-        echo "                      </tr>\n";
-    }
-
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";

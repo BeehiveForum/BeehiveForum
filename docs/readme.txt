@@ -591,20 +591,26 @@ X-Gangsta
 Matt Beale, Andy Black, Chris Hodcroft, Mark Rendle, Rowan Hill, 
 Andrew Holgate, Peter Kelly, Mike Franklin, Ben Sekulowicz
 
+4.2 Website
+===========
 
-4.2 Design/CSS
+Peter Boughton, Rowan Hill, Matt Beale, Mike Franklin and all you
+lovely Wiki contributors.
+
+
+4.3 Design/CSS
 ==============
 
 Mike Franklin, Simon Roberts, Kevin Yip
 
 
-4.3 Graphics
+4.4 Graphics
 ============
 
 Nigel Moore, Kevin Yip, Andrew Holgate, Mike Quigley
 
 
-4.4 Translations
+4.5 Translations
 ================
 
 French   - Mark Krywonos
@@ -612,18 +618,16 @@ Gangsta  - Jay Graham.
 X-Hacker - Matt Beale.
 
 
-4.5 Contributions
-=================
+4.6 Other Contributions
+=======================
 
-Mike Quigley, Frnht451, Michael Hermitscave, Peter Boughton, Lots of other people
+Mike Quigley, Frnht451, Michael @ Hermitscave, Peter Boughton, Lots of other people
 
 
-4.6 Project Leaders
-===================
+4.7 Project Lead
+================
 
 Matt Beale
-Andy Black
-Chris Hodcroft
 
 
 4.7 Special Thanks

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.50 2003-12-01 19:17:48 decoyduck Exp $ */
+/* $Id: index.php,v 1.51 2003-12-07 17:34:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -57,6 +57,7 @@ if (!file_exists($top_html)) {
 <title><?php echo $forum_name; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $lang['_charset']; ?>">
 <link rel="stylesheet" href="<?php echo $stylesheet; ?>" type="text/css" />
+<script language="Javascript" type="text/javascript" src="./js/index.js"></script>
 </head>
 <?php
 
@@ -69,7 +70,11 @@ if (bh_session_check()) {
 
     // User is actually logged in. Show them the relevant frameset.
 
-    echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
+    // Calculate how tall the nav frameset should be based on the user's fontsize.
+    
+    $navsize = bh_session_get_value('FONT_SIZE') * 2;
+
+    echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
     echo "<frame src=\"./nav.php\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 

@@ -105,8 +105,8 @@ function _html_draw_pm_script()
     echo "<!--\n";
     echo "function pm_notification() {\n";
 
-    if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check(bh_session_get_value('UID')))) {
-        echo "    if (window.confirm('You have a new PM. Read it now?')) {\n";
+    if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
+        echo "    if (window.confirm('You have a new PM. Would you like to go to your Inbox now?')) {\n";
         echo "        top.frames['main'].location.replace('pm.php');\n";
         echo "    }\n";
     }

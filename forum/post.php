@@ -195,7 +195,13 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
         echo "<p>&nbsp;</p>";
         echo "<div align=\"center\"><p>\n";
         echo "Message posted successfully\n";
-        echo "<br /><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a>\n";
+        
+        if ($newthread) {
+          echo "<br /><a href=\"discussion.php?msg=$t_tid.1\">Return to messages</a>\n";
+        }else{
+          echo "<br /><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a>\n";
+        }
+        
         echo "</p></div>\n";
         html_draw_bottom();
 

@@ -149,7 +149,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
 
     if($ddkey != $HTTP_POST_VARS['t_dedupe']){
         if($newthread){
-            $t_tid = post_create_thread($t_fid,$t_threadtitle);
+            $t_tid = post_create_thread($t_fid, $t_threadtitle);
             $t_rpid = 0;
         } else {
             $t_tid = $HTTP_POST_VARS['t_tid'];
@@ -184,10 +184,11 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
     }
 
     if($new_pid > -1){
+
+        html_draw_top();
     
         post_save_attachment_id($t_tid, $new_pid, $aid);
-    
-        html_draw_top();
+        
         echo "<p>&nbsp;</p>";
         echo "<p>&nbsp;</p>";
         echo "<div align=\"center\"><p>\n";
@@ -324,7 +325,7 @@ echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
 echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
 echo "<td>To: \n";
 
-echo post_draw_to_dropdown($t_to_uid);
+echo post_draw_to_dropdown($t_to_uid). "&nbsp;";
 //echo form_quick_button("javascript:t_tlogin = prompt('Please enter a membername:', '');", "Others");
 echo  "<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\">\n";
 

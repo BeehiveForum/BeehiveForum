@@ -126,7 +126,7 @@ function move_attachment($uid, $aid, $filename) {
     $db = db_connect();
     
     $sql = "update ". forum_table("POST_ATTACHMENT_FILES"). " set AID = '$aid' ";
-	    $sql.= "where UID = '$uid' and FILENAME = '$filename'";
+    $sql.= "where UID = '$uid' and FILENAME = '$filename'";
     
     $result = db_query($sql, $db) or die(mysql_error());
     
@@ -152,6 +152,26 @@ function get_free_attachment_space($uid) {
 
     return MAX_ATTACHMENT_SIZE - $used_attachment_space;                      
 }
+
+function get_attachment_id($tid, $pid) {
+
+    $db = db_connect();
+    
+    $sql = "select * from ". forum_table("POST_ATTACHMENT_IDS"). " where TID = $tid AND PID = $pid";
+    $result = db_query($sql, $db);
+    
+    if (db_num_rows($result) > 0) {
+    
+      $attachment = db_fetch_array($result);
+      return $attachment['AID'];
+      
+    }else{
+    
+      return -1;
+      
+    }
+    
+}    
 
 function download_attachment($uid, $filename) {
 

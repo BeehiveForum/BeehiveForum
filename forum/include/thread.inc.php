@@ -43,8 +43,11 @@ function thread_get_title($tid)
 
 function thread_get($tid)
 {
+   global $HTTP_COOKIE_VARS;
    $db_thread_get = db_connect();
-   $sql = "SELECT * FROM " . forum_table("THREAD") . " WHERE tid = $tid";
+   $sql = "SELECT THREAD.*, USER_THREAD.INTEREST AS INTEREST FROM " . forum_table("THREAD") . " LEFT JOIN ";
+   $sql .= forum_table("USER_THREAD") . " ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = ";
+   $sql .= $HTTP_COOKIE_VARS['bh_sess_uid'] . ") WHERE THREAD.TID = $tid";
    $resource_id = db_query($sql, $db_thread_get);
    if(!db_num_rows($resource_id)){
      $threaddata = false;

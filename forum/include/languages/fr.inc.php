@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.26 2004-02-13 13:20:26 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.27 2004-02-23 21:31:25 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -633,6 +633,7 @@ $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
+$lang['editrelationships'] = "Edit Relationships";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
 $lang['newpasswd'] = "Nouveau Mot de passe";
@@ -804,6 +805,10 @@ $lang['yoursearchdidnotreturnanymatches'] = "Votre recherche n'est pas retournée
 // Relationships (user_rel.php) ----------------------------------------
 
 $lang['userrelationship'] = "Relation d'utilisateur";
+$lang['userrelationships'] = "Rapports d'utilisateur";
+$lang['friends'] = "Friends";
+$lang['ignoredusers'] = "Ignored Users";
+$lang['ignoredsignatures'] = "Ignored Signatures";
 $lang['relationship'] = "Relation";
 $lang['friend_exp'] = "Les postes de l'utilisateur ont marqué avec un &quot;Friend&quot; icon.";
 $lang['normal_exp'] = "Les postes de l'utilisateur apparaissent comme normal.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.4 2004-01-26 20:11:14 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.5 2004-02-23 21:31:27 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -80,6 +80,9 @@ echo "    <td class=\"postbody\"><a href=\"edit_attachments.php\" target=\"right
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"edit_signature.php\" target=\"right\">{$lang['editsignature']}</a></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_relations.php\" target=\"right\">{$lang['editrelationships']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

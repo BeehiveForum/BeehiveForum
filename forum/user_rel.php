@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.25 2004-01-26 19:40:59 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.26 2004-02-23 21:31:27 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -46,13 +46,20 @@ if(bh_session_get_value('UID') == 0) {
         exit;
 }
 
-
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }elseif (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
     $msg = $HTTP_POST_VARS['msg'];
 }else {
     $msg = messages_get_most_recent(bh_session_get_value('UID'));
+}
+
+if (isset($HTTP_GET_VARS['edit_rel']) && is_numeric($HTTP_GET_VARS['edit_rel'])) {
+    $edit_rel = true;
+}elseif (isset($HTTP_POST_VARS['edit_rel']) && is_numeric($HTTP_POST_VARS['edit_rel'])) {
+    $edit_rel = true;
+}else {
+    $edit_rel = false;
 }
 
 require_once("./include/user.inc.php");
@@ -80,7 +87,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    header_redirect("./messages.php?msg=$msg");
+    if ($edit_rel) {
+        header_redirect("./edit_relations.php");
+    }else {
+        header_redirect("./messages.php?msg=$msg");
+    }
 }
 
 if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
@@ -106,52 +117,72 @@ html_draw_top("openprofile.js");
 $rel = user_rel_get($my_uid, $uid);
 
 echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
-?>
+echo "<br />\n";
+echo "<div class=\"postbody\">\n";
+echo "  <form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
+echo "    ", form_input_hidden("uid", $uid), "\n";
+echo "    ", form_input_hidden("msg", $msg), "\n";
+echo "    ", form_input_hidden("edit_rel", $edit_rel), "\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table class=\"box\">\n";
+echo "            <tr>\n";
+echo "              <td class=\"posthead\">\n";
+echo "                <table class=\"posthead\" width=\"500\">\n";
 
-<div class="postbody">
-  <form name="relationship" action="user_rel.php" method="post" target="_self">
-<?php echo "    ", form_input_hidden("uid", $uid), "\n    ", form_input_hidden("msg", $msg), "\n"; ?>
-    <table class="posthead" width="500">
-<?php if (isset($uid)) { ?>
-      <tr>
-        <td class="subhead" colspan="2"><?php echo $lang['relationship']; ?></td>
-      </tr>
-      <tr>
-        <td width="130"><?php echo form_radio("rel", "1", $lang['friend'], $rel & USER_FRIEND ? true : false); ?></td>
-        <td width="370">: <?php echo $lang['friend_exp']; ?></td>
-      </tr>
-      <tr>
-        <td width="130"><?php echo form_radio("rel", "0", $lang['normal'], !(($rel & USER_IGNORED) || ($rel & USER_FRIEND)) ? true : false); ?></td>
-        <td width="370">: <?php echo $lang['normal_exp']; ?></td>
-      </tr>
-      <tr>
-        <td width="130"><?php echo form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false); ?></td>
-        <td width="370">: <?php echo $lang['ignore_exp']; ?></td>
-      </tr>
-<?php } ?>
-      <tr>
-        <td class="subhead" colspan="2"><?php echo $lang['signature']; ?></td>
-      </tr>
-<?php if (isset($uid)) { ?>
-      <tr>
-        <td width="130"><?php echo form_radio("sig", "0", $lang['display'], $rel ^ USER_IGNORED_SIG ? true : false); ?></td>
-        <td width="370">: <?php echo $lang['displaysig_exp']; ?></td>
-      </tr>
-      <tr>
-        <td width="130"><?php echo form_radio("sig", "4", $lang['ignore'], $rel & USER_IGNORED_SIG ? true : false); ?></td>
-        <td width="370">: <?php echo $lang['hidesig_exp']; ?></td>
-      </tr>
-<?php } ?>
-      <tr>
-        <td width="130"><?php echo form_checkbox("sig_global", "Y", $lang['globallyignored'], user_get_global_sig(bh_session_get_value('UID')) == "Y"); ?></td>
-        <td width="370">: <?php echo $lang['globallyignoredsig_exp']; ?></td>
-      </tr>
-    </table>
-    <p><?php echo form_submit("submit", $lang['submit'])."&nbsp;".form_submit("cancel", $lang['cancel']); ?></p>
-  </form>
-</div>
-<?php
+if (isset($uid)) {
 
-  html_draw_bottom();
+    echo "                  <tr>\n";
+    echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['relationship']}</td>\n";
+    echo "                  </tr>\n";
+    echo "                  <tr>\n";
+    echo "                    <td width=\"130\">", form_radio("rel", "1", $lang['friend'], $rel & USER_FRIEND ? true : false), "</td>\n";
+    echo "                    <td width=\"370\">: {$lang['friend_exp']}</td>\n";
+    echo "                  </tr>\n";
+    echo "                  <tr>\n";
+    echo "                    <td width=\"130\">", form_radio("rel", "0", $lang['normal'], !(($rel & USER_IGNORED) || ($rel & USER_FRIEND)) ? true : false), "</td>\n";
+    echo "                    <td width=\"370\">: {$lang['normal_exp']}</td>\n";
+    echo "                  </tr>\n";
+    echo "                  <tr>\n";
+    echo "                    <td width=\"130\">", form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false), "</td>\n";
+    echo "                    <td width=\"370\">: {$lang['ignore_exp']}</td>\n";
+    echo "                  </tr>\n";
+}
+
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['signature']}</td>\n";
+echo "                  </tr>\n";
+
+if (isset($uid)) {
+
+    echo "                  <tr>\n";
+    echo "                    <td width=\"130\">", form_radio("sig", "0", $lang['display'], $rel ^ USER_IGNORED_SIG ? true : false), "</td>\n";
+    echo "                    <td width=\"370\">: {$lang['displaysig_exp']}</td>\n";
+    echo "                  </tr>\n";
+    echo "                  <tr>\n";
+    echo "                    <td width=\"130\">", form_radio("sig", "4", $lang['ignore'], $rel & USER_IGNORED_SIG ? true : false), "</td>\n";
+    echo "                    <td width=\"370\">: {$lang['hidesig_exp']}</td>\n";
+    echo "                  </tr>\n";
+}
+
+echo "                  <tr>\n";
+echo "                    <td width=\"130\">", form_checkbox("sig_global", "Y", $lang['globallyignored'], user_get_global_sig(bh_session_get_value('UID')) == "Y"), "</td>\n";
+echo "                    <td width=\"370\">: {$lang['globallyignoredsig_exp']}</td>\n";
+echo "                  </tr>\n";
+echo "                </table>\n";
+echo "              </td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "        <td align=\"center\"><p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
+echo "</div>\n";
+
+html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.10 2004-11-28 23:52:34 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.11 2004-12-09 13:20:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -126,7 +126,7 @@ if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0
     html_draw_top();
 
     echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>No form object specified for return text</h2>\n";
+    echo "<h2>{$lang['noformobj']}</h2>\n";
 
     html_draw_bottom();
     exit;
@@ -145,8 +145,8 @@ if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) >
 
     html_draw_top('dictionary.js', "onload=initialise_dictionary('$obj_id')");
 
-    echo "<h1>Dictionary</h1>\n";
-    echo "<h2>Initialising...</h2>\n";
+    echo "<h1>{$lang['dictionary']}</h1>\n";
+    echo "<h2>{$lang['initialisingdotdotdot']}</h2>\n";
 
     echo "<form id=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
@@ -271,7 +271,7 @@ if ($dictionary->is_check_complete()) {
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
     echo "function check_complete() {\n\n";
-    echo "    if (window.confirm('Spell check is complete. Do you wish to start again from the beginning?')) {\n";
+    echo "    if (window.confirm('{$lang['spellcheckcomplete']}')) {\n";
     echo "        document.dictionary.current_word.value = -1;\n";
     echo "        document.dictionary.submit();\n";
     echo "    }\n";
@@ -298,7 +298,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">Body Text</td>\n";
+echo "                  <td class=\"subhead\">{$lang['bodytext']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>\n";
@@ -328,16 +328,16 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\" class=\"subhead\">Spell Check</td>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['spellcheck']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">Not in dictionary</td>\n";
+echo "                  <td colspan=\"2\">{$lang['notindictionary']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_input_text("word_display", $dictionary->get_current_word(), 32, false, "style=\"width: 95%\" disabled=\"disabled\""), form_input_hidden("word", $dictionary->get_current_word()), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>Change to:</td>\n";
+echo "                  <td>{$lang['changeto']}:</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -345,19 +345,19 @@ echo "                  <td width=\"270\">", form_input_text("change_to", $dicti
 echo "                  <td rowspan=\"2\" width=\"130\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"120\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("ignore", "Ignore", "style=\"width: 90%\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("ignore", $lang['ignore'], "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("ignoreall", "Ignore All", "style=\"width: 90%\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("ignoreall", $lang['ignoreall'], "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("change", "Change", "style=\"width: 90%\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("change", $lang['change'], "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("changeall", "Change All", "style=\"width: 90%\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("changeall", $lang['changeall'], "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("add", "Add", "style=\"width: 90%\""), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("add", $lang['add'], "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -380,7 +380,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("ok", "OK"), "&nbsp;", form_submit("cancel", "Cancel"), "</td>\n";
+echo "      <td align=\"center\">", form_submit("ok", $lang['ok']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.8 2005-03-28 23:45:09 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.9 2005-03-29 21:48:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -137,6 +137,17 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 if (isset($_POST['cancel'])) {
     $uri = "./discussion.php?webtag=$webtag&msg=". $msg;
     header_redirect($uri);
+}
+
+if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
 if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {

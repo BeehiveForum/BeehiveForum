@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.141 2005-03-29 18:25:54 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.142 2005-03-29 21:48:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -199,7 +199,13 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
     $t_all_admin_tools = (double) (isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
     $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
 
-    $new_global_user_perms = ((double) $t_all_admin_tools | (double) $t_all_forum_tools);
+    if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] != 'cancel') {
+        $t_confirm_email = (double) USER_PERM_EMAIL_CONFIRM;
+    }else {
+        $t_confirm_email = (double) 0;
+    }
+
+    $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_confirm_email;
 
     if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 2) {
 
@@ -247,16 +253,8 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     // Confirmation email
 
-    if (isset($_POST['t_confirm_email']) && strlen(trim(_stripslashes($_POST['t_confirm_email']))) > 0) {
-
-        if ($_POST['t_confirm_email'] == 'cancel') {
-
-            perm_user_cancel_email_confirmation($uid);
-
-        }else if ($_POST['t_confirm_email'] == 'resend') {
-
-            email_send_user_confirmation($uid);
-        }
+    if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] == 'resend') {
+        email_send_user_confirmation($uid);
     }
 
     // Password reset

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.248 2005-03-26 18:16:44 decoyduck Exp $ */
+/* $Id: post.php,v 1.249 2005-03-29 21:48:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -396,6 +396,17 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
+    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+
+        html_draw_top();
+
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+
+        html_draw_bottom();
+        exit;
+    }
+
     if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
 
         html_draw_top();
@@ -417,6 +428,17 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
+    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+
+        html_draw_top();
+
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+
         html_draw_bottom();
         exit;
     }
@@ -452,6 +474,17 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         $error_html = "<h2>{$lang['invalidfolder']}</h2>\n";
         $valid = false;
+    }
+
+    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+
+        html_draw_top();
+
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+
+        html_draw_bottom();
+        exit;
     }
 
     if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE | USER_PERM_POST_READ)) {

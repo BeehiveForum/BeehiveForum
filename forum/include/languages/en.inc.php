@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.252 2005-03-29 18:25:56 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.253 2005-03-29 21:48:44 decoyduck Exp $ */
 
 // International English language file
 
@@ -998,6 +998,7 @@ $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
 $lang['postfrequencytoogreat_1'] = "You can only post once every";
 $lang['postfrequencytoogreat_2'] = "seconds. Please try again later.";
+$lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post!";
 
 // Message display (messages.php) --------------------------------------
 

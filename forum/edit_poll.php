@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.92 2005-03-26 18:16:43 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.93 2005-03-29 21:48:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -148,6 +148,17 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 }else if (!$aid = get_attachment_id($tid, $pid)) {
 
     $aid = md5(uniqid(rand()));
+}
+
+if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
 if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {

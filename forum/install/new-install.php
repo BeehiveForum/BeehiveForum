@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.9 2004-12-12 12:40:28 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.10 2004-12-17 16:13:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -584,7 +584,7 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "CREATE TABLE {$forum_webtag}_THREAD (";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  BY_UID mediumint(8) unsigned default NULL,";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
 $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
@@ -606,8 +606,8 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_THREAD ";
-$sql.= "(FID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-$sql.= "VALUES (1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);";
+$sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+$sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);";
 
 if (!$result = db_query($sql, $db_install)) {
 

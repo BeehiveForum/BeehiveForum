@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.205 2004-11-03 23:31:55 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.206 2004-11-04 18:43:37 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -360,7 +360,7 @@ function user_get_prefs($uid)
     $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, POST_PAGE FROM USER_PREFS WHERE UID = $uid";
 
     $result = db_query($sql, $db_user_get_prefs);
-    $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result) : array();
+    $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
 
     // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
 
@@ -373,7 +373,7 @@ function user_get_prefs($uid)
         $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
 
         $result = db_query($sql, $db_user_get_prefs);
-        $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result) : array();
+        $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
     }
 
     // Prune empty values from the arrays (to stop them overwriting valid values)
@@ -511,7 +511,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             $values = array();
 
             foreach($global_prefs as $pref_name => $pref_setting) {
-                 $values[] = "$pref_name = '$pref_setting'";
+                 if (user_check_pref($pref_name, $pref_setting)) {
+                     $values[] = "$pref_name = '$pref_setting'";
+                 }
             }
 
             $sql = "UPDATE USER_PREFS SET ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.84 2004-06-15 20:49:31 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.85 2004-07-07 13:59:21 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,7 +104,7 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-html_draw_top("openprofile.js");
+html_draw_top("openprofile.js", "robots=noindex,follow");
 
 echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";

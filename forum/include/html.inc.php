@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.117 2004-06-18 16:55:30 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.118 2004-07-07 13:59:20 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -247,6 +247,7 @@ function html_draw_top()
     $onunload_array = array();
     $arg_array = func_get_args();
     $meta_refresh = false;
+	$robots = false;
 
     $forum_settings = get_forum_settings();
     $webtag = get_webtag($webtag_search);
@@ -282,6 +283,11 @@ function html_draw_top()
             $meta_refresh = substr($func_args, 8);
             unset($arg_array[$key]);
         }
+
+        if (preg_match("/^robots=/i", $func_args)) {
+            $robots = substr($func_args, 7);
+            unset($arg_array[$key]);
+        }
     }
 
     if (!isset($title)) $title = forum_get_setting('forum_name');
@@ -302,12 +308,15 @@ function html_draw_top()
     echo "<meta name=\"reply-to\" content=\"$forum_email\" />\n";
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$forum_description\" />\n";
-    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 
+	if ($robots) {
+		echo "<meta name=\"robots\" content=\"$robots\" />\n";
+	}
     if ($meta_refresh) {
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
 
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
     $stylesheet = html_get_style_sheet();
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
 

@@ -45,12 +45,28 @@ function format_url2link($html)
 
 function format_time($time)
 {
-	if (date("j", $time) == date("j") && date("n", $time) == date("n") && date("Y", $time) == date("Y")) {
-		$fmt = gmdate("H:i", $time);
-	} else {
-		$fmt = gmdate("j M", $time);
-	}
-	
+    include_once("./include/constants.inc.php");
+    global $HTTP_COOKIE_VARS;
+    
+    // Make sure that $time is in GMT
+    $GMT_time = gmdate("U", $time);
+
+    // Work out the current time in GMT
+    $GMT_now = gmdate("U");
+
+    // Calculate time in local timezone from $GMT_time (the cookie bh_sess_tz = hours difference from GMT, West = negative)
+    $local_time = $GMT_time + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
+    
+    // Amend $local_time for daylight saving if necessary (using critera for British Summer Time)
+    if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time = timestamp_amend_bst($local_time);
+
+    // Test to see if the time in question is less than 24 hours ago
+    if (($GMT_now - $GMT_time) < DAY_IN_SECONDS) {
+        $fmt = date("H:i", $local_time); // time < 24h ago, display hours and minutes
+    } else {
+        $fmt = date("j M", $local_time); // time >= 24h ago, display day and date
+    }
+    
     return $fmt;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.141 2004-08-09 21:08:17 tribalonline Exp $ */
+/* $Id: edit.php,v 1.142 2004-08-14 23:25:35 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -240,10 +240,8 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 $page_prefs = bh_session_get_value('POST_PAGE');
 
 if ($page_prefs == 0) {
-        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
 }
-
-if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
 
 
 $valid = true;
@@ -277,11 +275,22 @@ if (isset($_POST['t_sig_html'])) {
 }
 
 if (isset($_POST['t_post_emots'])) {
-        if ($_POST['t_post_emots'] == "enabled") {
-                $emots_enabled = true;
-        } else {
+        if ($_POST['t_post_emots'] == "disabled") {
                 $emots_enabled = false;
+        } else {
+                $emots_enabled = true;
         }
+} else {
+	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+}
+if (isset($_POST['t_post_links'])) {
+        if ($_POST['t_post_links'] == "enabled") {
+                $links_enabled = true;
+        } else {
+                $links_enabled = false;
+        }
+} else {
+	$links_enabled = !($page_prefs & POST_AUTO_LINKS);
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -290,7 +299,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = md5(uniqid(rand()));
 }
 
-$post = new MessageText($post_html, "", $emots_enabled);
+$post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 $sig = new MessageText($sig_html);
 
 $allow_html = true;
@@ -562,11 +571,12 @@ if (isset($_POST['preview'])) {
         $parsed_message = new MessageTextParse($editmessage['CONTENT'], $emots_enabled);
 
 		$emots_enabled = $parsed_message->getEmoticons();
+		$links_enabled = $parsed_message->getLinks();
 		$t_content = $parsed_message->getMessage();
 		$post_html = $parsed_message->getMessageHTML();
 		$t_sig = $parsed_message->getSig();
 
-        $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled);
+        $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled, $links_enabled);
         $sig = new MessageText($allow_html ? $sig_html : false, $t_sig);
 
 		$post->diff = false;
@@ -713,15 +723,12 @@ if ($allow_html == true) {
 	echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<br /><br /><h2>". $lang['emoticonsinmessage'] .":</h2>\n";
-
-echo form_radio("t_post_emots", "enabled", $lang['enabled'], $emots_enabled)." \n";
-echo form_radio("t_post_emots", "disabled", $lang['disabled'], !$emots_enabled)." \n";
-
-echo "<br /><br />\n";
-
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 
+echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
+
+echo "<br />\n";
 echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');

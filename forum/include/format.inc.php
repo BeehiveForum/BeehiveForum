@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.73 2004-06-13 20:02:10 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.74 2004-08-14 23:25:36 tribalonline Exp $ */
 
 include_once("./include/lang.inc.php");
 include_once("./include/word_filter.inc.php");
@@ -55,21 +55,6 @@ function format_file_size($size)
     }
 
     return $resized;
-}
-
-
-function format_url2link($html)
-{
-    $html = " ".$html;
-
-    // URL:
-    $html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:?[^@\s]+@)?([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"$2\">$2</a>", $html);
-    $html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
-
-    // MAIL:
-    $html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
-
-    return substr($html, 1);
 }
 
 function format_time($time, $verbose = false, $custom_format = false)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.87 2004-08-12 23:14:49 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.88 2004-08-14 23:25:36 tribalonline Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -388,11 +388,13 @@ class MessageText {
         var $original_text = "";
         var $diff = false;
         var $emoticons = true;
+		var $links = true;
 
-        function MessageText ($html = 0, $content = "", $emoticons = true) {
+        function MessageText ($html = 0, $content = "", $emoticons = true, $links = true) {
                 $this->diff = false;
                 $this->original_text = "";
                 $this->emoticons = $emoticons;
+				$this->links = $links;
                 $this->setHTML($html);
                 $this->setContent($content);
         }
@@ -422,6 +424,15 @@ class MessageText {
 				return $this->emoticons;
 		}
 
+		function getLinks () {
+				return $this->links;
+		}
+
+		function setLinks ($bool) {
+				$this->links = ($bool == true) ? true : false;
+                $this->setContent($this->getOriginalContent());
+		}
+
         function setContent ($text) {
 
                 //$text = _stripslashes($text);
@@ -429,9 +440,9 @@ class MessageText {
                 $this->original_text = $text;
 
                 if ($this->html == 0) {
-                        $text = make_html($text, false, $this->emoticons);
+                        $text = make_html($text, false, $this->emoticons, $this->links);
                 } else if ($this->html > 0) {
-                        $text = fix_html($text, $this->emoticons);
+                        $text = fix_html($text, $this->emoticons, $this->links);
 
                         if ($this->original_text != tidy_html($text, ($this->html == 1) ? true : false)) {
                                 $this->diff = true;
@@ -453,7 +464,7 @@ class MessageText {
                 if ($this->html == 0) {
                         return strip_tags(clean_emoticons($this->text));
                 } else if ($this->html > 0) {
-                        return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false));
+                        return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false, $this->links));
                 }
         }
 
@@ -470,6 +481,7 @@ class MessageTextParse {
 
 		var $html = "";
 		var $emoticons = "";
+		var $links = "";
 		var $message = "";
 		var $sig = "";
 		var $original = "";
@@ -512,7 +524,7 @@ class MessageTextParse {
 
 				$emoticons = $emots_default;
 
-				if ($message_temp == $message && emoticons_convert($message) != $message) {
+				if ($message_temp == $message && emoticons_convert(strip_tags($message, '<span>')) != strip_tags($message, '<span>')) {
 						$emoticons = false;
 				} else if ($message_temp != $message) {
 						$emoticons = true;
@@ -522,6 +534,12 @@ class MessageTextParse {
 
 				$html = 0;
 				$message_temp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $message);
+				if ($message_temp != $message) {
+						$links = true;
+				} else {
+						$links = false;
+				}
+				$message = $message_temp;
 
 				if (strip_tags($message, '<p><br>') != $message_temp) {
 						$html = 2;
@@ -536,6 +554,7 @@ class MessageTextParse {
 				$this->sig = $sig;
 				$this->html = $html;
 				$this->emoticons = $emoticons;
+				$this->links = $links;
 		}
 
 		function getMessage () {
@@ -552,6 +571,10 @@ class MessageTextParse {
 
 		function getEmoticons () {
 				return $this->emoticons;
+		}
+		
+		function getLinks () {
+				return $this->links;
 		}
 
 		function getOriginal () {

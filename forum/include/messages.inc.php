@@ -29,6 +29,7 @@ require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/perm.inc.php"); // Permissions functions
 require_once("./include/forum.inc.php"); // Forum functions
 require_once("./include/user.inc.php"); // User functions
+require_once("./include/folder.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
@@ -99,7 +100,7 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false)
 {
     if(!isset($message['CONTENT']) || $message['CONTENT'] == ""){
         message_display_deleted($tid,$message['PID']);
@@ -168,7 +169,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "</td></tr>\n";
         if($in_list){
             echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\">";
-            echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a>";
+            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))){
+                echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a>";
+            }
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
                 echo "&nbsp;&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"main\">Delete</a>";
                 echo "&nbsp;&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"main\">Edit</a>";
@@ -188,6 +191,17 @@ function message_display_deleted($tid,$pid)
     echo "Message ${tid}.${pid} was deleted\n";
     echo "</td></tr></table>\n";
     echo "</td></tr></table></div>\n";
+}
+
+function messages_start_panel()
+{
+    echo "<p>&nbsp;</p>\n";
+    echo "<div align=\"center\"><table width=\"96%\" class=\"messagefoot\"><tr><td>";
+}
+
+function messages_end_panel()
+{
+    echo "</td></tr></table></div>";
 }
 
 function messages_nav_strip($tid,$pid,$length,$ppp)
@@ -251,9 +265,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
         $i++;
     }
 
-    echo "\n<p>&nbsp</p><div align=\"center\">";
-    echo "<table width=\"96%\"><tr><td align=\"center\" class=\"messagefoot\">" . $html . "</td></tr></table>";
-    echo "<p>&nbsp;</p></div>";
+    echo "<p align=\"center\">" . $html . "</p>\n";
 }
 
 function messages_interest_form($tid,$pid)
@@ -263,9 +275,7 @@ function messages_interest_form($tid,$pid)
     $chk[$interest+1] = " checked";
     global $HTTP_SERVER_VARS;
 
-    echo "\n<p>&nbsp</p><div align=\"center\">\n";
-    echo "<table width=\"96%\">\n";
-    echo "<tr><td align=\"center\" class=\"messagefoot\">\n";
+    echo "<p align=\"center\">\n";
     echo "<form name=\"rate_interest\" action=\"./interest.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
@@ -277,8 +287,23 @@ function messages_interest_form($tid,$pid)
     echo "<input type=\"submit\" class=\"button\" value=\"Apply\" name=\"submit\">\n";
     echo "<input type=\"hidden\" name=\"tid\" value=\"$tid\">\n";
     echo "</form>\n";
-    echo "</td></tr></table>\n";
-    echo "<p>&nbsp;</p></div>";
+    echo "</p>\n";
+}
+
+function messages_admin_form($tid,$pid)
+{
+    global $HTTP_SERVER_VARS;
+    echo "<p align=\"center\">\n";
+    echo "<form name=\"thread_admin\" action=\"./thread_admin.php?ret=";
+    echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
+    echo "\" method=\"POST\">\n";
+    echo "Move thread to: " . folder_draw_dropdown(0,"t_move");
+    echo " <input class=\"button\" type=\"submit\" name=\"move\" value=\"Move\">\n";
+    echo "&nbsp;&nbsp;<input class=\"button\" type=\"submit\" name=\"close\" value=\"Close for posting\">\n";
+    echo "<input type=\"hidden\" name=\"t_tid\" value=\"$tid\">\n";
+    echo "<input type=\"hidden\" name=\"t_pid\" value=\"$pid\">\n";
+    echo "</p>\n";
+    echo "</form>\n";
 }
 
 function mess_nav_range($from,$to)

@@ -209,9 +209,7 @@ A		{
           font-size: 10pt;
           font-style: normal;
           background-color: #9C9FC4;
-          border-style: solid;
-          border-color: black;
-          border-width: 1px;
+          border-width: 0px;
 }
 
 .notifier {
@@ -246,7 +244,8 @@ A		{
           border-top-width: 1px;
           border-right-width: 1px;
           border-bottom-width: 1px;
-          border-left-width: 1px
+          border-left-width: 1px;
+          text-decoration: none
 }
 
 .subhead {

@@ -21,32 +21,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Navigation strip
+// Frameset for start page
 
-require_once("./include/constants.inc.php");
-require_once("./include/header.inc.php");
-
-header_no_cache();
+//Check logged in status
+require_once("./include/session.inc.php");
+if(!bh_session_check()){
+    $go = "Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $go .= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $go .= "/logon.php?final_uri=";
+    $go .= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
+    header($go);
+}
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
+		<title>:: teh forum ::</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
-    <body style="font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px; background-color: #999999">
-        <a href="start.php" target="main">Start</a>&nbsp;
-        <a href="discussion.php" target="main">Messages</a>&nbsp;
-        <a href="prefs.php" target="main">Preferences</a>&nbsp;
-        <a href="edit_profile.php" target="main">Profile</a>&nbsp;
 <?
-if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER){
+    echo "<frameset cols=\"250,*\" border=\"1\">\n";
+    echo "<frame src=\"./start_left.php\" name=\"left\" border=\"1\">\n";
+    echo "<frame src=\"./start_main.php\" name=\"right\" border=\"1\">\n";
+    echo "</frameset>\n";
 ?>
-        <a href="admin.php" target="main">Admin</a>&nbsp;
-<?
-}
-?>
-        <a href="#">Logout</a>
-    </body>
 </html>

@@ -27,17 +27,27 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 
-if(isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest'])){
-    $tid = $HTTP_POST_VARS['tid'];
-    $interest = $HTTP_POST_VARS['interest'];
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+if(isset($HTTP_POST_VARS['move'])){
+    if(isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move'])){
+        $tid = $HTTP_POST_VARS['t_tid'];
+        $fid = $HTTP_POST_VARS['t_move'];
 
-    $db = db_connect();
-    $sql = "update ".forum_table("USER_THREAD")." set INTEREST = $interest where TID = $tid and UID = $uid";
+        $db = db_connect();
+        $sql = "update ".forum_table("THREAD")." set FID = $fid where TID = $tid";
 
-    db_query($sql,$db);
+        db_query($sql,$db);
 
-    db_disconnect($db);
+        db_disconnect($db);
+    }
+} else if(isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid'])){
+        $tid = $HTTP_POST_VARS['t_tid'];
+
+        $db = db_connect();
+        $sql = "update ".forum_table("THREAD")." set CLOSED = NOW() where TID = $tid";
+
+        db_query($sql,$db);
+
+        db_disconnect($db);
 }
 
 if(isset($HTTP_GET_VARS['ret'])){

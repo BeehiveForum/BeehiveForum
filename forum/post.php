@@ -60,6 +60,23 @@ if (isset($HTTP_POST_VARS['cancel'])){
 $valid = true;
 $t_post_html = $HTTP_POST_VARS['t_post_html'];
 
+if(substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:"){
+	$u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
+	$db = db_connect();
+	$sql = "select UID from ". forum_table("USER"). " where LOGON = '" . $u_login. "'";
+	$result = db_query($sql,$db);
+	if(db_num_rows($result)>0){ 
+		 $touser = db_fetch_array($result); 
+		 $HTTP_POST_VARS['t_to_uid'] = $touser['UID']; 
+		 $t_to_uid = $touser['UID'];
+	} else {
+		$error_html = "<h2>Invalid username</h2>";
+		$valid = false;
+	}
+	db_disconnect($db);
+}
+
+
 if(isset($HTTP_POST_VARS['t_newthread'])){
     $newthread = true;
     if(isset($HTTP_POST_VARS['t_threadtitle']) && trim($HTTP_POST_VARS['t_threadtitle']) != ""){
@@ -107,6 +124,11 @@ if($valid){
     if($t_post_html == "Y"){
         $t_content = fix_html($t_content);
     }
+	if(isset($t_sig)){
+		if($t_sig_html == "Y"){
+			$t_sig = fix_html($t_sig);
+		}
+	}
 }
 
 if($valid && isset($HTTP_POST_VARS['submit'])){
@@ -162,6 +184,9 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
     }
 
     if($new_pid > -1){
+    
+        post_save_attachment_id($new_pid, $aid);
+    
         html_draw_top();
         echo "<p>&nbsp;</p>";
         echo "<p>&nbsp;</p>";
@@ -185,7 +210,13 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
     }
 }
 
-html_draw_top();
+html_draw_top_script();
+
+if (!isset($HTTP_POST_VARS['aid'])) {
+  $aid = md5(uniqid(rand()));
+}else{
+  $aid = $HTTP_POST_VARS['aid'];
+}
 
 $t_sig = stripslashes($t_sig);
 
@@ -244,9 +275,7 @@ if(isset($HTTP_GET_VARS['replyto'])){
 }
 
 if(!$newthread){
-    if(isset($HTTP_POST_VARS['t_to_uid'])){
-        $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
-    } else {
+    if(!isset($HTTP_POST_VARS['t_to_uid'])){
         $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
     }
 }
@@ -265,7 +294,18 @@ if($newthread){
 if(isset($error_html)){
     echo $error_html . "\n";
 }
-echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
+
+echo "<script language=\"Javascript\">\n";
+echo "function launchOthers() {\n";
+echo "newUser = prompt(\"Please enter a MemberName.\",document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].text);\n";
+echo "if (newUser != null) {\n";
+echo "if (newUser != document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].text) {\n";
+echo "document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].value = \"U:\" + newUser;\n";
+echo "document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].text = newUser;\n";
+echo "}\n}\n}\n";
+echo "</script>\n";
+
+echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
 if($newthread){
     echo "<table>\n";
     echo "<tr><td>Select folder:</td></tr>\n";
@@ -283,7 +323,11 @@ if($newthread){
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
 echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
 echo "<td>To: \n";
+
 echo post_draw_to_dropdown($t_to_uid);
+//echo form_quick_button("javascript:t_tlogin = prompt('Please enter a membername:', '');", "Others");
+echo  "<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\">\n";
+
 echo "</td></tr></table>\n";
 echo "<table border=\"0\" class=\"posthead\">\n";
 if(isset($t_content)){
@@ -294,7 +338,7 @@ if(isset($t_content)){
     }
 }
 echo "<tr><td>".form_textarea("t_content",$t_content,12,80)."</tr></td>";
-echo "<tr><td>Signature:<br />".form_textarea("t_sig",$t_sig,4,80);
+echo "<tr><td>Signature:<br />".form_textarea("t_sig",htmlspecialchars($t_sig),4,80);
 echo form_input_hidden("t_sig_html",$t_sig_html)."</td></tr>\n";
 echo "<tr><td>".form_checkbox("t_post_html","Y","Contains HTML (not including signature)",($t_post_html == "Y"))."</td></tr>\n";
 echo "</table>\n";
@@ -302,6 +346,8 @@ echo "</td></tr></table>\n";
 echo form_submit("submit","Submit");
 echo "&nbsp;".form_submit("preview","Preview");
 echo "&nbsp;".form_submit("cancel", "Cancel");
+echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+echo form_input_hidden("aid", $aid);
 if(isset($HTTP_POST_VARS['t_dedupe'])){
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
 } else {

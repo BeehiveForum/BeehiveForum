@@ -24,19 +24,15 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
-
-function post_create($tid,$reply_pid,$fuid,$tuid,$content)
+function post_create($tid,$reply_pid,$fuid,$tuid,$content)
 {
     $db_post_create = db_connect();
     $content = mysql_escape_string($content);
-
-    $sql = "insert into " . forum_table("POST");
+    $sql = "insert into " . forum_table("POST");
     $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED) ";
     $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW())";
-
-    $result = db_query($sql,$db_post_create);
-
-    if($result){
+    $result = db_query($sql,$db_post_create);
+    if($result){
         $new_pid = db_insert_id($db_post_create);
         $sql = "insert into  " . forum_table("POST_CONTENT");
         $sql .= " (TID,PID,CONTENT) ";
@@ -49,8 +45,15 @@ function post_create($tid,$reply_pid,$fuid,$tuid,$content)
     } else {
         $new_pid = -1;
     }
+    return $new_pid;
+}
 
-    return $new_pid;
+function post_save_attachment_id($pid, $aid)
+{
+    $db_post_save_attachment_id = db_connect();
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_ID"). " (PID, AID) values ($pid, '$aid')";
+    $result = db_query($sql, $db_post_save_attachment_id);
+    return $result;
 }
 
 function post_create_thread($fid,$title)
@@ -89,9 +92,20 @@ function post_draw_to_dropdown($default_uid)
     $html = "<select name=\"t_to_uid\">";
     $db_post_draw_to_dropdown = db_connect();
 
+	$top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
+	$result = db_query($top_sql,$db_post_draw_to_dropdown);
+	if(db_num_rows($result)>0){
+		$top_user = db_fetch_array($result);
+		$fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+		$html .= "<option value=\"$default_uid\" selected>$fmt_username</option>";
+	}
+
     $html .= "<option value=\"0\">ALL</option>";
 
-    $sql = "select UID, LOGON, NICKNAME from " . forum_table("USER");
+	$sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
+	$sql.= "from ".forum_table("USER")." U ";
+	$sql.= "order by U.LAST_LOGON desc ";
+	$sql.= "limit 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
@@ -110,9 +124,7 @@ function post_draw_to_dropdown($default_uid)
         $fmt_uid = $row['UID'];
         $fmt_username = format_user_name($logon,$nickname);
 
-        if($fmt_uid == $default_uid){
-            $html .= "<option value=\"$fmt_uid\" selected>$fmt_username</option>";
-        } else {
+        if($fmt_uid != $default_uid){
             $html .= "<option value=\"$fmt_uid\">$fmt_username</option>";
         }
         $html .= ">$fmt_username</option>";

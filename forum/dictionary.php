@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.4 2004-11-22 22:10:15 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.5 2004-11-22 22:44:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -245,7 +245,19 @@ if (isset($_POST['ignoreall'])) {
     if (isset($_POST['change_to']) && strlen(trim(_stripslashes($_POST['change_to']))) > 0) {
 
          $t_change_to = trim(_stripslashes($_POST['change_to']));
-         $dictionary->change_current_word($t_change_to);
+         $dictionary->correct_current_word($t_change_to);
+    }
+
+    $dictionary->find_next_word();
+
+}else if (isset($_POST['changeall'])) {
+
+    // User has selected to change the current word
+
+    if (isset($_POST['change_to']) && strlen(trim(_stripslashes($_POST['change_to']))) > 0) {
+
+         $t_change_to = trim(_stripslashes($_POST['change_to']));
+         $dictionary->correct_all_word_matches($t_change_to);
     }
 
     $dictionary->find_next_word();
@@ -287,13 +299,13 @@ echo "  ", form_input_hidden('obj_id', $dictionary->get_obj_id()), "\n";
 echo "  ", form_input_hidden('ignored_words', $dictionary->get_ignored_words()), "\n";
 echo "  ", form_input_hidden('content', $dictionary->get_content()), "\n";
 echo "  ", form_input_hidden('current_word', $dictionary->get_current_word_index()), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"350\">\n";
+echo "              <table class=\"posthead\" width=\"400\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\">Body Text</td>\n";
 echo "                </tr>\n";
@@ -318,13 +330,13 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"350\">\n";
+echo "              <table class=\"posthead\" width=\"400\">\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\" class=\"subhead\">Spell Check</td>\n";
 echo "                </tr>\n";
@@ -343,16 +355,16 @@ echo "                  <td width=\"175\">", form_input_text("change_to", $t_sug
 echo "                  <td rowspan=\"2\" width=\"175\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_submit("ignore", "Ignore", "style=\"width: 80px\""), "</td>\n";
-echo "                        <td>", form_submit("ignoreall", "Ignore All", "style=\"width: 80px\""), "</td>\n";
+echo "                        <td align=\"center\">", form_submit("ignore", "Ignore"), "</td>\n";
+echo "                        <td align=\"center\">", form_submit("ignoreall", "Ignore All"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_submit("change", "Change", "style=\"width: 80px\""), "</td>\n";
-echo "                        <td>", form_submit("autocorrect", "Auto-correct", "style=\"width: 100px\""), "</td>\n";
+echo "                        <td align=\"center\">", form_submit("change", "Change"), "</td>\n";
+echo "                        <td align=\"center\">", form_submit("changeall", "Change all"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_submit("add", "Add", "style=\"width: 80px\""), "</td>\n";
-echo "                        <td>", form_submit("suggest", "Suggest", "style=\"width: 80px\""), "</td>\n";
+echo "                        <td align=\"center\">", form_submit("add", "Add"), "</td>\n";
+echo "                        <td align=\"center\">", form_submit("suggest", "Suggest"), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

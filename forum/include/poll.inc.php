@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.97 2004-03-21 09:22:10 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.98 2004-03-21 09:38:01 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -328,8 +328,9 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "  <tr>\n";
     $polldata['CONTENT'].= "    <td>\n";
 
-    $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n      ";
-    $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
+    $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
+    $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $webtag['WEBTAG']). "\n";
+    $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "      <table width=\"450\" align=\"center\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td colspan=\"2\"><h2>". thread_get_title($tid). "</h2></td>\n";
@@ -694,7 +695,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
 function poll_preview_graph_horz($pollresults)
 {
-    global $lang;
+    global $lang, $webtag;
 
     $totalvotes  = array();
     $max_values  = array();
@@ -777,7 +778,7 @@ function poll_preview_graph_horz($pollresults)
 
 function poll_preview_graph_vert($pollresults)
 {
-    global $lang;
+    global $lang, $webtag;
 
     $totalvotes  = array();
     $max_value   = array();
@@ -878,7 +879,7 @@ function poll_preview_graph_vert($pollresults)
 
 function poll_horizontal_graph($tid)
 {
-    global $lang;
+    global $lang, $webtag;
 
     $totalvotes  = array();
     $max_values  = array();
@@ -966,7 +967,7 @@ function poll_horizontal_graph($tid)
 
 function poll_vertical_graph($tid)
 {
-    global $lang;
+    global $lang, $webtag;
 
     $totalvotes  = array();
     $max_values  = array();
@@ -1073,7 +1074,7 @@ function poll_vertical_graph($tid)
 
 function poll_public_ballot($tid, $viewstyle)
 {
-    global $lang;
+    global $lang, $webtag;
 
     $totalvotes = array();
     $max_value  = array();
@@ -1201,7 +1202,7 @@ function poll_public_ballot($tid, $viewstyle)
 
 function poll_confirm_close($tid)
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $HTTP_SERVER_VARS, $lang, $webtag;
 
     $preview_message = messages_get($tid, 1, 1);
 
@@ -1232,11 +1233,13 @@ function poll_confirm_close($tid)
     // Check if the user is viewing signatures.
     $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
+    echo "<h1>{$lang['endpoll']}</h1>\n";
     echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
 
     poll_display($tid, $threaddata['LENGTH'], 1, false, false, false, true, $show_sigs, true);
 
     echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_self\">";
+    echo form_input_hidden("webtag", $webtag['WEBTAG']);
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
     echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
@@ -1302,42 +1305,24 @@ function poll_vote($tid, $vote_array)
 
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
-
-    /*if ($polldata['CHANGEVOTE'] == 2 || $uid == 0) {
-
-      foreach ($vote_array as $user_vote) {
-
-        $sql = "update {$webtag['PREFIX']}POLL_VOTES set VOTES = VOTES + 1 ";
-        $sql.= "where TID = $tid and OPTION_ID = $user_vote";
-
-        $result = db_query($sql, $db_poll_vote);
-      }
-
-    }else */
     
     if (!poll_get_user_vote($tid)) {
 
-      foreach ($vote_array as $user_vote) {
+        foreach ($vote_array as $user_vote) {
 
-        if ($polldata['VOTETYPE'] == 0) {
+            if ($polldata['VOTETYPE'] == 0) {
 
-          $sql = "insert into {$webtag['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
-          $sql.= "values ($tid, 0, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+                $sql = "insert into {$webtag['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
+                $sql.= "values ($tid, 0, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
 
-        }else {
+            }else {
 
-          $sql = "insert into {$webtag['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
-          $sql.= "values ($tid, $uid, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+                $sql = "insert into {$webtag['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
+                $sql.= "values ($tid, $uid, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+            }
 
+            $result = db_query($sql, $db_poll_vote);
         }
-
-        $result = db_query($sql, $db_poll_vote);
-
-        /*$sql = "update {$webtag['PREFIX']}POLL_VOTES set VOTES = VOTES + 1 ";
-        $sql.= "where TID = $tid and OPTION_ID = $user_vote";
-
-        $result = db_query($sql, $db_poll_vote); */
-      }
     }
 }
 
@@ -1356,17 +1341,10 @@ function poll_delete_vote($tid)
 
     if (db_num_rows($result) > 0) {
 
-        /*while($userpollvote = db_fetch_array($result)) {
-
-            $sql = "update {$webtag['PREFIX']}POLL_VOTES set VOTES = VOTES - 1 where OPTION_ID = ". $userpollvote['OPTION_ID']. " and TID = $tid";
-            db_query($sql, $db_poll_delete_vote);
-        } */
-
-      $sql = "delete from {$webtag['PREFIX']}USER_POLL_VOTES where PTUID = MD5($tid.$uid)";
-      $result = db_query($sql, $db_poll_delete_vote);
+        $sql = "delete from {$webtag['PREFIX']}USER_POLL_VOTES where PTUID = MD5($tid.$uid)";
+        $result = db_query($sql, $db_poll_delete_vote);
 
     }
-
 }
 
 function thread_is_poll($tid)
@@ -1382,14 +1360,10 @@ function thread_is_poll($tid)
 
     if (db_num_rows($result) > 0) {
 
-      return true;
-
-    }else {
-
-      return false;
-
+        return true;
     }
 
+    return false;
 }
 
 ?>

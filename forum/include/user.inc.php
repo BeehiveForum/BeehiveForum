@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.143 2004-03-21 09:22:10 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.144 2004-03-21 09:38:01 decoyduck Exp $ */
 
 function user_count()
 {
@@ -494,7 +494,7 @@ function user_get_post_count($uid)
     
     $webtag = get_webtag();
 
-    $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM {$webtag['PREFIX']}POST ";
+    $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM {$webtag['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN {$webtag['PREFIX']}POST_CONTENT POST_CONTENT ";
     $sql.= "ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
     $sql.= "WHERE POST.FROM_UID = '$uid' AND POST_CONTENT.CONTENT IS NOT NULL";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.77 2004-08-14 23:25:36 tribalonline Exp $ */
+/* $Id: user_profile.php,v 1.78 2004-08-16 22:07:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -125,28 +125,31 @@ if (!isset($uid)) {
     exit;
 }
 
-$user = user_get($uid);
-
-$title = format_user_name($user['LOGON'], $user['NICKNAME']);
-
-html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
-
 if (!$profile_sections = profile_sections_get()) {
+    html_draw_top();
     echo "<h1>{$lang['error']}:</h1>";
     echo "<h2>{$lang['profilesnotsetup']}</h2>";
     html_draw_bottom();
     exit;
 }
 
-$relationship = 0;
+if (!$user_profile = user_get_profile($uid)) {
+    html_draw_top();
+    echo "<h1>{$lang['error']}:</h1>";
+    echo "<h2>{$lang['profilesnotsetup']}</h2>";
+    html_draw_bottom();
+    exit;
+}
 
-if ($uid != bh_session_get_value('UID')) $relationship = user_rel_get(bh_session_get_value('UID'), $uid);
+$title = format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
+
+html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
 
 // user has chosen to modify their relationship
 
 if (isset($_GET['setrel']) && ($uid != bh_session_get_value('UID')) && bh_session_get_value('UID') > 0) {
-    $relationship = ($relationship&(~ (USER_FRIEND | USER_IGNORED)) | $_GET['setrel']);
-    user_rel_update(bh_session_get_value('UID'),$uid,$relationship);
+    $user_profile['RELATIONSHIP'] = ($user_profile['RELATIONSHIP'] & (~(USER_FRIEND | USER_IGNORED)) | $_GET['setrel']);
+    user_rel_update(bh_session_get_value('UID'), $uid, $user_profile['RELATIONSHIP']);
 }
 
 echo "<div align=\"center\">\n";
@@ -155,33 +158,39 @@ echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
+echo "            <td><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
 
 if (bh_session_get_value('UID') > 0) {
-    if ($relationship&USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-    if ($relationship&USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+
+    if ($user_profile['RELATIONSHIP'] & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+    if ($user_profile['RELATIONSHIP'] & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
 }
 
 echo "</h2></td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: ", user_get_last_logon_time($uid), "&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: {$user_profile['LAST_LOGON']}&nbsp;</td>\n";
 echo "          </tr>\n";
 
-if ($age = user_get_age($uid)) {
+if (isset($user_profile['AGE'])) {
+
     echo "          <tr>\n";
     echo "            <td>&nbsp;</td>\n";
     echo "            <td align=\"right\" class=\"smalltext\">";
 
-    if ($dob = user_get_dob($uid)) {
-        echo "{$lang['birthday']}: " . $dob . " ({$lang['aged']} " . $age . ")&nbsp;</td>\n";
-    } else {
-        echo "{$lang['age']}: " . $age . "&nbsp;</td>\n";
+    if (isset($user_profile['DOB'])) {
+
+        echo "{$lang['birthday']}: {$user_profile['DOB']} ({$lang['aged']} {$user_profile['AGE']})&nbsp;</td>\n";
+
+    }else {
+
+        echo "{$lang['age']}: {$user_profile['AGE']}&nbsp;</td>\n";
     }
+
     echo "          </tr>\n";
 }
 
 echo "          <tr>\n";
 echo "            <td>&nbsp;</td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: " . user_get_post_count($uid). "&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: {$user_profile['POST_COUNT']}&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
@@ -204,10 +213,10 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
     echo "    <td width=\"25%\" align=\"center\">";
 
     if ($profile_sections[$i]['PSID'] != $psid) {
-        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
-        echo _stripslashes($profile_sections[$i]['NAME']) . "</a></td>\n";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;psid={$profile_sections[$i]['PSID']}\" target=\"_self\">";
+        echo _stripslashes($profile_sections[$i]['NAME']), "</a></td>\n";
     } else {
-        echo "<b>" . _stripslashes($profile_sections[$i]['NAME']) . "</b></td>\n";
+        echo "<b>", _stripslashes($profile_sections[$i]['NAME']), "</b></td>\n";
     }
 }
 
@@ -230,22 +239,27 @@ foreach ($user_profile_array as $profile_entry) {
     if (($profile_entry['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_entry['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
         list($field_name, $field_values) = explode(':', $profile_entry['NAME']);
+
         $field_values = explode(';', $field_values);
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">", $field_name, "</td>\n";
 
         if (isset($profile_entry['ENTRY']) && isset($field_values[$profile_entry['ENTRY']])) {
+
             echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">{$field_values[$profile_entry['ENTRY']]}</td>\n";
+
         }else {
+
             echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">&nbsp;</td>\n";
         }
 
         echo "                </tr>\n";
 
     }else {
+
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $profile_entry['NAME'] . "</td>\n";
+        echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">{$profile_entry['NAME']}</td>\n";
         echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";
         echo "                </tr>\n";
     }
@@ -257,8 +271,8 @@ echo "            <td valign=\"top\">\n";
 echo "              <table width=\"100%\" class=\"subhead\">\n";
 echo "                <tr>\n";
 
-if ($profile_image = user_get_profile_image($uid)) {
-    echo "                  <td align=\"center\"><img src=\"{$profile_image}\" width=\"110\" height=\"110\" /></td>\n";
+if (isset($user_profile['PIC_URL'])) {
+    echo "                  <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" /></td>\n";
 }
 
 echo "                </tr>\n";
@@ -281,10 +295,13 @@ if (bh_session_get_value('UID') != 0) {
 
     if ($uid != bh_session_get_value('UID')) {
 
-        if ($relationship&USER_FRIEND) {
+        if ($user_profile['RELATIONSHIP'] & USER_FRIEND) {
+
             $setrel = 0;
             $text = $lang['removefromfriends'];
+
         }else {
+
             $setrel = USER_FRIEND;
             $text = $lang['addtofriends'];
         }
@@ -293,10 +310,13 @@ if (bh_session_get_value('UID') != 0) {
         echo "                  <td><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
 
-        if ($relationship&USER_IGNORED) {
+        if ($user_profile['RELATIONSHIP'] & USER_IGNORED) {
+
             $setrel = 0;
             $text = $lang['stopignoringuser'];
+
         }else {
+
             $setrel = USER_IGNORED;
             $text = $lang['ignorethisuser'];
         }

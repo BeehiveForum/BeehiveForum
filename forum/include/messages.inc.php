@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.331 2005-02-22 14:21:31 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.332 2005-03-09 17:59:22 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -192,7 +192,7 @@ function message_apply_wikilinks($content)
                 $content_array = preg_split('/([<|>])/', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
 
                 for ($i = 0; $i < sizeof($content_array); $i++) {
-                    if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
+                    if (!($i % 4) && (!isset($content_array[$i - 2]) || !strstr($content_array[$i - 2], "href"))) {
                         $content_array[$i] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $content_array[$i]);
                     }
                 }
@@ -224,7 +224,7 @@ function message_apply_wikilinks($content)
             $content_array = preg_split('/([<|>])/', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
 
             for ($i = 0; $i < sizeof($content_array); $i++) {
-                if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
+                if (!($i % 4) && (!isset($content_array[$i - 2]) || !strstr($content_array[$i - 2], "href"))) {
                     $content_array[$i] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $content_array[$i]);
                     $content_array[$i] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $content_array[$i]);
                 }

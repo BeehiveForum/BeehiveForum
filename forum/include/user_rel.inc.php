@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.20 2004-12-05 17:58:07 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.21 2005-03-09 17:59:45 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -52,7 +52,6 @@ function user_rel_update($uid, $peer_uid, $value)
 
 function user_rel_get($uid, $peer_uid)
 {
-
     $db_user_rel_get = db_connect();
 
     if (!$table_data = get_table_prefix()) return 0;

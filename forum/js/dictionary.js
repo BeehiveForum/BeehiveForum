@@ -41,7 +41,7 @@ function openSpellCheck(webtag, obj_id) {
     }
 
     content = form_obj.value;
-    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + obj_id + '&content=' + content, 'spellcheck','width=500, height=400, scrollbars=1');
+    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + obj_id + '&content=' + content, 'spellcheck','width=450, height=550, scrollbars=1');
 }
 
 function updateFormObj(obj_id, content) {

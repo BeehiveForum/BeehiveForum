@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.122 2004-06-03 16:42:48 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.123 2004-06-14 13:43:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -352,14 +352,14 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $optioncount  = 0;
 
     $polldata['CONTENT'] = "<br />\n";
-    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+    $polldata['CONTENT'].= "<div align=\"center\">\n";
+    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     $polldata['CONTENT'].= "  <tr>\n";
     $polldata['CONTENT'].= "    <td>\n";
-
     $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $_SERVER['PHP_SELF']. "\" target=\"_self\">\n";
     $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $webtag). "\n";
     $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
-    $polldata['CONTENT'].= "      <table width=\"450\" align=\"center\">\n";
+    $polldata['CONTENT'].= "      <table width=\"450\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td colspan=\"2\"><h2>". thread_get_title($tid). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
@@ -726,6 +726,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "    </td>\n";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
+    $polldata['CONTENT'].= "</div>\n";
     $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
 
     // Work out what relationship the user has to the user who posted the poll

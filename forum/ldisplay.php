@@ -1,0 +1,144 @@
+<?php
+
+/*======================================================================
+Copyright Project BeehiveForum 2002
+
+This file is part of BeehiveForum.
+
+BeehiveForum is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+BeehiveForum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+======================================================================*/
+
+/* $Id: ldisplay.php,v 1.1 2005-02-24 23:53:16 decoyduck Exp $ */
+
+// Compress the output
+include_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
+
+// Installation checking functions
+include_once("./include/install.inc.php");
+
+// Check that Beehive is installed correctly
+check_install();
+
+// Multiple forum support
+include_once("./include/forum.inc.php");
+
+// Fetch the forum settings
+$forum_settings = get_forum_settings();
+
+include_once("./include/beehive.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/light.inc.php");
+include_once("./include/logon.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+
+// Check we're logged in correctly
+
+if (!$user_sess = bh_session_check()) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    $webtag = get_webtag($webtag_search);
+    header_redirect("./llogon.php?webtag=$webtag&final_uri=$request_uri");
+}
+
+// Check we have a webtag
+
+if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./lforums.php?final_uri=$request_uri");
+}
+
+// Load language file
+
+$lang = load_language_file();
+
+// Check that we have access to this forum
+
+if (!forum_check_access_level()) {
+    header_redirect("./lforums.php");
+}
+
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $msg = $_GET['msg'];
+}else {
+    if (bh_session_get_value('UID')) {
+        $msg = messages_get_most_recent(bh_session_get_value('UID'));
+    } else {
+        $msg = "1.1";
+    }
+}
+
+list($tid, $pid) = explode('.', $msg);
+
+if (!is_numeric($pid)) $pid = 1;
+if (!is_numeric($tid)) $tid = 1;
+
+if (!thread_can_view($tid, bh_session_get_value('UID'))) {
+    html_draw_top();
+    echo "<h2>You are not authorised to view this thread!</h2>\n";
+    html_draw_bottom();
+    exit;
+}
+
+if (!$message = messages_get($tid, $pid, 1)) {
+
+   light_html_draw_top();
+   echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+   light_html_draw_bottom();
+   exit;
+}
+
+$threaddata = thread_get($tid);
+$foldertitle = folder_get_title($threaddata['FID']);
+
+light_html_draw_top();
+
+light_messages_top(apply_wordfilter($foldertitle), apply_wordfilter(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+
+$first_msg = $message['PID'];
+$message['CONTENT'] = message_get_content($tid, $message['PID']);
+
+if ($threaddata['POLL_FLAG'] == 'Y') {
+
+    if ($message['PID'] == 1) {
+
+        light_poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, false, false);
+        $last_pid = $message['PID'];
+
+    }else {
+
+        light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, false, false);
+        $last_pid = $message['PID'];
+    }
+
+}else {
+
+    light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, false, false, false);
+    $last_pid = $message['PID'];
+}
+
+echo "<a href=\"lmessages.php?msg=$msg\">{$lang['back']}</a>\n";
+light_html_draw_bottom();
+
+?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.52 2004-04-04 21:03:40 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.53 2004-04-05 20:54:47 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -30,7 +30,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return "";
     
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 
@@ -53,7 +53,7 @@ function folder_get_title($fid)
 
    if (!is_numeric($fid)) return "The Unknown Folder";
    
-   $table_data = get_table_prefix();
+   if (!$table_data = get_table_prefix()) return "The Unknown Folder";
 
    $sql = "SELECT FOLDER.TITLE FROM {$table_data['PREFIX']}FOLDER FOLDER WHERE FID = $fid";
    $result = db_query($sql, $db_folder_get_title);
@@ -78,7 +78,7 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
     if (!is_numeric($access)) $access = 0;
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
     $sql.= "VALUES ('$title', $access, '$description', $allowed_types, $position)";
@@ -101,7 +101,7 @@ function folder_update($fid, $title, $access, $description = "", $allowed_types 
     $title = addslashes($title);
     $description = addslashes($description);
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '$title', ";
     $sql.= "ACCESS_LEVEL = $access, DESCRIPTION = '$description', ";
@@ -117,7 +117,7 @@ function folder_move_threads($from, $to)
     if (!is_numeric($from)) return false;
     if (!is_numeric($to)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}THREAD SET FID = '$to' WHERE FID = '$from'";
     $result = db_query($sql, $db_folder_move_threads);
@@ -130,7 +130,7 @@ function folder_get_available()
     $uid = bh_session_get_value('UID');
     $db_folder_get_available = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return '0';
 
     $sql = "SELECT DISTINCT F.FID FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
     $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
@@ -155,7 +155,7 @@ function folder_get_all()
 {
     $db_folder_get_all = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return array();
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(THREAD.FID) AS THREAD_COUNT ";
@@ -183,7 +183,7 @@ function folder_get($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, COUNT(*) AS THREAD_COUNT ";
@@ -206,7 +206,7 @@ function folder_get_permissions($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM ";
     $sql.= "USER USER, {$table_data['PREFIX']}FOLDER FOLDER ";
@@ -234,7 +234,7 @@ function folder_is_valid($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT FID FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_get_available);
@@ -255,7 +255,7 @@ function folder_is_accessible($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT F.FID FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
     $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID and UF.UID = $uid) ";
@@ -280,7 +280,7 @@ function user_set_folder_interest($fid, $interest)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FID FROM {$table_data['PREFIX']}USER_FOLDER WHERE UID = '$uid' AND FID = '$fid'";
     $result = db_query($sql, $db_user_set_folder_interest);
@@ -305,7 +305,7 @@ function user_get_restricted_folders($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT F.FID, F.TITLE, UF.ALLOWED FROM {$table_data['PREFIX']}FOLDER F ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER UF ON (UF.UID = $uid AND UF.FID = F.FID) ";
@@ -331,7 +331,7 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
     if (!is_numeric($fid)) return false;
     if (!is_numeric($type)) $type = FOLDER_ALLOW_ALL_THREAD;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_thread_type_allowed);
@@ -357,7 +357,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT F.FID FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
     $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";

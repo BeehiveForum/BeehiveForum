@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.23 2004-04-04 21:03:40 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.24 2004-04-05 20:54:47 decoyduck Exp $ */
 
 function ip_check()
 {
@@ -54,7 +54,7 @@ function ban_ip($ipaddress)
 
    $ipaddress = addslashes($ipaddress);
    
-   $table_data = get_table_prefix();
+   if (!$table_data = get_table_prefix()) return false;
 
    if (!ip_is_banned($ipaddress)) {
 
@@ -73,7 +73,7 @@ function unban_ip($ipaddress)
 
    $ipaddress = addslashes($ipaddress);
    
-   $table_data = get_table_prefix();
+   if (!$table_data = get_table_prefix()) return false;
 
    $sql = "DELETE FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
    $result = db_query($sql, $db_ban_ip);
@@ -87,7 +87,7 @@ function ip_is_banned($ipaddress)
 
    $ipaddress = addslashes($ipaddress);
    
-   $table_data = get_table_prefix();
+   if (!$table_data = get_table_prefix()) return false;
 
    $sql = "SELECT IP FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
    $result = db_query($sql, $db_ip_is_banned);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.24 2004-04-04 21:03:40 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.25 2004-04-05 20:54:33 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -35,7 +35,7 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
     $piid   = addslashes($piid);
     $action = addslashes($action);
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
     $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
@@ -51,7 +51,7 @@ function admin_clearlog()
 
     if ((bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 
-        $table_data = get_table_prefix();
+        if (!$table_data = get_table_prefix()) return false;
         
         $sql = "DELETE FROM {$table_data['PREFIX']}ADMIN_LOG";
 	$result = db_query($sql, $db_admin_clearlog);
@@ -68,7 +68,7 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
     $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
@@ -100,7 +100,7 @@ function admin_get_word_filter()
 {
     $db_admin_get_word_filter = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return array();
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
     $result = db_query($sql, $db_admin_get_word_filter);
@@ -120,7 +120,7 @@ function admin_delete_word_filter($id)
 
     $db_user_delete_word_filter = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
     
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE ID = '$id' AND UID = 0";
@@ -132,7 +132,7 @@ function admin_clear_word_filter()
 {
     $db_admin_clear_word_filter = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
     return db_query($sql, $db_admin_clear_word_filter);
@@ -146,7 +146,7 @@ function admin_add_word_filter($match, $replace, $filter_option)
     $db_admin_add_word_filter = db_connect();
     $uid = bh_session_get_value('UID');    
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$match', '$replace', '$filter_option')";
@@ -165,7 +165,7 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
@@ -201,7 +201,7 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return $user_get_all_array;
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
@@ -226,7 +226,7 @@ function admin_session_end($uid)
     
     if (!is_numeric($uid)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
     
     $sql = "DELETE FROM SESSIONS WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_admin_session_end);

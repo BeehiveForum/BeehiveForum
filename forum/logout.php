@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.44 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: logout.php,v 1.45 2004-04-05 20:54:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,10 +31,6 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Fetch the forum webtag and settings
-$webtag = get_webtag();
-$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -60,9 +56,9 @@ $user_wordfilter = load_wordfilter();
 if (bh_session_get_value('UID') == 0) {
 
     if (isset($HTTP_GET_VARS['final_uri'])) {
-        $uri = "./index.php?webtag=$webtag&final_uri=". $HTTP_GET_VARS['final_uri'];
+        $uri = "./index.php?final_uri=". $HTTP_GET_VARS['final_uri'];
     }else {
-        $uri = "./index.php?webtag=$webtag";
+        $uri = "./index.php";
     }
     
     bh_session_end();
@@ -78,7 +74,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
     if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
     
-        header_redirect("./index.php?webtag=$webtag");
+        header_redirect("./index.php");
 
     }else {
     
@@ -87,7 +83,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './index.php?webtag=$webtag';\n";
+        echo "document.location.href = './index.php';\n";
         echo "//-->\n";
         echo "</script>";
 
@@ -108,7 +104,6 @@ html_draw_top();
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"_top\">\n";
-echo "  ", form_input_hidden("webtag", $webtag), "\n";
 echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.148 2004-04-04 21:03:41 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.149 2004-04-05 20:54:48 decoyduck Exp $ */
 
 function user_count()
 {
    $db_user_count = db_connect();
    
-   $table_data = get_table_prefix();
+   if ($table_data = get_table_prefix()) return 0;
 
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER ";
    $sql.= "WHERE USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')";
@@ -42,7 +42,7 @@ function user_exists($logon)
 {
     $db_user_exists = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $logon = addslashes($logon);
 
@@ -65,7 +65,7 @@ function user_create($logon, $password, $nickname, $email)
         $ipaddress = "";
     }
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email')";
@@ -86,7 +86,7 @@ function user_update($uid, $nickname, $email)
 {
     $db_user_update = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $nickname = addslashes(_htmlentities($nickname));
     $email = addslashes(_htmlentities($email));
@@ -102,7 +102,7 @@ function user_change_pw($uid, $password, $hash = false)
     $db_user_change_pw = db_connect();
     $password = md5($password);
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE USER SET PASSWD = '$password' WHERE UID = $uid ";
 
@@ -120,7 +120,7 @@ function user_get_status($uid)
 {
     if (!is_numeric($uid)) return 0;
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT STATUS FROM USER_STATUS WHERE UID = $uid ";
     $sql.= "AND FID = '{$table_data['FID']}'";
@@ -131,14 +131,13 @@ function user_get_status($uid)
     list($status) = db_fetch_array($result);
 
     return $status;
-
 }
 
 function user_update_status($uid, $status)
 {
     $db_user_update_status = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($status)) return false;
@@ -163,7 +162,7 @@ function user_update_folders($uid, $folders)
 {
     $db_user_update_folders = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_array($folders)) return false;
@@ -207,7 +206,7 @@ function user_logon($logon, $password, $md5hash = false)
 
     $logon = addslashes($logon);
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return -1;
 
     $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
@@ -246,7 +245,7 @@ function user_check_logon($uid, $logon, $md5pass)
         
         $db_user_check_logon = db_connect();
         
-        $table_data = get_table_prefix();
+        if ($table_data = get_table_prefix()) return false;
 
         $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
         $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
@@ -280,7 +279,7 @@ function user_get($uid, $hash = false)
 
     if (!is_numeric($uid)) return false;
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "SELECT USER.*, USER_STATUS.STATUS FROM USER USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID) ";
@@ -307,7 +306,7 @@ function user_get_logon($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return "";
 
     $sql = "SELECT LOGON FROM USER WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_logon);
@@ -328,7 +327,7 @@ function user_get_uid($logon)
 
     $logon = addslashes($logon);
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
@@ -347,7 +346,7 @@ function user_get_sig($uid, &$content, &$html)
 
     if (!is_numeric($uid)) return false;
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "SELECT CONTENT, HTML FROM {$table_data['PREFIX']}USER_SIG WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_sig);
@@ -370,18 +369,18 @@ function user_get_prefs($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_data = get_table_prefix();
-
-    $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
-    $result = db_query($sql, $db_user_get_prefs);
-    
     $prefs_array = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
                          'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
                          'MARK_AS_OF_INT' => '', 'POSTS_PER_PAGE' => '', 'FONT_SIZE' => '',
                          'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
                          'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '', 'ANON_LOGON' => '',
                          'SHOW_STATS' => '',  'IMAGES_TO_LINKS' => '', 'USE_WORD_FILTER' => '',
-                         'USE_ADMIN_FILTER' => '', 'EMOTICONS' => '');    
+                         'USE_ADMIN_FILTER' => '', 'EMOTICONS' => '');
+    
+    if (!$table_data = get_table_prefix()) return $prefs_array;
+
+    $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+    $result = db_query($sql, $db_user_get_prefs);
 
     if (db_num_rows($result) > 0) {
         $prefs_array = array_merge($prefs_array, db_fetch_array($result, MYSQL_ASSOC));
@@ -399,7 +398,7 @@ function user_update_prefs($uid, $prefs_array)
 
     $db_user_update_prefs = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
     
     // Get the current prefs and merge them with the new ones.   
 
@@ -442,7 +441,7 @@ function user_update_sig($uid, $content, $html)
     $content = addslashes($content);
     $db_user_update_sig = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
     $sql.= "HTML = '$html' WHERE UID = '$uid'";
@@ -466,7 +465,7 @@ function user_update_global_sig($uid, $value)
 
     $db_user_update_global_sig = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "update {$table_data['PREFIX']}USER_PREFS set ";
     $sql .= "VIEW_SIGS = '$value' where UID = $uid";
@@ -482,7 +481,7 @@ function user_get_global_sig($uid)
 
     $db_user_update_global_sig = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return "";
 
     $sql = "SELECT VIEW_SIGS FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_update_global_sig);
@@ -501,7 +500,7 @@ function user_get_post_count($uid)
 
     $db_user_get_count = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
@@ -523,7 +522,7 @@ function user_get_last_logon_time($uid, $verbose = true)
 
     $db_user_get_last_logon_time = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return $lang['unknown';
 
     $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
@@ -555,7 +554,7 @@ function user_guest_enabled()
 
     $db_user_guest_account = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
@@ -605,7 +604,7 @@ function user_get_forthcoming_birthdays()
 {
     $db_user_get_forthcoming_birthdays = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) ";
     $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
@@ -632,7 +631,7 @@ function user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir
 {
     $db_user_search = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 'VISITOR_LOG.LAST_LOGON');
 
@@ -670,7 +669,7 @@ function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $o
 {
     $db_user_get_all = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return array();
     
     $user_get_all_array = array();
 
@@ -702,7 +701,7 @@ function user_get_aliases($uid)
 {
     $db_user_get_aliases = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return array();
 
     if (!is_numeric($uid)) return false;
     
@@ -750,7 +749,7 @@ function users_get_recent()
 {
     $db_users_get_recent = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
@@ -777,7 +776,7 @@ function user_get_friends($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -800,7 +799,7 @@ function user_get_ignored($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -823,7 +822,7 @@ function user_get_ignored_signatures($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -846,7 +845,7 @@ function user_get_relationships($uid, $offset = 0)
 {
     $db_user_get_relationships = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
     
     if (!is_numeric($offset)) $offset = 0;
 
@@ -872,7 +871,7 @@ function user_get_word_filter($incadminfilter = false)
 {
     $db_user_get_word_filter = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return array;
     
     $uid = bh_session_get_value('UID');    
 
@@ -895,7 +894,7 @@ function user_clear_word_filter()
 {
     $db_user_clear_word_filter = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
     
     $uid = bh_session_get_value('UID');
 
@@ -910,7 +909,7 @@ function user_add_word_filter($match, $replace, $filter_option)
 
     $db_user_save_word_filter = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
     
     $uid = bh_session_get_value('UID');
 
@@ -926,7 +925,7 @@ function user_delete_word_filter($id)
 
     $db_user_delete_word_filter = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
     
     $uid = bh_session_get_value('UID');
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.63 2005-03-04 19:48:37 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.64 2005-03-08 22:50:53 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -204,8 +204,35 @@ function thread_set_interest($tid, $interest, $new = false)
     }else {
 
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "SET INTEREST = $interest WHERE UID = $uid AND TID = $tid";
+    }
+
+    $db_thread_set_interest = db_connect();
+    db_query($sql, $db_thread_set_interest);
+}
+
+// Same as thread_set_interest but this one won't
+// change the interest of a thread unless it is 'normal'
+
+function thread_set_high_interest($tid, $interest, $new = false)
+{
+    $uid = bh_session_get_value('UID');
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($interest)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if ($new) {
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
+        $sql.= "VALUES ($uid, $tid, $interest)";
+
+    }else {
+
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "SET INTEREST = $interest WHERE UID = $uid AND TID = $tid ";
-        $sql.= "AND INTEREST = 0";
+        $sql.= "WHERE INTEREST = 0";
     }
 
     $db_thread_set_interest = db_connect();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.34 2005-01-19 21:49:31 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.35 2005-03-08 22:50:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -169,6 +169,7 @@ if (isset($_POST['markasread']) && is_numeric($_POST['markasread']) && $_POST['m
 }
 
 if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest']) && $_POST['setinterest'] != $threaddata['INTEREST']) {
+
     $threaddata['INTEREST'] = $_POST['setinterest'];
     thread_set_interest($tid, $threaddata['INTEREST']);
     $update = true;

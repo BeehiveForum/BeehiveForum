@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.239 2005-02-16 23:39:35 decoyduck Exp $ */
+/* $Id: post.php,v 1.240 2005-03-08 22:50:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -577,7 +577,7 @@ if ($valid && isset($_POST['submit'])) {
 
             $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
 
-            if ($high_interest) thread_set_interest($t_tid, 1, $newthread);
+            if ($high_interest) thread_set_high_interest($t_tid, 1, $newthread);
 
             if (!(user_get_status($uid) & USER_PERM_WORMED)) {
                 email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);

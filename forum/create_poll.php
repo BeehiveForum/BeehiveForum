@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.143 2005-02-16 23:39:32 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.144 2005-03-08 22:50:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -533,7 +533,7 @@ if ($valid && isset($_POST['submit'])) {
             post_create($t_fid, $t_tid, 1, $uid, 0, $t_message_text);
         }
 
-        if ($high_interest) thread_set_interest($t_tid, 1, true);
+        if ($high_interest) thread_set_high_interest($t_tid, 1, true);
     }
 
     if (isset($t_tid) && $t_tid > 0) {

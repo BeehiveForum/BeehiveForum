@@ -4,7 +4,7 @@
 #
 # Generation Time: Nov 09, 2003 at 03:58 PM
 #
-# $Id: upgrade-04-to-041.sql,v 1.9 2004-03-16 19:24:49 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.10 2004-03-16 23:55:33 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -94,6 +94,7 @@ CREATE TABLE USER_STATUS (
 ) TYPE=MyISAM;
 
 INSERT INTO USER_STATUS (UID, STATUS) SELECT UID, STATUS FROM USER;
+UPDATE USER_STATUS SET FID = 1 WHERE FID = 0;
 
 ALTER TABLE USER DROP LAST_LOGON;
 ALTER TABLE USER DROP LOGON_FROM;

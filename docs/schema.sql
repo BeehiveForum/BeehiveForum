@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 16, 2004 at 19:29
 #
-# $Id: schema.sql,v 1.59 2004-03-16 19:24:49 decoyduck Exp $
+# $Id: schema.sql,v 1.60 2004-03-16 23:55:33 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -647,8 +647,8 @@ CREATE TABLE USER_STATUS (
 # Dumping data for table `USER_STATUS`
 #
 
-INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES (1, 0, 56);
-INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES (2, 0, 0);
+INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES (1, 1, 56);
+INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES (2, 1, 0);
 
 # --------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.35 2005-03-26 18:16:42 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.36 2005-03-28 00:16:05 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,7 +132,7 @@ if ($pack != "user") {
 
         if ($pack == $pack_name) {
 
-            echo "                  <h2>{$v}</h2>\n";
+            echo "                  <h2>{$display_name}</h2>\n";
 
         }else {
 

@@ -54,7 +54,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
       bh_session_init($luid);
         
-      if($HTTP_POST_VARS['remember_user'] == "Y") {
+      if(@$HTTP_POST_VARS['remember_user'] == "Y") {
         
         setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
         setcookie('bh_remember_password', $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS, '/');

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.30 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: logout.php,v 1.31 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -34,7 +37,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    header_redirect("./logon.php");
+    header_redirect("./logon.php?webtag=$webtag");
 }
 
 // Disable caching when showing logon page
@@ -48,9 +51,9 @@ if (!bh_session_get_value('UID')) {
 
 if (bh_session_get_value('UID') == 0) {
     if (isset($HTTP_GET_VARS['final_uri'])) {
-        $uri = "./index.php?final_uri=". $HTTP_GET_VARS['final_uri'];
+        $uri = "./index.php?webtag=$webtag&final_uri=". $HTTP_GET_VARS['final_uri'];
     }else {
-        $uri = "./index.php";
+        $uri = "./index.php?webtag=$webtag";
     }
     bh_session_end();
     bh_setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
@@ -72,7 +75,7 @@ $logged_off = false;
 
 if (isset($HTTP_POST_VARS['submit'])) {
     bh_session_end();
-    header_redirect("./index.php");
+    header_redirect("./index.php?webtag=$webtag");
     $logged_off = true;
 }
 

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_main.php,v 1.2 2004-01-26 19:40:58 decoyduck Exp $ */
+/* $Id: user_main.php,v 1.3 2004-03-10 18:43:18 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Frameset for thread list and messages
 
@@ -37,7 +40,7 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }

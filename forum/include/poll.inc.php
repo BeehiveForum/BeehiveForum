@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.88 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.89 2004-03-10 18:43:18 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -317,8 +317,8 @@ function poll_sort_groups($a, $b) {
 
 function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-
-    global $HTTP_SERVER_VARS, $lang;
+    global $HTTP_SERVER_VARS, $lang, $webtag;
+    
     $uid = bh_session_get_value('UID');
 
     $polldata     = poll_get($tid);
@@ -599,11 +599,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }else {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }
           }
@@ -648,11 +648,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }else {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }
 
@@ -695,7 +695,6 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['FROM_RELATIONSHIP'] = user_rel_get(bh_session_get_value('UID'), $polldata['FROM_UID']);
 
     message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
-
 }
 
 function poll_preview_graph_horz($pollresults)

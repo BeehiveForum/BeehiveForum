@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.20 2004-02-08 17:01:46 decoyduck Exp $ */
+/* $Id: interest.php,v 1.21 2004-03-10 18:43:17 decoyduck Exp $ */
 
-// Alter user's interest in a thread
-// DOES NOT DISPLAY ANYTHING
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -32,7 +32,6 @@ require_once("./include/errorhandler.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/db.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/thread.inc.php");
 require_once("./include/messages.inc.php");
@@ -40,9 +39,9 @@ require_once("./include/messages.inc.php");
 if (!bh_session_check()) {
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-        $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+        $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
     }else {
-        $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+        $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     }
 
     header_redirect($uri);
@@ -66,7 +65,7 @@ if (isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest']) && is_nu
 if (isset($HTTP_GET_VARS['ret'])) {
     header_redirect($HTTP_GET_VARS['ret']);
 }else {
-    header_redirect("./messages.php");
+    header_redirect("./messages.php?webtag=$webtag");
 }
 
 ?>

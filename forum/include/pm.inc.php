@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.36 2004-03-10 12:39:59 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.37 2004-03-10 18:43:18 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -54,22 +54,24 @@ function pm_markasread($mid)
 
 function pm_edit_refuse()
 {
-    global $lang;
+    global $lang, $webtag;
+    
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannoteditpm']}</p>";
-    echo form_quick_button("pm.php", $lang['back'], "folder", "2");
+    echo form_quick_button("pm.php?webtag=$webtag", $lang['back'], "folder", "2");
     echo "</div>";
 
 }
 
 function pm_error_refuse()
 {
-    global $lang;
+    global $lang, $webtag;
+    
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannotviewpm']}</p>";
-    echo form_quick_button("pm.php", $lang['back'], "folder", "1");
+    echo form_quick_button("pm.php?webtag=$webtag", $lang['back'], "folder", "1");
     echo "</div>";
 }
 
@@ -289,7 +291,7 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array)
 {
-    global $HTTP_SERVER_VARS, $lang, $attachment_dir, $attachment_use_old_method, $attachments_show_deleted;
+    global $HTTP_SERVER_VARS, $lang, $attachment_dir, $attachment_use_old_method, $attachments_show_deleted, $webtag;
     
     if (!isset($attachment_dir)) $attachment_dir = "attachments";
     if (!isset($attachment_use_old_method)) $attachment_use_old_method = false;
@@ -390,7 +392,7 @@ function draw_pm_message($pm_elements_array)
                     }else {
                             
                         if ($attachment_use_old_method) {
-                            echo "<a href=\"getattachment.php?hash=", $visible_attachments[$i]['hash'], "\"";
+                            echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $visible_attachments[$i]['hash'], "\"";
                         }else {
                             echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
                         }
@@ -430,7 +432,7 @@ function draw_pm_message($pm_elements_array)
         echo "          </table>\n";
         echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
         echo "            <tr>\n";
-        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
         echo "            </tr>\n";
     }
 

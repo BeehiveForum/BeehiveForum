@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.21 2004-03-09 23:00:08 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.22 2004-03-10 18:43:18 decoyduck Exp $ */
 
 // Functions for the links database
 
@@ -124,8 +124,7 @@ function links_add_folder($fid, $name, $visible = false)
 
 function links_display_folder_path($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
 {
-
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $webtag;
 
     $tree_fid = $fid;
     $tree     = '';
@@ -137,10 +136,13 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
           $tree_fid = $folders[$tree_fid]['PARENT_FID'];
     }
 
-    $link_base = $link_base ? $link_base : $HTTP_SERVER_VARS['PHP_SELF'];
-
+    $link_base = $link_base ? $link_base : "./links.php?webtag=$webtag";
     
-    $html = $links ? "<a href=\"$link_base?fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
+    if (strstr($link_base, "?")) {
+        $html = $links ? "<a href=\"$link_base&fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
+    }else {
+        $html = $links ? "<a href=\"$link_base?fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
+    }
 
     if (is_array($tree)) {
         while ($val = array_pop($tree)) {

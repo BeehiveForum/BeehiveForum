@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.42 2004-03-09 23:00:08 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.43 2004-03-10 18:43:18 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -249,7 +249,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
 function email_send_pw_reminder($logon)
 {
-    global $HTTP_SERVER_VARS, $forum_name, $forum_email;
+    global $HTTP_SERVER_VARS, $forum_name, $forum_email, $webtag;
     
     if (!isset($forum_name)) $forum_name = "A Beehive Forum";
     if (!isset($forum_name)) $forum_name = "admin@abeehiveforum.net";
@@ -279,7 +279,7 @@ function email_send_pw_reminder($logon)
                 $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/change_pw.php?u={$mailto['UID']}&h={$mailto['PASSWD']}";
+            $message.= "/change_pw.php?webtag=$webtag&u={$mailto['UID']}&h={$mailto['PASSWD']}";
 
             $header = "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";

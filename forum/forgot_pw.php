@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.16 2004-01-26 19:40:32 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.17 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -80,7 +83,7 @@ if (isset($error_html)) {
 }
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"forgot_pw\" action=\"forgot_pw.php\" method=\"POST\">\n";
+echo "  <form name=\"forgot_pw\" action=\"forgot_pw.php?webtag=$webtag\" method=\"POST\">\n";
 echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.61 2004-03-05 21:37:55 decoyduck Exp $ */
+/* $Id: register.php,v 1.62 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -50,7 +53,7 @@ if (bh_session_get_value('UID')) {
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
+    echo form_quick_button("./index.php?webtag=$webtag". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
     echo "</div>\n";
     html_draw_bottom();
     exit;
@@ -326,7 +329,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           echo "<div align=\"center\">\n";
           echo "<p>{$lang['userrecordcreated']}</p>\n";
-          echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), "Continue", 0, 0, "_top");
+          echo form_quick_button("./index.php?webtag=$webtag". (isset($final_uri) ? "?$final_uri" : ""), "Continue", 0, 0, "_top");
           echo "</div>\n";
 
           html_draw_bottom();
@@ -388,7 +391,7 @@ if (strlen($error_html) > 0) {
 
 ?>
 <div align="center">
-<form name="register" action="register.php" method="POST">
+<form name="register" action="register.php?webtag=$webtag" method="POST">
   <table class="box" cellpadding="0" cellspacing="0" align="center" width="500">
     <tr>
       <td>

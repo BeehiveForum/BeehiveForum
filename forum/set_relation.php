@@ -25,7 +25,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.24 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.25 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -45,9 +48,9 @@ require_once("./include/messages.inc.php");
 if (!bh_session_check()) {
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+      $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
     }else {
-      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+      $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     }
 
     header_redirect($uri);
@@ -61,7 +64,6 @@ if (bh_session_get_value('UID') == 0) {
 
 require_once("./include/db.inc.php");
 require_once("./include/header.inc.php");
-require_once("./include/forum.inc.php");
 
 if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['rel'])) {
 
@@ -91,9 +93,9 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($H
 
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
-    header_redirect("./messages.php?msg=$msg");
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 }else {
-    header_redirect("./messages.php");
+    header_redirect("./messages.php?webtag=$webtag");
 }
 
 ?>

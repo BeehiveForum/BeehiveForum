@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.4 2004-03-04 20:30:35 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.5 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -35,7 +38,7 @@ require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -123,7 +126,7 @@ if (!empty($error_html)) {
 if ($user_peers = user_get_relationships($uid, $start)) {
 
     echo "<br />\n";
-    echo "<form name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form name=\"prefs\" action=\"edit_relations.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
     
     if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
         echo "  ", form_input_hidden("usersearch", trim($HTTP_POST_VARS['usersearch'])), "\n";
@@ -170,13 +173,13 @@ if ($user_peers = user_get_relationships($uid, $start)) {
     if (sizeof($user_peers) == 20) {
         if ($start < 20) {
             echo "    <tr>\n";
-            echo "      <td align=\"center\"><p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p></td>\n";
+            echo "      <td align=\"center\"><p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p></td>\n";
             echo "    </tr>\n";
         }elseif ($start >= 20) {
             echo "    <tr>\n";
             echo "      <td align=\"center\">\n";
-            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-            echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
+            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+            echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
             echo "      </td>\n";
             echo "    </tr>\n";
         }
@@ -184,7 +187,7 @@ if ($user_peers = user_get_relationships($uid, $start)) {
         if ($start >= 20) {
             echo "    <tr>\n";
             echo "      <td align=\"center\">\n";
-            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a></p>\n";
+            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a></p>\n";
             echo "      </td>\n";
             echo "    </td>\n";
         }
@@ -205,7 +208,7 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
 
     $usersearch = trim($HTTP_POST_VARS['usersearch']);
     
-    echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
+    echo "<form method=\"post\" action=\"edit_relations.php?webtag=$webtag\" target=\"_self\">\n";
     echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
@@ -267,7 +270,7 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
     echo "</form>\n";   
 }
 
-echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
+echo "<form method=\"post\" action=\"edit_relations.php?webtag=$webtag\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";

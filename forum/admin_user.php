@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.59 2004-03-10 12:39:59 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.60 2004-03-10 18:43:16 decoyduck Exp $ */
 
-// Frameset for thread list and messages
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -36,13 +37,12 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
@@ -66,7 +66,7 @@ if (isset($HTTP_GET_VARS['ret'])) {
 }elseif (isset($HTTP_POST_VARS['ret'])) {
     $ret = $HTTP_POST_VARS['ret'];
 }else {
-    $ret = "admin_users.php";
+    $ret = "admin_users.php?webtag=$webtag";
 }
 
 html_draw_top();
@@ -216,7 +216,7 @@ echo "<div align=\"center\">\n";
 
 if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
-    echo "<form name=\"f_user\" action=\"admin_user.php\" method=\"post\">\n";
+    echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
     echo "<table width=\"50%\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"box\">\n";
@@ -234,7 +234,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "          <td>", form_checkbox("t_confirm_delete_posts", 1, $lang['confirm'], false), "</td>\n";
     echo "        </tr>\n";
     echo "      </table>\n";
-    echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", "admin_user.php?uid=$uid"), "\n";
+    echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
@@ -243,7 +243,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
-    echo "<form name=\"f_user\" action=\"admin_user.php\" method=\"get\">\n";
+    echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"get\">\n";
     echo "<table width=\"50%\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"box\">\n";
@@ -264,7 +264,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
 }else {
 
-    echo "<form name=\"f_user\" action=\"admin_user.php\" method=\"post\">\n";
+    echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
     echo "<table width=\"50%\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"box\">\n";
@@ -338,7 +338,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
         foreach ($user_alias_array as $user_alias) {
             echo "                    <tr>\n";
             echo "                      <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
-            echo "                      <td align=\"left\">&nbsp;<a href=\"admin_user.php?uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+            echo "                      <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
             echo "                      <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
             
             if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
@@ -405,7 +405,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
             echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
             
             if ($attachment_use_old_method) {
-                echo "<a href=\"getattachment.php?hash=", $attachments[$i]['hash'], "\" title=\"";
+                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
                 echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
             }           

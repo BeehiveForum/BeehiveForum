@@ -23,7 +23,10 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.153 2004-02-27 00:24:12 decoyduck Exp $ */
+/* $Id: post.php,v 1.154 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -37,7 +40,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -58,7 +61,6 @@ require_once("./include/fixhtml.inc.php");
 require_once("./include/email.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/constants.inc.php");
@@ -73,7 +75,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "./discussion.php";
+    $uri = "./discussion.php?webtag=$webtag";
 
     if (isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid']) && is_numeric($HTTP_POST_VARS['t_rpid']) ) {
         $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
@@ -447,11 +449,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($t_tid > 0 && $t_rpid > 0) {
 
-          $uri = "./discussion.php?msg=$t_tid.$t_rpid";
+          $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
 
         }else{
 
-          $uri = "./discussion.php";
+          $uri = "./discussion.php?webtag=$webtag";
 
         }
 
@@ -475,7 +477,7 @@ if (!isset($HTTP_POST_VARS['aid'])) {
 }
 
 echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
-echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
+echo "<br /><form name=\"f_post\" action=\"post.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 
 if (!$newthread) {
 

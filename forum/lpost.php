@@ -23,7 +23,10 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.25 2004-03-07 18:05:46 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.26 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -41,7 +44,7 @@ require_once("./include/header.inc.php");
 
 if (!bh_session_check() || bh_session_get_value('UID') == 0){
 
-    $uri = "./llogon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./llogon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -63,7 +66,6 @@ require_once("./include/fixhtml.inc.php");
 require_once("./include/email.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/light.inc.php");
@@ -77,7 +79,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "./lthread_list.php";
+    $uri = "./lthread_list.php?webtag=$webtag";
     
     if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid'])) {
         $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
@@ -254,11 +256,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($t_tid > 0 && $t_rpid > 0) {
 
-          $uri = "./lmessages.php?msg=$t_tid.$t_rpid";
+          $uri = "./lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
 
         }else {
 
-          $uri = "./lmessages.php";
+          $uri = "./lmessages.php?webtag=$webtag";
 
         }
 

@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.47 2004-03-03 23:15:17 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.48 2004-03-10 18:43:16 decoyduck Exp $ */
 
-// Frameset for thread list and messages
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -36,13 +37,12 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/constants.inc.php");
@@ -131,7 +131,7 @@ if (isset($HTTP_POST_VARS['t_kick'])) {
 
 echo "<p>{$lang['manageusersexp_1']} '{$sort_by_array[$sort_by]}'. {$lang['manageusersexp_2']}</p>\n";
 echo "<div align=\"center\">\n";
-echo "<form action=\"admin_users.php\" method=\"post\">\n";
+echo "<form action=\"admin_users.php?webtag=$webtag\" method=\"post\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
@@ -139,73 +139,73 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'USER.UID' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_by == 'USER.UID' && $sort_dir == 'DESC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">UID</a></td>\n";
 }
 
 if ($sort_by == 'USER.LOGON' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_by == 'USER.LOGON' && $sort_dir == 'DESC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'USER.STATUS' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_by == 'USER.STATUS' && $sort_dir == 'DESC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['status']}</a></td>\n";
 }
 
 if ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'DESC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['lastlogon']}</a></td>\n";
 }
 
 if ($sort_by == 'USER.LOGON_FROM' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_by == 'USER.LOGON_FROM' && $sort_dir == 'DESC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['logonfrom']}</a></td>\n";
 }
 
 if ($sort_by == 'SESSIONS.SESSID' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_by == 'SESSIONS.SESSID' && $sort_dir == 'DESC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['active']}</a></td>\n";
 }
 
 if ($sort_by == 'SESSIONS.SESSID' && $sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
 }elseif ($sort_by == 'SESSIONS.SESSID' && $sort_dir == 'DESC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
 }else {
-    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&sort_by=SESSID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=", ($start / 20), "\">{$lang['kick']}</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -222,7 +222,7 @@ if (sizeof($user_array) > 0) {
 
         echo "        <tr>\n";
         echo "          <td class=\"posthead\" align=\"left\">&nbsp;", $user['UID'], "</td>\n";
-        echo "          <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_user.php?uid=", $user['UID'], "\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&uid=", $user['UID'], "\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
         echo "          <td class=\"posthead\" align=\"left\">&nbsp;";
 
         if (isset($user['STATUS']) && $user['STATUS'] > 0) {
@@ -284,16 +284,16 @@ echo "</form>\n";
 
 if (sizeof($user_array) == 20) {
     if ($start < 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
     }elseif ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
     }
 }else {
     if ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch&amp;sort_by={$sort_by_array[$sort_by]}&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
     }else {
         echo "<p>&nbsp;</p>\n";
     }
@@ -308,7 +308,7 @@ echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinl
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
-echo "            <form method=\"get\" action=\"admin_users.php\">\n";
+echo "            <form method=\"get\" action=\"admin_users.php?webtag=$webtag\">\n";
 echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
 echo "              ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
 echo "            </form>\n";

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.18 2004-03-06 13:45:50 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.19 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -51,7 +54,7 @@ require_once("./include/lang.inc.php");
 
 if(!bh_session_check() || bh_session_get_value('UID') == 0){
 
-    $uri = "./llogon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./llogon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -87,7 +90,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
   if (isset($HTTP_POST_VARS['pollvote'])) {
 
     poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
-    header_redirect("lmessages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
+    header_redirect("lmessages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
 
   }else {
 
@@ -164,12 +167,12 @@ unset($messages, $message);
 
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;
-    echo form_quick_button("./lmessages.php", $lang['keepreading'], "msg", "$tid.$npid");
+    echo form_quick_button("./lmessages.php?webtag=$webtag", $lang['keepreading'], "msg", "$tid.$npid");
 }
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
-echo "<h4><a href=\"lthread_list.php\">{$lang['backtothreadlist']}</a></h4>";
+echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a></h4>";
 
 light_html_draw_bottom();
 

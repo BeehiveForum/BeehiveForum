@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.16 2004-02-27 00:24:12 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.17 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -34,7 +37,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -72,7 +75,7 @@ if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
 // User clicked cancel
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    header_redirect("./pm.php?folder=2");
+    header_redirect("./pm.php?webtag=$webtag&folder=2");
 }
 
 $valid = true;
@@ -138,7 +141,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
         }         
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
-            header_redirect("pm.php?folder=2");
+            header_redirect("pm.php?webtag=$webtag&folder=2");
         }else {
             $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
             $valid = false;
@@ -192,7 +195,7 @@ draw_header_pm();
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['editpm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";

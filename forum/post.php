@@ -312,7 +312,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-    if (isset($t_post_html) && $t_post_html != "Y") {
+    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
 
       $preview_message['CONTENT'] = make_html($t_content);
 
@@ -473,7 +473,7 @@ if ($newthread) {
 
 }
 
-if (isset($t_post_html) && $t_post_html != "Y") {
+if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
     $t_content = isset($t_content) ? _stripslashes($t_content) : "";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.53 2005-01-25 12:51:12 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.54 2005-01-31 15:44:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -256,6 +256,11 @@ if (isset($_POST['submit'])) {
     }
 }
 
+// Get the available forum styles and emoticons
+
+$available_styles = styles_get_available();
+$available_emoticons = emoticons_get_available();
+
 // Start Output Here
 
 html_draw_top("emoticons.js");
@@ -311,18 +316,11 @@ echo "                  <td colspan=\"2\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['defaultstyle']}:</td>\n";
-
-$styles = style_get_styles();
-
-echo "                  <td>", form_dropdown_array("default_style", array_keys($styles), array_values($styles), forum_get_setting('default_style', false, 'Beehive')), "</td>\n";
+echo "                  <td>", form_dropdown_array("default_style", array_keys($available_styles), array_values($available_styles), forum_get_setting('default_style', false, 'Beehive')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['defaultemoticons']} ";
-echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
-
-$emot_sets = emoticons_get_sets();
-
-echo "                  <td>", form_dropdown_array("default_emoticons", array_keys($emot_sets), array_values($emot_sets), forum_get_setting('default_emoticons')), "</td>\n";
+echo "                  <td width=\"200\">{$lang['defaultemoticons']} [<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
+echo "                  <td>", form_dropdown_array("default_emoticons", array_keys($available_emoticons), array_values($available_emoticons), forum_get_setting('default_emoticons')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['defaultlanguage']}:</td>\n";

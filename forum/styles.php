@@ -23,6 +23,8 @@ USA
 
 // style.php : handles site styles with user preferences
 
+header("Content-Type: text/css");
+
 if (empty($HTTP_GET_VARS['fontsize'])) {
   $fontsize = "10pt";
 }else{

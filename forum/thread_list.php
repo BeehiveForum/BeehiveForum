@@ -301,11 +301,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 	} else {
 	
 		echo "<tr>\n";
-		echo "<td class=\"threads\">\n";
-		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." msgs</a>\n";
-		echo "<a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
-		echo "</td></tr>\n";
-		echo "<tr><td class=\"threads\" style=\"border-top: 0px; background-color: transparent;\">";
+		echo "<td class=\"threads\" style=\"border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." threads</a></td>\n";
+		echo "<td class=\"threads\" style=\"border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
+		echo "</tr>\n";
 		
 	}
 

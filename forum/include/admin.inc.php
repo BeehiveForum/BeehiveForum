@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.50 2004-12-22 19:27:50 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.51 2004-12-22 22:21:10 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -315,7 +315,7 @@ function admin_get_users_attachments($uid)
 
     $forum_settings = get_forum_settings();
 
-    $sql = "SELECT * FROM {$table_data['FID']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);
 
     while($row = db_fetch_array($result)) {

@@ -32,6 +32,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/lang.inc.php");
 
 header_no_cache();
 

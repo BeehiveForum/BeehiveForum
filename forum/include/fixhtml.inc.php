@@ -30,7 +30,6 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 {
 	if (!empty($html)) {
 		$html = stripslashes($html);
-		$html = preg_replace("/<xmp[^>]*>((.|\n)*)<\/xmp[^>]*>/i", "<xmp>\\1</xmp>", $html);
 
 		$open_pos = strpos($html, "<");
 		$next_open_pos = strpos($html, "<", $open_pos+1);
@@ -53,10 +52,9 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 				$html = substr($html, $end_comment+3);
 
-			} else if(strtolower(substr($html, $open_pos+1, 3)) == "xmp"){
-				$html = substr_replace($html, "xmp", $open_pos+1, 3);
+			} else if(substr($html, $open_pos+1, 3) == "xmp"){
 				$html = substr_replace($html, "", $open_pos+4, $close_pos-$open_pos-4);
-				$end_xmp = strpos($html, "</xmp>", $open_pos);
+				$end_xmp = strpos($html, "</xmp", $open_pos);
 				if(!is_integer($end_xmp)){
 					$html = substr_replace($html, "</xmp>", $open_pos+5, 0);
 					$end_xmp = $open_pos+5;
@@ -69,7 +67,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 				$html = substr($html, $end_xmp+6);
 
-			} else if(!is_integer($open_pos) || ($close_pos < $open_pos && is_integer($close_pos))){
+			} else if(!is_integer($open_pos) || $close_pos < $open_pos){
 				// > by itself
 				$html = substr_replace($html, "&gt;", $close_pos, 1);
 
@@ -117,14 +115,13 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				if(substr($html_parts[$i],0,1) == "/"){ // closing tag
 					$tag_bits = explode(" ", substr($html_parts[$i],1));
 					if(substr($tag_bits[0], -1) == "/"){
-						$tag_bits[0] = substr($tag_bits[0], 0, -1);
+						$tag_bits[0] = strtolower(substr($tag_bits[0], 0, -1));
 					}
 
-					$tag = strtolower($tag_bits[0]);
-					$html_parts[$i] = "/".$tag;
+					$tag = $tag_bits[0];
 
-					// filter 'bad' tags or single tags
-					if(in_array($tag, $bad_tags) || in_array($tag, $single_tags)){
+					// filter 'bad' tags
+					if(in_array($tag, $bad_tags)){
 						$html_parts[$i-1] .= $html_parts[$i+1];
 						array_splice($html_parts, $i, 2);
 						$i -= 2;
@@ -142,7 +139,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							array_splice($html_parts, $i, 2);
 							$i--;
 
-						// previous tag hasn't been closed
+						// tag hasn't been closed
 						} else if ($last_tag2 != $tag){
 							array_splice($html_parts, $i, 0, array("/".$last_tag2,""));
 							$opentags[$last_tag2]--;
@@ -158,7 +155,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 					$firstspace = strpos($html_parts[$i], " ");
 
-					$firstthree = strtolower(substr($html_parts[$i], 0, 3));
+					$firstthree = substr($html_parts[$i], 0, 3);
 					if($firstthree == "!--" || $firstthree == "xmp"){
 						$tag = $firstthree;
 
@@ -366,4 +363,5 @@ function preg_filter($text, $regex, $join)
 	$ret_text = preg_replace("/".$regex."/i", $join, $text);
 	return $ret_text;
 }
+
 ?>

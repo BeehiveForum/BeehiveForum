@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.103 2004-12-19 21:36:56 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.104 2004-12-22 19:27:52 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -611,9 +611,9 @@ function draw_pm_message($pm_elements_array)
                 echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
                 if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                    echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
+                    echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
                 }else {
-                    echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
+                    echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                 }
 
                 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'pm_write.php') {
@@ -801,7 +801,7 @@ function pm_delete_message($mid)
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, PAF.FILENAME, AT.AID ";
     $sql.= "FROM PM PM ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_delete_pm);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.115 2004-11-06 20:26:24 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.116 2004-12-22 19:27:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -786,9 +786,9 @@ if (isset($_POST['t_delete_posts'])) {
             echo "                              <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\" title=\"";
+                echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\" title=\"";
+                echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\" title=\"";
             }
 
             if (strlen($attachment['filename']) > 16) {

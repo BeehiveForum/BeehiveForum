@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.151 2004-12-19 13:20:33 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.152 2004-12-22 19:27:55 decoyduck Exp $ */
 
 // International English language file
 
@@ -533,7 +533,7 @@ $lang['forum_settings_help_25'] = "<b>4Llow eM8edDin9 0f 4tT4chMEN+\$ IN M3\$s49
 $lang['forum_settings_help_26'] = "<b>U\$E @lt3rn@+IVE @++4CHM3NT mE+HoD</b> Forc35 8eehIVE t0 u\$3 4n 4l+ern4+1vE R3triev4l Me+HoD F0R 4Tt4chm3Nts. iPH J00 R3C3IV3 404 3rroR M35\$4935 WH3N +rYIng T0 d0wnLo4D 4tT4chm3nts PHRoM me\$S4GEs tRy 3N4BliNg Th1S 0P+ion.";
 $lang['forum_settings_help_27'] = "+Hi\$ 53tTIN9 alL0W\$ your F0rUM +0 8e SPIdeR3d BY S34rch 3n9in35 L1k3 G00gle, 4L+@V1S+@ @nD Y4H0O. 1pH J00 \$w1tcH TH1\$ 0p+I0n OpHF Y0uR f0RuM WiLL NOt 83 INClUdED 1N +HEs3 s34RCh EN91N35 R3SULtS.";
 
-// Attachments (attachments.php, getattachment.php) ---------------------------------------
+// Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
 $lang['aidnotspecified'] = "@Id N0+ sPecIPHI3D.";
 $lang['upload'] = "uPlO@d";
@@ -1005,7 +1005,7 @@ $lang['savepminsentitems'] = "54Ve 4 cOPY 0F E4Ch pm 1 s3nD 1n MY 53N+ IT3ms F0L
 $lang['includepminreply'] = "1NCLuD3 MESs49e 80Dy wh3n REPLyiNg +0 pM";
 $lang['autoprunemypmfoldersevery'] = "AUtO PRuNE my pm ph0ld3RS EV3rY:";
 
-// Polls (create_poll.php, pollresults.php) ---------------------------------------------
+// Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "j00 mU\$t enTEr 4 POLL qU3\$+iON";
 $lang['mustprovideanswergroups'] = "J00 mUS+ pROViDe som3 4n5weR 9r0Up\$";

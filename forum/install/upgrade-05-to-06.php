@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.1 2004-12-22 19:11:47 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.2 2004-12-22 19:28:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -122,7 +122,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 return;
             }
 
-            $sql = "DELETE FROM POST_ATTACHMENT_FILES WHERE AID = '{$pm_data['AID']}'";
+            $sql = "DELETE FROM {$forum_webtag}_POST_ATTACHMENT_FILES WHERE AID = '{$pm_data['AID']}'";
 
             if (!$delete_result = db_query($sql, $db_install)) {
 

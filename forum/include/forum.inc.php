@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.96 2004-12-19 17:22:26 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.97 2004-12-22 19:27:50 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -957,7 +957,7 @@ function forum_delete($fid)
             $sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
             $result = db_query($sql, $db_forum_delete);
 
-            $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
+            $sql = "SELECT AID FROM {$table_data['FID']}POST_ATTACHMENT_IDS WHERE FID = '$fid'";
             $result = db_query($sql, $db_forum_delete);
 
             while ($row = db_fetch_array($result)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.69 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.1 2004-12-22 19:27:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -135,7 +135,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
     echo "<div align=\"center\">";
     echo "<p>{$lang['mustspecifypolltoview']}</p>";
-    echo "<form method=\"post\" action=\"pollresults.php\">\n";
+    echo "<form method=\"post\" action=\"poll_results.php\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ". form_submit('submit', $lang['close']). "\n";
     echo "</form>\n";
@@ -162,7 +162,7 @@ if ($polldata['VOTETYPE'] == 1 && $polldata['POLLTYPE'] != 2) {
     echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"center\" class=\"postbody\">\n";
-    echo "      <form name=\"f_mode\" method=\"get\" action=\"pollresults.php\">\n";
+    echo "      <form name=\"f_mode\" method=\"get\" action=\"poll_results.php\">\n";
     echo "        ", form_input_hidden("webtag", $webtag), "\n";
     echo "        ", form_input_hidden("tid", $tid), "\n";
     echo "        View Style: ", form_dropdown_array("viewstyle", range(0, 1), array('By option', 'By user'), $viewstyle, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
@@ -244,7 +244,7 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
-echo "<form method=\"post\" action=\"pollresults.php\" target=\"_self\">\n";
+echo "<form method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ". form_submit('submit', $lang['close']). "\n";
 echo "</form>\n";

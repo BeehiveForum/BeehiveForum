@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.95 2004-11-02 19:24:22 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.96 2004-11-03 23:31:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -295,11 +295,11 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                 }
     }
 
-    $sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
+    $sql = "SELECT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}POST P ";
     $sql.= "LEFT JOIN USER U ON (P.FROM_UID = U.UID) ";
     $sql.= "WHERE P.TID = '$tid' ";
-    $sql.= "LIMIT 0, 20";
+    $sql.= "GROUP BY P.FROM_UID LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 

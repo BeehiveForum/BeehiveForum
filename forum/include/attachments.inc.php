@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.71 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.72 2004-11-03 23:31:54 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -41,7 +41,7 @@ function get_attachments($uid, $aid)
 
     $forum_settings = get_forum_settings();
 
-    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid' AND AID = '$aid'";
 
     $result = db_query($sql, $db_get_attachments);
@@ -78,7 +78,7 @@ function get_all_attachments($uid, $aid)
 
     $forum_settings = get_forum_settings();
 
-    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid' AND AID <> '$aid'";
 
     $result = db_query($sql, $db_get_all_attachments);
@@ -114,7 +114,7 @@ function get_users_attachments($uid)
 
     $forum_settings = get_forum_settings();
 
-    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_get_users_attachments);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.56 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.57 2004-11-03 23:31:55 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -57,11 +57,11 @@ function thread_get($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, ";
+    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, ";
     $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
     $sql.= "THREAD.ADMIN_LOCK, USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
+    $sql.= "USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -69,8 +69,6 @@ function thread_get($tid)
     $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql.= "(AT.TID = THREAD.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON ";
     $sql.= "(FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE USER.UID = POST.FROM_UID ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.132 2004-10-18 19:20:52 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.133 2004-11-03 23:31:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -249,7 +249,7 @@ function poll_get_total_votes($tid)
 
     $ptuid_array = array();
 
-    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "SELECT PTUID FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE TID = '$tid'";
 
     $result = db_query($sql, $db_poll_get_total_votes);

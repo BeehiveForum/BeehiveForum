@@ -70,7 +70,7 @@ if(isset($HTTP_POST_VARS['move'])){
 
 } else if(isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
-        $name = mysql_escape_string(htmlspecialchars($HTTP_POST_VARS['t_name']));
+        $name = addslashes(htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_name'])));
 
         $db = db_connect();
         $sql = "update ".forum_table("THREAD")." set TITLE = \"$name\" where TID = $tid";

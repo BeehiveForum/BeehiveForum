@@ -42,13 +42,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             $newpass = md5($HTTP_POST_VARS['pw']);
 
-            $conn = db_connect();
+            $db = db_connect();
             $sql = "update ". forum_table("USER") ." set PASSWD = \"$newpass\" ";
             $sql.= "where UID = '{$HTTP_POST_VARS['uid']}' and PASSWD = \"{$HTTP_POST_VARS['key']}\"";
-            $result = db_query($sql,$conn);
-            $success = mysql_affected_rows($conn);
+            $result = db_query($sql, $db);
+            $success = db_affected_rows($db);
 
-            if($success){
+            if ($success) {
                 html_draw_top();
 
                 echo "<h1>Password changed</h1>";

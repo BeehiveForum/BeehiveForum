@@ -83,7 +83,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
 function post_create_thread($fid, $title, $poll = 'N')
 {
-    $title = mysql_escape_string(htmlspecialchars($title));
+    $title = addslashes(htmlspecialchars($title));
 
     $db_post_create_thread = db_connect();
 

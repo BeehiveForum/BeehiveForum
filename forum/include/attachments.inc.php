@@ -30,7 +30,7 @@ function get_attachments($uid, $aid) {
 
     global $HTTP_SERVER_VARS, $attachment_dir;
 
-    $userattachments = '';
+    $userattachments = false;
 
     $db = db_connect();
 
@@ -61,7 +61,7 @@ function get_all_attachments($uid, $aid) {
 
     global $HTTP_SERVER_VARS, $attachment_dir;
 
-    $userattachments = '';
+    $userattachments = false;
 
     $db = db_connect();
 
@@ -92,7 +92,7 @@ function get_users_attachments($uid) {
 
     global $HTTP_SERVER_VARS, $attachment_dir;
 
-    $userattachments = '';
+    $userattachments = false;
 
     $db = db_connect();
 
@@ -169,7 +169,7 @@ function get_free_attachment_space($uid) {
     $db = db_connect();
 
     $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = $uid";
-    $result = db_query($sql, $db) or die(mysql_error());
+    $result = db_query($sql, $db);
 
     while($row = db_fetch_array($result)) {
 

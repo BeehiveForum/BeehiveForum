@@ -103,6 +103,17 @@ if(isset($HTTP_POST_VARS['submit'])) {
     delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
     admin_addlog($uid, 0, 0, 0, 0, 0, 6);
 
+  }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
+
+    $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
+    $result = db_query($sql, $db);
+
+    while (list($tid, $pid) = db_fetch_array($result)) {
+      post_delete($tid, $pid);
+    }
+
+    admin_addlog($uid, 0, 0, 0, 0, 0, 3);
+
   }else {
 
     $t_soldier = (isset($HTTP_POST_VARS['t_soldier'])) ? $HTTP_POST_VARS['t_soldier'] : 0;
@@ -149,14 +160,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       }
     }
 
-    if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
-      $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
-      $result = db_query($sql, $db);
-      while (list($tid, $pid) = db_fetch_array($result)) {
-        post_delete($tid, $pid);
-      }
-      admin_addlog($uid, 0, 0, 0, 0, 0, 3);
-    }
+    // IP Address banning / unbanning
 
     if (isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
       if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
@@ -180,14 +184,13 @@ echo "<h1>Manage User</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 
-echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\">\n";
-echo "<table width=\"50%\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"box\">\n";
-echo "      <table class=\"posthead\" width=\"100%\">\n";
-
 if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
+  echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\">\n";
+  echo "<table width=\"50%\">\n";
+  echo "  <tr>\n";
+  echo "    <td class=\"box\">\n";
+  echo "      <table class=\"posthead\" width=\"100%\">\n";
   echo "        <tr>\n";
   echo "          <td class=\"subhead\">User Status: ", $user['LOGON'], "</td>\n";
   echo "        </tr>\n";
@@ -201,13 +204,20 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "          <td>", form_checkbox("t_confirm_delete_posts", 1, "Confirm", false), "</td>\n";
   echo "        </tr>\n";
   echo "      </table>\n";
-  echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", $ret), "\n";
+  echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", "admin_user.php?uid=$uid"), "\n";
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
+  echo "<p>", form_submit("submit", "Submit"), "&nbsp;", form_submit("cancel", "Cancel"), "</p>\n";
+  echo "</form>\n";
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
+  echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"get\">\n";
+  echo "<table width=\"50%\">\n";
+  echo "  <tr>\n";
+  echo "    <td class=\"box\">\n";
+  echo "      <table class=\"posthead\" width=\"100%\">\n";
   echo "        <tr>\n";
   echo "          <td class=\"subhead\">User Status: ", $user['LOGON'], "</td>\n";
   echo "        </tr>\n";
@@ -219,9 +229,16 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
+  echo "<p>", form_submit("submit", "Continue"), "</p>\n";
+  echo "</form>\n";
 
 }else {
 
+  echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\">\n";
+  echo "<table width=\"50%\">\n";
+  echo "  <tr>\n";
+  echo "    <td class=\"box\">\n";
+  echo "      <table class=\"posthead\" width=\"100%\">\n";
   echo "        <tr>\n";
   echo "          <td class=\"subhead\" align=\"left\">User Status: ", $user['LOGON'], "</td>\n";
   echo "        </tr>\n";
@@ -354,10 +371,9 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "          <td align=\"left\">\n";
   echo "            <table class=\"posthead\" width=\"100%\">\n";
 
-  $attachments = get_users_attachments($uid);
   $total_attachment_size = 0;
 
-  if (is_array($attachments)) {
+  if ($attachments = get_users_attachments($uid)) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -425,11 +441,10 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
+  echo "<p>", form_submit("submit", "Submit"), "&nbsp;", form_submit("cancel", "Cancel"), "</p>\n";
+  echo "</form>\n";
 
 }
-
-echo "<p>", form_submit("submit", "Submit"), "&nbsp;", form_submit("cancel", "Cancel"), "</p>\n";
-echo "</form>\n";
 
 if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.53 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.54 2004-08-09 01:17:19 rowan_hill Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -134,9 +134,9 @@ if (bh_session_get_value('UID') == 0) {
   $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
                   $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
                   $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                  $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
+                  $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['unreadtoday']);
 
-  echo light_form_dropdown_array("mode",range(0,15),$labels,$mode). "\n        ";
+  echo light_form_dropdown_array("mode",range(0,16),$labels,$mode). "\n        ";
 
 }
 

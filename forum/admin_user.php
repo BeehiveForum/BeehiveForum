@@ -100,7 +100,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
     $user['STATUS'] = $new_status;
 
     // Private folder permissions
-    for($i=0; $i<$HTTP_POST_VARS['t_fcount']; $i++){
+    for($i = 0; $i < $HTTP_POST_VARS['t_fcount']; $i++){
         $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
         $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
     }
@@ -174,12 +174,14 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   $sql.= "where F.ACCESS_LEVEL = 1"; // Restricted folders
 
   $result = db_query($sql,$db);
+  $count  = 0;
 
   if (db_num_rows($result)) {
 
     while($row = db_fetch_array($result)) {
-      echo "<tr><td>".form_checkbox("t_fallow_$i", 1, $row['TITLE'], ($row['ALLOWED'] > 0));
-      echo form_input_hidden("t_fid_$i", $row['FID']). "</td></tr>\n";
+      echo "<tr><td>".form_checkbox("t_fallow_$count", 1, $row['TITLE'], ($row['ALLOWED'] > 0));
+      echo form_input_hidden("t_fid_$count", $row['FID']). "</td></tr>\n";
+      $count++;
     }
 
     echo form_input_hidden("t_fcount", db_num_rows($result));

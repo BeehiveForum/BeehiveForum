@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.107 2005-01-30 18:56:26 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.108 2005-02-04 00:21:56 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -602,42 +602,63 @@ function draw_pm_message($pm_elements_array)
 
             // Draw the attachment header at the bottom of the post
 
-            echo "<tr><td>&nbsp;</td></tr>\n";
-            echo "<tr><td class=\"postbody\" align=\"left\">\n";
-            echo "<b>{$lang['attachments']}:</b><br />\n";
+            echo "          <tr>\n";
+            echo "            <td>&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"postbody\" align=\"left\">\n";
 
-            foreach($attachments_array as $attachment) {
+            if (isset($attachments_array['attachments']) && is_array($attachments_array['attachments']) && sizeof($attachments_array['attachments']) > 0) {
 
-                echo attachment_make_link($attachment), "<br />\n";
+                echo "              <p><b>{$lang['attachments']}:</b><br />\n";
+
+                foreach($attachments_array['attachments'] as $attachment) {
+
+                    echo attachment_make_link($attachment), "<br />\n";
+                }
+
+                echo "              </p>\n";
             }
 
-            echo "</td></tr>\n";
+            if (isset($attachments_array['image_attachments']) && is_array($attachments_array['image_attachments']) && sizeof($attachments_array['image_attachments']) > 0) {
+
+                echo "              <p><b>{$lang['imageattachments']}:</b><br />\n";
+
+                foreach($attachments_array['image_attachments'] as $key => $attachment) {
+
+                    echo attachment_make_link($attachment), "&nbsp;\n";
+                    if ($key > 0 && !($key % 4)) echo "<br />\n";
+                }
+
+                echo "              </p>\n";
+            }
+
+            echo "            </td>\n";
+            echo "          </tr>\n";
         }
     }
 
-    echo "          </table>\n";
-    echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
-    echo "            <tr>\n";
-    echo "              <td align=\"center\">\n";
+    echo "        </table>\n";
+    echo "        <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    echo "          <tr>\n";
 
     if (isset($pm_elements_array['FOLDER']) && (isset($pm_elements_array['MID']))) {
 
         if ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
 
-            echo "<img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a>&nbsp;\n";
+            echo "            <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
 
         }else {
 
-            echo "&nbsp;";
+            echo "            <td align=\"center\">&nbsp;</td>\n";
         }
 
     }else {
 
-        echo "&nbsp;";
+        echo "            <td align=\"center\">&nbsp;</td>\n";
     }
 
-    echo "              </td>\n";
-    echo "            </tr>\n";
+    echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";

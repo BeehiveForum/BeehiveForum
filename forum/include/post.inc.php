@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.104 2005-01-28 23:50:31 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.105 2005-02-04 00:21:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -52,8 +52,8 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
     }else {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
-        $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
-        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), '$ipaddress')";
+        $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) ";
+        $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
 
     $result = db_query($sql,$db_post_create);
@@ -85,6 +85,22 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
     }
 
     return $new_pid;
+}
+
+function post_approve($tid, $pid)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    $db_post_approve = db_connect();
+    $approve_uid = bh_session_get_value('UID');
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}POST SET APPROVED = NOW(), APPROVED_BY = '$approve_uid' ";
+    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+
+    return db_query($sql, $db_post_approve);
 }
 
 function post_save_attachment_id($tid, $pid, $aid)

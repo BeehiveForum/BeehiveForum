@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.231 2005-01-26 22:42:24 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.232 2005-02-04 00:21:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -187,11 +187,8 @@ echo "  <tr>\n";
 echo "    <td colspan=\"2\">\n";
 echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
 echo "        ", form_input_hidden("webtag", $webtag), "\n";
-
-threads_draw_discussions_dropdown($mode);
-
-echo form_submit("go",$lang['goexcmark']). "\n";
-
+echo "        ", threads_draw_discussions_dropdown($mode), "\n";
+echo "        ", form_submit("go",$lang['goexcmark']), "\n";
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

@@ -513,3 +513,10 @@ A		{
 .admin_settings_text {
                 font-size: 8pt;
 }
+
+.attachment_thumb {
+                float: left;
+		border: 1px solid #777777;
+		padding: 5px;
+		margin: 5px;
+}

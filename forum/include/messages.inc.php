@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.320 2005-01-30 14:10:23 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.321 2005-02-04 00:21:55 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -536,22 +536,34 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-            $attachments_array = get_attachments($message['FROM_UID'], $aid);
 
-            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+            if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
-                // Draw the attachment header at the bottom of the post
-
-                echo "              <tr>\n";
-                echo "                <td>&nbsp;</td>\n";
-                echo "              </tr>\n";
                 echo "              <tr>\n";
                 echo "                <td class=\"postbody\" align=\"left\">\n";
-                echo "                  <b>{$lang['attachments']}:</b><br />\n";
 
-                foreach($attachments_array as $attachment) {
+                if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
-                    echo attachment_make_link($attachment), "<br />\n";
+                    echo "                  <p><b>{$lang['attachments']}:</b><br />\n";
+
+                    foreach($attachments_array as $attachment) {
+
+                        echo "                  ", attachment_make_link($attachment), "<br />\n";
+                    }
+
+                    echo "                  </p>\n";
+                }
+
+                if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                    echo "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
+
+                    foreach($image_attachments_array as $key => $attachment) {
+
+                        echo "                  ", attachment_make_link($attachment), "\n";
+                    }
+
+                    echo "                  </p>\n";
                 }
 
                 echo "                </td>\n";

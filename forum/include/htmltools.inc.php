@@ -27,6 +27,51 @@ include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
+function TinyMCE() {
+
+    $lang = load_language_file();
+
+    $str = "<!-- tinyMCE -->\n";
+    $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"./tiny_mce/tiny_mce.js\"></script>\n";
+	$str.= "<script language=\"javascript\" type=\"text/javascript\">\n";
+	$str.= "tinyMCE.init({\n";
+
+	$str.= "    mode : \"specific_textareas\",\n";
+
+    if ($pref_language = bh_session_get_value("LANGUAGE")) {
+        if (@file_exists("./tiny_mce/langs/{$pref_language}.js")) {
+        	$str.= "    language : \"{$pref_language}\",\n";
+        }
+    }
+
+    $str.= "    directionality : \"{$lang['_textdir']}\",\n";
+
+//  $str.= "    content_css : \"style.css\",\n";
+//  $str.= "    autofocus : \"t_content\",\n";
+
+    $str.= "    plugins : \"beehive,searchreplace,table\",\n";
+
+	$str.= "    theme : \"advanced\",\n";
+    $str.= "    theme_advanced_toolbar_location : \"top\",\n";
+    $str.= "    theme_advanced_toolbar_align : \"left\",\n";
+//    $str.= "    theme_advanced_path_location : \"bottom\",\n";
+
+	// separator,rowseparator,spacer
+    $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontselect,fontsizeselect\",\n";
+    $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols,separator,search,replace,bhspellcheck\",\n";
+    $str.= "    theme_advanced_buttons3 : \"removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,hr,separator,bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
+
+	$str.= "    extended_valid_elements : \"bh,marquee,span\",\n";
+
+    $str.= "    invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\"\n";
+
+	$str.= "   });\n";
+	$str.= "</script>\n";
+	$str.= "<!-- /tinyMCE -->\n";
+
+    return $str;
+}
+
 // WARNING: Remember to declare onUnload="clearFocus()" in your <body> tag
 
 /* Example of usage:
@@ -51,18 +96,44 @@ class TextAreaHTML {
     // stick with PHP/4.x's old var modifiers, because for now
     // it is going to be more compatible with our 'audience'
 
-    var $form;                    // name of the form the textareas will belong to
-    var $tas = array();            // array of all the html-enabled textarea's names
-    var $tbs = 0;                // count of all the generated toolbars
+    var $form;                      // name of the form the textareas will belong to
+    var $tas = array();             // array of all the html-enabled textarea's names
+    var $tbs = 0;                   // count of all the generated toolbars
+    var $tac = 0;                   // count of all the generated textareas
+    var $tinymce = false;           // marker if the TinyMCE editor is being used
+    var $tinymce_allow = 1;         // number of allowed TinyMCE toolbars, default 1
 
     function TextAreaHTML ($form) {
         $this->form = $form;
+        if (@file_exists("./tiny_mce/tiny_mce.js")) {
+            $this->tinymce = true;
+        }
+    }
+
+    // ----------------------------------------------------
+    // Returns true if the TinyMCE editor is being used
+    // ----------------------------------------------------
+
+    function getTinyMCE () {
+        return $this->tinymce;
+    }
+
+    // ----------------------------------------------------
+    // Sets the number of allowed TinyMCE toolbars per page
+    // ----------------------------------------------------
+
+    function setTinyMCEAllow ($num) {
+        if (is_numeric($num)) {
+            $this->tinymce_allow = $num > 0 ? $num : 0;
+        }
     }
 
     // ----------------------------------------------------
     // Returns the HTML for the toolbar
     // ----------------------------------------------------
     function toolbar ($emoticons = true, $custom_html = "") {
+
+        if ($this->tinymce) return;
 
         $lang = load_language_file();
 
@@ -151,6 +222,15 @@ class TextAreaHTML {
 
     function textarea ($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = "", $class = "bhinputtext") {
 
+        $this->tac++;
+
+        if ($this->tinymce) {
+            if ($this->tac <= $this->tinymce_allow) {
+                $custom_html .= " mce_editable=\"true\"";
+            }
+            return form_textarea($name, $value, $rows, $cols, $wrap, $custom_html, $class);
+        }
+
         $this->tas[] = $name;
 
         $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
@@ -170,6 +250,8 @@ class TextAreaHTML {
     // ----------------------------------------------------
 
     function preload () {
+
+        if ($this->tinymce) return;
 
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
@@ -193,6 +275,8 @@ class TextAreaHTML {
     // ----------------------------------------------------
 
     function js ($focus = true) {
+
+        if ($this->tinymce) return;
 
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
@@ -246,13 +330,23 @@ class TextAreaHTML {
         $str.= "  <!--\n";
         $str.= "    function co_{$ta}_show (type) {\n";
         $str.= "      if (type == \"correct\" && document.{$this->form}.co_{$ta}_current.value != \"correct\") {\n";
-        $str.= "        var temp = document.{$this->form}.{$ta}.value;\n";
-        $str.= "        document.{$this->form}.{$ta}.value = document.{$this->form}.co_{$ta}_old.value;\n";
+        if ($this->tinymce) {
+            $str.= "        var temp = tinyMCE.getContent();\n";
+            $str.= "        tinyMCE.setContent(document.{$this->form}.co_{$ta}_old.value);\n";
+        } else {
+            $str.= "        var temp = document.{$this->form}.{$ta}.value;\n";
+            $str.= "        document.{$this->form}.{$ta}.value = document.{$this->form}.co_{$ta}_old.value;\n";
+        }
         $str.= "        document.{$this->form}.co_{$ta}_old.value = temp;\n";
         $str.= "        document.{$this->form}.co_{$ta}_current.value = \"correct\";\n";
         $str.= "      } else if (type == \"submit\" && document.{$this->form}.co_{$ta}_current.value != \"submit\") {\n";
-        $str.= "        var temp = document.{$this->form}.{$ta}.value;\n";
-        $str.= "        document.{$this->form}.{$ta}.value = document.{$this->form}.co_{$ta}_old.value;\n";
+        if ($this->tinymce) {
+            $str.= "        var temp = tinyMCE.getContent();\n";
+            $str.= "        tinyMCE.setContent(document.{$this->form}.co_{$ta}_old.value);\n";
+        } else {
+            $str.= "        var temp = document.{$this->form}.{$ta}.value;\n";
+            $str.= "        document.{$this->form}.{$ta}.value = document.{$this->form}.co_{$ta}_old.value;\n";
+        }
         $str.= "        document.{$this->form}.co_{$ta}_old.value = temp;\n";
         $str.= "        document.{$this->form}.co_{$ta}_current.value = \"submit\";\n";
         $str.= "      }\n";
@@ -275,6 +369,8 @@ class TextAreaHTML {
     // ----------------------------------------------------
 
     function assign_checkbox($a, $b = "") {
+
+        if ($this->tinymce) return;
 
         $str = "<script language=\"Javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";

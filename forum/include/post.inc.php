@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.121 2005-04-04 02:32:57 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.122 2005-04-05 02:10:54 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -467,8 +467,12 @@ class MessageText {
     var $diff = false;
     var $emoticons = true;
     var $links = true;
+    var $tinymce = false;
 
     function MessageText ($html = 0, $content = "", $emoticons = true, $links = true) {
+        if (@file_exists("./tiny_mce/tiny_mce.js")) {
+            $this->tinymce = true;
+        }
         $this->diff = false;
         $this->original_text = "";
         $this->links = $links;
@@ -518,10 +522,12 @@ class MessageText {
         if ($this->html == 0) {
             $text = make_html($text, false, $this->emoticons, $this->links);
         } else if ($this->html > 0) {
+            if ($this->tinymce) $text = tidy_tinymce($text);
+            $o = $text;
             $text = fix_html($text, $this->emoticons, $this->links);
 
             // <code></code> blocks are removed as the code highlighter often trips up this comparison
-            if (trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', $this->original_text)) != trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', tidy_html($text, ($this->html == 1) ? true : false)))) {
+            if (trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', $o)) != trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', tidy_html($text, ($this->html == 1) ? true : false)))) {
                 $this->diff = true;
             }
 
@@ -541,6 +547,7 @@ class MessageText {
         if ($this->html == 0) {
             return strip_tags($this->text);
         } else if ($this->html > 0) {
+            if ($this->tinymce) return _htmlentities(tidy_html($this->text, false, $this->links, true));
             return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false, $this->links));
         }
     }

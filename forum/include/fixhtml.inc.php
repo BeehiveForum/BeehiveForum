@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.100 2005-04-03 16:30:48 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.101 2005-04-05 02:10:43 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -606,6 +606,8 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
         $noemots = 0;
         $spoiler = 0;
 
+        $atags = 0;
+
         for ($i = 0; $i < count($html_parts); $i++) {
 
             if ($i % 2) {
@@ -643,11 +645,17 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                     } else if ($tag_quote == true && $tag == '/div') {
                         $tag_quote = false;
                     }
+
+                    if (substr($tag,0,2) == 'a ' || $tag == 'a') {
+                        $atags++;
+                    } else if ($tag == '/a') {
+                        $atags--;
+                    }
                 }
 
             } else {
 
-                if ($links == true && $tag_code == false && $spoiler == 0) {
+                if ($links == true && $atags == 0 && $tag_code == false && $spoiler == 0) {
                     $html_parts[$i] = make_links($html_parts[$i]);
                 }
 
@@ -870,9 +878,14 @@ function clean_attributes ($tag)
 * @param string $html The HTML to be tidied.
 * @param boolean $linebreaks Toggle if <br /> and <p> tags are to be converted (default=true)
 * @param boolean $links Toggle if HTML links are to be converted to text (default=true)
+* @param boolean $tidymce Toggle if using the TidyMCE WYSIWYG toolbar (default=false)
 */
-function tidy_html ($html, $linebreaks = true, $links = true)
+function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 {
+    if ($tidymce == true) {
+        $linebreaks = false;
+    }
+
     // turn <br /> and <p>...</p> back into linebreaks
     // only if auto-linebreaks is enabled
 
@@ -886,7 +899,8 @@ function tidy_html ($html, $linebreaks = true, $links = true)
     // turn autoconverted links back into text
 
     if ($links == true) {
-        $html = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $html);
+        $html = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "$3", $html);
+        $html = preg_replace("/<a href=\"(mailto:)?([^\"]*)\">((mailto:)?\\2)<\/a>/", "$3", $html);
     }
 
     // make <code>..</code> tag, and html_entity_decode
@@ -1016,6 +1030,16 @@ function tidy_html ($html, $linebreaks = true, $links = true)
 
     $html = $html_left.$html_right;
 
+    if ($tidymce) {
+        $html = preg_replace_callback("/<code([^>]*)>([^,]*)<\/code>/", "tidy_html_callback_2", $html);
+        $html = preg_replace("/<quote([^>]*)>/", "&lt;<em>quote</em>$1&gt;", $html);
+        $html = str_replace("</quote>", "&lt;<em>/quote</em>&gt;", $html);
+        $html = str_replace("<spoiler>", "&lt;<em>spoiler</em>&gt;", $html);
+        $html = str_replace("</spoiler>", "&lt;<em>/spoiler</em>&gt;", $html);
+        $html = str_replace("<noemots>", "&lt;<em>noemots</em>&gt;", $html);
+        $html = str_replace("</noemots>", "&lt;<em>/noemots</em>&gt;", $html);
+    }
+
     return $html;
 }
 
@@ -1028,6 +1052,57 @@ function tidy_html ($html, $linebreaks = true, $links = true)
 function tidy_html_callback ($matches)
 {
     return "<code language=\"{$matches[1]}\">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
+}
+/**
+* Used by tidy_html to convert <code> tags
+*
+* @return string
+* @param array $matches Array returned by preg_replace_callback
+*/
+function tidy_html_callback_2 ($matches)
+{
+    return "&lt;<em>code</em>{$matches[1]}&gt;". _htmlentities($matches[2]). "&lt;<em>/code</em>&gt;";
+}
+
+/**
+* I SHOULDN'T NEED TO DO THIS.
+*
+* @return string
+* @param string $html HTML THAT SHOULDN'T NEED TOUCHING.
+*/
+function tidy_tinymce ($html)
+{
+
+    $html = preg_replace_callback("/&lt;<em>code<\/em>(.*)&gt;(.*)&lt;<em>\/code<\/em>&gt;/sU", "tidy_tinymce_code_callback", $html);
+    $html = preg_replace_callback("/&lt;<em>quote<\/em>(.*)&gt;/sU", "tidy_tinymce_quote_callback", $html);
+    $html = str_replace("&lt;<em>/quote</em>&gt;", "</quote>", $html);
+    $html = str_replace("&lt;<em>spoiler</em>&gt;", "<spoiler>", $html);
+    $html = str_replace("&lt;<em>/spoiler</em>&gt;", "</spoiler>", $html);
+    $html = str_replace("&lt;<em>noemots</em>&gt;", "<noemots>", $html);
+    $html = str_replace("&lt;<em>/noemots</em>&gt;", "</noemots>", $html);
+
+    return $html;
+}
+
+/**
+* Used by tidy_tinymce to convert <code> tags
+*
+* @return string
+* @param array $matches Array returned by preg_replace_callback
+*/
+function tidy_tinymce_code_callback ($matches)
+{
+    return "<code". _htmlentities_decode($matches[1]) .">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
+}
+/**
+* Used by tidy_tinymce to convert <quote> tags
+*
+* @return string
+* @param array $matches Array returned by preg_replace_callback
+*/
+function tidy_tinymce_quote_callback ($matches)
+{
+    return "<quote". _htmlentities_decode($matches[1]) .">";
 }
 
 /** 
@@ -1407,11 +1482,11 @@ function make_links ($html)
     $html = " ".$html;
 
     // URL:
-    $html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:?[^@\s]+@)?([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"$2\">$2</a>", $html);
-    $html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
+    $html = preg_replace("/\b(\w+:\/\/([^:\s]+:?[^@\s]+@)?((\w+-?)+\.?)*\w+(:\d+)?([\/?#]\S*[^)\s])?)/i", "<a href=\"$1\">$1</a>", $html);
+    $html = preg_replace("/\b(www\.((\w+-?)+\.?)*\w+(:\d+)?([\/?#]\S*[^)\s])?)/i", "<a href=\"http://$1\">$1</a>", $html);
 
     // MAIL:
-    $html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
+    $html = preg_replace("/\b(mailto:)?(((\w+-?)+\.?)*\w+@((\w+-?)+\.)+\w+)/i", "<a href=\"mailto:$2\">$1$2</a>", $html);
 
     return substr($html, 1);
 }

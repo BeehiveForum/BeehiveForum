@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.79 2005-01-19 21:49:28 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.80 2005-01-22 18:46:37 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -267,9 +267,6 @@ if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
 }else {
 
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
-    echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
     echo "                </tr>\n";

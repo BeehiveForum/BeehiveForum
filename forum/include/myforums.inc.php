@@ -22,6 +22,7 @@ USA
 ======================================================================*/
 
 require_once("./include/html.inc.php");
+require_once("./include/threads.inc.php");
 
 function get_forum_list()
 {
@@ -101,27 +102,24 @@ function get_my_forums()
 	        $forum_data['FORUM_NAME'] = "Unnamed Forum";
 	    }
 
-            // Get unread message count
-        
-            $sql = "SELECT THREAD.LENGTH, USER_THREAD.LAST_READ ";
-            $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
-            $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-	    $sql.= "WHERE USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL";
+            // Get any new messages since last visit
+
+	    $folders = threads_get_available_folders();
+
+            $sql = "SELECT COUNT(POST.PID) AS NEW_MESSAGES ";
+            $sql.= "FROM {$forum_data['WEBTAG']}_POST POST ";
+	    $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON (POST.TID = THREAD.TID) ";
+	    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (VISITOR_LOG.UID = $uid) ";
+	    $sql.= "WHERE THREAD.FID IN ($folders) AND POST.CREATED >= VISITOR_LOG.LAST_LOGON";
 
             $result = db_query($sql, $db_get_my_forums);
 
-	    $forum_data['UNREAD_MESSAGES'] = 0;
+	    $forum_data['NEW_MESSAGES'] = 0;
         
             if (db_num_rows($result)) {
-	        while ($row = db_fetch_array($result)) {
-                    if (isset($row['LAST_READ']) && ($row['LAST_READ'] < $row['LENGTH'])) {
-		        $forum_data['UNREAD_MESSAGES']+= $row['LENGTH'] - $row['LAST_READ'];
-		    }else {
-		        $forum_data['UNREAD_MESSAGES']+= $row['LENGTH'];
-		    }
-	        }
-            }
+	        $row = db_fetch_array($result);
+		$forum_data['NEW_MESSAGES'] = $row['NEW_MESSAGES'];
+	    }
 
             // Get unread to me message count
         

@@ -2,8 +2,10 @@
 # Version 0.3 to 0.4-dev Upgrade Script
 # http://beehiveforum.sourceforge.net/
 #
-# Generation Time: Jul 15, 2003 at 19:35 PM
-# --------------------------------------------------------#
+# Schema generated using phpMyAdmin
+# (http://phpmyadmin.sourceforge.net)
+# Generation Time: Jul 24, 2003 at 21:37 PM
+# --------------------------------------------------------
 
 ALTER TABLE USER_PREFS ADD DOB date default '0000-00-00' NULL AFTER LASTNAME;
 ALTER TABLE USER_PREFS ADD LANGUAGE varchar(32) default NULL AFTER START_PAGE;
@@ -36,15 +38,20 @@ CREATE TABLE FILTER_LIST (
 
 CREATE TABLE PM (
   MID mediumint(8) unsigned NOT NULL auto_increment,
-  FROM_UID mediumint(8) unsigned NOT NULL default '0',
+  TYPE tinyint(3) unsigned NOT NULL default '0',
   TO_UID mediumint(8) unsigned NOT NULL default '0',
+  FROM_UID mediumint(8) unsigned NOT NULL default '0',
   SUBJECT varchar(64) NOT NULL default '',
   CREATED datetime NOT NULL default '0000-00-00 00:00:00',
-  VIEWED datetime default NULL,
-  DELETED tinyint(4) NOT NULL default '0',
-  NOTIFIED tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (MID),
-  KEY TO_UID (TO_UID)
+  KEY LID (MID)
+) TYPE=MyISAM;
+
+CREATE TABLE PM_ATTACHMENT_IDS (
+  MID mediumint(8) unsigned NOT NULL default '0',
+  AID char(32) NOT NULL default '',
+  PRIMARY KEY  (MID),
+  KEY AID (AID)
 ) TYPE=MyISAM;
 
 CREATE TABLE PM_CONTENT (

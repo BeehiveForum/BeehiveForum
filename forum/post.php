@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.105 2003-08-01 19:58:42 hodcroftcj Exp $ */
+/* $Id: post.php,v 1.106 2003-08-01 22:09:47 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -194,8 +194,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($newthread) {
             if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
-                $t_closed = isset($HTTP_POST_VARS['t_closed']) && $HTTP_POST_VARS['t_closed'] == "Y" ? true : false;
-                $t_sticky = isset($HTTP_POST_VARS['t_sticky']) && $HTTP_POST_VARS['t_sticky'] == "Y" ? "Y" : "N";
+                $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
+                $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
             }
                
             $t_tid = post_create_thread($t_fid, _stripslashes($t_threadtitle), "N", $t_sticky, $t_closed);
@@ -205,6 +205,24 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
             $t_tid = $HTTP_POST_VARS['t_tid'];
             $t_rpid = $HTTP_POST_VARS['t_rpid'];
+            if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
+                
+                if (isset($HTTP_POST_VARS['t_closed'])) $t_closed = $HTTP_POST_VARS['t_closed'];
+                if (isset($HTTP_POST_VARS['old_t_closed'])) $old_t_closed = $HTTP_POST_VARS['old_t_closed'];
+                if (isset($HTTP_POST_VARS['t_sticky'])) $t_sticky = $HTTP_POST_VARS['t_sticky'];
+                if (isset($HTTP_POST_VARS['old_t_sticky'])) $old_t_sticky = $HTTP_POST_VARS['old_t_sticky'];
+                
+                if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
+                    thread_set_closed($t_tid, true);
+                } elseif ((!isset($t_closed) || (isset($t_closed) && $t_closed != "Y")) && $old_t_closed == "Y") {
+                    thread_set_closed($t_tid, false);
+                }
+                if (isset($t_sticky) && isset($old_t_sticky) && $t_sticky != $old_t_sticky && $t_sticky == "Y") {
+                    thread_set_sticky($t_tid, true);
+                } elseif ((!isset($t_sticky) || (isset($t_sticky) && $t_sticky != "Y")) && $old_t_sticky == "Y") {
+                    thread_set_sticky($t_tid, false);
+                }
+            }
 
         }
 
@@ -518,10 +536,12 @@ if ($attachments_enabled) {
 
 }
 
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML']);
-if ($newthread && (bh_session_get_value("STATUS") & PERM_CHECK_WORKER)) {
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_closed", "Y", $lang['closeforposting']);
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_sticky", "Y", $lang['makesticky'])."</p>\n";
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML'])."\n";
+if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
+    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
+    echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
+    echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
 }
 
 

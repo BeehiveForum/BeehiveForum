@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.18 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: thread_admin.php,v 1.19 2003-08-01 22:09:47 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -70,22 +70,12 @@ if(isset($HTTP_POST_VARS['move'])){
     }
 } else if(isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){
         $tid = $HTTP_POST_VARS['t_tid'];
-
-        $db = db_connect();
-        $sql = "update ".forum_table("THREAD")." set CLOSED = NOW() where TID = $tid";
-
-        db_query($sql,$db);
-
+        thread_set_closed($tid, true);
         admin_addlog(0, 0, $tid, 0, 0, 0, 19);
 
 } else if(isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){
         $tid = $HTTP_POST_VARS['t_tid'];
-
-        $db = db_connect();
-        $sql = "update ".forum_table("THREAD")." set CLOSED = NULL where TID = $tid";
-
-        db_query($sql,$db);
-
+        thread_set_closed($tid, false);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
 
 } else if(isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.46 2004-02-22 14:29:24 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.47 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -41,7 +41,9 @@ require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/lang.inc.php");
 
-if (!$attachments_enabled) {
+if (!isset($attachment_dir)) $attachment_dir = "attachments";
+
+if (isset($attachments_enabled) && !$attachments_enabled) {
     html_draw_top();
     echo "<h1>Attachments have been disabled by the forum owner.</h1>\n";
     html_draw_bottom();

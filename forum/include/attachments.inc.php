@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.35 2004-02-22 14:27:22 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.36 2004-02-22 15:24:34 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -31,6 +31,8 @@ require_once("./include/config.inc.php");
 function get_attachments($uid, $aid)
 {
     global $HTTP_SERVER_VARS, $attachment_dir;
+    
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     $userattachments = false;
 
@@ -75,6 +77,8 @@ function get_attachments($uid, $aid)
 function get_all_attachments($uid, $aid)
 {
     global $HTTP_SERVER_VARS, $attachment_dir;
+    
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     $userattachments = false;
 
@@ -119,6 +123,8 @@ function get_all_attachments($uid, $aid)
 function get_users_attachments($uid)
 {
     global $HTTP_SERVER_VARS, $attachment_dir;
+    
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     $userattachments = false;
 
@@ -182,6 +188,8 @@ function add_attachment($uid, $aid, $filename, $mimetype)
 function delete_attachment($uid, $aid, $filename)
 {
     global $attachment_dir;
+    
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     $db_delete_attachment = db_connect();
 
@@ -223,6 +231,9 @@ function delete_attachment($uid, $aid, $filename)
 function get_free_attachment_space($uid)
 {
     global $HTTP_SERVER_VARS, $attachment_dir;
+    
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
+    
     $used_attachment_space = 0;
 
     $db_get_free_attachment_space = db_connect();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.29 2004-02-13 02:37:02 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.30 2004-02-22 15:24:39 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -274,7 +274,9 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array)
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $HTTP_SERVER_VARS, $lang, $attachment_dir;
+    
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     $uid = bh_session_get_value('UID');
 

@@ -96,7 +96,9 @@ $auto_logon = true;             // Automatically logs on the user as a
 
 $show_pms = true;               // Show the Private Messages section
 $pm_allow_attachments = true;   // Allow Private Messages to contain
-                                // attachments.
+                                // attachments. This setting is dependent
+                                // on the $attachments_enabled setting
+                                // below.
 
 // ---------------------------------------------------------------------
 

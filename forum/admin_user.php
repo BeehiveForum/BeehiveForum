@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.56 2004-02-02 20:47:05 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.57 2004-02-22 15:24:32 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -54,6 +54,8 @@ require_once("./include/ip.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/post.inc.php");
+
+if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
 if (isset($HTTP_POST_VARS['cancel'])) {
     header_redirect($HTTP_POST_VARS['ret']);

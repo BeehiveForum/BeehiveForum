@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.30 2004-02-13 13:20:26 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.31 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -61,6 +61,8 @@ require_once("./include/user.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/lang.inc.php");
+
+if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
 html_draw_top("post.js");
 
@@ -249,7 +251,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
       echo "</table>\n";
       echo "</form>\n";
 
-  }elseif ($attachments_enabled) {
+  }elseif (isset($attachments_enabled) && $attachments_enabled) {
 
       if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
           $aid = $HTTP_GET_VARS['aid'];

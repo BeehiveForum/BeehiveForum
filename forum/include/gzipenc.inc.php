@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.23 2004-01-08 20:17:45 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.24 2004-02-22 15:24:39 decoyduck Exp $ */
 
 // Compresses the output of the PHP scripts to save bandwidth.
 
@@ -30,6 +30,8 @@ require_once('./include/config.inc.php');
 function bh_check_gzip()
 {
     global $HTTP_SERVER_VARS, $gzip_compress_output;
+    
+    if (!isset($gzip_compress_output)) $gzip_compress_output = false;
 
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.

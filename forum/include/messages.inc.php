@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.226 2004-02-20 18:36:03 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.227 2004-02-22 15:24:39 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -211,10 +211,13 @@ function message_filter($content)
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-
     global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang, $attachments_show_deleted;
     
     if (!isset($attachments_show_deleted)) $attachments_show_deleted = false;
+    if (!isset($maximum_post_length)) $maximum_post_length = 6226;
+    if (!isset($allow_post_editing)) $allow_post_editing = true;
+    if (!isset($post_edit_time)) $post_edit_time = 0;
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
@@ -908,10 +911,12 @@ function validate_msg($msg)
 function messages_forum_stats($tid, $pid)
 {
     global $lang, $show_stats, $bh_query_count, $gzip_compress_state, $gzip_compress_level;
+    
+    if (!isset($show_stats)) $show_stats = true;    
 
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
-
+    
     if ($show_stats) {
 
         echo "<div align=\"center\">\n";

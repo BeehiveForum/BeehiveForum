@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.5 2003-12-06 19:15:56 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.6 2004-02-22 15:24:39 decoyduck Exp $ */
 
 // I18N SUPPORT
 
@@ -32,6 +32,7 @@ require_once("./include/session.inc.php");
 
 bh_session_check();
 
+if (!isset($default_language)) $default_language = "en";
 $pref_language = bh_session_get_value("LANGUAGE");
 
 if ($pref_language && $pref_language != "") { // if the user has expressed a preference for language, ignore what the browser wants and use that if available

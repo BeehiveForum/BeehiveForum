@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.40 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.41 2004-02-22 15:24:34 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -34,6 +34,9 @@ function email_sendnotification($tuid, $msg, $fuid)
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
+    
+    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
+    if (!isset($forum_name)) $forum_name = "admin@abeehiveforum.net";
 
     $db_email_sendnotification = db_connect();
 
@@ -101,6 +104,9 @@ function email_sendsubscription($tuid, $msg, $fuid)
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
+
+    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
+    if (!isset($forum_name)) $forum_name = "admin@abeehiveforum.net";
 
     $db_email_sendsubscription = db_connect();
 
@@ -170,6 +176,9 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email, $lang;
+    
+    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
+    if (!isset($forum_name)) $forum_name = "admin@abeehiveforum.net";
 
     $db_email_sendnotification = db_connect();
 
@@ -235,6 +244,9 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 function email_send_pw_reminder($logon)
 {
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
+    
+    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
+    if (!isset($forum_name)) $forum_name = "admin@abeehiveforum.net";
 
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
@@ -284,6 +296,8 @@ function email_send_pw_reminder($logon)
 function email_get_language($to_uid)
 {
     global $default_language;
+    
+    if (!isset($default_language)) $default_language = "en";    
 
     $prefs = user_get_prefs($to_uid);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.25 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: admin.php,v 1.26 2004-02-22 15:24:32 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -47,6 +47,7 @@ require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/config.inc.php");
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     html_draw_top();
@@ -56,6 +57,7 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     exit;
 }
 
+if (!isset($default_style)) $default_style = "default";
 $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.22 2004-02-20 22:04:24 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.23 2004-02-22 15:24:39 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -31,21 +31,22 @@ require_once("./include/lang.inc.php");
 
 function light_html_draw_top ($title = false)
 {
-
     global $forum_name, $lang;
+    
+    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
 
-    if(!$title){
+    if (!isset($title)) {
         $title = $forum_name;
     }
 
-        echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
-        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
-        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"", $lang['_textdir'], "\">\n";
-        echo "<head>\n";
-        echo "<title>$title</title>\n";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=", $lang['_charset'], "\"/>\n";
-        echo "</head>\n";
-        echo "<body>\n";
+    echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"", $lang['_textdir'], "\">\n";
+    echo "<head>\n";
+    echo "<title>$title</title>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=", $lang['_charset'], "\"/>\n";
+    echo "</head>\n";
+    echo "<body>\n";
 }
 
 function light_html_draw_bottom ()
@@ -357,6 +358,9 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
 {
     global $maximum_post_length, $attachment_dir, $lang;
+    
+    if (!isset($maximum_post_length)) $maximum_post_length = 6226;    
+    if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         light_message_display_deleted($tid, $message['PID']);

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.16 2004-04-23 22:11:05 decoyduck Exp $ */
+/* $Id: forums.php,v 1.17 2004-04-23 22:22:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -30,9 +30,6 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Fetch the forum settings
-$forum_settings = get_forum_settings();
 
 // Fetch the forum settings
 $forum_settings = get_forum_settings();

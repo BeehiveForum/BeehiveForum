@@ -53,8 +53,17 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
   if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
   
-    $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
+    if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && ($HTTP_POST_VARS['submit'] == 'Logon')) {
     
+      header("HTTP/1.0 500 Internal Server Error"); // Naughty naughty.
+      exit;
+      
+    }else {
+  
+      $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
+    
+    }
+         
     if ($luid > -1) {
     
       // Reset Thread Mode      
@@ -254,7 +263,7 @@ echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
 echo "</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
 echo "<tr><td align=\"center\">";
-echo form_submit();
+echo form_submit("submit", "Logon");
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
 echo "</form>\n";

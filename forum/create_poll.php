@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.47 2003-09-02 19:40:38 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.48 2003-09-02 20:47:52 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -102,9 +102,9 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
   $answer_group_check = array();
 
-  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answer_group']); $i++) {
-      if (!in_array($HTTP_POST_VARS['answer_group'][$i], $answer_group_check)) {
-          $answer_group_check[] = $HTTP_POST_VARS['answer_group'][$i];
+  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answer_groups']); $i++) {
+      if (!in_array($HTTP_POST_VARS['answer_groups'][$i], $answer_group_check)) {
+          $answer_group_check[] = $HTTP_POST_VARS['answer_groups'][$i];
       }
   }
 
@@ -181,7 +181,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y', 'N');
     $pid = post_create($tid, 0, bh_session_get_value('UID'), 0, '');
 
-    poll_create($tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_group'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
+    poll_create($tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
 
     if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
 
@@ -283,7 +283,15 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
                        'GROUP_ID'    => $HTTP_POST_VARS['answer_groups'],
                        'VOTES'       => $poll_votes_array);
 
-  $polldata['CONTENT'].= poll_preview_graph($pollresults, $HTTP_POST_VARS['polltype']);
+  if ($HTTP_POST_VARS['polltype'] == 1) {
+
+    $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
+
+  }else {
+
+    $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+  }
+
   $polldata['CONTENT'].= "          </td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "      </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.196 2003-11-20 19:40:51 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.197 2003-11-20 22:14:31 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -232,7 +232,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if (isset($message['EDITED']) && isset($message['EDITED_BY']) && $message['EDITED'] > 0 && $message['EDITED_BY'] > 0) {
-        $message['CONTENT'].= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". date("d/m/y H:i T");
+        $message['CONTENT'].= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". format_date($message['EDITED'], 1, "d/m/y H:i T");
         $message['CONTENT'].= " {$lang['by']} ". user_get_logon($message['EDITED_BY']);
         $message['CONTENT'].= "</p>";
     }

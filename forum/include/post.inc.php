@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.71 2004-04-12 19:44:43 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.72 2004-04-12 20:39:03 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -271,7 +271,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     return $html;
 }
 
-function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
+function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $inc_blank = false)
 {
     $html = "<select name=\"t_to_uid_in_thread\" style=\"width: 190px\" onClick=\"checkToRadio(0)\">\n";
     $db_post_draw_to_dropdown = db_connect();
@@ -290,12 +290,21 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
 
             $top_user = db_fetch_array($result);
             $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
         }
     }
 
     if ($show_all) {
-        $html .= "<option value=\"0\">ALL</option>\n";
+
+        $html.= "<option value=\"0\">ALL</option>\n";
+
+    }elseif ($inc_blank) {
+
+        if (isset($default_uid) && $default_uid != 0) {
+            $html.= "<option value=\"0\"></option>\n";
+	}else {
+            $html.= "<option value=\"0\" selected=\"selected\"></option>\n";
+	}
     }
 
     $sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";

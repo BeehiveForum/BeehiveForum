@@ -75,8 +75,8 @@ function get_num_sessions()
     $get_num_sessions = db_connect();
     $session_stamp = time() - $active_sess_cutoff;
 
-    $sql = "SELECT COUNT(UID) AS SESSION_COUNT FROM ". forum_table("SESSIONS"). " ";
-    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM ". forum_table("SESSIONS"). " ";
+    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) GROUP BY UID";
 
     $result = db_query($sql, $get_num_sessions);
 
@@ -106,12 +106,12 @@ function get_active_users()
 
     // Current active users
 
-    $sql = "SELECT SESSIONS.UID, SESSIONS.TIME, USER.LOGON, USER.NICKNAME, ";
+    $sql = "SELECT DISTINCT SESSIONS.UID, SESSIONS.TIME, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PREFS.ANON_LOGON FROM ". forum_table("SESSIONS"). " SESSIONS ";
     $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "ORDER BY USER.NICKNAME ";
+    $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     $result = db_query($sql, $db_get_active_users);
 

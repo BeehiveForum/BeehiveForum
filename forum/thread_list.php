@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.228 2004-12-19 13:20:31 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.229 2004-12-21 23:56:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -414,7 +414,7 @@ if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"sma
 
 // Iterate through the information we've just got and display it in the right order
 
-while (list($key1, $folder_number) = each($folder_order)) {
+foreach ($folder_order as $key1 => $folder_number) {
 
     if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
@@ -495,7 +495,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     echo "    <td class=\"threads\" style=\"border-top: 0px;\" colspan=\"2\">\n";
                     echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 
-                    while (list($key2, $thread) = each($thread_info)) {
+                    foreach($thread_info as $key2 => $thread) {
 
                         if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
                         if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];

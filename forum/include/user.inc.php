@@ -357,4 +357,17 @@ function user_get_global_sig($uid){
 	return "";
 }
 
+function user_get_post_count($uid)
+{
+        $db_user_get_count = db_connect();
+
+        $sql = "select COUNT(FROM_UID) AS COUNT FROM " . forum_table("POST") . " where FROM_UID = $uid";
+        
+        $result = db_query($sql, $db_user_get_count);
+        
+        $post_count = db_fetch_array($result);
+        
+        return $post_count['COUNT'];
+}
+
 ?>

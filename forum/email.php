@@ -50,6 +50,7 @@ if(isset($HTTP_POST_VARS['cancel'])){
 
 require_once("./include/user.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/format.inc.php");
 
 if(isset($HTTP_GET_VARS['uid'])){
     $to_uid = $HTTP_GET_VARS['uid'];
@@ -121,4 +122,5 @@ echo "</form>";
 echo "</div>\n";
 
 html_draw_bottom();
+
 ?>

@@ -56,6 +56,7 @@ require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/user_profile.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/format.inc.php");
 
 
 html_draw_top();

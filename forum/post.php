@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.251 2005-04-05 02:16:56 tribalonline Exp $ */
+/* $Id: post.php,v 1.252 2005-04-06 22:14:30 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -904,7 +904,9 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-        echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+    echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+} else {
+    $tools->setTinyMCE(false);
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\"", "post_content"), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.111 2004-08-08 00:39:47 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.112 2004-08-17 10:52:23 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -131,7 +131,7 @@ if (isset($_POST['cancel'])) {
 if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
 
     list($gid) = array_keys($_POST['edit_users']);
-    header_redirect("./admin_user_groups_edit_users.php?gid=$gid");
+    header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
 }
 
 html_draw_top('admin.js');

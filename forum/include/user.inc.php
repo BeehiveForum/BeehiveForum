@@ -40,10 +40,19 @@ function user_exists($logon)
 
 function user_create($logon,$password,$nickname,$email)
 {
-    $md5pass = md5($password);
 
-    $sql = "INSERT INTO " . forum_table("USER") . " (logon,passwd,nickname,email) ";
-    $sql .= "VALUES (\"$logon\",\"$md5pass\",\"$nickname\",\"$email\")";
+    global $HTTP_SERVER_VARS;
+
+    $md5pass = md5($password);
+    
+    if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
+      $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+    }else {
+      $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+    }    
+
+    $sql = "INSERT INTO " . forum_table("USER") . " (LOGON, PASSWRD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
+    $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$ipaddress')";
 
     $db_user_create = db_connect();
     $result = db_query($sql, $db_user_create);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.57 2005-01-07 00:49:00 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.58 2005-01-19 17:53:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,7 +155,7 @@ if (isset($_POST['submit'])) {
 
         $path_parts = pathinfo($_FILES['userfile']['tmp_name']);
 
-        if (in_array($path_parts['extension'], $allowed_file_exts)) {
+        if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_file_exts)) {
 
             if (@move_uploaded_file($_FILES['userfile']['tmp_name'], "forums/$webtag/start_main.php")) {
 

@@ -601,6 +601,14 @@ function tidy_html ($html, $linebreaks = true) {
 
 
 	// make <code>..</code> tag, and html_entity_decode 
+	if (!function_exists("html_entity_decode")) {
+		function html_entity_decode ($string)  {
+			$trans_tbl = get_html_translation_table (HTML_ENTITIES);
+			$trans_tbl = array_flip ($trans_tbl);
+			$ret = strtr ($string, $trans_tbl);
+			return preg_replace('/&#(\d+);/me', "chr('\\1')",$ret);
+		}
+	}
 	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/ie",
 						"'<code>'.html_entity_decode('$1').'</code>'", $html);
 

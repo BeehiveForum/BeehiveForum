@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.97 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.98 2004-04-12 18:32:24 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -285,28 +285,29 @@ function bh_setcookie($name, $value = "", $expires = 0)
     global $HTTP_SERVER_VARS;
 
     if (isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
+
         $hostname = $HTTP_SERVER_VARS['HTTP_HOST'];
-    }else {
-        $hostname = "";
-    }
+        $cookie_domain = forum_get_setting('cookie_domain', false, $hostname);
 
-    $cookie_domain = forum_get_setting('cookie_domain', false, $hostname);
-
-    if (strstr($cookie_domain, $hostname) && strlen($cookie_domain) > 0) {
-        $hostname = $cookie_domain;
-    }
-    
-    if (!strstr($hostname, 'localhost')) {
-            
-        $hostname = str_replace("www", "", $hostname);
-        $hostname = str_replace("http://", "", $hostname);
-            
-        if (substr($hostname, 0, 1) != ".") {
-            $hostname = ".{$hostname}";
+        if (strstr($cookie_domain, $hostname) && strlen($cookie_domain) > 0) {
+            $hostname = $cookie_domain;
         }
+    
+        if (!strstr($hostname, 'localhost')) {
+            
+            $hostname = str_replace("www", "", $hostname);
+            $hostname = str_replace("http://", "", $hostname);
+            
+            if (substr($hostname, 0, 1) != ".") {
+                $hostname = ".{$hostname}";
+            }
+
+            setcookie($name, $value, $expires, '/', $hostname, 0);
+	    return true;
+	}
     }
 
-    setcookie($name, $value, $expires, '/', $hostname, 0);
+    setcookie($name, $value, $expires, '/');    
 }
 
 ?>

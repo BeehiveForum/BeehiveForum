@@ -288,7 +288,7 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
-                           $posts_per_page, $font_size, $style, $view_sigs)
+                           $posts_per_page, $font_size, $style, $view_sigs, $start_page = 0)
 {
 
     $db_user_update_prefs = db_connect();
@@ -302,11 +302,11 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 	if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
-    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS)";
+    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE)";
     $sql .= " values ($uid, \"". htmlspecialchars($firstname). "\", \"". htmlspecialchars($lastname). "\",";
     $sql .= " \"". htmlspecialchars($homepage_url). "\", \"". htmlspecialchars($pic_url). "\",";
     $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\",";
-	$sql .= " $posts_per_page, $font_size, \"$style\", \"$view_sigs\")";
+	$sql .= " $posts_per_page, $font_size, \"$style\", \"$view_sigs\", \"$start_page\")";
 
     $result = db_query($sql, $db_user_update_prefs);
 

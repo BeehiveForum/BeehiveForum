@@ -38,7 +38,12 @@ require_once("./include/poll.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    if (isset($HTTP_GET_VARS['msg'])) {
+      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+    }else {
+      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+    }
+
     header_redirect($uri);
 
 }

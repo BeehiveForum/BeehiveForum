@@ -29,27 +29,21 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
-    header_redirect($uri);
+    header_redirect("./logon.php");
     
 }
 
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
+
 if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     header_no_cache();
 }
 
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+
 	bh_session_end();
-
-	if(isset($final_uri)){
-		$uri = "./logon.php?final_uri=".urlencode($final_uri);
-	} else {
-		$uri = "./logon.php?final_uri=". urlencode(get_request_uri());
-	}
-
-	header_redirect($uri);
+	header_redirect("./logon.php");
   
 }
 
@@ -63,10 +57,11 @@ require_once("./include/form.inc.php");
 
 $logged_off = false;
 
-// Where are we going after we've logged on?
-if(isset($HTTP_POST_VARS['submit'])){
+// Where are we going after we've logged off?
+
+if (isset($HTTP_POST_VARS['submit'])) {
     bh_session_end();
-	header_redirect("./start.php");
+    header_redirect("./index.php");
     $logged_off = true;
 }
 
@@ -74,7 +69,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 html_draw_top();
 
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"POST\">\n";
+echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"POST\" target=\"_top\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
 echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
 echo "Log out:\n";

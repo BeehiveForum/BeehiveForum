@@ -39,7 +39,7 @@ html_draw_top('Nav', 'navpage');
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
 
 ?>
-        <a href="preferences.php" target="main">Preferences</a>&nbsp|&nbsp;
+        <a href="prefs.php" target="main">Preferences</a>&nbsp|&nbsp;
         <a href="profile.php" target="main">Profile</a>&nbsp|&nbsp;
 <?php
 

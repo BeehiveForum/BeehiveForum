@@ -38,15 +38,26 @@ header_no_cache();
     <body style="font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px; background-color: #D7D7D7">
         <a href="start.php" target="main">Start</a>&nbsp|&nbsp;
         <a href="discussion.php" target="main">Messages</a>&nbsp|&nbsp;
+<?php
+        
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+
+?>
         <a href="preferences.php" target="main">Preferences</a>&nbsp|&nbsp;
         <a href="profile.php" target="main">Profile</a>&nbsp|&nbsp;
-<?
+<?php
+
+}
+
 if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && $HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER) { 
+
 ?>
         <a href="admin.php" target="main">Admin</a>&nbsp|&nbsp;
-<?
+<?php
+
 }
 ?>
+
         <a href="logout.php" target="main">Logout</a>
     </body>
 </html>

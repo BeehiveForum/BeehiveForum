@@ -103,12 +103,23 @@ if (isset($searchsql)) {
   echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"#\">Create Poll</a><br />\n";
   echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";  
   
-  $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
-                  "2 Days Back","7 Days Back","High Interest","Unread High Interest",
-                  "I've recently seen","I've ignored","I've subscribed to");
+  echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
 
-  echo "<form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
-  echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+  if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+
+    $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
+    echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
+  
+  }else {
+
+    $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
+                    "2 Days Back","7 Days Back","High Interest","Unread High Interest",
+                    "I've recently seen","I've ignored","I've subscribed to");
+
+    echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+  
+  }  
+  
   echo form_submit("go","Go!"). "\n";  
   
   echo "<br /><br />\n";

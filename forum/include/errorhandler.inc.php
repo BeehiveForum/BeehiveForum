@@ -39,6 +39,8 @@ function error_handler($errno, $errstr, $errfile, $errline)
       $getvars.= "&retryerror=yes";
     }
 
+    srand((double)microtime()*1000000);
+
     ob_end_clean();
 
     if ($gzip_compress_output && (phpversion() >= '4.2')) {
@@ -51,80 +53,36 @@ function error_handler($errno, $errstr, $errfile, $errline)
         ob_start();
     }
 
-    html_draw_top();
+    if (defined("BEEHIVEMODE_LIGHT")) {
 
-    echo "<div align=\"center\">\n";
-    echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
-    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "  <tr>\n";
-    echo "    <td>\n";
-    echo "      <table border=\"0\" width=\"100%\">\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td>";
+      light_html_draw_top();
 
-    foreach ($HTTP_POST_VARS as $key => $value) {
-      echo form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
-    }
+      echo "<p>An error has occured. Please wait a few minutes and then click the Retry button below.</p>\n";
+      echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
 
-    echo "          </td>\n";
-    echo "        </tr>\n";
+      foreach ($HTTP_POST_VARS as $key => $value) {
+        echo form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
+      }
 
-    srand((double)microtime()*1000000);
+      echo form_submit(md5(uniqid(rand())), 'Retry');
 
-    echo "        <tr>\n";
-    echo "          <td align=\"center\">", form_submit(md5(uniqid(rand())), 'Retry'), "</td>\n";
-    echo "        </tr>\n";
+      if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
 
-    if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+        echo "<p>This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</p>\n";
+        echo form_textarea("t_content", htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85);
 
-      echo "        <tr>\n";
-      echo "          <td>&nbsp;</td>\n";
-      echo "        </tr>\n";
-      echo "        <tr>\n";
-      echo "          <td><hr /></td>\n";
-      echo "        </tr>\n";
-      echo "        <tr>\n";
-      echo "          <td class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
-      echo "        </tr>\n";
-      echo "        <tr>\n";
-      echo "          <td>&nbsp;</td>\n";
-      echo "        </tr>\n";
-      echo "        <tr>\n";
-      echo "          <td>", form_textarea("t_content", htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85), "</td>\n";
-      echo "        </tr>\n";
+        if (isset($HTTP_GET_VARS['replyto'])) {
 
-      if (isset($HTTP_GET_VARS['replyto'])) {
+          echo "<p>Reply Message Number:</p>\n";
+          echo form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64);
 
-        echo "        <tr>\n";
-        echo "          <td>&nbsp;</td>\n";
-        echo "        </tr>\n";
-        echo "        <tr>\n";
-        echo "          <td class=\"postbody\">Reply Message Number:</td>\n";
-        echo "        </tr>\n";
-        echo "        <tr>\n";
-        echo "          <td>", form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64), "</td>\n";
-        echo "        </tr>\n";
+        }
 
       }
 
-    }
+      echo "<h2>Error Message for server admins and developers:</h2>\n";
 
-    echo "        <tr>\n";
-    echo "          <td>&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td><hr /></td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td><h2>Error Message for server admins and developers:</h2></td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"postbody\">";
-
-    switch ($errno) {
+      switch ($errno) {
 
         case FATAL:
             echo "<p><b>FATAL</b> [$errno] $errstr</p>\n";
@@ -142,20 +100,118 @@ function error_handler($errno, $errstr, $errfile, $errline)
             echo "<b>Unknown error</b> [$errno] $errstr<br />\n";
             echo "<p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
+      }
+
+      echo "</form>\n";
+      light_html_draw_bottom();
+      exit;
+
+    }else {
+
+      html_draw_top();
+
+      echo "<div align=\"center\">\n";
+      echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
+      echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+      echo "  <tr>\n";
+      echo "    <td>\n";
+      echo "      <table border=\"0\" width=\"100%\">\n";
+      echo "        <tr>\n";
+      echo "          <td class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td>";
+
+      foreach ($HTTP_POST_VARS as $key => $value) {
+        echo form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
+      }
+
+      echo "          </td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td align=\"center\">", form_submit(md5(uniqid(rand())), 'Retry'), "</td>\n";
+      echo "        </tr>\n";
+
+      if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+
+        echo "        <tr>\n";
+        echo "          <td>&nbsp;</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td><hr /></td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td>&nbsp;</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td>", form_textarea("t_content", htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85), "</td>\n";
+        echo "        </tr>\n";
+
+        if (isset($HTTP_GET_VARS['replyto'])) {
+
+          echo "        <tr>\n";
+          echo "          <td>&nbsp;</td>\n";
+          echo "        </tr>\n";
+          echo "        <tr>\n";
+          echo "          <td class=\"postbody\">Reply Message Number:</td>\n";
+          echo "        </tr>\n";
+          echo "        <tr>\n";
+          echo "          <td>", form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64), "</td>\n";
+          echo "        </tr>\n";
+
+        }
+
+      }
+
+      echo "        <tr>\n";
+      echo "          <td>&nbsp;</td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td><hr /></td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td><h2>Error Message for server admins and developers:</h2></td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td class=\"postbody\">";
+
+      switch ($errno) {
+
+        case FATAL:
+          echo "<p><b>FATAL</b> [$errno] $errstr</p>\n";
+          echo "<p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          break;
+        case ERROR:
+          echo "<b>ERROR</b> [$errno] $errstr<br />\n";
+          echo "<p>Error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          break;
+        case WARNING:
+          echo "<b>WARNING</b> [$errno] $errstr<br />\n";
+          echo "<p>Warning in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          break;
+        default:
+          echo "<b>Unknown error</b> [$errno] $errstr<br />\n";
+          echo "<p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
+          break;
+      }
+
+      echo "<p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
+      echo "</td>\n";
+      echo "        </tr>\n";
+      echo "      </table>\n";
+      echo "    </td>\n";
+      echo "  </tr>\n";
+      echo "</table>\n";
+      echo "</form>\n";
+      echo "</div>\n";
+
+      html_draw_bottom();
+      exit;
+
     }
-
-    echo "<p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
-    echo "</td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
-    exit;
 
 }
 

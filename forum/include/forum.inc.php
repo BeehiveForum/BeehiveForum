@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.22 2004-03-20 19:21:30 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.23 2004-03-21 09:22:10 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -37,6 +37,8 @@ function get_webtag()
     
     if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
         $webtag = trim($HTTP_GET_VARS['webtag']);
+    }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
+        $webtag = trim($HTTP_POST_VARS['webtag']);
     }else {
         $webtag = "";
     }

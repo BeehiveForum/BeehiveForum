@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.84 2004-03-18 23:42:31 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.85 2004-03-21 09:22:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -44,9 +44,11 @@ include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
 include_once("./include/poll.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
@@ -295,7 +297,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
 }
 
-html_draw_top("basetarget=_blank", "openprofile.js");
+html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.37 2003-09-21 12:57:57 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.38 2003-10-05 16:46:24 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -47,6 +47,7 @@ require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/admin.inc.php");
 
 html_draw_top();
 
@@ -149,9 +150,9 @@ if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
 echo "        </tr>\n";
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
-    $user_array = user_search($usersearch, $sort_by, $sort_dir, $start);
+    $user_array = admin_user_search($usersearch, $sort_by, $sort_dir, $start, false);
 }else {
-    $user_array = user_get_all($sort_by, $sort_dir, $start);
+    $user_array = admin_user_get_all($sort_by, $sort_dir, $start, false);
 }
 
 if (sizeof($user_array) > 0) {

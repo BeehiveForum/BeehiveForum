@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.8 2003-08-05 03:11:21 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.9 2003-10-05 16:46:24 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -120,6 +120,49 @@ function admin_save_word_filter($filter)
 
        $result = db_query($sql, $db_admin_save_word_filter);
     }
+}
+
+function admin_user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $offset = 0)
+{
+    $db_user_search = db_connect();
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "USER.LOGON_FROM, USER.STATUS FROM " . forum_table("USER") . " USER ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "WHERE (LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
+    $sql.= "ORDER BY USER.$sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 20";
+
+    $result = db_query($sql, $db_user_search);
+
+    if (db_num_rows($result)) {
+        $user_search_array = array();
+        while ($row = db_fetch_array($result)) {
+            $user_search_array[] = $row;
+        }
+        return $user_search_array;
+    }else {
+        return false;
+    }
+}
+
+function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
+{
+    $db_user_get_all = db_connect();
+    $user_get_all_array = array();
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "USER.LOGON_FROM, USER.STATUS FROM ". forum_table("USER"). " USER ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "ORDER BY USER.$sort_by $sort_dir LIMIT $offset, 20";
+
+    $result = db_query($sql, $db_user_get_all);
+
+    while($row = db_fetch_array($result)) {
+       $user_get_all_array[] = $row;
+    }
+
+    return $user_get_all_array;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.108 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.109 2005-03-19 21:50:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -128,7 +128,7 @@ html_draw_top();
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
-echo "var upload_field_array = new array();\n\n";
+echo "var upload_field_array = new Array();\n\n";
 echo "var upload_field_html = '<input type=\"file\" name=\"userfile[]\" id=\"userfile[]\" class=\"bhinputtext\" value=\"\" size=\"40\" dir=\"ltr\" />';\n\n";
 echo "function add_upload_field()\n";
 echo "{\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.87 2005-03-14 13:27:23 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.88 2005-03-14 22:41:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -255,7 +255,7 @@ echo "                    <table width=\"150\" class=\"subhead\" cellspacing=\"5
 if (isset($user_profile['PIC_URL'])) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" alt=\"\" title=\"\" /></td>\n";
+    echo "                        <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" alt=\"$title\" title=\"$title\" /></td>\n";
     echo "                      </tr>\n";
 }
 

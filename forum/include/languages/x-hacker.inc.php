@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.120 2004-08-07 22:39:47 tribalonline Exp $ */
+/* $Id: x-hacker.inc.php,v 1.121 2004-08-08 20:53:29 tribalonline Exp $ */
 
 // International English language file
 
@@ -955,9 +955,9 @@ $lang['enterpollquestionexp'] = "3n+3R +3H ansW3RS F0R Y0Ur POLL QuE\$+10N.. iF 
 $lang['numberanswers'] = "n0. 4NsW3R\$";
 $lang['answerscontainHTML'] = "@NsW3r\$ C0nT41N HtML (N0+ InCLuD1n9 SIgN4+ur3)";
 $lang['optionsdisplay'] = "4n\$W3Rs D1\$pl@Y TyP3";
-$lang['optionsdisplayexp'] = "hoW 5h0UlD Teh Po5sI8L3 @nsW3r5 BE D1\$Pl4Y3D T0 PoT3NT1@L VotER\$?";
+$lang['optionsdisplayexp'] = "hoW 5h0UlD Teh @nsW3r5 BE D1\$Pl4Y3D?";
 $lang['dropdown'] = "@s drOp-d0Wn LISt(5)";
-$lang['radios'] = "@S 5Er1Es 0PH R@DI0 8UTtON5";
+$lang['radios'] = "@S 4 5Er1Es 0PH R@DI0 8UTtON5";
 $lang['votechanging'] = "V0+E cH4N91N9";
 $lang['votechangingexp'] = "C4N @ PEr\$0N Ch4ng3 hi5 0r HeR voTe?";
 $lang['allowmultiplevotes'] = "alLoW MUlTiPlE v0TEs";

@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.112 2004-04-17 17:39:30 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.113 2004-04-21 21:00:37 decoyduck Exp $ */
+
+include_once("./include/folder.inc.php");
 
 function threads_get_available_folders()
 {
@@ -33,7 +35,7 @@ function threads_get_folders()
     $uid = bh_session_get_value('UID');
 
     $db_threads_get_folders = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT F.FID, F.TITLE, F.DESCRIPTION, F.ALLOWED_TYPES, ";
@@ -50,15 +52,15 @@ function threads_get_folders()
         while($row = db_fetch_array($result)) {
             if (isset($row['INTEREST'])) {
                 $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
-                                                  'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 
-                                                  'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 
-                                                  'INTEREST'      => $row['INTEREST'], 
+                                                  'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                  'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                  'INTEREST'      => $row['INTEREST'],
                                                   'ACCESS_LEVEL'  => $row['ACCESS_LEVEL']);
             }else {
-                $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'], 
-                                                  'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 
-                                                  'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 
-                                                  'INTEREST'      => 0, 
+                $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
+                                                  'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                  'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                  'INTEREST'      => 0,
                                                   'ACCESS_LEVEL'  => $row['ACCESS_LEVEL']);
             }
         }
@@ -72,7 +74,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
 
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -116,7 +118,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -158,7 +160,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 {
     $folders = threads_get_available_folders();
     $db_threads_get_unread_to_me = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -200,7 +202,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 
     $folders = threads_get_available_folders();
     $db_threads_get_by_days = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -244,7 +246,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
 
     $folders = threads_get_available_folders();
     $db_threads_get_by_interest = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -286,7 +288,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 
     $folders = threads_get_available_folders();
     $db_threads_get_unread_by_interest = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -329,7 +331,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
     $folders = threads_get_available_folders();
     $db_threads_get_recently_viewed = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -371,7 +373,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
 
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -413,7 +415,7 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
 
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -457,7 +459,7 @@ function threads_get_polls($uid, $start = 0)
 
     $folders = threads_get_available_folders();
     $db_threads_get_polls = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -478,7 +480,7 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
     $sql .= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-    $sql .= "(USER_STATUS.UID = USER.UID) ";    
+    $sql .= "(USER_STATUS.UID = USER.UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -502,7 +504,7 @@ function threads_get_sticky($uid, $start = 0)
 
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -524,7 +526,7 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
     $sql .= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-    $sql .= "(USER_STATUS.UID = USER.UID) ";    
+    $sql .= "(USER_STATUS.UID = USER.UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -548,7 +550,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -590,7 +592,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 function threads_get_folder($uid, $fid, $start = 0)
 {
     $db_threads_get_folder = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
@@ -611,7 +613,7 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
     $sql .= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-    $sql .= "(USER_STATUS.UID = USER.UID) ";    
+    $sql .= "(USER_STATUS.UID = USER.UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($fid) ";
@@ -632,14 +634,16 @@ function threads_get_folder($uid, $fid, $start = 0)
 function threads_get_most_recent()
 {
     $db_threads_get_recent = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $fidlist = folder_get_available();
-    $uid = bh_session_get_value('UID');
+
+    if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
     $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, T.POLL_FLAG, UT.LAST_READ, ";
-    $sql.= "UP.RELATIONSHIP, AT.AID AS ATTACHMENTS, UT.INTEREST, U.NICKNAME, U.LOGON ";
+    $sql.= "UNIX_TIMESTAMP(T.MODIFIED) AS MODIFIED, UP.RELATIONSHIP, ";
+    $sql.= "AT.AID AS ATTACHMENTS, UT.INTEREST, U.NICKNAME, U.LOGON ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD T ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD UT ";
     $sql.= "ON (T.TID = UT.TID and UT.UID = '$uid') ";
@@ -736,7 +740,7 @@ function threads_get_folder_msgs()
 
     $folder_msgs = array();
     $db_threads_get_folder_msgs = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT FID, COUNT(*) AS TOTAL FROM {$table_data['PREFIX']}THREAD GROUP BY FID";
@@ -752,7 +756,7 @@ function threads_get_folder_msgs()
 function threads_any_unread()
 {
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}THREAD T LEFT JOIN {$table_data['PREFIX']}USER_THREAD UT ";
@@ -772,7 +776,7 @@ function threads_mark_all_read()
     $uid = bh_session_get_value('UID');
 
     $db_threads_mark_all_read = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT TID, LENGTH FROM {$table_data['PREFIX']}THREAD";
@@ -789,7 +793,7 @@ function threads_mark_50_read()
     $uid = bh_session_get_value('UID');
 
     $db_threads_mark_50_read = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
@@ -808,11 +812,11 @@ function threads_mark_50_read()
 function threads_mark_read($tidarray)
 {
     $db_threads_mark_read = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_array($tidarray)) return false;
-    
+
     foreach($tidarray as $ctid) {
 
         $sql = "SELECT LENGTH FROM {$table_data['PREFIX']}THREAD WHERE TID = $ctid";

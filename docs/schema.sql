@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.62 2004-03-17 14:14:28 decoyduck Exp $
+# $Id: schema.sql,v 1.63 2004-03-17 20:41:44 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -202,7 +202,7 @@ CREATE TABLE LINKS_FOLDERS (
 ) TYPE=MYISAM;
 
 #
-# Dumping data for table `links_folders`
+# Dumping data for table `LINKS_FOLDERS`
 #
 
 INSERT INTO LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y');
@@ -210,7 +210,7 @@ INSERT INTO LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level',
 # --------------------------------------------------------
 
 #
-# Table structure for table `links_vote`
+# Table structure for table `LINKS_VOTE`
 #
 
 CREATE TABLE LINKS_VOTE (

@@ -21,11 +21,50 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.14 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: gzipenc.inc.php,v 1.15 2003-09-09 15:16:28 decoyduck Exp $ */
 
 // Compresses the output of the PHP scripts to save bandwidth.
 
 require_once('./include/config.inc.php');
+
+function bh_script_start()
+{
+    static $start_time = false;
+    if (!$start_time) $start_time = microtime();
+    return $start_time;
+}
+
+function bh_script_stop()
+{
+    static $stop_time = false;
+    if (!$stop_time) $stop_time = microtime();
+    return $stop_time;
+}
+
+function bh_calculate_elapsed_time()
+{
+    static $elapsed_time = false;
+
+    if ($elapsed_time) {
+        return $elapsed_time;
+    }else {
+
+        $start_time = bh_script_start();
+        $stop_time  = bh_script_stop();
+
+        $start_u = substr($start_time, 0, 10);
+        $start_s = substr($start_time, 11, 10);
+
+        $stop_u = substr($stop_time, 0, 10);
+        $stop_s = substr($stop_time, 11, 10);
+
+        $start_total = doubleval($start_u) + $start_s;
+        $stop_total  = doubleval($stop_u)  + $stop_s;
+
+        $elapsed_time = round($stop_total  -  $start_total, 5);
+        return $elapsed_time;
+    }
+}
 
 function bh_check_gzip()
 {
@@ -58,16 +97,26 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $gzip_compress_level;
+    global $gzip_compress_level, $query_count, $script_start;
 
     // check the compression level variable
     if (!isset($gzip_compress_level)) $gzip_compress_level = 1;
     if ($gzip_compress_level > 9) $gzip_compress_level = 9;
     if ($gzip_compress_level < 1) $gzip_compress_level = 1;
 
+    // work out how long it took the script to execute
+
+    bh_script_stop();
+    $script_time = bh_calculate_elapsed_time();
+
+    $contents = str_replace("<!-- bh_query_count //-->", $query_count, $contents);
+    $contents = str_replace("<!-- bh_script_time //-->", $script_time, $contents);
+
     // check that the encoding is possible.
     // and fetch the client's encoding method.
     if ($encoding = bh_check_gzip()) {
+
+        $contents = str_replace("<!-- bh_content_encoding //-->", "GZIP&nbsp;Enabled", $contents);
 
         // do the compression
         if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
@@ -104,6 +153,8 @@ function bh_gzhandler($contents)
 
     }else {
 
+        $contents = str_replace("<!-- bh_content_encoding //-->", "GZIP&nbsp;Disabled", $contents);
+
         // return the text uncompressed as the client
         // doesn't support it or it has been disabled
         // in config.inc.php.
@@ -111,6 +162,9 @@ function bh_gzhandler($contents)
 
     }
 }
+
+// Start the clock ticking
+bh_script_start();
 
 // Enabled the gzip handler
 ob_start("bh_gzhandler");

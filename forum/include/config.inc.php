@@ -41,13 +41,20 @@ $default_language = "en"; // default language for the forum
 
 // ---------------------------------------------------------------------
 
-// Error Handler -------------------------------------------------------
+// Debugging -----------------------------------------------------------
 
 $show_friendly_errors = true; // Should Beehive replace PHP's default
                               // error handler? If you have problems
                               // with blank pages, etc, you should try
                               // turning this option off to see if it
                               // goes away.
+
+$show_page_info = true;       // Includes a small line of text at the
+                              // bottom of the main pages which shows
+                              // the amount of time taken to execute
+                              // the PHP script, the number of queries
+                              // used by the script and the status
+                              // of the gzip compression.
 
 // ---------------------------------------------------------------------
 

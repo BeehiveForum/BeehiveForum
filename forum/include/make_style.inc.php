@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.7 2003-08-05 03:11:21 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.8 2004-12-21 22:49:45 decoyduck Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -113,11 +113,9 @@ function changeColour ($r, $g, $b, $variance, $mode, $steps)
 
 // Random number shiznit
 
-function randSort()
+function rand_sort($a, $b)
 {
-
     return (rand(0, 1));
-
 }
 
 // calculates the luminance, saturation and hue of a supplied

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.2 2004-03-07 18:05:45 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.3 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -35,7 +38,7 @@ require_once("./include/header.inc.php");
 
 if (!bh_session_check() || bh_session_get_value('UID') == 0) {
 
-    $uri = "./llogon.php";
+    $uri = "./llogon.php?webtag=$webtag";
     header_redirect($uri);
 }
 
@@ -58,14 +61,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
-        header_redirect("./llogon.php");
+        header_redirect("./llogon.php?webtag=$webtag");
 
     }else { // IIS bug prevents redirect at same time as setting cookies.
 
         light_html_draw_top();
 
         echo "<p>{$lang['youhaveloggedout']}</p>";
-        echo form_quick_button("./llogon.php", $lang['ok']);
+        echo form_quick_button("./llogon.php?webtag=$webtag", $lang['ok']);
 
         light_html_draw_bottom();
         exit;
@@ -74,7 +77,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 light_html_draw_top();
 
-echo "<form name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"_top\">\n";
+echo "<form name=\"logon\" action=\"llogout.php?webtag=$webtag\" method=\"post\" target=\"_top\">\n";
 echo "<p>{$lang['currentlyloggedinas']} ", user_get_logon(bh_session_get_value('UID')), "</p>\n";
 echo "<p>", form_submit("submit", $lang['logout']), "</p>\n";
 

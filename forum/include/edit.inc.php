@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.31 2004-03-09 23:00:08 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.32 2004-03-10 18:43:18 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -90,12 +90,12 @@ function post_delete($tid, $pid)
 
 function edit_refuse($tid, $pid)
 {
-    global $lang;
+    global $lang, $webtag;
 
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['nopermissiontoedit']}</p>";
-    echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+    echo form_quick_button("discussion.php?webtag=$webtag", $lang['back'], "msg", "$tid.$pid");
     echo "</div>";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.79 2004-03-07 09:45:45 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.80 2004-03-10 18:43:18 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -31,9 +31,10 @@ require_once("./include/pm.inc.php");
 
 function html_guest_error ()
 {
-     global $lang;
+     global $lang, $webtag;
+     
      html_draw_top();
-     echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?final_uri=", get_request_uri(), "\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
+     echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag&final_uri=", get_request_uri(), "\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
      html_draw_bottom();
 }
 
@@ -120,7 +121,7 @@ function html_message_type_error()
 
 function html_draw_top()
 {
-    global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_name, $default_style, $lang;
+    global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_name, $default_style, $lang, $webtag;
     
     if (!isset($forum_name)) $forum_name = "A Beehive Forum";
     if (!isset($default_style)) $default_style = "default";
@@ -176,7 +177,7 @@ function html_draw_top()
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
     
     if ($meta_refresh) {
-        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php\">\n";
+        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
 
     if (isset($default_style)) {
@@ -201,7 +202,7 @@ function html_draw_top()
     $fontsize = bh_session_get_value('FONT_SIZE');
     
     if ($fontsize && $fontsize != '10') {
-        echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";
+        echo "<style type=\"text/css\">@import \"fontsize.php?webtag=$webtag\";</style>\n";
     }
     
     if (isset($HTTP_GET_VARS['fontresize'])) {

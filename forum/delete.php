@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.43 2004-01-26 19:40:26 decoyduck Exp $ */
+/* $Id: delete.php,v 1.44 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -34,7 +37,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -82,7 +85,7 @@ if (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = "./discussion.php?msg=". $msg;
+    $uri = "./discussion.php?webtag=$webtag&msg=". $msg;
     header_redirect($uri);
 }
 
@@ -123,7 +126,7 @@ if ($valid) {
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['postdelsuccessfully']}</p>";
-            echo form_quick_button("discussion.php", $lang['back'], "msg", $HTTP_POST_VARS['msg']);
+            echo form_quick_button("discussion.php?webtag=$webtag", $lang['back'], "msg", $HTTP_POST_VARS['msg']);
             echo "</div>";
             html_draw_bottom();
             exit;
@@ -172,7 +175,7 @@ if ($valid) {
 if(isset($error_html)) echo $error_html;
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"f_delete\" action=\"delete.php\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"f_delete\" action=\"delete.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    <p>", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
 echo "  </form>\n";

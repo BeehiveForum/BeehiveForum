@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.16 2004-03-04 20:30:35 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.17 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -34,7 +37,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -45,7 +48,6 @@ if (bh_session_get_value('UID') == 0) {
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/user_profile.inc.php");
@@ -77,7 +79,7 @@ if ($profile_values = profile_get_user_values($uid)) {
 
     // Draw the form
     echo "<br />\n";
-    echo "<form name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form name=\"f_profile\" action=\"edit_profile.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";

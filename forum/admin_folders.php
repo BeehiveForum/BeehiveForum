@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.47 2004-03-03 23:15:17 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.48 2004-03-10 18:43:16 decoyduck Exp $ */
 
-// Frameset for thread list and messages
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -37,14 +38,13 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
@@ -104,7 +104,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
+echo "<form name=\"f_folders\" action=\"admin_folders.php?webtag=$webtag\" method=\"post\">\n";
 echo "  <table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";
@@ -148,7 +148,7 @@ if ($folder_array = folder_get_all()) {
         echo "            <td align=\"left\">". form_dropdown_array("t_allow[{$folder_array[$i]['FID']}]", $allow_values, $allow_labels, $folder_array[$i]['ALLOWED_TYPES'] ? $folder_array[$i]['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow[{$folder_array[$i]['FID']}]", $folder_array[$i]['ALLOWED_TYPES'])."</td>\n";
 
         if ($folder_array[$i]['ACCESS_LEVEL'] > 0) {
-            echo "            <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php?fid={$folder_array[$i]['FID']}'\""), "</td>\n";
+            echo "            <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php?webtag=$webtag&fid={$folder_array[$i]['FID']}'\""), "</td>\n";
         }else {
             echo "            <td align=\"left\">&nbsp;</td>";
         }

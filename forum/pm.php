@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.25 2004-01-07 20:57:02 decoyduck Exp $ */
+/* $Id: pm.php,v 1.26 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -34,7 +37,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -139,7 +142,7 @@ $pm_folders = array(0 => $lang['pminbox'],
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$pm_folders[$folder]}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
@@ -160,7 +163,7 @@ if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
 // get message list
 $listmessages_array = pm_list_get($folder_bitwise);
 
-echo "<form name=\"pm\" action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"pm\" action=\"pm.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
 echo "  <table width=\"95%\" align=\"center\" border=\"0\">\n";
 echo "    <tr>\n";
@@ -215,14 +218,14 @@ if (sizeof($listmessages_array) == 0) {
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"pm.php?folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", _stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
+        echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", _stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
 
         if (isset($listmessages_array[$i]['AID'])) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
         }
 
         if (($folder_bitwise == PM_FOLDER_OUTBOX) && (($listmessages_array[$i]['TYPE'] == PM_NEW) || ($listmessages_array[$i]['TYPE'] == PM_UNREAD))) {
-            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?mid={$listmessages_array[$i]['MID']}\">Edit</a>]</span>";
+            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&mid={$listmessages_array[$i]['MID']}\">Edit</a>]</span>";
         }
 
         echo "</td>\n";

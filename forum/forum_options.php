@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.6 2004-03-04 20:30:35 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.7 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -35,7 +38,7 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -188,7 +191,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-        header_redirect("./forum_options.php?updated=true");
+        header_redirect("./forum_options.php?webtag=$webtag&updated=true");
 
     }else {
 
@@ -197,7 +200,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './forum_options.php?updated=true';\n";
+        echo "document.location.href = './forum_options.php?webtag=$webtag&updated=true';\n";
         echo "//-->\n";
         echo "</script>";
 
@@ -205,7 +208,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
         echo "<p>{$lang['preferencesupdated']}</p>";
 
-        form_quick_button("./forum_options.php", $lang['continue'], "", "", "_top");
+        form_quick_button("./forum_options.php?webtag=$webtag", $lang['continue'], "", "", "_top");
 
         html_draw_bottom();
         exit;
@@ -259,7 +262,7 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<form name=\"prefs\" action=\"forum_options.php\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefs\" action=\"forum_options.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.4 2004-03-07 09:45:45 decoyduck Exp $ */
+/* $Id: user.php,v 1.5 2004-03-10 18:43:18 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Frameset for thread list and messages
 
@@ -38,7 +41,7 @@ require_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -64,7 +67,7 @@ $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value
 <link rel="icon" href="images/favicon.ico" type="image/ico">
 </head>
 <frameset cols="180,*" border="1">
-<frame src="./user_menu.php" name="left" border="1">
-<frame src="./user_main.php" name="right" border="1">
+<frame src="./user_menu.php?webtag=$webtag" name="left" border="1">
+<frame src="./user_main.php?webtag=$webtag" name="right" border="1">
 </frameset>
 </html>

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.27 2004-03-06 13:45:50 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.28 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -47,7 +50,7 @@ require_once("./include/lang.inc.php");
 
 if(!bh_session_check() || bh_session_get_value('UID') == 0){
 
-    $uri = "./llogon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./llogon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -97,7 +100,7 @@ if (isset($HTTP_GET_VARS['start_from']) && is_numeric($HTTP_GET_VARS['start_form
 // Output XHTML header
 light_html_draw_top();
 
-echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n        ";
+echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php?webtag=$webtag\">\n        ";
 
 if (bh_session_get_value('UID') == 0) {
 
@@ -255,16 +258,16 @@ if (isset($ignored_folders)) $folder_order = array_merge($folder_order, $ignored
 // If no threads are returned, say something to that effect
 
 if (!$thread_info) {
-    echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"lthread_list.php?mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
+    echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"lthread_list.php?webtag=$webtag&mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<p><a href=\"lthread_list.php?mode=0&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&mode=0&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
 
 // Iterate through the information we've just got and display it in the right order
 
 while (list($key1, $folder_number) = each($folder_order)) {
 
-    echo "<h3><a href=\"lthread_list.php?mode=0&folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE'] . "</a></h3>";
+    echo "<h3><a href=\"lthread_list.php?webtag=$webtag&mode=0&folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE'] . "</a></h3>";
 
     if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
@@ -279,10 +282,10 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo " {$lang['threads']}";
-            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&fid=".$folder_number."\">{$lang['postnew']}</a></b>";
             echo "</p>\n";
 
-            if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"lthread_list.php?mode=0&folder=$folder&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></i></p>\n";
+            if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&mode=0&folder=$folder&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></i></p>\n";
 
             echo "<ul>\n";
 
@@ -316,7 +319,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     // work out how long ago the thread was posted and format the time to display
                     $thread_time = format_time($thread['modified']);
 
-                    echo "<a href=\"lmessages.php?msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
+                    echo "<a href=\"lmessages.php?webtag=$webtag&msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
                     if ($thread['interest'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                     if ($thread['interest'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                     if ($thread['poll_flag'] == 'Y') echo "(P) ";
@@ -334,14 +337,14 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                 $more_threads = $folder_msgs[$folder] - $start_from - 50;
 
-                if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"lthread_list.php?mode=0&folder=$folder&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</a></i></p>\n";
-                if ($more_threads > 50) echo "<p><i><a href=\"lthread_list.php?mode=0&folder=$folder&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></i></p>\n";
+                if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&mode=0&folder=$folder&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</a></i></p>\n";
+                if ($more_threads > 50) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&mode=0&folder=$folder&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></i></p>\n";
 
             }
 
         }elseif ($folder_info[$folder_number]['INTEREST'] != -1) {
 
-            echo "<p><a href=\"lthread_list.php?mode=0&folder=".$folder_number."\">";
+            echo "<p><a href=\"lthread_list.php?webtag=$webtag&mode=0&folder=".$folder_number."\">";
 
             if (isset($folder_msgs[$folder_number])) {
                 echo $folder_msgs[$folder_number];
@@ -350,7 +353,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo " {$lang['threads']}</a>";
-            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&fid=".$folder_number."\">{$lang['postnew']}</a></b>";
             echo "</p>\n";
         }
 
@@ -370,8 +373,8 @@ if ($mode == 0 && !isset($folder)) {
       }
 
       $more_threads = $total_threads - $start_from - 50;
-      if ($more_threads > 0 && $more_threads <= 50) echo "<p><a href=\"lthread_list.php?mode=0&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</p>\n";
-      if ($more_threads > 50) echo "<p><a href=\"lthread_list.php?mode=0&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></p>\n";
+      if ($more_threads > 0 && $more_threads <= 50) echo "<p><a href=\"lthread_list.php?webtag=$webtag&mode=0&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</p>\n";
+      if ($more_threads > 50) echo "<p><a href=\"lthread_list.php?webtag=$webtag&mode=0&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></p>\n";
 
     }
 }
@@ -379,7 +382,7 @@ if ($mode == 0 && !isset($folder)) {
 if (bh_session_get_value('UID') != 0) {
 
     echo "  <h5>{$lang['markasread']}:</h5>\n";
-    echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";
+    echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php?webtag=$webtag\">\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
 
@@ -395,7 +398,7 @@ if (bh_session_get_value('UID') != 0) {
 
 }
 
-echo "<p><a href=\"llogout.php\">{$lang['logout']}</a></p>\n";
+echo "<p><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></p>\n";
 light_html_draw_bottom();
 
 ?>

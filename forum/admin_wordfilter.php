@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.18 2004-03-03 23:15:17 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.19 2004-03-10 18:43:16 decoyduck Exp $ */
 
-// Frameset for thread list and messages
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -34,14 +35,13 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
@@ -96,7 +96,7 @@ if (isset($status_text)) echo $status_text;
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
+echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php?webtag=$webtag\">\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";

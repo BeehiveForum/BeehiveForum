@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.19 2004-03-07 17:37:58 decoyduck Exp $ */
+/* $Id: start.php,v 1.20 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -37,7 +40,7 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -55,15 +58,15 @@ echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\">\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
-echo "<frame src=\"./start_left.php\" name=\"left\" border=\"1\">\n";
+echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
 
 if (isset($HTTP_GET_VARS['show']) && $HTTP_GET_VARS['show'] == "visitors") {
 
-    echo "<frame src=\"./visitor_log.php\" name=\"right\" border=\"1\">\n";
+    echo "<frame src=\"./visitor_log.php?webtag=$webtag\" name=\"right\" border=\"1\">\n";
 
 }else {
 
-    echo "<frame src=\"./start_main.php\" name=\"right\" border=\"1\">\n";
+    echo "<frame src=\"./start_main.php?webtag=$webtag\" name=\"right\" border=\"1\">\n";
 }
 
 echo "</frameset>\n";

@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.4 2004-01-26 19:40:59 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.5 2004-03-10 18:43:18 decoyduck Exp $ */
 
-// Changes the user's fontsize. Moved from messages.php (02.05.2003)
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 require_once("./include/user.inc.php");
 require_once("./include/session.inc.php");
@@ -31,7 +32,7 @@ require_once("./include/messages.inc.php");
 require_once("./include/format.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -51,11 +52,11 @@ if (isset($HTTP_GET_VARS['show_stats']) && $uid > 0) {
     user_update_prefs($uid, $user_prefs);
 
     bh_session_init(bh_session_get_value('UID'));
-    header_redirect("./messages.php?msg=$msg");
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 
 }else {
 
-   header_redirect("./messages.php?msg=$msg");
+   header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 
 }
 

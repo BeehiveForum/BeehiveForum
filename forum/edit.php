@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.84 2004-02-29 09:10:28 decoyduck Exp $ */
+/* $Id: edit.php,v 1.85 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -35,7 +38,7 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -90,7 +93,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 	echo "</td></tr>\n";
 
 	echo "<tr><td align=\"center\">\n";
-	echo form_quick_button("discussion.php", $lang['back']);
+	echo form_quick_button("discussion.php?webtag=$webtag", $lang['back']);
 	echo "</td></tr>\n";
 	echo "</table>\n";
 
@@ -114,7 +117,7 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 	echo "</td></tr>\n";
 
 	echo "<tr><td align=\"center\">\n";
-	echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+	echo form_quick_button("discussion.php?webtag=$webtag", $lang['back'], "msg", "$tid.$pid");
 	echo "</td></tr>\n";
 	echo "</table>\n";
 
@@ -124,7 +127,7 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
-    $uri = "./edit_poll.php";
+    $uri = "./edit_poll.php?webtag=$webtag";
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
         $uri.= "?msg=". $HTTP_GET_VARS['msg'];
@@ -137,7 +140,7 @@ if (thread_is_poll($tid) && $pid == 1) {
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "./discussion.php";
+    $uri = "./discussion.php?webtag=$webtag";
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
         $uri.= "?msg=". $HTTP_GET_VARS['msg'];
@@ -342,7 +345,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 		echo "</td></tr>\n";
 
 		echo "<tr><td align=\"center\">\n";
-		echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+		echo form_quick_button("discussion.php?webtag=$webtag", $lang['back'], "msg", "$tid.$pid");
 		echo "</td></tr>\n";
 		echo "</table>\n";
 
@@ -400,7 +403,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			echo "</td></tr>\n";
 
 			echo "<tr><td align=\"center\">\n";
-			echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
+			echo form_quick_button("discussion.php?webtag=$webtag", $lang['continue'], "msg", "$tid.$pid");
 			echo "</td></tr>\n";
 			echo "</table>\n";
 
@@ -432,7 +435,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			echo "</td></tr>\n";
 
 			echo "<tr><td align=\"center\">\n";
-			echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+			echo form_quick_button("discussion.php?webtag=$webtag", $lang['back'], "msg", "$tid.$pid");
 			echo "</td></tr>\n";
 			echo "</table>\n";
 
@@ -499,7 +502,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 }
 
 echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
+echo "<br /><form name=\"f_edit\" action=\"edit.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 
 if (isset($error_html)) {
     echo "<table class=\"posthead\" width=\"720\">\n";

@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.26 2004-02-13 11:07:20 decoyduck Exp $ */
+/* $Id: display.php,v 1.27 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -44,9 +47,9 @@ require_once("./include/poll.inc.php");
 if (!bh_session_check()) {
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+      $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
     }else {
-      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+      $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     }
 
     header_redirect($uri);
@@ -114,7 +117,7 @@ if ($message) {
 
 messages_end_panel();
 echo "<table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";
-echo "<form name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
+echo "<form name=\"display\" method=\"get\" action=\"messages.php?webtag=$webtag\" target=\"_self\">\n";
 echo form_input_hidden("msg", "$tid.$pid");
 echo form_submit("submit", $lang['back']);
 echo "&nbsp;";

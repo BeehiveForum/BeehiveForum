@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.26 2004-02-23 21:31:27 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.27 2004-03-10 18:43:18 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -34,7 +37,7 @@ require_once("./include/lang.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -83,14 +86,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     // Update the User's Session to save them having to logout and back in
     bh_session_init(bh_session_get_value('UID'));
-    header_redirect("./messages.php?msg=$msg");
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
     if ($edit_rel) {
-        header_redirect("./edit_relations.php");
+        header_redirect("./edit_relations.php?webtag=$webtag");
     }else {
-        header_redirect("./messages.php?msg=$msg");
+        header_redirect("./messages.php?webtag=$webtag&msg=$msg");
     }
 }
 
@@ -119,7 +122,7 @@ $rel = user_rel_get($my_uid, $uid);
 echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 echo "<br />\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"relationship\" action=\"user_rel.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden("uid", $uid), "\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    ", form_input_hidden("edit_rel", $edit_rel), "\n";

@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.21 2004-03-03 23:15:17 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.22 2004-03-10 18:43:16 decoyduck Exp $ */
 
-// Frameset for thread list and messages
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -37,14 +38,13 @@ require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
@@ -77,7 +77,7 @@ if (isset($HTTP_POST_VARS['save'])) {
     fwrite($fp, $content);
     fclose($fp);
 
-    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"start_main.php\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
+    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
 
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
@@ -96,7 +96,7 @@ if (isset($HTTP_POST_VARS['save'])) {
 
 }
 
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag=$webtag\">\n";
 echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;

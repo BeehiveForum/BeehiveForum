@@ -21,13 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.32 2004-02-29 09:10:28 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.33 2004-03-10 18:43:17 decoyduck Exp $ */
+
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/db.inc.php");
-require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/messages.inc.php");
@@ -43,9 +45,9 @@ if (!isset($post_edit_time)) $post_edit_time = 0;
 if (!bh_session_check()) {
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+      $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
     }else {
-      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+      $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     }
 
     header_redirect($uri);
@@ -151,7 +153,7 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
     }
 }
 
-$uri = "./messages.php";
+$uri = "./messages.php?webtag=$webtag";
 
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $uri.= "?msg=". $HTTP_GET_VARS['msg'];

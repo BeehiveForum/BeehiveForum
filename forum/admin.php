@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.28 2004-03-07 09:45:45 decoyduck Exp $ */
+/* $Id: admin.php,v 1.29 2004-03-10 18:43:16 decoyduck Exp $ */
 
-// Frameset for thread list and messages
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -39,7 +40,7 @@ require_once("./include/messages.inc.php");
 
 if (!bh_session_check()) {
 
-    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
 }
@@ -69,8 +70,8 @@ echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n"
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"150,*\" border=\"1\">\n";
-echo "  <frame src=\"./admin_menu.php\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-echo "  <frame src=\"./admin_main.php\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 echo "</frameset>\n";
 echo "</html>\n";
 

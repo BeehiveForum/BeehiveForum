@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.14 2004-01-26 19:40:58 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.15 2004-03-10 18:43:18 decoyduck Exp $ */
 
-// Changes the user's fontsize. Moved from messages.php (02.05.2003)
+//Multiple forum support
+require_once("./include/forum.inc.php");
 
 require_once("./include/user.inc.php");
 require_once("./include/session.inc.php");
@@ -31,7 +32,7 @@ require_once("./include/messages.inc.php");
 require_once("./include/format.inc.php");
 
 if (!bh_session_check()) {
-    $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+    $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -50,11 +51,11 @@ if (isset($HTTP_GET_VARS['fontsize']) && is_numeric($HTTP_GET_VARS['fontsize']) 
 
     user_update_prefs($uid, $user_prefs);
 
-    header_redirect("./messages.php?msg=$msg&fontresize=1");
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg&fontresize=1");
 
 }else {
 
-   header_redirect("./messages.php?msg=$msg");
+   header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 
 }
 

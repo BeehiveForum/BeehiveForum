@@ -225,9 +225,18 @@ function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
     return $age;
 }
 
-function format_date($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
+function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 {
     $date_bits = explode("-", $date);
-    return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $date_bits[0]));
+    $local_time = get_local_time();
+    $todays_date = date("j", $local_time);
+    $todays_month = date("n", $local_time);
+    if (($todays_month < $date_bits[1]) && ($todays_date < $date_bits[2])) {
+        $year = date("Y", $local_time);
+    } else {
+        $year = date("Y", $local_time) + 1;
+    }
+    
+    return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
 }
 ?>

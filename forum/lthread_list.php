@@ -274,8 +274,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "0";
             }
 
-            echo " {$lang['threads']} - \n";
-            echo "<b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b></p>\n";
+            echo " {$lang['threads']}";
+            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+            echo "</p>\n";
 
             if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></i></p>\n";
 
@@ -312,8 +313,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     $thread_time = format_time($thread['modified']);
 
                     echo "<a href=\"lmessages.php?msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
-                    if ($thread['interest'] == 1) echo "(HI) ";
-                    if ($thread['interest'] == 2) echo "(Sub) ";
+                    if ($thread['interest'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
+                    if ($thread['interest'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                     if ($thread['poll_flag'] == 'Y') echo "(P) ";
                     if ($thread['relationship'] & USER_FRIEND) echo "(Fr) ";
                     echo $number." ";

@@ -61,6 +61,12 @@ require_once("./include/poll.inc.php");
 require_once("./include/light.inc.php");
 require_once("./include/lang.inc.php");
 
+// Check that there are some available folders for this thread type
+if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
+    light_html_message_type_error();
+    exit;
+}
+
 if (isset($HTTP_POST_VARS['cancel'])) {
 
     $uri = "./lthread_list.php";
@@ -113,7 +119,12 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_fid'])) {
-        $t_fid = $HTTP_POST_VARS['t_fid'];
+        if (folder_thread_type_allowed($HTTP_POST_VARS['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+            $t_fid = $HTTP_POST_VARS['t_fid'];
+        } else {
+            $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+            $valid = false;
+        }
     } else if ($valid) {
         $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
         $valid = false;
@@ -405,7 +416,7 @@ if (!isset($t_threadtitle)) {
 if ($newthread) {
 
     echo "<p>{$lang['selectfolder']}: ";
-    echo folder_draw_dropdown($t_fid) . "</p>\n";
+    echo folder_draw_dropdown($t_fid,"t_fid","",FOLDER_ALLOW_NORMAL_THREAD) . "</p>\n";
     echo "<p>{$lang['threadtitle']}: ";
     echo light_form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 30, 64);
     echo "</p>\n";

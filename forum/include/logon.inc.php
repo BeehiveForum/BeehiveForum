@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.8 2004-04-26 11:21:12 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.9 2004-04-28 20:38:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -30,7 +30,7 @@ function perform_logon($logon_main)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     // Retrieve existing cookie data if any
 
@@ -197,7 +197,7 @@ function draw_logon_form($logon_main)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     // Retrieve existing cookie data if any
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.74 2004-04-28 12:24:03 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.75 2004-04-28 20:38:58 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -378,16 +378,16 @@ function pm_user_get_friends()
 
     $result = db_query($sql, $db_user_get_relationships);
 
-    $user_get_peers_array['uid_array'] = 0;
-    $user_get_peers_array['logon_array'] = "&lt;select recipient&gt;";
+    $user_get_peers_array = array();
+
+    $user_get_peers_array['uid_array'][] = 0;
+    $user_get_peers_array['logon_array'][] = "&lt;select recipient&gt;";
 
     if (db_num_rows($result) > 0) {
 
-        $user_get_peers_array = array();
-
         while ($row = db_fetch_array($result)) {
-            $user_get_peers_array['uid_array'] = $row['UID'];
-            $user_get_peers_array['logon_array'] = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $user_get_peers_array['uid_array'][] = $row['UID'];
+            $user_get_peers_array['logon_array'][] = format_user_name($row['LOGON'], $row['NICKNAME']);
         }
 
         return $user_get_peers_array;
@@ -460,7 +460,7 @@ function draw_pm_message($pm_elements_array)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $uid = bh_session_get_value('UID');
 

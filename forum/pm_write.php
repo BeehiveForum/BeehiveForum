@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.71 2004-04-28 14:28:54 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.72 2004-04-28 20:38:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -436,7 +436,7 @@ if ($friends_array = pm_user_get_friends()) {
     echo "        <tr>\n";
     echo "          <td>\n";
     echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
-    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0)), "<br />\n";
+    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "style=\"width: 190px\" onclick=\"checkToRadio(0)\""), "<br />\n";
     echo "            ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
     echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" style=\"width: 190px\" onclick=\"checkToRadio(1)\""), "\n";
     echo "          </td>\n";

@@ -56,7 +56,7 @@ class TextAreaHTML {
         $lang = load_language_file();
 
         $forum_settings = get_forum_settings();
-        $webtag = get_webtag();
+        $webtag = get_webtag($webtag_search);
 
         $this->tbs++;
 

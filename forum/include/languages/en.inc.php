@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.218 2005-02-04 19:35:38 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.219 2005-02-06 14:28:05 decoyduck Exp $ */
 
 // International English language file
 
@@ -507,6 +507,7 @@ $lang['wikiintegration'] = "Wiki Integration";
 $lang['enablewikiintegration'] = "Enable WikiWiki Integration";
 $lang['wikiintegrationuri'] = "WikiWiki Location";
 $lang['maximumpostlength'] = "Maximum Post Length";
+$lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['searchoptions'] = "Search Options";
 $lang['minsearchwordlength'] = "Min search word length";
@@ -547,24 +548,25 @@ $lang['forum_settings_help_9'] = "<b>WARNING:</b> Do not change this if you do n
 $lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in hours after posting that a user can edit their post. If set to 0 there is no limit.";
 $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a seperate page.";
 $lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
-$lang['forum_settings_help_13'] = "This settings defines the mimumum word length that is allowed to to be searched for in AND and OR based searches. Words smaller than the value specified will be removed from the query automatically. Exact phrase searches are not effected by this setting";
-$lang['forum_settings_help_14'] = "<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
-$lang['forum_settings_help_15'] = "<b>Active session cut off</b> is the maximum time before a user's session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
-$lang['forum_settings_help_16'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
-$lang['forum_settings_help_17'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don't want your users to be able to send each other PMs you can disable this option.";
-$lang['forum_settings_help_18'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";
-$lang['forum_settings_help_19'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and it not in addition to. ";
-$lang['forum_settings_help_20'] = "The guest account allows visitors to your forum to read posts without having to sign up for an account.";
-$lang['forum_settings_help_21'] = "If you prefer you can also setup your BeehiveForum so that guests are automatically logged in. Once a user registers they will always be shown the login screen as long as their cookies remain intact.";
-$lang['forum_settings_help_22'] = "Beehive allows attachments to be uploaed to messages when posted. If you have limited webspace you may which to disable attachments by unticking the box above.";
-$lang['forum_settings_help_23'] = "<b>Attachment Dir</b> is the location Beehive should store it's attachments in. This directory must exist on your webspace and must be writable by the webserver / PHP process otherwise uploads will fail.";
-$lang['forum_settings_help_24'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
-$lang['forum_settings_help_25'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
-$lang['forum_settings_help_26'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
-$lang['forum_settings_help_27'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
-$lang['forum_settings_help_28'] = "If you don't want any new user signups you can change this option. Doing so will make the registration form unavailable.";
-$lang['forum_settings_help_29'] = "Enable this option to provide WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your choosen Wiki.";
-$lang['forum_settings_help_30'] = "When entering your Wiki URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
+$lang['forum_settings_help_13'] = "The Links section of Beehive provides a place for your users to maintain a list of sites they frequently visit that other users may find useful. Links can be divided into categories by folder and allow for comments and ratings to be given. In order to moderate the links section a user must be ranted Global Moderator status.";
+$lang['forum_settings_help_14'] = "This settings defines the mimumum word length that is allowed to to be searched for in AND and OR based searches. Words smaller than the value specified will be removed from the query automatically. Exact phrase searches are not effected by this setting";
+$lang['forum_settings_help_15'] = "<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
+$lang['forum_settings_help_16'] = "<b>Active session cut off</b> is the maximum time before a user's session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
+$lang['forum_settings_help_17'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
+$lang['forum_settings_help_18'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don't want your users to be able to send each other PMs you can disable this option.";
+$lang['forum_settings_help_19'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";
+$lang['forum_settings_help_20'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and it not in addition to. ";
+$lang['forum_settings_help_21'] = "The guest account allows visitors to your forum to read posts without having to sign up for an account.";
+$lang['forum_settings_help_22'] = "If you prefer you can also setup your BeehiveForum so that guests are automatically logged in. Once a user registers they will always be shown the login screen as long as their cookies remain intact.";
+$lang['forum_settings_help_23'] = "Beehive allows attachments to be uploaed to messages when posted. If you have limited webspace you may which to disable attachments by unticking the box above.";
+$lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive should store it's attachments in. This directory must exist on your webspace and must be writable by the webserver / PHP process otherwise uploads will fail.";
+$lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
+$lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
+$lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
+$lang['forum_settings_help_28'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
+$lang['forum_settings_help_29'] = "If you don't want any new user signups you can change this option. Doing so will make the registration form unavailable.";
+$lang['forum_settings_help_30'] = "Enable this option to provide WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your choosen Wiki.";
+$lang['forum_settings_help_31'] = "When entering your Wiki URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

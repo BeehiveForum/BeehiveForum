@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.68 2005-02-04 19:35:36 decoyduck Exp $ */
+/* $Id: links.php,v 1.69 2005-02-06 14:28:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -86,54 +86,61 @@ if (forum_get_setting('show_links', 'N', false)) {
     exit;
 }
 
+$folders = links_folders_get(perm_is_moderator());
+
+if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+
+    $fid = $_GET['fid'];
+
+}elseif (is_array($folders)) {
+
+    list($fid) = array_keys($folders);
+
+}else {
+
+    links_add_folder(1, $lang['toplevel'], true);
+    $folders = links_folders_get(perm_is_moderator());
+    $fid = 1;
+}
+
 if (isset($_GET['action'])) {
 
     if (perm_is_moderator() && $_GET['action'] == "folderhide") {
 
-        links_folder_change_visibility($_GET['fid'], false);
-        $fid = $_GET['new_fid'];
+        links_folder_change_visibility($fid, false);
+
+        if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
+            $fid = $_GET['new_fid'];
+        }else {
+            $fid = 1;
+        }
 
     }elseif (perm_is_moderator() && $_GET['action'] == "foldershow") {
 
-        links_folder_change_visibility($_GET['fid'], true);
-        $fid = $_GET['new_fid'];
+        links_folder_change_visibility($fid, true);
+
+        if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
+            $fid = $_GET['new_fid'];
+        }else {
+            $fid = 1;
+        }
 
     }elseif (perm_is_moderator() && $_GET['action'] == "folderdel") {
 
         $folders = links_folders_get(perm_is_moderator());
-        if (count(links_get_subfolders($_GET['fid'], $folders)) == 0) links_folder_delete($_GET['fid']);
-        $fid = $_GET['new_fid'];
+        if (count(links_get_subfolders($fid, $folders)) == 0) links_folder_delete($fid);
+
+        if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
+            $fid = $_GET['new_fid'];
+        }else {
+            $fid = 1;
+        }
 
     }elseif ($_GET['action'] == "go") {
 
         links_click($_GET['lid']);
         exit;
     }
-}
-
-$folders = links_folders_get(perm_is_moderator());
-
-// if the LINKS_FOLDERS database is empty, add a 'Top Level' folder
-
-if (!is_array($folders)) {
-
-    links_add_folder(1, $lang['toplevel'], true);
-    $folders = links_folders_get(perm_is_moderator());
-}
-
-// default to top level folder if no other valid folder specified
-
-if (isset($_GET['fid']) && is_numeric($_GET['fid']) && !isset($fid)) {
-
-    if (is_array($folders) && array_key_exists($_GET['fid'], $folders)) {
-        $fid = $_GET['fid'];
-    }else {
-        list($fid) = array_keys($folders);
-    }
-
-}elseif (!isset($fid)) {
-
-    list($fid) = array_keys($folders);
 }
 
 if (isset($_GET['viewmode']) && is_numeric($_GET['viewmode']) && $_GET['viewmode'] == 1) {
@@ -323,7 +330,7 @@ if (sizeof($links['links_array']) > 0 ) {
             echo "    <td class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
         }
 
-        echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
+        echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&fid=$fid\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
         echo "  </tr>\n";
     }
 

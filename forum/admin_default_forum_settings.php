@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.11 2005-01-30 18:56:25 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.12 2005-02-06 14:28:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -312,7 +312,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_13']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_14']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -360,8 +360,8 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_14']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_15']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_16']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -398,7 +398,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -452,9 +452,9 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_17']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_18']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_19']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_20']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -491,7 +491,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -537,8 +537,8 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_20']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -595,11 +595,11 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_23']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_24']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_25']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_26']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.54 2005-01-31 15:44:08 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.55 2005-02-06 14:28:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -191,6 +191,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['wiki_integration_uri'] = trim(_stripslashes($_POST['wiki_integration_uri']));
     }else {
         $new_forum_settings['wiki_integration_uri'] = "";
+    }
+
+    if (isset($_POST['show_links']) && $_POST['show_links'] == "Y") {
+        $new_forum_settings['show_links'] = "Y";
+    }else {
+        $new_forum_settings['show_links'] = "N";
     }
 
     if (isset($_POST['allow_polls']) && $_POST['allow_polls'] == "Y") {
@@ -422,8 +428,39 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_30']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_31']}</p>\n";
+echo "                  </td>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['links']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">", form_checkbox("show_links", "Y", $lang['enablelinkssection'], forum_get_setting('show_links', 'Y', false)), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                  <td class=\"smalltext\">\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_13']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -491,7 +528,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_16']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_17']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -528,7 +565,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -574,8 +611,8 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_20']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

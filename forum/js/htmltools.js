@@ -12,21 +12,38 @@ function set_focus() {
 // -------------------------------------------
 // Functions to retrieve the current selection
 // -------------------------------------------
-function active_text (t) {
+function active_text (t, dbl) {
 	if (t.createTextRange) {	
     	t.caretPos = document.selection.createRange().duplicate();	
 		active_field.t = "";
 	}
 	active_field = t;
+
+	if (dbl == true) {
+		var s = get_selection();
+		if (s.charAt(s.length-1) == " ") {
+			var ss = get_selection_start();
+			var se = get_selection_end()-1;
+
+			if (active_field.setSelectionRange) {
+				active_field.focus();
+				active_field.setSelectionRange(ss, se);
+
+			} else if (active_field.createTextRange) {
+				t.caretPos.moveEnd('character', -1);
+				t.caretPos.select();
+			}
+		}
+	}
 }
 function active_page_text () { 
 	selected_text = (document.all) ? document.selection.createRange().text : window.getSelection();
 }
 
 function get_selection() {
-	if (document.all) {
+	if (active_field.createTextRange) {
 		return document.selection.createRange().text;
-	} else if (document.getElementById) {
+	} else if (active_field.setSelectionRange) {
 		var selLength = active_field.textLength;
 		var selStart = active_field.selectionStart;
 		var selEnd = active_field.selectionEnd;
@@ -39,32 +56,50 @@ function get_selection() {
 	}
 }
 function get_selection_start () {
-	if (!document.all) {
+	if (active_field.setSelectionRange) {
 		return active_field.selectionStart;
-	} else {
+
+	} else if (active_field.createTextRange) {
 		var s = active_field.caretPos.duplicate();
 		var t = active_field.value;
 		var u = s.text;
 		var i = 0;
+		var last_s;
+		var count = 0;
 
 		while(t.indexOf(s.text) > -1) {
+			last_s = s.duplicate();
 			s.moveStart("character", -1);
+
+			// yet another IE bug - if there is no selection, just a placed cursor,
+			// then moveStart will ignore any combinations of \r\n until it hits a 
+			// non-linebreak character. "Argh".
+			if (u.length == 0) {
+				if (last_s.text == s.text) {
+					count++;
+				}
+			}
 			if (++i > t.length * 2) { // something's gone wrong
 				break;
 			}
 		}
+		if (u.length == 0) {
+			count = (count-1) * 2;
+		}
+
 		// Remove 'junk' characters before the textfield
 		// See textarea() in htmltools.inc.php
 		var re = new RegExp("^" + String.fromCharCode(9999) + "*\r?\n?");
 		var u2 = s.text.replace(re, "");
 
-		return (u2.length - u.length);
+		return (u2.length + count - u.length);
 	}
 }
 function get_selection_end () {
-	if (!document.all) {
+	if (active_field.setSelectionRange) {
 		return active_field.selectionEnd;
-	} else {
+
+	} else if (active_field.createTextRange) {
 		var s = active_field.caretPos.duplicate();
 		var u = s.text;
 
@@ -86,7 +121,9 @@ function add_tag (tag, a, v, enclose) {
 
 	var single_tags = {br:true, img:true, hr:true, area:true, embed:true};
 
-	if (navigator.userAgent.indexOf('Opera') > -1) {
+//	var ua = navigator.userAgent.toLowerCase();
+//	if (ua.indexOf('opera') > -1 || ua.indexOf('safari') > -1 || ua.indexOf('konqueror') > -1) {
+	if (!active_field.createTextRange && !active_field.setSelectionRange) {
 		if (!single_tags[tag]) {
 			var open_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\">" : ">");
 			var close_tag = "</" + tag + ">";

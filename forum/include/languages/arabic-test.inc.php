@@ -24,7 +24,7 @@ USA
 // This is a test language file for RTL display in Beehive. It is not
 // intended for release with Beehive.
 
-/* $Id: arabic-test.inc.php,v 1.1 2004-05-01 22:23:51 decoyduck Exp $ */
+/* $Id: arabic-test.inc.php,v 1.2 2004-06-21 12:04:26 tribalonline Exp $ */
 
 // International English language file
 
@@ -1110,6 +1110,7 @@ $lang['list'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";
 $lang['indenttext'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";
 $lang['code'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";
 $lang['quote'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";
+$lang['spoiler'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";
 $lang['horizontalrule'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";
 $lang['image'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";
 $lang['hyperlink'] = "ﺺﻧ؛  ﺏﺎﺘﻜﻟﺍ ﻦﺘﻣ؛  ﺱﺪﻘﻤﻟﺍ";

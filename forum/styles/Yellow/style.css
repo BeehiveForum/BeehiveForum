@@ -385,6 +385,17 @@ A		{
 		margin-right: 10px;
 		padding: 3px;
 }
+.spoiler {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		border: 1px solid #CCCCCC;
+		color: #EEEEEE;
+		background-color: #EEEEEE;
+		margin-top: 0px;
+		margin-bottom: 10px;
+		margin-left: 40px;
+		margin-right: 10px;
+		padding: 3px;
+}
 
 .tools {
 		margin: 0;

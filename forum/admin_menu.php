@@ -34,7 +34,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/perm.inc.php");
@@ -65,6 +65,9 @@ echo "    <td class=\"postbody\"><a href=\"./admin_prof_sect.php\" target=\"righ
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"./admin_startpage.php\" target=\"right\">Start Page</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_make_style.php\" target=\"right\">Forum Style</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.106 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.107 2004-08-17 20:13:49 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -181,7 +181,9 @@ $lang['adminexp_6'] = "<b>Profiles</b> lets you change the items appearing in us
 $lang['adminexp_7'] = "Choose <b>Start Page</b> to edit the forum start page.";
 $lang['adminexp_8'] = "Using <b>Forum Style</b> allows you to create new colour schemes for the forum.";
 $lang['adminexp_9'] = "The words in the <b>Word Filter</b> can be edited.";
-$lang['adminexp_10'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";$lang['createforumstyle'] = "Créer un Style de Forum";
+$lang['adminexp_10'] = "Add links to neighbouring sites and Beehive forums in <b>Forum Links</b>.";
+$lang['adminexp_11'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";
+$lang['createforumstyle'] = "Créer un Style de Forum";
 $lang['newstyle'] = "Nouveau style";
 $lang['successfullycreated'] = "avec succès créé.";
 $lang['stylesdirnotwritable'] = "L'annuaire de styles n'est pas writeable. S'il vous plaît CHMOD l'annuaire de styles et juger à nouveau.";
@@ -211,6 +213,7 @@ $lang['startpage'] = "Commencer par la page";
 $lang['forumstyle'] = "Style de forum";
 $lang['forumemoticons'] = "Emoticons de forum";
 $lang['wordfilter'] = "Filtre de mot";
+$lang['forumlinks'] = "Liens de forum";
 $lang['viewlog'] = "Journal de bord de vue";
 $lang['invalidop'] = "Opération nulle";
 $lang['noprofilesectionspecified'] = "Aucune section de Profil a spécifié.";

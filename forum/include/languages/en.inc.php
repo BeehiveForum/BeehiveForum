@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.163 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.164 2004-08-17 20:13:49 tribalonline Exp $ */
 
 // International English language file
 
@@ -183,7 +183,8 @@ $lang['adminexp_6'] = "<b>Profiles</b> lets you change the items appearing in us
 $lang['adminexp_7'] = "Choose <b>Start Page</b> to edit the forum start page.";
 $lang['adminexp_8'] = "Using <b>Forum Style</b> allows you to create new colour schemes for the forum.";
 $lang['adminexp_9'] = "The words in the <b>Word Filter</b> can be edited.";
-$lang['adminexp_10'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";
+$lang['adminexp_10'] = "Add links to neighbouring sites and Beehive forums in <b>Forum Links</b>.";
+$lang['adminexp_11'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";
@@ -214,6 +215,7 @@ $lang['forumsettings'] = "Forum Settings";
 $lang['startpage'] = "Start Page";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";
+$lang['forumlinks'] = "Forum Links";
 $lang['viewlog'] = "View Log";
 $lang['invalidop'] = "Invalid Operation";
 $lang['noprofilesectionspecified'] = "No Profile section specified.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.78 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: nav.php,v 1.79 2004-08-17 20:13:49 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -62,7 +62,7 @@ $webtag = get_webtag($webtag_search);
 
 header_no_cache();
 
-html_draw_top("class=navpage");
+html_draw_top("class=navpage", "forumlinks.js");
 
 echo "<div class=\"navleft\">\n";
 

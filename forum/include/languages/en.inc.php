@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.49 2003-11-02 11:11:48 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.50 2003-11-02 12:47:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -133,6 +133,10 @@ $lang['polls'] = "Polls";
 $lang['user'] = "User";
 $lang['enabled'] = "Enabled";
 $lang['disabled'] = "Disabled";
+
+// Error handling messages (error_handler.inc.php) ---------------------
+
+$lang['db_connect_error'] = "<p>An error has occured while connecting to the database.</p>\n<p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p><pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre><p>They should be set to the database details given to you by your hosting provider.</p>\n";
 
 // Admin interface (admin*.php) ----------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.157 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.158 2004-01-04 17:04:39 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -128,6 +128,7 @@ function change_current_thread (thread_id) {
     }
     document["t" + thread_id].src = "<?php echo style_image('current_thread.png'); ?>";
     current_thread = thread_id;
+    return true;
 }
 // -->
 </script>

@@ -39,6 +39,7 @@ require_once("./include/search.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/folder.inc.php");
+require_once("./include/format.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/threads.inc.php");
 require_once("./include/thread.inc.php");
@@ -56,92 +57,25 @@ $basesql.= "WHERE ";
 
 // Construct the unique part of the query
 
-if (isset($HTTP_POST_VARS['submit'])) {
-
-  // Folder ID
-  
-  if ($HTTP_POST_VARS['fid'] > 0) {
-    $searchsql.= "THREAD.FID = ". $HTTP_POST_VARS['fid']. " ";
-  }else{
-    $folders = threads_get_available_folders();
-    $searchsql.= "THREAD.FID in ($folders) ";
-  }
-  
-  // Date Range
-  
-  $searchsql.= search_date_range($HTTP_POST_VARS['date_from'], $HTTP_POST_VARS['date_to']). " ";
-  
-  // Keywords
-  
-  if (!empty($HTTP_POST_VARS['search_string'])) {
-  
-    if ($HTTP_POST_VARS['method'] == 1) {
-  
-      $keywords = explode(' ', $HTTP_POST_VARS['search_string']);
-      foreach($keywords as $word) $searchsql.= "AND POST_CONTENT.CONTENT LIKE '%$word%' ";
-    
-    }elseif ($HTTP_POST_VARS['method'] == 2) {
-  
-      $searchsql.= "AND ";
-      $keywords = explode(' ', $HTTP_POST_VARS['search_string']);
-      foreach($keywords as $word) $searchsql.= "POST_CONTENT.CONTENT LIKE '%$word%' OR ";
-      $searchsql = substr($searchsql, 0, -3);
-    
-    }elseif ($HTTP_POST_VARS['method'] == 3) {
-  
-      $searchsql.= "AND POST_CONTENT.CONTENT LIKE '%". $HTTP_POST_VARS['search_string']. "%' ";
-
-    }
-    
-  }
-  
-  // User selection
-  
-  if ($HTTP_POST_VARS['me_only'] != 'Y') {
-  
-    // To User
-  
-    if (empty($HTTP_POST_VARS['to_other']) && $HTTP_POST_VARS['to_uid'] > 0) {
-      $searchsql.= "AND POST.TO_UID = ". $HTTP_POST_VARS['to_uid']. " ";
-    }elseif (!empty($HTTP_POST_VARS['to_other'])) {
-      $touid = user_get_uid($HTTP_POST_VARS['to_other']);
-      if ($touid > -1) $searchsql.= "AND POST.TO_UID = ". $touid. " ";    
-    }
-  
-    // From User
-  
-    if (empty($HTTP_POST_VARS['from_other']) && $HTTP_POST_VARS['from_uid'] > 0) {
-      $searchsql.= "AND POST.FROM_UID = ". $HTTP_POST_VARS['from_uid']. " ";
-    }elseif (!empty($HTTP_POST_VARS['from_other'])) {
-      $fromuid = user_get_uid($HTTP_POST_VARS['from_other']);
-      if ($fromuid > -1) $searchsql.= "AND POST.FROM_UID = ". $fromuid. " ";      
-    }
-    
-  }else {
-  
-    $searchsql.= "AND POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR ";
-    $searchsql.= $searchsql. " AND POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " ";
-
-  }
-  
-  // Order by
-  
-  if ($HTTP_POST_VARS['order_by'] == 2) {
-    $searchsql.= "ORDER BY POST.CREATED DESC";
-  }elseif($HTTP_POST_VARS['order_by'] == 3) {
-    $searchsql.= "ORDER BY POST.CREATED";
-  }
-  
-}
-
-if (isset($HTTP_COOKIE_VARS['bh_search_sql']) && isset($HTTP_GET_VARS['sstart'])) $searchsql = stripslashes($HTTP_COOKIE_VARS['bh_search_sql']);
+if (isset($HTTP_POST_VARS['submit'])) search_construct_query($HTTP_POST_VARS, $searchsql, $urlquery);
+if (isset($HTTP_GET_VARS['sstart'])) search_construct_query($HTTP_GET_VARS, $searchsql, $urlquery);
 
 if (isset($searchsql)) {
 
-  setcookie('bh_search_sql', $searchsql);
-  
   html_draw_top();
+  
+  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
+  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"#\">Create Poll</a><br />\n";
+  
+  $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
+                  "2 Days Back","7 Days Back","High Interest","Unread High Interest",
+                  "I've recently seen","I've ignored","I've subscribed to");
 
+  echo "<form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
+  echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+  echo form_submit("go","Go!"). "\n";  
+  
+  echo "<br /><br />\n";
   echo "<h1>Search Results</h1>";
 
   $db  = db_connect();
@@ -156,35 +90,36 @@ if (isset($searchsql)) {
   $result = db_query($sql, $db);
   $numRows = mysql_num_rows($result);  
   
-  echo "<br />\n";
   echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;Found: ", $numRows, " matches<br />\n";
   
-  if (($sstart + 50) > $numRows) {  
-    echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;Showing results: ", $sstart + 1, " - ", $numRows, "<br /><br />\n";
-  }else{
-    echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;Showing results: ", $sstart + 1, " - ", $sstart + 50, "<br /><br />\n";
+  if (($numRows > 50) && (($sstart + 50) < $numRows)) {
+    if ($numRows - ($sstart + 50) > 50) {
+      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a><br />\n";
+    }else{
+      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next ", $numRows - ($sstart + 50), "</a><br />\n";
+    }
   }
+  
+  echo "<br />\n";
   
   for ($i = $sstart; $i < $sstart + 50; $i++) {
   
     if (db_data_seek($result, $i)) {
     
       $row = db_fetch_array($result);
-  
-      $message = messages_get($row['TID'], $row['PID']);
-      $threaddata = thread_get($row['TID']);
-      $closed = isset($threaddata['CLOSED']);
-      $foldertitle = folder_get_title($threaddata['FID']);
-      if($closed) $foldertitle .= " (closed)";
-    
-      echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
-      echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle:&nbsp;<a href=\"messages.php?msg=". $row['TID']. ".". $row['PID']. "\" target=\"_self\">". stripslashes($threaddata['TITLE']). "</a></p>";
-      echo "</td></tr></table></div>\n";
       
-      $message[0]['CONTENT'] = fix_html($message[0]['CONTENT']);
-    
-      message_display($row['TID'], $message[0], $threaddata['LENGTH'], $row['PID'], true, false);
-      echo "<br />\n";
+      $message = messages_get($row['TID'], $row['PID']);
+      $message[0]['CONTENT'] = strip_tags($message[0]['CONTENT']);
+      
+      if (strlen($message[0]['CONTENT']) > 50) {
+      
+        $message[0]['CONTENT'] = substr(strip_tags($message[0]['CONTENT']), 0, 50);
+        $message[0]['CONTENT'] = substr($message[0]['CONTENT'], 0, strrpos($message[0]['CONTENT'], ' '));
+        
+      }
+      
+      echo $i + 1, ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message[0]['CONTENT'], "</a><br />\n";
+      echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message[0]['FLOGON'], $message[0]['FNICK']). ", ". format_time($message[0]['CREATED'], 1). "</span><br /><br />\n";
       
     }
     
@@ -192,9 +127,9 @@ if (isset($searchsql)) {
   
   if (($numRows > 50) && (($sstart + 50) < $numRows)) {
     if ($numRows - ($sstart + 50) > 50) {
-      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, "\">Next 50</a>\n";
+      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next 50</a>\n";
     }else{
-      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, "\">Next ", $numRows - ($sstart + 50), "</a>\n";
+      echo "<img src=\"./images/star.png\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Next ", $numRows - ($sstart + 50), "</a>\n";
     }
   }
   
@@ -207,7 +142,7 @@ html_draw_top();
 
 ?>
 <h1>Search Messages</h1>
-<form method="post" action="search.php">
+<form method="post" action="search.php" target="left">
 <table border="0" width="500" align="center">
   <tr>
     <td class="postbody" colspan="2">Search Discussions...</td>

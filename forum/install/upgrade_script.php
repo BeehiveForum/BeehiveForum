@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.9 2004-06-30 20:08:47 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.10 2004-07-14 13:29:50 hodcroftcj Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -664,7 +664,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  WEBTAG varchar(255) NOT NULL default '',";
     $sql.= "  DEFAULT_FORUM tinyint(4) NOT NULL default '0',";
     $sql.= "  ACCESS_LEVEL tinyint(4) NOT NULL default '0',";
-    $sql.= "  FORUM_PASSWD VARCHAR(32) NOT default '',";
+    $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL default '',";
     $sql.= "  PRIMARY KEY  (FID)";
     $sql.= ")";
 
@@ -856,7 +856,8 @@ foreach($forum_webtag_array as $forum_webtag) {
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    $sql = "CREATE TABLE USER_FORUM (";
+
+    $sql = "CREATE TABLE USER_FORUM (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
     $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
     $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";

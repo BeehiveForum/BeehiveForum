@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.48 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.49 2004-03-19 13:53:08 decoyduck Exp $ */
 
 include_once("./include/perm.inc.php");
 
@@ -223,6 +223,8 @@ function get_free_attachment_space($uid)
     
     $webtag = get_webtag();
 
+    $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
+
     $sql = "SELECT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_free_attachment_space);
 
@@ -233,8 +235,8 @@ function get_free_attachment_space($uid)
         }
     }
     
-    if ((MAX_ATTACHMENT_SIZE - $used_attachment_space) < 0) return 0;
-    return MAX_ATTACHMENT_SIZE - $used_attachment_space;
+    if (($max_attachment_space - $used_attachment_space) < 0) return 0;
+    return $max_attachment_space - $used_attachment_space;
 }
 
 function get_attachment_id($tid, $pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.88 2004-08-14 23:25:36 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.89 2004-08-15 00:35:29 tribalonline Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -533,7 +533,7 @@ class MessageTextParse {
 				$message = trim($message_temp);
 
 				$html = 0;
-				$message_temp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $message);
+				$message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
 				if ($message_temp != $message) {
 						$links = true;
 				} else {

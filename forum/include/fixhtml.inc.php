@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.86 2004-08-14 23:25:36 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.87 2004-08-15 00:35:29 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -631,7 +631,7 @@ function tidy_html ($html, $linebreaks = true, $links = true)
 	}
 	// turn autoconverted links back into text
 	if ($links == true) {
-		$html = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $html);
+		$html = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $html);
 	}
 
 	// make <code>..</code> tag, and html_entity_decode

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.49 2004-05-23 13:39:36 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.50 2004-06-04 16:45:51 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -218,6 +218,84 @@ if ($valid) {
     }
 }
 
+
+if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
+
+    $replyto = $_GET['replyto'];
+    list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
+    $newthread = false;
+
+    if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
+    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
+}elseif (isset($_POST['t_tid'])) {
+
+    $reply_to_tid = $_POST['t_tid'];
+    $reply_to_pid = $_POST['t_rpid'];
+    $newthread = false;
+
+    if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
+    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
+}else {
+
+    $newthread = true;
+
+    if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+
+        $t_fid = $_GET['fid'];
+
+    }elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
+
+        $t_fid = $_POST['t_fid'];
+    }
+
+    if (isset($t_fid) && !folder_is_valid($t_fid)) {
+
+        $error_html = "<h2>{$lang['invalidfolder']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE | USER_PERM_POST_READ)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+}
+
 if ($valid && isset($_POST['submit'])) {
 
     if (check_ddkey($_POST['t_dedupe'])) {
@@ -358,36 +436,6 @@ if ($valid && isset($_POST['preview'])) {
     light_message_display(0, $preview_message, 0, 0, false, false, false);
     echo "<br />\n";
 
-}
-
-if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-
-    $replyto = $_GET['replyto'];
-    list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
-    $newthread = false;
-
-}elseif (isset($_POST['t_tid'])) {
-
-    $reply_to_tid = $_POST['t_tid'];
-    $reply_to_pid = $_POST['t_rpid'];
-    $newthread = false;
-
-}else {
-
-    $newthread = true;
-
-    if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-
-        $t_fid = $_GET['fid'];
-
-    }elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
-
-        $t_fid = $_POST['t_fid'];
-
-    }else {
-
-        $t_fid = 1;
-    }
 }
 
 if (!$newthread) {

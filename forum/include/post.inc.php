@@ -105,7 +105,7 @@ function post_create_thread($fid, $title, $poll = 'N')
 function make_html($text)
 {
     $html = _stripslashes($text);
-    $html = _htmlentities($html, true);
+    $html = _htmlentities($html);
     $html = format_url2link($html);
     $html = nl2br($html);
 

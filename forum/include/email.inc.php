@@ -56,7 +56,7 @@ function email_sendnotification($tuid, $msg, $fuid)
             $thread = thread_get($tid);
 
             $message = strtoupper($mailfrom['LOGON']). " posted a message to you on $forum_name\n\n";
-            $message.= "The subject is:  ". _htmlentities_reverse(_stripslashes($thread['TITLE'])). "\n\n";
+            $message.= "The subject is:  ". _htmlentities_decode(_stripslashes($thread['TITLE'])). "\n\n";
             $message.= "To read that message and others in the same discussion, go to:\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
@@ -72,6 +72,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
             $header = "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+	    $header.= "Content-type: text/plain; charset=UTF-8\n";
             $header.= "X-Mailer: PHP/". phpversion(). "\n";
 
             mail($mailto['EMAIL'], "Message Notification from $forum_name", $message, $header);
@@ -117,7 +118,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $message = strtoupper($mailfrom['LOGON']). " posted a message in a thread you\n";
         $message.= "have subscribed to on $forum_name\n\n";
-        $message.= "The subject is:  ". _htmlentities_reverse(_stripslashes($thread['TITLE'])). "\n\n";
+        $message.= "The subject is:  ". _htmlentities_decode(_stripslashes($thread['TITLE'])). "\n\n";
         $message.= "To read that message and others in the same discussion, go to:\n";
         $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
@@ -133,6 +134,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $header = "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+        $header.= "Content-type: text/plain; charset=UTF-8\n";
         $header.= "X-Mailer: PHP/". phpversion(). "\n";
 
         mail($mailto['EMAIL'], "Subscription Notification from $forum_name", $message, $header);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.34 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.35 2003-09-24 13:21:05 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -58,7 +58,6 @@ if (!isset($uid)) {
 }
 
 $user = user_get($uid);
-$your_uid = bh_session_get_value('UID');
 
 $title = format_user_name($user['LOGON'], $user['NICKNAME']);
 
@@ -73,11 +72,13 @@ if (!$profile_sections = profile_sections_get()) {
 
 $relationship = 0;
 
-if ($uid != $your_uid) $relationship = user_rel_get($your_uid, $uid);
+if ($uid != bh_session_get_value('UID')) $relationship = user_rel_get(bh_session_get_value('UID'), $uid);
 
-if (isset($HTTP_GET_VARS['setrel']) && ($uid != $your_uid)) { // user has chosen to modify their relationship
+// user has chosen to modify their relationship
+
+if (isset($HTTP_GET_VARS['setrel']) && ($uid != bh_session_get_value('UID')) && bh_session_get_value('UID') > 0) {
     $relationship = ($relationship & (~ (USER_FRIEND | USER_IGNORED)) | $HTTP_GET_VARS['setrel']);
-    user_rel_update($your_uid,$uid,$relationship);
+    user_rel_update(bh_session_get_value('UID'),$uid,$relationship);
 }
 
 echo "<div align=\"center\">\n";
@@ -88,8 +89,10 @@ echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\
 echo "          <tr>\n";
 echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
 
-if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+if (bh_session_get_value('UID') > 0) {
+    if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+    if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+}
 
 echo "</h2></td>\n";
 echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";
@@ -181,13 +184,11 @@ echo "                <tr>\n";
 
 if ($profile_image = user_get_profile_image($uid)) {
     echo "                  <td align=\"center\"><img src=\"{$profile_image}\" width=\"110\" height=\"110\" /></td>\n";
-}else {
-    echo "                  <td align=\"center\">&nbsp;</td>\n";
 }
 
 echo "                </tr>\n";
 
-if (bh_session_get_value('UID') <> 0) {
+if (bh_session_get_value('UID') != 0) {
 
     echo "                <tr>\n";
     echo "                  <td><a href=\"email.php?uid=$uid\">{$lang['sendemail']}</a></td>\n";
@@ -195,33 +196,33 @@ if (bh_session_get_value('UID') <> 0) {
     echo "                <tr>\n";
     echo "                  <td><a href=\"./index.php?final_uri=", rawurlencode("./pm_write.php?uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
     echo "                </tr>\n";
-}
 
-if ($uid != $your_uid) {
-    if ($relationship & USER_FRIEND) {
-        $setrel = 0;
-        $text = $lang['removefromfriends'];
-    } else {
-        $setrel = USER_FRIEND;
-        $text = $lang['addtofriends'];
+    if ($uid != bh_session_get_value('UID')) {
+
+        if ($relationship & USER_FRIEND) {
+            $setrel = 0;
+            $text = $lang['removefromfriends'];
+        }else {
+            $setrel = USER_FRIEND;
+            $text = $lang['addtofriends'];
+        }
+
+        echo "                <tr>\n";
+        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
+        echo "                </tr>\n";
+
+        if ($relationship & USER_IGNORED) {
+            $setrel = 0;
+            $text = $lang['stopignoringuser'];
+        }else {
+            $setrel = USER_IGNORED;
+            $text = $lang['ignorethisuser'];
+        }
+
+        echo "                <tr>\n";
+        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
+        echo "                </tr>\n";
     }
-
-    echo "                <tr>\n";
-    echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
-    echo "                </tr>\n";
-
-    if ($relationship & USER_IGNORED) {
-        $setrel = 0;
-        $text = $lang['stopignoringuser'];
-    } else {
-        $setrel = USER_IGNORED;
-        $text = $lang['ignorethisuser'];
-    }
-
-    echo "                <tr>\n";
-    echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
-    echo "                </tr>\n";
-
 }
 
 echo "              </table>\n";

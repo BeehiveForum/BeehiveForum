@@ -480,6 +480,8 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
     $t_content = isset($t_content) ? _stripslashes($t_content) : "";
 }
 
+$t_sig = _stripslashes($t_sig);
+
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";

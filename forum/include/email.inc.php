@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.70 2004-08-29 18:06:20 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.71 2004-09-03 15:53:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -206,7 +206,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             $subject = "{$lang['pmnotification_subject']} $forum_name";
 
-            $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
+            $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
             $message.= " {$lang['pmnotification_1']}". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
             $message.= "{$lang['pmnotification_2']}". _htmlentities_decode(_stripslashes($pm_subject)). "\n\n";
             $message.= "{$lang['pmnotification_3']}";
@@ -220,7 +220,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['pmnotification_4']}";
             $message.= "{$lang['pmnotification_5']}";
-            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/";
+            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/\n";
             $message.= "{$lang['pmnotification_6']}";
             $message.= "{$lang['pmnotification_7']}";
 

@@ -54,7 +54,18 @@ require_once("./include/format.inc.php");
 
 html_draw_top();
 
-$users_free_space = get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']);
+if(isset($HTTP_GET_VARS['uid'])){
+    $uid = $HTTP_GET_VARS['uid'];
+} else if(isset($HTTP_POST_VARS['uid'])){
+    $uid = $HTTP_POST_VARS['uid'];
+} else {
+    echo "<h1>Invalid Operation</h1>\n";
+    echo "<p>No user specified for editing.</p>\n";
+    html_draw_bottom();
+    exit;
+}
+
+$users_free_space = get_free_attachment_space($uid);
 $total_attachment_size = 0;
 
 // Make sure the attachments directory exists
@@ -68,7 +79,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   if ($HTTP_POST_VARS['submit'] == 'Delete') {
 
     unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
-    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+    delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
 
   }elseif ($HTTP_POST_VARS['submit'] == 'Close') {
 
@@ -92,7 +103,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
 <?php
 
-  $attachments = get_attachments($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid']);
+  $attachments = get_attachments($uid, $HTTP_GET_VARS['aid']);
   
   if (is_array($attachments)) {
   
@@ -130,7 +141,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"edit_attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
-      echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);      
+      echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
+      echo "        ". form_input_hidden('uid', $uid);
       echo "        ". form_submit('submit', 'Delete'). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
@@ -167,14 +179,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody">Free space:</td>
-    <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid'])); ?></td>
+    <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space($uid)); ?></td>
     <td width="100" class="postbody">&nbsp;</td>
   </tr>
   <tr>
     <td width="500" colspan="3"><hr width="500"/></td>
   </tr>
 </table>
-<form method="post" action="edit_attachments.php?aid=<?php echo $HTTP_GET_VARS['aid']; ?>">
+<form method="post" action="edit_attachments.php?aid=<?php echo $HTTP_GET_VARS['aid']; ?>&uid=<?php echo $uid; ?>">
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
     <td class="postbody" align="center"><?php echo form_submit('submit', 'Close'); ?></td>

@@ -116,7 +116,6 @@ $lang['managefolders'] = "Manage Folders";
 $lang['id'] = "ID";
 $lang['foldername'] = "Folder Name";
 $lang['accesslevel'] = "Access Level";
-$lang['threads'] = "Threads";
 $lang['move'] = "Move";
 $lang['closed'] = "Closed";
 $lang['open'] = "Open";

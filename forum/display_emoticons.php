@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.8 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.9 2004-04-06 20:35:00 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -83,35 +83,21 @@ if (!$user_sess = bh_session_check()) {
     }
 }
 
-html_draw_top();
-
 $pack = "";
-if (isset($_GET['pack'])) {
-	$pack = $_GET['pack'];
+$mode = "";
+if (isset($HTTP_GET_VARS['pack'])) {
+	$pack = $HTTP_GET_VARS['pack'];
+}
+if (isset($HTTP_GET_VARS['mode'])) {
+	$mode = $HTTP_GET_VARS['mode'];
 }
 
-$available_emots = array();
-$emot_names = array();
-
-if ($dir = @opendir('emoticons')) {
-    while (($file = readdir($dir)) !== false) {
-        if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
-            if (@file_exists("./emoticons/$file/style.css")) {
-                if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
-                    $available_emots[] = $file;
-                    $emot_names[] = _htmlentities(fread($fp, filesize("emoticons/$file/desc.txt")));
-                    fclose($fp);
-                }else {
-                    $available_emots[] = $file;
-                    $emot_names[] = $file;
-                }
-            }
-        }
-    }
-    closedir($dir);
+if ($mode == "mini") {
+	echo emoticons_preview($pack);
+	exit;
 }
 
-array_multisort($emot_names, $available_emots);
+html_draw_top();
 
 echo "<h1>{$lang['emoticons']}</h1>\n";
 
@@ -126,23 +112,38 @@ echo "          <td valign=\"top\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
 
+
+$emot_sets = emoticons_get_sets();
+unset($emot_sets['none']);
+$emot_sets_keys = array_keys($emot_sets);
+
 if ($pack != "user") {
 	echo "              <td valign=\"top\" width=\"200\">\n";
-	for ($i=0; $i<count($emot_names); $i++) {
-		echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&pack=".$available_emots[$i]."\" target=\"_self\">".$emot_names[$i]."</a></p>\n";
+
+	foreach ($emot_sets as $k => $v) {
+		if ($pack != $k) {
+			echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&pack=".$k."\" target=\"_self\">".$v."</a></p>\n";
+		} else {
+			echo "                  <p><h2>".$v."</h2></p>\n";
+		}
 	}
+
 	echo "                </td>\n";
 }
 
-if ($pack == "user") {
-    $user_emots = bh_session_get_value('EMOTICONS');
-    $user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons');
+$emot_forum = forum_get_setting('default_emoticons');
 
-	$path = "emoticons/".$user_emots;
-} else if (in_array($pack, $available_emots)) {
+if ($pack == "user") {
+    $pack = bh_session_get_value('EMOTICONS');
+    $pack = $pack ? $pack : $emot_forum;
+}
+
+if (in_array($pack, $emot_sets_keys)) {
 	$path = "emoticons/".$pack;
+} else if (in_array($emot_forum, $emot_sets_keys)) {
+	$path = "emoticons/".$emot_forum;
 } else {
-	$path = "emoticons/".$available_emots[0];
+	$path = "emoticons/".$emot_sets_keys[0];
 }
 
 $fp = fopen("$path/style.css", "r");

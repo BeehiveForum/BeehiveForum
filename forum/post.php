@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.171 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: post.php,v 1.172 2004-04-06 20:35:01 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -700,7 +700,13 @@ echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : (
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
 echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br />\n";
 
-echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openEmoticons('user','$webtag')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
+
+$emot_user = bh_session_get_value('EMOTICONS');
+$emot_prev = emoticons_preview($emot_user);
+if ($emot_prev != "") {
+	echo "<h2>".$lang['emoticons'].":</h2>\n";
+	echo $emot_prev;
+}
 
 if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
 
@@ -738,7 +744,7 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
-echo $tools->toolbar(form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 
 if (isset($t_content)) {
 	if (isset($HTTP_POST_VARS['preview']) && isset($HTTP_POST_VARS['t_post_html']) && $t_post_html) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.107 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: edit.php,v 1.108 2004-04-06 20:35:01 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -642,7 +642,7 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 if ($edit_type == "html") {
 	$tools = new TextAreaHTML("f_edit");
 
-	echo $tools->toolbar(form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+	echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
 
     $t_content = tidy_html($t_content, isset($auto_linebreaks) ? $auto_linebreaks : false);
     $t_content = _htmlentities($t_content);

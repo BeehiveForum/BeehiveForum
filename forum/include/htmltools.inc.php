@@ -50,7 +50,7 @@ class TextAreaHTML {
 	// ----------------------------------------------------
 	// Returns the HTML for the toolbar
 	// ----------------------------------------------------
-	function toolbar ($custom_html = "") {
+	function toolbar ($emoticons = true, $custom_html = "") {
 		global $lang;
 		global $webtag;
 
@@ -75,7 +75,9 @@ class TextAreaHTML {
 		$str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);", "horizontal_rule_button.png");
 		$str.= $this->_tb_img($lang['image'], "add_image();", "image_button.png");
 		$str.= $this->_tb_img($lang['hyperlink'], "add_link();", "link_button.png");
-		$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
+		if ($emoticons == true) {
+			$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
+		}
 		$str.= "	<br /><br />\n";
 		$str.= "	<select class=\"bhselect\" onChange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
 		$str.= "		<option value=\"\" selected>".$lang['fontface']."</option>\n";
@@ -236,7 +238,7 @@ class TextAreaHTML {
 	// Internal function - returns HTML for toolbar image
 	// ----------------------------------------------------
 	function _tb_img ($title, $on_click, $image_name) {
-		return "	<img src=\"".style_image($image_name)."\" onClick=\"".$on_click."\" title=\"".$title."\" width=\"18\" height=\"18\" class=\"tools_up\" onMouseOver=\"m_ov(this);\" onMouseOut=\"m_ou(this);\" onMouseDown=\"m_d(this);\" onMouseUp=\"m_u(this);\">\n";
+		return "<img src=\"".style_image($image_name)."\" onClick=\"".$on_click."\" title=\"".$title."\" class=\"tools_up\" onMouseOver=\"m_ov(this);\" onMouseOut=\"m_ou(this);\" onMouseDown=\"m_d(this);\" onMouseUp=\"m_u(this);\" />";
 	}
 	// ----------------------------------------------------
 

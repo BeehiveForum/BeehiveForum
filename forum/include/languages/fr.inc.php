@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.60 2004-04-12 15:34:48 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.61 2004-04-12 21:08:11 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -150,6 +150,7 @@ $lang['webtag'] = "Webtag";
 $lang['default'] = "default";
 $lang['makedefault'] = "Make Default";
 $lang['unsetdefault'] = "Unset Default";
+$lang['rename'] = "Rename";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -1135,7 +1136,8 @@ $lang['adminoptions'] = "Admin Options";
 $lang['closedforposting'] = "Closed for posting";
 $lang['locktitleandfolder'] = "Lock title and folder";
 $lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
-$lang['deletethread'] = "Delete thread";
+$lang['deletethread'] = "Delete Thread";
 $lang['markasunread'] = "Mark as unread";
+$lang['makethreadsticky'] = "Make Thread Sticky";
 
 ?>

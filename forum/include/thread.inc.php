@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.51 2004-04-12 14:31:22 tribalonline Exp $ */
+/* $Id: thread.inc.php,v 1.52 2004-04-12 21:08:11 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 
@@ -270,23 +270,42 @@ function thread_change_title($tid, $new_title)
 
 function thread_delete_by_user($tid, $uid)
 {
-	$db_thread_delete = db_connect();
+    $db_thread_delete_by_user = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($uid)) return false;
 
-	if ($uid == 0) {
-		$sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT SET CONTENT = null WHERE TID = $tid";
-	} else {
-		$sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT C ";
-		$sql.= "LEFT JOIN {$table_data['PREFIX']}POST P ";
-		$sql.= "ON P.TID = C.TID AND P.PID = C.PID ";
-		$sql.= "SET C.CONTENT = NULL ";
-		$sql.= "WHERE P.TID = $tid AND P.FROM_UID = $uid";
-	}
-    return db_query($sql, $db_thread_delete);
+    $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST ";
+    $sql.= "WHERE FROM_UID = '$uid' AND TID = '$tid'";
+
+    $result = db_query($sql, $db_thread_delete_by_user);
+
+    while ($row = db_fetch_array($result)) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT ";
+        $sql.= "SET CONTENT = NULL WHERE TID = '{$row['TID']}' ";
+        $sql.= "AND PID = '{$row['PID']}'";
+
+	$result = db_query($sql, $db_thread_delete_by_user);
+    }
+
+    return $result;
+}
+
+function thread_delete($tid)
+{
+    $db_thread_delete = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($tid)) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT ";
+    $sql.= "SET CONTENT = NULL WHERE TID = '{$row['TID']}'";
+
+    return db_query($sql, $db_thread_delete_by_user);
 }
 
 ?>

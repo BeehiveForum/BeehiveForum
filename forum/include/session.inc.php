@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.133 2004-10-10 13:38:25 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.134 2004-10-11 09:33:49 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -349,7 +349,9 @@ function bh_session_init($uid)
     // Check to see if the user alredy hash a session
     // and reuse it if we can.
 
-    $sql = "SELECT HASH FROM SESSIONS WHERE UID = '$uid'";
+    $sql = "SELECT * FROM SESSIONS WHERE UID = '$uid' ";
+    $sql.= "AND IPADDRESS = '$ipaddress'";
+
     $result = db_query($sql, $db_bh_session_init);
 
     if (db_num_rows($result) > 0) {
@@ -360,23 +362,26 @@ function bh_session_init($uid)
 
             $user_hash = $user_sess['HASH'];
 
-            $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
-            $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
+        }else {
+
+            $user_hash = md5(uniqid($ipaddress));
+
+            $sql = "UPDATE LOW_PRIORITY SESSIONS SET HASH = '$user_hash' ";
+            $sql.= "WHERE UID = '$uid' AND IPADDRESS = '$ipaddress'";
+
+            $result = db_query($sql, $db_bh_session_init);
         }
 
     }else {
-
-        // Generate a unique random MD5 hash for the user's cookie
-        // from their IP Address.
 
         $user_hash = md5(uniqid($ipaddress));
 
         $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
         $sql.= "VALUES ('$user_hash', '$uid', '$fid', ";
         $sql.= "'$ipaddress', NOW())";
-    }
 
-    $result = db_query($sql, $db_bh_session_init);
+        $result = db_query($sql, $db_bh_session_init);
+    }
 
     bh_update_visitor_log($uid);
 

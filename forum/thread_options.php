@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.21 2004-05-09 00:57:49 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.22 2004-05-17 15:57:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -128,6 +128,18 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     exit;
 }
 
+// Get the folder ID for the current message
+
+if (!$fid = thread_get_folder($tid)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['invalidop']}</h1>\n";
+    html_draw_bottom();
+    exit;
+}
+
+// UID of the current user.
+
 $uid = bh_session_get_value('UID');
 
 if (!thread_can_view($tid, $uid)) {
@@ -182,7 +194,7 @@ if (isset($_POST['interest']) && is_numeric($_POST['interest']) && $_POST['inter
 
 // Admin Options
 
-if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
+if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
 
     if (isset($_POST['rename'])) {
 
@@ -191,9 +203,11 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
             $threaddata['TITLE'] = $_POST['rename'];
             thread_change_title($tid, $threaddata['TITLE']);
             post_add_edit_text($tid, 1);
-			if (perm_is_moderator() && $threaddata['FROM_UID'] != $uid) {
-	            admin_addlog(0, 0, $tid, 0, 0, 0, 21);
-			}
+
+            if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
+	        admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+            }
+
             $update = true;
         }
     }
@@ -202,17 +216,22 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
 
         if (folder_is_valid($_POST['move']) && $_POST['move'] != $threaddata['FID']) {
 
-            $threaddata['FID'] = $_POST['move'];
-            thread_change_folder($tid, $threaddata['FID']);
-			if (perm_is_moderator() && $threaddata['FROM_UID'] != $uid) {
-	            admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 18);
-			}
-            $update = true;
+            if (perm_check_folder_permissions($_POST['move'], USER_PERM_THREAD_CREATE)) {
+
+                $threaddata['FID'] = $_POST['move'];
+                thread_change_folder($tid, $threaddata['FID']);
+
+                if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
+                    admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 18);
+                }
+
+                $update = true;
+            }
         }
     }
 }
 
-if (perm_is_moderator()) {
+if (perm_is_moderator($fid)) {
 
     if (isset($_POST['closed'])) {
 
@@ -334,7 +353,7 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
-if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
+if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
 
     echo "        <br />\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -353,10 +372,12 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
         echo "                  <td>".form_input_text("rename", _stripslashes($threaddata['TITLE']), 30, 64)."</td>\n";
     }
 
+    $thread_type = (thread_is_poll($tid) ? FOLDER_ALLOW_POLL_THREAD : FOLDER_ALLOW_NORMAL_THREAD);
+
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td class=\"posthead\">{$lang['movethread']}:</td>\n";
-    echo "                  <td>", folder_draw_dropdown($threaddata['FID'], "move"), "</td>\n";
+    echo "                  <td>", folder_draw_dropdown($threaddata['FID'], "move", "", $thread_type, "", USER_PERM_THREAD_CREATE), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
@@ -367,7 +388,7 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (perm_is_moderator()) {
+    if (perm_is_moderator($fid)) {
 
         echo "        <br />\n";
 	echo "        <table class=\"box\" width=\"100%\">\n";
@@ -461,12 +482,12 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
 	echo "                  <td>&nbsp;</td>\n";
 	echo "                  <td>&nbsp;</td>\n";
         echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
     }
 
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
 }

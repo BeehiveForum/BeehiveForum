@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.48 2004-05-15 14:43:40 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.49 2004-05-17 15:56:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -134,12 +134,6 @@ $folder_array = folder_get($fid);
 
 echo "<h1>{$lang['admin']} : {$lang['managefolder']} : ", _stripslashes($folder_array['TITLE']), "</h1>\n";
 echo "<br />\n";
-
-if ($folder_array['ACCESS_LEVEL'] < 1) {
-    echo "<h2>{$lang['folderisnotrestricted']}</h2>\n";
-    html_draw_bottom();
-    exit;
-}
 
 if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
     $usersearch = trim($_POST['usersearch']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.111 2004-05-11 15:51:39 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.112 2004-05-17 15:56:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -181,7 +181,24 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if ($valid && !folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_POLL_THREAD)) {
+    if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
+
+        $t_fid = $_POST['t_fid'];
+
+        if (!folder_is_valid($t_fid)) {
+
+            $error_html = "<h2>{$lang['unknownfolder']}</h2>\n";
+            $valid = false;
+        }
+
+        if (!perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE)) {
+
+            $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>\n";
+            $valid = false;
+        }
+    }
+
+    if ($valid && !folder_thread_type_allowed($t_fid, FOLDER_ALLOW_POLL_THREAD)) {
         $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
         $valid = false;
     }
@@ -258,29 +275,6 @@ if ($valid && isset($_POST['submit'])) {
 
     if (check_ddkey($_POST['t_dedupe'])) {
 
-        $folderdata = folder_get($_POST['t_fid']);
-
-        if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($_POST['t_fid']) && !perm_is_moderator()) {
-
-            html_draw_top();
-
-            echo "<form name=\"f_post\" action=\"./create_poll.php\" method=\"post\" target=\"_self\">\n";
-            echo form_input_hidden('webtag', $webtag), "\n";
-            echo "<table class=\"posthead\" width=\"720\">\n";
-            echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
-            echo "<tr><td>\n";
-            echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
-            echo "</td></tr>\n";
-
-            echo "<tr><td align=\"center\">\n";
-            echo form_submit('cancel', $lang['cancel']);
-            echo "</td></tr>\n";
-            echo "</table></form>\n";
-
-            html_draw_bottom();
-            exit;
-        }
-
         // Work out when the poll will close.
 
         if ($_POST['closepoll'] == 0) {
@@ -313,7 +307,7 @@ if ($valid && isset($_POST['submit'])) {
 
         // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
-        $t_tid = post_create_thread($_POST['t_fid'], $_POST['question'], 'Y', 'N');
+        $t_tid = post_create_thread($t_fid, $_POST['question'], 'Y', 'N');
         $t_pid = post_create($t_tid, 0, bh_session_get_value('UID'), 0, '');
 
         poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
@@ -475,8 +469,8 @@ if (isset($_POST['t_dedupe'])) {
 
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
     $t_fid = $_GET['fid'];
-}elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
-    $t_fid = $_POST['t_fid'];
+}elseif (isset($t_fid) && is_numeric($t_fid)) {
+    $t_fid = $t_fid;
 }else {
     $t_fid = 1;
 }

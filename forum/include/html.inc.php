@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.113 2004-05-11 16:49:14 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.114 2004-05-17 15:57:01 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -251,7 +251,7 @@ function html_draw_top()
     echo "<head>\n";
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
-    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 
     if ($meta_refresh) {
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";

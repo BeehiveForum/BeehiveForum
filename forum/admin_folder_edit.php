@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.8 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.9 2004-05-17 15:56:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -158,10 +158,6 @@ if (isset($_POST['submit'])) {
         $folder_data['DESCRIPTION'] = trim(_stripslashes($_POST['description']));
     }
 
-    if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
-        $folder_data['ACCESS_LEVEL'] = $_POST['access_level'];
-    }
-
     if (isset($_POST['allowed_types']) && is_numeric($_POST['allowed_types'])) {
         $folder_data['ALLOWED_TYPES'] = $_POST['allowed_types'];
     }
@@ -224,7 +220,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['moveposts']}
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['movepoststofolder']}:</td>\n";
-echo "                  <td>", folder_draw_dropdown($folder_data['FID'], "move"), "</td>\n";
+echo "                  <td>", folder_draw_dropdown($folder_data['FID'], "move", "", FOLDER_ALLOW_ALL_THREAD, "", USER_PERM_THREAD_CREATE), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -240,11 +236,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['accesslevel']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-echo "                  <td>", form_dropdown_array("access_level", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), $folder_data['ACCESS_LEVEL']), "&nbsp;", ($folder_data['ACCESS_LEVEL'] > 0) ? form_submit("permissions", $lang['permissions']) : "", "</td>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.127 2004-05-09 00:57:47 decoyduck Exp $ */
+/* $Id: edit.php,v 1.128 2004-05-17 15:56:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -115,13 +115,31 @@ if (bh_session_get_value('UID') == 0) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-  $edit_msg = $_GET['msg'];
-  list($tid, $pid) = explode('.', $_GET['msg']);
+    $edit_msg = $_GET['msg'];
+    list($tid, $pid) = explode('.', $_GET['msg']);
+
+    if (!$t_fid = thread_get_folder($tid, $pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
 
 }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
 
-  $edit_msg = $_POST['t_msg'];
-  list($tid, $pid) = explode('.', $_POST['t_msg']);
+    $edit_msg = $_POST['t_msg'];
+    list($tid, $pid) = explode('.', $_POST['t_msg']);
+
+    if (!$t_fid = thread_get_folder($tid, $pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
 
 }else {
 
@@ -168,7 +186,6 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 
     html_draw_bottom();
     exit;
-
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
@@ -195,6 +212,17 @@ if (isset($_POST['cancel'])) {
     }
 
     header_redirect($uri);
+}
+
+if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT)) {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
 // Check if the user is viewing signatures.

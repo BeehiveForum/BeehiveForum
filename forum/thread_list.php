@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.209 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.210 2004-05-17 15:57:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -471,7 +471,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             echo "&nbsp;{$lang['threads']}</a></td>\n";
             echo "    <td class=\"threads\" style=\"", ($visible_threads ? "border-bottom: 0px; " : ""), ($lang['_textdir'] == "ltr") ? "border-left: 0px" : "border-right: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
 
-            if (perm_check_folder_permissions($thread['fid'], USER_PERM_THREAD_CREATE)) {
+            if (perm_check_folder_permissions($folder_number, USER_PERM_THREAD_CREATE)) {
 
                 echo "<a href=\"";
                 echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
@@ -616,10 +616,21 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "0";
             }
 
-            echo " {$lang['threads']}</a></td>\n";
-            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-left: 1px" : "border-right: 1px", "\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"";
-            echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
-            echo "&amp;fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a></td>\n";
+            echo "&nbsp;{$lang['threads']}</a></td>\n";
+            echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == "ltr") ? "border-left: 0px" : "border-right: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
+
+            if (perm_check_folder_permissions($folder_number, USER_PERM_THREAD_CREATE)) {
+
+                echo "<a href=\"";
+                echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
+                echo "&amp;fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\" style=\"", ($lang['_textdir'] == "ltr") ? "text-align: right; float: right" : "text-align: left; float: left", "\">{$lang['postnew']}</a>";
+
+            }else {
+
+                echo "&nbsp;";
+            }
+
+            echo "</td>\n";
             echo "  </tr>\n";
 
         }

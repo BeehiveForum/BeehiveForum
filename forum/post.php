@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.194 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: post.php,v 1.195 2004-05-17 15:57:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -290,6 +290,15 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
+    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
     $newthread = false;
 
 }elseif (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) {
@@ -313,14 +322,25 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     $newthread = true;
 
     if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-
         $t_fid = $_GET['fid'];
-
     }elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
-
         $t_fid = $_POST['t_fid'];
     }
 
+    if (isset($t_fid) && !folder_is_valid($t_fid)) {
+
+        $error_html = "<h2>{$lang['invalidfolder']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
 }
 
 if (!$newthread) {
@@ -341,28 +361,6 @@ if ($valid && isset($_POST['submit'])) {
     if (check_ddkey($_POST['t_dedupe'])) {
 
         if ($newthread) {
-
-            $folderdata = folder_get($t_fid);
-
-            if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($t_fid) && !perm_is_moderator()) {
-
-                html_draw_top();
-
-                echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-                echo "<table class=\"posthead\" width=\"720\">\n";
-                echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
-                echo "<tr><td>\n";
-                echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
-                echo "</td></tr>\n";
-
-                echo "<tr><td align=\"center\">\n";
-                echo form_submit('cancel', $lang['cancel']);
-                echo "</td></tr>\n";
-                echo "</table></form>\n";
-
-                html_draw_bottom();
-                exit;
-            }
 
             if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
             if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
@@ -438,7 +436,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 
-            if (!(user_get_status(bh_session_get_value('UID')) & USER_PERM_WORM)) {
+            if (!(user_get_status(bh_session_get_value('UID')) & USER_PERM_WORMED)) {
                 email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
                 email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
             }
@@ -703,7 +701,7 @@ echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if (forum_get_setting('attachments_enabled', 'Y', false)) {
+if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);

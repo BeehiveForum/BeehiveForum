@@ -161,7 +161,7 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
     global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir;
@@ -192,6 +192,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     if($in_list && isset($message['PID'])){
         echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>";
+    }
+
+    if (sizeof($message['CONTENT']) > 0) {
+        foreach ($highlight as $word) {
+            $message['CONTENT'] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $message['CONTENT']);
+	}
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.211 2004-05-20 16:14:08 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.212 2004-06-08 19:22:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -193,7 +193,7 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "  </tr>\n";
 
-if ($pm_new_count = pm_get_unread_count()) {
+if ($pm_new_count = pm_get_unread_count() && bh_session_get_value('UID') != 0) {
     echo "  <tr>\n";
     echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
     echo "  </tr>\n";

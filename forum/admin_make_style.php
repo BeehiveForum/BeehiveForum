@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.75 2005-03-19 17:53:33 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.76 2005-03-20 17:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -179,7 +179,8 @@ if (isset($_POST['submit'])) {
                         $success = true;
 
                         admin_add_log_entry(CREATED_NEW_STYLE, $stylename);
-                        echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
+
+                        $error_html = "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
                     }
                 }
 
@@ -225,17 +226,17 @@ if (isset($_POST['submit'])) {
 
             }else {
 
-                echo "<h2>{$lang['stylealreadyexists']}</h2>\n";
+                $error_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
             }
 
         }else {
 
-            echo "<h2>{$lang['failedtoopenmasterstylesheet']}</h2>\n";
+            $error_html = "<h2>{$lang['failedtoopenmasterstylesheet']}</h2>\n";
         }
 
     }else {
 
-        echo "<h2>{$lang['stylenofilename']}</h2>\n";
+        $error_html = "<h2>{$lang['stylenofilename']}</h2>\n";
     }
 }
 
@@ -244,6 +245,10 @@ if (isset($_POST['submit'])) {
 html_draw_top();
 
 echo "<h1>{$lang['admin']} : {$lang['createforumstyle']}</h1>\n";
+
+if (isset($error_html) && strlen($error_html) > 0) {
+    echo $error_html;
+}
 
 // Check to see if any of the required variables were passed via the URL Query or POST_VARS
 // Otherwise create some random numbers to work with.

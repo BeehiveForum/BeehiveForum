@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.23 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.24 2005-03-20 17:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -119,24 +119,39 @@ if ($forum_array = forum_get($fid)) {
     }
 
     if (isset($_POST['add_recent_user'])) {
+
         $uf[0]['fid'] = $fid;
         $uf[0]['allowed'] = 1;
+
         user_update_forums($_POST['t_to_uid'], $uf);
+
     }elseif (isset($_POST['add_searched_user'])) {
+
         if (isset($_POST['user_add']) && is_array($_POST['user_add'])) {
+
             for ($i = 0; $i < sizeof($_POST['user_add']); $i++) {
+
                 $uf[0]['fid'] = $fid;
                 $uf[0]['allowed'] = 1;
                 user_update_forums($_POST['user_add'][$i], $uf);
             }
         }
+
     }elseif (isset($_POST['remove_user'])) {
+
         if (isset($_POST['user_remove']) && is_array($_POST['user_remove'])) {
+
             for ($i = 0; $i < sizeof($_POST['user_remove']); $i++) {
+
                 $uf[0]['fid'] = $fid;
                 $uf[0]['allowed'] = 0;
+
                 user_update_forums($_POST['user_remove'][$i], $uf);
-                admin_add_log_entry(CHANGE_FORUM_ACCESS, array($fid, $_POST['user_remove'][$i]));
+
+                $folder_title = folder_get_title($fid);
+                $user_logon = user_get_logon($_POST['user_remove'][$i]);
+
+                admin_add_log_entry(CHANGE_FORUM_ACCESS, array($folder_title, $user_logon));
             }
         }
     }

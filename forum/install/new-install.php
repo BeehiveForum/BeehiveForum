@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.41 2005-03-20 12:37:33 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.42 2005-03-20 17:53:31 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -563,7 +563,7 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Location', 0, 0);";
+$sql.= "VALUES (1, 'Location', 0, 1);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -572,7 +572,8 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (2, 1, 'Age', 0, 0);";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
+$sql.= "VALUES (2, 1, 'Age', 0, 2);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -581,7 +582,8 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (3, 1, 'Gender', 0, 0);";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
+$sql.= "VALUES (3, 1, 'Gender', 0, 3);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -590,7 +592,8 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (4, 1, 'Quote', 0, 0);";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
+$sql.= "VALUES (4, 1, 'Quote', 0, 4);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -599,7 +602,8 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (5, 1, 'Occupation', 0, 0);";
+$sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
+$sql.= "VALUES (5, 1, 'Occupation', 0, 5);";
 
 if (!$result = db_query($sql, $db_install)) {
 

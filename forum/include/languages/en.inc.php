@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.242 2005-03-20 12:37:33 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.243 2005-03-20 17:53:31 decoyduck Exp $ */
 
 // International English language file
 
@@ -324,9 +324,6 @@ $lang['inclusive'] = "inclusive";
 $lang['datetime'] = "Date/Time";
 $lang['unknownuser'] = "Unknown user";
 $lang['unknownfolder'] = "Unknown folder";
-$lang['changeduserstatus'] = "Changed User Status for User";
-$lang['changedfolderaccess'] = "Changed User Folder Access Privs for User";
-$lang['deletedallusersposts'] = "Deleted All Posts for User";
 $lang['banneduser'] = "Banned User";
 $lang['unbanneduser'] = "Unbanned User";
 $lang['ipaddress'] = "IP address";
@@ -337,6 +334,7 @@ $lang['deleteduser'] = "Deleted User";
 $lang['changedtitleaccessfolder'] = "Changed Folder Options for folder";
 $lang['movedthreads'] = "Moved threads to folder";
 $lang['creatednewfolder'] = "Created new folder";
+$lang['deletedfolder'] = "Deleted folder";
 $lang['changedprofilesectiontitle'] = "Changed Profile section title for section";
 $lang['addednewprofilesection'] = "Added New Profile section";
 $lang['deletedprofilesection'] = "Deleted Profile Section";
@@ -358,9 +356,6 @@ $lang['threaddeleted'] = "Thread Deleted";
 $lang['deletedpost'] = "Deleted Post";
 $lang['editedpost'] = "Edited Post";
 $lang['editedwordfilter'] = "Edited Word Filter";
-$lang['createdusergroup'] = "Created User Group";
-$lang['deletedusergroup'] = "Deleted User Group";
-$lang['addedusertogroup'] = "Added User to group";
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['recententries'] = "Recent Entries";
 $lang['clearlog'] = "Clear Log";
@@ -512,6 +507,21 @@ $lang['requirepostapproval'] = "Require Post Approval";
 $lang['userpermissions'] = "User Permissions";
 $lang['admintools'] = "Admin Tools";
 $lang['forumtools'] = "Forum Tools";
+
+$lang['globaluserpermissions'] = "Global user permissions";
+
+// Admin Log data ----------------------------------------------------------------
+
+$lang['changedstatusforuser'] = "Changed status for user: %s";
+$lang['changedpasswordforuser'] = "Changed password for user: %s";
+$lang['changedforumaccess'] = "Changed forum access for user: %s";
+$lang['deletedallusersposts'] = "Deleted all posts for user: %s";
+
+$lang['createdusergroup'] = "Created User Group: %s";
+$lang['deletedusergroup'] = "Deleted User Group: %s";
+$lang['updatedusergroup'] = "Updated User Group: %s";
+$lang['addedusertogroup'] = "Added user %s to group %s";
+$lang['removeduserfromgroup'] = "Remove user %s from group %s";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.32 2005-03-15 21:30:06 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.33 2005-03-20 17:53:31 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -95,9 +95,9 @@ function profile_sections_get()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
-    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
-    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID";
+    $sql = "SELECT PSID, NAME, POSITION ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION ";
+    $sql.= "ORDER BY POSITION, PSID";
 
     $result = db_query($sql, $db_profile_section_get);
 
@@ -126,10 +126,9 @@ function profile_items_get($psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, PROFILE_ITEM.TYPE ";
-    $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
-    $sql.= "WHERE PROFILE_ITEM.PSID = $psid ";
-    $sql.= "ORDER BY PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
+    $sql = "SELECT PIID, NAME, TYPE, POSITION ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "WHERE PSID = $psid ORDER BY POSITION, PIID";
 
     $result = db_query($sql, $db_profile_items_get);
 

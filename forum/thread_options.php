@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.38 2005-03-19 17:53:34 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.39 2005-03-20 17:53:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -204,7 +204,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
             if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
 
-                admin_add_log_entry(RENAME_THREAD, array($tid, $threaddata['TITLE'], $t_rename));
+                admin_add_log_entry(RENAME_THREAD, array($threaddata['TITLE'], $t_rename));
             }
 
             $threaddata['TITLE'] = _htmlentities($t_rename);
@@ -229,7 +229,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
                 if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
 
-                    admin_add_log_entry(MOVED_THREAD, array($tid, $threaddata['TITLE'], $old_folder_title, $new_folder_title));
+                    admin_add_log_entry(MOVED_THREAD, array($threaddata['TITLE'], $old_folder_title, $new_folder_title));
                 }
 
                 $threaddata['FID'] = $_POST['move'];
@@ -300,7 +300,7 @@ if (perm_is_moderator($fid)) {
 
             thread_delete_by_user($tid, $del_uid['UID']);
 
-            admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $del_uid['UID'], $user_logon));
+            admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $user_logon));
 
             $update = true;
         }

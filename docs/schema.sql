@@ -272,6 +272,7 @@ CREATE TABLE USER_PREFS (
   FONT_SIZE tinyint(3) unsigned default NULL,
   STYLE varchar(255) default NULL,
   VIEW_SIGS char(1) default NULL,
+  START_PAGE tinyint(3) unsigned default NULL,
   KEY STYLE (STYLE),
   KEY UID (UID)
 ) TYPE=MyISAM;

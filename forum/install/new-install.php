@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.51 2005-04-04 17:29:31 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.52 2005-04-05 22:09:53 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -44,7 +44,7 @@ set_time_limit(0);
 
 if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
-    $error_html.= "<h2>You must specify a forum webtag for your choosen type of installation.</h2>\n";
+    $error_array[] = "<h2>You must specify a forum webtag for your choosen type of installation.</h2>\n";
     $valid = false;
     return;
 }
@@ -90,6 +90,13 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
             return;
         }
     }
+}
+
+if (!install_check_tables($forum_webtag)) {
+
+    $error_array[] = "<h2>Selected database contains tables which conflict with BeehiveForum. If this database contains an existing BeehiveForum installation please check that you have selected the correct install / upgrade method.</h2>\n";
+    $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_ADMIN_LOG (";

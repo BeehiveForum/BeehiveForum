@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.28 2005-03-31 19:23:40 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.29 2005-04-05 22:09:52 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
@@ -215,6 +215,46 @@ function install_table_exists($table_name)
     $result = db_query($sql, $db_install_table_exists);
 
     return db_num_rows($result) > 0;
+}
+
+function install_check_tables($webtag)
+{
+    $db_install_check_tables = db_connect();
+
+    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
+                          'FOLDER',        'FORUM_LINKS',     'LINKS',
+                          'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
+                          'POLL',          'POLL_VOTES',      'POST',
+                          'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
+                          'STATS',         'THREAD',          'USER_FOLDER',
+                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
+                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD');
+
+    $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
+                           'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
+                           'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
+                           'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SEARCH_KEYWORDS',
+                           'SEARCH_MATCH', 'SEARCH_POSTS',        'SESSIONS',
+                           'USER',         'USER_FORUM',          'USER_PREFS',
+                           'USER_TRACK',   'VISITOR_LOG');
+
+    foreach ($forum_tables as $forum_table) {
+
+        $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
+        $result = db_query($sql, $db_install_check_tables);
+
+        if (db_num_rows($result) > 0) return false;
+    }
+
+    foreach ($global_tables as $global_table) {
+
+        $sql = "SHOW TABLES LIKE '$global_table' ";
+        $result = db_query($sql, $db_install_check_tables);
+
+        if (db_num_rows($result) > 0) return false;
+    }
+
+    return true;
 }
 
 ?>

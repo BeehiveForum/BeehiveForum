@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.10 2005-03-25 21:37:54 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.11 2005-03-27 13:50:01 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "links.inc.php");
@@ -30,9 +30,13 @@ function forum_links_get_links()
 {
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $db_forum_draw_friends_dropdown = db_connect();
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}FORUM_LINKS ORDER BY POS ASC, LID ASC";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "ORDER BY POS ASC, LID ASC";
+
     $result = db_query($sql, $db_forum_draw_friends_dropdown);
 
     if (db_num_rows($result) > 0) {
@@ -79,8 +83,9 @@ function forum_links_delete($lid)
 
     $db_forum_links_delete = db_connect();
 
-    $sql = "DELETE from {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
+    if (!is_numeric($lid)) return false;
 
+    $sql = "DELETE FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
     return db_query($sql, $db_forum_links_delete);
 }
 
@@ -90,9 +95,8 @@ function forum_links_update($lid, $pos, $title, $uri = "")
 
     $db_forum_links_update = db_connect();
 
-    $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS ";
-    $sql.= "SET POS = '$pos', TITLE = '$title', URI = '$uri' ";
-    $sql.= "WHERE LID = '$lid'";
+    $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$pos', ";
+    $sql.= "TITLE = '$title', URI = '$uri' WHERE LID = '$lid'";
 
     return db_query($sql, $db_forum_links_update);
 }
@@ -103,8 +107,13 @@ function forum_links_add($pos, $title, $uri = "")
 
     $db_forum_links_add = db_connect();
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}FORUM_LINKS ";
-    $sql.= "(pos, title, uri) VALUES ('$pos', '$title', '$uri')";
+    if (!is_numeric($pos)) return false;
+
+    $title = addslashes($title);
+    $uri = addslashes($uri);
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}FORUM_LINKS (POS, TITLE, URI) ";
+    $sql.= "VALUES ('$pos', '$title', '$uri')";
 
     return db_query($sql, $db_forum_links_add);
 }

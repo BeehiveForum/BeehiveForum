@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.141 2005-02-04 19:35:35 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.142 2005-02-08 19:13:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -233,6 +233,12 @@ if (isset($_POST['cancel'])) {
 
     $valid = true;
 
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+        $t_post_html = 'Y';
+    }else {
+        $t_post_html = 'N';
+    }
+
     if (isset($_POST['question']) && strlen(trim(_stripslashes($_POST['question']))) > 0) {
         $t_question = trim(_stripslashes($_POST['question']));
     }else {
@@ -286,6 +292,15 @@ if (isset($_POST['cancel'])) {
         if (!isset($t_answers[1]) || strlen(trim(_stripslashes($t_answers[1]))) == 0) {
             $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
             $valid = false;
+        }
+
+        foreach($t_answers as $t_answer) {
+
+            if (attachment_embed_check($t_answer) && $t_post_html == 'Y') {
+
+                $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+                $valid = false;
+            }
         }
     }
 
@@ -344,12 +359,6 @@ if (isset($_POST['cancel'])) {
         $t_close_poll = $_POST['close_poll'];
     }else {
         $t_close_poll = false;
-    }
-
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
-        $t_post_html = 'Y';
-    }else {
-        $t_post_html = 'N';
     }
 
     if ($valid && $t_poll_type == 2 && sizeof(array_unique($t_answer_groups)) != 2) {
@@ -690,7 +699,7 @@ echo "    <tr>\n";
 echo "      <td><h2>{$lang['pollquestion']}</h2></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : '', 30, 64), "&nbsp;", form_submit('submit', $lang['post']), "</td>\n";
+echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : '', 30, 64), "&nbsp;", form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

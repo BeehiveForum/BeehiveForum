@@ -848,3 +848,12 @@ a {
 .approved_text {
     font-size: 10px;
 }
+
+.wikiword {
+    text-decoration: none;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 0px;
+    border-style: dashed;
+}

@@ -149,14 +149,14 @@ class TextAreaHTML {
     // Takes the same arguments as form_textarea in form.inc.php
     // ----------------------------------------------------
 
-    function textarea ($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = "") {
+    function textarea ($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = "", $class = "bhinputtext") {
 
         $this->tas[] = $name;
 
         $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
 
         $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
-        $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html);
+        $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html, $class);
 
         return $str;
     }

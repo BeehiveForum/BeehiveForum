@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.328 2005-02-14 23:34:43 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.329 2005-02-16 23:39:36 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -174,12 +174,28 @@ function message_apply_wikilinks($content)
             if (preg_match("/<div class=\"sig\">/", $content)) {
 
                 $content_array = preg_split("/<div class=\"sig\">/", $content);
-                $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content_array[0]);
+                $message_array = preg_split('/([<|>])/', $content_array[0], -1, PREG_SPLIT_DELIM_CAPTURE);
+
+                for ($i = 0; $i < sizeof($message_array); $i++) {
+                    if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
+                        $message_array[$i] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $message_array[$i]);
+                    }
+                }
+
+                $content = implode('', $message_array);
                 $content.= "<div class=\"sig\">{$content_array[1]}";
 
             }else {
 
-                $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content);
+                $content_array = preg_split('/([<|>])/', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+                for ($i = 0; $i < sizeof($content_array); $i++) {
+                    if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
+                        $content_array[$i] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $content_array[$i]);
+                    }
+                }
+
+                $content = implode('', $content_array);
             }
         }
     }
@@ -189,14 +205,30 @@ function message_apply_wikilinks($content)
         if (preg_match("/<div class=\"sig\">/", $content)) {
 
             $content_array = preg_split("/<div class=\"sig\">/", $content);
-            $content = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\">\\1</a>", $content_array[0]);
-            $content = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\">\\1</a>", $content);
+            $message_array = preg_split('/([<|>])/', $content_array[0], -1, PREG_SPLIT_DELIM_CAPTURE);
+
+            for ($i = 0; $i < sizeof($message_array); $i++) {
+                if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
+                    $message_array[$i] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $message_array[$i]);
+                    $message_array[$i] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $message_array[$i]);
+                }
+            }
+
+            $content = implode('', $message_array);
             $content.= "<div class=\"sig\">{$content_array[1]}";
 
         }else {
 
-            $content = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\">\\1</a>", $content);
-            $content = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\">\\1</a>", $content);
+            $content_array = preg_split('/([<|>])/', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+            for ($i = 0; $i < sizeof($content_array); $i++) {
+                if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
+                    $content_array[$i] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $content_array[$i]);
+                    $content_array[$i] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $content_array[$i]);
+                }
+            }
+
+            $content = implode('', $content_array);
         }
     }
 
@@ -207,13 +239,13 @@ function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky =
 {
     $lang = load_language_file();
 
-    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
+    echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
 
-    if ($closed) echo "&nbsp;<img src=\"". style_image('thread_closed.png'). "\" height=\"15\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" align=\"middle\" />\n";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" />";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" />";
-    if ($sticky == "Y") echo "&nbsp;<img src=\"". style_image('sticky.png'). "\" height=\"15\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" />";
-    if ($locked) echo "&nbsp;<img src=\"". style_image('admin_locked.png'). "\" height=\"15\" alt=\"{$lang['locked']}\" title=\"{$lang['locked']}\" align=\"middle\" />\n";
+    if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" height=\"15\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" align=\"middle\" />\n";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" />";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"", style_image('subscribe.png'), "\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" />";
+    if ($sticky == "Y") echo "&nbsp;<img src=\"", style_image('sticky.png'), "\" height=\"15\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" />";
+    if ($locked) echo "&nbsp;<img src=\"", style_image('admin_locked.png'), "\" height=\"15\" alt=\"{$lang['locked']}\" title=\"{$lang['locked']}\" align=\"middle\" />\n";
 
     echo "</p>";
 }
@@ -382,11 +414,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if ($message['FROM_UID'] > -1) {
 
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
-        echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
+        echo format_user_name($message['FLOGON'], $message['FNICK']), "</a></span>";
 
     }else {
 
-        echo format_user_name($message['FLOGON'], $message['FNICK']) . "</span>";
+        echo format_user_name($message['FLOGON'], $message['FNICK']), "</span>";
     }
 
     $temp_ignore = false;
@@ -1248,7 +1280,7 @@ function messages_forum_stats($tid, $pid)
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";
-            echo "            <td>{$lang['ourmembershavemadeatotalof']} <b>", number_format(get_thread_count(), 0, ".", ","), "</b> {$lang['threadsand']} <b>", number_format(get_post_count(), 0, ".", ","), "</b> {$lang['postslowercase']}</td>\n";
+            echo "            <td>{$lang['ourmembershavemadeatotalof']} <b>", number_format(get_thread_count(), 0, ".", ","), "</b> {$lang['threadsand']} <b>", number_format(get_post_count(), 0, ",", ","), "</b> {$lang['postslowercase']}</td>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
@@ -1258,7 +1290,7 @@ function messages_forum_stats($tid, $pid)
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>{$lang['longestthreadis']} '<a href=\"?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ".", ","), "</b> {$lang['postslowercase']}.</td>\n";
+                echo "            <td>{$lang['longestthreadis']} '<a href=\"?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ",", ","), "</b> {$lang['postslowercase']}.</td>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
                 echo "        </table>\n";
@@ -1288,7 +1320,7 @@ function messages_forum_stats($tid, $pid)
                         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                         echo "          <tr>\n";
                         echo "            <td width=\"35\">&nbsp;</td>\n";
-                        echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodwas']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ".", ","), "</b> {$lang['on']} ", format_time($most_posts['MOST_POSTS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
+                        echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodwas']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_posts['MOST_POSTS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
                         echo "            <td width=\"35\">&nbsp;</td>\n";
                         echo "          </tr>\n";
                         echo "        </table>\n";
@@ -1324,7 +1356,7 @@ function messages_forum_stats($tid, $pid)
                     echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                     echo "          <tr>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
-                    echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> {$lang['on']} ", format_time($most_users['MOST_USERS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
+                    echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_users['MOST_USERS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
                     echo "          </tr>\n";
                     echo "        </table>\n";

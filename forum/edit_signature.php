@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.52 2005-04-04 02:32:56 tribalonline Exp $ */
+/* $Id: edit_signature.php,v 1.53 2005-04-05 21:55:28 rowan_hill Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -45,6 +45,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
+include_once(BH_INCLUDE_PATH. "edit_sig.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
@@ -83,9 +84,30 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
-    html_guest_error();
-    exit;
+if (isset($_GET['siguid'])) {
+    if (is_numeric($_GET['siguid'])) {
+        $siguid = $_GET['siguid'];
+    } else {
+        echo "<h1>{$lang['invalidop']}</h1>\n";
+        echo "<h2>{$lang['nouserspecified']}</h2>\n";
+        html_draw_bottom();
+        exit;
+    }
+} elseif (isset($_POST['siguid'])) {
+    if (is_numeric($_POST['siguid'])) {
+        $siguid = $_POST['siguid'];
+    } else {
+        echo "<h1>{$lang['invalidop']}</h1>\n";
+        echo "<h2>{$lang['nouserspecified']}</h2>\n";
+        html_draw_bottom();
+        exit;
+    }
+} else {
+    if (bh_session_get_value('UID') == 0) {
+        html_guest_error();
+        exit;
+    }
+    $siguid = bh_session_get_value('UID');
 }
 
 $valid = true;
@@ -118,23 +140,19 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        // User's UID for updating with.
-
-        $uid = bh_session_get_value('UID');
-
         // Update USER_SIG
 
-        user_update_sig($uid, $t_sig_content, $t_sig_html);
+        user_update_sig($siguid, $t_sig_content, $t_sig_html);
 
         // Reinitialize the User's Session to save them having to logout and back in
 
-        bh_session_init($uid, false);
+        bh_session_init(bh_session_get_value('UID'), false);
 
         // IIS bug prevents redirect at same time as setting cookies.
 
         if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-            header_redirect("./edit_signature.php?webtag=$webtag&updated=true");
+            header_redirect("./edit_signature.php?webtag=$webtag&updated=true&siguid=$siguid");
 
         }else {
 
@@ -143,7 +161,7 @@ if (isset($_POST['submit'])) {
             // Try a Javascript redirect
             echo "<script language=\"javascript\" type=\"text/javascript\">\n";
             echo "<!--\n";
-            echo "document.location.href = './edit_signature.php?webtag=$webtag&amp;updated=true';\n";
+            echo "document.location.href = './edit_signature.php?webtag=$webtag&amp;updated=true&siguid=$siguid';\n";
             echo "//-->\n";
             echo "</script>";
 
@@ -151,7 +169,7 @@ if (isset($_POST['submit'])) {
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['preferencesupdated']}</p>";
 
-            echo form_quick_button("./edit_signature.php", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./edit_signature.php&siguid=$siguid", $lang['continue'], false, false, "_top");
 
             html_draw_bottom();
             exit;
@@ -161,11 +179,18 @@ if (isset($_POST['submit'])) {
 
 // Get the User's Signature
 
-user_get_sig(bh_session_get_value('UID'), $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
+user_get_sig($siguid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
 
 // Start Output Here
 
 html_draw_top("onUnload=clearFocus()", "dictionary.js", "htmltools.js");
+
+if (!(perm_has_admin_access()) && ($uid != bh_session_get_value('UID'))) {
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
+    exit;
+}
 
 if (isset($_POST['preview'])) {
 
@@ -174,7 +199,7 @@ if (isset($_POST['preview'])) {
         $preview_message['TLOGON'] = "ALL";
         $preview_message['TNICK'] = "ALL";
 
-        $preview_tuser = user_get(bh_session_get_value('UID'));
+        $preview_tuser = user_get($siguid);
 
         $preview_message['FLOGON']   = $preview_tuser['LOGON'];
         $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
@@ -215,25 +240,8 @@ if (!empty($error_html)) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 }
 
-$tools = new TextAreaHTML("prefs");
 
-echo "<br />\n";
-echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>\n";
 
-echo $tools->toolbar();
 
 if (isset($t_sig_html)) {
         $sig_html = ($t_sig_html == "Y");
@@ -247,34 +255,56 @@ if (isset($t_sig_content)) {
         $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
 }
 
-echo $tools->textarea("sig_content", $sig_code, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
+  $tools = new TextAreaHTML("prefs");
+  
+  echo "<br />\n";
+  echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
+  echo "  ", form_input_hidden('webtag', $webtag), "\n";
+  echo "  ", form_input_hidden('siguid', $siguid), "\n";
+  echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+  echo "    <tr>\n";
+  echo "      <td>\n";
+  echo "        <table class=\"box\">\n";
+  echo "          <tr>\n";
+  echo "            <td class=\"posthead\">\n";
+  echo "              <table class=\"posthead\" width=\"100%\">\n";
+  echo "                <tr>\n";
+  echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
+  echo "                </tr>\n";
+  echo "                <tr>\n";
+  echo "                  <td>\n";
+  
+  echo $tools->toolbar();
+  
+  echo $tools->textarea("sig_content", $sig_code, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
 
-echo $tools->js();
+  echo $tools->js();
+  
+  echo "                </tr>\n";
+  echo "                <tr>\n";
+  echo "                  <td align=\"right\">\n";
+  
+  echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
+  
+  echo $tools->assign_checkbox("sig_html");
+  
+  echo "                                  </td>\n";
+  echo "                </tr>\n";
+  echo "              </table>\n";
+  echo "            </td>\n";
+  echo "          </tr>\n";
+  echo "        </table>\n";
+  echo "      </td>\n";
+  echo "    </tr>\n";
+  echo "    <tr>\n";
+  echo "      <td>&nbsp;</td>\n";
+  echo "    </tr>\n";
+  echo "    <tr>\n";
+  echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
+  echo "    </tr>\n";
+  echo "  </table>\n";
+  echo "</form>\n";
 
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"right\">\n";
-
-echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
-
-echo $tools->assign_checkbox("sig_html");
-
-echo "                                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
 
 html_draw_bottom();
 

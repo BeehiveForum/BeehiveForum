@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.77 2004-05-05 22:07:14 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.78 2004-05-05 22:08:41 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -971,6 +971,7 @@ $lang['automatichighinterestonpost'] = "Automatique l'haut intérêt sur la poste"
 $lang['itemsmarkedwithaasterixarerequired'] = "Les articles ont marqué avec un * sont exigé";
 $lang['confirmpassword'] = "Confirmer le Mot de passe";
 $lang['invalidemailaddressformat'] = "Invalid email address format";
+$lang['moreoptionsavailable'] = "More Profile and Preference options are available once you register";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

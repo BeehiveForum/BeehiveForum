@@ -11,7 +11,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful,
+BeehiveForum is distributed in the hope that it will be useful, 
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.133 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: post.php,v 1.134 2003-11-09 13:42:36 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -398,7 +398,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     if ($new_pid > -1) {
 
-        if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);
+        if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);
 
         if ($t_tid > 0 && $t_rpid > 0) {
 
@@ -541,7 +541,7 @@ if (!$newthread) {
 }
 
 if (!isset($t_sig)) {
-    $has_sig = user_get_sig(bh_session_get_value('UID'),$t_sig,$t_sig_html);
+    $has_sig = user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 }else{
     $has_sig = true;
 }
@@ -565,11 +565,13 @@ if (!isset($t_fid)) {
 
 echo "<table class=\"posthead\" width=\"720\">\n";
 echo "<tr><td class=\"subhead\" colspan=\"2\">";
+
 if ($newthread) {
     echo $lang['createnewthread'];
 }else{
     echo $lang['postreply'];
 }
+
 echo "</td></tr>\n";
 echo "<tr>\n";
 
@@ -587,8 +589,8 @@ if ($newthread) {
     echo "<h2>".$lang['threadtitle'].":</h2>\n";
     echo form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
 
-    echo form_input_hidden("t_newthread","Y")."\n";
-	echo "<br />\n";
+    echo form_input_hidden("t_newthread", "Y")."\n";
+    echo "<br />\n";
 
 }else {
 
@@ -599,14 +601,16 @@ if ($newthread) {
 
     echo form_input_hidden("t_tid", $reply_to_tid);
     echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
-	echo "<br /><br />\n";
+    echo "<br /><br />\n";
 }
 
 echo "<h2>".$lang['to'].":</h2>\n";
+
 if (!$newthread) {
     echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true)."<br />\n";
     echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid)."<br />\n";
 }
+
 echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false)."<br />\n";
 echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
 
@@ -647,7 +651,7 @@ if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
-tools_html(form_submit('submit',$lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+tools_html(form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 
 echo tools_junk()."\n";
 echo form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
@@ -668,7 +672,7 @@ if ($content_html_changes == true) {
     echo form_input_hidden("old_t_content", htmlentities($old_t_content));
     echo form_input_hidden("current_t_content", "correct");
 
-	echo "<br /><br />\n";
+    echo "<br /><br />\n";
 }
 
 echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
@@ -678,9 +682,9 @@ $tph_radio = 1;
 if (isset($HTTP_POST_VARS['t_post_html'])) {
     if ($t_post_html) {
         $tph_radio = 3;
-		if ($auto_linebreaks == true) {
-			$tph_radio = 2;
-		}
+        if ($auto_linebreaks == true) {
+            $tph_radio = 2;
+        }
     }
 }
 
@@ -690,13 +694,13 @@ echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
 
-echo form_submit('submit',$lang['post'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
+echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
 if ($attachments_enabled) {
 
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('".$aid."')\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}')\"");
     echo form_input_hidden("aid", $aid);
 }
 
@@ -732,9 +736,9 @@ echo "</table>\n";
 
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
+    echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
 }else{
-    echo form_input_hidden("t_dedupe",date("YmdHis"));
+    echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
 if (!$newthread) {

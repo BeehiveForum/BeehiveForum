@@ -25,6 +25,7 @@ define("MAX_ATTACHMENT_SIZE", 5242880);
 
 define("SEARCH_USER_NOT_FOUND", 1);
 define("SEARCH_NO_KEYWORDS", 2);
+define("SEARCH_NO_MATCHES", 3);
 
 // Poll Constants
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.63 2004-12-14 08:33:29 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.64 2004-12-27 14:52:18 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -143,8 +143,10 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 
 function form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
+    $id = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
     $html = "<span class=\"bhinputcheckbox\">";
-    $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$name\" value=\"$value\"";
+    $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
     if ($checked) $html.= " checked=\"checked\"";
 
@@ -153,7 +155,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
         $html.= " $custom_html ";
     }
 
-    $html.= "/><label for=\"$name\">$text</label></span>";
+    $html.= "/><label for=\"$id\">$text</label></span>";
     return $html;
 }
 
@@ -161,8 +163,10 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
 function form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
+    $id = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
     $html = "<span class=\"bhinputradio\">";
-    $html.= "<input type=\"radio\" name=\"$name\" id=\"$name\" value=\"$value\"";
+    $html.= "<input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
     if ($checked) $html.= " checked=\"checked\"";
 
@@ -171,7 +175,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
         $html.= " $custom_html ";
     }
 
-    $html.= "/><label for=\"$name\">$text</label></span>";
+    $html.= "/><label for=\"$id\">$text</label></span>";
     return $html;
 }
 

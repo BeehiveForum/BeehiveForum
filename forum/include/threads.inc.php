@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.156 2004-12-27 00:20:51 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.157 2004-12-27 14:52:18 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -589,7 +589,7 @@ function threads_get_most_recent()
     $sql.= "WHERE THREAD.FID IN ($fidlist) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "GROUP BY THREAD.TID ORDER BY THREAD.MODIFIED DESC ";
+    $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_threads_get_recent);

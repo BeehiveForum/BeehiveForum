@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.40 2003-11-02 12:47:36 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.41 2003-12-02 22:02:23 decoyduck Exp $ */
 
 // PROVIDES BASIC DATABASE FUNCTIONALITY
 // This is desgined to be be referenced in an include() or require() statement
@@ -32,6 +32,8 @@ USA
 
 require_once("./include/lang.inc.php");
 require_once("./include/constants.inc.php");
+
+if (!isset($bh_query_count)) $bh_query_count = 0;
 
 function db_connect ()
 {
@@ -66,7 +68,9 @@ function db_disconnect ($connection_id)
 
 function db_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $bh_query_count;
+
+    $bh_query_count++;
 
     if ($resource_id = mysql_query($sql, $connection_id)) {
         return $resource_id;
@@ -80,7 +84,9 @@ function db_query ($sql, $connection_id)
 
 function db_unbuffered_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $bh_query_count;
+
+    $bh_query_count++;
 
     if (function_exists("mysql_unbuffered_query")) {
         if ($resource_id = mysql_unbuffered_query($sql, $connection_id)) {

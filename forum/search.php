@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.48 2003-09-30 21:21:39 decoyduck Exp $ */
+/* $Id: search.php,v 1.49 2003-12-02 22:02:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -65,8 +65,10 @@ html_draw_top();
 
 if (isset($HTTP_POST_VARS['submit'])) {
     $search_arguments = $HTTP_POST_VARS;
+    $search_string = $HTTP_POST_VARS['search_string'];
 }elseif (isset($HTTP_GET_VARS['sstart'])) {
     $search_arguments = $HTTP_GET_VARS;
+    $search_string = $HTTP_GET_VARS['search_string'];
 }else {
 
     echo "<h1>", $lang['searchmessages'], "</h1>\n";

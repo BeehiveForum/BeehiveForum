@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.14 2004-12-22 22:21:10 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.15 2004-12-22 22:33:57 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -632,6 +632,7 @@ $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
 $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
+$sql.= "  CREATED DATETIME DEFAULT NULL,";
 $sql.= "  MODIFIED DATETIME DEFAULT NULL,";
 $sql.= "  CLOSED DATETIME DEFAULT NULL,";
 $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
@@ -819,7 +820,7 @@ $forum_settings = array('1' => array('forum_name'             => 'A Beehive Foru
                                      'pm_allow_attachments'       => 'Y',
                                      'attachment_dir'             => 'attachments',
                                      'attachments_enabled'        => 'Y',
-                                     'attachments_max_user_space' => '1024',
+                                     'attachments_max_user_space' => '1048576',
                                      'attachments_allow_embed'    => 'N',
                                      'attachment_use_old_method'  => 'N'));
 

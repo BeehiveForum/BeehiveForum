@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.13 2004-12-22 22:21:11 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.14 2004-12-22 22:33:57 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1087,202 +1087,50 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_name', 'A Beehive Forum')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_email', 'adminabeehiveforum.net')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_style', 'default')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_emoticon', 'default')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_language', 'en')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_stats', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_links', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'auto_logon', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_pms', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'pm_allow_attachments', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'maximum_post_length', '6226')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'allow_post_editing', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'post_edit_time', '0')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'allow_polls', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'search_min_word_length', '3')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_enabled', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_dir', 'attachments')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_allow_embed', 'N')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_use_old_method', 'N')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'guest_account_active', 'Y')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'session_cutoff', '86400')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
-
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'active_session_cutoff', '900')";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
+        $forum_settings = array('1' => array('forum_name'             => 'A Beehive Forum',
+                                             'forum_email'            => 'admin@abeehiveforum.net',
+                                             'forum_desc'             => 'A Beehive Forum',
+                                             'forum_keywords'         => 'BeehiveForums, Beehive, Forum, Community',
+                                             'default_style'          => 'default',
+                                             'default_emoticons'      => 'default',
+                                             'default_language'       => 'en',
+                                             'allow_post_editing'     => 'Y',
+                                             'post_edit_time'         => '0',
+                                             'maximum_post_length'    => '6226',
+                                             'allow_polls'            => 'Y',
+                                             'search_min_word_length' => '3',
+                                             'session_cutoff'         => '86400',
+                                             'active_sess_cutoff'     => '900',
+                                             'show_stats'             => 'Y',
+                                             'guest_account_enabled'  => 'Y',
+                                             'auto_logon'             => 'Y',
+                                             'allow_search_spidering' => 'Y'),
+
+                                '0' => array('show_pms'                   => 'Y',
+                                             'pm_max_user_messages'       => '100',
+                                             'pm_auto_prune'              => 'N',
+                                             'pm_auto_prune_length'       => '60',
+                                             'pm_allow_attachments'       => 'Y',
+                                             'attachment_dir'             => 'attachments',
+                                             'attachments_enabled'        => 'Y',
+                                             'attachments_max_user_space' => '1048576',
+                                             'attachments_allow_embed'    => 'N',
+                                             'attachment_use_old_method'  => 'N'));
+
+        foreach ($forum_settings as $forum => $settings_array) {
+
+            foreach ($settings_array as $sname => $svalue) {
+
+                $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+                $sql.= "VALUES ('$forum', '$sname', '$svalue')";
+
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                    $valid = false;
+                    return;
+                }
+            }
         }
 
         $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";

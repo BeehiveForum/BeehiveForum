@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.49 2004-02-22 15:24:32 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.50 2004-02-27 00:29:25 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -290,7 +290,12 @@ if (isset($HTTP_POST_VARS['upload'])) {
           echo $attachments[$i]['filename']. "</a></td>\n";
         }
 
-        echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+        if ($message_link = get_message_link($attachments[$i]['aid'])) {
+            echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"$mesage_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+        }else {
+            echo "    <td>&nbsp;</td>\n";
+        }
+        
         echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
         echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
         echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";

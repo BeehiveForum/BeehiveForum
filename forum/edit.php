@@ -97,6 +97,8 @@ if (isset($HTTP_POST_VARS['preview'])) {
     $edit_msg = $HTTP_POST_VARS['t_msg'];
     $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");   
 
+    $preview_message = messages_get($tid, $pid, 1);
+
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
     
         $t_content = $HTTP_POST_VARS['t_content'];
@@ -267,7 +269,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit("submit","Apply"). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel",  "Cancel");
+echo form_submit('submit', 'Apply', 'onclick="attachwin.close();"'). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel",  "Cancel");
 
 if ($edit_html) {
     echo "&nbsp;".form_submit("b_edit_text", "Edit text");
@@ -279,14 +281,17 @@ if ($edit_html) {
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");    
+    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");    
 }
 
 echo "</form>";
 
+$threaddata = thread_get($tid);
+
 if ($valid) {
     echo "<h2>Message Preview:</h2>";
-    message_display(0, $preview_message, 0, 0, false, false, false);
+    //message_display(0, $preview_message, 0, 0, false, false, false);
+    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true);
 }
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.102 2004-02-11 11:17:44 decoyduck Exp $ */
+/* $Id: logon.php,v 1.103 2004-02-20 17:53:17 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -197,7 +197,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         // Check to see if Form Data already exists in cookie
 
         if (!_in_array($logon, $username_array)) {
-
+          
           array_unshift($username_array, $logon);
 
           if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
@@ -210,14 +210,20 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         }else {
 
-          if (($key = _array_search($logon, $username_array)) !== false) {
+          if (($key = array_search($logon, $username_array)) !== false) {
 
+            // Extract the existing values
+            
+            $uncookie = $username_array[$key];
+            $pwcookie = $password_array[$key];
+            $phcookie = $passhash_array[$key];
+            
             // Remove the existing values
 
-            $uncookie = array_splice($username_array, $key, 1);
-            $pwcookie = array_splice($password_array, $key, 1);
-            $phcookie = array_splice($passhash_array, $key, 1);
-
+            unset($username_array[$key]);
+            unset($password_array[$key]);
+            unset($passhash_array[$key]);
+           
             // Push the username to the top of the array
 
             array_unshift($username_array, $logon);
@@ -227,14 +233,20 @@ if (isset($HTTP_POST_VARS['submit'])) {
             // their arrays if applicable.
 
             if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-              if (isset($pwcookie[0]) && isset($phcookie[0])) {
-                array_unshift($password_array, $pwcookie[0]);
-                array_unshift($passhash_array, $phcookie[0]);
+            
+              if (isset($pwcookie) && isset($phcookie)) {
+              
+                array_unshift($password_array, $pwcookie);
+                array_unshift($passhash_array, $phcookie);
+                
               }else {
+              
                 array_unshift($password_array, $passw);
                 array_unshift($passhash_array, $passh);
               }
+              
             }else {
+
               array_unshift($password_array, str_repeat(chr(255), 4));
               array_unshift($passhash_array, str_repeat(chr(255), 4));
             }
@@ -242,7 +254,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
 
         // set / update the username and password cookies
-
+        
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
           bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);

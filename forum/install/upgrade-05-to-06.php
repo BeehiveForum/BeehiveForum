@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.2 2004-12-22 19:28:03 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.3 2004-12-22 22:21:11 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -52,6 +52,7 @@ $sql = "SHOW TABLES LIKE 'FORUMS'";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -69,15 +70,16 @@ if (db_num_rows($result) > 0) {
     }
 }
 
-$sql = "DROP TABLE IF EXISTS PM_ATTACHMENT_FILES";
+$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_FILES";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
-$sql = "CREATE TABLE PM_ATTACHMENT_FILES (";
+$sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
 $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -89,47 +91,54 @@ $sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (ID),";
 $sql.= "  KEY AID (AID),";
 $sql.= "  KEY HASH (HASH)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_IDS";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  PRIMARY KEY  (FID, TID, PID),";
+$sql.= "  KEY AID (AID)";
+$sql.= ") TYPE=MyISAM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
-    // Move the PM attachment records out of POST_ATTACHMENT_FILES
-    // into the PM_ATTACHMENT_FILES folder.
+    // Move the attachment records into a global PMI table
+    // along with the forum FID.
 
-    $sql = "SELECT PMI.AID, PAF.UID, PAF.FILENAME, PAF.MIMETYPE, ";
-    $sql.= "PAF.HASH, PAF.DOWNLOADS, PAF.DELETED FROM PM_ATTACHMENT_IDS PMI ";
-    $sql.= "LEFT JOIN {$forum_webtag}_POST_ATTACHMENT_FILES PAF ";
-    $sql.= "ON (PAF.AID = PMI.AID)";
+    $sql = "INSERT INTO POST_ATTACHMENT_FILES (FID, TID, PID, AID) ";
+    $sql.= "SELECT $forum_fid, TID, PID, AID ";
+    $sql.= "FROM {$forum_webtag}_POST_ATTACHMENT_FILES ";
 
-    if ($result = db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
-        while ($pm_data = db_fetch_array($result)) {
-
-            $sql = "INSERT INTO PM_ATTACHMENT_FILES (AID, UID, FILENAME, ";
-            $sql.= "MIMETYPE, HASH, DOWNLOADS, DELETED) VALUES ('{$pm_data['AID']}', ";
-            $sql.= "'{$pm_data['UID']}', '{$pm_data['FILENAME']}', '{$pm_data['MIME_TYPE']}', ";
-            $sql.= "'{$pm_data['HASH']}', '{$pm_data['DOWNLOADS']}', '{$pm_data['DELETED']}')";
-
-            if (!$insert_result = db_query($sql, $db_install)) {
-
-                $valid = false;
-                return;
-            }
-
-            $sql = "DELETE FROM {$forum_webtag}_POST_ATTACHMENT_FILES WHERE AID = '{$pm_data['AID']}'";
-
-            if (!$delete_result = db_query($sql, $db_install)) {
-
-                $valid = false;
-                return;
-            }
-        }
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
     }
 
     // Need to recreate the THREAD table so we can add the
@@ -139,6 +148,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -160,10 +170,11 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY BY_UID (BY_UID),";
     $sql.= "  KEY FID (FID),";
     $sql.= "  FULLTEXT KEY TITLE (TITLE)";
-    $sql.= ")";
+    $sql.= ") TYPE=MyISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -183,6 +194,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -193,6 +205,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -203,6 +216,63 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Lots of indexes to make things go /fast/ (maybe)
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (LAST_READ) ";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (INTEREST) ";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST_CONTENT DROP INDEX CONTENT";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD DROP INDEX TITLE";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_FOLDER ADD INDEX (INTEREST)";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD INDEX (RELATIONSHIP)";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }

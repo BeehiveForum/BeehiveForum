@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.13 2004-12-22 19:11:46 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.14 2004-12-22 22:21:10 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -43,6 +43,7 @@ set_time_limit(0);
 
 if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -63,6 +64,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -74,6 +76,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -86,6 +89,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -101,6 +105,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -116,6 +121,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -125,6 +131,7 @@ $sql.= "VALUES ('General', NULL, NULL, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -139,6 +146,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -148,6 +156,7 @@ $sql.= "VALUES (1, 'Forum Links:', NULL)";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -157,6 +166,7 @@ $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -166,6 +176,7 @@ $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -179,6 +190,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -187,6 +199,7 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 0, 1792);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -195,6 +208,7 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 1, 6652);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -203,6 +217,7 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 14588);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -215,6 +230,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -223,6 +239,7 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS VALUES (1, 1);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -237,6 +254,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -246,6 +264,7 @@ $sql.= "VALUES ('Queen', NULL, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -266,6 +285,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -282,6 +302,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -296,6 +317,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -305,6 +327,7 @@ $sql.= "VALUES (NULL, 'Top Level', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -319,6 +342,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -337,6 +361,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -350,6 +375,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -363,6 +389,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -380,6 +407,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -394,6 +422,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -417,6 +446,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -427,11 +457,12 @@ $sql.= "VALUES (1, 0, 1, 0, NULL, NOW(), 0, NULL, 0, '');";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_FILES (";
+$sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
 $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -447,11 +478,12 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_IDS (";
+$sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -462,6 +494,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -476,6 +509,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -484,6 +518,7 @@ $sql = "INSERT INTO {$forum_webtag}_POST_CONTENT VALUES (1, 1, 'Welcome to your 
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -499,6 +534,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -508,6 +544,7 @@ $sql.= "VALUES (1, 'Location', 0, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -516,6 +553,7 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (2, 1, 'Age', 0, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -524,6 +562,7 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (3, 1, 'Gender', 0, 0);"
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -532,6 +571,7 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (4, 1, 'Quote', 0, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -540,6 +580,7 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (5, 1, 'Occupation', 0, 
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -553,6 +594,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -562,6 +604,7 @@ $sql.= "VALUES ('Personal', 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -577,6 +620,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -601,6 +645,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -611,6 +656,7 @@ $sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -624,6 +670,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -637,6 +684,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -651,6 +699,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -681,6 +730,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -694,6 +744,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -707,6 +758,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -722,6 +774,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -735,6 +788,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -778,6 +832,7 @@ foreach ($forum_settings as $forum => $settings_array) {
 
         if (!$result = db_query($sql, $db_install)) {
 
+            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
             return;
         }
@@ -795,6 +850,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -804,6 +860,7 @@ $sql.= "VALUES ('{$forum_webtag}', 1, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -819,6 +876,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -834,6 +892,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -843,6 +902,7 @@ $sql.= "VALUES ('$admin_username', MD5('$admin_password'), '$admin_username', '$
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -857,6 +917,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -899,6 +960,7 @@ $sql.= "  ) TYPE=MYISAM;";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -911,6 +973,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -926,6 +989,7 @@ $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -944,6 +1008,7 @@ if (@$fp = fopen('./install/english.dic', 'r')) {
 
         if (!$result = db_query($sql, $db_install)) {
 
+            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
             return;
         }

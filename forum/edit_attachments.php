@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.76 2004-12-22 19:27:49 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.77 2004-12-22 22:21:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -332,11 +332,21 @@ if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 }else {
 
     echo "                <tr>\n";
+    echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
     echo "                  <td valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td valign=\"top\" colspan=\"4\" class=\"postbody\">&nbsp;</td>\n";
+    echo "                  <td colspan=\"4\">&nbsp;</td>\n";
     echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 }
 
 echo "  <br />\n";
@@ -376,19 +386,6 @@ echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">\n";
-
-if (forum_get_setting('attachments_enabled', 'Y', false)) {
-
-    if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
-        $aid = $_GET['aid'];
-    }elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-        $aid = $_POST['aid'];
-    }else {
-        $aid = md5(uniqid(rand()));
-    }
-
-    echo "        ", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;\n";
-}
 
 if ($popup) {
 

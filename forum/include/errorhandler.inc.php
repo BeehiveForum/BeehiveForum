@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.21 2003-08-04 22:44:54 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.22 2003-08-18 13:44:07 decoyduck Exp $ */
 
 // Error Handler
 
@@ -136,7 +136,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td>\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                echo "            ", form_input_hidden($key, _htmlentities(_stripslashes($value))), "\n";
+                    echo "            ", form_input_hidden_array($key, $value), "\n";
             }
 
             echo "          </td>\n";

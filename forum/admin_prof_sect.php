@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.23 2003-07-30 19:53:13 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.24 2003-08-18 13:44:01 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -60,8 +60,6 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     html_draw_bottom();
     exit;
 }
-
-$db = db_connect();
 
 // Do updates
 

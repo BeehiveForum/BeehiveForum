@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.33 2003-08-02 01:32:53 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.34 2003-08-18 13:44:07 decoyduck Exp $ */
 
 // PROVIDES BASIC DATABASE FUNCTIONALITY
 // This is desgined to be be referenced in an include() or require() statement
@@ -64,7 +64,6 @@ function db_query ($sql, $connection_id)
 // Executes a query on the database and returns a resource ID
 function db_unbuffered_query ($sql, $connection_id)
 {
-
     global $HTTP_SERVER_VARS;
 
     if (function_exists("mysql_unbuffered_query")) {

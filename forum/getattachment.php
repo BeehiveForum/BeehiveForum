@@ -67,42 +67,55 @@ if (isset($attachment_data[1])) {
         if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
 
             // Use these quite a few times, so assign them to variables to make it easier
+
             $filepath = $attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']));
             $filename = basename($attachmentdetails['FILENAME']);
 
-            // Etag Header for cache control
-            $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
+            // Are we viewing or downloading the attachment?
 
-            if (isset($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH'])) {
-                $remote_etag = substr(stripslashes($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH']), 1, -1);
+            if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+                header("Content-Type: application/x-ms-download", true);
             }else {
-                $remote_etag = false;
+                header("Content-Type: ". $attachmentdetails['MIMETYPE'], true);
             }
 
-            // Last Modified Header for cache control
-            $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT";
+            // Only do the cache control if we're not running
+            // in PHP CGI Mode. We need to do this check as
+            // we need to modify the HTTP Response header
+            // which is not permitted under PHP CGI Mode.
 
-            if (isset($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE'])) {
-                $remote_last_modified = stripslashes($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']);
-            }else {
-                $remote_last_modified = false;
-            }
+            if (!strstr(php_sapi_name(), 'cgi')) {
 
-            if (strcmp($remote_etag, $local_etag) == "0" || strcmp($remote_last_modified, $local_last_modified) == "0") {
-                header("HTTP/1.1 304 Not Modified");
-                exit;
-            }else {
-                if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
-                    header("Content-Type: application/x-ms-download", true);
+                // Etag Header for cache control
+                $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
+
+                if (isset($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH'])) {
+                    $remote_etag = substr(stripslashes($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH']), 1, -1);
                 }else {
-                    header("Content-Type: ". $attachmentdetails['MIMETYPE'], true);
+                    $remote_etag = false;
                 }
+
+                // Last Modified Header for cache control
+                $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT";
+
+                if (isset($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE'])) {
+                    $remote_last_modified = stripslashes($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']);
+                }else {
+                    $remote_last_modified = false;
+                }
+
+                if (strcmp($remote_etag, $local_etag) == "0" || strcmp($remote_last_modified, $local_last_modified) == "0") {
+                    header("HTTP/1.1 304 Not Modified");
+                    exit;
+                }
+
                 header("Last-Modified: $local_last_modified", true);
                 header("Etag: \"$local_etag\"", true);
-                header("Content-disposition: inline; filename=$filename", true);
-                readfile($filepath);
-                exit;
             }
+
+            header("Content-disposition: inline; filename=$filename", true);
+            readfile($filepath);
+            exit;
         }
     }
 }

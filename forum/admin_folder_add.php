@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.1 2004-05-04 23:04:22 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.2 2004-05-05 20:04:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -110,6 +110,45 @@ if (isset($_POST['cancel'])) {
     header_redirect("./admin_folders.php?webtag=$webtag");
 }
 
+if (isset($_POST['submit'])) {
+
+    $valid = true;
+
+    if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
+        $t_name = trim(_stripslashes($_POST['t_name']));
+    }else {
+        $error_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['t_description']) && strlen(trim($_POST['t_description'])) > 0) {
+        $t_description = trim(_stripslashes($_POST['t_description']));
+    }else {
+        $t_description = "";
+    }
+
+    if (isset($_POST['t_access_level']) && is_numeric($_POST['t_access_level'])) {
+        $t_access_level = $_POST['t_access_level'];
+    }else {
+        $t_access_level = 0;
+    }
+
+    if (isset($_POST['t_allowed_types']) && is_numeric($_POST['t_allowed_types'])) {
+        $t_allowed_types = $_POST['t_allowed_types'];
+    }else {
+        $t_allowed_types = FOLDER_ALLOW_ALL_THREAD;
+    }
+
+    if ($valid) {
+
+        $new_fid = folder_create($t_name, $t_access_level, $t_description, $t_allowed_types);
+        admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
+
+        $add_success = rawurlencode($t_name);
+        header_redirect("./admin_folders.php?webtag=$webtag&add+success=$add_success");
+    }
+}
+
 // Make the arrays for the allow post types dropdown
 
 $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lang['both']);
@@ -131,11 +170,11 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['name']} / {$
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                  <td>".form_input_text("rename", "", 30, 64)."</td>\n";
+echo "                  <td>".form_input_text("t_name", (isset($t_name) ? $t_name : ""), 30, 64)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                  <td>".form_input_text("description", "", 30, 64)."</td>\n";
+echo "                  <td>".form_input_text("t_description", (isset($t_description) ? $t_description : ""), 30, 64)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -155,7 +194,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['accesslevel'
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-echo "                  <td>", form_dropdown_array("access", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), 0), "</td>\n";
+echo "                  <td>", form_dropdown_array("t_access_level", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), (isset($t_access_level) ? $t_access_level : 0)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -175,7 +214,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['allow']}</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
-echo "                  <td>", form_dropdown_array("allow", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD), "</td>\n";
+echo "                  <td>", form_dropdown_array("t_allowed_types", $allow_values, $allow_labels, (isset($t_allowed_types) ? $t_allowed_types : FOLDER_ALLOW_ALL_THREAD)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

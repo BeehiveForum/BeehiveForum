@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.126 2004-05-04 23:04:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.127 2004-05-05 20:04:30 decoyduck Exp $ */
 
 // International English language file
 
@@ -350,6 +350,10 @@ $lang['moveposts'] = "Move Posts";
 $lang['movepoststofolder'] = "Move posts to folder";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
 $lang['addnewfolder'] = "Add New Folder";
+$lang['mustenterfoldername'] = "You must enter a folder name";
+$lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
+$lang['successfullyaddedfolder'] = "Successfully Added Folder";
+$lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

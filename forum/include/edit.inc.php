@@ -21,18 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.46 2004-04-25 13:55:44 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.47 2004-06-25 22:14:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
 
 function post_update($tid, $pid, $content)
 {
-    if (!is_numeric($tid) || !is_numeric($pid)) return false;
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
 
     $db_post_update = db_connect();
 
-    $content  = addslashes($content);
+    $content = addslashes($content);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -44,7 +45,8 @@ function post_update($tid, $pid, $content)
 
 function post_add_edit_text($tid, $pid)
 {
-    if (!is_numeric($tid) || !is_numeric($pid)) return false;
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
 
     $db_post_add_edit_text = db_connect();
     $edit_uid = bh_session_get_value('UID');
@@ -59,7 +61,8 @@ function post_add_edit_text($tid, $pid)
 
 function post_delete($tid, $pid)
 {
-    if (!is_numeric($tid) || !is_numeric($pid)) return false;
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.106 2004-06-15 20:49:30 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.107 2004-06-25 22:14:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -182,8 +182,9 @@ if (isset($_POST['del'])) {
         $t_admintools = (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
         $t_banned     = (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
         $t_wormed     = (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
+	$t_moderator  = (isset($_POST['t_moderator']))  ? $_POST['t_moderator']  : 0;
 
-        $new_user_perms = (double) $t_banned | $t_wormed;
+        $new_user_perms = (double) $t_banned | $t_wormed | $t_moderator;
 
         if (perm_has_forumtools_access()) {
 
@@ -396,6 +397,9 @@ if (isset($_POST['t_delete_posts'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms['STATUS'] & USER_PERM_WORMED), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td>", form_checkbox("t_moderator", USER_PERM_FOLDER_MODERATE, $lang['userisglobalmod'], $user_perms['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.51 2004-06-13 22:52:00 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.52 2004-06-25 22:14:06 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -44,7 +44,7 @@ function db_connect ()
             }
         }
 
-        if (isset($show_friendly_errors) && $show_friendly_errors) {
+        if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
 	    trigger_error(BH_DB_CONNECT_ERROR, FATAL);
 	}else {
 	    trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);

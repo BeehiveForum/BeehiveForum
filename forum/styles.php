@@ -36,8 +36,13 @@ if (empty($HTTP_GET_VARS['fontsize'])) {
 }
 
 if(isset($default_style)){
-    $user_style = empty($HTTP_COOKIE_VARS['bh_sess_style']) ? $default_style : $HTTP_COOKIE_VARS['bh_sess_style'];
-    $stylesheet = file("styles/$user_style/style.css");
+	$user_style = empty($HTTP_COOKIE_VARS['bh_sess_style']) ? $default_style : $HTTP_COOKIE_VARS['bh_sess_style'];
+	if (is_dir("./styles/$user_style")) {
+		$stylesheet = file("styles/$user_style/style.css");
+	} else {
+		$stylesheet = file('styles/style.css');
+	}
+	//$stylesheet = file("styles/$user_style/style.css");
 } else {
     $stylesheet = file('styles/style.css');
 }

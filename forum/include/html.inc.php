@@ -123,7 +123,12 @@ function style_image($img)
     // If user styles are enabled, set the directory
     if(isset($default_style)){
     	$user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
-    	$style_dir = "./styles/$user_style";
+		if (is_dir("./styles/$user_style")) {
+	    	$style_dir = "./styles/$user_style";
+		} else {
+	        $style_dir = '.';
+		}
+
     } else {
         $style_dir = '.';
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.10 2004-11-18 22:50:20 decoyduck Exp $ */
+/* $Id: install.php,v 1.11 2004-11-21 14:08:09 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -575,7 +575,10 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "      <td width=\"250\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" autocomplete=\"off\" class=\"button\" /></td>\n";
+    echo "      <td width=\"250\">The installation process may take several minutes to complete. Please click the Install button once and once only. Clicking it multiple times may cause your installation to become corrupted.</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" autocomplete=\"off\" class=\"button\" onclick=\"this.enabled = false;\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.177 2004-09-16 12:00:01 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.178 2004-09-19 16:22:01 decoyduck Exp $ */
 
 // International English language file
 
@@ -214,6 +214,7 @@ $lang['usergroups'] = "User Groups";
 $lang['profiles'] = "Profiles";
 $lang['manageforums'] = "Manage Forums";
 $lang['forumsettings'] = "Forum Settings";
+$lang['defaultforumsettings'] = "Default Forum Settings";
 $lang['startpage'] = "Start Page";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.7 2004-05-09 00:57:49 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.8 2004-09-19 16:22:00 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -46,6 +46,7 @@ $forum_settings = get_forum_settings();
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
 include_once("./include/messages.inc.php");
+include_once("./include/post.inc.php");
 include_once("./include/threads.inc.php");
 
 $webtag = get_webtag($webtag_search);
@@ -89,8 +90,11 @@ if ($threads_array = threads_get_most_recent()) {
 
         $modified_date   = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
 
-        $message_content = _stripslashes(message_get_content($thread['TID'], $thread['LENGTH']));
-        $message_content = strip_tags(_htmlentities_decode($message_content));
+        $message_content = message_get_content($thread['TID'], $thread['LENGTH']);
+        $parsed_message = new MessageTextParse($message_content, false);
+
+        $t_content = $parsed_message->getMessage();
+        $t_content = strip_tags(_htmlentities_decode($t_content));
 
         echo "\t\t\t<item>\n";
         echo "\t\t\t\t<guid isPermaLink=\"true\">\n";
@@ -101,7 +105,7 @@ if ($threads_array = threads_get_most_recent()) {
         echo "\t\t\t\t<link>\n";
         echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
         echo "\t\t\t\t</link>\n";
-        echo "\t\t\t\t<description><![CDATA[{$message_content}]]></description>\n";
+        echo "\t\t\t\t<description><![CDATA[{$t_content}]]></description>\n";
         echo "\t\t\t\t<comments>\n";
         echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
         echo "\t\t\t\t</comments>\n";

@@ -104,64 +104,119 @@ user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'], $user_sig['CONTENT'], $user_sig['
 
 html_draw_top();
 
-echo "<h1>User Preferences</h1>";
-
-if(!empty($error_html)) echo $error_html;
-
-echo "<div class=\"postbody\">";
-echo "<form name=\"prefs\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
-echo "<table class=\"posthead\">";
-echo "<tr><td class=\"subhead\" colspan=\"2\">User Details</td></tr>";
-echo "<tr><td>New Password:</td>";
-echo "<td>".form_field("pw","",0,0,"password")."</td></tr>";
-echo "<tr><td>Confirm Password:</td>";
-echo "<td>".form_field("cpw","",0,0,"password")."</td></tr>";
-echo "<tr><td>Nickname:</td>";
-echo "<td>".form_field("nickname",$user['NICKNAME'],32,32)."</td></tr>";
-echo "<tr><td>Email Address:</td>";
-echo "<td>".form_field("email",$user['EMAIL'],60,80)."</td></tr>";
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td>First name:</td>";
-echo "<td>".form_field("firstname",$user_prefs['FIRSTNAME'],32,32)."</td></tr>";
-echo "<tr><td>Last name:</td>";
-echo "<td>".form_field("lastname",$user_prefs['LASTNAME'],32,32)."</td></tr>";
-echo "<tr><td>Homepage URL:</td>";
-echo "<td>".form_field("homepage_url",$user_prefs['HOMEPAGE_URL'],60,255)."</td></tr>";
-echo "<tr><td>Picture URL:</td>";
-echo "<td>".form_field("pic_url",$user_prefs['PIC_URL'],60,255)."</td></tr>";
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td class=\"subhead\" colspan=\"2\">Forum Options</td></tr>";
-echo "<tr><td>&nbsp;</td>";
-echo "<td>".form_checkbox("email_notify","Y","Notify by email of posts<br />to me",($user_prefs['EMAIL_NOTIFY'] == "Y"))."</td></tr>";
-echo "<tr><td>Timezone (from GMT)</td>";
-echo "<td>".form_dropdown_array("timezone",range(-11,11),range(-11,11),$user_prefs['TIMEZONE'])."</td></tr>";
-echo "<tr><td>&nbsp;</td>";
-echo "<td>".form_checkbox("dl_saving","Y","Adjust for<br />daylight saving",($user_prefs['DL_SAVING'] == "Y"))."</td></tr>";
-echo "<tr><td>&nbsp;</td>";
-echo "<td>".form_checkbox("mark_as_of_int","Y","Automatically mark threads<br />I post in as High Interest",($user_prefs['MARK_AS_OF_INT'] == "Y"))."</td></tr>";
-echo "<tr><td>Posts per page:</td>";
-echo "<td>".form_dropdown_array("posts_per_page",array(5,10,20),array(5,10,20),$user_prefs['POSTS_PER_PAGE'])."</td></tr>";
-echo "<tr><td>Font size:</td>";
-
-if ($user_prefs['FONT_SIZE'] == '') {
-
-  echo "<td>".form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), "10pt")."</td></tr>";
-  
-}else{
-
-  echo "<td>".form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE'])."</td></tr>";
-  
-}
-
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td class=\"subhead\" colspan=\"2\">Signature</td></tr>";
-echo "<tr><td colspan=\"2\">".form_textarea("sig_content",$user_sig['CONTENT'],4,60);
-echo "<tr><td>&nbsp;</td><td align=\"right\">";
-echo form_checkbox("sig_html","Y","Contains HTML", ($user_sig['HTML'] == "Y"));
-echo "</td></tr></table>\n";
-echo form_submit("submit", "Submit");
-echo "</form>";
-
-html_draw_bottom();
-
 ?>
+<h1>User Preferences</h1>
+<?php if(!empty($error_html)) echo $error_html; ?>
+<div class="postbody">
+  <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
+    <table class="posthead" width="400">
+      <tr>
+        <td class="subhead" colspan="2">User Details</td>
+      </tr>
+      <tr>
+        <td>New Password</td>
+        <td>: <?php echo form_field("pw", "", 37, 0, "password"); ?></td>
+      </tr>
+      <tr>
+        <td>Confirm Password</td>
+        <td>: <?php echo form_field("cpw", "", 37, 0, "password"); ?></td>
+      </tr>
+      <tr>
+        <td>Nickname</td>
+        <td>: <?php echo form_field("nickname", $user['NICKNAME'], 37, 32); ?></td>
+      </tr>
+      <tr>
+        <td>Email Address</td>
+        <td>: <?php echo form_field("email", $user['EMAIL'], 37, 80); ?></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>First name</td>
+        <td>: <?php echo form_field("firstname", $user_prefs['FIRSTNAME'], 37, 32); ?></td>
+      </tr>
+      <tr>
+        <td>Last name</td>
+        <td>: <?php echo form_field("lastname", $user_prefs['LASTNAME'], 37, 32); ?></td>
+      </tr>
+      <tr>
+        <td>Homepage URL</td>
+        <td>: <?php echo form_field("homepage_url", $user_prefs['HOMEPAGE_URL'], 37, 255); ?></td>
+      </tr>
+      <tr>
+        <td>Picture URL</td>
+        <td>: <?php echo form_field("pic_url", $user_prefs['PIC_URL'], 37, 255); ?></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+    <table class="posthead" width="400">
+      <tr>
+        <td class="subhead">Forum Options</td>
+      </tr>
+      <tr>
+        <td><?php echo form_checkbox("email_notify", "Y", "Notify by email of posts to me", ($user_prefs['EMAIL_NOTIFY'] == "Y")); ?></td>
+      </tr>
+      <tr>
+        <td><?php echo form_checkbox("dl_saving", "Y", "Adjust for daylight saving", ($user_prefs['DL_SAVING'] == "Y")); ?></td>
+      </tr>
+      <tr>
+        <td><?php echo form_checkbox("mark_as_of_int", "Y", "Automatically mark threads I post in as High Interest", ($user_prefs['MARK_AS_OF_INT'] == "Y")); ?></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+    </table>
+    <table class="posthead" width="400">
+      <tr>
+        <td width="150">Timezone (from GMT)</td>
+        <td><?php echo form_dropdown_array("timezone", range(-11,11), range(-11,11), $user_prefs['TIMEZONE']); ?></td>
+      </tr>
+      <tr>
+        <td>Posts per page</td>
+        <td><?php echo form_dropdown_array("posts_per_page" ,array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']); ?></td>
+      </tr>
+      <tr>
+        <td>Font size</td>
+        <td>
+          <?php
+
+            if ($user_prefs['FONT_SIZE'] == '') {
+
+                echo form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), "10pt");
+
+            }else{
+
+                echo form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']);
+
+            }
+
+          ?>
+        </td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+    <table class="posthead" width="400">
+      <tr>
+        <td class="subhead" colspan="2">Signature</td>
+      </tr>
+      <tr>
+        <td colspan="2"><?php echo form_textarea("sig_content", $user_sig['CONTENT'], 4, 60); ?></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td align="right"><?php echo form_checkbox("sig_html", "Y", "Contains HTML", ($user_sig['HTML'] == "Y")); ?></td>
+      </tr>
+    </table>
+    <?php echo form_submit("submit", "Submit"); ?>
+  </form>
+</div>
+<?php html_draw_bottom(); ?>

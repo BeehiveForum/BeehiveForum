@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.18 2004-03-21 18:58:24 tribalonline Exp $ */
+/* $Id: forum_options.php,v 1.19 2004-03-22 12:31:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -248,7 +248,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
         echo "<p>{$lang['preferencesupdated']}</p>";
 
-        form_quick_button("./forum_options.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+        form_quick_button("./forum_options.php", $lang['continue'], false, false, "_top");
 
         html_draw_bottom();
         exit;

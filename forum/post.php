@@ -24,6 +24,7 @@ USA
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/form.inc.php");
 
 if(!bh_session_check()){
 
@@ -211,15 +212,14 @@ if($newthread){
     echo "<tr><td>Select folder:</td></tr>\n";
     echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
     echo "<tr><td>Thread title:</td></tr>\n";
-    echo "<tr><td><input type=\"text\" name=\"t_threadtitle\" maxchars=\"64\" width=\"64\" value=\"";
-    if (isset($t_threadtitle)) echo stripslashes(htmlentities($t_threadtitle));
-    echo "\">\n";
-    echo "<input type=\"hidden\" name=\"t_newthread\" value=\"Y\"></td></tr>\n";
+    echo "<tr><td>".form_input_text("t_threadtitle",stripslashes(htmlentities($t_threadtitle)),64,64);
+    echo "\n";
+    echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
     echo "</table>\n";
 } else {
     echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
-    echo "<input type=\"hidden\" name=\"t_tid\" value=\"$reply_to_tid\">\n";
-    echo "<input type=\"hidden\" name=\"t_rpid\" value=\"$reply_to_pid\">\n";
+    echo form_input_hidden("t_tid",$reply_to_tid);
+    echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
 }
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
 echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
@@ -227,26 +227,21 @@ echo "<td>To: \n";
 echo post_draw_to_dropdown($t_to_uid);
 echo "</td></tr></table>\n";
 echo "<table border=\"0\">\n";
-echo "<tr><td><textarea name=\"t_content\" cols=\"60\" rows=\"10\" wrap=\"VIRTUAL\">\n";
 if(isset($t_content)){
     if($t_post_html == "Y"){
-        echo stripslashes(htmlentities($t_content));
+        $t_content = stripslashes(htmlentities($t_content));
     } else {
-        echo stripslashes($t_content);
+        $t_content = stripslashes($t_content);
     }
 }
-echo "</textarea></td></tr>\n";
-echo "<tr><td><textarea name=\"t_sig\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">$t_sig</textarea>\n";
-echo "<input type=\"hidden\" name=\"t_sig_html\" value=\"$t_sig_html\"></td></tr>\n";
-echo "<tr><td class=\"smalltext\"><input type=\"checkbox\" name=\"t_post_html\" value=\"Y\"";
-if($t_post_html == "Y"){
-    echo " checked";
-}
-echo ">&nbsp;Contains HTML</td></tr>\n";
+echo "<tr><td>".form_textarea("t_content",$t_content,10,60)."</tr></td>";
+echo "<tr><td>".form_textarea("t_sig",$t_sig,4,60);
+echo form_input_hidden("t_sig_html",$t_sig_html)."</td></tr>\n";
+echo "<tr><td>".form_checkbox("t_post_html","Y","Contains HTML",($t_post_html == "Y"))."</td></tr>\n";
 echo "</table>\n";
 echo "</td></tr></table>\n";
-echo "<input class=\"button\" name=\"submit\" type=\"submit\" value=\"Submit\">\n";
-echo "&nbsp;&nbsp;<input class=\"button\" name=\"preview\" type=\"submit\" value=\"Preview\">\n";
+echo form_submit("submit","Submit");
+echo "&nbsp;".form_submit("preview","Preview");
 echo "</form>\n";
 echo "<p>&nbsp;&nbsp;</p>\n";
 if(!$newthread){

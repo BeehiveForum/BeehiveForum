@@ -39,6 +39,7 @@ require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/fixhtml.inc.php");
+require_once("./include/form.inc.php");
 
 $error_html = "";
 
@@ -104,19 +105,6 @@ if(isset($HTTP_POST_VARS['submit'])){
         user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$user_sig['CONTENT'],$user_sig['HTML']);
         $user_sig_exist = (count($user_sig) > 0);
     }
-/*    $user['NICKNAME'] = $HTTP_POST_VARS['nickname'];
-    $user['EMAIL'] = $HTTP_POST_VARS['email'];
-    $user_prefs['FIRSTNAME'] = $HTTP_POST_VARS['firstname'];
-    $user_prefs['LASTNAME'] = $HTTP_POST_VARS['lastname'];
-    $user_prefs['HOMEPAGE_URL'] = $HTTP_POST_VARS['homepage_url'];
-    $user_prefs['PIC_URL'] = $HTTP_POST_VARS['pic_url'];
-    $user_prefs['EMAIL_NOTIFY'] = $HTTP_POST_VARS['email_notify'];
-    $user_prefs['TIMEZONE'] = $HTTP_POST_VARS['timezone'];
-    $user_prefs['DL_SAVING'] = $HTTP_POST_VARS['dl_saving'];
-    $user_prefs['MARK_AS_OF_INT'] = $HTTP_POST_VARS['mark_as_of_int'];
-    $user_prefs['POSTS_PER_PAGE'] = $HTTP_POST_VARS['posts_per_page'];
-    $user_sig['CONTENT'] = $HTTP_POST_VARS['content'];
-    $user_sig['HTML'] = $HTTP_POST_VARS['html'];*/
 } else {
 
 // Get preferences
@@ -140,78 +128,47 @@ echo "<form name=\"prefs\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" meth
 echo "<table class=\"posthead\">";
 echo "<tr><td class=\"subhead\" colspan=\"2\">User Details</td></tr>";
 echo "<tr><td>New Password:</td>";
-echo "<td><input type=\"password\" name=\"pw\"></td></tr>";
+echo "<td>".form_field("pw","",0,0,"password")."</td></tr>";
 echo "<tr><td>Confirm Password:</td>";
-echo "<td><input type=\"password\" name=\"cpw\"></td></tr>";
+echo "<td>".form_field("cpw","",0,0,"password")."</td></tr>";
 echo "<tr><td>Nickname:</td>";
-echo "<td><input type=\"text\" name=\"nickname\" maxchars=\"32\" width=\"32\" value=\"" . $user['NICKNAME'] . "\"></td></tr>";
+echo "<td>".form_field("nickname",$user['NICKNAME'],32,32)."</td></tr>";
 echo "<tr><td>Email Address:</td>";
-echo "<td><input type=\"text\" name=\"email\"  maxchars=\"80\" width=\"60\" value=\"" . $user['EMAIL'] . "\"></td></tr>";
+echo "<td>".form_field("email",$user['EMAIL'],60,80)."</td></tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td>First name:</td>";
-echo "<td><input type=\"text\" name=\"firstname\"  maxchars=\"32\" width=\"32\" value=\"" . $user_prefs['FIRSTNAME'] . "\"></td></tr>";
+echo "<td>".form_field("firstname",$user_prefs['FIRSTNAME'],32,32)."</td></tr>";
 echo "<tr><td>Last name:</td>";
-echo "<td><input type=\"text\" name=\"lastname\" maxchars=\"32\" width=\"32\"  value=\"" . $user_prefs['LASTNAME'] . "\"></td></tr>";
+echo "<td>".form_field("lastname",$user_prefs['LASTNAME'],32,32)."</td></tr>";
 echo "<tr><td>Homepage URL:</td>";
-echo "<td><input type=\"text\" name=\"homepage_url\" maxchars=\"255\" width=\"60\"  value=\"" . $user_prefs['HOMEPAGE_URL'] . "\"></td></tr>";
+echo "<td>".form_field("homepage_url",$user_prefs['HOMEPAGE_URL'],60,255)."</td></tr>";
 echo "<tr><td>Picture URL:</td>";
-echo "<td><input type=\"text\" name=\"pic_url\" maxchars=\"255\" width=\"60\"  value=\"" . $user_prefs['PIC_URL'] . "\"></td></tr>";
+echo "<td>".form_field("pic_url",$user_prefs['PIC_URL'],60,255)."</td></tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td class=\"subhead\" colspan=\"2\">Forum Options</td></tr>";
-echo "<tr><td colspan=\"2\">Notify by email of posts to me&nbsp;";
-echo "<input type=\"checkbox\" name=\"email_notify\" value=\"Y\"";
-if($user_prefs['EMAIL_NOTIFY'] == "Y"){
-    echo " checked";
-}
-echo "></td></tr>";
+echo "<tr><td>&nbsp;</td>";
+echo "<td>".form_checkbox("email_notify","Y","Notify by email of posts<br />to me",($user_prefs['EMAIL_NOTIFY'] == "Y"))."</td></tr>";
 echo "<tr><td>Timezone (from GMT)</td>";
-echo "<td><select name=\"timezone\"";
-echo "<option value=\"" . $user_prefs['TIMEZONE'] . "\">" . $user_prefs['TIMEZONE'] . "</option>";
-for($tz = -11; $tz < 12; $tz++){
-    if($tz == $user_prefs['TIMEZONE']){
-        echo "<option selected value=\"$tz\">$tz</option>";
-    } else {
-        echo "<option value=\"$tz\">$tz</option>";
-    }
-}
-echo "</select></td></tr>";
-echo "<tr><td colspan=\"2\">Adjust for daylight saving&nbsp;";
-echo "<input type=\"checkbox\" name=\"dl_saving\" value=\"Y\"";
-if($user_prefs['DL_SAVING'] == "Y"){
-    echo " checked";
-}
-echo "></td></tr>";
-echo "<tr><td colspan=\"2\">Automatically mark threads I post in as High Interest&nbsp;";
-echo "<input type=\"checkbox\" name=\"mark_as_of_int\" value=\"Y\"";
-if($user_prefs['MARK_AS_OF_INT'] == "Y"){
-    echo " checked";
-}
-echo "></td></tr>";
+echo "<td>".form_dropdown_array("timezone",range(-11,11),range(-11,11),$user_prefs['TIMEZONE'])."</td></tr>";
+echo "<tr><td>&nbsp;</td>";
+echo "<td>".form_checkbox("dl_saving","Y","Adjust for<br />daylight saving",($user_prefs['DL_SAVING'] == "Y"))."</td></tr>";
+echo "<tr><td>&nbsp;</td>";
+echo "<td>".form_checkbox("mark_as_of_int","Y","Automatically mark threads<br />I post in as High Interest",($user_prefs['MARK_AS_OF_INT'] == "Y"))."</td></tr>";
 echo "<tr><td>Posts per page:</td>";
-echo "<td><select name=\"posts_per_page\"";
-for($ppp = 5; $ppp < 25; $ppp+=5){
-    if($ppp == $user_prefs['POSTS_PER_PAGE']){
-        echo "<option selected value=\"$ppp\">$ppp</option>";
-    } else {
-        echo "<option value=\"$ppp\">$ppp</option>";
-    }
-}
-echo "</select></td></tr>";
+echo "<td>".form_dropdown_array("posts_per_page",array(5,10,20),array(5,10,20),$user_prefs['POSTS_PER_PAGE'])."</td></tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td class=\"subhead\" colspan=\"2\">Signature</td></tr>";
-echo "<tr><td colspan=\"2\"><textarea name=\"sig_content\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">". $user_sig['CONTENT'] . "</textarea>";
-echo "<tr><td colspan=\"2\"><input type=\"checkbox\" name=\"sig_html\" value=\"Y\"";
-if($user_sig['HTML'] == "Y"){
-    echo " checked";
-}
-echo ">&nbsp;Contains HTML</td></tr></table>";
+echo "<tr><td colspan=\"2\">".form_textarea("sig_content",$user_sig['CONTENT'],4,60);
+echo "<tr><td>&nbsp;</td><td align=\"right\">";
+echo form_checkbox("sig_html","Y","Contains HTML",($user_sig['HTML'] == "Y"));
+echo "</td></tr></table>";
 if($user_prefs_exist){
-    echo "<input type=\"hidden\" name=\"prefs_exist\" value=\"Y\">";
+    echo form_field("prefs_exist","Y",0,0,"hidden");
 }
 if($user_sig_exists){
-    echo "<input type=\"hidden\" name=\"sig_exists\" value=\"Y\">";
+    echo form_field("sig_exists","Y",0,0,"hidden");
 }
-echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
-
+echo form_submit("submit","Submit");
+echo "</form>";
 html_draw_bottom();
 ?>

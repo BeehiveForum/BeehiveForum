@@ -26,9 +26,9 @@ USA
 require_once("./include/db.inc.php");
 
 // create a <input type="text"> field
-function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
+function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text")
 {
-    $html = "<input type=\"text\" name=\"$name\" class=\"bhinputtext\"";
+    $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\"";
 
     if($value) $html.= " value=\"$value\"";
     if($width) $html.= " width=\"$width\"";
@@ -37,20 +37,26 @@ function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
     return $html.">\n";
 }
 
+function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
+{
+    return form_field($name,$value,$width,$maxchars,"text");
+}
+
+function form_input_password($name, $value = "", $width = 0, $maxchars = 0)
+{
+    return form_field($name,$value,$width,$maxchars,"password");
+}
+
 // create a <input type="hidden"> field
 function form_input_hidden($name, $value = "")
 {
-    $html = "<input type=\"text\" name=\"$name\" class=\"bhinputtext\"";
-
-    if($value) $html.= " value=\"$value\"";
-
-    return $html.">\n";
+    return form_field($name,$value,0,0,"hidden");
 }
 
 // create a <textarea> field
 function form_textarea($name, $value = "", $rows = 0, $cols = 0)
 {
-    $html = "<textarea name=\"$name\" class=\"bhtextarea\"";
+    $html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"VIRTUAL\"";
 
     if($rows) $html.= " rows=\"$rows\"";
     if($cols) $html.= " cols=\"$cols\"";
@@ -102,17 +108,17 @@ function form_dropdown_array($name, $value, $label, $default)
 // create a <input type="checkbox">
 function form_checkbox($name, $value, $text, $checked = false)
 {
-    $html = "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
+    $html = "<span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"$name\" value=\"$value\"";
     if($checked) $html .= " checked";
-    return $html . " />$text\n";
+    return $html . " />$text</span>\n";
 }
 
 // create a <input type="radio">
 function form_radio($name, $value, $text, $checked = false)
 {
-    $html = "<input type=\"radio\" name=\"$name\" value=\"$value\"";
+    $html = "<span class=\"bhinputradio\"><input type=\"radio\" name=\"$name\" value=\"$value\"";
     if($checked) $html .= " checked";
-    return $html . " />$text\n";
+    return $html . " />$text</span>\n";
 }
 
 // create a <input type="radio"> set with values from array(s)
@@ -125,9 +131,9 @@ function form_radio_array($name, $value, $text, $checked = -1)
 }
 
 // create a <input type="submit"> button
-function form_submit($name = "submit", $value = "Submit")
+function form_submit($name = "submit", $value = "Submit", $class = "button")
 {
-    return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"button\" />";
+    return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" />";
 }
 
 ?>

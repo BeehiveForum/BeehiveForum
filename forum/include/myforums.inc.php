@@ -36,9 +36,13 @@ function get_forum_list()
 
     while ($row = db_fetch_array($result)) {  
         
+        echo "<pre>\n";
+	print_r($row);
+	echo "</pre>\n";
+        
         $forum_data = $row;
 
-	if (isset($forum_data['FORUM_NAME'])) {
+	if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) == 0) {
 	    $forum_data['FORUM_NAME'] = "Unknown Forum";
 	}
 
@@ -99,7 +103,7 @@ function get_forum_list()
 
             $unread_message_count = 0;
 	    $unread_to_me_message_count = 0;
-	    $last_visit = "Never";
+	    $last_visit = "";
         
             $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
             $result = db_query($sql, $db_get_forum_list);

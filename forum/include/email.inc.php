@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.54 2004-04-04 21:03:40 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.55 2004-04-05 20:54:46 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
@@ -33,7 +33,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
     $db_email_sendnotification = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
     $sql.= "{$table_data['PREFIX']}USER_PREFS PREFS, ";
@@ -110,7 +110,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
     list($tid, $pid) = explode('.', $msg);
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT USER.UID, USER.NICKNAME, USER.EMAIL FROM ";
     $sql.= "{$table_data['PREFIX']}USER_THREAD USER_THREAD, ";
@@ -184,7 +184,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     
     $db_email_sendnotification = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PREFS.PM_NOTIFY_EMAIL, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
     $sql.= "{$table_data['PREFIX']}USER_PREFS PREFS, USER PROFILE ";
@@ -257,7 +257,7 @@ function email_send_pw_reminder($logon)
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.89 2004-04-04 21:03:41 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.90 2004-04-05 20:54:47 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -39,8 +39,6 @@ function bh_session_check()
 
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
-    
-    if (!$table_data = get_table_prefix()) return false;
 
     // Current server time.
 
@@ -55,12 +53,22 @@ function bh_session_check()
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
-	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
-	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
-	$sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	$sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$table_data['FID']}) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+        if ($table_data = get_table_prefix()) {
+
+	    $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
+	    $sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
+	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$table_data['FID']}) ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+
+	}else {
+
+	    $sql = "SELECT USER.LOGON, USER.PASSWD, SESSIONS.UID, SESSIONS.SESSID, ";
+	    $sql.= "SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
+	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+	}
 
 	$result = db_query($sql, $db_bh_session_check);
 
@@ -149,7 +157,7 @@ function bh_session_check()
 
                         db_query($sql, $db_bh_session_check);
 
-                        if (forum_get_setting('show_stats', 'Y', false)) {
+                        if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
                             update_stats();
                         }
 		    }
@@ -227,8 +235,6 @@ function bh_session_end()
 
     $db_bh_session_end = db_connect();
     
-    $table_data = get_table_prefix();
-
     if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];

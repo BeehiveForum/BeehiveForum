@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.27 2004-04-04 21:03:40 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.28 2004-04-05 20:54:47 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -88,6 +88,8 @@ function get_webtag()
     if (db_num_rows($result) > 0) {
         return $webtag;
     }
+
+    return false;
 }
 
 function get_forum_settings()
@@ -96,7 +98,7 @@ function get_forum_settings()
     
     $db_get_forum_settings = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return array();
     
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_get_forum_settings);
@@ -115,7 +117,7 @@ function save_forum_settings($forum_settings_array)
     
     $db_save_forum_settings = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
        
     foreach ($forum_settings_array as $sname => $svalue) {
     
@@ -160,7 +162,11 @@ function draw_start_page()
     
     $db_draw_start_page = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) {
+        html_draw_top();
+        echo "<h1>{$lang['editstartpage_help']}</h1>\n";
+        html_draw_bottom();
+    }
     
     $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_draw_start_page);
@@ -192,7 +198,7 @@ function load_start_page()
 {
     $db_load_start_page = db_connect();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return "";
     
     $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_load_start_page);
@@ -209,9 +215,10 @@ function load_start_page()
 function save_start_page($content)
 {
     $db_save_start_page = db_connect();
-    
-    $table_data = get_table_prefix();
+
     $content = addslashes($content);
+    
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE START_MAIN SET HTML = '$content' ";
     $sql.= "WHERE FID = '{$table_data['FID']}'";

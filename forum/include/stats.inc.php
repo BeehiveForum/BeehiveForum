@@ -25,7 +25,7 @@ function update_stats()
 {
     $db_update_stats = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $num_sessions = get_num_sessions();
     $num_recent_posts = get_recent_post_count();
@@ -70,7 +70,7 @@ function get_num_sessions()
 
     $get_num_sessions = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return 0;
     
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
@@ -92,15 +92,16 @@ function get_active_users()
     global $forum_settings;
 
     $db_get_active_users = db_connect();
+
+    $stats = array('GUESTS' => 0, 'NUSERS' => 0,
+                   'AUSERS' => 0, 'USERS'  => array());
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return $stats;
     
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
     $uid = bh_session_get_value('UID');
 
-    $stats = array('GUESTS' => 0, 'NUSERS' => 0,
-                   'AUSERS' => 0, 'USERS'  => array());
 
     // Current active users
 
@@ -139,7 +140,7 @@ function get_thread_count()
 {
     $db_get_thread_count = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_data['PREFIX']}THREAD THREAD";
     $result = db_query($sql, $db_get_thread_count);

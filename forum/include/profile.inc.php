@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.25 2004-04-04 21:03:41 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.26 2004-04-05 20:54:47 decoyduck Exp $ */
 
 function profile_section_get_name($psid)
 {
@@ -29,7 +29,7 @@ function profile_section_get_name($psid)
 
    if (!is_numeric($psid)) return "The Unknown Section";
    
-   $table_data = get_table_prefix();
+   if ($table_data = get_table_prefix()) return "The Unknown Section";
 
    $sql = "SELECT PS.NAME FROM {$table_data['PREFIX']}PROFILE_SECTION PS WHERE PS.PSID = $psid";
    $resource_id = db_query($sql, $db_profile_section_get_name);
@@ -52,7 +52,7 @@ function profile_section_create($name, $position)
 
     $name = addslashes($name);
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return 0;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_SECTION (NAME, POSITION) ";
     $sql.= "VALUES ('$name', '$position')";
@@ -77,7 +77,7 @@ function profile_section_update($psid, $position, $name)
 
     $name = addslashes($name);
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "SET NAME = '$name', POSITION = '$position' ";
@@ -92,7 +92,7 @@ function profile_sections_get()
 {
     $db_profile_section_get = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
@@ -117,7 +117,7 @@ function profile_items_get($psid)
 
     if (!is_numeric($psid)) return false;
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, PROFILE_ITEM.TYPE ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
@@ -147,7 +147,7 @@ function profile_item_create($psid, $name, $position, $type)
 
     $name = addslashes($name);
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return 0;
 
     $sql = "insert into {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
     $sql.= "values ($psid, '$name', $type, $position)";
@@ -175,7 +175,7 @@ function profile_item_update($piid, $psid, $position, $type, $name)
 
     $name = addslashes($name);
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "SET PSID = $psid, POSITION = $position, ";
@@ -192,7 +192,7 @@ function profile_section_delete($psid)
 
     if (!is_numeric($psid)) return false;
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
     return db_query($sql, $db_profile_section_delete);
@@ -204,7 +204,7 @@ function profile_item_delete($piid)
 
     if (!is_numeric($piid)) return false;
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
     return db_query($sql, $db_profile_item_delete);
@@ -215,7 +215,7 @@ function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="
     $html = "<select name=\"${field_name}${suffix}\">";
     $db_profile_section_dropdown = db_connect();
     
-    $table_data = get_table_prefix();
+    if ($table_data = get_table_prefix()) return "";
 
     $sql = "SELECT PSID, NAME FROM {$table_data['PREFIX']}PROFILE_SECTION";
     $result = db_query($sql, $db_profile_section_dropdown);
@@ -241,7 +241,7 @@ function profile_get_user_values($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";

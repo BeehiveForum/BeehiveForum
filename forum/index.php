@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.69 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: index.php,v 1.70 2004-04-05 20:54:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -85,36 +85,75 @@ if ($user_sess = bh_session_check()) {
     echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
     echo "<frame src=\"./nav.php?webtag=$webtag\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
-    if (isset($HTTP_GET_VARS['final_uri'])) {
+    if ($webtag) {
 
-      echo "<frame src=\"". rawurldecode($HTTP_GET_VARS['final_uri']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        if (isset($HTTP_GET_VARS['final_uri'])) {
 
-    }else if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+	    if (stristr(rawurldecode($HTTP_GET_VARS['final_uri']), "?")) {
+                echo "<frame src=\"". rawurldecode($HTTP_GET_VARS['final_uri']). "&webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+	    }else {
+                echo "<frame src=\"". rawurldecode($HTTP_GET_VARS['final_uri']). "?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+	    }
 
-      echo "<frame src=\"./discussion.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        }else if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
-    }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
+            echo "<frame src=\"./discussion.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-      echo "<frame src=\"./discussion.php?webtag=$webtag&folder=". $HTTP_GET_VARS['folder']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
 
-    }else if (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
+            echo "<frame src=\"./discussion.php?webtag=$webtag&folder=". $HTTP_GET_VARS['folder']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-      echo "<frame src=\"./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        }else if (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
+
+            echo "<frame src=\"./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else {
+
+            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+
+            if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
+                $final_uri = "./discussion.php?webtag=$webtag";
+            }elseif (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 2) {
+                $final_uri = "./pm.php?webtag=$webtag";
+            }else {
+                $final_uri = "./start.php?webtag=$webtag";
+            }
+
+            echo "<frame src=\"", $final_uri, "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+	}
 
     }else {
 
-      $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+        if (isset($HTTP_GET_VARS['final_uri'])) {
 
-      if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
-        $final_uri = "./discussion.php?webtag=$webtag";
-      }elseif (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 2) {
-        $final_uri = "./pm.php?webtag=$webtag";
-      }else {
-        $final_uri = "./start.php?webtag=$webtag";
-      }
+            echo "<frame src=\"./forums.php?final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-      echo "<frame src=\"", $final_uri, "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        }else if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
+            echo "<frame src=\"./forums.php?final_uri=", rawurlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
+
+            echo "<frame src=\"./forums.php?final_uri=", rawurlencode("./discussion.php?folder=". $HTTP_GET_VARS['folder']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else if (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
+
+            echo "<frame src=\"./forums.php?final_uri=", rawurlencode("./pm.php?mid=". $HTTP_GET_VARS['pmid']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else {
+
+            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+
+            if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
+                $final_uri = "./discussion.php";
+            }elseif (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 2) {
+                $final_uri = "./pm.php";
+            }else {
+                $final_uri = "./start.php";
+            }
+
+            echo "<frame src=\"forums.php?final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+	}
     }
 
 }else {
@@ -125,11 +164,11 @@ if ($user_sess = bh_session_check()) {
 
         bh_session_init(0); // auto login as guest
 
-	if ($webtag) {
+        echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
+        echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+        echo "<frame src=\"./nav.php?webtag=$webtag\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
-            echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
-            echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-            echo "<frame src=\"./nav.php?webtag=$webtag\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+	if ($webtag) {
 
             if (isset($HTTP_GET_VARS['final_uri'])) {
 
@@ -150,50 +189,57 @@ if ($user_sess = bh_session_check()) {
             }else {
 
                 echo "<frame src=\"./start.php?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-
             }
 
 	}else {
 
-            echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
-	    echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-            echo "<frame src=\"./forums.php?webtag=$webtag\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+            if (isset($HTTP_GET_VARS['final_uri'])) {
+
+                echo "<frame src=\"./forums.php?webtag=$webtag&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+            }elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+
+                echo "<frame src=\"./forums.php?webtag=$webtag&final_uri=", rawurlencode("./discussion.php?webtag=$webtag&msg=", $HTTP_GET_VARS['msg']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+            }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
+
+                echo "<frame src=\"./forums.php?webtag=$webtag&final_uri=". rawurlencode("./discussion.php?webtag=$webtag&folder=". $HTTP_GET_VARS['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+            }else if (isset($HTTP_GET_VARS['pmid'])) {
+
+                echo "<frame src=\"./forums.php?webtag=$webtag&final_uri=". rawurlencode("./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+            }else {
+
+                echo "<frame src=\"./forums.php?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            }
 	}
 
     }else {
 
-        if ($webtag) {
-        
-            echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
-            echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+        echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
+        echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
      
-            if (isset($HTTP_GET_VARS['final_uri'])) {
+        if (isset($HTTP_GET_VARS['final_uri'])) {
 
-                echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-            }elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+        }elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
-                echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". rawurlencode("./discussion.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". rawurlencode("./discussion.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-            }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
+        }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
 
-                echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". rawurlencode("./discussion.php?webtag=$webtag&folder=". $HTTP_GET_VARS['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". rawurlencode("./discussion.php?webtag=$webtag&folder=". $HTTP_GET_VARS['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-            }else if (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
+        }else if (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
 
-                echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". rawurlencode("./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-
-            }else {
-
-                echo "<frame src=\"./logon.php?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-	    }
+            echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". rawurlencode("./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else {
 
-            echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
-	    echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-            echo "<frame src=\"./forums.php?webtag=$webtag\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-	}
+            echo "<frame src=\"./logon.php?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        }
     }
 }
 

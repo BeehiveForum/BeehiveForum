@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.96 2005-01-19 21:49:30 decoyduck Exp $ */
+/* $Id: search.php,v 1.97 2005-01-21 01:19:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -256,7 +256,13 @@ if (isset($_POST['search_string'])) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">&nbsp;</td>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>{$lang['searchcriteria_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['searchcriteria_2']}</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['find']), "</td>\n";
@@ -391,10 +397,10 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     switch($error) {
 
         case SEARCH_USER_NOT_FOUND:
-            echo "<h2>{$lang['usernamenotfound']}</h2>\n";
+            echo "<p>{$lang['usernamenotfound']}</p>\n";
             break;
         case SEARCH_NO_KEYWORDS:
-            echo "<h2>{$lang['notexttosearchfor_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['notexttosearchfor_2']}.</h2>\n";
+            echo "<p>{$lang['notexttosearchfor']}</p>\n";
             break;
         case SEARCH_NO_MATCHES:
             echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";

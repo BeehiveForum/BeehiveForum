@@ -59,10 +59,13 @@ if (!isset($HTTP_GET_VARS['msg'])) {
 if (isset($HTTP_GET_VARS['fontsize'])) {
 
     $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+
     user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
-                      $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'], $userprefs['EMAIL_NOTIFY'],
-                      $userprefs['TIMEZONE'], $userprefs['DL_SAVING'], $userprefs['MARK_AS_OF_INT'],
-                      $userprefs['POST_PER_PAGE'], $HTTP_GET_VARS['fontsize'], $userprefs['STYLE']);
+                      $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
+                      $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
+                      $userprefs['MARK_AS_OF_INT'], $userprefs['POST_PER_PAGE'],
+                      $HTTP_GET_VARS['fontsize'], $userprefs['STYLE']);
+
     unset($userprefs);
 
     bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
@@ -75,10 +78,10 @@ if ($tid == '') $tid = 1;
 if ($pid == '') $pid = 1;
 
 if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
-	light_html_draw_top();
-	echo "<h2>The requested thread could not be found or access was denied.</h2>";
-	light_html_draw_bottom();
-	exit;
+        light_html_draw_top();
+        echo "<h2>The requested thread could not be found or access was denied.</h2>";
+        light_html_draw_bottom();
+        exit;
 }
 
 // Poll stuff
@@ -134,11 +137,11 @@ if($msg_count > 0){
                 $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
             }
 
-	    } else {
+            } else {
 
-        	$message['CONTENT'] = message_get_content($tid, $message['PID']);
+                $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
-	    }
+            }
 
         if($threaddata['POLL_FLAG'] == 'Y') {
 

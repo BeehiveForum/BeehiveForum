@@ -47,9 +47,9 @@ function email_sendnotification($tuid, $msg, $fuid)
 
         $mailto = db_fetch_array($result);
 
-    	if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != ''){
+        if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != ''){
 
-    	    $sql = "select LOGON from ". forum_table("USER") . " where UID = $fuid";
+            $sql = "select LOGON from ". forum_table("USER") . " where UID = $fuid";
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
@@ -60,11 +60,11 @@ function email_sendnotification($tuid, $msg, $fuid)
             $message.= "The subject is:  ". htmlspecialchars_reverse(_stripslashes($thread['TITLE'])). "\n\n";
             $message.= "To read that message and others in the same discussion, go to:\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
-            
+
             if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
-            
+
             $message.= "/?msg=$msg\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "Note: If you do not wish to receive email notifications of Forum messages\n";
@@ -77,7 +77,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
             @mail($mailto['EMAIL'], "Message Notification from $forum_name", $message, $header);
 
-    	}
+        }
     }
 
 }
@@ -117,11 +117,11 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $message.= "The subject is:  ". htmlspecialchars_reverse(_stripslashes($thread['TITLE'])). "\n\n";
         $message.= "To read that message and others in the same discussion, go to:\n";
         $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
-            
+
         if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
           $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
         }
-            
+
         $message.= "/?msg=$msg\n\n";
         $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $message.= "Note: If you do not wish to receive email notifications of new messages\n";

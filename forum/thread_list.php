@@ -81,7 +81,11 @@ function change_current_thread (thread_id) {
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<td><a href="post.php" target="main" class="folderpostnew">New Discussion</a></td>
+		<td class="postbody">
+			<img src="./images/star.png" width="14" height="14" />&nbsp;<a href="post.php" target="main">New Discussion</a><br>
+			<img src="./images/star.png" width="14" height="14" />&nbsp;<a href="#">Create Poll</a><br>
+			<img src="./images/star.png" width="14" height="14" />&nbsp;<a href="#">Search</a><br>
+		</td>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>

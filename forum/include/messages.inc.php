@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.289 2004-07-08 00:54:57 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.290 2004-07-08 01:09:52 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -478,7 +478,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "</td>\n";
 	    echo "<td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
-            echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=.%2Fpm_write.php%3Fwebtag%3D$webtag%26amp%3Buid%3D{$message['FROM_UID']}%26amp%3Bmsg%3D$tid.{$message['PID']}\" target=\"_main\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+            echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
             
             echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 

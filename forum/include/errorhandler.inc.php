@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.65 2005-03-14 13:27:24 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.66 2005-03-14 21:16:35 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "/config.inc.php");
@@ -61,204 +61,76 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
     if (error_reporting()) {
 
-        if (isset($show_friendly_errors) && $show_friendly_errors === false) {
+        if ((isset($show_friendly_errors) && $show_friendly_errors === false) || defined("BEEHIVEMODE_LIGHT")) {
 
-            switch ($errstr) {
+            switch ($errno) {
 
-                case DB_ER_NO_EXTENSION:
+                case E_USER_ERROR:
 
-                    echo "<p>No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.</p>\n";
+                    echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
                     echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
-                case DB_ER_NO_SUCH_HOST:
+                case E_USER_WARNING:
 
-                    echo "<p>Cannot connect to database. Please check settings in config.inc.php</p>\n";
-                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
+                    echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
+                    echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
-                case DB_ER_NO_SUCH_DBASE:
+                case E_USER_NOTICE:
 
-                    echo "<p>Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct.</p>\n";
-                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
+                    echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
+                    echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
-                case DB_ER_NO_SUCH_TABLE:
+                default:
 
-                    echo "<p>Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct</p>\n";
-                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
+                    echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
+                    echo "<p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
             }
 
             exit;
         }
 
-        @ob_end_clean();
-        ob_start("bh_gzhandler");
+        while (@ob_end_clean());
 
         srand((double)microtime() * 1000000);
 
-        if (defined("BEEHIVEMODE_LIGHT")) {
+        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
+        echo "<head>\n";
+        echo "<title>Beehive Forum - Error Handler</title>\n";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+        echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
+        echo "</head>\n";
+        echo "<body>\n";
+        echo "<div align=\"center\">\n";
+        echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
+        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "  <tr>\n";
+        echo "    <td>\n";
+        echo "      <table border=\"0\" width=\"100%\">\n";
+        echo "        <tr>\n";
+        echo "          <td class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td>\n";
 
-            echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
-            echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
-            echo "<head>\n";
-            echo "<title>Beehive Forum - Error Handler</title>\n";
-            echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
-            echo "</head>\n";
-            echo "<body>\n";
-            echo "<p>An error has occured. Please wait a few minutes and then click the Retry button below.</p>\n";
-            echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
+        foreach ($_POST as $key => $value) {
 
-            foreach ($_POST as $key => $value) {
-                echo "<input type=\"hidden\" name=\"$key}\" value=\"", _htmlentities($value), "\">\n";
-            }
+            echo "<input type=\"hidden\" name=\"{$key}\" value=\"", _htmlentities($value), "\">\n";
+        }
 
-            echo "<input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" />\n";
+        echo "          </td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" /></td>\n";
+        echo "        </tr>\n";
 
-            if (isset($_GET['retryerror']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
-
-                echo "<p>This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</p>\n";
-                echo "<textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea>\n";
-
-                if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-
-                    echo "<p>Reply Message Number:</p>\n";
-                    echo "<input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\">\n";
-
-                }
-
-            }
-
-            echo "<h2>Error Message for server admins and developers:</h2>\n";
-
-            switch ($errstr) {
-
-                case DB_ER_NO_EXTENSION:
-
-                    echo "<p>No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.</p>\n";
-                    break;
-
-                case DB_ER_NO_SUCH_HOST:
-
-                    echo "<p>Cannot connect to database. Please check settings in config.inc.php</p>\n";
-                    break;
-
-                case DB_ER_NO_SUCH_DBASE:
-
-                    echo "<p>Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct</p>\n";
-                    break;
-
-                case DB_ER_NO_SUCH_TABLE:
-
-                    echo "<p>Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct</p>\n";
-                    break;
-
-                default:
-
-                    switch ($errno) {
-
-                        case E_USER_ERROR:
-
-                            echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                            echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
-                            break;
-
-                        case E_USER_WARNING:
-
-                            echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                            echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
-                            break;
-
-                        case E_USER_NOTICE:
-
-                            echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                            echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
-                            break;
-
-                        default:
-
-                            echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                            echo "<p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
-                            break;
-                    }
-            }
-
-            echo "<p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
-            echo "</form>\n";
-            echo "</body>\n";
-            echo "</html>\n";
-
-            die;
-
-        }else {
-
-            echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-            echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
-            echo "<head>\n";
-            echo "<title>Beehive Forum - Error Handler</title>\n";
-            echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-            echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-            echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
-            echo "</head>\n";
-            echo "<body>\n";
-            echo "<div align=\"center\">\n";
-            echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
-            echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-            echo "  <tr>\n";
-            echo "    <td>\n";
-            echo "      <table border=\"0\" width=\"100%\">\n";
-            echo "        <tr>\n";
-            echo "          <td class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
-            echo "        </tr>\n";
-            echo "        <tr>\n";
-            echo "          <td>\n";
-
-            foreach ($_POST as $key => $value) {
-
-                echo "<input type=\"hidden\" name=\"{$key}\" value=\"", _htmlentities($value), "\">\n";
-            }
-
-            echo "          </td>\n";
-            echo "        </tr>\n";
-            echo "        <tr>\n";
-            echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" /></td>\n";
-            echo "        </tr>\n";
-
-            if (isset($_GET['retryerror']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
-
-                echo "        <tr>\n";
-                echo "          <td>&nbsp;</td>\n";
-                echo "        </tr>\n";
-                echo "        <tr>\n";
-                echo "          <td><hr /></td>\n";
-                echo "        </tr>\n";
-                echo "        <tr>\n";
-                echo "          <td class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
-                echo "        </tr>\n";
-                echo "        <tr>\n";
-                echo "          <td>&nbsp;</td>\n";
-                echo "        </tr>\n";
-                echo "        <tr>\n";
-                echo "          <td><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea></td>\n";
-                echo "        </tr>\n";
-
-                if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-
-                    echo "        <tr>\n";
-                    echo "          <td>&nbsp;</td>\n";
-                    echo "        </tr>\n";
-                    echo "        <tr>\n";
-                    echo "          <td class=\"postbody\">Reply Message Number:</td>\n";
-                    echo "        </tr>\n";
-                    echo "        <tr>\n";
-                    echo "          <td><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\"></td>\n";
-                    echo "        </tr>\n";
-
-                }
-            }
+        if (isset($_GET['retryerror']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
             echo "        <tr>\n";
             echo "          <td>&nbsp;</td>\n";
@@ -267,77 +139,82 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td><hr /></td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td><h2>Error Message for server admins and developers:</h2></td>\n";
+            echo "          <td class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td class=\"postbody\">\n";
-
-            switch ($errstr) {
-
-                case DB_ER_NO_EXTENSION:
-
-                    echo "<p>No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.</p>\n";
-                    break;
-
-                case DB_ER_NO_SUCH_HOST:
-
-                    echo "<p>Cannot connect to database. Please check the settings in config.inc.php</p>\n";
-                    break;
-
-                case DB_ER_NO_SUCH_DBASE:
-
-                    echo "<p>Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct</p>\n";
-                    break;
-
-                case DB_ER_NO_SUCH_TABLE:
-
-                    echo "<p>Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct</p>\n";
-                    break;
-
-                default:
-
-                    switch ($errno) {
-
-                        case E_USER_ERROR:
-
-                            echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                            echo "            <p>Fatal error in line $errline of file $errfile</p>\n";
-                            break;
-
-                        case E_USER_WARNING:
-
-                            echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                            echo "            <p>Error in line $errline of file $errfile</p>\n";
-                            break;
-
-                        case E_USER_NOTICE:
-
-                            echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                            echo "            <p>Warning in line $errline of file $errfile</p>\n";
-                            break;
-
-                        default:
-
-                            echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                            echo "            <p>Unknown error in line $errline of file $errfile</p>\n";
-                            break;
-                    }
-            }
-
-            echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), " MySQL/", db_fetch_mysql_version(), "</p>\n";
-            echo "          </td>\n";
+            echo "          <td>&nbsp;</td>\n";
             echo "        </tr>\n";
-            echo "      </table>\n";
-            echo "    </td>\n";
-            echo "  </tr>\n";
-            echo "</table>\n";
-            echo "</form>\n";
-            echo "</div>\n";
-            echo "</body>\n";
-            echo "</html>\n";
+            echo "        <tr>\n";
+            echo "          <td><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea></td>\n";
+            echo "        </tr>\n";
 
-            die;
+            if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
+
+                echo "        <tr>\n";
+                echo "          <td>&nbsp;</td>\n";
+                echo "        </tr>\n";
+                echo "        <tr>\n";
+                echo "          <td class=\"postbody\">Reply Message Number:</td>\n";
+                echo "        </tr>\n";
+                echo "        <tr>\n";
+                echo "          <td><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\"></td>\n";
+                echo "        </tr>\n";
+
+            }
         }
+
+        echo "        <tr>\n";
+        echo "          <td>&nbsp;</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td><hr /></td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td><h2>Error Message for server admins and developers:</h2></td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td class=\"postbody\">\n";
+
+        switch ($errno) {
+
+            case E_USER_ERROR:
+
+                echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
+                echo "            <p>Fatal error in line $errline of file $errfile</p>\n";
+                break;
+
+            case E_USER_WARNING:
+
+                echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
+                echo "            <p>Error in line $errline of file $errfile</p>\n";
+                break;
+
+            case E_USER_NOTICE:
+
+                echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
+                echo "            <p>Warning in line $errline of file $errfile</p>\n";
+                break;
+
+            default:
+
+                echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
+                echo "            <p>Unknown error in line $errline of file $errfile</p>\n";
+                break;
+        }
+
+        echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), " MySQL/", db_fetch_mysql_version(), "</p>\n";
+        echo "          </td>\n";
+        echo "        </tr>\n";
+        echo "      </table>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+        echo "</form>\n";
+        echo "</div>\n";
+        echo "</body>\n";
+        echo "</html>\n";
+
+        exit;
     }
 }
 

@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.1 2005-03-10 21:17:53 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.2 2005-03-14 21:16:35 decoyduck Exp $ */
 
-function db_connect ()
+function db_connect()
 {
     global $db_server, $db_username, $db_password, $db_database, $show_friendly_errors;
 
@@ -31,21 +31,13 @@ function db_connect ()
 
     if (!$connection_id) {
 
-        if (@$connection_id = mysqli_connect($db_server, $db_username, $db_password)) {
+        if ($connection_id = mysqli_connect($db_server, $db_username, $db_password)) {
 
-            if (@mysqli_select_db($connection_id, $db_database)) {
+            if (mysqli_select_db($connection_id, $db_database)) {
 
                 db_enable_big_selects($connection_id);
                 return $connection_id;
-
-            }else {
-
-                trigger_error(DB_ER_NO_SUCH_DBASE, E_USER_ERROR);
             }
-
-        }else {
-
-             trigger_error(DB_ER_NO_SUCH_HOST, E_USER_ERROR);
         }
     }
 
@@ -65,17 +57,9 @@ function db_enable_big_selects($connection_id)
     return false;
 }
 
-function db_query ($sql, $connection_id)
+function db_query($sql, $connection_id)
 {
-    if ($result = mysqli_query($connection_id, $sql)) {
-
-        return $result;
-
-    }else {
-
-        $mysql_error = mysqli_error($connection_id);
-        trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", E_USER_ERROR);
-    }
+    return mysqli_query($connection_id, $sql);
 }
 
 function db_unbuffered_query ($sql, $connection_id)
@@ -83,7 +67,7 @@ function db_unbuffered_query ($sql, $connection_id)
     return db_query($sql, $connection_id);
 }
 
-function db_num_rows ($result)
+function db_num_rows($result)
 {
     return mysqli_num_rows($result);
 }
@@ -93,7 +77,7 @@ function db_affected_rows($connection_id)
     return mysqli_affected_rows($connection_id);
 }
 
-function db_fetch_array ($result, $result_type = DB_RESULT_BOTH)
+function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 {
     return mysqli_fetch_array($result, $result_type);
 }
@@ -122,12 +106,12 @@ function db_fetch_mysql_version()
         $db_fetch_mysql_version = db_connect();
 
         $sql = "SELECT VERSION() AS version";
-        $result = @db_query($sql, $db_fetch_mysql_version);
+        $result = db_query($sql, $db_fetch_mysql_version);
 
         if (!$row = db_fetch_array($result)) {
 
             $sql = "SHOW VARIABLES LIKE 'version'";
-            $result = @db_query($sql, $db_fetch_mysql_version);
+            $result = db_query($sql, $db_fetch_mysql_version);
 
             $row = db_fetch_array($result);
         }

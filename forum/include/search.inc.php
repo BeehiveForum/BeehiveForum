@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.104 2005-03-14 13:27:26 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.105 2005-03-14 21:16:35 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "/forum.inc.php");
 include_once(BH_INCLUDE_PATH. "/lang.inc.php");
@@ -135,6 +135,8 @@ function search_execute($argarray, &$urlquery, &$error)
 
             if (strlen($value) < $search_min_word_length || strlen($value) > 64 || _in_array($value, $mysql_fulltext_stopwords)) {
                 unset($keywords_array[$key]);
+            }else {
+                $keywords_array[$key] = strtolower($value);
             }
         }
 
@@ -142,15 +144,15 @@ function search_execute($argarray, &$urlquery, &$error)
 
             if ($argarray['method'] == 1) { // AND
 
-                $search_sql.= "AND (SEARCH_KEYWORDS.WORD LIKE '%";
-                $search_sql.= implode("%' AND SEARCH_KEYWORDS.WORD LIKE '%", $keywords_array);
-                $search_sql.= "%') ";
+                $search_sql.= "AND (SEARCH_KEYWORDS.WORD = '";
+                $search_sql.= implode("' AND SEARCH_KEYWORDS.WORD = '", $keywords_array);
+                $search_sql.= "') ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
-                $search_sql.= "AND (SEARCH_KEYWORDS.WORD LIKE '%";
-                $search_sql.= implode("%' OR SEARCH_KEYWORDS.WORD LIKE '%", $keywords_array);
-                $search_sql.= "%') ";
+                $search_sql.= "AND (SEARCH_KEYWORDS.WORD = '";
+                $search_sql.= implode("' OR SEARCH_KEYWORDS.WORD = '", $keywords_array);
+                $search_sql.= "') ";
             }
 
         }elseif ($argarray['user_include'] < 4) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.89 2004-09-08 01:50:01 tribalonline Exp $ */
+/* $Id: pm_write.php,v 1.90 2004-09-08 21:56:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -181,6 +181,13 @@ if (isset($t_rmid) && $t_rmid > 0) {
             }
         }
 
+        $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+
+        if ($user_prefs['PM_INCLUDE_REPLY'] == 'Y') {
+
+            $t_content = "\n\nIn Reply To:\n============\n\n{$pm_data['CONTENT']}";
+        }
+
     }else {
 
         html_draw_top();
@@ -232,7 +239,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
     user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 
-	$fix_html = false;
+        $fix_html = false;
 }
 
 // User clicked the submit button - check the data that was submitted
@@ -639,7 +646,7 @@ $tools = new TextAreaHTML("f_post");
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+        echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
@@ -661,21 +668,21 @@ echo "          <td>\n";
 
 if ($allow_html == true) {
 
-	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-	$tph_radio = $post->getHTML();
+        $tph_radio = $post->getHTML();
 
-	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-	}
+        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+                echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        }
 
 } else {
 
-	echo form_input_hidden("t_post_html", "disabled");
+        echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";

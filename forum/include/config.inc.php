@@ -32,7 +32,6 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 
 // ---------------------------------------------------------------------
 
-
 // Forum-specific ------------------------------------------------------
 
 $forum_name    = "A Beehive Forum"; // the name of your forum
@@ -41,6 +40,32 @@ $default_style = "default"; // the default forum style directory name
 $default_language = "en"; // default language for the forum
 
 // ---------------------------------------------------------------------
+
+// Cookie options ------------------------------------------------------
+
+$cookie_domain = ""; // Specifies the domain name that the cookies set
+                     // by Beehive should use. This is useful for
+                     // situations where there is more than one
+                     // access point for your forum.
+                     //
+                     // For example, both of the following URLs are
+                     // valid access points for the *same* forum:
+                     //
+                     // http://forum.mybeehiveforum.net/
+                     // http://www.mybeehiveforum.net/forum/
+                     //
+                     // To prevent users from having to login in twice
+                     // at each access point, you could set the
+                     // $cookie_domain value to "mybeehiveforum.net"
+                     // and the cookies for both the logon page and
+                     // the main session cookies will work for both
+                     // URLs.
+                     //
+                     // WARNING: Do not change this if you do not
+                     //          understand what it does. Setting it to
+                     //          an invalid or incorrect value will
+                     //          make it impossible for you to use
+                     //          your forum.
 
 // Forum options -------------------------------------------------------
 
@@ -121,7 +146,7 @@ $guest_account_enabled = true;  // Enable the use of forum guest account
 // WARNING: If you are using mod_gzip or any other gzipping module
 //          to handle the compression of PHP scripts on your web
 //          server, do _NOT_ enable the built in GZIP compression
-//          in Beehive, otherwise your forum will be inaccessible.
+//          in Beehive, otherwise your forum may become inaccessible.
 
 // To disable GZIP compression change the variable below to false
 

@@ -39,6 +39,7 @@ require_once("./include/html.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/attachments.inc.php");
+require_once("./include/format.inc.php");
 
 $userinfo = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 $total_attachment_size = 0;
@@ -69,8 +70,6 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_VARS['userfile']);
     
   }
-  
-  delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['userfile']); 
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
 
@@ -156,7 +155,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
       
-      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". number_format($attachments[$i]['filesize'], 2, '.', ','). " bytes</td>\n";
+      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
@@ -188,7 +187,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody">&nbsp;</td>
-    <td align="right" valign="top" width="200" class="postbody"><?php echo number_format($total_attachment_size, 2, '.', ','); ?> bytes</td>
+    <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size($total_attachment_size); ?></td>
     <td width="100" class="postbody">&nbsp;</td>    
   </tr>
   <tr>
@@ -222,7 +221,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
       }
       
       echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
-      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". number_format($attachments[$i]['filesize'], 2, '.', ','). " bytes</td>\n";
+      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
@@ -255,19 +254,16 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
   
 ?>
   <tr>
-    <td width="500" colspan="3"><hr /></td>
-    <td width="100" class="postbody">&nbsp;</td>    
+    <td width="500" colspan="3"><hr width="500"/></td>
   </tr>
   <tr>
-    <td valign="top" width="200" class="postbody">Total Size:</td>
-    <td valign="top" width="100" class="postbody">&nbsp;</td>
-    <td align="right" valign="top" width="200" class="postbody"><?php echo number_format($total_attachment_size, 2, '.', ','); ?> bytes</td>
+    <td valign="top" width="300" class="postbody">Total Size:</td>
+    <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size($total_attachment_size); ?></td>
     <td width="100" class="postbody">&nbsp;</td>
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody">Free space:</td>
-    <td valign="top" width="100" class="postbody">&nbsp;</td>    
-    <td align="right" valign="top" width="200" class="postbody"><?php echo number_format(get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']), 2, '.', ','); ?> bytes</td>
+    <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid'])); ?></td>
     <td width="100" class="postbody">&nbsp;</td>
   </tr>  
 </table>

@@ -209,7 +209,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 		      echo "<p><b>Attachments:</b><br>\n";
 		     
                       for ($i = 0; $i < sizeof($attachments); $i++) {
-                        echo "<img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\"><a href=\"getattachment.php?uid=". $message['FROM_UID']. "&hash=$aid&filename=". rawurlencode($attachments[$i]['filename']). "\" target=\"_self\">". $attachments[$i]['filename']. "</a><br />\n";
+                        echo "<img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\"><a href=\"getattachment.php?uid=". $message['FROM_UID']. "&hash=$aid&filename=". rawurlencode($attachments[$i]['filename']). "\" target=\"_self\">". $attachments[$i]['filename']. "</a> (". format_file_size($attachments[$i]['filesize']). ")<br />\n";
                       }
                     
                       echo "</p>\n";

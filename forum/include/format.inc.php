@@ -36,6 +36,22 @@ function format_user_name($u_logon,$u_nickname)
     return $fmt;
 }
 
+function format_file_size($size) 
+{
+
+    $megabyte = 1024 * 1024;
+    
+    if ($size >= $megabyte) {
+        $resized = round($size / $megabyte, 1). "MB";
+    }else if ($size >= 1024) {
+        $resized = round($size / 1024, 1). "KB";
+    }else{
+        $resized = $size. " bytes";
+    }
+    
+    return $resized; 
+}
+
 function format_url2link($html)
 {
 	$html = " ".$html;

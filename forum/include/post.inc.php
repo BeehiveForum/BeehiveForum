@@ -20,10 +20,12 @@ along with Beehive; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
 USA
 ======================================================================*/
-require_once("./include/db.inc.php");
+
+require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
-function post_create($tid, $reply_pid, $fuid, $tuid, $content)
+
+function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 {
 
     $db_post_create = db_connect();
@@ -32,21 +34,24 @@ require_once("./include/forum.inc.php");
     $sql = "insert into " . forum_table("POST");
     $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED) ";
     $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW())";
-    $result = db_query($sql,$db_post_create);
-    if($result){
+
+    $result = db_query($sql,$db_post_create);
+
+    if($result){
         $new_pid = db_insert_id($db_post_create);
         $sql = "insert into  " . forum_table("POST_CONTENT");
         $sql .= " (TID,PID,CONTENT) ";
         $sql .= "values ($tid, $new_pid, '$content')";
         $result = db_query($sql, $db_post_create);
         
-        $sql = "update " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
+        $sql = "update low_priority " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
         $sql .= "where tid = $tid";
         $result = db_query($sql, $db_post_create);
     } else {
         $new_pid = -1;
     }
-    return $new_pid;
+
+    return $new_pid;
 }
 
 function post_save_attachment_id($tid, $pid, $aid)

@@ -76,7 +76,7 @@ function folder_create($title,$access)
 function folder_update($fid,$title,$access)
 {
     $db_folder_update = db_connect();
-    $sql = "update " . forum_table("FOLDER") . " ";
+    $sql = "update low_priority " . forum_table("FOLDER") . " ";
     $sql.= "set TITLE = \"$title\", ";
     $sql.= "ACCESS_LEVEL = $access ";
     $sql.= "where FID = $fid";

@@ -409,7 +409,7 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
         // Update if already existing
         $fa = db_fetch_array($result);
         if($pid > $fa['LAST_READ']){
-            $sql = "update " . forum_table("USER_THREAD") . " set LAST_READ = $pid, LAST_READ_AT = NOW() ";
+            $sql = "update low_priority " . forum_table("USER_THREAD") . " set LAST_READ = $pid, LAST_READ_AT = NOW() ";
             $sql .= "where UID = $uid and TID = $tid";
             //echo "<p>$sql</p>";
             db_query($sql, $db_message_update_read);
@@ -422,7 +422,7 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
     }
 
     // Mark posts as Viewed...
-    $sql = "update POST set VIEWED = NOW() where TID = $tid and PID between $spid and $pid and TO_UID = $uid and VIEWED is null";
+    $sql = "update low_priority POST set VIEWED = NOW() where TID = $tid and PID between $spid and $pid and TO_UID = $uid and VIEWED is null";
     db_query($sql, $db_message_update_read);
 
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.5 2004-04-29 14:03:10 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.6 2004-04-30 21:10:49 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -1033,6 +1033,8 @@ $lang['now'] = "Rizight Nizow";
 $lang['relevance'] = "Rizelevizance";
 $lang['newestfirst'] = "Nizewizest fizirst";
 $lang['oldestfirst'] = "Oldizest fizirst";
+$lang['keywords'] = "Keywords";
+$lang['orderby'] = "Order by";
 $lang['onlyshowmessagestoorfromme'] = "Only shizow mizessages to my ass or frizom my ass";
 $lang['groupsresultsbythread'] = "Grizoup ma rizesults by thizread";
 

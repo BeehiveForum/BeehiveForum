@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.81 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.82 2004-11-13 18:59:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -148,6 +148,7 @@ html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
 // user has chosen to modify their relationship
 
 if (isset($_GET['setrel']) && ($uid != bh_session_get_value('UID')) && bh_session_get_value('UID') > 0) {
+
     $user_profile['RELATIONSHIP'] = ($user_profile['RELATIONSHIP'] & (~(USER_FRIEND | USER_IGNORED)) | $_GET['setrel']);
     user_rel_update(bh_session_get_value('UID'), $uid, $user_profile['RELATIONSHIP']);
 }

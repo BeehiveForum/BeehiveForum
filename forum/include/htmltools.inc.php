@@ -24,6 +24,7 @@ USA
 // htmltools.inc.php : wysiwyg toolbar functions
 
 include_once("./include/form.inc.php");
+include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
 
 /* Example of usage:

@@ -20,9 +20,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.73 2004-04-14 15:26:31 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.74 2004-04-24 18:42:29 decoyduck Exp $ */
 
 include_once("./include/emoticons.inc.php");
+include_once("./include/html.inc.php");
 
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
@@ -211,7 +212,7 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 
 					$tag = strtolower($tag_bits[0]);
 
-					if (!in_array($tag, array_keys($opentags))) {  
+					if (!in_array($tag, array_keys($opentags))) {
 						$opentags[$tag] = 0;
 					}
 
@@ -272,7 +273,7 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 						$html_parts[$i] = $tag;
 					}
 
-					if (!in_array($tag, array_keys($opentags))) {  
+					if (!in_array($tag, array_keys($opentags))) {
 						$opentags[$tag] = 0;
 					}
 
@@ -587,7 +588,7 @@ function tidy_html ($html, $linebreaks = true) {
 		$html_left .= substr($html_right, 0, $pos);
 		$matches = array();
 
-		if (preg_match("/^<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is", 
+		if (preg_match("/^<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is",
 						substr($html_right, $pos), $matches)) {
 			$html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
 
@@ -629,7 +630,7 @@ function tidy_html ($html, $linebreaks = true) {
 //						"<quote source=\"$3\" url=\"$2\">$4</quote>", $html);
 
 
-	// make <code>..</code> tag, and html_entity_decode 
+	// make <code>..</code> tag, and html_entity_decode
 	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/ie", "regex_output('$1')", $html);
 
 

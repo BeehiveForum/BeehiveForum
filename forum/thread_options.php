@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.12 2004-04-23 22:11:53 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.13 2004-04-24 18:42:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,11 +31,11 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
+
 $forum_settings = get_forum_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/beehive.inc.php");
-include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/edit.inc.php");
 include_once("./include/folder.inc.php");

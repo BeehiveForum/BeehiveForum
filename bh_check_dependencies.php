@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.6 2004-04-23 22:26:32 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.7 2004-04-24 18:42:15 decoyduck Exp $ */
 
 $include_files_dir   = "forum/include";
-$include_files_array = array("lang.inc.php");
+$include_files_array = array("\$lang" => "lang.inc.php");
 
 $source_files_dir_array = array("forum", "forum/include");
 $source_files_array     = array();
@@ -37,7 +37,7 @@ if (is_dir($include_files_dir)) {
             $pathinfo = pathinfo("$include_files_dir/$file");
             if ($pathinfo['extension'] == 'php') {
                 $file_contents = file_get_contents("$include_files_dir/$file");
-                if (preg_match_all("/function[ ]?([a-z1-9-_]+)[ ]?\(/i", $file_contents, $function_matches)) {
+                if (preg_match_all("/function\s([a-z1-9-_]+)[\s]?\(/i", $file_contents, $function_matches)) {
                     for ($i = 0; $i < sizeof($function_matches[1]); $i++) {
                         $include_files_array[$function_matches[1][$i]] = $file;
                     }

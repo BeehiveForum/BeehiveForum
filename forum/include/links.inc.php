@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.38 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.39 2004-04-24 18:42:30 decoyduck Exp $ */
+
+include_once("./include/forum.inc.php");
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0) // setting $invisible to true gets links that are marked as not visible too
 {
@@ -33,7 +35,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 
     if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
-    
+
     if (!$table_data = get_table_prefix()) return array('links_count' => 0,
                                                         'links_array' => array());
 
@@ -73,9 +75,9 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
 function links_folders_get($invisible = false)
 {
     $db_links_folders_get = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $sql  = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
     if (!$invisible) $sql .= "WHERE VISIBLE = 'Y' ";
     $sql .= "ORDER BY FID";
@@ -99,7 +101,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     $db_links_add = db_connect();
 
     $visible = $visible ? "Y" : "N";
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS (URI, TITLE, DESCRIPTION, FID, UID, VISIBLE, CREATED) ";
@@ -115,7 +117,7 @@ function links_add_folder($fid, $name, $visible = false)
     $db_links_add_folder = db_connect();
 
     $visible = $visible ? "Y" : "N";
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) ";
@@ -139,7 +141,7 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     }
 
     $link_base = $link_base ? $link_base : "./links.php?webtag=$webtag";
-    
+
     if (strstr($link_base, "?")) {
         $html = $links ? "<a href=\"$link_base&fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
     }else {
@@ -179,7 +181,7 @@ function links_change_visibility($lid, $visible = true)
     $visible = $visible ? "Y" : "N";
 
     $db_links_change_visibility = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET VISIBLE = '$visible' WHERE LID = '$lid'";
@@ -191,7 +193,7 @@ function links_click($lid)
     if (!is_numeric($lid)) return false;
 
     $db_links_click = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
@@ -209,7 +211,7 @@ function links_get_single($lid)
     if (!is_numeric($lid)) return false;
 
     $db_links_get_single = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql  = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, ";
@@ -243,7 +245,7 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
     if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
 
     $db_links_get_in_folder = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return array('links_count' => 0,
                                                         'links_array' => array());
 
@@ -284,7 +286,7 @@ function links_folder_change_visibility($fid, $visible = true)
     if (!is_numeric($fid)) return false;
 
     $visible = $visible ? "Y" : "N";
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS_FOLDERS SET VISIBLE = '$visible' WHERE FID = $fid";
@@ -298,7 +300,7 @@ function links_folder_delete($fid)
     $folders = links_folders_get(perm_is_moderator());
 
     $db_links_folder_delete = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT MIN(FID) AS FID FROM {$table_data['PREFIX']}LINKS";
@@ -322,7 +324,7 @@ function links_get_vote($lid, $uid)
 
     if (!is_numeric($lid)) return false;
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT RATING FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = $lid AND UID = $uid";
@@ -343,7 +345,7 @@ function links_vote($lid, $vote, $uid)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($vote)) return false;
     if (!is_numeric($uid))  return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS_VOTE ";
@@ -371,7 +373,7 @@ function links_add_comment($lid, $uid, $comment)
 
     if (!is_numeric($lid))  return false;
     if (!is_numeric($uid))  return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_COMMENT (LID, UID, COMMENT, CREATED) ";
@@ -385,7 +387,7 @@ function links_get_comments($lid)
     $db_links_get_comments = db_connect();
 
     if (!is_numeric($lid))  return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
@@ -423,9 +425,9 @@ function links_folder_dropdown($default_fid, $folders)
 function links_delete_comment($cid)
 {
     $db_links_delete_comment = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = $cid";
     $result_id = db_query($sql, $db_links_delete_comment);
     return $result_id;
@@ -436,7 +438,7 @@ function links_delete($lid)
     $db_links_delete = db_connect();
 
     if (!is_numeric($lid))  return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
@@ -455,7 +457,7 @@ function links_update($lid, $fid, $title, $uri, $description)
 
     if (!is_numeric($lid))  return false;
     if (!is_numeric($fid))  return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET LID = '$lid', FID = '$fid', ";
@@ -469,7 +471,7 @@ function links_get_creator_uid($lid)
     $db_links_get_creator_uid = db_connect();
 
     if (!is_numeric($lid))  return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
@@ -483,7 +485,7 @@ function links_get_comment_uid($cid)
     $db_links_get_comment_uid = db_connect();
 
     if (!is_numeric($cid))  return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = '$cid'";

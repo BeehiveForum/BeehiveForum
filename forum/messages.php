@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.137 2004-04-23 22:11:14 decoyduck Exp $ */
+/* $Id: messages.php,v 1.138 2004-04-24 18:42:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -36,7 +36,6 @@ include_once("./include/forum.inc.php");
 $forum_settings = get_forum_settings();
 
 include_once("./include/beehive.inc.php");
-include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/folder.inc.php");
 include_once("./include/form.inc.php");

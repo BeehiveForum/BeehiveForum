@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.54 2004-04-23 22:12:31 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.55 2004-04-24 18:42:46 decoyduck Exp $ */
+
+include_once("./include/forum.inc.php");
+include_once("./include/lang.inc.php");
 
 function search_execute($argarray, &$urlquery, &$error)
 {

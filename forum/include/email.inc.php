@@ -21,7 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.61 2004-04-23 12:51:43 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.62 2004-04-24 18:42:29 decoyduck Exp $ */
+
+include_once("./include/forum.inc.php");
+include_once("./include/lang.inc.php");
 
 function email_sendnotification($tuid, $msg, $fuid)
 {

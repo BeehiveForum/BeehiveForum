@@ -21,14 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.27 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.28 2004-04-24 18:42:46 decoyduck Exp $ */
+
+include_once("./include/forum.inc.php");
 
 function profile_section_get_name($psid)
 {
    $db_profile_section_get_name = db_connect();
 
    if (!is_numeric($psid)) return "The Unknown Section";
-   
+
    if (!$table_data = get_table_prefix()) return "The Unknown Section";
 
    $sql = "SELECT PS.NAME FROM {$table_data['PREFIX']}PROFILE_SECTION PS WHERE PS.PSID = $psid";
@@ -51,7 +53,7 @@ function profile_section_create($name, $position)
     if (!is_numeric($position)) $position = 0;
 
     $name = addslashes($name);
-    
+
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_SECTION (NAME, POSITION) ";
@@ -76,7 +78,7 @@ function profile_section_update($psid, $position, $name)
     if (!is_numeric($position)) $position = 0;
 
     $name = addslashes($name);
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION ";
@@ -91,7 +93,7 @@ function profile_section_update($psid, $position, $name)
 function profile_sections_get()
 {
     $db_profile_section_get = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
@@ -116,7 +118,7 @@ function profile_items_get($psid)
     $db_profile_items_get = db_connect();
 
     if (!is_numeric($psid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, PROFILE_ITEM.TYPE ";
@@ -146,7 +148,7 @@ function profile_item_create($psid, $name, $position, $type)
     if (!is_numeric($type)) $type = 0;
 
     $name = addslashes($name);
-    
+
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "insert into {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
@@ -174,7 +176,7 @@ function profile_item_update($piid, $psid, $position, $type, $name)
     if (!is_numeric($type)) $type = 0;
 
     $name = addslashes($name);
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM ";
@@ -191,7 +193,7 @@ function profile_section_delete($psid)
     $db_profile_section_delete = db_connect();
 
     if (!is_numeric($psid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
@@ -203,7 +205,7 @@ function profile_item_delete($piid)
     $db_profile_item_delete = db_connect();
 
     if (!is_numeric($piid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
@@ -214,7 +216,7 @@ function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="
 {
     $html = "<select name=\"${field_name}${suffix}\">";
     $db_profile_section_dropdown = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT PSID, NAME FROM {$table_data['PREFIX']}PROFILE_SECTION";
@@ -240,7 +242,7 @@ function profile_get_user_values($uid)
     $db_profile_get_user_values = db_connect();
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";

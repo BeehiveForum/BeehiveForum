@@ -264,7 +264,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
             echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
         }else {
-            if (!$is_preview) {
+            if ($is_preview == false) {
                 echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
             }
         }

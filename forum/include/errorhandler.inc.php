@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.48 2004-07-17 10:43:12 hodcroftcj Exp $ */
+/* $Id: errorhandler.inc.php,v 1.49 2004-07-26 17:48:53 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -29,13 +29,30 @@ define("FATAL", E_USER_ERROR);
 define("ERROR", E_USER_WARNING);
 define("WARNING", E_USER_NOTICE);
 
+// Define PHP 5.0's new E_STRICT constant here if it's not defined.
+// This will be meaningless to PHP versions below 5.0 but it saves
+// us doing some dodgy if checking against the version number later.
+
+if (!defined("E_STRICT")) {
+    define("E_STRICT", 2048);
+}
+
+// Set the error reporting level to report all error messages.
+// If this is changed to include E_STRICT Beehive will probably
+// not work.
+
 error_reporting(E_ALL);
 
 // Beehive Error Handler Function
 
 function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
-    if (error_reporting()) {
+    // We're going to ignore any E_STRICT error messages.
+    // With error_reporting set to E_ALL this if should
+    // return 0 if the error is to do with PHP/5.0's
+    // code compatibility E_STRICT gubbins.
+
+    if ((error_reporting() & E_STRICT) > 0) {
 
         srand((double)microtime()*1000000);
 
@@ -184,15 +201,15 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "        <tr>\n";
             echo "          <td class=\"postbody\">\n";
 
-	    if ($errstr == BH_DB_CONNECT_ERROR) {
+            if ($errstr == BH_DB_CONNECT_ERROR) {
 
                 echo "            <p><b>FATAL</b> [$errno]</p>\n";
                 echo "            <p>An error has occured while connecting to the database.</p>\n";
                 echo "            <p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p>\n";
-		echo "            <pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre>\n";
+                echo "            <pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre>\n";
                 echo "            <p>They should be set to the database details given to you by your hosting provider.</p>\n";
 
-	    }else {
+            }else {
 
                 switch ($errno) {
 
@@ -213,9 +230,9 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                         echo "            <p>Unknown error in line $errline of file $errfile</p>\n";
                         break;
                 }
-	    }
+            }
 
-	    echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), " MySQL/", db_fetch_mysql_version(), "</p>\n";
+            echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), " MySQL/", db_fetch_mysql_version(), "</p>\n";
             echo "          </td>\n";
             echo "        </tr>\n";
             echo "      </table>\n";

@@ -29,8 +29,14 @@ function launchAttachWin (aid, from_uid) {
 }
 
 function clearFocus() {
-	document.f_edit.t_content.caretPos = "";
-	document.f_edit.t_sig.caretPos = "";
+	if (document.f_edit) {
+		if (document.f_edit.t_content) {
+			document.f_edit.t_content.caretPos = "";
+		}
+		if (document.f_edit.t_sig) {
+			document.f_edit.t_sig.caretPos = "";
+		}
+	}
 }
 
 function checkToRadio(num) {

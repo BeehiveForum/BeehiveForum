@@ -29,15 +29,31 @@ function load_language_file($filename)
     return $lang;
 }
 
-$en_lang = load_language_file("en.inc.php");
-$ga_lang = load_language_file("x-hacker.inc.php");
+// Master Language File.
 
-foreach ($en_lang as $key => $value) {
+$master_lang = load_language_file("en.inc.php");
 
-    if (!isset($ga_lang[$key])) {
+// Slave Language Files.
 
-        echo "\$lang['$key'] = \"$value\";\n";
+$slave_langs = array("fr.inc.php" => load_language_file("fr.inc.php"),
+                     "gangsta.inc.php" => load_language_file("gangsta.inc.php"));
+
+foreach ($slave_langs as $lang => $strings) {
+    
+    echo $lang, "\n", str_repeat("=", strlen($lang)), "\n\n";
+    $errors = false;
+    
+    foreach ($master_lang as $key => $value) {
+
+        if (!isset($strings[$key])) {
+
+            echo "\$lang['$key'] = \"$value\";\n";
+            $errors = true;
+        }
     }
+    
+    if (!$errors) echo "No errors found.\n";    
+    echo "\n\n";
 }
 
 ?>

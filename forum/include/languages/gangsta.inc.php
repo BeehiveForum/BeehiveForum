@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.31 2004-03-05 21:37:55 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.32 2004-03-06 14:01:01 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -510,6 +510,7 @@ $lang['usernameandpasswdrequired'] = "Yo needs to enter a username and password,
 $lang['welcometolight'] = "Welcome to wack ass Beehive!";
 $lang['pleasereenterpasswd'] = "Enter yo password again, G";
 $lang['rememberpasswds'] = "Remember yo password?";
+$lang['rememberpassword'] = "Remember yo password";
 $lang['enterasa'] = "Bone out as a";
 $lang['donthaveanaccount'] = "Ain't got no account, G?";
 $lang['problemsloggingon'] = "Yo got problems?";
@@ -659,6 +660,8 @@ $lang['confirmpasswd'] = "Confizirm Pizasswizord";
 $lang['passwdsdonotmatch'] = "Yo pizasswizords do not match!";
 $lang['nicknamerequired'] = "Need yo tag, G!";
 $lang['emailaddressrequired'] = "Emizail addrizess is reqizuired!";
+$lang['relationshipsupdated'] = "Relationships Updated";
+$lang['relationshipupdatefailed'] = "Relationship updated failed!";
 $lang['jan'] = "Jizanuizary";
 $lang['feb'] = "Fizebruary";
 $lang['mar'] = "Mizarizch";
@@ -791,7 +794,8 @@ $lang['usernametooshort'] = "Yo tag gotta be 2 characters long, G";
 $lang['usernametoolong'] = "Yo tag can't be no bigger tha 15 chizarizacters lizong, homie";
 $lang['usernamerequired'] = "Yo tag is nizeeded";
 $lang['passwdmustnotcontainHTML'] = "Yo pizassword can't have no fly-ass code";
-$lang['usernameinvalidchars'] = "Yo izassword ain't gonna have no fly-ass characters";
+$lang['passwordinvalidchars'] = "Yo pizassword can't have no fly-ass characters";
+$lang['usernameinvalidchars'] = "Yo tag ain't gonna have no fly-ass characters";
 $lang['passwdtooshort'] = "Yo pizasswizord gotta be 6 chizarizactizers long, yo";
 $lang['passwdrequired'] = "A pizasswizord is needed, punk";
 $lang['confirmationpasswdrequired'] = "Yo gotta confizirm yo pizasswizord";

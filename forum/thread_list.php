@@ -175,7 +175,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
     $threadvisible = false;
 
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
-    list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'], $thread['modified'], $thread['closed'])  = thread_get($tid);
+    list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'], $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
     
     $thread['title'] = stripslashes($thread['title']);
     
@@ -262,7 +262,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 				} else {
 					$number = "[".$thread['length']."]";
 					$latest_post = 1;
-
+	
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
 						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
@@ -270,6 +270,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 						echo "<img src=\"./images/bullet.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					}
 				}
+				
 				// work out how long ago the thread was posted and format the time to display
 				$thread_time = format_time($thread['modified']);
 				$thread_author = thread_get_author($thread['tid']);

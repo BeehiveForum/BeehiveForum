@@ -94,10 +94,11 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($H
 
 }
 
-if(isset($HTTP_GET_VARS['ret'])){
-    header_redirect($HTTP_GET_VARS['ret']);
-}else{
-    header_redirect("./user_profile.php?uid=$uid");
+if (isset($HTTP_GET_VARS['msg'])) {
+    $msg = $HTTP_GET_VARS['msg'];
+    header_redirect("./messages.php?msg=$msg");
+}else {
+    header_redirect("./messages.php");
 }
 
 ?>

@@ -566,4 +566,5 @@ function light_form_input_password($name, $value = "", $width = 0, $maxchars = 0
 {
     return light_form_field($name,$value,$width,$maxchars,"password");
 }
+
 ?>

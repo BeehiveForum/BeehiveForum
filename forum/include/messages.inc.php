@@ -265,9 +265,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
+        echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
     } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
-        echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+        echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
     }
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
@@ -293,16 +293,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
+            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
         } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
-            echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
         }
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
-            echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo>&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span>";
+            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span>";
         }else {
             if ($is_preview == false) {
-                echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo>&nbsp;<span class=\"smalltext\">{$lang['unread']}</span>";
+                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;<span class=\"smalltext\">{$lang['unread']}</span>";
             }
         }
 
@@ -314,7 +314,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
-        echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a><bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo>&nbsp;";
+        echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
     }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
@@ -426,19 +426,19 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             }
             if(bh_session_get_value('UID') == $message['FROM_UID'] || perm_is_moderator()){
-                echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
+                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&amp;back=$tid.$first_msg\" target=\"_parent\">{$lang['delete']}</a>";
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
                     if ($is_poll && $message['PID'] == 1) {
                         if (!poll_is_closed($tid) || perm_is_moderator()) {
 
-                            echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
+                            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
                             echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
                         }
                     }else {
 
-                      echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
+                      echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
                       echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
 
                     }
@@ -446,12 +446,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
             if(bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" />";
+                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" />";
                 echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['relationship']}</a>";
             }
 
             if(perm_is_soldier()){
-                echo "<bdo dir=\"", $lang['_textdir'], "\"><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></bdo><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" />";
+                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" />";
                 echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\">{$lang['privileges']}</a>";
             }
 

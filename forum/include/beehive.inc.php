@@ -25,7 +25,7 @@ require_once("./include/lang.inc.php");
 
 function draw_beehive_bar()
 {
-	global $lang;
+        global $lang;
 ?>
 <div align="center"><table width="96%" class="posthead"><tr>
 <td width="60%" class="smalltext" align="left">

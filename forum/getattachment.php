@@ -46,7 +46,7 @@ if (!$attachments_enabled) {
     exit;
 }
 
-preg_match("/\/getattachment.php\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+preg_match("/[\/getattachment.php]?\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
 
 if (isset($attachment_data[1])) {
 

@@ -35,3 +35,5 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
   return $result;
 
 }
+
+?>

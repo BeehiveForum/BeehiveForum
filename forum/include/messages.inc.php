@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.248 2004-03-17 17:20:35 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.249 2004-03-17 23:41:47 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -410,7 +410,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                            
                         }else {
                             
-                            if ($attachment_use_old_method) {
+                            if (strtoupper($forum_settings['attachment_use_old_method']) == "Y") {
                                 echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $visible_attachments[$i]['hash'], "\"";
                             }else {
                                 echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.40 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.41 2004-03-17 23:41:47 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/lang.inc.php");
@@ -59,7 +59,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$value}\">\n";
+                echo "<input type=\"hidden\" name=\"$key}\" value=\"", _htmlentities($value), "\">\n";
             }
 
             echo "<input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"{$lang['retry']}\" />\n";
@@ -132,7 +132,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td>\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$value}\">\n";
+                echo "<input type=\"hidden\" name=\"{$key}\" value=\"", _htmlentities($value), "\">\n";
             }
 
             echo "          </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.66 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.67 2004-03-17 23:41:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,14 +96,10 @@ if (substr($forum_settings['attachment_dir'], -1) == '/') $forum_settings['attac
 
 // Make sure the attachments directory exists
 
-if (!is_dir($forum_settings['attachment_dir'])) {
+if (!(@is_dir($forum_settings['attachment_dir']))) {
     mkdir($forum_settings['attachment_dir'], 0755);
     chmod($forum_settings['attachment_dir'], 0777);
 }
-
-// Default File Input Box count
-
-$filecount = 1;
 
 // User's UID
 
@@ -124,7 +120,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
     
         for ($i = 0; $i < sizeof($HTTP_POST_FILES['userfile']); $i++) {
         
-            if (isset($HTTP_POST_FILES['userfile']['tmp_name'][$i]) && strlen(trim($HTTP_POST_FILES['userfile']['tmp_name'][$i])) > 0) {
+            if (isset($HTTP_POST_FILES['userfile']['name'][$i]) && strlen(trim($HTTP_POST_FILES['userfile']['name'][$i])) > 0) {
             
                 $filesize = $HTTP_POST_FILES['userfile']['size'][$i];
                 $tempfile = $HTTP_POST_FILES['userfile']['tmp_name'][$i];
@@ -160,6 +156,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
                         }
                         
                         $upload_failure[] = $filename;
+                        echo "\"$filename\"<br />";
                     }
                 }
             }
@@ -173,13 +170,6 @@ if (isset($HTTP_POST_VARS['upload'])) {
         delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['hash']);
     }
 
-}elseif (isset($HTTP_POST_VARS['change'])) {
-
-    if (isset($HTTP_POST_VARS['filecount']) && is_numeric($HTTP_POST_VARS['filecount'])) {
-    
-        $filecount = $HTTP_POST_VARS['filecount'];
-    }
-
 }elseif (isset($HTTP_POST_VARS['complete'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
@@ -188,6 +178,12 @@ if (isset($HTTP_POST_VARS['upload'])) {
 
     html_draw_bottom();
     exit;
+}
+
+if (isset($HTTP_POST_VARS['filecount']) && is_numeric($HTTP_POST_VARS['filecount'])) {
+    $filecount = $HTTP_POST_VARS['filecount'];
+}else {
+    $filecount = 1;
 }
 
 if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
@@ -248,7 +244,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
             echo "  <tr>\n";
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
 
-            if ($attachment_use_old_method) {
+            if (strtoupper($forum_settings['attachment_use_old_method']) == "Y") {
                 echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
                 echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
@@ -282,8 +278,9 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
             echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
             echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
             echo "      <form method=\"post\" action=\"attachments.php?webtag={$webtag['WEBTAG']}&aid=". $HTTP_GET_VARS['aid']. "\">\n";
-            echo "        ". form_input_hidden('hash', $attachments[$i]['hash']);
-            echo "        ". form_submit('del', $lang['del']). "\n";
+            echo "        ", form_input_hidden('filecount', $filecount), "\n";
+            echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
+            echo "        ", form_submit('del', $lang['del']), "\n";
             echo "      </form>\n";
             echo "    </td>\n";
             echo "  </tr>\n";

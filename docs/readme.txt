@@ -281,7 +281,7 @@ Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Ben Sekulowicz
 
 4.2 Design/CSS
 ==============
-Mike Franklin / Simon Roberts
+Mike Franklin / Simon Roberts / Kevin Yip
 
 
 4.3 Graphics
@@ -289,13 +289,18 @@ Mike Franklin / Simon Roberts
 Nigel Moore / Kevin Yip / Andrew Holgate
 
 
-4.4 Director
+4.4 Contributions
+=================
+Mike Quigley / Frnht451 / Peter Kelly / Lots of other people
+
+
+4.5 Director
 ============
 Mark Rendle
 and Matt/Andy while I was moving house...
 
 
-4.5 Thanks to
+4.6 Thanks to
 =============
 - The NPCFFers for testing, moral support, saying nice things and just generally
   being teh cool.

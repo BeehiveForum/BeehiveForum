@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.124 2004-09-13 15:59:21 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.125 2004-09-13 19:37:18 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -440,12 +440,50 @@ function bh_setcookie($name, $value, $expires = 0)
     return setcookie($name, $value, $expires);
 }
 
+// Remove named $keys from the query of a URI
+// $keys can be an array or a single key to remove
+
+function href_remove_query_keys($uri, $remove_keys)
+{
+    $uri_array = parse_url($uri);
+
+    if (isset($uri_array['query'])) {
+
+        parse_str($uri_array['query'], $uri_query_array);
+
+        $new_uri_query = "";
+
+        foreach($uri_query_array as $key => $value) {
+
+            if ((is_array($remove_keys) && !in_array($key, $keys)) || ($key != $remove_keys)) {
+
+                $new_uri_query.= "{$key}={$value}";
+            }
+        }
+
+        $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
+        $uri.= (isset($uri_array['user']))     ? "{$uri_array['user']}:"     : '';
+        $uri.= (isset($uri_array['pass']))     ? "{$uri_array['pass']}@"     : '';
+        $uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
+        $uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
+        $uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
+        $uri.= (isset($uri_array['query']))    ? "?{$new_uri_query}"         : '';
+        $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
+    }
+
+    return $uri;
+}
+
+// Draws Page links (i.e.: Pages: [1] 2 3 4 ... >>)
+
 function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "page")
 {
     $lang = load_language_file();
 
     $page_count   = ceil($total_rows / $rows_per_page);
     $current_page = floor($offset / $rows_per_page) + 1;
+
+    $uri = href_remove_query_keys($uri, 'page');
 
     echo "<span class=\"pagenum_text\">{$lang['pages']}: ";
 

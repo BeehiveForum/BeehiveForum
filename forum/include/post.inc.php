@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.115 2005-03-24 18:54:39 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.116 2005-03-27 01:47:41 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -452,208 +452,208 @@ function check_post_frequency()
 
 class MessageText {
 
-        // Note: PHP/5.0 introduces new public, private and protected
-        // modifiers whilst removing the var modifier. However it only
-        // causes problems if PHP/5.0's new STRICT error reporting
-        // is also enabled, hence we're (for the mean while) going to
-        // stick with PHP/4.x's old var modifiers, because for now
-        // it is going to be more compatible with our 'audience'
+    // Note: PHP/5.0 introduces new public, private and protected
+    // modifiers whilst removing the var modifier. However it only
+    // causes problems if PHP/5.0's new STRICT error reporting
+    // is also enabled, hence we're (for the mean while) going to
+    // stick with PHP/4.x's old var modifiers, because for now
+    // it is going to be more compatible with our 'audience'
+    
+    var $html = "";
+    var $text = "";
+    var $original_text = "";
+    var $diff = false;
+    var $emoticons = true;
+    var $links = true;
 
-        var $html = "";
-        var $text = "";
-        var $original_text = "";
-        var $diff = false;
-        var $emoticons = true;
-                var $links = true;
+    function MessageText ($html = 0, $content = "", $emoticons = true, $links = true) {
+        $this->diff = false;
+        $this->original_text = "";
+        $this->links = $links;
+        $this->setEmoticons($emoticons);
+        $this->setHTML($html);
+        $this->setContent($content);
+    }
 
-        function MessageText ($html = 0, $content = "", $emoticons = true, $links = true) {
-                $this->diff = false;
-                $this->original_text = "";
-                $this->emoticons = $emoticons;
-                                $this->links = $links;
-                $this->setHTML($html);
-                $this->setContent($content);
+    function setHTML ($html) {
+        if ($html == false || $html == "N") {
+            $this->html = 0;
+        } else if ($html == 1 || $html == "A") {
+            $this->html = 1;
+        } else {
+            $this->html = 2;
         }
 
-        function setHTML ($html) {
-                if ($html == false || $html == "N") {
-                        $this->html = 0;
-                } else if ($html == 1 || $html == "A") {
-                        $this->html = 1;
-                } else {
-                        $this->html = 2;
-                }
+        $this->setContent($this->getOriginalContent());
+    }
 
-                $this->setContent($this->getOriginalContent());
+    function getHTML () {
+        return $this->html;
+    }
+
+    function setEmoticons ($bool) {
+        $this->emoticons = false; //($bool == true) ? true : false;
+        $this->setContent($this->getOriginalContent());
+    }
+
+    function getEmoticons () {
+        return $this->emoticons;
+    }
+
+    function getLinks () {
+        return $this->links;
+    }
+
+    function setLinks ($bool) {
+        $this->links = ($bool == true) ? true : false;
+        $this->setContent($this->getOriginalContent());
+    }
+
+    function setContent ($text) {
+
+        $this->original_text = $text;
+
+        if ($this->html == 0) {
+            $text = make_html($text, false, $this->emoticons, $this->links);
+        } else if ($this->html > 0) {
+            $text = fix_html($text, $this->emoticons, $this->links);
+
+            if (trim($this->original_text) != trim(tidy_html($text, ($this->html == 1) ? true : false))) {
+                $this->diff = true;
+            }
+
+            if ($this->html == 1) {
+                $text = add_paragraphs($text);
+            }
         }
 
-        function getHTML () {
-                return $this->html;
+        $this->text = $text;
+    }
+
+    function getContent () {
+        return $this->text;
+    }
+
+    function getTidyContent () {
+        if ($this->html == 0) {
+            return strip_tags(clean_emoticons($this->text));
+        } else if ($this->html > 0) {
+            return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false, $this->links));
         }
+    }
 
-                function setEmoticons ($bool) {
-                                $this->emoticons = ($bool == true) ? true : false;
-                $this->setContent($this->getOriginalContent());
-                }
+    function getOriginalContent () {
+        return $this->original_text;
+    }
 
-                function getEmoticons () {
-                                return $this->emoticons;
-                }
-
-                function getLinks () {
-                                return $this->links;
-                }
-
-                function setLinks ($bool) {
-                                $this->links = ($bool == true) ? true : false;
-                $this->setContent($this->getOriginalContent());
-                }
-
-        function setContent ($text) {
-
-                $this->original_text = $text;
-
-                if ($this->html == 0) {
-                        $text = make_html($text, false, $this->emoticons, $this->links);
-                } else if ($this->html > 0) {
-                        $text = fix_html($text, $this->emoticons, $this->links);
-
-                        if (trim($this->original_text) != trim(tidy_html($text, ($this->html == 1) ? true : false))) {
-                                $this->diff = true;
-                        }
-
-                        if ($this->html == 1) {
-                                $text = add_paragraphs($text);
-                        }
-                }
-
-                $this->text = $text;
-        }
-
-        function getContent () {
-                return $this->text;
-        }
-
-        function getTidyContent () {
-                if ($this->html == 0) {
-                        return strip_tags(clean_emoticons($this->text));
-                } else if ($this->html > 0) {
-                        return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false, $this->links));
-                }
-        }
-
-        function getOriginalContent () {
-                return $this->original_text;
-        }
-
-        function isDiff () {
-                return $this->diff;
-        }
+    function isDiff () {
+        return $this->diff;
+    }
 }
 
 class MessageTextParse {
 
-                var $html = "";
-                var $emoticons = "";
-                var $links = "";
-                var $message = "";
-                var $sig = "";
-                var $original = "";
+    var $html = "";
+    var $emoticons = "";
+    var $links = "";
+    var $message = "";
+    var $sig = "";
+    var $original = "";
 
-                function MessageTextParse ($message, $emots_default = true, $links_enabled = true) {
+    function MessageTextParse ($message, $emots_default = true, $links_enabled = true) {
 
-                                $this->original = $message;
+        $this->original = $message;
 
-                                $message_temp = preg_split("/<div class=\"sig\">/", $message);
+        $message_temp = preg_split("/<div class=\"sig\">/", $message);
 
-                                if (count($message_temp) > 1) {
+        if (count($message_temp) > 1) {
 
-                                                $sig_temp = array_pop($message_temp);
-                                                $sig_temp = preg_split("/<\/div>/", $sig_temp);
+            $sig_temp = array_pop($message_temp);
+            $sig_temp = preg_split("/<\/div>/", $sig_temp);
 
-                                                $sig = "";
+            $sig = "";
 
-                                                for ($i = 0; $i < count($sig_temp) - 1; $i++) {
-                                                                $sig .= $sig_temp[$i];
-                                                                if ($i < count($sig_temp) - 2) {
-                                                                                $sig .= "</div>";
-                                                                }
-                                                }
-
-                                } else {
-                                                $sig = "";
-                                }
-
-                                $message = "";
-
-                                for ($i = 0; $i < count($message_temp); $i++) {
-                                                $message .= $message_temp[$i];
-                                                if ($i < count($message_temp) - 1) {
-                                                                $message .= "<div class=\"sig\">";
-                                                }
-                                }
-
-                                $sig = clean_emoticons($sig);
-                                $message_temp = clean_emoticons($message);
-
-                                $emoticons = $emots_default;
-
-                                if ($message_temp == $message && emoticons_convert(strip_tags($message, '<span>')) != strip_tags($message, '<span>')) {
-                                                $emoticons = false;
-                                } else if ($message_temp != $message) {
-                                                $emoticons = true;
-                                }
-
-                                $message = trim($message_temp);
-
-                                $html = 0;
-                                $message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
-                                if ($message_temp != $message) {
-                                                $links = true;
-                                } else {
-                                                $links = $links_enabled;
-                                }
-                                $message = $message_temp;
-
-                                if (strip_tags($message, '<p><br>') != $message_temp) {
-                                                $html = 2;
-                                                if (add_paragraphs($message) == $message) {
-                                                                $html = 1;
-                                                }
-                                } else {
-                                                $message = _htmlentities_decode(strip_tags($message));
-                                }
-
-                                $this->message = $message;
-                                $this->sig = $sig;
-                                $this->html = $html;
-                                $this->emoticons = $emoticons;
-                                $this->links = $links;
+            for ($i = 0; $i < count($sig_temp) - 1; $i++) {
+                $sig .= $sig_temp[$i];
+                if ($i < count($sig_temp) - 2) {
+                    $sig .= "</div>";
                 }
+            }
 
-                function getMessage () {
-                                return $this->message;
-                }
+        } else {
+            $sig = "";
+        }
 
-                function getSig () {
-                                return $this->sig;
-                }
+        $message = "";
 
-                function getMessageHTML () {
-                                return $this->html;
-                }
+        for ($i = 0; $i < count($message_temp); $i++) {
+            $message .= $message_temp[$i];
+            if ($i < count($message_temp) - 1) {
+                $message .= "<div class=\"sig\">";
+            }
+        }
 
-                function getEmoticons () {
-                                return $this->emoticons;
-                }
+        $sig = clean_emoticons($sig);
+        $message_temp = clean_emoticons($message);
 
-                function getLinks () {
-                                return $this->links;
-                }
+        $emoticons = $emots_default;
 
-                function getOriginal () {
-                                return $this->original;
-                }
+        if ($message_temp == $message && emoticons_convert(strip_tags($message, '<span>')) != strip_tags($message, '<span>')) {
+            $emoticons = false;
+        } else if ($message_temp != $message) {
+            $emoticons = true;
+        }
+
+        $message = trim($message_temp);
+
+        $html = 0;
+        $message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
+        if ($message_temp != $message) {
+            $links = true;
+        } else {
+            $links = $links_enabled;
+        }
+        $message = $message_temp;
+
+        if (strip_tags($message, '<p><br>') != $message_temp) {
+            $html = 2;
+            if (add_paragraphs($message) == $message) {
+                $html = 1;
+            }
+        } else {
+            $message = _htmlentities_decode(strip_tags($message));
+        }
+
+        $this->message = $message;
+        $this->sig = $sig;
+        $this->html = $html;
+        $this->emoticons = $emoticons;
+        $this->links = $links;
+    }
+
+    function getMessage () {
+        return $this->message;
+    }
+
+    function getSig () {
+        return $this->sig;
+    }
+
+    function getMessageHTML () {
+        return $this->html;
+    }
+
+    function getEmoticons () {
+        return $this->emoticons;
+    }
+
+    function getLinks () {
+        return $this->links;
+    }
+
+    function getOriginal () {
+        return $this->original;
+    }
 }
 
 ?>

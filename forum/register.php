@@ -166,7 +166,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           echo "<div align=\"center\">\n";
           echo "<p>Huzzah! Your user record has been created successfully!</p>\n";
-          echo form_quick_button($final_uri, "Continue");
+          echo form_quick_button($final_uri, "Continue", 0, 0, "_top");
           echo "</div>\n";
 
           html_draw_bottom();

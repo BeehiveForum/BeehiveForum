@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.46 2003-10-28 15:53:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.47 2003-10-31 19:48:35 decoyduck Exp $ */
 
 // International English language file
 
@@ -113,7 +113,8 @@ $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
 $lang['error'] = "Error";
 $lang['reset'] = "Reset";
-$lang['guesterror'] = "Sorry, you need to be logged in to use this feature. <a href=\"logout.php?final_uri=". get_request_uri(). "\" target=\"_top\">Login Now</a>.";
+$lang['guesterror_1'] = "Sorry, you need to be logged in to use this feature.";
+$lang['guesterror_2'] = "Login now";
 $lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";

@@ -30,6 +30,9 @@ A list of changes since previous Beehive versions can be found in release.txt.
 3.    Support
   3.1    Requests / Bug reporting
   3.2    General questions and help
+  3.3    BeehiveForums in foreign langauges
+    3.3.1    Translating BeehiveForums into my native language
+    3.3.2    Current Available Languages   
 
 4.    Credits
 
@@ -294,26 +297,61 @@ informal - it's best to use it to let us know that you've posted a bug in the SF
 system.
 
 
+3.3 BeehiveForums in foreign langauges
+======================================
+
+As of 0.4 BeehiveForums supports multiple languages, but because we're all very
+busy doing other things the number of languages that ship with Beehive are few
+and far between.
+
+
+3.3.1 Translating BeehiveForums into my native language
+=======================================================
+
+Unfortunatly the BeehiveForum coding team consists primarily of born and bread
+English men who have enough trouble speaking our own tongue as it is. Because
+of this, we're on the look out for people to start translating Beehive for us.
+If you feel you have the neccesary skills to do this (no babelfish / direct
+from dictionary translations please) feel free to drop us a note. With any
+luck your language file may end up being distributed with future versions of
+BeehiveForums and you may even get to see your name in print, or at the very
+least bundled here amongst the other credits.
+
+
+3.3.2 Current Available Languages
+=================================
+
+Current available languages are as follows:
+
+English (UK)  - Beehive Forum Coding Team
+X-Hacker      - Beehive Forum Coding Team
+French        - Kriv @ tehforum.net.
+
+
 4 Credits
 =========
 
 4.1 Coding
 ==========
+
 Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Mike Franklin / Ben Sekulowicz
 
 
 4.2 Design/CSS
 ==============
+
 Mike Franklin / Simon Roberts / Kevin Yip
 
 
 4.3 Graphics
 ============
+
 Nigel Moore / Kevin Yip / Andrew Holgate
 
 
 4.4 Contributions
 =================
+
 Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Lots of other people
 
 

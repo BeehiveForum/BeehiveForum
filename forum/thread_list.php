@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.154 2003-12-09 23:03:49 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.155 2003-12-09 23:04:31 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -447,7 +447,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }else {
-                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\"/>;";
+                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }
 
                         }elseif ($thread['last_read'] < $thread['length']) {

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.205 2004-07-07 18:11:31 tribalonline Exp $ */
+/* $Id: post.php,v 1.206 2004-07-08 00:54:58 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -133,6 +133,11 @@ if (isset($_POST['cancel'])) {
     }
 
     header_redirect($uri);
+}
+
+// for "REPLY ALL" form button on messages.php
+if (isset($_POST['replyto'])) {
+	$_GET['replyto'] = $_POST['replyto'];
 }
 
 // Check if the user is viewing signatures.
@@ -760,7 +765,7 @@ if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
-if (!$newthread) {
+if (!$newthread && $reply_to_pid > 0) {
 
     echo "<table class=\"posthead\" width=\"720\">\n";
     echo "<tr><td class=\"subhead\">". $lang['inreplyto'] .":</td></tr>\n";

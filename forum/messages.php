@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.150 2004-07-07 13:59:21 tribalonline Exp $ */
+/* $Id: messages.php,v 1.151 2004-07-08 00:54:58 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -324,14 +324,22 @@ if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($_GET['markasre
     messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
 }
 
+echo "<div align=\"center\">\n";
+echo "<table width=\"96%\" border=\"0\">\n";
+echo "  <tr>\n";
+echo "  <td>";
+form_quick_button("./post.php", $lang['replyall'], "replyto", "$tid.0", "_parent");
+echo "</td>\n";
+
 if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
-    echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
+    echo "    <td align=\"right\">";
     form_quick_button("./messages.php", "{$lang['keepreading']} &gt;&gt;", "msg", "$tid.$npid");
-    echo "</td></tr></table>\n";
-}else {
-    echo "<p>&nbsp;</p>\n";
+    echo "</td>\n";
 }
+
+echo "  </tr>\n";
+echo "</table></div>\n";
 
 messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);

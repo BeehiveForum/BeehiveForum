@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
 
@@ -103,6 +106,11 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 					}
 
 					$tag = strtolower($tag_bits[0]);
+
+					if (!in_array($tag, array_keys($opentags))) {  
+						$opentags[$tag] = 0;
+					}
+
 					$html_parts[$i] = "/".$tag;
 
 					// filter 'bad' tags or single tags
@@ -129,10 +137,12 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						// previous tag hasn't been closed
 						} else if ($last_tag2 != $tag){
 							// wrap white-text
+							$ta = array("/".$last_tag2, "");
 							if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws)) {
 								$html_parts[$i-1] = preg_replace("/( )?\s+$/", "$1", $html_parts[$i-1]);
+								$ta[1] = $ws[0];
 							}
-							array_splice($html_parts, $i, 0, array("/".$last_tag2, $ws[0]));
+							array_splice($html_parts, $i, 0, $ta);
 							$opentags[$last_tag2]--;
 							$i++;
 
@@ -158,6 +168,10 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$html_parts[$i] = $tag;
 					}
 
+					if (!in_array($tag, array_keys($opentags))) {  
+						$opentags[$tag] = 0;
+					}
+
 					// filter 'bad' tags
 					if(in_array($tag, $bad_tags)){
 						$html_parts[$i-1] .= $html_parts[$i+1];
@@ -165,30 +179,45 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$i -= 2;
 
 					} else if(!in_array($tag, $single_tags)){
-						if(isset($nest[$tag]) && $opentags[$nest[$tag][0]] == 0) {
-							$tmp_nest = $tag;
-							$last_tag2 = array_pop($last_tag);
-							$tmp_tags = array($last_tag2);
-							$tmp_len = $i;
-							while (isset($nest[$tmp_nest])) {
-								if (in_array($last_tag2, $nest[$tmp_nest])) {
-									break;
+						if(in_array($tag, array_keys($nest))) {
+							$tmptmptmp = 0;
+							if (in_array($nest[$tag][0], array_keys($opentags))) {
+								if ($opentags[$nest[$tag][0]] == 0) {
+									$tmptmptmp = 1;
 								}
-								array_splice($html_parts, $tmp_len, 0, array($nest[$tmp_nest][0], ""));
-
-								$i += 2;
-								array_splice($tmp_tags, 1, 0, $nest[$tmp_nest][0]);
-								$last_tag2 = $tmp_tags[1];
-								$tmp_nest = $nest[$tmp_nest][0];
+							} else {
+								$tmptmptmp = 1;
 							}
 
+							if ($tmptmptmp == 1) {
+								$tmp_nest = $tag;
+								$last_tag2 = array_pop($last_tag);
+								$tmp_tags = array($last_tag2);
+								$tmp_len = $i;
+								while (isset($nest[$tmp_nest])) {
+									if (in_array($last_tag2, $nest[$tmp_nest])) {
+										break;
+									}
+									array_splice($html_parts, $tmp_len, 0, array($nest[$tmp_nest][0], ""));
 
-							$tmp_len = count($last_tag);
-							for($j=0;$j<count($tmp_tags);$j++){
-								if (strlen($tmp_tags[$j]) > 0) {
-									array_push($last_tag, $tmp_tags[$j]);
-									if ($j != 0) {
-										$opentags[$tmp_tags[$j]]++;
+									$i += 2;
+									array_splice($tmp_tags, 1, 0, $nest[$tmp_nest][0]);
+									$last_tag2 = $tmp_tags[1];
+									$tmp_nest = $nest[$tmp_nest][0];
+								}
+
+
+								$tmp_len = count($last_tag);
+								for($j=0;$j<count($tmp_tags);$j++){
+									if (strlen($tmp_tags[$j]) > 0) {
+										array_push($last_tag, $tmp_tags[$j]);
+										if ($j != 0) {
+											if (in_array($tmp_tags[$j], array_keys($opentags))) {
+												$opentags[$tmp_tags[$j]]++;
+											} else {
+												$opentags[$tmp_tags[$j]] = 1;
+											}
+										}
 									}
 								}
 							}
@@ -200,10 +229,12 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 
 						// make sure certain tags can't nest within themselves, e.g. <p><p>
-						if(isset($no_nest[$tag])) {
+						if(in_array($tag, array_keys($no_nest))) {
 							$opencount = 0;
 							for ($j=0; $j<count($no_nest[$tag]); $j++) {
-								$opencount += $opentags[$no_nest[$tag][$j]];
+								if (in_array($no_nest[$tag][$j], array_keys($opentags))) {
+									$opencount += $opentags[$no_nest[$tag][$j]];
+								}
 							}
 							if ($tag == "p") $opencount++;
 

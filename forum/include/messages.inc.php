@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.315 2005-01-25 12:51:13 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.316 2005-01-26 21:33:24 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -195,15 +195,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     $webtag = get_webtag($webtag_search);
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
-        message_display_deleted($tid, $message['PID']);
+
+        message_display_deleted($tid, $message['PID'], $message);
         return;
     }
 
     if (bh_session_get_value('UID') != $message['FROM_UID']) {
-      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
-        message_display_deleted($tid, $message['PID']);
-        return;
-      }
+
+        if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
+
+            message_display_deleted($tid, $message['PID'], $message);
+            return;
+        }
     }
 
     if (!isset($message['FROM_RELATIONSHIP'])) {
@@ -216,7 +219,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
     {
-        message_display_deleted($tid, $message['PID']);
+        message_display_deleted($tid, $message['PID'], $message);
         return;
     }
 
@@ -618,16 +621,28 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</div>\n";
 }
 
-function message_display_deleted($tid,$pid)
+function message_display_deleted($tid, $pid, $message)
 {
     $lang = load_language_file();
 
-    echo "<br /><div align=\"center\">";
-    echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
-    echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
-    echo "{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}\n";
-    echo "</td></tr></table>\n";
-    echo "</td></tr></table></div>\n";
+    if (isset($message['EDITED']) && $message['EDITED'] > 0) {
+
+        echo "<br /><div align=\"center\">";
+        echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
+        echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
+        echo "{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['EDIT_LOGON']}\n";
+        echo "</td></tr></table>\n";
+        echo "</td></tr></table></div>\n";
+
+    }else {
+
+        echo "<br /><div align=\"center\">";
+        echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
+        echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
+        echo "{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}\n";
+        echo "</td></tr></table>\n";
+        echo "</td></tr></table></div>\n";
+    }
 }
 
 function messages_start_panel()

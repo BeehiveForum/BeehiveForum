@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.18 2004-12-14 08:33:29 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.19 2005-01-26 21:33:24 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -41,7 +41,9 @@ function load_language_file()
          // ignore what the browser wants and use that if available
 
         if ($pref_language = bh_session_get_value("LANGUAGE")) {
-            if (file_exists("./include/languages/{$pref_language}.inc.php")) {
+
+            if (@file_exists("./include/languages/{$pref_language}.inc.php")) {
+
                 include_once("./include/languages/{$pref_language}.inc.php");
                 return $lang;
             }
@@ -79,8 +81,11 @@ function load_language_file()
         // default to what is specified in config.inc.php
 
         foreach ($qvalue as $key => $value) {
+
             if ($langs[$key] == "*") $langs[$key] = $default_language;
-            if (file_exists("./include/languages/{$langs[$key]}.inc.php")) {
+
+            if (@file_exists("./include/languages/{$langs[$key]}.inc.php")) {
+
                 include_once("./include/languages/{$langs[$key]}.inc.php");
                 return $lang;
             }
@@ -96,11 +101,20 @@ function load_language_file()
 function lang_get_available()
 {
     $available_langs = array();
-    $dir = opendir("./include/languages");
-    while ($item = readdir($dir)) {
-        if (strpos($item, '.inc.php') !== false) array_push($available_langs, substr($item, 0, strpos($item, '.inc.php')));
+
+    if (@$dir = opendir("./include/languages")) {
+
+        while ($file = readdir($dir)) {
+
+            if (strpos($file, '.inc.php') !== false) {
+
+                array_push($available_langs, substr($file, 0, strpos($file, '.inc.php')));
+            }
+        }
+
+        closedir($dir);
     }
-    closedir($dir);
+
     return $available_langs;
 }
 

@@ -155,7 +155,7 @@ function messages_bottom()
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false)
 {
 
-    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length;
+    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
@@ -246,13 +246,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         echo "<tr><td class=\"postbody\">". $message['CONTENT'];
         if ($tid <> 0 && isset($message['PID'])) {
-            $aid = get_attachment_id($tid, $message['PID']);
-            if ($aid != -1) {
+            if ($aid = get_attachment_id($tid, $message['PID'])) {
                 $attachments = get_attachments($message['FROM_UID'], $aid);
                 if (is_array($attachments)) {
                     echo "<p><b>Attachments:</b><br>\n";
                     for ($i = 0; $i < sizeof($attachments); $i++) {
-                        echo "<img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\"><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a> (". format_file_size($attachments[$i]['filesize']). ")<br />\n";
+                        echo "<img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\">";
+                        echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a>";
+                        echo " (". format_file_size($attachments[$i]['filesize']);
+                        if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+                          echo " - ". $imageinfo[0]. "x". $imageinfo[1];
+                        }
+                        echo ")<br />\n";
                     }
                     echo "</p>\n";
                 }

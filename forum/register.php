@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.107 2005-03-26 18:16:45 decoyduck Exp $ */
+/* $Id: register.php,v 1.108 2005-03-26 23:49:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,14 +108,14 @@ $available_langs = lang_get_available();
 $available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
 array_unshift($available_langs, "");
 
-$timezones = array("GMT -12h", "GMT -11h", "GMT -10h", "GMT -9h30m", "GMT -9h", "GMT -8h30m", "GMT -8h",
-                   "GMT -7h", "GMT -6h", "GMT -5h", "GMT -4h", "GMT -3h30m", "GMT -3h", "GMT -2h", "GMT -1h",
-                   "GMT", "GMT +1h", "GMT +2h", "GMT +3h",  "GMT +3h30m","GMT +4h", "GMT +4h30m", "GMT +5h",
-                   "GMT +5h30m", "GMT +6h", "GMT +6h30m", "GMT +7h", "GMT +8h", "GMT +9h", "GMT +9h30m",
-                   "GMT +10h", "GMT +10h30m", "GMT +11h", "GMT +11h30m", "GMT +12h", "GMT +13h", "GMT +14h");
+$timezones = array("UTC -12h", "UTC -11h", "UTC -10h", "UTC -9h30m", "UTC -9h", "UTC -8h30m", "UTC -8h",
+                   "UTC -7h", "UTC -6h", "UTC -5h", "UTC -4h", "UTC -3h30m", "UTC -3h", "UTC -2h", "UTC -1h",
+                   "UTC", "UTC +1h", "UTC +2h", "UTC +3h",  "UTC +3h30m", "UTC +4h", "UTC +4h30m", "UTC +5h",
+                   "UTC +5h30m", "UTC +6h", "UTC +6h30m", "UTC +7h", "UTC +8h", "UTC +9h", "UTC +9h30m",
+                   "UTC +10h", "UTC +10h30m", "UTC +11h", "UTC +11h30m", "UTC +12h", "UTC +13h", "UTC +14h");
 
-$timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
-                        6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
+$timezones_data = array(-12, -11, -10, -9.5, -9, -8.5, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0, 1, 2, 3, 3.5, 4, 4.5, 5, 5.5,
+                        6, 6.5, 7, 8, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13, 14);
 
 if (isset($_POST['submit'])) {
 
@@ -543,31 +543,31 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['preferenceso
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['alwaysnotifymeofrepliestome']}:</td>\n";
-echo "                  <td>", form_radio("EMAIL_NOTIFY", "Y", $lang['yes'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "Y") : true), "&nbsp;", form_radio("EMAIL_NOTIFY", "N", $lang['no'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "N") : false), "</td>\n";
+echo "                  <td>", form_radio("EMAIL_NOTIFY", "Y", $lang['yes'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "Y") : forum_get_setting('new_user_email_notify', 'Y', true)), "&nbsp;", form_radio("EMAIL_NOTIFY", "N", $lang['no'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "N") : forum_get_setting('new_user_email_notify', 'N', false)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['notifyonnewprivatemessage']}:</td>\n";
-echo "                  <td>", form_radio("PM_NOTIFY_EMAIL", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "Y") : true), "&nbsp;", form_radio("PM_NOTIFY_EMAIL", "N", $lang['no'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "N") : false), "</td>\n";
+echo "                  <td>", form_radio("PM_NOTIFY_EMAIL", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "Y") : forum_get_setting('new_user_pm_notify_email', 'Y', true)), "&nbsp;", form_radio("PM_NOTIFY_EMAIL", "N", $lang['no'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "N") : forum_get_setting('new_user_pm_notify_email', 'N', false)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['popuponnewprivatemessage']}:</td>\n";
-echo "                  <td>", form_radio("PM_NOTIFY", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "Y") : true), "&nbsp;", form_radio("PM_NOTIFY", "N", $lang['no'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "N") : false), "</td>\n";
+echo "                  <td>", form_radio("PM_NOTIFY", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "Y") : forum_get_setting('new_user_pm_notify', 'Y', true)), "&nbsp;", form_radio("PM_NOTIFY", "N", $lang['no'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "N") : forum_get_setting('new_user_pm_notify', 'N', false)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['automatichighinterestonpost']}:</td>\n";
-echo "                  <td>", form_radio("MARK_AS_OF_INT", "Y", $lang['yes'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "Y") : true), "&nbsp;", form_radio("MARK_AS_OF_INT", "N", $lang['no'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "N") : false), "</td>\n";
+echo "                  <td>", form_radio("MARK_AS_OF_INT", "Y", $lang['yes'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "Y") : forum_get_setting('new_user_mark_as_of_int', 'Y', true)), "&nbsp;", form_radio("MARK_AS_OF_INT", "N", $lang['no'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "N") : forum_get_setting('new_user_mark_as_of_int', 'N', false)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['daylightsaving']}:</td>\n";
-echo "                  <td>", form_radio("DL_SAVING", "Y", $lang['yes'], (isset($new_user['DL_SAVING'])) ? ($new_user['DL_SAVING'] == "Y") : true), "&nbsp;", form_radio("DL_SAVING", "N", $lang['no'], (isset($new_user['DL_SAVING'])) ? ($new_user['DL_SAVING'] == "N") : false), "</td>\n";
+echo "                  <td>", form_radio("DL_SAVING", "Y", $lang['yes'], (isset($new_user['DL_SAVING'])) ? ($new_user['DL_SAVING'] == "Y") : forum_get_setting('forum_dl_saving', false, true)), "&nbsp;", form_radio("DL_SAVING", "N", $lang['no'], (isset($new_user['DL_SAVING'])) ? ($new_user['DL_SAVING'] == "N") : forum_get_setting('forum_dl_saving', false, false)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['timezonefromGMT']}</td>\n";
-echo "                  <td>", form_dropdown_array("TIMEZONE", $timezones_data, $timezones, (isset($new_user['TIMEZONE']) ? $new_user['TIMEZONE'] : 0)), "</td>\n";
+echo "                  <td>", form_dropdown_array("TIMEZONE", $timezones_data, $timezones, (isset($new_user['TIMEZONE']) ? $new_user['TIMEZONE'] : forum_get_setting('forum_timezone', false, 0))), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['preferredlang']}:</td>\n";
-echo "                  <td>", form_dropdown_array("LANGUAGE", $available_langs, $available_langs_labels, (isset($new_user['LANGUAGE']) ? $new_user['LANGUAGE'] : "en")), "</td>\n";
+echo "                  <td>", form_dropdown_array("LANGUAGE", $available_langs, $available_langs_labels, (isset($new_user['LANGUAGE']) ? $new_user['LANGUAGE'] : forum_get_settings('default_language', false, 'en'))), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['style']}</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.23 2005-03-21 14:33:01 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.24 2005-03-26 23:49:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,6 +133,30 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['allow_new_registrations'] = "Y";
     }else {
         $new_forum_settings['allow_new_registrations'] = "N";
+    }
+
+    if (isset($_POST['new_user_email_notify']) && $_POST['new_user_email_notify'] == "Y") {
+        $new_forum_settings['new_user_email_notify'] = "Y";
+    }else {
+        $new_forum_settings['new_user_email_notify'] = "N";
+    }
+
+    if (isset($_POST['new_user_pm_notify_email']) && $_POST['new_user_pm_notify_email'] == "Y") {
+        $new_forum_settings['new_user_pm_notify_email'] = "Y";
+    }else {
+        $new_forum_settings['new_user_pm_notify_email'] = "N";
+    }
+
+    if (isset($_POST['showpopuponnewpm']) && $_POST['showpopuponnewpm'] == "Y") {
+        $new_forum_settings['showpopuponnewpm'] = "Y";
+    }else {
+        $new_forum_settings['showpopuponnewpm'] = "N";
+    }
+
+    if (isset($_POST['new_user_mark_as_of_int']) && $_POST['new_user_mark_as_of_int'] == "Y") {
+        $new_forum_settings['new_user_mark_as_of_int'] = "Y";
+    }else {
+        $new_forum_settings['new_user_mark_as_of_int'] = "N";
     }
 
     if (isset($_POST['show_pms']) && $_POST['show_pms'] == "Y") {
@@ -400,6 +424,51 @@ echo "                      <tr>\n";
 echo "                       <td colspan=\"2\" >\n";
 echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
 echo "                       </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['newuserpreferences']}:</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['sendemailnotificationonreply']}:</td>\n";
+echo "                        <td>", form_radio("new_user_email_notify", "Y", $lang['yes'], (isset($default_forum_settings['new_user_email_notify']) && $default_forum_settings['new_user_email_notify'] == 'Y') || !isset($default_forum_settings['new_user_email_notify'])), "&nbsp;", form_radio("new_user_email_notify", "N", $lang['no'], (isset($default_forum_settings['new_user_email_notify']) && $default_forum_settings['new_user_email_notify'] == 'N')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['sendemailnotificationonpm']}:</td>\n";
+echo "                        <td>", form_radio("new_user_pm_notify_email", "Y", $lang['yes'], (isset($default_forum_settings['new_user_pm_notify_email']) && $default_forum_settings['new_user_pm_notify_email'] == 'Y') || !isset($default_forum_settings['new_user_pm_notify_email'])), "&nbsp;", form_radio("new_user_pm_notify_email", "N", $lang['no'], (isset($default_forum_settings['new_user_pm_notify_email']) && $default_forum_settings['new_user_pm_notify_email'] == 'N')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['showpopuponnewpm']}:</td>\n";
+echo "                        <td>", form_radio("new_user_pm_notify", "Y", $lang['yes'], (isset($default_forum_settings['new_user_pm_notify']) && $default_forum_settings['new_user_pm_notify'] == 'Y') || !isset($default_forum_settings['new_user_pm_notify'])), "&nbsp;", form_radio("new_user_pm_notify", "N", $lang['no'], (isset($default_forum_settings['new_user_pm_notify']) && $default_forum_settings['new_user_pm_notify'] == 'N')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['setautomatichighinterestonpost']}:</td>\n";
+echo "                        <td>", form_radio("new_user_mark_as_of_int", "Y", $lang['yes'], (isset($default_forum_settings['new_user_mark_as_of_int']) && $default_forum_settings['new_user_mark_as_of_int'] == 'Y') || !isset($default_forum_settings['new_user_mark_as_of_int'])), "&nbsp;", form_radio("new_user_mark_as_of_int", "N", $lang['no'], (isset($default_forum_settings['new_user_mark_as_of_int']) && $default_forum_settings['new_user_mark_as_of_int'] == 'N')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"3\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_41']}</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

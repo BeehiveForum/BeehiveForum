@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.248 2005-03-25 20:45:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.249 2005-03-26 23:49:09 decoyduck Exp $ */
 
 // International English language file
 
@@ -443,6 +443,13 @@ $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
 
+$lang['newuserpreferences'] = "New User Preferences";
+
+$lang['sendemailnotificationonreply'] = "Email notification on reply to user";
+$lang['sendemailnotificationonpm'] = "Email notification on PM to user";
+$lang['showpopuponnewpm'] = "Show popup when receiving new PM";
+$lang['setautomatichighinterestonpost'] = "Set automatic high interest on post";
+
 $lang['top20postersforperiod'] = "Top 20 posters for period";
 $lang['postingstats'] = "Posting Stats";
 $lang['nodata'] = "No data";
@@ -672,6 +679,7 @@ $lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a
 $lang['forum_settings_help_38'] = "When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
 $lang['forum_settings_help_39'] = "<b>Min search frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
 $lang['forum_settings_help_40'] = "<b>Minimum Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
+$lang['forum_settings_help_41'] = "The above options change the default values for the user registration form. Where applicable other settings will use the forum's own default settings.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.64 2005-03-21 14:33:01 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.65 2005-03-26 23:49:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,6 +93,17 @@ $available_langs = lang_get_available();
 
 $available_styles = styles_get_available();
 $available_emoticons = emoticons_get_available();
+
+// Timezones
+
+$timezones = array("UTC -12h", "UTC -11h", "UTC -10h", "UTC -9h30m", "UTC -9h", "UTC -8h30m", "UTC -8h",
+                   "UTC -7h", "UTC -6h", "UTC -5h", "UTC -4h", "UTC -3h30m", "UTC -3h", "UTC -2h", "UTC -1h",
+                   "UTC", "UTC +1h", "UTC +2h", "UTC +3h",  "UTC +3h30m", "UTC +4h", "UTC +4h30m", "UTC +5h",
+                   "UTC +5h30m", "UTC +6h", "UTC +6h30m", "UTC +7h", "UTC +8h", "UTC +9h", "UTC +9h30m",
+                   "UTC +10h", "UTC +10h30m", "UTC +11h", "UTC +11h30m", "UTC +12h", "UTC +13h", "UTC +14h");
+
+$timezones_data = array(-12, -11, -10, -9.5, -9, -8.5, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0, 1, 2, 3, 3.5, 4, 4.5, 5, 5.5,
+                        6, 6.5, 7, 8, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13, 14);
 
 // Get the forum settings just for this forum
 
@@ -183,6 +194,18 @@ if (isset($_POST['changepermissions'])) {
 
         $error_html = "<h2>{$lang['mustchoosedefaultlang']}</h2>\n";
         $valid = false;
+    }
+
+    if (isset($_POST['forum_timezone']) && is_numeric($_POST['forum_timezone'])) {
+        $new_forum_settings['forum_timezone'] = $_POST['forum_timezone'];
+    }else {
+        $new_forum_settings['forum_timezone'] = 0;
+    }
+
+    if (isset($_POST['forum_dl_saving']) && $_POST['forum_dl_saving'] == "Y") {
+        $new_forum_settings['forum_dl_saving'] = "Y";
+    }else {
+        $new_forum_settings['forum_dl_saving'] = "N";
     }
 
     if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
@@ -364,7 +387,7 @@ echo "                        <td colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['defaultstyle']}:</td>\n";
-echo "                        <td>", form_dropdown_array("default_style", array_keys($available_styles), array_values($available_styles), (isset($current_forum_settings['default_style']) && in_array($current_forum_settings['default_style'], array_keys($available_styles)) ? $current_forum_settings['default_style'] : 'beehive')), "</td>\n";
+echo "                        <td>", form_dropdown_array("default_style", array_keys($available_styles), array_values($available_styles), (isset($current_forum_settings['default_style']) && in_array($current_forum_settings['default_style'], array_keys($available_styles)) ? $current_forum_settings['default_style'] : 'default')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['defaultemoticons']} [<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
@@ -373,6 +396,14 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['defaultlanguage']}:</td>\n";
 echo "                        <td>", form_dropdown_array("default_language", $available_langs, $available_langs, (isset($current_forum_settings['default_language']) && in_array($current_forum_settings['default_language'], $available_langs) ? $current_forum_settings['default_language'] : 'en')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['timezonefromGMT']}:</td>\n";
+echo "                        <td>", form_dropdown_array("forum_timezone", $timezones_data, $timezones, (isset($current_forum_settings['forum_timezone']) && is_numeric($current_forum_settings['forum_timezone']) ? $current_forum_settings['forum_timezone'] : 0)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                        <td>", form_checkbox("forum_dl_saving", "Y", $lang['daylightsaving'], (isset($current_forum_settings['forum_dl_saving']) && $current_forum_settings['forum_dl_saving'] == 'Y') ? true : false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">&nbsp;</td>\n";

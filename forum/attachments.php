@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.47 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.48 2004-02-13 13:20:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -168,46 +168,48 @@ if (isset($HTTP_POST_VARS['upload'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
-      echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=1\" title=\"";
+      if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
 
-      if (strlen($attachments[$i]['filename']) > 16) {
-        echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+        echo "  <tr>\n";
+        echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=1\" title=\"";
+
+        if (strlen($attachments[$i]['filename']) > 16) {
+          echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+        }
+
+        if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+          echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+        }
+
+        echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+        echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+
+        if ($attachments[$i]['downloads'] == 1) {
+          echo " {$lang['time']}";
+        }else {
+          echo " {$lang['times']}";
+        }
+
+        echo "\">";
+
+        if (strlen($attachments[$i]['filename']) > 16) {
+          echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+        }else{
+          echo $attachments[$i]['filename']. "</a></td>\n";
+        }
+
+        echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
+        echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
+        echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
+        echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
+        echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
+        echo "        ". form_submit('del', $lang['del']). "\n";
+        echo "      </form>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+
+        $total_attachment_size += $attachments[$i]['filesize'];
       }
-
-      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-      }
-
-      echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
-      echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
-
-      if ($attachments[$i]['downloads'] == 1) {
-        echo " {$lang['time']}";
-      }else {
-        echo " {$lang['times']}";
-      }
-
-      echo "\">";
-
-      if (strlen($attachments[$i]['filename']) > 16) {
-        echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
-      }else{
-        echo $attachments[$i]['filename']. "</a></td>\n";
-      }
-
-      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
-      echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
-      echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
-      echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
-      echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "        ". form_submit('del', $lang['del']). "\n";
-      echo "      </form>\n";
-      echo "    </td>\n";
-      echo "  </tr>\n";
-
-      $total_attachment_size += $attachments[$i]['filesize'];
-
     }
 
   }else {
@@ -255,48 +257,50 @@ if (isset($HTTP_POST_VARS['upload'])) {
   if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
+    
+      if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {    
 
-      echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=true\" title=\"";
+        echo "  <tr>\n";
+        echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=true\" title=\"";
 
-      if (strlen($attachments[$i]['filename']) > 16) {
-        echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+        if (strlen($attachments[$i]['filename']) > 16) {
+          echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+        }
+
+        if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+          echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+        }
+
+        echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+        echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+
+        if ($attachments[$i]['downloads'] == 1) {
+          echo " {$lang['time']}";
+        }else {
+          echo " {$lang['times']}";
+        }
+
+        echo "\">";
+
+        if (strlen($attachments[$i]['filename']) > 16) {
+          echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+        }else{
+          echo $attachments[$i]['filename']. "</a></td>\n";
+        }
+
+        echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+        echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
+        echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
+        echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
+        echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
+        echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
+        echo "        ". form_submit('del', $lang['del']). "\n";
+        echo "      </form>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+
+        $total_attachment_size += $attachments[$i]['filesize'];
       }
-
-      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-      }
-
-      echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
-      echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
-
-      if ($attachments[$i]['downloads'] == 1) {
-        echo " {$lang['time']}";
-      }else {
-        echo " {$lang['times']}";
-      }
-
-      echo "\">";
-
-      if (strlen($attachments[$i]['filename']) > 16) {
-        echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
-      }else{
-        echo $attachments[$i]['filename']. "</a></td>\n";
-      }
-
-      echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
-      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
-      echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
-      echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
-      echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
-      echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "        ". form_submit('del', $lang['del']). "\n";
-      echo "      </form>\n";
-      echo "    </td>\n";
-      echo "  </tr>\n";
-
-      $total_attachment_size += $attachments[$i]['filesize'];
-
     }
 
   }else {
@@ -317,7 +321,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
 
 ?>
   <tr>
-    <td width="500" colspan="3"><hr width="500"/></td>
+    <td width="500" colspan="3"><hr width="500" align="left" /></td>
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody"><?php echo $lang['totalsize']; ?>:</td>

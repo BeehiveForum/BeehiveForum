@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.29 2004-01-31 21:53:12 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.30 2004-02-13 13:20:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -145,56 +145,58 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
   if (is_array($attachments)) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
+    
+      if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
 
-      echo "  <tr>\n";
-      echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=true\" title=\"";
+        echo "  <tr>\n";
+        echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=true\" title=\"";
 
-      if (strlen($attachments[$i]['filename']) > 16) {
-        echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+        if (strlen($attachments[$i]['filename']) > 16) {
+          echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+        }
+
+        if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+          echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+        }
+
+        echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+        echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+
+        if ($attachments[$i]['downloads'] == 1) {
+          echo " {$lang['time']}";
+        }else {
+          echo " {$lang['times']}";
+        }
+
+        echo "\">";
+
+        if (strlen($attachments[$i]['filename']) > 16) {
+            echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+        }else{
+            echo $attachments[$i]['filename']. "</a></td>\n";
+        }
+
+        if (!isset($aid)) {
+            echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+        }
+
+        echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";
+        echo "    <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
+        echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
+        echo "        ", form_input_hidden('userfile', $attachments[$i]['filename']), "\n";
+        echo "        ", form_input_hidden('f_aid', $attachments[$i]['aid']), "\n";
+        echo "        ", form_input_hidden('uid', $uid), "\n";
+        echo "        ", form_input_hidden('popup', $popup), "\n";
+        echo "        ", form_submit('delete', $lang['delete']), "\n";
+
+        if (isset($aid)) echo "        ". form_input_hidden('aid', $aid), "\n";
+ 
+        echo "      </form>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+
+        $total_attachment_size += $attachments[$i]['filesize'];
       }
-
-      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-      }
-
-      echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
-      echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
-
-      if ($attachments[$i]['downloads'] == 1) {
-        echo " {$lang['time']}";
-      }else {
-        echo " {$lang['times']}";
-      }
-
-      echo "\">";
-
-      if (strlen($attachments[$i]['filename']) > 16) {
-          echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
-      }else{
-          echo $attachments[$i]['filename']. "</a></td>\n";
-      }
-
-      if (!isset($aid)) {
-          echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
-      }
-
-      echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";
-      echo "    <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-      echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
-      echo "        ", form_input_hidden('userfile', $attachments[$i]['filename']), "\n";
-      echo "        ", form_input_hidden('f_aid', $attachments[$i]['aid']), "\n";
-      echo "        ", form_input_hidden('uid', $uid), "\n";
-      echo "        ", form_input_hidden('popup', $popup), "\n";
-      echo "        ", form_submit('delete', $lang['delete']), "\n";
-
-      if (isset($aid)) echo "        ". form_input_hidden('aid', $aid), "\n";
-
-      echo "      </form>\n";
-      echo "    </td>\n";
-      echo "  </tr>\n";
-
-      $total_attachment_size += $attachments[$i]['filesize'];
-
     }
 
   }else {
@@ -249,7 +251,13 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
 
   }elseif ($attachments_enabled) {
 
-      $aid = md5(uniqid(rand()));
+      if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
+          $aid = $HTTP_GET_VARS['aid'];
+      }elseif (isset($HTTP_POST_VARS['aid']) && is_md5($HTTP_POST_VARS['aid'])) {
+          $aid = $HTTP_POST_VARS['aid'];
+      }else {
+          $aid = md5(uniqid(rand()));
+      }
       
       echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
       echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

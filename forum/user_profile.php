@@ -77,7 +77,7 @@ if (isset($HTTP_GET_VARS['setrel']) && ($uid != $your_uid)) { // user has chosen
 }
 
 echo "<div align=\"center\">\n";
-echo "  <table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";

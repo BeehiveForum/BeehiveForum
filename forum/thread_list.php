@@ -296,7 +296,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 						$first_thread = $thread['tid'];
 						echo "<img src=\"".style_image('ct.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					} else {
-						echo "<img src=\"".style_image('star.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
+						echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					}
 				}
 				

@@ -142,6 +142,8 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							array_splice($html_parts, $i, 2);
 							$i--;
 
+							array_push($last_tag, $last_tag2);
+
 						// previous tag hasn't been closed
 						} else if ($last_tag2 != $tag){
 							array_splice($html_parts, $i, 0, array("/".$last_tag2,""));
@@ -253,7 +255,7 @@ function clean_attributes($tag)
 	$valid["map"] = array("name");
 	$valid["area"] = array("shape", "coords", "href", "alt", "nohref");
 
-	$valid["table"] = array("border", "cellspacing", "cellpadding", "width", "height", "summary", "bgcolor", "background", "frame", "rules");
+	$valid["table"] = array("border", "cellspacing", "cellpadding", "width", "height", "summary", "bgcolor", "background", "frame", "rules", "bordercolor");
 	$valid["tbody"] = array("char", "charoff", "valign");
 	$valid["tfoot"] = $valid["tbody"];
 	$valid["thead"] = $valid["tbody"];

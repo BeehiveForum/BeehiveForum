@@ -99,7 +99,7 @@ $result = db_query($sql,$db);
 
 while($row = db_fetch_array($result)){
     echo "<tr><td class=\"subhead\" width=\"33%\">" . $row['NAME'] . "</td>";
-    echo "<td width=\"67%\" class=\"posthead\">" . htmlentities(stripslashes($row['ENTRY'])) . "</td></tr>\n";
+    echo "<td width=\"67%\" class=\"posthead\">" . stripslashes($row['ENTRY']) . "</td></tr>\n";
 }
 
 echo "</table></td>\n";

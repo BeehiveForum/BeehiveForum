@@ -32,6 +32,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/html.inc.php");
+require_once("./include/constants.inc.php");
 
 if(!bh_session_check()){
 
@@ -75,6 +76,11 @@ if (isset($HTTP_POST_VARS['cancel'])) {
   if ($valid && !isset($HTTP_POST_VARS['t_fid'])) {
     $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
     $valid = false;
+  }
+  
+  if ($valid && !folder_thread_type_allowed($HTTP_POST_VARS['t_fid'], FOLDER_ALLOW_POLL_THREAD)) {
+      $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+      $valid = false;
   }
 
   if ($valid && strlen(trim($HTTP_POST_VARS['answers'][0])) == 0) {
@@ -378,7 +384,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
       <td><h2><?php echo $lang['selectfolder']; ?></h2></td>
     </tr>
     <tr>
-      <td><?php echo folder_draw_dropdown($t_fid); ?></td>
+      <td><?php echo folder_draw_dropdown($t_fid,"t_fid","",FOLDER_ALLOW_POLL_THREAD); ?></td>
     </tr>
     <tr>
       <td><h2><?php echo $lang['pollquestion']; ?></h2></td>

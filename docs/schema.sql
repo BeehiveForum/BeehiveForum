@@ -70,6 +70,7 @@ CREATE TABLE FOLDER (
   TITLE varchar(32) default NULL,
   ACCESS_LEVEL tinyint(4) default '0',
   DESCRIPTION varchar(255) default NULL,
+  ALLOWED_TYPES tinyint(3) default NULL,
   PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
 

@@ -119,7 +119,12 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_fid'])) {
-        $t_fid = $HTTP_POST_VARS['t_fid'];
+        if (folder_thread_type_allowed($HTTP_POST_VARS['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+            $t_fid = $HTTP_POST_VARS['t_fid'];
+        } else {
+            $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+            $valid = false;
+        }
     } else if ($valid) {
         $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
         $valid = false;
@@ -437,7 +442,7 @@ if ($newthread) {
 
     echo "<table>\n";
     echo "<tr><td><h2>{$lang['selectfolder']}:</h2></td></tr>\n";
-    echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
+    echo "<tr><td>" . folder_draw_dropdown($t_fid,"t_fid","",FOLDER_ALLOW_NORMAL_THREAD) . "</td></tr>\n";
     echo "<tr><td><h2>{$lang['threadtitle']}:</h2></td></tr>\n";
     echo "<tr><td>".form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 30, 64);
     echo "\n";

@@ -232,7 +232,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         
       }elseif ($totalvotes == 0 && ($poll['CLOSES'] > gmmktime() || $poll['CLOSES'] == 0)) {
       
-        $polldata['CONTENT'].= "Nobody has voted,";
+        $polldata['CONTENT'].= "Nobody has voted.";
       
       }elseif ($totalvotes == 1 && ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0)) {
       

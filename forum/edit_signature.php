@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.37 2004-05-30 15:33:06 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.38 2004-07-08 02:28:58 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -205,7 +205,7 @@ if (isset($_POST['preview'])) {
         if ($t_sig_html == "Y") {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
         }else {
-            $preview_message['CONTENT'].= "<div class=\"sig\">". _htmlentities($t_sig_content). "</div>";
+            $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
         }
 
         $preview_message['CREATED'] = mktime();
@@ -255,7 +255,17 @@ echo "                  <td>\n";
 
 echo $tools->toolbar();
 
-$sig_code = (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT'])));
+if (isset($t_sig_html)) {
+	$sig_html = ($t_sig_html == "Y");
+} else {
+	$sig_html = ($user_sig['SIG_HTML'] == "Y");
+}
+
+if (isset($t_sig_content)) {
+	$sig_code = _htmlentities($sig_html == "Y" ? tidy_html($t_sig_content, false) : $t_sig_content);
+} else {
+	$sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
+}
 
 echo $tools->textarea("sig_content", $sig_code, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."</td>\n";
 
@@ -264,8 +274,6 @@ echo $tools->js();
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"right\">\n";
-
-$sig_html = (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y");
 
 echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
 

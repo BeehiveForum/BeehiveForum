@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.206 2004-07-08 00:54:58 tribalonline Exp $ */
+/* $Id: post.php,v 1.207 2004-07-08 02:28:58 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -144,14 +144,6 @@ if (isset($_POST['replyto'])) {
 
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
-// Fetch the current user's sig
-
-user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
-
-if ($t_sig_html != "N") {
-    $sig_html = 2;
-}
-
 // Assume everything is A-OK!
 
 $valid = true;
@@ -232,6 +224,20 @@ if (isset($_POST['t_sig_html'])) {
     if ($t_sig_html != "N") {
         $sig_html = 2;
     }
+
+	$fetched_sig = false;
+
+} else {
+	// Fetch the current user's sig
+	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+
+	if ($t_sig_html != "N") {
+		$sig_html = 2;
+	}
+
+	$t_sig = tidy_html($t_sig, true);
+
+	$fetched_sig = true;
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -742,7 +748,7 @@ echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"
 
 echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-if ($sig->isDiff()) {
+if ($sig->isDiff() && !$fetched_sig) {
 
     echo $tools->compare_original("t_sig", $sig->getOriginalContent());
 

@@ -84,15 +84,15 @@ echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
 messages_top($foldertitle,stripslashes($threaddata['TITLE']),$threaddata['INTEREST']);
 echo "</td></tr></table></div>\n";
 
-if($msg_count>0){
+if($msg_count > 0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
-        if($message['RELATIONSHIP'] >= 0){ // if we're not ignoring this user
+        if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
         } else {
             $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
         }
-        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed, true);
+        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true);
         $last_pid = $message['PID'];
     }
 }

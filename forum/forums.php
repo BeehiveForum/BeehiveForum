@@ -46,10 +46,6 @@ include_once("./include/user.inc.php");
 
 $user_wordfilter = load_wordfilter();
 
-// Get the list of available forums for this user
-
-$forums_array = get_forum_list();
-
 html_draw_top("basetarget=_top");
 
 echo "<h1>My Forums</h1>\n";
@@ -65,17 +61,28 @@ echo "        <tr class=\"subhead\">\n";
 echo "          <td colspan=\"3\">Available Forums:</td><td>Last Visited</td>\n";
 echo "        </tr>\n";
 
-foreach ($forums_array as $forum) {
-    
+if ($user_sess = bh_session_check()) {
+
     echo "        <tr>\n";
-    echo "          <td width=\"25%\">\n";
-    echo "            <a href=\"#\">[?]</a>&nbsp;";
-    echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
-    echo "          </td>\n";
-    echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
-    echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['MESSAGES']} Messages</a></td>\n";
-    echo "          <td width=\"20%\">{$forum['LAST_VISIT']}</td>\n";
+    echo "          <td colspan=\"4\">NOT IMPLEMENTED YET</td>\n";
     echo "        </tr>\n";
+
+}else {
+
+    $forums_array = get_forum_list();
+
+    foreach ($forums_array as $forum) {
+    
+        echo "        <tr>\n";
+        echo "          <td width=\"25%\">\n";
+        echo "            <a href=\"#\">[?]</a>&nbsp;";
+        echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+        echo "          </td>\n";
+        echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
+        echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['MESSAGES']} Messages</a></td>\n";
+        echo "          <td width=\"20%\">{$forum['LAST_VISIT']}</td>\n";
+        echo "        </tr>\n";
+    }
 }
 
 echo "      </table>\n";

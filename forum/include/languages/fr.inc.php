@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.46 2004-03-27 19:47:01 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.47 2004-04-04 21:12:22 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -720,6 +720,7 @@ $lang['nouserspecified'] = "Aucun utilisateur a spécifié.";
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
 $lang['mycontrols'] = "My Controls";
+$lang['myforums'] = "My Forums";
 $lang['menu'] = "Menu";
 $lang['userexp_1'] = "Use the menu on the left to manage your settings.";
 $lang['userexp_2'] = "<b>User Details</b> allows you to change your name, email address and password.";

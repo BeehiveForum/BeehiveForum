@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.226 2005-02-14 21:01:02 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.227 2005-02-14 21:13:28 decoyduck Exp $ */
 
 // International English language file
 
@@ -224,7 +224,7 @@ $lang['adminexp_7'] = "<b>Forum Settings</b> allows you to customise your forum'
 $lang['adminexp_8'] = "<b>Start Page</b> lets you customise your forum's start page.";
 $lang['adminexp_9'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
 $lang['adminexp_10'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
-$lang['adminexp_11'] = "<b>Posting stats</b> generates a report listing the top 10 posters by month, week, day and hour.";
+$lang['adminexp_11'] = "<b>Posting stats</b> generates a report listing the top 10 posters in a defined period.";
 $lang['adminexp_12'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
 $lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum moderators.";
 $lang['adminexp_14'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";

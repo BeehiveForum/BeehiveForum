@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.28 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.29 2003-09-24 13:45:01 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -154,12 +154,12 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
 
 }else {
 
-  for ($i = 1; $i <= sizeof($pollresults); $i++) {
+  for ($i = 0; $i <= sizeof($pollresults['OPTION_ID']); $i++) {
 
-    if (!empty($pollresults[$i]['OPTION_NAME'])) {
+    if (!empty($pollresults['OPTION_NAME'][$i])) {
 
       echo "        <tr>\n";
-      echo "          <td class=\"postbody\">". $pollresults[$i]['OPTION_NAME']. "</td>\n";
+      echo "          <td class=\"postbody\">{$pollresults['OPTION_NAME'][$i]}</td>\n";
       echo "        </tr>\n";
 
     }

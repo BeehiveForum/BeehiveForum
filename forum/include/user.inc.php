@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.213 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.214 2004-12-17 16:04:46 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -750,8 +750,7 @@ function user_search($usersearch, $offset = 0)
     $result = db_query($sql, $db_user_search);
     list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "LIMIT $offset, 20";
 

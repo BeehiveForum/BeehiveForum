@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.6 2005-02-08 12:43:07 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.7 2005-02-09 23:50:24 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -145,6 +145,7 @@ if (isset($_POST['update'])) {
 
         }else {
 
+            $num_days = ((($stats_end - $stats_start) / 60) / 60) / 24;
             $user_stats_array = get_post_tallys($stats_start, $stats_end);
         }
     }
@@ -164,6 +165,8 @@ if (!isset($user_stats_array) || !is_array($user_stats_array)) {
 
     $stats_start = mktime(0, 0, 0, $from_month, $from_day, $from_year);
     $stats_end = mktime(23, 59, 59, $to_month, $to_day, $to_year);
+
+    $num_days = ((($stats_end - $stats_start) / 60) / 60) / 24;
 
     $user_stats_array = get_post_tallys($stats_start, $stats_end);
 }
@@ -186,7 +189,8 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\">{$lang['user']}</td>\n";
 echo "                  <td class=\"subhead\">{$lang['totalposts']}</td>\n";
 echo "                  <td class=\"subhead\">{$lang['posts']}</td>\n";
-echo "                  <td class=\"subhead\">{$lang['percentofthisperiodsposts']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['percent']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['average']}</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($user_stats_array['user_stats']) > 0) {
@@ -197,7 +201,8 @@ if (sizeof($user_stats_array['user_stats']) > 0) {
         echo "                  <td>", format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']), "</td>\n";
         echo "                  <td>", user_get_post_count($user_stats['UID']), "</td>\n";
         echo "                  <td>{$user_stats['POST_COUNT']}</td>\n";
-        echo "                  <td>", round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), "%</td>\n";
+        echo "                  <td>", number_format(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";
+        echo "                  <td>", number_format(round($user_stats['POST_COUNT'] / ($num_days), 2), 2, '.', ','), "</td>\n";
         echo "                </tr>\n";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.46 2005-02-08 12:43:07 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.47 2005-02-09 23:50:25 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -311,123 +311,11 @@ function get_post_tallys($start_stamp, $end_stamp)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
+    $sql.= "WHERE POST.CREATED >= FROM_UNIXTIME($start_stamp) AND POST.CREATED <= FROM_UNIXTIME($end_stamp) ";
     $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
-    $sql.= "LIMIT 0, 10";
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_get_month_post_tallys);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($row = db_fetch_array($result)) {
-            $post_tallys['user_stats'][] = $row;
-        }
-    }
-
-    return $post_tallys;
-}
-
-function get_week_post_tallys()
-{
-    $db_get_week_post_tallys = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $post_tallys = array('user_stats' => array(), 'post_count' => 0);
-
-    // slightly different way of calculating the
-    // timestamps here because we need to know
-    // the day of the week and the last.
-
-    $timestamp = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
-    $dayofweek = date('w', $timestamp);
-
-    $start_stamp = mktime(0, 0, 0, date('n'), date('j') - $dayofweek, date('Y'));
-    $end_stamp = mktime(23, 59, 59, date('n'), date('j') + (6 - $dayofweek), date('Y'));
-
-    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
-
-    $result = db_query($sql, $db_get_week_post_tallys);
-    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
-    $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
-    $sql.= "LIMIT 0, 10";
-
-    $result = db_query($sql, $db_get_week_post_tallys);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($row = db_fetch_array($result)) {
-            $post_tallys['user_stats'][] = $row;
-        }
-    }
-
-    return $post_tallys;
-}
-
-function get_day_post_tallys()
-{
-    $db_get_day_post_tallys = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $post_tallys = array('user_stats' => array(), 'post_count' => 0);
-
-    $start_stamp = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
-    $end_stamp = mktime(23, 59, 59, date('n'), date('j'), date('Y'));
-
-    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
-
-    $result = db_query($sql, $db_get_day_post_tallys);
-    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
-    $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
-    $sql.= "LIMIT 0, 10";
-
-    $result = db_query($sql, $db_get_day_post_tallys);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($row = db_fetch_array($result)) {
-            $post_tallys['user_stats'][] = $row;
-        }
-    }
-
-    return $post_tallys;
-}
-
-function get_hour_post_tallys()
-{
-    $db_get_hour_post_tallys = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $post_tallys = array('user_stats' => array(), 'post_count' => 0);
-
-    $start_stamp = mktime(date('G'), 0, 0, date('n'), date('j'), date('Y'));
-    $end_stamp = mktime(date('G'), 59, 59, date('n'), date('j'), date('Y'));
-
-    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
-
-    $result = db_query($sql, $db_get_hour_post_tallys);
-    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp) ";
-    $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
-    $sql.= "LIMIT 0, 10";
-
-    $result = db_query($sql, $db_get_hour_post_tallys);
 
     if (db_num_rows($result) > 0) {
 

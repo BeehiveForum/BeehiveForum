@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.152 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: messages.php,v 1.153 2004-08-12 17:53:23 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -357,6 +357,7 @@ if ($threaddata['POLL_FLAG'] == 'Y') {
 
 if (bh_session_get_value('UID') != 0) {
 
+    messages_interest_form($tid,$pid);
     messages_fontsize_form($tid, $pid);
     form_quick_button("thread_options.php", $lang['threadoptions'], "msg", $msg);
 }

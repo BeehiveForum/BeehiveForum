@@ -1,0 +1,216 @@
+BODY		{
+		background-color:#FFFFFF;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		margin-left: 05px;
+		margin-right: 05px;
+		font-family: Verdana, Arial, Helvetica, sans-serif
+		}
+
+P, H1, H2,  .form	{
+		background-color: transparent;
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		text-decoration: none;
+		}
+
+P	{
+		color: #000000;
+		font-size: 10px;
+		margin-top: 00px;
+		margin-bottom: 00px;
+		margin-left: 05px;
+		margin-right: 05px;
+		text-align:left;
+		}
+
+H1		{
+		background-color: transparent;
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		text-decoration: none;
+		color: #000000;
+		font-size: 11px;
+		font-weight:lighter;
+		margin-top: 00px;
+		margin-bottom: 00px;
+		margin-left: 05px;
+		margin-right: 05px;
+		}
+
+H2		{
+		background-color: transparent;
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		text-decoration: none;
+		color: #000000;
+		font-size: 10px;
+		font-weight:lighter;
+		margin-top: 05px;
+		margin-bottom: 05px;
+		margin-left: 05px;
+		margin-right: 05px;
+		}
+
+A		{
+		background-color: transparent;
+		color: #000000;
+		text-decoration: none;
+		font-weight: bold;
+		}
+
+A:hover 	{
+		background-color: transparent;
+		color: #000000;
+		text-decoration:underline;
+		font-weight: bold;
+		}
+
+.thread_list_aim{
+		background-color:#FFFFFF;
+		border-style:none;
+		height:40px;
+		vertical-align:top;
+		}
+
+.thread_list_folder{
+		background-color:#CCCCCC;
+		border-style:solid;
+		border-top-width:00px;
+		border-bottom-width:01px;
+		border-left-width:00px;
+		border-right-width:00px;
+		border-color:#FFFFFF;
+		height:20px;
+		vertical-align:middle;
+		}
+
+.thread_list_form {
+		background-color:#FFFFFF;
+		border-style:solid;
+		border-top-width:01px;
+		border-bottom-width:01px;
+		border-left-width:01px;
+		border-right-width:01px;
+		border-color:#999999;
+		font-size:10px;
+		margin-left:05px;
+		margin-right:05px;
+}
+
+.thread_list_thread{
+		background-color:#FFFFFF;
+		border-style:none;
+		vertical-align:middle;
+		}
+
+.threadname {
+          font-style: normal;
+          background-color: #CCD0E3;
+          margin-top: 4px;
+          margin-right: 4px;
+          margin-bottom: 4px;
+          margin-left: 4px;
+          padding-top: 2px;
+          padding-right: 2px;
+          padding-bottom: 2px;
+          padding-left: 2px;
+          border: #000000;
+          border-style: solid;
+          border-top-width: 1px;
+          border-right-width: 1px;
+          border-bottom-width: 1px;
+          border-left-width: 1px
+}
+
+.foldername {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+          font-size: 14pt;
+          font-style: normal;
+          font-variant: small-caps;
+          color: #000000;
+          background-color: #FFFFFF;
+          text-align: center;
+          padding-top: 2px;
+          padding-right: 2px;
+          padding-bottom: 2px;
+          padding-left: 2px
+}
+
+.posthead {
+          background-color: #CCD0E3;
+          font-size: 10pt;
+          border: solid;
+          float: left;
+          border-width: 1px 1px 0px;
+          border-color: black #000000
+}
+
+.postbody {
+          background-color: #FFFFFF;
+          padding-top: 2px;
+          padding-right: 2px;
+          padding-bottom: 2px;
+          padding-left: 2px;
+          border: solid;
+          border-width: 0px 1px 1px;
+          border-color: black #000000 #000000
+}
+
+.posstnumber {
+          text-align: right;
+          font-size: 10pt
+}
+
+.postinfo {
+          font-size: 10pt;
+          text-align: right;
+          float: right
+}
+
+.posttofrom {
+          font-size: 10pt
+}
+
+.postresponse {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+          font-size: 12pt;
+          font-style: normal;
+          color: #000000;
+          text-decoration: underline;
+          text-align: center
+}
+
+.messagefoot {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+          font-size: 12pt;
+          font-style: normal;
+          background-color: #9C9FC4;
+          border: #000000;
+          border-style: solid;
+          border-top-width: 1px;
+          border-right-width: 1px;
+          border-bottom-width: 1px;
+          border-left-width: 1px
+}
+
+.notifier {
+          background-color: #E2E2E2;
+          border: #000000;
+          border-style: double;
+          border-top-width: 1px;
+          border-right-width: 1px;
+          border-bottom-width: 1px;
+          border-left-width: 1px;
+          width: 200px;
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+          font-size: 10pt;
+          font-weight: bold;
+          color: #009900;
+          float: right;
+          text-align: right;
+          vertical-align: middle;
+          padding-top: 3px;
+          padding-right: 3px;
+          padding-bottom: 3px;
+          padding-left: 3px; top: 20px;
+          clip:   rect(   )
+}
+

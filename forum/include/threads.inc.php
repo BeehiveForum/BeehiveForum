@@ -152,5 +152,19 @@ function threads_display_list($thread_info, $folder_order) // Displays the threa
 		echo "</tr>\n";
 	}
 }
-	
+
+function thread_get_title($tid)
+{
+   $db = db_connect();
+   $sql = "SELECT THREAD.title FROM THREAD WHERE tid = $tid";
+   $resource_id = db_query($sql,$db);
+   if(!db_num_rows($resource_id)){
+     $threadtitle = "The Unknown Thread";
+   } else {
+     $data = db_fetch_array($resource_id);
+     $threadtitle = $data['title'];
+   }
+   db_disconnect($db);
+   return $threadtitle;
+}
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.10 2003-11-16 22:10:08 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.11 2003-11-17 16:01:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -57,9 +57,9 @@ require_once("./include/attachments.inc.php");
 
 // Get the Message ID (MID)
 
-if (isset($HTTP_GET_VARS['mid']) && is_int($HTTP_GET_VARS['mid'])) {
+if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
     $mid = $HTTP_GET_VARS['mid'];
-}elseif (isset($HTTP_POST_VARS['mid']) && is_int($HTTP_POST_VARS['mid'])) {
+}elseif (isset($HTTP_POST_VARS['mid']) && is_numeric($HTTP_POST_VARS['mid'])) {
     $mid = $HTTP_POST_VARS['mid'];
 }else {
     html_draw_top();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.50 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.51 2003-11-17 16:01:42 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -76,9 +76,9 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['uid']) && is_int($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
-}else if (isset($HTTP_POST_VARS['uid']) && is_int($HTTP_POST_VARS['uid'])) {
+}else if (isset($HTTP_POST_VARS['uid']) && is_numeric($HTTP_POST_VARS['uid'])) {
     $uid = $HTTP_POST_VARS['uid'];
 }else {
     echo "<h1>{$lang['invalidop']}</h1>\n";

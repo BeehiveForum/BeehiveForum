@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.19 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.20 2003-11-17 16:01:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -348,11 +348,11 @@ if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto']))
 
     $newthread = true;
 
-    if (isset($HTTP_GET_VARS['fid']) && is_int($HTTP_GET_VARS['fid'])) {
+    if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
         $t_fid = $HTTP_GET_VARS['fid'];
 
-    }elseif (isset($HTTP_POST_VARS['t_fid']) && is_int($HTTP_POST_VARS['t_fid'])) {
+    }elseif (isset($HTTP_POST_VARS['t_fid']) && is_numeric($HTTP_POST_VARS['t_fid'])) {
 
         $t_fid = $HTTP_POST_VARS['t_fid'];
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.21 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.22 2003-11-17 16:01:42 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -68,9 +68,9 @@ html_draw_top();
 // Get any UID from the GET or POST request
 // or default to the current user if not specified.
 
-if (isset($HTTP_GET_VARS['uid']) && is_int($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
-}elseif (isset($HTTP_POST_VARS['uid']) && is_int($HTTP_POST_VARS['uid'])) {
+}elseif (isset($HTTP_POST_VARS['uid']) && is_numeric($HTTP_POST_VARS['uid'])) {
     $uid = $HTTP_POST_VARS['uid'];
 }else {
     $uid = bh_session_get_value('UID');

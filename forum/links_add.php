@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.23 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.24 2003-11-17 16:01:42 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -111,7 +111,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
         header_redirect("./links.php?fid=$fid");
         exit;
     }
-} elseif (isset($HTTP_GET_VARS['fid']) && is_int($HTTP_GET_VARS['fid'])) {
+} elseif (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
     $fid = $HTTP_GET_VARS['fid'];
     if ($HTTP_GET_VARS['mode'] == 'link' && !in_array($fid, array_keys($folders))) { // this did use array_key_exists(), but that's only supported in PHP/4.1.0+
         html_draw_top();

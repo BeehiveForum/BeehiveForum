@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.38 2003-11-09 18:02:17 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.39 2003-11-17 16:01:41 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -82,9 +82,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
     }
 
-    if (trim($HTTP_POST_VARS['t_title_new']) != "" && trim($HTTP_POST_VARS['t_title_new']) != $lang['newfolder']) {
+    if (strlen(trim($HTTP_POST_VARS['t_title_new'])) > 0 && trim($HTTP_POST_VARS['t_title_new']) != $lang['newfolder']) {
 
-        $new_fid = folder_create($HTTP_POST_VARS['t_title_new'], $HTTP_POST_VARS['t_access_new'], $HTTP_POST_VARS['t_desc_new'], $HTTP_POST_VARS['t_allow_new'], (isset($HTTP_POST_VARS['t_fid']) ? sizeof($HTTP_POST_VARS['t_fid']) : 1));
+        $new_fid = folder_create(trim($HTTP_POST_VARS['t_title_new']), $HTTP_POST_VARS['t_access_new'], trim($HTTP_POST_VARS['t_desc_new']), $HTTP_POST_VARS['t_allow_new'], (isset($HTTP_POST_VARS['t_fid']) ? sizeof($HTTP_POST_VARS['t_fid']) : 1));
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
 
     }

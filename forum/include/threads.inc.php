@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.140 2004-10-28 19:31:34 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.141 2004-11-03 17:32:38 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -121,7 +121,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -131,15 +131,12 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -161,10 +158,10 @@ function threads_get_unread($uid) // get unread messages for $uid
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -174,8 +171,6 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -183,7 +178,6 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -204,9 +198,9 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
@@ -215,8 +209,6 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "JOIN {$table_data['PREFIX']}POST POST2 ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
@@ -224,7 +216,6 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "AND POST2.tid = THREAD.tid ";
     $sql .= "AND POST2.pid = 1 ";
     $sql .= "AND POST.tid = THREAD.tid AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -250,7 +241,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -260,8 +251,6 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -269,7 +258,6 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -294,15 +282,13 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD, ";
     $sql .= "{$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -312,7 +298,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
+
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -337,15 +323,13 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD, ";
     $sql .= "{$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -356,7 +340,6 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "AND USER_THREAD.last_read < THREAD.length ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -380,15 +363,13 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD, ";
     $sql .= "{$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -399,7 +380,6 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -423,7 +403,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -433,8 +413,6 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -442,7 +420,6 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "AND (UP.relationship & $relationship = $relationship)";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -464,10 +441,10 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -477,8 +454,6 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -487,7 +462,6 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -512,7 +486,7 @@ function threads_get_polls($uid, $start = 0)
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -522,8 +496,6 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND THREAD.poll_flag = 'Y' ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -531,7 +503,6 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -557,7 +528,7 @@ function threads_get_sticky($uid, $start = 0)
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -567,8 +538,6 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -576,7 +545,6 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "AND THREAD.sticky = 'Y' ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -598,11 +566,11 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "THREAD.length - IF (USER_THREAD.last_read, USER_THREAD.last_read, 0) AS T_LENGTH, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -612,8 +580,6 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -621,7 +587,6 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY T_LENGTH DESC, THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -644,7 +609,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -654,14 +619,11 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($fid) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -685,7 +647,7 @@ function threads_get_most_recent()
 
     $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, T.POLL_FLAG, UT.LAST_READ, ";
     $sql.= "UNIX_TIMESTAMP(T.MODIFIED) AS MODIFIED, UP.RELATIONSHIP, ";
-    $sql.= "AT.AID AS ATTACHMENTS, UT.INTEREST, U.NICKNAME, U.LOGON ";
+    $sql.= "UT.INTEREST, U.NICKNAME, U.LOGON ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD T ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD UT ";
     $sql.= "ON (T.TID = UT.TID and UT.UID = '$uid') ";
@@ -699,15 +661,12 @@ function threads_get_most_recent()
     $sql.= "(GROUP_USERS.GID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON ";
     $sql.= "(GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (T.FID)) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql.= "(AT.TID = T.TID) ";
     $sql.= "WHERE T.FID IN ($fidlist) ";
     $sql.= "AND U.UID = P.FROM_UID ";
     $sql.= "AND P.TID = T.TID ";
     $sql.= "AND P.PID = 1 ";
     $sql.= "AND (UT.INTEREST IS NULL OR UT.INTEREST > -1) ";
     $sql.= "AND (UF.INTEREST IS NULL OR UF.INTEREST > -1) ";
-    $sql.= "GROUP BY T.TID ";
     $sql.= "ORDER BY T.MODIFIED desc ";
     $sql.= "LIMIT 0, 10";
 
@@ -748,10 +707,10 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship ";
     $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -761,8 +720,6 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
-    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -771,7 +728,6 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
-    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -862,7 +818,6 @@ function threads_process_list($resource_id, $allow_ignored_completely = false)
                     $lst[$i]['logon'] = $thread['logon'];
                     $lst[$i]['nickname'] = $thread['nickname'];
                     $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
-                    $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
                     $lst[$i]['sticky'] = isset($thread['sticky']) ? $thread['sticky'] : 0;
                 }
             }
@@ -935,7 +890,7 @@ function threads_mark_50_read()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DISTINCT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
@@ -969,7 +924,7 @@ function threads_mark_read($tidarray)
 
 function threads_draw_discussions_dropdown($mode)
 {
-    global $lang;
+    $lang = load_language_file();
 
     if (bh_session_get_value('UID') == 0) {
 
@@ -986,6 +941,26 @@ function threads_draw_discussions_dropdown($mode)
         echo form_dropdown_array("mode",range(0,16),$labels,$mode,"onchange=\"submit()\""). "\n";
 
     }
+}
+
+function thread_has_attachments($tid)
+{
+    if (!is_numeric($tid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $db_thread_has_attachments = db_connect();
+
+    $sql = "SELECT COUNT(PAF.AID) AS ATTACHMENT_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
+    $sql.= "ON (PAI.AID = PAF.AID) WHERE PAI.TID = '$tid'";
+
+    $result = db_query($sql, $db_thread_has_attachments);
+
+    $row = db_fetch_array($result);
+
+    return ($row['ATTACHMENT_COUNT'] > 0);
 }
 
 ?>

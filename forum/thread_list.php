@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.218 2004-09-16 12:00:02 tribalonline Exp $ */
+/* $Id: thread_list.php,v 1.219 2004-11-03 17:32:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -333,7 +333,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
             $thread['title'] = _stripslashes($thread['title']);
 
-            if (isset($thread['aid'])) $thread['attachments'] = 1;
             if (!isset($thread['relationship'])) $thread['relationship'] = 0;
 
             if ($thread['tid'] == $tid) {
@@ -565,12 +564,15 @@ while (list($key1, $folder_number) = each($folder_order)) {
                         echo "&nbsp;</td>\n";
                         echo "          <td valign=\"top\">";
                         echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['tid']}');\" title=\"#{$thread['tid']} {$lang['startedby']} ", format_user_name($thread['logon'], $thread['nickname']), "\">", apply_wordfilter($thread['title']), "</a> ";
+
                         if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
                         if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
                         if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
                         if ($thread['sticky'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" height=\"15\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
                         if ($thread['relationship']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
-                        if (isset($thread['attachments']) && $thread['attachments'] > 0) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+
+                        if (thread_has_attachments($thread['tid'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+
                         echo "<bdo dir=\"{$lang['_textdir']}\"><span class=\"threadxnewofy\">{$number}</span></bdo></td>\n";
                         echo "          <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
                         echo "        </tr>\n";

@@ -48,7 +48,7 @@ function get_forum_list()
             if (isset($forum_data['WEBTAG']) && isset($forum_data['FID'])) {
 
 	        if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) == 0) {
-	            $forum_data['FORUM_NAME'] = "Unnamed Forum";
+	            $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
                 }
 
       	        // Get number of messages on forum
@@ -121,7 +121,7 @@ function get_my_forums()
 	        // Make sure the Forum Name is set
 
 	        if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) == 0) {
-	            $forum_data['FORUM_NAME'] = "Unnamed Forum";
+	            $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
 	        }
 
 	        // Make sure the Forum Interest Level is set.

@@ -128,7 +128,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;From:&nbsp;</span></td>\n";
 	echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
 
-	echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\">";
+	echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
 	echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span></td>\n";
 
 	echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
@@ -147,7 +147,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
 	echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
 	if($message['TLOGON'] != "ALL"){
-		echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['TO_UID'].")\">";
+		echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['TO_UID'].")\" target=\"_self\">";
 		echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 		if(!$message['VIEWED']){
 			echo " <span class=\"smalltext\">(unread)</span>";
@@ -175,10 +175,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 			if($message['PID'] > 1){
 				echo " in reply to ";
 				if(intval($message['REPLY_TO_PID']) >= intval($first_msg)){
-					echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\">";
+					echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
 					echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
 				} else {
-					echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\">";
+					echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
 					echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
 				}
 			}
@@ -242,7 +242,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     // The first section, 1-x
     if($spid > 1){
         if($pid > 1){
-            $navbits[0] = "<a href=\"messages.php?msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
+            $navbits[0] = "<a href=\"messages.php?msg=$tid.1\" target=\"_self\">" . mess_nav_range(1,$spid-1) . "</a>";
         } else {
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
@@ -257,7 +257,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\">" . mess_nav_range($spid,$spid+($ppp - 1)) . "</a>";
+            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid,$spid+($ppp - 1)) . "</a>";
         }
         $spid += $ppp;
     }
@@ -269,7 +269,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\">" . mess_nav_range($spid,$length) . "</a>";
+            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid,$length) . "</a>";
         }
     }
     $max = $i;
@@ -277,7 +277,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     $html = "Show messages:";
 
     if($length <= $ppp){
-        $html .= " <a href=\"messages.php?msg=$tid.1\">All</a>";
+        $html .= " <a href=\"messages.php?msg=$tid.1\" target=\"_self\">All</a>";
     }
     $i=0;
     foreach($navbits as $bit){
@@ -301,7 +301,7 @@ function messages_interest_form($tid,$pid)
     global $HTTP_SERVER_VARS;
 
     echo "<p align=\"center\">\n";
-    echo "<form name=\"rate_interest\" action=\"./interest.php?ret=";
+    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
     echo "Rate my interest: \n";
@@ -316,7 +316,7 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
 {
     global $HTTP_SERVER_VARS;
     echo "<p align=\"center\">\n";
-    echo "<form name=\"thread_admin\" action=\"./thread_admin.php?ret=";
+    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
     echo "Rename thread:".form_input_text("t_name",stripslashes($title),64,64)."&nbsp;";
@@ -432,18 +432,34 @@ function message_fontsize_form($fontsize, $tid, $pid)
         $fontsize = $user_prefs['FONT_SIZE'];
       }
     }
-    
+
     if (!isset($user_prefs['FIRST_NAME'])) $user_prefs['FIRST_NAME'] = "";
     if (!isset($user_prefs['LAST_NAME'])) $user_prefs['LAST_NAME'] = "";
     if (!isset($user_prefs['HOMEPAGE_URL'])) $user_prefs['HOMEPAGE_URL'] = "";
     if (!isset($user_prefs['PIC_URL'])) $user_prefs['PIC_URL'] = "";
 
-    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
-                      $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
-                      $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
-                      $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
-                      $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
-                      $fontsize);
+    if (empty($user_prefs['FONT_SIZE'])) {
+    
+      $user_prefs = array('FIRST_NAME' => '', 'LAST_NAME'      => '', 'HOMEPAGE_URL'   => '',
+                          'PIC_URL'    => '', 'EMAIL_NOTIFY'   => '', 'TIMEZONE'       => 0,
+                          'DL_SAVING'  => '', 'MARK_AS_OF_INT' => '', 'POSTS_PER_PAGE' => 5,
+                          'FONT_SIZE'  => $fontsize);
+
+      user_insert_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
+                        $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
+                        $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
+                        $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
+                        $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
+                        $user_prefs['FONT_SIZE']);
+    }else {
+
+      user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
+                        $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
+                        $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
+                        $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
+                        $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
+                        $fontsize);
+    }
     
     $fontstrip = "Adjust text size: ";
     
@@ -455,15 +471,15 @@ function message_fontsize_form($fontsize, $tid, $pid)
       if ($fontsmaller < 1) $fontsmaller = 1;
       if ($fontlarger > 15) $fontlarger = 15;
         
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\">Smaller</a> ". $fontsize. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\">Larger</a>";
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ". $fontsize. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\" target=\"_self\">Larger</a>";
       
     }elseif ($fontsize == 1) {
     
-      $fontstrip.= $fontsize. "<a href=\"messages.php?msg=$tid.$pid&fontsize=2\">Larger</a>";
+      $fontstrip.= $fontsize. "<a href=\"messages.php?msg=$tid.$pid&fontsize=2\" target=\"_self\">Larger</a>";
       
     }elseif ($fontsize == 15) {
    
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=14\">Smaller</a> ". $fontsize;
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=14\" target=\"_self\">Smaller</a> ". $fontsize;
       
     }
       

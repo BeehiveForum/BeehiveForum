@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.166 2004-04-29 11:59:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.167 2004-04-29 14:03:11 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -32,9 +32,7 @@ function user_count()
 
    if (!$table_data = get_table_prefix()) return 0;
 
-   $sql = "SELECT COUNT(UID) AS COUNT FROM USER ";
-   $sql.= "WHERE USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')";
-
+   $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
    $result = db_query($sql, $db_user_count);
 
    $user_count = db_fetch_array($result);
@@ -549,29 +547,7 @@ function user_guest_enabled()
         return false;
     }
 
-    $db_user_guest_account = db_connect();
-
-    $table_data = get_table_prefix();
-
-    $forum_settings = get_forum_settings();
-
-    $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
-    $sql.= "WHERE USER.LOGON = 'GUEST' AND (USER.PASSWD = MD5('guest') OR USER.PASSWD = MD5('GUEST'))";
-
-    $result = db_query($sql, $db_user_guest_account);
-
-    if (db_num_rows($result)) {
-        $fa = db_fetch_array($result);
-        if (isset($fa['STATUS']) && $fa['STATUS'] & USER_PERM_SPLAT) {
-            return false;
-        }else {
-            return true;
-        }
-    }
-
-    return false;
+    return true;
 }
 
 function user_get_dob($uid)

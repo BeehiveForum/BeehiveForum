@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.25 2004-04-28 14:28:52 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.26 2004-04-29 14:02:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,34 +52,37 @@ if (!$user_sess = bh_session_check()) {
 
         if (perform_logon(false)) {
 
-	    html_draw_top();
+            $lang = load_language_file();
+            $webtag = get_webtag();
+
+            html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
             echo "<div align=\"center\">\n";
-	    echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+            echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
 
             $request_uri = get_request_uri();
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+            echo form_input_hidden('webtag', $webtag);
 
             foreach($_POST as $key => $value) {
-	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
+                echo form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
-	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
+            echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
-	    echo "</form>\n";
+            echo "</form>\n";
 
-	    html_draw_bottom();
-	    exit;
-	}
-
-    }else {
-        html_draw_top();
-        draw_logon_form(false);
-	html_draw_bottom();
-	exit;
+            html_draw_bottom();
+            exit;
+        }
     }
+
+    html_draw_top();
+    draw_logon_form(false);
+    html_draw_bottom();
+    exit;
 }
 
 // Load language file

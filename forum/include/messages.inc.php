@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.277 2004-04-28 20:38:57 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.278 2004-04-29 14:03:10 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -1029,7 +1029,6 @@ function messages_forum_stats($tid, $pid)
                 echo "          <tr>\n";
                 echo "            <td>&nbsp;</td>\n";
                 echo "            <td>\n";
-                echo "              <b>{$user_stats['GUESTS']}</b> {$lang['guests']}\n";
                 echo "              <b>{$user_stats['NUSERS']}</b> {$lang['members']}\n";
                 echo "              <b>{$user_stats['AUSERS']}</b> {$lang['anonymousmembers']}\n";
                 echo "              [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"main\">{$lang['viewcompletelist']}</a> ]\n";

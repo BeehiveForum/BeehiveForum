@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.136 2004-04-28 14:28:53 decoyduck Exp $ */
+/* $Id: logon.php,v 1.137 2004-04-29 14:02:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,6 +48,10 @@ include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
 if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
+
+    // Load language file
+
+    $lang = load_language_file();
 
     html_draw_top();
     echo "<div align=\"center\">\n";
@@ -135,6 +139,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
     }
 
     bh_session_end();
+    bh_setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
 
     if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
@@ -165,7 +170,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
         // If they're still here, Javascript's not working. Give up, give a link.
         echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-        echo "<p>{$lang['loggedinsuccessfully']}</p>";
+        echo "<p>{$lang['cookiessuccessfullydeleted']}</p>";
 
         if (isset($final_uri)) {
             form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");

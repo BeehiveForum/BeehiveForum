@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.73 2004-04-28 18:36:15 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.74 2004-04-29 14:03:10 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -629,6 +629,7 @@ $lang['enterasa'] = "Entrer comme un";
 $lang['donthaveanaccount'] = "Ne pas avoir un compte?";
 $lang['problemsloggingon'] = "Les problèmes effectuant une procédure d'entrée?";
 $lang['deletecookies'] = "Effacer  Cookies";
+$lang['cookiessuccessfullydeleted'] = "Cookies successfully deleted";
 $lang['forgottenpasswd'] = "Oublié votre mot de passe?";
 $lang['usingaPDA'] = "L'utilisation un PDA?";
 $lang['lightHTMLversion'] = "La version légère de HTML";

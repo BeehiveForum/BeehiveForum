@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.15 2004-04-28 14:28:54 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.16 2004-04-29 14:03:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -58,6 +58,9 @@ if (!$user_sess = bh_session_check()) {
 
         if (perform_logon(false)) {
 
+            $lang = load_language_file();
+            $webtag = get_webtag();
+
             html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -67,9 +70,10 @@ if (!$user_sess = bh_session_check()) {
             $request_uri = get_request_uri();
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+            echo form_input_hidden('webtag', $webtag);
 
             foreach($_POST as $key => $value) {
-                form_input_hidden($key, _htmlentities(_stripslashes($value)));
+                echo form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
             echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
@@ -79,14 +83,12 @@ if (!$user_sess = bh_session_check()) {
             html_draw_bottom();
             exit;
         }
-
-    }else {
-
-        html_draw_top();
-        draw_logon_form(false);
-        html_draw_bottom();
-        exit;
     }
+
+    html_draw_top();
+    draw_logon_form(false);
+    html_draw_bottom();
+    exit;
 }
 
 // Load language file

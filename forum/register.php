@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.89 2004-04-29 12:45:57 decoyduck Exp $ */
+/* $Id: register.php,v 1.90 2004-04-29 14:02:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,7 +50,11 @@ if (isset($_GET['final_uri'])) {
     $final_uri = rawurldecode($_GET['final_uri']);
 }
 
-if ($user_sess = bh_session_check()) {
+if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
+
+    // Load language file
+
+    $lang = load_language_file();
 
     html_draw_top();
     echo "<div align=\"center\">\n";

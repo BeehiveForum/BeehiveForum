@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.5 2004-05-09 00:57:43 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.6 2004-05-10 09:36:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,19 +151,19 @@ if (isset($_POST['submit'])) {
     $valid = true;
 
     if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
-        $folder_data['TITLE'] = trim($_POST['name']);
+        $folder_data['TITLE'] = trim(_stripslashes($_POST['name']));
     }
 
     if (isset($_POST['description']) && strlen(trim($_POST['description'])) > 0) {
-        $folder_data['DESCRIPTION'] = trim($_POST['description']);
+        $folder_data['DESCRIPTION'] = trim(_stripslashes($_POST['description']));
     }
 
     if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
-        $folder_data['ACCESS_LEVEL'] = trim($_POST['access_level']);
+        $folder_data['ACCESS_LEVEL'] = trim(_stripslashes($_POST['access_level']));
     }
 
     if (isset($_POST['allowed_types']) && is_numeric($_POST['allowed_types'])) {
-        $folder_data['ALLOWED_TYPES'] = trim($_POST['allowed_types']);
+        $folder_data['ALLOWED_TYPES'] = trim(_stripslashes($_POST['allowed_types']));
     }
 
     folder_update($fid, $folder_data);

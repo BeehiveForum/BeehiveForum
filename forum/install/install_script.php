@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.6 2004-06-19 11:30:35 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.7 2004-07-06 15:18:11 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -816,7 +816,7 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  WEBTAG VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  DEFAULT_FORUM TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  ACCESS_LEVEL TINYINT(4) NOT NULL DEFAULT '0',";
-$sql.= "  FORUM_PASSWD VARCHAR(32) NOT default '',";
+$sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (FID)";
 $sql.= ")";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.288 2004-07-03 23:08:19 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.289 2004-07-08 00:54:57 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -341,7 +341,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             }
 
-            if ($message['PID'] > 1) {
+            if ($message['REPLY_TO_PID'] > 0) {
 
                 echo " {$lang['inreplyto']} ";
 

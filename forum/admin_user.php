@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.49 2003-09-21 12:57:57 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.50 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -76,9 +76,9 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['uid']) && is_int($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
-}else if(isset($HTTP_POST_VARS['uid'])) {
+}else if (isset($HTTP_POST_VARS['uid']) && is_int($HTTP_POST_VARS['uid'])) {
     $uid = $HTTP_POST_VARS['uid'];
 }else {
     echo "<h1>{$lang['invalidop']}</h1>\n";
@@ -99,7 +99,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if ($HTTP_POST_VARS['submit'] == 'Del') {
 
-        unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
         delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
         admin_addlog($uid, 0, 0, 0, 0, 0, 6);
 

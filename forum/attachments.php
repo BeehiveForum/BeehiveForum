@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.44 2003-11-10 20:37:47 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.45 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -43,17 +43,18 @@ if (!bh_session_check()) {
 require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/format.inc.php");
 
 // If attachments are disabled then no need to go any further.
 
-if (isset($attachments_enabled) && !$attachments_enabled)) {
+if (isset($attachments_enabled) && !$attachments_enabled) {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();
     exit;
 }
 
-if (!isset($HTTP_GET_VARS['aid'])) {
+if (!isset($HTTP_GET_VARS['aid']) || !is_md5($HTTP_GET_VARS['aid'])) {
   html_draw_top();
   echo "<h1>{$lang['invalidop']}</h1>\n";
   echo "<h2>{$lang['aidnotspecified']}</h2>\n";
@@ -86,7 +87,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
   if ($HTTP_POST_VARS['submit'] == $lang['del']) {
 
-    @unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
     delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
 
   }elseif ($HTTP_POST_VARS['submit'] == $lang['upload'] || $HTTP_POST_VARS['submit'] == $lang['waitdotdot']) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.38 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: delete.php,v 1.39 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -62,12 +62,12 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-if (isset($HTTP_POST_VARS['msg'])) {
+if (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
 
     $msg = $HTTP_POST_VARS['msg'];
     list($tid, $pid) = explode(".", $msg);
 
-}elseif (isset($HTTP_GET_VARS['msg'])) {
+}elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
     $msg = $HTTP_GET_VARS['msg'];
     list($tid, $pid) = explode(".", $msg);

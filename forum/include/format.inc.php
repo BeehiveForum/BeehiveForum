@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.55 2003-11-02 16:18:33 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.56 2003-11-13 20:44:41 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -220,6 +220,19 @@ function _in_array($needle, $haystack)
             }
         }
     }
+    return false;
+}
+
+// is_md5 validates an md5 hash to make sure it is correctly
+// formed (i.e. letters A to F and numbers only and a length
+// of 32 chars).
+
+function is_md5($hash)
+{
+    if (preg_match("/^[A-Fa-f0-9]{32}$/", $hash)) {
+        return true;
+    }
+
     return false;
 }
 

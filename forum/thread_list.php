@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.151 2003-11-12 21:09:51 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.152 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -37,6 +37,7 @@ require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/form.inc.php"); // Form drawing functions
 require_once("./include/header.inc.php");
+require_once("./include/messages.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
@@ -251,7 +252,7 @@ if (!is_array($folder_order)) $folder_order = array();
 
 // Sort the folders and threads correctly as per the URL query for the TID
 
-if (isset($HTTP_GET_VARS['msg']) && strlen($HTTP_GET_VARS['msg']) > 0) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
     $threadvisible = false;
     
@@ -301,7 +302,7 @@ if (isset($HTTP_GET_VARS['msg']) && strlen($HTTP_GET_VARS['msg']) > 0) {
 
 if (bh_session_get_value('UID') > 0) {
 
-    if (isset($HTTP_GET_VARS['msg'])) {
+    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
         list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
 
@@ -442,7 +443,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             $latest_post = 1;
 
-                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }else {
@@ -455,7 +456,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                             $number = "[".$new_posts."&nbsp;{$lang['new']}&nbsp;{$lang['of']}&nbsp;".$thread['length']."]";
                             $latest_post = $thread['last_read'] + 1;
 
-                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }else {
@@ -472,7 +473,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             $latest_post = 1;
 
-                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             } else {

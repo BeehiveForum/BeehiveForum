@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.20 2003-11-10 21:10:06 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.21 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -68,9 +68,9 @@ html_draw_top();
 // Get any UID from the GET or POST request
 // or default to the current user if not specified.
 
-if (isset($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['uid']) && is_int($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
-}elseif (isset($HTTP_POST_VARS['uid'])) {
+}elseif (isset($HTTP_POST_VARS['uid']) && is_int($HTTP_POST_VARS['uid'])) {
     $uid = $HTTP_POST_VARS['uid'];
 }else {
     $uid = bh_session_get_value('UID');
@@ -78,18 +78,11 @@ if (isset($HTTP_GET_VARS['uid'])) {
 
 // Get any AID from the GET or POST request
 
-if (isset($HTTP_GET_VARS['aid'])) {
+if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
     $aid = $HTTP_GET_VARS['aid'];
 }elseif (isset($HTTP_POST_VARS['aid'])) {
     $aid = $HTTP_POST_VARS['aid'];
 }
-
-/*else {
-    echo "<h1>{$lang['invalidop']}</h1>\n";
-    echo "<p>{$lang['nomessagespecifiedforedit']}</p>\n";
-    html_draw_bottom();
-    exit;
-}*/
 
 // Check that the UID we have belongs to the current user
 // or that it is an admin if we're viewing another user's
@@ -113,12 +106,12 @@ if (!is_dir('attachments')) {
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-  if ($HTTP_POST_VARS['submit'] == $lang['delete']) {
+    if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['aid']) && isset($HTTP_POST_VARS['userfile'])) {
 
-    unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
-    delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+        delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+    }
 
-  }elseif ($HTTP_POST_VARS['submit'] == $lang['close']) {
+}elseif (isset($HTTP_POST_VARS['close'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -126,8 +119,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     html_draw_bottom();
     exit;
-
-  }
 }
 
 ?>
@@ -184,7 +175,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
       echo "        ". form_input_hidden('uid', $uid);
-      echo "        ". form_submit('submit', $lang['delete']). "\n";
+      echo "        ". form_submit('delete', $lang['delete']). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";
@@ -232,7 +223,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   echo form_input_hidden('uid', $uid), "\n";
   echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
   echo "  <tr>\n";
-  echo "    <td class=\"postbody\" align=\"center\">", form_submit('submit', $lang['close']), "</td>\n";
+  echo "    <td class=\"postbody\" align=\"center\">", form_submit('close', $lang['close']), "</td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
   echo "</form>\n";

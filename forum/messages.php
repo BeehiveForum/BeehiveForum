@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.98 2003-10-29 13:35:35 decoyduck Exp $ */
+/* $Id: messages.php,v 1.99 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -47,7 +47,7 @@ require_once("./include/lang.inc.php");
 
 if (!bh_session_check()) {
 
-    if (isset($HTTP_GET_VARS['msg'])) {
+    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
       $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
     }else {
       $uri = "./index.php?final_uri=". urlencode(get_request_uri());
@@ -59,7 +59,7 @@ if (!bh_session_check()) {
 
 // Check that required variables are set
 // default to display most recent discussion for user
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
     $msg = messages_get_most_recent(bh_session_get_value('UID'));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.20 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.21 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -35,6 +35,7 @@ require_once("./include/format.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/messages.inc.php");
 require_once("./include/light.inc.php");
 require_once("./include/lang.inc.php");
 
@@ -69,20 +70,24 @@ if (!isset($HTTP_GET_VARS['mode'])) {
             $mode = 0;
         }
     }else {
-        $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        $mode = (is_int($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
     }
 } else {
-    $mode = $HTTP_GET_VARS['mode'];
+    $mode = (is_int($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
 }
 
-if (isset($HTTP_GET_VARS['folder'])) {
+if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
     $folder = $HTTP_GET_VARS['folder'];
     $mode = 0;
 }
 
 bh_setcookie('bh_thread_mode', $mode);
 
-if(!isset($HTTP_GET_VARS['start_from'])) { $start_from = 0; } else { $start_from = $HTTP_GET_VARS['start_from']; }
+if (isset($HTTP_GET_VARS['start_from']) && is_int($HTTP_GET_VARS['start_form'])) {
+    $start_from = $HTTP_GET_VARS['start_from'];
+}else {
+    $start_from = 0;
+}
 
 // Output XHTML header
 light_html_draw_top();
@@ -180,7 +185,7 @@ if (!is_array($folder_order)) $folder_order = array();
 
 // Sort the folders and threads correctly as per the URL query for the TID
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
     $threadvisible = false;
 
@@ -220,10 +225,10 @@ if (isset($HTTP_GET_VARS['msg'])) {
 // Work out if any folders have no messages and add them.
 // Seperate them by INTEREST level
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
     list(,$selectedfolder) = thread_get($tid);
-}elseif (isset($HTTP_GET_VARS['folder'])) {
+}elseif (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
     $selectedfolder = $HTTP_GET_VARS['folder'];
 }else {
     $selectedfolder = 0;

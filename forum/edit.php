@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.72 2003-11-11 19:10:26 decoyduck Exp $ */
+/* $Id: edit.php,v 1.73 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -62,12 +62,12 @@ require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/htmltools.inc.php");
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
   $edit_msg = $HTTP_GET_VARS['msg'];
   list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
 
-}elseif (isset($HTTP_POST_VARS['t_msg'])) {
+}elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
 
   $edit_msg = $HTTP_POST_VARS['t_msg'];
   list($tid, $pid) = explode('.', $HTTP_POST_VARS['t_msg']);
@@ -123,9 +123,9 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 if (thread_is_poll($tid) && $pid == 1) {
     $uri = "./edit_poll.php";
 
-    if (isset($HTTP_GET_VARS['msg'])) {
+    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
         $uri.= "?msg=". $HTTP_GET_VARS['msg'];
-    }elseif (isset($HTTP_POST_VARS['t_msg'])) {
+    }elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
         $uri.= "?msg=". $HTTP_POST_VARS['t_msg'];
     }
 
@@ -136,9 +136,9 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
     $uri = "./discussion.php";
 
-    if (isset($HTTP_GET_VARS['msg'])) {
+    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
         $uri.= "?msg=". $HTTP_GET_VARS['msg'];
-    }elseif (isset($HTTP_POST_VARS['t_msg'])) {
+    }elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
         $uri.= "?msg=". $HTTP_POST_VARS['t_msg'];
     }
 

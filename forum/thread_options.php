@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.8 2004-04-13 00:33:33 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.9 2004-04-13 00:57:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -157,7 +157,7 @@ if (isset($HTTP_POST_VARS['markasread']) && is_numeric($HTTP_POST_VARS['markasre
     $markasread = $HTTP_GET_VARS['markasread'];
     messages_set_read($tid, $markasread, $uid);
     
-    $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&mar=1";
+    $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&markasread=1";
     header_redirect($uri);
     exit;
 }

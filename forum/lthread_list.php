@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.54 2004-08-09 01:17:19 rowan_hill Exp $ */
+/* $Id: lthread_list.php,v 1.55 2004-08-10 18:43:47 rowan_hill Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -197,6 +197,9 @@ if (isset($folder)) {
             break;
         case 15: // Most unread posts
             list($thread_info, $folder_order) = threads_get_longest_unread($user);
+            break;
+        case 16: // Most unread posts
+            list($thread_info, $folder_order) = threads_get_unread_by_days($user, 0);
             break;
     }
 }

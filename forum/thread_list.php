@@ -214,7 +214,7 @@ if (!$thread_info) {
     echo "</tr>\n<tr>\n<td>&nbsp;</td>\n<tr>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr><tr><td>&nbsp;</td></tr>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr><tr><td>&nbsp;</td></tr>\n";
 
 // Iterate through the information we've just got and display it in the right order
 while (list($key1, $folder_number) = each($folder_order)) {
@@ -229,7 +229,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." threads</a></td>\n";
 		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
 		echo "</tr>\n";
-		if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<tr><td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">Previous 50 threads</a></td></tr>\n";
+		if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<tr><td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\" colspan=\"2\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">Previous 50 threads</a></td></tr>\n";
 		echo "<tr><td class=\"threads\" style=\"border-top: 0px;\" colspan=\"2\">\n";
 		echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 		while (list($key2, $thread) = each($thread_info)) {

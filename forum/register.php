@@ -41,8 +41,6 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     exit;
 }
 
-html_draw_top();
-
 $valid = true;
 
 if(isset($HTTP_POST_VARS['submit'])) {
@@ -171,9 +169,10 @@ if(isset($HTTP_POST_VARS['submit'])) {
   if($valid) {
       $new_uid = user_create($logon,$password,$nickname,$email);
       if($new_uid > -1) {
+          bh_session_init($new_uid);
+          html_draw_top();
           echo "<p>Huzzah! Your user record has been created successfully!</p>";
           echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>";      
-          bh_session_init($new_uid);
           html_draw_bottom();
           exit;
       } else {
@@ -183,6 +182,8 @@ if(isset($HTTP_POST_VARS['submit'])) {
   }
   
 }
+
+html_draw_top();
 
 echo "<h1>User Registration</h1>";
 

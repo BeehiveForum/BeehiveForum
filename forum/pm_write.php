@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.81 2004-06-30 20:08:47 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.82 2004-07-03 23:08:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -54,6 +54,8 @@ include_once("./include/pm.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
@@ -117,6 +119,17 @@ if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
     $t_rmid = $_POST['replyto'];
 }else {
     $t_rmid = 0;
+}
+
+// Get the tid.pid if any.
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    @list($tid, $pid) = explode('.', $_GET['msg']); 
+    
+    if (is_numeric($tid) && is_numeric($pid)) {
+    	if ($threaddata = thread_get($tid)) {
+   	   $t_subject = "Re:".$threaddata['TITLE']." [$tid.$pid]";
+  	  }
+    }
 }
 
 // User clicked cancel

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.265 2004-04-13 00:33:33 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.266 2004-04-13 00:45:26 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -451,15 +451,15 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             echo "<a href=\"display.php?webtag=$webtag&msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
-            echo "<a href=\"thread_options.php?webtag=$webtag&tid=$tid&markasread=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+            echo "<a href=\"thread_options.php?webtag=$webtag&msg=$tid.$first_msg&markasread=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
             if (bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "<a href=\"user_rel.php?webtag=$webtag&uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"user_rel.php?webtag=$webtag&uid=", $message['FROM_UID'], "&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
             }
 
             if (perm_is_soldier()){
 
-                echo "<a href=\"admin_user.php?webtag=$webtag&uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"admin_user.php?webtag=$webtag&uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
 	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";

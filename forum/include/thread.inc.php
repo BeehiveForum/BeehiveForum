@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.31 2003-08-30 00:16:23 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.32 2003-08-30 16:46:03 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -70,24 +70,24 @@ function thread_get($tid)
    $sql.= "AND THREAD.TID = $tid ";
    $sql.= "GROUP BY THREAD.tid ";*/
 
-	$sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, "; 
-	$sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, "; 
-	$sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE "; 
-	$sql.= "FROM ". forum_table("THREAD"). " THREAD "; 
-	$sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD "; 
-	$sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)"; 
-	$sql.= "JOIN " . forum_table("USER") . " USER "; 
-	$sql.= "JOIN " . forum_table("POST") . " POST "; 
-	$sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON "; 
-	$sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) "; 
-	$sql.= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON "; 
-	$sql.= "(AT.TID = THREAD.TID) "; 
-	$sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON "; 
-	$sql.= "(FOLDER.FID = THREAD.FID) "; 
-	$sql.= "WHERE USER.UID = POST.FROM_UID "; 
-	$sql.= "AND POST.TID = THREAD.TID "; 
-	$sql.= "AND POST.PID = 1 "; 
-	$sql.= "AND THREAD.TID = $tid "; 
+	$sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+	$sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
+	$sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
+	$sql.= "FROM ". forum_table("THREAD"). " THREAD ";
+	$sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
+	$sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)";
+	$sql.= "JOIN " . forum_table("USER") . " USER ";
+	$sql.= "JOIN " . forum_table("POST") . " POST ";
+	$sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
+	$sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
+	$sql.= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+	$sql.= "(AT.TID = THREAD.TID) ";
+	$sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON ";
+	$sql.= "(FOLDER.FID = THREAD.FID) ";
+	$sql.= "WHERE USER.UID = POST.FROM_UID ";
+	$sql.= "AND POST.TID = THREAD.TID ";
+	$sql.= "AND POST.PID = 1 ";
+	$sql.= "AND THREAD.TID = $tid ";
 	$sql.= "GROUP BY THREAD.tid";
 
    $resource_id = db_query($sql, $db_thread_get);
@@ -212,7 +212,7 @@ function thread_change_folder($tid, $new_fid)
 function thread_change_title($tid, $new_title)
 {
     $db_thread_change_title = db_connect();
-    $new_title = _addslashes(_htmlentities($new_title));
+    $new_title = addslashes(_htmlentities($new_title));
 
     $sql = "UPDATE ". forum_table("THREAD"). " SET TITLE = '$new_title' WHERE TID = $tid";
     $result = db_query($sql, $db_thread_change_title);

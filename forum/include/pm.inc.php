@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.16 2003-08-17 17:59:10 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.17 2003-08-30 16:46:03 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -88,7 +88,7 @@ function pm_add_sentitem($mid)
 
     $sql = "INSERT INTO ". forum_table("PM"). " (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
-    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". _addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
+    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}')";
 
     $result  = db_query($sql, $db_pm_add_sentitem);
@@ -100,7 +100,7 @@ function pm_add_sentitem($mid)
     // ------------------------------------------------------------
 
     $sql = "INSERT INTO ". forum_table("PM_CONTENT"). " (MID, CONTENT) ";
-    $sql.= "VALUES ($new_mid, '". _addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
+    $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
 
@@ -288,7 +288,7 @@ function draw_pm_message($pm_elements_array)
     echo "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
     echo "          <tr>\n";
 
-    if ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
+    if (isset($pm_elements_array['FOLDER']) && $pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
         echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
         echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['FROM_UID'] . ")\" target=\"_self\">";
@@ -364,15 +364,14 @@ function draw_pm_message($pm_elements_array)
 
     }
 
-    echo "          <tr>\n";
-    echo "            <td align=\"center\">\n";
-
-    if (($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) && (isset($pm_elements_array['MID']))) {
-        echo "<span class=\"postresponse\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></span>\n";
+    if (isset($pm_elements_array['FOLDER']) && ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) && (isset($pm_elements_array['MID']))) {
+        echo "          </table>\n";
+        echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+        echo "            <tr>\n";
+        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+        echo "            </tr>\n";
     }
 
-    echo "</td>\n";
-    echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
@@ -414,8 +413,8 @@ function pm_send_message($tuid, $subject, $content)
 {
     $db_pm_send_message = db_connect();
 
-    $subject = _addslashes($subject);
-    $content = _addslashes($content);
+    $subject = addslashes($subject);
+    $content = addslashes($content);
 
     $fuid = bh_session_get_value('UID');
 
@@ -453,8 +452,8 @@ function pm_edit_message($mid, $subject, $content)
 {
     $db_pm_edit_messages = db_connect();
 
-    $subject = _addslashes($subject);
-    $content = _addslashes($content);
+    $subject = addslashes($subject);
+    $content = addslashes($content);
 
     // ------------------------------------------------------------
     // Update the subject text

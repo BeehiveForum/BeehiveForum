@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.87 2003-08-30 00:16:23 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.88 2003-08-30 16:46:03 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -45,7 +45,7 @@ function user_exists($logon)
 {
     $db_user_exists = db_connect();
 
-    $logon = _addslashes($logon);
+    $logon = addslashes($logon);
 
     $sql = "SELECT uid FROM " . forum_table("USER") . " WHERE logon = '$logon'";
     $result = db_query($sql, $db_user_exists);
@@ -80,8 +80,8 @@ function user_update($uid, $nickname, $email)
 {
     $db_user_update = db_connect();
 
-    $nickname = _addslashes(_htmlentities($nickname));
-    $email = _addslashes(_htmlentities($nickname));
+    $nickname = addslashes(_htmlentities($nickname));
+    $email = addslashes(_htmlentities($nickname));
 
     $sql = "UPDATE ". forum_table("USER"). " SET NICKNAME = '$nickname', ";
     $sql.= "EMAIL = '$email' WHERE UID = $uid";
@@ -97,7 +97,7 @@ function user_change_pw($uid, $password, $hash = false)
     $sql = "UPDATE ". forum_table("USER"). " SET PASSWD = '$password' WHERE UID = $uid ";
 
     if ($hash) {
-        $hash = _addslashes($hash);
+        $hash = addslashes($hash);
         $sql.= "AND PASSWD = '$hash'";
     }
 
@@ -226,7 +226,7 @@ function user_get($uid, $hash = false)
     $sql = "SELECT * FROM " . forum_table("USER") . " WHERE UID = $uid ";
 
     if ($hash) {
-        $hash = _addslashes($hash);
+        $hash = addslashes($hash);
         $sql.= "AND PASSWD = '$hash'";
     }
 
@@ -351,7 +351,7 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
 function user_update_sig($uid, $content, $html)
 {
 
-    $content = _addslashes($content);
+    $content = addslashes($content);
     $db_user_update_sig = db_connect();
 
     $sql = "delete from ". forum_table("USER_SIG"). " where UID = $uid";
@@ -532,7 +532,7 @@ function user_get_by_ipaddress($ip, $uid_filter = false)
     // filter out a UID if specified
 
     if ($uid_filter) {
-        $uid_filter = _addslashes($uid_filter);
+        $uid_filter = addslashes($uid_filter);
         $sql.= "AND UID <> '$uid_filter'";
     }
 

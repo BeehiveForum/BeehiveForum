@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.37 2003-08-30 00:16:23 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.38 2003-08-30 16:46:03 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -65,8 +65,8 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
 {
     $db_folder_create = db_connect();
 
-    $title = _addslashes($title);
-    $description = _addslashes($description);
+    $title = addslashes($title);
+    $description = addslashes($description);
 
     $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
     $sql.= "values ('$title', $access, '$description', $allowed_types, $position)";
@@ -86,8 +86,8 @@ function folder_update($fid, $title, $access, $description = "", $allowed_types 
 {
     $db_folder_update = db_connect();
 
-    $title = _addslashes($title);
-    $description = _addslashes($description);
+    $title = addslashes($title);
+    $description = addslashes($description);
 
     $sql = "UPDATE LOW_PRIORITY ". forum_table("FOLDER"). " SET TITLE = '$title', ";
     $sql.= "ACCESS_LEVEL = $access, DESCRIPTION = '$description', ";
@@ -96,7 +96,7 @@ function folder_update($fid, $title, $access, $description = "", $allowed_types 
     return db_query($sql, $db_folder_update);
 }
 
-function folder_move_threads($from,$to)
+function folder_move_threads($from, $to)
 {
     $db_folder_move_threads = db_connect();
     $sql = "update " . forum_table("THREAD") . " ";

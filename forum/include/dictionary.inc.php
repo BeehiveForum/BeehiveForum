@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.8 2004-11-28 23:52:35 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.9 2004-12-04 17:49:13 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
@@ -51,6 +51,8 @@ class dictionary {
 
         $this->current_word = $current_word;
         $this->obj_id = $obj_id;
+
+        $this->check_complete = false;
     }
 
     function get_obj_id()

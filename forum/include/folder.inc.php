@@ -29,9 +29,10 @@ require_once("./include/db.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/constants.inc.php");
 
-function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
+function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
     global $HTTP_COOKIE_VARS;
+
     $ustatus = $HTTP_COOKIE_VARS['bh_sess_ustatus'];
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 

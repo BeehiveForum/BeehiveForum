@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.21 2004-03-13 20:04:34 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.22 2004-03-14 18:33:41 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -47,7 +47,7 @@ include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
 if (isset($HTTP_GET_VARS['final_uri'])) {
-    $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
+    $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
 }else {
     $final_uri = "./lthread_list.php?webtag={$webtag['WEBTAG']}";
 }
@@ -97,7 +97,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
           light_html_draw_top();
 
           echo "<p>{$lang['loggedinsuccessfully']}</p>";
-          echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "final_uri", urlencode($final_uri));
+          echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "final_uri", rawurlencode($final_uri));
 
           light_html_draw_bottom();
           exit;

@@ -103,11 +103,11 @@ function get_my_forums()
 
             // Get unread message count
         
-            $sql = "SELECT (THREAD.LENGTH - USER_THREAD.LAST_READ) AS POST_COUNT ";
+            $sql = "SELECT THREAD.LENGTH, USER_THREAD.LAST_READ ";
             $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
-            $sql.= "(THREAD.TID = USER_THREAD.TID) WHERE USER_THREAD.UID = $uid ";
-            $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL)";
+            $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+	    $sql.= "WHERE USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL";
 
             $result = db_query($sql, $db_get_my_forums);
 
@@ -115,7 +115,11 @@ function get_my_forums()
         
             if (db_num_rows($result)) {
 	        while ($row = db_fetch_array($result)) {
-                    $forum_data['UNREAD_MESSAGES']+= $row['POST_COUNT'];
+                    if (isset($row['LAST_READ']) && ($row['LAST_READ'] < $row['LENGTH'])) {
+		        $forum_data['UNREAD_MESSAGES']+= $row['LENGTH'] - $row['LAST_READ'];
+		    }else {
+		        $forum_data['UNREAD_MESSAGES']+= $row['LENGTH'];
+		    }
 	        }
             }
 

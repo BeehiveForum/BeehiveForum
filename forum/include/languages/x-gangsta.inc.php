@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.12 2004-05-11 16:49:15 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.13 2004-05-22 21:04:58 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -280,6 +280,23 @@ $lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
 $lang['currentpasswd'] = "Current Password";
 $lang['forumisnotrestricted'] = "Forum is not restricted";
 $lang['noforumidspecified'] = "No Forum ID specified";
+$lang['usergroups'] = "User Groups";
+$lang['nameanddesc'] = "Name and Description";
+$lang['groups'] = "Groups";
+$lang['addnewgroup'] = "Add New Group";
+$lang['nousergroups'] = "No User Groups have been set up";
+$lang['suppliedgidisnotausergroup'] = "Supplied GID is not a user group";
+$lang['manageusergroups'] = "Manage User Groups";
+$lang['groupstatus'] = "Group Status";
+$lang['addusergroup'] = "Add Group";
+$lang['addremoveusers'] = "Add/Remove Users";
+$lang['addtogroup'] = "Add to group";
+$lang['nousersingroup'] = "There are no users in this group";
+$lang['deletegroups'] = "Delete Groups";
+$lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
+$lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
+$lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
+$lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

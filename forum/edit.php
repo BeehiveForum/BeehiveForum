@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.114 2004-04-15 18:31:59 tribalonline Exp $ */
+/* $Id: edit.php,v 1.115 2004-04-16 09:19:45 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -520,8 +520,8 @@ echo form_input_hidden("t_to_uid", $to_uid);
 echo form_input_hidden("t_from_uid", $from_uid);
 
 echo "<h2>".$lang['to'].":</h2>\n";
-echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($from_uid, '$webtag')\" target=\"_self\">";
-echo _stripslashes(format_user_name($preview_message['FLOGON'], $preview_message['FNICK']));
+echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
+echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
 echo "</a><br /><br />\n";
 
 $emot_user = bh_session_get_value('EMOTICONS');

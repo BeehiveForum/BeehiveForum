@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.72 2004-04-27 23:07:11 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.73 2004-04-27 23:31:40 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -474,7 +474,7 @@ function draw_pm_message($pm_elements_array)
     $uid = bh_session_get_value('UID');
 
     echo "<div align=\"center\">\n";
-    echo "  <table width=\"90%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "  <table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";

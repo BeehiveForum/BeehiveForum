@@ -259,27 +259,37 @@ if (isset($HTTP_GET_VARS['msg'])) {
 // Work out if any folders have no messages and add them.
 // Seperate them by INTEREST level
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+
+  if (isset($HTTP_GET_VARS['msg'])) {
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
     list(,$selectedfolder) = thread_get($tid);
-}elseif (isset($HTTP_GET_VARS['folder'])) {
+  }elseif (isset($HTTP_GET_VARS['folder'])) {
     $selectedfolder = $HTTP_GET_VARS['folder'];
-}else {
-    $selectedfolder = 0;
-}
-
-while (list($fid, $folder_data) = each($folder_info)) {
-  if (!$folder_data['INTEREST'] || ($selectedfolder == $fid)) {
-    if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
   }else {
-    $ignored_folders[] = $fid;
+    $selectedfolder = 0;
   }
+
+  while (list($fid, $folder_data) = each($folder_info)) {
+    if (!$folder_data['INTEREST'] || ($selectedfolder == $fid)) {
+      if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+    }else {
+      $ignored_folders[] = $fid;
+    }
+  }
+
+  // Append ignored folders onto the end of the folder list.
+  // This will make them appear at the bottom of the thread list.
+
+  $folder_order = array_merge($folder_order, $ignored_folders);
+
+}else {
+
+  while (list($fid, $folder_data) = each($folder_info)) {
+    if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+  }
+
 }
-
-// Append ignored folders onto the end of the folder list.
-// This will make them appear at the bottom of the thread list.
-
-$folder_order = array_merge($folder_order, $ignored_folders);
 
 // If no threads are returned, say something to that effect
 
@@ -305,15 +315,21 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "<img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"folder\" />\n";
     echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE']. "</a>";
     echo "</td>\n";
-    echo "<td class=\"folderpostnew\" width=\"15\">\n";
 
-    if (!$folder_info[$folder_number]['INTEREST']) {
-        echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"Ignore This Folder\" /></a>\n";
-    }else {
-        echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"Stop Ignoring This Folder\" /></a>\n";
+    if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+
+      echo "<td class=\"folderpostnew\" width=\"15\">\n";
+
+      if (!$folder_info[$folder_number]['INTEREST']) {
+          echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"Ignore This Folder\" /></a>\n";
+      }else {
+          echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"Stop Ignoring This Folder\" /></a>\n";
+      }
+
+      echo "</td>\n";
+
     }
 
-    echo "</td>\n";
     echo "</tr>\n";
     echo "</table>\n";
     echo "</td>\n";

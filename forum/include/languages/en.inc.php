@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.243 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.244 2005-03-20 20:35:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -331,16 +331,6 @@ $lang['ip'] = "IP";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
 $lang['deleteduser'] = "Deleted User";
-$lang['changedtitleaccessfolder'] = "Changed Folder Options for folder";
-$lang['movedthreads'] = "Moved threads to folder";
-$lang['creatednewfolder'] = "Created new folder";
-$lang['deletedfolder'] = "Deleted folder";
-$lang['changedprofilesectiontitle'] = "Changed Profile section title for section";
-$lang['addednewprofilesection'] = "Added New Profile section";
-$lang['deletedprofilesection'] = "Deleted Profile Section";
-$lang['changedprofileitemtitle'] = "Changed Profile Item title for item";
-$lang['addednewprofileitem'] = "Added New Profile Item";
-$lang['deletedprofileitem'] = "Deleted Profile Item";
 $lang['editedstartpage'] = "Edited Start Page";
 $lang['savednewstyle'] = "Saved New Style";
 $lang['movedthread'] = "Moved Thread";
@@ -510,18 +500,43 @@ $lang['forumtools'] = "Forum Tools";
 
 $lang['globaluserpermissions'] = "Global user permissions";
 
-// Admin Log data ----------------------------------------------------------------
+// Admin Log data (admin_viewlog.php) --------------------------------------------
 
-$lang['changedstatusforuser'] = "Changed status for user: %s";
-$lang['changedpasswordforuser'] = "Changed password for user: %s";
-$lang['changedforumaccess'] = "Changed forum access for user: %s";
-$lang['deletedallusersposts'] = "Deleted all posts for user: %s";
+$lang['changedstatusforuser'] = "Changed user status for '%s'";
+$lang['changedpasswordforuser'] = "Changed password for '%s'";
+$lang['changedforumaccess'] = "Changed forum access permissions for '%s'";
+$lang['deletedallusersposts'] = "Deleted all posts for '%s'";
 
-$lang['createdusergroup'] = "Created User Group: %s";
-$lang['deletedusergroup'] = "Deleted User Group: %s";
-$lang['updatedusergroup'] = "Updated User Group: %s";
-$lang['addedusertogroup'] = "Added user %s to group %s";
-$lang['removeduserfromgroup'] = "Remove user %s from group %s";
+$lang['createdusergroup'] = "Created User Group '%s'";
+$lang['deletedusergroup'] = "Deleted User Group '%s'";
+$lang['updatedusergroup'] = "Updated User Group '%s'";
+$lang['addedusertogroup'] = "Added user '%s' to group '%s'";
+$lang['removeduserfromgroup'] = "Remove user '%s' from group '%s'";
+
+$lang['addedipaddresstobanlist'] = "Added IP '%s' to ban list";
+$lang['removedipaddressfrombanlist'] = "Removed IP '%s' from ban list";
+
+$lang['addedlogontobanlist'] = "Added logon '%s' to ban list";
+$lang['removedlogonfrombanlist'] = "Removed logon '%s' from ban list";
+
+$lang['addednicknametobanlist'] = "Added nickname '%s' to ban list";
+$lang['removednicknamefrombanlist'] = "Removed nickname '%s' from ban list";
+
+$lang['addedemailtobanlist'] = "Added email address '%s' to ban list";
+$lang['removedemailfrombanlist'] = "Removed email address '%s' from ban list";
+
+$lang['editedfolder'] = "Edited Folder '%s'";
+$lang['movedallthreadsfromto'] = "Moved all threads from '%s' to '%s'";
+$lang['creatednewfolder'] = "Created new folder '%s'";
+$lang['deletedfolder'] = "Deleted folder '%s'";
+
+$lang['changedprofilesectiontitle'] = "Changed Profile section title from '%s' to '%s'";
+$lang['addednewprofilesection'] = "Added New Profile section '%s'";
+$lang['deletedprofilesection'] = "Deleted Profile Section '%s'";
+
+$lang['addednewprofileitem'] = "Added New Profile Item '%s' to section '%s'";
+$lang['changedprofileitem'] = "Changed Profile Item '%s'";
+$lang['deletedprofileitem'] = "Deleted Profile Item '%s'";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

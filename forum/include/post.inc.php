@@ -49,7 +49,7 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
         if ($result) {
 
-            $sql = "update " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
+            $sql = "update " . forum_table("THREAD") . " set length = $new_pid, modified = NOW() ";
             $sql.= "where tid = $tid";
             $result = db_query($sql, $db_post_create);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.54 2004-01-26 19:40:16 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.55 2004-02-02 19:44:38 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -288,16 +288,10 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "          <td align=\"left\">&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}";
-
-    if (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
-        echo "(IP: ", $user['LOGON_FROM'], ") ";
-    }
-
-    echo ":</td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}:</td>\n";
     echo "        </tr>\n";
 
-    if ($user_alias_array = user_get_by_ipaddress($user['LOGON_FROM'], $user['UID'])) {
+    if ($user_alias_array = user_get_aliases($user['UID'])) {
 
         foreach ($user_alias_array as $user_alias) {
             echo "        <tr>\n";

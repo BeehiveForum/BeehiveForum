@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.345 2005-04-04 02:32:56 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.346 2005-04-04 11:28:13 rowan_hill Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -682,34 +682,36 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if ($in_list && $msg_count > 0) {
 
+            $title = ($message['PID'] ==1) ? "{$lang['linktothread']} ($tid.1)" : "{$lang['linktothispost']}";
             if ($is_preview) {
 
-                echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_blank\">$tid.{$message['PID']}</a>";
+                echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_blank\" title=\"$title\">$tid.{$message['PID']}</a>";
 
             }else {
 
-                echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_top\">$tid.{$message['PID']}</a>";
+                echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_top\" title=\"$title\">$tid.{$message['PID']}</a>";
             }
 
             if ($message['REPLY_TO_PID'] > 0) {
+                $title = "{$lang['linktopost']} #{$message['REPLY_TO_PID']}";
 
                 echo " {$lang['inreplyto']} ";
 
                 if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
 
-                    echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\">";
+                    echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\" title=\"$title\">";
                     echo "{$tid}.{$message['REPLY_TO_PID']}</a>";
 
                 }else {
 
                     if ($is_preview) {
 
-                        echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\" target=\"_blank\">";
+                        echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\" target=\"_blank\" title=\"$title\">";
                         echo "{$tid}.{$message['REPLY_TO_PID']}</a>";
 
                     }else {
 
-                        echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\" target=\"_self\">";
+                        echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\" target=\"_self\" title=\"$title\">";
                         echo "{$tid}.{$message['REPLY_TO_PID']}</a>";
                     }
                 }

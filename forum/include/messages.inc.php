@@ -98,7 +98,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
             $messages[$i]['VIEWED'] = @$message['VIEWED'];
             $messages[$i]['CONTENT'] = '';
             $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
-			$messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $messages['TO_RELATIONSHIP'] : 0;
+            $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $messages['TO_RELATIONSHIP'] : 0;
             $messages[$i]['FNICK'] = $message['FNICK'];
             $messages[$i]['FLOGON'] = $message['FLOGON'];
             
@@ -121,9 +121,9 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
         if(!isset($messages['FROM_RELATIONSHIP'])){
             $messages['FROM_RELATIONSHIP'] = 0;
         }
-		if(!isset($messages['TO_RELATIONSHIP'])){
-			$messages['TO_RELATIONSHIP'] = 0;
-		}
+        if(!isset($messages['TO_RELATIONSHIP'])){
+            $messages['TO_RELATIONSHIP'] = 0;
+        }
         
         if(!isset($messages['TNICK'])){
             $messages['TNICK'] = 'ALL';
@@ -171,9 +171,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!isset($message['FROM_RELATIONSHIP'])) {
         $message['FROM_RELATIONSHIP'] = 0;
     }
-	if(!isset($message['TO_RELATIONSHIP'])) {
-		$message['TO_RELATIONSHIP'] = 0;
-	}
+    if(!isset($message['TO_RELATIONSHIP'])) {
+        $message['TO_RELATIONSHIP'] = 0;
+    }
 
     if((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
@@ -194,12 +194,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
-	
-	if($message['FROM_RELATIONSHIP'] == 1) {
-		echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
-	} else if($message['FROM_RELATIONSHIP'] == -1) {
-		echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
-	}
+    
+    if($message['FROM_RELATIONSHIP'] == 1) {
+        echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
+    } else if($message['FROM_RELATIONSHIP'] == -1) {
+        echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
+    }
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
     
@@ -221,17 +221,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
-		if($message['TO_RELATIONSHIP'] == 1) {
-			echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
-		} else if($message['TO_RELATIONSHIP'] == -1) {
-			echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
-		}
+        if($message['TO_RELATIONSHIP'] == 1) {
+            echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
+        } else if($message['TO_RELATIONSHIP'] == -1) {
+            echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
+        }
 
         if($message['VIEWED'] > 0) {
-			echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
+            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
         } else {
             echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
-		}
+        }
     }else {
         echo "ALL</span>";
     }
@@ -322,14 +322,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                   
                 }
             }
-			if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
-				echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
-				echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Ignore User</a>";
-			}
-            if(perm_is_moderator()){
+
+            if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
+                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
+                echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Ignore User</a>";
+            }
+
+            if(perm_is_soldier()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."\" target=\"_self\">Privileges</a>";
             }
+
             echo "</span></td></tr>";
         }
         echo "</table>\n";

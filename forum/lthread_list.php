@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.13 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: lthread_list.php,v 1.14 2003-08-02 13:46:35 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -116,9 +116,9 @@ if (bh_session_get_value('UID') == 0) {
   $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
                   $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
                   $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                  $lang['unreadstartedbyfriend']);
+                  $lang['unreadstartedbyfriend'],$lang['polls']);
 
-  echo light_form_dropdown_array("mode",range(0,12),$labels,$mode). "\n        ";
+  echo light_form_dropdown_array("mode",range(0,13),$labels,$mode). "\n        ";
 
 }
 
@@ -170,6 +170,9 @@ if(isset($folder)){
             break;
         case 12: // Unread started by friend
             list($thread_info, $folder_order) = threads_get_unread_by_relationship($user, USER_FRIEND);
+            break;
+        case 13: // Polls
+            list($thread_info, $folder_order) = threads_get_polls($user);
             break;
     }
 }
@@ -347,8 +350,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "0";
             }
 
-            echo " {$lang['threads']} - </a>\n";
-            echo "<a href=\"post.php?fid=".$folder_number."\">{$lang['postnew']}w</a></p>\n";
+            echo " {$lang['threads']}</a>";
+            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+            echo "</p>\n";
         }
 
     }

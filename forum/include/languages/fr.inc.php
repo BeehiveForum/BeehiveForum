@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.35 2004-03-13 00:20:39 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.36 2004-03-14 19:44:12 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -311,6 +311,9 @@ $lang['fieldtypeexample1'] = "Pour les Boutons de Radio et le Dépot en bas Champ
 $lang['fieldtypeexample2'] = "L'exemple: créer un boutons de radio de Sexe fondamentaux, avec deux sélections pour Mâle et Femelle, vous entreriez: <b>Le sexe: mâle; la femelle</b> dans le champ de Nom d'Article.";
 $lang['madethreadsticky'] = "Fait Enfiler Collant";
 $lang['madethreadnonsticky'] = "Le Fil fait Non-Collant";
+$lang['matchedtext'] = "Texte Assorti";
+$lang['replacementtext'] = "Texte De rechange";
+$lang['preg'] = "PREG";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 

@@ -56,7 +56,7 @@ html_draw_top();
 
 if (isset($HTTP_POST_VARS['save'])) {
 
-    $content = stripslashes($HTTP_POST_VARS['content']);
+    $content = _stripslashes($HTTP_POST_VARS['content']);
     $content = str_replace(chr(13), '', $content);
 
     $fp = fopen('./start_main.php', 'w');

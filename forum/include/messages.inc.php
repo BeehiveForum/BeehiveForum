@@ -282,7 +282,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	    if ($is_preview) {
 	        echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
 	    }else {
-	        echo "<a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.". $message['PID']. "\" target=\"_self\">$tid.". $message['PID']. "</a>";
+	        echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
 	    }
 
             if($message['PID'] > 1) {
@@ -620,20 +620,24 @@ function messages_get_most_recent($uid)
 
     $result = db_query($sql, $db_messages_get_most_recent);
 
-    if(db_num_rows($result)){
+    if(db_num_rows($result)) {
+
         $fa = db_fetch_array($result);
-        if(isset($fa['LAST_READ'])){
-	    if (intval($fa['LAST_READ']) < intval($fa['LENGTH'])) {
-	      $return = $fa['TID'] . ".". intval($fa['LAST_READ']) + 1;
+
+        if (isset($fa['LAST_READ'])) {
+
+	    if ($fa['LAST_READ'] < $fa['LENGTH']) {
+	      $return = $fa['TID'] . ".". ($fa['LAST_READ'] + 1);
 	    }else {
               $return = $fa['TID'] . "." . $fa['LAST_READ'];
 	    }
+
         } else {
             $return = $fa['TID'] . ".1";
         }
     }
 
-    return $return;
+    return array($return, $fa);
 }
 
 function messages_fontsize_form($tid, $pid)

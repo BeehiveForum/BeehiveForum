@@ -103,7 +103,7 @@ if (count($subfolders) == 0) {
     echo "<table>\n";
     // create list of subfolders
     while (list($key, $val) = each($subfolders)) {
-            echo "<tr width=\"20\"><td><img src=\"" . style_image("folder.png") . "\" alt=\"folder\"></td><td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "style=\"color: gray;\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
+            echo "<tr width=\"20\"><td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"folder\"></td><td class=\"postbody\"><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "style=\"color: gray;\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             if (perm_is_moderator() && $folders[$val]['VISIBLE'] == "Y") {
                 echo "&nbsp;<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&action=folderhide&new_fid=$fid\" class=\"threadtime\">[hide]</a>\n";
             } elseif (perm_is_moderator() && $folders[$val]['VISIBLE'] == "N") {

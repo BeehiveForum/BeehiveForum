@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.105 2004-04-24 18:42:30 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.106 2004-04-25 14:15:33 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -58,6 +58,26 @@ function html_message_type_error()
     html_draw_top();
     echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
     html_draw_bottom();
+}
+
+function html_get_style_sheet()
+{
+    $forum_settings = get_forum_settings();
+
+    if ($default_style = forum_get_setting('default_style')) {
+
+        if ($user_style = bh_session_get_value('STYLE')) {
+            if (@is_dir("./styles/$user_style") && @file_exists("./styles/$user_style/style.css")) {
+                return "styles/$user_style/style.css";
+            }
+        }
+
+        if (@is_dir("./styles/$default_style") && @file_exists("./styles/$default_style/style.css")) {
+            return "styles/$default_style/style.css";
+        }
+    }
+
+    return "styles/style.css";
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags
@@ -186,21 +206,7 @@ function html_draw_top()
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
 
-    if (forum_get_setting('default_style')) {
-
-        $user_style = bh_session_get_value('STYLE');
-        $user_style = $user_style ? $user_style : forum_get_setting('default_style');
-
-        if (is_dir("./styles/$user_style") && file_exists("./styles/$user_style/style.css")) {
-            $stylesheet = "styles/$user_style/style.css";
-        }else {
-            $stylesheet = "styles/style.css";
-        }
-
-    }else {
-        $stylesheet = "styles/style.css";
-    }
-
+    $stylesheet = html_get_style_sheet();
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
 
     if (forum_get_setting('default_emoticons')) {

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.8 2004-04-25 13:40:26 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.9 2004-04-25 14:15:33 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -53,6 +53,10 @@ include_once("./include/user.inc.php");
 // to be able to see this page.
 
 $user_sess = bh_session_check();
+
+// Make sure we have a webtag
+
+$webtag = get_webtag();
 
 // Load Language File
 
@@ -93,9 +97,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
 
 	        if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
+                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
 	        }else {
-                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']}</p>\n";
+                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
                 echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
@@ -111,9 +115,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
 
 	        if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
+                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
 	        }else {
-                    echo "<p>{$forum['NEW_MESSAGES']} {$lang['unreadmessages']}</p>\n";
+                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
                 echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";

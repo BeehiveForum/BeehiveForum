@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.41 2004-04-25 13:55:45 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.42 2004-04-25 14:15:33 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 
 function light_html_draw_top ($title = false)
@@ -34,20 +35,24 @@ function light_html_draw_top ($title = false)
         $title = forum_get_setting('forum_name');
     }
 
-    echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
+    echo "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
-    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"", $lang['_textdir'], "\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=", $lang['_charset'], "\"/>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={lang['_charset']}\"/>\n";
+
+    $stylesheet = html_get_style_sheet();
+    echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
+
     echo "</head>\n";
     echo "<body>\n";
 }
 
 function light_html_draw_bottom ()
 {
-    echo "\t</body>\n";
-        echo "</html>\n";
+    echo "</body>\n";
+    echo "</html>\n";
 }
 
 // create a <select> dropdown with values from array(s)

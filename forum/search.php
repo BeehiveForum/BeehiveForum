@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.85 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: search.php,v 1.86 2004-05-10 17:40:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -327,6 +327,8 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
             $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
 
         }
+
+        $message['TITLE'] = apply_wordfilter($message['TITLE']);
 
         // trunicate the search result at the last space in the first 50 chars.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.57 2005-03-06 23:36:41 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.58 2005-03-07 00:04:41 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -432,11 +432,69 @@ function perm_get_global_permissions()
                  'user_array' => $user_search_array);
 }
 
+function perm_get_global_permissions_count()
+{
+    $db_perm_get_global_permissions = db_connect();
+
+    if (!$table_data = get_table_prefix()) return 0;
+
+    $sql = "SELECT COUNT(GROUPS.GID) AS PERM_COUNT FROM GROUPS ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & 1024 > 0 ";
+    $sql.= "OR GROUP_PERMS.PERM & 512 > 0) ";
+
+    $result = db_query($sql, $db_perm_get_global_permissions);
+    list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $global_perm_count;
+}
+
+function perm_get_admin_tools_perm_count()
+{
+    $db_perm_get_global_permissions = db_connect();
+
+    if (!$table_data = get_table_prefix()) return 0;
+
+    $sql = "SELECT COUNT(GROUPS.GID) AS PERM_COUNT FROM GROUPS ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_PERMS.PERM & 512 > 0";
+
+    $result = db_query($sql, $db_perm_get_global_permissions);
+    list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $global_perm_count;
+}
+
+function perm_get_forum_tools_perm_count()
+{
+    $db_perm_get_global_permissions = db_connect();
+
+    if (!$table_data = get_table_prefix()) return 0;
+
+    $sql = "SELECT COUNT(GROUPS.GID) AS PERM_COUNT FROM GROUPS ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_PERMS.PERM & 1024 > 0";
+
+    $result = db_query($sql, $db_perm_get_global_permissions);
+    list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $global_perm_count;
+}
+
 function perm_update_global_perms($uid, $perm)
 {
     $db_perm_update_global_perms = db_connect();
 
-    if (!is_numeric($gid)) return false;
+    if (!is_numeric($uid)) return false;
     if (!is_numeric($perm)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -456,9 +514,13 @@ function perm_remove_global_perms($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $perm = USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS;
+
     if ($gid = perm_get_user_gid($uid)) {
 
-        $sql = "DELETE FROM GROUP_PERMS WHERE GID = '$gid'";
+        $sql = "UPDATE GROUP_PERMS SET PERM = PERM ^ $perm ";
+        $sql.= "WHERE GID = '$gid'";
+
         $result = db_query($sql, $db_perm_remove_global_perms);
     }
 }

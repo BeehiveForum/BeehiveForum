@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.18 2005-03-05 21:59:16 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.19 2005-03-07 00:04:42 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -49,13 +49,13 @@ set_time_limit(0);
 
 $sql = "SHOW TABLES LIKE 'FORUMS'";
 
-if ($result = db_query($sql, $db_install)) {
+if (@$result = db_query($sql, $db_install)) {
 
     if (db_num_rows($result) > 0) {
 
         $sql = "SELECT WEBTAG FROM FORUMS";
 
-        if ($result = db_query($sql, $db_install)) {
+        if (@$result = db_query($sql, $db_install)) {
 
             $forum_webtag_array = array();
 
@@ -66,7 +66,7 @@ if ($result = db_query($sql, $db_install)) {
 
         }else {
 
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+            $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
             $valid = false;
             return;
         }
@@ -74,7 +74,7 @@ if ($result = db_query($sql, $db_install)) {
 
 }else {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
     $valid = false;
     return;
 }
@@ -100,7 +100,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY TO_UID (TO_UID)";
         $sql.=") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -117,7 +117,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY AID (AID)";
         $sql.=") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -134,7 +134,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
         $sql.=") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -150,7 +150,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.=") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -160,7 +160,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
     $sql = "DROP TABLE IF EXISTS VISITOR_LOG";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!@$result = db_query($sql, $db_install)) {
 
         $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
@@ -174,7 +174,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
     $sql = "DROP TABLE IF EXISTS SESSIONS";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!@$result = db_query($sql, $db_install)) {
 
         $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
@@ -190,7 +190,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
     $sql.= "  PRIMARY KEY  (HASH, UID, IPADDRESS)";
     $sql.=") TYPE=MYISAM";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!@$result = db_query($sql, $db_install)) {
 
         $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
@@ -203,7 +203,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
     $sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
     $sql.= "TIMEZONE DECIMAL(3,1) DEFAULT '0.0' NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!@$result = db_query($sql, $db_install)) {
 
         $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
@@ -217,7 +217,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_DEDUPE";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -231,7 +231,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SET PERM = PERM | 8192 WHERE GID = 0 ";
         $sql.= "AND FID > 0 AND PERM > 0";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -245,7 +245,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_THREAD_NEW";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -270,7 +270,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  FULLTEXT KEY TITLE (TITLE)";
         $sql.=") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -290,7 +290,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON ";
         $sql.= "(POST.TID = THREAD.TID AND POST.PID = 1)";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -301,7 +301,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_THREAD";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -312,7 +312,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -323,7 +323,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_VISITOR_LOG";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -336,7 +336,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.=") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -351,13 +351,13 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "SHOW TABLES LIKE '{$forum_webtag}_PM'";
 
-        if ($result = db_query($sql, $db_install)) {
+        if (@$result = db_query($sql, $db_install)) {
 
             if (db_num_rows($result) > 0) {
 
             $sql = "SELECT * FROM {$forum_webtag}_PM";
 
-                if ($result = db_query($sql, $db_install)) {
+                if (@$result = db_query($sql, $db_install)) {
 
                     while($pm_data = db_fetch_array($result)) {
 
@@ -418,7 +418,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_PM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -429,7 +429,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_PM_ATTACHMENT_IDS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -440,7 +440,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_PM_CONTENT";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -451,7 +451,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_PREFS_NEW";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -482,7 +482,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.=") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -501,7 +501,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
         $sql.= "ALLOW_EMAIL, ALLOW_PM FROM {$forum_webtag}_USER_PREFS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -512,7 +512,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_PREFS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -523,7 +523,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS_NEW RENAME {$forum_webtag}_USER_PREFS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!@$result = db_query($sql, $db_install)) {
 
             $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
             $valid = false;
@@ -535,7 +535,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
     $sql = "DROP TABLE IF EXISTS DICTIONARY";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!@$result = db_query($sql, $db_install)) {
 
         $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
@@ -551,7 +551,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
     $sql.= "  KEY WORD (WORD)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!@$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -569,7 +569,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
             $sql.= "VALUES ('$word', '$metaphone', 0)";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!@$result = db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;

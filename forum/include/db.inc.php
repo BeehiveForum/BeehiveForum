@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.53 2004-07-17 10:43:11 hodcroftcj Exp $ */
+/* $Id: db.inc.php,v 1.54 2004-07-17 10:51:37 hodcroftcj Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -33,6 +33,7 @@ include_once("./include/constants.inc.php");
 
 function db_connect ()
 {
+	// If the PHP MySQL extension isn't loaded, we're not going anywhere
 	if (!extension_loaded("mysql")) {
 	    trigger_error("The PHP MySQL extension is not loaded!", FATAL);
 	}

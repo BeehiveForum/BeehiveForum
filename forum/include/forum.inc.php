@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.71 2004-06-28 22:07:31 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.72 2004-07-14 13:29:49 hodcroftcj Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -456,6 +456,39 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= ") TYPE=MYISAM;";
 
         $result = db_query($sql, $db_forum_create);
+        
+		// Create GROUP_PERMS table
+
+		$sql = "CREATE TABLE {$webtag}_GROUP_PERMS (";
+		$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  PRIMARY KEY  (GID,FID)";
+		$sql.= ")";
+		
+		$result = db_query($sql, $db_forum_create);
+		
+		// Create GROUP_USERS table
+		
+		$sql = "CREATE TABLE {$webtag}_GROUP_USERS (";
+		$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+		$sql.= "  PRIMARY KEY  (GID,UID)";
+		$sql.= ")";
+		
+		$result = db_query($sql, $db_forum_create);
+		
+		// Create GROUPS table
+		
+		$sql = "CREATE TABLE {$webtag}_GROUPS (";
+		$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+		$sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
+		$sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
+		$sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  PRIMARY KEY  (GID)";
+		$sql.= ")";
+		
+		$result = db_query($sql, $db_forum_create);
 
         // Create LINKS table
 
@@ -809,7 +842,29 @@ function forum_create($webtag, $forum_name, $access)
 
         $result = db_query($sql, $db_forum_create);
 
-        // Create Top Level Links Folder
+		// Create default group
+		
+		$sql = "INSERT INTO {$webtag}_GROUPS (GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+		$sql.= "VALUES ('Queen', NULL, 0);";
+		$result = db_query($sql, $db_forum_create);
+
+        // Create default group permissions
+
+        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 0, 1536);";
+        $result = db_query($sql, $db_forum_create);
+
+		$sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 1, 508);";
+		$result = db_query($sql, $db_forum_create);
+
+		$sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (0, 1, 252);";
+		$result = db_query($sql, $db_forum_create);
+
+		// Create default user permissions
+		
+		$sql = "INSERT INTO {$webtag}_GROUP_USERS VALUES (1, 1);";
+		$result = db_query($sql, $db_forum_create);
+
+		// Create Top Level Links Folder
 
         $sql = "INSERT INTO {$webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
         $result = db_query($sql, $db_forum_create);

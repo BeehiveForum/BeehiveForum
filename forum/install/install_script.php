@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.7 2004-07-06 15:18:11 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.8 2004-07-14 13:29:49 hodcroftcj Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 

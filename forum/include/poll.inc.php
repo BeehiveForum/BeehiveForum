@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.65 2003-09-02 23:21:10 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.66 2003-09-03 15:28:36 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -991,14 +991,12 @@ function poll_vertical_graph($tid)
 
 }
 
-function poll_public_ballot($tid, $bar_width, $totalvotes)
+function poll_public_ballot($tid)
 {
     global $lang;
 
-    $totalvotes  = array();
-    $max_value   = array();
-
-    $bgcolor = 0;
+    $totalvotes = array();
+    $max_value  = array();
 
     $pollresults = poll_get_votes($tid);
 
@@ -1016,6 +1014,8 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
         $totalvotes[$pollresults['GROUP_ID'][$i]]+= $pollresults['VOTES'][$i];
       }
     }
+
+    $row_class = (sizeof($max_values) > 1) ? "highlight" : "postbody";
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
@@ -1037,7 +1037,7 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
         }
 
         $polldisplay.= "              <tr>\n";
-        $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\" style=\"border-bottom: 1px solid\"><h2>". $pollresults['OPTION_NAME'][$i]. "</h2></td>\n";
+        $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\"><h2>". $pollresults['OPTION_NAME'][$i]. "</h2></td>\n";
 
         if ($pollresults['VOTES'][$i] > 0) {
 
@@ -1047,7 +1047,7 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
               $vote_percent = 0;
           }
 
-          $polldisplay.= "                <td  class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
+          $polldisplay.= "                <td  class=\"$row_class\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
           $polldisplay.= "              </tr>\n";
 
           for($j = 0; $j < sizeof($user_votes); $j++) {
@@ -1059,8 +1059,8 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
                 $user = user_get($k);
 
                 $polldisplay.= "              <tr>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$k})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$k})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
                 $polldisplay.= "              </tr>\n";
 
               }
@@ -1068,17 +1068,17 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
           }
 
           $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
           $polldisplay.= "              </tr>\n";
 
         }else {
 
-          $polldisplay.= "                <td  class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\" style=\"border-bottom: 1px solid\">0 {$lang['votes']} (0%)</td>\n";
+          $polldisplay.= "                <td  class=\"$row_class\" style=\"border-bottom: 1px solid\">0 {$lang['votes']} (0%)</td>\n";
           $polldisplay.= "              </tr>\n";
           $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
           $polldisplay.= "              </tr>\n";
 
         }

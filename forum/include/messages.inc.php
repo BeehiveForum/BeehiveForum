@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.166 2003-09-04 16:10:38 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.167 2003-09-10 17:10:00 tribalonline Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -366,15 +366,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "&nbsp;</span></td></tr>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-            $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
-            $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
-            $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
-            $message['CONTENT'] = "";
-            for ($i=0; $i<count($msg_split); $i++) {
-                if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-                $message['CONTENT'] .= $msg_split[$i];
-            }
-            $message['CONTENT'] .= "</div>";
+			if (preg_match("/<div class=\"sig\">/", $message['CONTENT']) && ($is_preview == false && $in_list == true)) {
+				$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
+				$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
+				$msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
+				$message['CONTENT'] = "";
+				for ($i=0; $i<count($msg_split); $i++) {
+					if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
+					$message['CONTENT'] .= $msg_split[$i];
+				}
+				$message['CONTENT'] .= "</div>";
+			}
         }
 
         echo "<tr><td class=\"postbody\" align=\"left\">". $message['CONTENT']. "</td></tr>\n";

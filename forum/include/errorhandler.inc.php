@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.49 2004-07-26 17:48:53 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.50 2004-09-09 10:13:58 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -41,7 +41,7 @@ if (!defined("E_STRICT")) {
 // If this is changed to include E_STRICT Beehive will probably
 // not work.
 
-error_reporting(E_ALL);
+error_reporting(E_STRICT);
 
 // Beehive Error Handler Function
 
@@ -52,7 +52,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
     // return 0 if the error is to do with PHP/5.0's
     // code compatibility E_STRICT gubbins.
 
-    if ((error_reporting() & E_STRICT) > 0) {
+    if (error_reporting()) {
 
         srand((double)microtime()*1000000);
 

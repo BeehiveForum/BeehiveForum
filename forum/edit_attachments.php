@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.77 2004-12-22 22:21:10 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.78 2004-12-27 16:19:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -227,6 +227,9 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
+echo "                </tr>\n";
 
 if ($aid) {
     $attachments_array = get_attachments($uid, $aid);
@@ -236,16 +239,7 @@ if ($aid) {
 
 if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
-    $forum_fid = 0;
-
     foreach ($attachments_array as $key => $attachment) {
-
-        if ($forum_fid != $attachment['forum_fid']) {
-
-            echo "                <tr>\n";
-            echo "                  <td colspan=\"4\" class=\"subhead\">", forum_get_name($attachment['forum_fid']), "</td>\n";
-            echo "                </tr>\n";
-        }
 
         if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
 
@@ -299,34 +293,6 @@ if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
             $total_attachment_size += $attachment['filesize'];
         }
-
-        if ($forum_fid != $attachment['forum_fid']) {
-
-            echo "                <tr>\n";
-            echo "                  <td colspan=\"4\">&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-            echo "  </table>\n";
-
-            if ($key < sizeof($attachments_array) - 1) {
-
-                echo "  <br />\n";
-                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-                echo "    <tr>\n";
-                echo "      <td>\n";
-                echo "        <table class=\"box\" width=\"100%\">\n";
-                echo "          <tr>\n";
-                echo "            <td class=\"posthead\">\n";
-                echo "              <table class=\"posthead\" width=\"100%\">\n";
-            }
-
-            $forum_fid = $attachment['forum_fid'];
-        }
     }
 
 }else {
@@ -337,18 +303,18 @@ if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
     echo "                <tr>\n";
     echo "                  <td valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
     echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
 }
 
+echo "                <tr>\n";
+echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.184 2004-07-14 13:29:49 hodcroftcj Exp $ */
+/* $Id: user.inc.php,v 1.185 2004-08-02 00:32:30 tribalonline Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -318,7 +318,8 @@ function user_get_prefs($uid)
                          'STYLE' => '', 'VIEW_SIGS' => 'Y', 'START_PAGE' => '0', 'LANGUAGE' => '',
                          'PM_NOTIFY' => 'Y', 'PM_NOTIFY_EMAIL' => 'Y', 'DOB_DISPLAY' => 'Y', 'ANON_LOGON' => 'N',
                          'SHOW_STATS' => 'Y',  'IMAGES_TO_LINKS' => 'N', 'USE_WORD_FILTER' => 'N',
-                         'USE_ADMIN_FILTER' => 'N', 'EMOTICONS' => '', 'ALLOW_EMAIL' => 'Y', 'ALLOW_PM' => 'Y');
+                         'USE_ADMIN_FILTER' => 'N', 'EMOTICONS' => '', 'ALLOW_EMAIL' => 'Y', 'ALLOW_PM' => 'Y',
+						 'POST_PAGE' => '0');
 
     if (!$table_data = get_table_prefix()) return $prefs_array;
 
@@ -355,6 +356,7 @@ function user_update_prefs($uid, $prefs_array)
     if (empty($prefs_array['TIMEZONE']))       $prefs_array['TIMEZONE']       = 0;
     if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 20;
     if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
+	if (empty($prefs_array['POST_PAGE']))	   $prefs_array['POST_PAGE']	  = 0;
 
     if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = forum_get_setting('default_style');
     if (!ereg("([[:alnum:]]+)", $prefs_array['EMOTICONS'])) $prefs_array['EMOTICONS'] = forum_get_setting('default_emoticons');
@@ -362,7 +364,7 @@ function user_update_prefs($uid, $prefs_array)
     $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
     $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, ";
-    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM) ";
+    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, POST_PAGE) ";
     $sql.= "VALUES ($uid, '{$prefs_array['FIRSTNAME']}', '{$prefs_array['LASTNAME']}', '{$prefs_array['DOB']}', ";
     $sql.= "'{$prefs_array['HOMEPAGE_URL']}', '{$prefs_array['PIC_URL']}', '{$prefs_array['EMAIL_NOTIFY']}', ";
     $sql.= "'{$prefs_array['TIMEZONE']}', '{$prefs_array['DL_SAVING']}', '{$prefs_array['MARK_AS_OF_INT']}', ";
@@ -371,7 +373,7 @@ function user_update_prefs($uid, $prefs_array)
     $sql.= "'{$prefs_array['PM_NOTIFY']}', '{$prefs_array['PM_NOTIFY_EMAIL']}', '{$prefs_array['DOB_DISPLAY']}', ";
     $sql.= "'{$prefs_array['ANON_LOGON']}', '{$prefs_array['SHOW_STATS']}', '{$prefs_array['IMAGES_TO_LINKS']}', ";
     $sql.= "'{$prefs_array['USE_WORD_FILTER']}', '{$prefs_array['USE_ADMIN_FILTER']}', '{$prefs_array['EMOTICONS']}', ";
-    $sql.= "'{$prefs_array['ALLOW_EMAIL']}', '{$prefs_array['ALLOW_PM']}')";
+    $sql.= "'{$prefs_array['ALLOW_EMAIL']}', '{$prefs_array['ALLOW_PM']}', '{$prefs_array['POST_PAGE']}')";
 
     $result = db_query($sql, $db_user_update_prefs);
 

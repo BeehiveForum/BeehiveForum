@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.54 2004-05-23 13:39:35 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.55 2004-08-02 00:32:29 tribalonline Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -191,6 +191,22 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 {
     $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" ";
     $html.= "autocomplete=\"off\" class=\"$class\" ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= "/>";
+    return $html;
+}
+
+// Creates a form submit button using an image
+
+function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false)
+{
+    $html = "<input name=\"$name\" value=\"$value\" type=\"image\" src=\"". style_image($image). "\" ";
+    $html.= "autocomplete=\"off\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.81 2004-07-07 19:07:55 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.82 2004-08-02 00:32:29 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -961,16 +961,18 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 	return $return;
 }
 
-function make_html ($html, $br_only = false)
+function make_html ($html, $br_only = false, $emoticons = true)
 {
     $html = _htmlentities($html);
     $html = format_url2link($html);
 
-	$h_s = preg_split("/(<a[^>]+>[^<]+<\/a>)/", $html, -1, PREG_SPLIT_DELIM_CAPTURE);
-	for ($i=0; $i<count($h_s); $i+=2) {
-		$h_s[$i] = emoticons_convert($h_s[$i]);
+	if ($emoticons == true) {
+		$h_s = preg_split("/(<a[^>]+>[^<]+<\/a>)/", $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+		for ($i=0; $i<count($h_s); $i+=2) {
+			$h_s[$i] = emoticons_convert($h_s[$i]);
+		}
+		$html = implode("", $h_s);
 	}
-	$html = implode("", $h_s);
 
     $html = add_paragraphs($html, true, $br_only);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.95 2004-08-01 16:04:12 rowan_hill Exp $ */
+/* $Id: fr.inc.php,v 1.96 2004-08-02 00:32:30 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -737,6 +737,7 @@ $lang['usersinthread'] = "Les utilisateurs dans le fil";
 $lang['correctedcode'] = "Code corrigé";
 $lang['submittedcode'] = "Code soumis";
 $lang['htmlinmessage'] = "HTML dans le message";
+$lang['emoticonsinmessage'] = "Emoticons dans le message";
 $lang['enabledwithautolinebreaks'] = "Rendu capable avec l'auto-linebreaks";
 $lang['fixhtmlexplanation'] = "Ce forum utilise filtrer de HTML. Votre HTML soumis a été modifié par les filtres à certains égards.\\n\\nPour regarder votre code original, choisir le \\'Submitted code\\' radio button.\\nPour regarder le code modifié, choisir le \\'Corrected code\\' radio button.";
 $lang['messageoptions'] = "Options de message";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.119 2004-06-28 21:51:03 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.120 2004-08-02 00:32:30 tribalonline Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -246,7 +246,8 @@ function bh_session_check($add_guest_sess = true)
                  'SHOW_STATS'       => 1,
                  'IMAGES_TO_LINKS'  => 'N',
                  'USE_WORD_FILTER'  => 'Y',
-                 'USE_ADMIN_FILTER' => 'Y');
+                 'USE_ADMIN_FILTER' => 'Y',
+				 'POST_PAGE'		=> 0);
 }
 
 // Fetches a value from the session

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.116 2004-08-01 16:04:12 rowan_hill Exp $ */
+/* $Id: x-hacker.inc.php,v 1.117 2004-08-02 00:32:30 tribalonline Exp $ */
 
 // International English language file
 
@@ -745,6 +745,7 @@ $lang['usersinthread'] = "us3rS 1n +hR34D";
 $lang['correctedcode'] = "CORr3cT3d coDE";
 $lang['submittedcode'] = "SU8m1+t3d C0de";
 $lang['htmlinmessage'] = "HTml 1N me\$S4g3";
+$lang['emoticonsinmessage'] = "eM0+1c0N\$ 1N me\$S4g3";
 $lang['enabledwithautolinebreaks'] = "En4bl3D wI+h 4Uto-L1ne8r3@Ks";
 $lang['fixhtmlexplanation'] = "+hIs PhOrUm USe5 htmL fIlTEr1N9. yoUR SU8m1T+3d h+ml H@5 bE3n m0DiPhiEd 8Y Th3 Ph1lTerS in sOMe w4Y.\\n\\N+O v13W yOur 0r1GIN4L c0D3, \$3L3ct thE \\'SU8mI+t3d coDE\\' r@dIO 8U++0N.\\NT0 v1Ew +h3 m0DipH1Ed c0D3, seLec+ +H3 \\'CORR3C+Ed C0DE\\' R@d10 BuTT0n.";
 $lang['messageoptions'] = "m3\$\$4GE OP+IoNs";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.208 2004-07-17 21:53:15 decoyduck Exp $ */
+/* $Id: post.php,v 1.209 2004-08-02 00:32:39 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -137,12 +137,20 @@ if (isset($_POST['cancel'])) {
 
 // for "REPLY ALL" form button on messages.php
 if (isset($_POST['replyto'])) {
-        $_GET['replyto'] = $_POST['replyto'];
+	$_GET['replyto'] = $_POST['replyto'];
 }
 
 // Check if the user is viewing signatures.
 
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+
+// Get the user's post page preferences.
+
+$page_prefs = bh_session_get_value('POST_PAGE');
+
+if ($page_prefs == 0) {
+	$page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+}
 
 // Assume everything is A-OK!
 
@@ -212,9 +220,11 @@ if (isset($_POST['t_post_html'])) {
 
     if ($t_post_html == "enabled_auto") {
         $post_html = 1;
-    }else if ($t_post_html == "enabled") {
+    } else if ($t_post_html == "enabled") {
         $post_html = 2;
-    }
+    } else {
+		$post_html = 0;
+	}
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -225,19 +235,27 @@ if (isset($_POST['t_sig_html'])) {
         $sig_html = 2;
     }
 
-        $fetched_sig = false;
+	$fetched_sig = false;
 
 } else {
-        // Fetch the current user's sig
-        user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+	// Fetch the current user's sig
+	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 
-        if ($t_sig_html != "N") {
-                $sig_html = 2;
-        }
+	if ($t_sig_html != "N") {
+		$sig_html = 2;
+	}
 
-        $t_sig = tidy_html($t_sig, true);
+	$t_sig = tidy_html($t_sig, true);
 
-        $fetched_sig = true;
+	$fetched_sig = true;
+}
+
+if (isset($_POST['t_post_emots'])) {
+	if ($_POST['t_post_emots'] == "enabled") {
+		$emots_enabled = true;
+	} else {
+		$emots_enabled = false;
+	}
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -246,8 +264,21 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = md5(uniqid(rand()));
 }
 
-if (!isset($post_html)) $post_html = 0;
+
+if (!isset($post_html)) {
+	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+		$post_html = 1;
+	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+		$post_html = 2;
+	} else {
+		$post_html = 0;
+	}
+}
+
 if (!isset($sig_html)) $sig_html = 0;
+
+if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
@@ -278,22 +309,37 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
     }
 }
 
+if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+        $t_content = trim(_stripslashes($_POST['t_content']));
+	}
+
+    if (isset($_POST['t_sig'])) {
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
+	}
+
+	$page_prefs ^= POST_EMOTICONS_DISPLAY;
+
+	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+}
+
+
 if (!isset($t_content)) $t_content = "";
 if (!isset($t_sig)) $t_sig = "";
 
-$post = new MessageText($post_html, $t_content);
+$post = new MessageText($post_html, $t_content, $emots_enabled);
 $sig = new MessageText($sig_html, $t_sig);
 
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();
 
 if (strlen($t_content) >= 65535) {
-        $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-        $valid = false;
+	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+	$valid = false;
 }
 if (strlen($t_sig) >= 65535) {
-        $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-        $valid = false;
+	$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+	$valid = false;
 }
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
@@ -387,7 +433,7 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') && $reply_to_pid > 0) {
+    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
 
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         $valid = false;
@@ -676,15 +722,6 @@ echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : (
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
 echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br /><br />\n";
 
-$emot_user = bh_session_get_value('EMOTICONS');
-$emot_prev = emoticons_preview($emot_user);
-
-if ($emot_prev != "") {
-
-    echo "<h2>".$lang['emoticons'].":</h2>\n";
-    echo $emot_prev."<br />\n";
-}
-
 if (perm_is_moderator($t_fid)) {
 
     echo "<h2>".$lang['admin'].":</h2>\n";
@@ -692,6 +729,32 @@ if (perm_is_moderator($t_fid)) {
     echo "<br />".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
     echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
     echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
+}
+
+$emot_user = bh_session_get_value('EMOTICONS');
+$emot_prev = emoticons_preview($emot_user);
+
+if ($emot_prev != "") {
+	echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+	echo "  <tr>\n";
+	echo "    <td class=\"subhead\">\n";
+	echo "      <div style=\"float:left\">&nbsp;{$lang['emoticons']}:</div>\n";
+
+	if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
+		echo "      <div style=\"float:right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "</div>\n";
+		echo "    </td>\n";
+		echo "  </tr>\n";
+
+		echo "  <tr>\n";
+		echo "    <td colspan=\"2\">\n";
+		echo $emot_prev;
+	} else {
+		echo "      <div style=\"float:right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "</div>\n";
+	}
+
+	echo "    </td>\n";
+	echo "  </tr>\n";
+	echo "</table>\n";
 }
 
 echo "</td></tr>\n";
@@ -705,7 +768,9 @@ if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
-echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+}
 
 $t_content = $post->getTidyContent();
 
@@ -727,6 +792,11 @@ echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'
 echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
+echo "<br /><br /><h2>". $lang['emoticonsinmessage'] .":</h2>\n";
+
+echo form_radio("t_post_emots", "enabled", $lang['enabled'], $emots_enabled)." \n";
+echo form_radio("t_post_emots", "disabled", $lang['disabled'], !$emots_enabled)." \n";
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
 

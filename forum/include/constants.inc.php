@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.33 2004-07-22 19:41:56 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.34 2004-08-02 00:32:29 tribalonline Exp $ */
 
 // Beehive Version
 
@@ -67,6 +67,15 @@ define("BH_DB_CONNECT_ERROR", 32767);
 define("SEARCH_USER_NOT_FOUND", 1);
 define("SEARCH_NO_KEYWORDS", 2);
 define("SEARCH_NO_MATCHES", 3);
+
+// Constants for post page preferences
+
+define("POST_TOOLBAR_DISPLAY", 1);
+define("POST_EMOTICONS_DISPLAY", 2);
+define("POST_TEXT_DEFAULT", 4);
+define("POST_AUTOHTML_DEFAULT", 8);
+define("POST_HTML_DEFAULT", 16);
+define("POST_EMOTICONS_DISABLED", 32);
 
 // Poll Constants
 

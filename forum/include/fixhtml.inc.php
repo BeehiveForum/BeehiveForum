@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.97 2005-04-03 00:56:27 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.98 2005-04-03 01:27:14 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "geshi.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
@@ -43,6 +43,10 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
     $ret_text = '';
 
     if (!empty($html)) {
+
+        if ($emoticons == false) {
+            $html = '<noemots>'.$html.'</noemots>';
+        }
 
         $html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -609,10 +613,6 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
             } else {
 
-                if ($emoticons == true && $tag_quote == false && $tag_code == false && $noemots == 0 && $spoiler == 0) {
-                    $html_parts[$i] = emoticons_convert($html_parts[$i]);
-                }
-
                 if ($links == true && $tag_code == false && $spoiler == 0) {
                     $html_parts[$i] = make_links($html_parts[$i]);
                 }
@@ -962,10 +962,6 @@ function tidy_html ($html, $linebreaks = true, $links = true)
 
     $html = $html_left.$html_right;
 
-    // convert smileys back to plain text
-
-    // $html = clean_emoticons($html);
-
     return $html;
 }
 
@@ -976,11 +972,6 @@ function tidy_html_callback($matches)
    // if (isset($matches[1])) $lang = substr($matches[1], 1);
 
     return "<code language=\"{$matches[1]}\">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
-}
-
-function clean_emoticons($html)
-{
-    return preg_replace("/<span class=\"e_[^>]*\" title=\"[^>]*\"><span[^>]*>([^<]*)<\/span>(&nbsp;)?<\/span>/i", "$1", $html);
 }
 
 function clean_styles($style)
@@ -1295,20 +1286,11 @@ function make_html($html, $br_only = false, $emoticons = true, $links = true)
     $html = _htmlentities($html);
 
     if ($links == true) {
-
         $html = make_links($html);
     }
 
-    if ($emoticons == true) {
-
-        $h_s = preg_split("/(<a[^>]+>[^<]+<\/a>)/", $html, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-        for ($i=0; $i<count($h_s); $i+=2) {
-
-            $h_s[$i] = emoticons_convert($h_s[$i]);
-        }
-
-        $html = implode("", $h_s);
+    if ($emoticons == false) {
+        $html = '<noemots>'.$html.'</noemots>';
     }
 
     $html = add_paragraphs($html, true, $br_only);

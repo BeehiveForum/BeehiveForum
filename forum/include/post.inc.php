@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.118 2005-04-03 00:56:06 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.119 2005-04-03 01:27:15 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -494,7 +494,7 @@ class MessageText {
     }
 
     function setEmoticons ($bool) {
-        $this->emoticons = false; //($bool == true) ? true : false;
+        $this->emoticons = ($bool == true) ? true : false;
         $this->setContent($this->getOriginalContent());
     }
 
@@ -538,7 +538,7 @@ class MessageText {
 
     function getTidyContent () {
         if ($this->html == 0) {
-            return strip_tags(clean_emoticons($this->text));
+            return strip_tags($this->text);
         } else if ($this->html > 0) {
             return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false, $this->links));
         }
@@ -556,7 +556,6 @@ class MessageText {
 class MessageTextParse {
 
     var $html = "";
-    var $emoticons = "";
     var $links = "";
     var $message = "";
     var $sig = "";
@@ -566,7 +565,7 @@ class MessageTextParse {
 
         $this->original = $message;
 
-        $message = explode('<div class="sig">', $message);
+        $message = explode('<div class="sig">', trim($message));
 
         if (count($message) > 1 && substr($message[count($message)-1], -6) == '</div>') {
 
@@ -582,18 +581,11 @@ class MessageTextParse {
 
         $message = implode('<div class="sig">', $message);
 
-        $sig = clean_emoticons($sig);
-        $message_temp = clean_emoticons($message);
-
         $emoticons = $emots_default;
 
-        if ($message_temp == $message && emoticons_convert(strip_tags($message, '<span>')) != strip_tags($message, '<span>')) {
+        if (preg_match("/^<noemots>.*<\/noemots>$/s", $message)) {
             $emoticons = false;
-        } else if ($message_temp != $message) {
-            $emoticons = true;
         }
-
-        $message = trim($message_temp);
 
         $html = 0;
         $message_temp = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "\\3", $message);
@@ -615,8 +607,8 @@ class MessageTextParse {
 
         $this->message = $message;
         $this->sig = $sig;
-        $this->html = $html;
         $this->emoticons = $emoticons;
+        $this->html = $html;
         $this->links = $links;
     }
 

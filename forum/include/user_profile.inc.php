@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.37 2004-12-05 17:58:07 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.38 2004-12-17 16:36:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/profile.inc.php");
@@ -63,14 +63,11 @@ function user_get_profile($uid)
     $user_prefs = user_get_prefs($uid);
 
     $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "COUNT(POST.FROM_UID) AS POST_COUNT FROM USER USER ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
     $sql.= "ON (VISITOR_LOG.UID = USER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ";
-    $sql.= "ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
@@ -101,6 +98,8 @@ function user_get_profile($uid)
         if (!isset($user_profile['RELATIONSHIP'])) {
             $user_profile['RELATIONSHIP'] = 0;
         }
+
+        $user_profile['POST_COUNT'] = user_get_post_count($uid);
 
         return $user_profile;
     }
@@ -144,6 +143,25 @@ function user_get_profile_image($uid)
     }else {
         return false;
     }
+}
+
+function user_get_post_count($uid)
+{
+    if (!is_numeric($uid)) return 0;
+
+    if (!$table_data = get_table_prefix()) return 0;
+
+    $db_user_get_count = db_connect();
+
+    $sql = "SELECT COUNT(PID) AS COUNT FROM ";
+    $sql.= "{$table_data['PREFIX']}POST ";
+    $sql.= "WHERE FROM_UID = $uid";
+
+    $result = db_query($sql, $db_user_get_count);
+
+    $post_count = db_fetch_array($result);
+
+    return $post_count['COUNT'];
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.128 2004-08-01 10:17:05 rowan_hill Exp $ */
+/* $Id: poll.inc.php,v 1.129 2004-08-08 20:25:24 rowan_hill Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -411,7 +411,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             	
                   $polldata['CONTENT'].= "        <tr>\n";
                   $polldata['CONTENT'].= "          <td class=\"postbody\">&nbsp;</td>\n";
-                  $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
+                  $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i-1]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
                   $polldata['CONTENT'].= "        </tr>\n";
                   
             	}
@@ -453,7 +453,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           }   
           
           if ($i == sizeof($pollresults['OPTION_ID']) - 1) {
-            	if ($polldata['OPTIONTYPE'] == 1 && $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i-1]] > 1) {  
+            	if ($polldata['OPTIONTYPE'] == 1 && $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]] > 1) {  
             	
                   $polldata['CONTENT'].= "        <tr>\n";
                   $polldata['CONTENT'].= "          <td class=\"postbody\">&nbsp;</td>\n";

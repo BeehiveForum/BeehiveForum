@@ -138,16 +138,16 @@ function emoticons_set_exists ($set) {
 	return false;
 }
 
-function emoticons_get_emoticons ($set) {
+function emoticons_preview ($set, $width=190, $height=100) {
 	global $emoticon_text;
 	$str = "";
 
-	if (emoticons_set_exists($set)) {
+	if (emoticons_set_exists($set) && $set != 'none') {
 		$path = "./emoticons/$set";
 		$fp = fopen("$path/style.css", "r");
 		$style = fread($fp, filesize("$path/style.css"));
 
-		preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?images\/([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
+		preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 
 		for ($i=0; $i<count($matches[1]); $i++) {
 			if (isset($emoticon_text[$matches[1][$i]])) {
@@ -157,41 +157,20 @@ function emoticons_get_emoticons ($set) {
 			}
 		}
 
-		array_multisort($emot_match, $emot_text, $emot_image);
+		array_multisort($emot_match, SORT_DESC, $emot_text, $emot_image);
 
-		$str.= "['$path/images/'";
+		$str.= "<div style=\"width:".$width."px; height:".$height."px\" class=\"emoticon_preview\">\n";
 		for ($i=0; $i<count($emot_match); $i++) {
 			$tmp_t = "";
 			for ($j=1; $j<count($emot_match[$i]); $j++) {
 				$tmp_t.= " ".$emot_match[$i][$j];
 			}
-			$tmp_i = str_replace("'", "\\'", $emot_image[$i]);
-			$tmp_ts = str_replace("'", "\\'", $emot_match[$i][0]);
-			$tmp_t = str_replace("'", "\\'", $tmp_t);
+			$tmp_i = $emot_image[$i];
+			$tmp_ts = $emot_match[$i][0];
 
-			$str.= ",['".$tmp_i."','".$tmp_ts."'";
-			if ($tmp_t != "") {
-				$str.= ",'".$tmp_t."'";
-			}
-			$str.= "]";
+			$str.= "<img src=\"$path/". $tmp_i ."\" title=\"". $tmp_ts.$tmp_t ."\" onclick=\"add_text('". str_replace("'", "\\'", $tmp_ts) ."');\" /> ";
+
 		}
-		$str.= "]";
-	}
-
-	return $str;
-}
-
-function emoticons_preview ($set, $width=190, $height=100) {
-	$set = emoticons_set_exists($set) ? $set : forum_get_setting('default_emoticons');
-	$str = "";
-
-	if ($set != 'none') {
-		$str.= "<div style=\"width:".$width."px; height:".$height."px; overflow:auto; background-color:#fff; padding:2px\" class=\"emoticon_preview\">\n";
-		$str.= "  <script language=\"Javascript\">\n";
-		$str.= "    <!--\n";
-		$str.= "      document.write(previewEmoticons(".emoticons_get_emoticons($set)."));";
-		$str.= "    //-->\n";
-		$str.= "  </script>\n";
 		$str.= "</div>";
 	}
 

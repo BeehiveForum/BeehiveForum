@@ -120,17 +120,17 @@ A                   { background-color: transparent; color: #$text_colour[body];
 .subhead            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt;
                       font-weight: bold; color: #$text_colour[subhead]; background-color: #$elements[subhead];
                       border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px;
-                      border-left-width: 0px }
+                      border-left-width: 0px; }
 
 .bhinputtext,
 .bhtextarea,
 .bhselect           { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 9pt;
                       color: #000000; background-color: #FFFFFF; border-top-width: 1px;
                       border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;
-                      padding-left: 2px; border-style: inset }
+                      padding-left: 2px; border-style: inset; }
 
 .bhinputcheckbox,
-.bhinputradio       { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 8pt }
+.bhinputradio       { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 8pt; }
 
 .pollbar1           { background-color: #0000AA }
 
@@ -148,14 +148,14 @@ A                   { background-color: transparent; color: #$text_colour[body];
                       margin-right: 10px; padding: 3px; }
 
 .code               { font-family: monospace; border: 1px solid #CCCCCC; background-color: #EEEEEE; margin-top: 0px;
-                      margin-bottom: 10px; margin-left: 40px; margin-right: 10px; padding: 3px; }
+                      margin-bottom: 10px; margin-left: 40px; margin-right: 10px; padding: 3px; overflow: auto; }
 
 .quote              { font-family: Verdana, Arial, Helvetica, sans-serif; border: 1px solid #CCCCCC; background-color: #EEEEEE;
                       margin-top: 0px; margin-bottom: 10px; margin-left: 40px; margin-right: 10px; padding: 3px; }
 
 .tools              { margin: 0; margin-bottom: 3px; padding: 2px; text-align:left; display: none; }
 
-.tools_up           { border: 1px solid #$elements[threads]; margin: 1; float:left; }
+.tools_up           { border: 1px solid #$elements[threads]; margin: 1; float:left; width:18px; height:18px; }
 
 .tools_over         { border-top: 1px solid buttonhighlight; border-left: 1px solid buttonhighlight; border-bottom: 1px solid buttonshadow;
                       border-right: 1px solid buttonshadow; margin:1; float:left; }
@@ -166,3 +166,7 @@ A                   { background-color: transparent; color: #$text_colour[body];
 .activeusers        { font-size: 8pt; }
 
 .adminipdisplay     { font-size: 8pt; }
+
+.emoticon_preview	{ overflow: auto; padding: 2px; background-color: #FFFFFF; }
+
+.emoticon_preview img { cursor: pointer; }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.108 2004-04-06 20:35:01 tribalonline Exp $ */
+/* $Id: edit.php,v 1.109 2004-04-08 00:29:29 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -618,9 +618,14 @@ echo form_input_hidden("t_from_uid", $from_uid);
 echo "<h2>".$lang['to'].":</h2>\n";
 echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($from_uid, '$webtag')\" target=\"_self\">";
 echo _stripslashes(format_user_name($preview_message['FLOGON'], $preview_message['FNICK']));
-echo "</a><br />\n";
+echo "</a><br /><br />\n";
 
-echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openEmoticons('user','$webtag')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
+$emot_user = bh_session_get_value('EMOTICONS');
+$emot_prev = emoticons_preview($emot_user);
+if ($emot_prev != "") {
+	echo "<h2>".$lang['emoticons'].":</h2>\n";
+	echo $emot_prev."<br />\n";
+}
 
 echo "</td></tr>\n";
 echo "</table>\n";
@@ -639,9 +644,9 @@ echo "<tr><td>\n";
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
-if ($edit_type == "html") {
-	$tools = new TextAreaHTML("f_edit");
+$tools = new TextAreaHTML("f_edit");
 
+if ($edit_type == "html") {
 	echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
 
     $t_content = tidy_html($t_content, isset($auto_linebreaks) ? $auto_linebreaks : false);
@@ -675,7 +680,8 @@ if ($edit_type == "html") {
     echo "<br /><br />\n";
 
 } else {
-    echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+    echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+
 }
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
@@ -707,13 +713,9 @@ echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
 $t_sig = tidy_html($t_sig, false);
 
-if ($edit_type == "html") {
-	echo $tools->textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+echo $tools->textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-	echo $tools->js();
-} else {
-	echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
-}
+echo $tools->js();
 
 if ($sig_html_changes == true) {
 

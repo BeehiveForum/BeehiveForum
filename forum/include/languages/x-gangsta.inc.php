@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.1 2004-04-23 22:13:25 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.2 2004-04-25 16:47:23 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -999,8 +999,8 @@ $lang['globallyignoredsig_exp'] = "Yo ain't be seein' shit with this motherfucke
 
 $lang['searchresults'] = "Yo Search Results";
 $lang['usernamenotfound'] = "tha tag yo wanted in tha to or from field ain't here, yo.";
-$lang['notexttosearchfor_1'] = "Yo ain't specifyin' any words to search fo', yo dizumb shit";
-$lang['notexttosearchfor_2'] = "chizaracters lizong n shit";
+$lang['notexttosearchfor_1'] = "You did not specify any words to search for or the words were under";
+$lang['notexttosearchfor_2'] = "characters long or you did not enter a username to search against";
 $lang['foundzeromatches'] = "Fizound: 0 pussy";
 $lang['found'] = "Fizound";
 $lang['matches'] = "mizatches";

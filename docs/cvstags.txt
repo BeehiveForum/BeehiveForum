@@ -1,0 +1,6 @@
+Beehive - CVS tag list
+
+NB: No tags exist before the release of 0.3 - oops :)
+
+TAG           DESCRIPTION
+rel0-3        0.3 release

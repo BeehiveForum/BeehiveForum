@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.64 2005-03-08 22:50:53 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.65 2005-03-09 23:26:53 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -232,7 +232,7 @@ function thread_set_high_interest($tid, $interest, $new = false)
 
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "SET INTEREST = $interest WHERE UID = $uid AND TID = $tid ";
-        $sql.= "WHERE INTEREST = 0";
+        $sql.= "AND INTEREST = 0";
     }
 
     $db_thread_set_interest = db_connect();

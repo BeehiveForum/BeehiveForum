@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.332 2005-03-09 17:59:22 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.333 2005-03-09 23:26:52 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -273,7 +273,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     if ($uid != $message['FROM_UID']) {
 
-        if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
+        if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
 
             message_display_deleted($tid, $message['PID'], $message);
             return;
@@ -455,7 +455,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             $user_prefs = user_get_prefs($uid);
 
-            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
+            if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
             if (forum_get_setting('require_post_approval', 'Y', false) && isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>{$lang['approvalrequired']}</b> ";
 

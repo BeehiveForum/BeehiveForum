@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.90 2005-03-08 16:52:49 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.91 2005-03-09 23:26:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -165,14 +165,16 @@ if ($folder_array = folder_get_all()) {
         }
 
         echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
-        echo "                  <td align=\"left\">{$folder['THREAD_COUNT']}</td>\n";
+
+        if ($thread_count = folder_get_thread_count($folder['FID'])) {
+            echo "                  <td align=\"left\">{$thread_count}</td>\n";
+        }else {
+            echo "                  <td align=\"left\">{$lang['unknown']}</td>\n";
+        }
 
         if ($folder['FOLDER_PERM_COUNT'] > 0) {
-
             echo "                  <td align=\"left\">", perm_display_list($folder['FOLDER_PERMS']), "</td>\n";
-
         }else {
-
             echo "                  <td align=\"left\">{$lang['none']}</td>\n";
         }
 

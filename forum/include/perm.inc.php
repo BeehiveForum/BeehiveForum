@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.60 2005-03-08 16:52:55 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.61 2005-03-09 23:26:53 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -325,8 +325,6 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
 
         $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid' ";
         $sql.= "AND FID = '0' AND FORUM = '$forum_fid'";
-
-        echo $sql; exit;
 
         return db_query($sql, $db_perm_update_group);
     }
@@ -762,18 +760,19 @@ function perm_get_global_user_gid($uid)
 }
 
 
-function perm_get_user_folder_perms($uid, $fid)
+function perm_user_get_user_folders($uid)
 {
-    $db_perm_get_user_folder_perms = db_connect();
+    $db_perm_user_get_user_folders = db_connect();
 
-    if (!is_numeric($uid)) return 0;
-    if (!is_numeric($fid)) return 0;
+    $folders_array = array();
+
+    if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return 0;
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
@@ -783,21 +782,35 @@ function perm_get_user_folder_perms($uid, $fid)
     $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
     $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "WHERE FOLDER.FID = '$fid' ";
     $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
-    $result = db_query($sql, $db_perm_get_user_folder_perms);
+    $result = db_query($sql, $db_perm_user_get_user_folders);
 
-    $row = db_fetch_array($result);
+    if (db_num_rows($result) > 0) {
 
-    if ($row['USER_PERM_COUNT'] > 0) {
+        while ($row = db_fetch_array($result)) {
 
-        return array('STATUS' => $row['USER_STATUS']);
+            if ($row['USER_PERM_COUNT'] > 0) {
 
-    }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
+                                                    'TITLE'  => $row['TITLE'],
+                                                    'STATUS' => $row['USER_STATUS']);
 
-        return array('STATUS' => $row['FOLDER_PERMS']);
+            }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+
+                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
+                                                    'TITLE'  => $row['TITLE'],
+                                                    'STATUS' => $row['FOLDER_PERMS']);
+            }else {
+
+                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
+                                                    'TITLE'  => $row['TITLE'],
+                                                    'STATUS' => 0);
+            }
+        }
+
+        return $folders_array;
     }
 
     return false;

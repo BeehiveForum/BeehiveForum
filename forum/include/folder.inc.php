@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.89 2005-03-05 21:09:44 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.90 2005-03-09 23:26:52 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -292,12 +292,10 @@ function folder_get_all()
     if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(THREAD.FID) AS THREAD_COUNT, ";
+    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, ";
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "ON (THREAD.FID = FOLDER.FID) ";
     $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
     $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "GROUP BY FOLDER.FID ";
@@ -317,6 +315,24 @@ function folder_get_all()
     }
 
     return false;
+}
+
+function folder_get_thread_count($fid)
+{
+    $db_folder_get_thread_count = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(TID) AS THREAD_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "WHERE FID = $fid";
+
+    $result = db_query($sql, $db_folder_get_thread_count);
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $thread_count;
 }
 
 function folder_get($fid)

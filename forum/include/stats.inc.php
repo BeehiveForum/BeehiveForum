@@ -26,16 +26,18 @@ require_once("./include/config.inc.php");
 function update_stats()
 {
     $db_update_stats = db_connect();
-    $num_sessions = get_num_sessions();
 
-    $sql = "SELECT MOST_USERS_COUNT FROM ". forum_table("STATS");
+    $num_sessions = get_num_sessions();
+    $num_recent_posts = get_recent_post_count();
+
+    $sql = "SELECT * FROM ". forum_table("STATS");
     $result = db_query($sql, $db_update_stats);
 
     if (db_num_rows($result)) {
 
-        $most_users = db_fetch_array($result);
+        $stats_array = db_fetch_array($result);
 
-        if ($num_sessions > $most_users['MOST_USERS_COUNT']) {
+        if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
 
             $sql = "UPDATE ". forum_table("STATS"). " SET ";
             $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
@@ -43,12 +45,22 @@ function update_stats()
             $result = db_query($sql, $db_update_stats);
         }
 
+        if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
+
+            $sql = "UPDATE ". forum_table("STATS"). " SET ";
+            $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
+
+            $result = db_query($sql, $db_update_stats);
+        }
+
     }else {
 
-        $sql = "INSERT INTO ". forum_table("STATS"). " (MOST_USERS_DATE, MOST_USERS_COUNT) ";
-        $sql.= "VALUES (NOW(), '$num_sessions')";
+        $sql = "INSERT INTO ". forum_table("STATS"). " (MOST_USERS_DATE, ";
+        $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
+        $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
 
         $result = db_query($sql, $db_update_stats);
+
     }
 }
 
@@ -89,7 +101,7 @@ function get_active_users()
     $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "ORDER BY SESSIONS.SESSID DESC";
+    $sql.= "ORDER BY SESSIONS.TIME DESC";
 
     $result = db_query($sql, $db_get_active_users);
 
@@ -99,7 +111,7 @@ function get_active_users()
 
             $stats['GUESTS']++;
 
-        }elseif ($row['ANON_LOGON'] == 1) {
+        }elseif (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] == 1) {
 
             $stats['AUSERS']++;
 
@@ -145,6 +157,25 @@ function get_post_count()
     return 0;
 }
 
+function get_recent_post_count()
+{
+    $db_get_post_count = db_connect();
+
+    $post_stamp = time() - HOUR_IN_SECONDS;
+
+    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM ". forum_table("POST"). " ";
+    $sql.= "WHERE CREATED >= FROM_UNIXTIME($post_stamp)";
+
+    $result = db_query($sql, $db_get_post_count);
+
+    if (db_num_rows($result)) {
+        $row = db_fetch_array($result);
+        return $row['POSTS'];
+    }
+
+    return 0;
+}
+
 function get_longest_thread()
 {
     $db_get_longest_thread = db_connect();
@@ -170,6 +201,23 @@ function get_most_users()
     $sql.= "FROM ". forum_table("STATS");
 
     $result = db_query($sql, $db_get_most_users);
+
+    if (db_num_rows($result)) {
+        $row = db_fetch_array($result);
+        return $row;
+    }
+
+    return false;
+}
+
+function get_most_posts()
+{
+    $db_get_most_posts = db_connect();
+
+    $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
+    $sql.= "FROM ". forum_table("STATS");
+
+    $result = db_query($sql, $db_get_most_posts);
 
     if (db_num_rows($result)) {
         $row = db_fetch_array($result);

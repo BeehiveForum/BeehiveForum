@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.182 2003-09-21 18:28:45 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.183 2003-09-21 20:41:12 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -842,13 +842,24 @@ function messages_forum_stats()
             if (sizeof($user_stats['USERS']) > 0) {
 
                 echo "          <tr>\n";
+                echo "            <td width=\"30\">&nbsp;</td>\n";
                 echo "            <td>&nbsp;</td>\n";
-                echo "            <td>";
+                echo "          </tr>\n";
+                echo "          <tr>\n";
+                echo "            <td>&nbsp;</td>\n";
+                echo "            <td>Currently Active:</td>\n";
+                echo "          </tr>\n";
+                echo "          <tr>";
+                echo "            <td>&nbsp;</td>\n";
+                echo "            <td>\n";
 
                 for ($i = 0; $i < sizeof($user_stats['USERS']); $i++) {
                     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']})\" target=\"_self\">", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME']), "</a>";
                     if ($i < (sizeof($user_stats['USERS']) - 1)) echo ", ";
                 }
+
+                echo "            </td>\n";
+                echo "          </tr>\n";
             }
 
             echo "          <tr>\n";
@@ -861,7 +872,7 @@ function messages_forum_stats()
         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         echo "          <tr>\n";
         echo "            <td width=\"30\">&nbsp;</td>\n";
-        echo "            <td>Our members have made a total of ", get_thread_count(), " threads and ", get_post_count(), " posts</td>\n";
+        echo "            <td>Our members have made a total of <b>", number_format(get_thread_count(), 0, ".", ","), "</b> threads and <b>", number_format(get_post_count(), 0, ".", ","), "</b> posts</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
 
@@ -870,9 +881,38 @@ function messages_forum_stats()
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
             echo "            <td width=\"30\">&nbsp;</td>\n";
-            echo "            <td>Longest thread is '<a href=\"./?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' with {$longest_thread['LENGTH']} posts.</td>\n";
+            echo "            <td>Longest thread is '<a href=\"./?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' with <b>", number_format($longest_thread['LENGTH'], 0, ".", ","), "</b> posts.</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
+        }
+
+        if ($recent_posts = get_recent_post_count()) {
+
+            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "          <tr>\n";
+            echo "            <td width=\"30\">&nbsp;</td>\n";
+            echo "            <td>&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "          <tr>\n";
+            echo "            <td width=\"30\">&nbsp;</td>\n";
+            echo "            <td>There have been <b>$recent_posts</b> posts made in the last 60 minutes.</td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+
+            if ($most_posts = get_most_posts()) {
+
+                if ($most_posts['MOST_POSTS_COUNT'] > 0 && $most_posts['MOST_POSTS_DATE'] > 0) {
+
+                    echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+                    echo "          <tr>\n";
+                    echo "            <td width=\"30\">&nbsp;</td>\n";
+                    echo "            <td>Most posts ever made in a single 60 minute period is <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ".", ","), "</b></td>\n";
+                    echo "          </tr>\n";
+                    echo "        </table>\n";
+                }
+            }
         }
 
         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
@@ -883,7 +923,7 @@ function messages_forum_stats()
         echo "          <tr>\n";
         echo "            <td width=\"30\">&nbsp;</td>\n";
         echo "            <td>\n";
-        echo "              We have ", user_count(), " registered members.\n";
+        echo "              We have <b>", user_count(), "</b> registered members.\n";
 
         if ($newest_member = get_newest_user()) {
 
@@ -901,7 +941,7 @@ function messages_forum_stats()
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
                 echo "            <td width=\"30\">&nbsp;</td>\n";
-                echo "            <td>Most users ever online was {$most_users['MOST_USERS_COUNT']} on ", date("M jS Y, g:i A", $most_users['MOST_USERS_DATE']), "</td>\n";
+                echo "            <td>Most users ever online was <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> on ", date("M jS Y, g:i A", $most_users['MOST_USERS_DATE']), "</td>\n";
                 echo "          </tr>\n";
             }
         }

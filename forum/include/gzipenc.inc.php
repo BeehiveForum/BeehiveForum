@@ -21,15 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.40 2005-03-18 23:58:40 decoyduck Exp $ */
-
-if (@file_exists("./include/config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
-}
+/* $Id: gzipenc.inc.php,v 1.41 2005-03-29 00:42:04 decoyduck Exp $ */
 
 function bh_check_gzip()
 {
-    global $gzip_compress_output;
+    if (@file_exists("./include/config.inc.php")) {
+        include(BH_INCLUDE_PATH. "config.inc.php");
+    }
 
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.
@@ -67,7 +65,9 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $gzip_compress_level;
+    if (@file_exists("./include/config.inc.php")) {
+        include(BH_INCLUDE_PATH. "config.inc.php");
+    }
 
     // check the compression level variable is set
 

@@ -20,16 +20,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.95 2005-03-21 22:35:37 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.96 2005-03-29 00:42:02 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "geshi.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
-
-$fix_html_code_text = 'code:';
-$fix_html_quote_text = 'quote:';
-$fix_html_spoiler_text = 'spoiler:';
 
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
@@ -38,9 +34,9 @@ $fix_html_spoiler_text = 'spoiler:';
 
 function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
 {
-    global $fix_html_code_text;
-    global $fix_html_quote_text;
-    global $fix_html_spoiler_text;
+    $fix_html_code_text = 'code:';
+    $fix_html_quote_text = 'quote:';
+    $fix_html_spoiler_text = 'spoiler:';
 
     global $code_highlighter;
 

@@ -72,7 +72,7 @@ if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VA
 
 // Delete the user's cookie as requested and send them back to the login form.
 
-if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == true) {
+if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == 'yes') {
 
   for ($i = 0; $i < sizeof($username_array); $i++) {
 
@@ -439,7 +439,7 @@ if (user_guest_enabled() && $guest_account_enabled) {
 echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Register now.</a></p>\n";
 echo "  <hr width=\"350\">\n";
 echo "  <h2>Problems logging on?</h2>\n";
-echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=true", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Delete Cookies</a></p>\n";
+echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Delete Cookies</a></p>\n";
 echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Forgotten your password?</a></p>\n";
 echo "  <hr width=\"350\">\n";
 echo "  <h2>Using a PDA?</h2>\n";

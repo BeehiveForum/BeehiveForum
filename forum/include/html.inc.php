@@ -27,11 +27,11 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
 
-function html_guest_error () 
-{ 
-     html_draw_top(); 
-     echo "<h1>Sorry, you need to be logged in to use this feature.</h1>"; 
-     html_draw_bottom(); 
+function html_guest_error ()
+{
+     html_draw_top();
+     echo "<h1>Sorry, you need to be logged in to use this feature.</h1>";
+     html_draw_bottom();
 }
 
 function html_poll_edit_error ()
@@ -72,7 +72,7 @@ function _html_draw_top1($title = false)
     echo "<link rel=\"stylesheet\" href=\"", $stylesheet, "\" type=\"text/css\" />\n";
 
     if (!empty($HTTP_COOKIE_VARS['bh_sess_fontsize']) && $HTTP_COOKIE_VARS['bh_sess_fontsize'] != '10') {
-        echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n"; 
+        echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";
     }
 
 }
@@ -92,7 +92,7 @@ function _html_draw_top_script()
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n\n";
     echo "function openProfile(uid) {\n";
-    echo "  window.open('user_profile.php?uid=' + uid, uid,'width=400, height=400, toolbars=no');\n";
+    echo "  window.open('user_profile.php?uid=' + uid, uid,'width=500, height=450, toolbars=no');\n";
     echo "}\n\n";
     echo "-->\n";
     echo "</script>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.18 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: en.inc.php,v 1.19 2003-07-28 17:09:24 decoyduck Exp $ */
 
 // International English language file
 
@@ -123,6 +123,7 @@ $lang['permissions'] = "Permissions";
 $lang['position'] = "Position";
 $lang['or'] = "or";
 $lang['hours'] = "Hours";
+$lang['type'] = "Type";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -272,6 +273,14 @@ $lang['addnewuser'] = "Add New User";
 $lang['adduser'] = "Add User";
 $lang['searchforuser'] = "Search For User";
 $lang['browsernegotiation'] = "Browser negotiation";
+$lang['largetextfield'] = "Large Text Field";
+$lang['mediumtextfield'] = "Medium Text Field";
+$lang['smalltextfield'] = "Small Text Field";
+$lang['multilinetextfield'] = "Multiline Text Field";
+$lang['radiobuttons'] = "Radio Buttons";
+$lang['dropdown'] = "Drop Down";
+$lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to seperate the fieldname and the values with a colon and each value should be seperated by semi-colons.";
+$lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 

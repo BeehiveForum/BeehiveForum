@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.11 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: profile.inc.php,v 1.12 2003-07-28 17:09:24 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -102,7 +102,7 @@ function profile_items_get($psid)
 {
     $db_profile_items_get = db_connect();
 
-    $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME ";
+    $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, PROFILE_ITEM.TYPE ";
     $sql.= "FROM " . forum_table("PROFILE_ITEM") . " PROFILE_ITEM ";
     $sql.= "WHERE PROFILE_ITEM.PSID = $psid ";
     $sql.= "ORDER BY PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
@@ -120,14 +120,14 @@ function profile_items_get($psid)
     }
 }
 
-function profile_item_create($psid, $name, $position)
+function profile_item_create($psid, $name, $position, $type)
 {
     $db_profile_item_create = db_connect();
 
     $name = addslashes($name);
 
-    $sql = "insert into ". forum_table("PROFILE_ITEM"). " (PSID, NAME, POSITION) ";
-    $sql.= "values ($psid, '$name', $position)";
+    $sql = "insert into ". forum_table("PROFILE_ITEM"). " (PSID, NAME, TYPE, POSITION) ";
+    $sql.= "values ($psid, '$name', $type, $position)";
 
     $result = db_query($sql, $db_profile_item_create);
 
@@ -141,7 +141,7 @@ function profile_item_create($psid, $name, $position)
 
 }
 
-function profile_item_update($piid, $psid, $position, $name)
+function profile_item_update($piid, $psid, $position, $type, $name)
 {
     $db_profile_item_update = db_connect();
 
@@ -149,7 +149,7 @@ function profile_item_update($piid, $psid, $position, $name)
 
     $sql = "UPDATE " . forum_table("PROFILE_ITEM") . " ";
     $sql.= "SET PSID = $psid, POSITION = $position, ";
-    $sql.= "NAME = '$name' WHERE PIID = $piid";
+    $sql.= "TYPE = $type, NAME = '$name' WHERE PIID = $piid";
 
     $result = db_query($sql, $db_profile_item_update);
 

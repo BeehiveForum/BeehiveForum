@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.165 2003-08-31 18:15:12 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.166 2003-09-04 16:10:38 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -393,7 +393,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 for ($i = 0; $i < sizeof($attachments); $i++) {
 
                     echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
-                    echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "\"";
+                    echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\"";
 
                     if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
                         echo " target=\"_blank\"";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.69 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.70 2004-06-25 14:33:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,18 +139,42 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 // Get any AID from the GET or POST request
 
 if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
+
     $aid = $_GET['aid'];
+
+    if (!$t_fid = get_folder_fid($aid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
 }elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+
     $aid = $_POST['aid'];
+
+    if (!$t_fid = get_folder_fid($aid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
 }else {
+
     $aid = false;
+    $t_fid = 0;
 }
 
 // Check that the UID we have belongs to the current user
 // or that it is an admin if we're viewing another user's
 // attachments.
 
-if (($uid != bh_session_get_value('UID')) && !(perm_is_moderator())) {
+if (($uid != bh_session_get_value('UID')) && !(perm_is_moderator($t_fid))) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();

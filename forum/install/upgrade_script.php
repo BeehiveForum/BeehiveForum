@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.7 2004-06-19 11:30:36 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.8 2004-06-25 14:33:58 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -230,7 +230,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql = "CREATE TABLE {$forum_webtag}_BANNED_IP_NEW (";
     $sql.= "  IP CHAR(15) NOT NULL DEFAULT '',";
     $sql.= "  PRIMARY KEY  (IP)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -254,13 +254,25 @@ foreach($forum_webtag_array as $forum_webtag) {
         return mysql_error();
     }
 
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD FULLTEXT (TITLE)";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
+    }
+
+    $sql = "REPAIR TABLE {$forum_webtag}_THREAD";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
+    }
+
     $sql = "CREATE TABLE {$forum_webtag}_LINKS_VOTE_NEW (";
     $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
     $sql.= "  PRIMARY KEY  (LID, UID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -291,7 +303,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
     $sql.= "  PRIMARY KEY  (TID,PID),";
     $sql.= "  KEY AID (AID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -323,7 +335,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
     $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (ID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -355,7 +367,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
     $sql.= "  ALLOWED TINYINT(4) DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (UID,FID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -386,7 +398,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -442,7 +454,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  ALLOW_EMAIL CHAR(1) DEFAULT 'Y' NOT NULL,";
     $sql.= "  ALLOW_PM CHAR(1) DEFAULT 'Y' NOT NULL,";
     $sql.= "  PRIMARY KEY (UID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -477,7 +489,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (UID,PIID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -508,7 +520,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  CONTENT TEXT,";
     $sql.= "  HTML CHAR(1) DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (UID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -541,7 +553,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
     $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
     $sql.= "  PRIMARY KEY (UID, TID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -598,7 +610,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
     $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (ID, UID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -648,7 +660,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  ACCESS_LEVEL tinyint(4) NOT NULL default '0',";
     $sql.= "  FORUM_PASSWD VARCHAR(32) NOT default '',";
     $sql.= "  PRIMARY KEY  (FID)";
-    $sql.= ") TYPE=MyISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -666,7 +678,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  SNAME VARCHAR(255) NOT NULL,";
     $sql.= "  SVALUE VARCHAR(255) NOT NULL,";
     $sql.= "  INDEX (SID, FID)";
-    $sql.= ") TYPE=MyISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -809,7 +821,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
     $sql.= "  LAST_LOGON DATETIME NOT NULL,";
     $sql.= "  PRIMARY KEY (UID, FID)";
-    $sql.= ") TYPE=MyISAM";
+    $sql.= ")";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();

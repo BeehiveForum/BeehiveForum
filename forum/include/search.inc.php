@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.69 2004-06-13 22:59:15 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.70 2004-06-25 14:33:58 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -34,6 +34,7 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['date_from'])) $argarray['date_from'] = 7;
     if (!isset($argarray['date_to'])) $argarray['date_to'] = 2;
     if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;
+    if (!isset($argarray['group_by_thread'])) $argarray['group_by_thread'] = "N";
     if (!isset($argarray['sstart'])) $argarray['sstart'] = 0;
     if (!isset($argarray['fid'])) $argarray['fid'] = 0;
     if (!isset($argarray['me_only'])) $argarray['me_only'] = "N";
@@ -115,16 +116,22 @@ function search_execute($argarray, &$urlquery, &$error)
 
         $keywords_array = explode(' ', trim($argarray['search_string']));
 
+	// Boolean Search Parameters that we don't want to strip
+
+	$boolean_search_params = array('and', 'or', 'not', '+', '~', '-');
+
         foreach ($keywords_array as $key => $value) {
 
-            if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
-                unset($keywords_array[$key]);
+            if (!in_array($key, $boolean_search_params)) {
+                if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
+                    unset($keywords_array[$key]);
+		}
             }
         }
 
 	if (sizeof($keywords_array) > 0) {
 
-            if ((db_fetch_mysql_version() > 33232) && ($argarray['method'] < 2)) {
+            if ((db_fetch_mysql_version() > 33232) && ($argarray['method'] == 1)) {
 
                 // Full Text Support in MySQL 3.32.32 and above
 
@@ -133,13 +140,13 @@ function search_execute($argarray, &$urlquery, &$error)
 	        $bool_mode = (db_fetch_mysql_version() > 40010) ? "IN BOOLEAN MODE" : "";
 	        $keywords = search_convert_fulltext($keywords);
 
-    	        $thread_title_sql = "MATCH (THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
-	        $post_content_sql = "MATCH (POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
-	        $attach_files_sql = "MATCH (POST_ATTACHMENT_FILES.FILENAME) AGAINST('$keywords' $bool_mode)";
+    	        if ($argarray['include'] > 0) $thread_title_sql = "MATCH (THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
+	        if ($argarray['include'] > 1) $post_content_sql = "MATCH (POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
+	        if ($argarray['include'] > 2) $attach_files_sql = "MATCH (POST_ATTACHMENT_FILES.FILENAME) AGAINST('$keywords' $bool_mode)";
 
 	    }else {
 
-                if ($argarray['method'] == 1) { // AND
+                if ($argarray['method'] == 2) { // AND
 
                     if ($argarray['include'] > 0) {
 
@@ -162,7 +169,7 @@ function search_execute($argarray, &$urlquery, &$error)
                         $attach_files_sql.= "%'";
                     }
 
-                }elseif ($argarray['method'] == 2) { // OR
+                }elseif ($argarray['method'] == 3) { // OR
 
                     if ($argarray['include'] > 0) {
 
@@ -185,20 +192,20 @@ function search_execute($argarray, &$urlquery, &$error)
                         $attach_files_sql.= "%'";
                     }
 
-                }elseif ($argarray['method'] == 3) { // EXACT
+                }elseif ($argarray['method'] == 4) { // EXACT
 
                     $keywords = addslashes(trim(implode(' ', $keywords_array)));
 
                     if ($argarray['include'] > 0) {
-                        $thread_title_sql.= "(INSTR(THREAD.TITLE, ' {$keywords} ') ";
+                        $thread_title_sql.= "INSTR(THREAD.TITLE, '{$keywords}')";
                     }
 
                     if ($argarray['include'] > 1) {
-                        $post_content_sql = "INSTR(POST_CONTENT.CONTENT, ' {$keywords} ') ";
+                        $post_content_sql = "INSTR(POST_CONTENT.CONTENT, '{$keywords}')";
                     }
 
                     if ($argarray['include'] > 2) {
-                        $attach_files_sql = "INSTR(POST_ATTACHMENT_FILES.FILENAME, ' {$keywords} ')";
+                        $attach_files_sql = "INSTR(POST_ATTACHMENT_FILES.FILENAME, '{$keywords}')";
                     }
 		}
             }
@@ -286,10 +293,11 @@ function search_execute($argarray, &$urlquery, &$error)
 
         $result = db_query($search_sql, $db_search_execute);
 
-        $urlquery = "&amp;fid=". $argarray['fid']. "&amp;date_from=". $argarray['date_from']. "&amp;date_to=". $argarray['date_to'];
-        $urlquery.= "&amp;search_string=". rawurlencode(trim($argarray['search_string'])). "&amp;method=". $argarray['method']. "&amp;me_only=". $argarray['me_only'];
-        $urlquery.= "&amp;to_other=". $argarray['to_other']. "&amp;to_uid=". $argarray['to_uid']. "&amp;from_other=". $argarray['from_other'];
-        $urlquery.= "&amp;from_uid=". $argarray['from_uid']. "&amp;order_by=". $argarray['order_by'];
+        $urlquery = "&amp;fid={$argarray['fid']}&amp;date_from={$argarray['date_from']}";
+        $urlquery.= "&amp;date_to={$argarray['date_to']}&amp;search_string=". rawurlencode(trim($argarray['search_string']));
+        $urlquery.= "&amp;method={$argarray['method']}&amp;me_only={$argarray['me_only']}";
+        $urlquery.= "&amp;username={$argarray['username']}&amp;user_include={$argarray['user_include']}";
+        $urlquery.= "&amp;order_by={$argarray['order_by']}&amp;group_by_thread={$argarray['group_by_thread']}";
 
         if (db_num_rows($result)) {
             $search_results_array = array();

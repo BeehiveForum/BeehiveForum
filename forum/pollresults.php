@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.67 2004-06-15 20:49:31 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.68 2004-06-25 14:33:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -113,21 +113,29 @@ if (isset($_POST['submit']) && $_POST['submit'] == $lang['close']) {
 
 if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
-  $tid = $_GET['tid'];
+    $tid = $_GET['tid'];
+
+    if (!$t_fid = thread_get_folder($tid, 1)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
 
 }else {
 
-  echo "<div align=\"center\">";
-  echo "<p>{$lang['mustspecifypolltoview']}</p>";
-  echo "<form method=\"post\" action=\"pollresults.php\">\n";
-  echo "  ", form_input_hidden('webtag', $webtag), "\n";
-  echo "  ". form_submit('submit', $lang['close']). "\n";
-  echo "</form>\n";
-  echo "</div>";
+    echo "<div align=\"center\">";
+    echo "<p>{$lang['mustspecifypolltoview']}</p>";
+    echo "<form method=\"post\" action=\"pollresults.php\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ". form_submit('submit', $lang['close']). "\n";
+    echo "</form>\n";
+    echo "</div>";
 
-  html_draw_bottom();
-  exit;
-
+    html_draw_bottom();
+    exit;
 }
 
 $polldata = poll_get($tid);
@@ -167,7 +175,7 @@ echo "        <tr>\n";
 echo "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
 echo "        </tr>\n";
 
-if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator() || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < gmmktime())) {
+if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($t_fid) || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < gmmktime())) {
 
   if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 

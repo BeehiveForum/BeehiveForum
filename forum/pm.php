@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.59 2004-06-15 20:49:31 decoyduck Exp $ */
+/* $Id: pm.php,v 1.60 2004-06-25 14:33:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -205,6 +205,17 @@ if ($folder == PM_FOLDER_INBOX) {
 echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+
+$uid = bh_session_get_value('UID');
+
+if ($uid = 54 || $uid = 19) {
+
+    echo "<p>Debugging for Kriv's PM bug:</p>\n";
+    echo "<pre>\n";
+    print_r($pm_messages_array);
+    echo "</pre>\n";
+}
+
 echo "<p>&nbsp;</p>\n";
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -240,7 +251,7 @@ if ($folder == PM_FOLDER_INBOX) {
 
 echo "      <td class=\"posthead\">&nbsp;{$lang['timesent']}</td>\n";
 
-if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
+if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
     echo "      <td class=\"posthead\" width=\"25\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
     echo "    </tr>\n";

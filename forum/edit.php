@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.131 2004-06-13 20:02:09 decoyduck Exp $ */
+/* $Id: edit.php,v 1.132 2004-06-25 14:33:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -383,7 +383,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
+    if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
 
         echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
         echo "<br />\n";
@@ -420,7 +420,7 @@ if (isset($_POST['preview'])) {
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
 
-            if (perm_is_moderator() && ($_POST['t_from_uid'] != bh_session_get_value('UID'))) {
+            if (perm_is_moderator($t_fid) && ($_POST['t_from_uid'] != bh_session_get_value('UID'))) {
                 admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
             }
 
@@ -455,7 +455,7 @@ if (isset($_POST['preview'])) {
 
         $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
-        if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
+        if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
 
             echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
             echo "<br />\n";

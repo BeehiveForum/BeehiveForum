@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.124 2004-06-15 20:49:31 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.125 2004-06-25 14:33:58 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -632,7 +632,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
 
-          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
+          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($polldata['FID'])) {
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
@@ -645,7 +645,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             }
           }
 
-          if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()){
+          if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($polldata['FID'])){
 
             $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']). "</td>\n";
 
@@ -681,7 +681,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
 
-          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
+          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($polldata['FID'])) {
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
@@ -695,7 +695,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           }
 
-          if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()){
+          if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($polldata['FID'])){
 
             $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
 
@@ -1506,7 +1506,7 @@ function poll_confirm_close($tid)
 
     $preview_message = messages_get($tid, 1, 1);
 
-    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
+    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator($preview_message['FID'])) {
         edit_refuse($tid, 1);
         return;
     }
@@ -1557,11 +1557,11 @@ function poll_close($tid)
     $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND PID = 1";
     $result = db_query($sql, $db_poll_close);
 
-    if (db_num_rows($result) > 0) {
+    if ($t_fid = thread_get_folder($tid, 1) && (db_num_rows($result) > 0)) {
 
       $polldata = db_fetch_array($result);
 
-      if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
+      if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($t_fid)) {
 
         $sql = "update {$table_data['PREFIX']}POLL set CLOSES = FROM_UNIXTIME(". gmmktime(). ") where TID = $tid";
         $result = db_query($sql, $db_poll_close);

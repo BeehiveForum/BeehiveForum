@@ -5,7 +5,7 @@ BODY		{
 		margin-left: 05px;
 		margin-right: 05px;
 		font-family: Verdana, Arial, Helvetica, sans-serif;
-                font-size: 10pt;
+        font-size: 10pt;
 		}
 
 P, H1, H2,  .form	{
@@ -54,7 +54,7 @@ A		{
 		color: #000000;
 		text-decoration: underline;
 		}
-		
+
 .smalltext{
         font-size: 9pt;
         }
@@ -242,3 +242,26 @@ A		{
           clip:   rect(   )
 }
 
+.button {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+          font-size: 9pt;
+          font-weight: bold;
+          color: #FFFFFF;
+          background-color: #9C9FC4;
+          border-top-width: 1px;
+          border-right-width: 1px;
+          border-bottom-width: 1px;
+          border-left-width: 1px
+}
+
+.subhead {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+          font-size: 10pt;
+          'font-weight: bold;'
+          color: #FFFFFF;
+          background-color: #9C9FC4;
+          border-top-width: 0px;
+          border-right-width: 0px;
+          border-bottom-width: 0px;
+          border-left-width: 0px
+}

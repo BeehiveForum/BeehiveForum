@@ -103,32 +103,37 @@ if(!$valid){
             $password = $HTTP_COOKIE_VARS['bh_remember_password'];
         }
     }
-    echo "<h1>User Logon</h1>";
     if(isset($error_html)){
         echo $error_html;
     }
-    echo "<div align=\"center\">";
-    echo "<form name=\"register\" action=\"" . $HTTP_SERVER_VARS['REQUEST_URI'] . "\" method=\"POST\">";
-    echo "<table>";
-    echo "<tr><td align=\"right\">Login Name</td>";
-    echo "<td><input type=\"text\" name=\"logon\" value=\"" . $logon . "\"></td>";
-    echo "</tr><tr><td align=\"right\">Password</td>";
-    echo "<td><input type=\"password\" name=\"password\" value=\"" . $password . "\"></td></tr>";
-    echo "<tr><td>&nbsp;</td><td align=\"right\">";
+    echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+    echo "<form name=\"logon\" action=\"" . $HTTP_SERVER_VARS['REQUEST_URI'] . "\" method=\"POST\">\n";
+    echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
+    echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
+    echo "Logon:\n";
+    echo "</td></tr></table>\n";
+    echo "<table class=\"posthead\" width=\"100%\">\n";
+    echo "<tr><td align=\"right\">User Name:</td>\n";
+    echo "<td><input type=\"text\" name=\"logon\" value=\"" . $logon . "\"></td>\n";
+    echo "</tr><tr><td align=\"right\">Password</td>\n";
+    echo "<td><input type=\"password\" name=\"password\" value=\"" . $password . "\"></td></tr>\n";
+    echo "<tr><td>&nbsp;</td><td align=\"right\">\n";
     echo "<input type=\"checkbox\" name=\"remember_user\" value=\"Y\"";
     if(isset($HTTP_COOKIE_VARS['bh_remember_user']) || $HTTP_POST_VARS['remember_user'] == "Y"){
         echo " checked";
     }
-    echo "> Remember me";
-    echo "</td></tr></table>";
-    echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr></table>";
-    echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
-    echo "</form></div>";
-    echo "<p>&nbsp;</p>";
-    echo "<div align=\"center\">";
-    echo "<p>Don't have an account?<br />";
+    echo "> Remember me</tr></td>\n";
+    echo "</table>\n";
+    echo "<table class=\"posthead\" width=\"100%\">\n";
+    echo "<tr><td align=\"center\"><input class=\"button\" name=\"submit\" type=\"submit\" value=\"Submit\">\n";
+    echo "</td></tr></table>\n";
+    echo "</td></tr></table>\n";
+    echo "</form></div>\n";
+    echo "<div align=\"center\">\n";
+    echo "<p class=\"smalltext\">\nDon't have an account? ";
     echo "<a href=\"register.php?final_uri=" . urlencode($final_uri);
-    echo "\" target=\"_self\">Click here to register...</a></p></div>";
+    echo "\" target=\"_self\">Register now.</a></p>";
+    echo "</div>\n";
 }
 
 html_draw_bottom();

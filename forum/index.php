@@ -29,15 +29,9 @@ require_once("./include/config.inc.php");
 
 header_no_cache();
 
-if(isset($default_style)) {
-    $user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
-	if (is_dir("./styles/$user_style")) {
-		$top_html = "./styles/$user_style/top.html";
-	} else {
-		$top_html = "./top.html";
-	}
-	//$top_html = "./styles/$user_style/top.html";
-} else {
+$top_html = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/top.html";
+
+if (!file_exists($top_html)) {
 	$top_html = "./top.html";
 }
 

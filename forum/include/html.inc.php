@@ -120,20 +120,13 @@ function style_image($img)
 {
     global $HTTP_COOKIE_VARS, $default_style;
 
-    // If user styles are enabled, set the directory
-    if(isset($default_style)){
-    	$user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
-		if (is_dir("./styles/$user_style")) {
-	    	$style_dir = "./styles/$user_style";
-		} else {
-	        $style_dir = '.';
-		}
+	$file = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/images/$img";
 
-    } else {
-        $style_dir = '.';
-    }
-
-    return "$style_dir/images/$img";
+	if (file_exists($file)) {
+	    return $file;
+	} else {
+		return "./images/$img";
+	}
 }
 
 ?>

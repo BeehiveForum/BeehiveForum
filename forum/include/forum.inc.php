@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.102 2005-01-21 21:25:51 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.103 2005-01-23 23:50:55 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -446,7 +446,7 @@ function forum_create($webtag, $forum_name, $access)
 
         // Beehive Table Names
 
-        $table_array = array('ADMIN_LOG', 'BANNED_IP', 'FILTER_LIST',
+        $table_array = array('ADMIN_LOG', 'BANNED', 'FILTER_LIST',
                              'FOLDER', 'FORUM_LINKS', 'LINKS',
                              'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
                              'POLL', 'POLL_VOTES', 'POST',
@@ -485,12 +485,16 @@ function forum_create($webtag, $forum_name, $access)
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        // Create BANNED_IP table
+        // Create BANNED table
 
-        $sql = "CREATE TABLE {$webtag}_BANNED_IP (";
-        $sql.= "  IP CHAR(15) NOT NULL DEFAULT '',";
+        $sql = "CREATE TABLE {$webtag}_BANNED (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  IPADDRESS CHAR(15) NOT NULL DEFAULT '',";
+        $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (IP)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MyISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -958,7 +962,7 @@ function forum_delete($fid)
                 delete_attachment_by_aid($row['AID']);
             }
 
-            $table_array = array('ADMIN_LOG', 'BANNED_IP', 'FILTER_LIST',
+            $table_array = array('ADMIN_LOG', 'BANNED', 'FILTER_LIST',
                                  'FOLDER', 'FORUM_LINKS', 'GROUPS',
                                  'GROUP_PERMS', 'GROUP_USERS', 'LINKS',
                                  'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',

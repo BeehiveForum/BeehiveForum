@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.29 2004-04-28 18:36:15 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.30 2004-04-28 22:39:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,8 +92,8 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 // Load the start page
 
-if ($start_main = load_start_page()) {
-    echo $start_main;
+if (file_exists("forums/$webtag/start_main.php")) {
+    include("forums/$webtag/start_main.php");
 }else {
     html_draw_top();
     echo "<h1>{$lang['editstartpage_help']}</h1>\n";

@@ -113,7 +113,7 @@ if($closed) $foldertitle .= " (closed)";
 $msg_count = count($messages);
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
-messages_top($foldertitle,stripslashes($threaddata['TITLE']),$threaddata['INTEREST']);
+messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTEREST']);
 echo "</td></tr></table></div>\n";
 
 if($msg_count > 0){

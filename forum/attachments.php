@@ -67,8 +67,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
   if ($HTTP_POST_VARS['submit'] == 'Del') {
 
-    unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. stripslashes($HTTP_POST_VARS['userfile'])));
-    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], rawurlencode(stripslashes($HTTP_POST_VARS['userfile'])));
+    unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
+    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
     
   }elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
 
@@ -81,10 +81,10 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
       }else {
     
-        if(move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. stripslashes($HTTP_POST_FILES['userfile']['name'])))) {
+        if(move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. _stripslashes($HTTP_POST_FILES['userfile']['name'])))) {
       
-          add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid'], rawurlencode(stripslashes($HTTP_POST_FILES['userfile']['name'])), $HTTP_POST_FILES['userfile']['type']);
-          echo "<p>Successfully Uploaded: ". stripslashes($HTTP_POST_FILES['userfile']['name']). "</p>\n";
+          add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'])), $HTTP_POST_FILES['userfile']['type']);
+          echo "<p>Successfully Uploaded: ". _stripslashes($HTTP_POST_FILES['userfile']['name']). "</p>\n";
           
         }else {
       

@@ -161,7 +161,19 @@ function htmlspecialchars_reverse($text)
 
     return $retval;
 
-}  
+}
 
+// Checks for Magic Quotes and perform stripslashes if nessecary
+
+function _stripslashes($string)
+{
+
+  if (get_magic_quotes_gpc()) {
+    return stripslashes($string);
+  }else {
+    return $string;
+  }
+  
+}
 
 ?>

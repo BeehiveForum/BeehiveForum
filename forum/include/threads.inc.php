@@ -315,7 +315,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
             $lst[$i]['tid'] = $thread['tid'];
             $lst[$i]['fid'] = $thread['fid'];
-            $lst[$i]['title'] = stripslashes($thread['title']);
+            $lst[$i]['title'] = _stripslashes($thread['title']);
             $lst[$i]['length'] = $thread['length'];
             $lst[$i]['poll_flag'] = $thread['poll_flag'];
 

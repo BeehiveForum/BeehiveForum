@@ -63,8 +63,8 @@ $from_user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 
 if(isset($HTTP_POST_VARS['submit'])){
     $valid = true;
-    $subject = stripslashes($HTTP_POST_VARS['t_subject']);
-    $message = stripslashes($HTTP_POST_VARS['t_message']);
+    $subject = _stripslashes($HTTP_POST_VARS['t_subject']);
+    $message = _stripslashes($HTTP_POST_VARS['t_message']);
     if(!$subject){
         $error = "<p>Enter a subject for the message:</p>";
         $valid = false;

@@ -160,7 +160,7 @@ if (isset($searchsql)) {
       if (thread_is_poll($row['TID'])) {
       
         $threaddata = thread_get($row['TID']);
-        $message['CONTENT'] = strip_tags(stripslashes($threaddata['TITLE']));
+        $message['CONTENT'] = strip_tags(_stripslashes($threaddata['TITLE']));
         
       }else {
       

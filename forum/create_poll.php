@@ -120,9 +120,9 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     
     for ($i = 0; $i < 5; $i++) {
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $HTTP_POST_VARS['answers'][$i] = fix_html(stripslashes($HTTP_POST_VARS['answers'][$i]));
+        $HTTP_POST_VARS['answers'][$i] = fix_html(_stripslashes($HTTP_POST_VARS['answers'][$i]));
       }else {
-        $HTTP_POST_VARS['answers'][$i] = make_html(stripslashes($HTTP_POST_VARS['answers'][$i]));
+        $HTTP_POST_VARS['answers'][$i] = make_html(_stripslashes($HTTP_POST_VARS['answers'][$i]));
       }
     }
     
@@ -164,7 +164,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    <td>\n";
   $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";  
   $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td><h2>". stripslashes($HTTP_POST_VARS['question']). "</h2></td>\n";
+  $polldata['CONTENT'].= "          <td><h2>". _stripslashes($HTTP_POST_VARS['question']). "</h2></td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -173,9 +173,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   for ($i = 0; $i < 5; $i++) {
     if (!empty($HTTP_POST_VARS['answers'][$i])) {
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $polldata['CONTENT'].= "          <li>". fix_html(stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
+        $polldata['CONTENT'].= "          <li>". fix_html(_stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
       }else {
-        $polldata['CONTENT'].= "          <li>". make_html(stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
+        $polldata['CONTENT'].= "          <li>". make_html(_stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
       }
     }
   }
@@ -234,7 +234,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
       <td><h2>Poll Question</h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", htmlspecialchars(stripslashes($HTTP_POST_VARS['question'])), 30, 64); ?></td>
+      <td><?php echo form_input_text("question", htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])), 30, 64); ?></td>
     </tr>
     <tr>
       <td>&nbsp;</td>
@@ -254,19 +254,19 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
             <td>&nbsp;</td>
           </tr>          
           <tr>
-            <td>1. <?php echo form_input_text("answers[]", htmlspecialchars(stripslashes($HTTP_POST_VARS['answers'][0])), 40, 64); ?></td>
+            <td>1. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][0])), 40, 64); ?></td>
           </tr>
           <tr>
-            <td>2. <?php echo form_input_text("answers[]", htmlspecialchars(stripslashes($HTTP_POST_VARS['answers'][1])), 40, 64); ?></td>
+            <td>2. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][1])), 40, 64); ?></td>
           </tr>
           <tr>
-            <td>3. <?php echo form_input_text("answers[]", htmlspecialchars(stripslashes($HTTP_POST_VARS['answers'][2])), 40, 64); ?></td>
+            <td>3. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][2])), 40, 64); ?></td>
           </tr>
           <tr>
-            <td>4. <?php echo form_input_text("answers[]", htmlspecialchars(stripslashes($HTTP_POST_VARS['answers'][3])), 40, 64); ?></td>
+            <td>4. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][3])), 40, 64); ?></td>
           </tr>
           <tr>
-            <td>5. <?php echo form_input_text("answers[]", htmlspecialchars(stripslashes($HTTP_POST_VARS['answers'][4])), 40, 64); ?></td>
+            <td>5. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][4])), 40, 64); ?></td>
           </tr>
           <tr>
             <td><?php echo form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", ($HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>

@@ -29,7 +29,7 @@ USA
 function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea"))
 {
 	if (!empty($html)) {
-		$html = stripslashes($html);
+		$html = _stripslashes($html);
 		$html = preg_replace("/<xmp[^>]*>((.|\n)*)<\/xmp[^>]*>/i", "<xmp>\\1</xmp>", $html);
 
 		$open_pos = strpos($html, "<");

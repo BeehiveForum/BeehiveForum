@@ -459,11 +459,11 @@ if(!$newthread) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      poll_display($reply_to_tid,$reply_message,0,0,false,false,false);
+      light_poll_display($reply_to_tid,$reply_message,0,true,false,false);
 
     }else {
 
-      message_display(0,$reply_message,0,0,false,false,false);
+      light_message_display(0,$reply_message,0,0,true,false,false,false,false);
 
     }
 

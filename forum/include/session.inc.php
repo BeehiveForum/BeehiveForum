@@ -44,14 +44,14 @@ function bh_session_check()
     $check.= " ". $HTTP_COOKIE_VARS['bh_sess_logon'];
     $check.= " ". $HTTP_COOKIE_VARS['bh_sess_passwd'];
     $check.= " ". $HTTP_COOKIE_VARS['bh_sess_ustatus'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_ppp'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_tz'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_dlsav'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_markread'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_fontsize'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_style'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_sig'];
-    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_sp'];
+    if (isset($HTTP_COOKIE_VARS['bh_sess_ppp'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_ppp']; } else { $check .= " "; }
+    if (isset($HTTP_COOKIE_VARS['bh_sess_tz'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_tz']; } else { $check .= " "; }
+    if (isset($HTTP_COOKIE_VARS['bh_sess_dlsav'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_dlsav']; } else { $check .= " "; }
+    if (isset($HTTP_COOKIE_VARS['bh_sess_markread'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_markread']; } else { $check .= " "; }
+    if (isset($HTTP_COOKIE_VARS['bh_sess_fontsize'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_fontsize']; } else { $check .= " "; }
+    if (isset($HTTP_COOKIE_VARS['bh_sess_style'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_style']; } else { $check .= " "; }
+    if (isset($HTTP_COOKIE_VARS['bh_sess_sig'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_sig']; } else { $check .= " "; }
+    if (isset($HTTP_COOKIE_VARS['bh_sess_sp'])) { $check.= " ". $HTTP_COOKIE_VARS['bh_sess_sp']; } else { $check .= " "; }
 
     if(isset($HTTP_SERVER_VARS['SERVER_SIGNATURE'])) {
         $check.= " ". $HTTP_SERVER_VARS['SERVER_SIGNATURE'];

@@ -31,10 +31,8 @@ require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
 
 if(!bh_session_check()){
-
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
 require_once("./include/html.inc.php");
@@ -44,57 +42,72 @@ require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
 
 if (!$attachments_enabled) {
-  header("HTTP/1.0 404 File Not Found");
-  exit;
+    header("HTTP/1.0 404 File Not Found");
+    exit;
 }
-
-header_no_cache();
 
 if (isset($HTTP_GET_VARS['hash'])) {
 
-  $db = db_connect();
+    $db = db_connect();
 
-  $hash = $HTTP_GET_VARS['hash'];
-  $sql  = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
-  $result = db_query($sql, $db);
+    $hash = $HTTP_GET_VARS['hash'];
+    $sql  = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
+    $result = db_query($sql, $db);
 
-  $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash' limit 0,1";
-  $result = db_query($sql, $db);
+    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash' limit 0,1";
+    $result = db_query($sql, $db);
 
-  if (db_num_rows($result)) {
+    if (db_num_rows($result)) {
 
-    $attachmentdetails = db_fetch_array($result);
+        $attachmentdetails = db_fetch_array($result);
 
-    if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
+        if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
 
-      if (strstr($HTTP_SERVER_VARS['HTTP_USER_AGENT'], 'MSIE')) {
-        $attachment="";
-      }else {
-        $attachment=" attachment;";
-      }
+            if (strstr($HTTP_SERVER_VARS['HTTP_USER_AGENT'], 'MSIE')) {
+                $attachment=" inline;";
+            }else {
+                $attachment=" attachment;";
+            }
 
-      if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+            // Use these quite a few times, so assign them to variables to make it easier
+            $filepath = $attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']));
+            $filename = basename($attachmentdetails['FILENAME']);
 
-        header("Content-Type: application/x-ms-download");
-        header("Content-disposition:$attachment filename=". basename($attachmentdetails['FILENAME']));
-        readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
-        header("Content-Length: ". ob_get_length());
-        exit;
+            // Etag Header for cache control
+            $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
 
-      }else {
+            if (isset($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH'])) {
+                $remote_etag = substr(stripslashes($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH']), 1, -1);
+            }else {
+                $remote_etag = false;
+            }
 
-        header("Content-Type: ". $attachmentdetails['MIMETYPE']);
-        header("Content-disposition: filename=". basename($attachmentdetails['FILENAME']));
-        readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
-        header("Content-Length: ". ob_get_length());
-        exit;
+            // Last Modified Header for cache control
+            $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT";
 
-      }
+            if (isset($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE'])) {
+                $remote_last_modified = stripslashes($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']);
+            }else {
+                $remote_last_modified = false;
+            }
 
+            if (strcmp($remote_etag, $local_etag) == "0" || strcmp($remote_last_modified, $local_last_modified) == "0") {
+                header("HTTP/1.1 304 Not Modified");
+                exit;
+            }else {
+                if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+                    header("Content-Type: application/x-ms-download", true);
+                }else {
+                    header("Content-Type: ". $attachmentdetails['MIMETYPE'], true);
+                }
+                header("Last-Modified: $local_last_modified", true);
+                header("Etag: \"$local_etag\"", true);
+                header("Content-disposition: $attachment filename=$filename", true);
+                readfile($filepath);
+                exit;
+            }
+        }
     }
-
-  }
-
 }
 
 html_draw_top();

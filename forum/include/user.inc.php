@@ -178,23 +178,6 @@ function user_get_prefs($uid)
     return $fa;
 }
 
-/*function user_insert_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
-                           $email_notify,$timezone,$dl_saving,$mark_as_of_int,
-                           $posts_per_page,$font_size)
-{
-
-    $db_user_insert_prefs = db_connect();
-    
-    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
-    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE)";
-    $sql .= " values ($uid, \"". htmlspecialchars($firstname). "\", \"". htmlspecialchars($lastname). "\",";
-    $sql .= " \"". htmlspecialchars($homepage_url). "\", \"". htmlspecialchars($pic_url). "\",";
-    $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page, $font_size)";
-    $result = db_query($sql, $db_user_insert_prefs);
-
-    return $result;
-} */
-
 function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
                            $posts_per_page, $font_size)
@@ -215,19 +198,6 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 
     return $result;
 }
-
-/*function user_insert_sig($uid,$content,$html){
-
-    $content = mysql_escape_string($content);
-    $db_user_insert_sig = db_connect();
-
-    $sql = "insert into " . forum_table("USER_SIG") . " (UID, CONTENT, HTML)";
-    $sql .= " values ($uid, \"$content\", \"$html\")";
-
-    $result = db_query($sql, $db_user_insert_sig);
-
-    return $result;
-} */
 
 function user_update_sig($uid,$content,$html){
 

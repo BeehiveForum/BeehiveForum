@@ -85,7 +85,7 @@ if($last_pid < $threaddata['LENGTH']){
 messages_start_panel();
 
 messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
-messages_interest_form($tid,$pid);
+messages_interest_form($tid, $pid);
 
 if (isset($HTTP_GET_VARS['fontsize'])) {
     message_fontsize_form($HTTP_GET_VARS['fontsize'], $tid, $pid);

@@ -27,23 +27,29 @@ require_once("./include/db.inc.php");
 function profile_section_get_name($psid)
 {
    $db_profile_section_get_name = db_connect();
+
    $sql = "SELECT PS.NAME FROM ".forum_table("PROFILE_SECTION")." PS WHERE PS.PSID = $psid";
+
    $resource_id = db_query($sql, $db_profile_section_get_name);
-   if(!db_num_rows($resource_id)){
+
+   if (!db_num_rows($resource_id)) {
      $sectionname = "The Unknown Section";
    } else {
      $data = db_fetch_array($resource_id);
      $sectionname = $data['NAME'];
    }
+
    return $sectionname;
 }
 
-function profile_section_create($name)
+function profile_section_create($name, $position)
 {
     $db_profile_section_create = db_connect();
 
-    $sql = "insert into " . forum_table("PROFILE_SECTION") . " (NAME) ";
-    $sql.= "values (\"$name\")";
+    $name = addslashes($name);
+
+    $sql = "insert into " . forum_table("PROFILE_SECTION") . " (NAME, POSITION) ";
+    $sql.= "values ('$name', $position)";
 
     $result = db_query($sql, $db_profile_section_create);
 
@@ -56,24 +62,48 @@ function profile_section_create($name)
     return $new_psid;
 }
 
-function profile_section_update($psid, $name)
+function profile_section_update($psid, $position, $name)
 {
     $db_profile_section_update = db_connect();
-    $sql = "update " . forum_table("PROFILE_SECTION") . " ";
-    $sql.= "set NAME = \"$name\" ";
-    $sql.= "where PSID = $psid";
+
+    $sql = "UPDATE " . forum_table("PROFILE_SECTION") . " ";
+    $sql.= "SET NAME = '$name', POSITION = $position ";
+    $sql.= "WHERE PSID = $psid";
+
     $result = db_query($sql, $db_profile_section_update);
+
     return $result;
+}
+
+function profile_sections_get()
+{
+    $db_profile_section_get = db_connect();
+
+    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
+    $sql.= "FROM " . forum_table("PROFILE_SECTION") . " PROFILE_SECTION ";
+    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID";
+
+    $result = db_query($sql, $db_profile_section_get);
+
+    if (db_num_rows($result)) {
+        $profile_sections_get = array();
+        while($row = db_fetch_array($result)) {
+            $profile_sections_get[] = $row;
+        }
+        return $profile_sections_get;
+    }else {
+        return false;
+    }
 }
 
 function profile_items_get($psid)
 {
     $db_profile_items_get = db_connect();
 
-    $sql = "select PROFILE_ITEM.PIID, PROFILE_ITEM.NAME ";
-    $sql.= "from " . forum_table("PROFILE_ITEM") . " PROFILE_ITEM ";
-    $sql.= "where PROFILE_ITEM.PSID = $psid ";
-    $sql.= "order by PROFILE_ITEM.PIID";
+    $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME ";
+    $sql.= "FROM " . forum_table("PROFILE_ITEM") . " PROFILE_ITEM ";
+    $sql.= "WHERE PROFILE_ITEM.PSID = $psid ";
+    $sql.= "ORDER BY PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
     $result = db_query($sql, $db_profile_items_get);
 
@@ -88,12 +118,14 @@ function profile_items_get($psid)
     }
 }
 
-function profile_item_create($psid,$name)
+function profile_item_create($psid, $name, $position)
 {
     $db_profile_item_create = db_connect();
 
-    $sql = "insert into " . forum_table("PROFILE_ITEM") . " (PSID,NAME) ";
-    $sql.= "values ($psid,\"$name\")";
+    $name = addslashes($name);
+
+    $sql = "insert into ". forum_table("PROFILE_ITEM"). " (PSID, NAME, POSITION) ";
+    $sql.= "values ($psid, '$name', $position)";
 
     $result = db_query($sql, $db_profile_item_create);
 
@@ -107,14 +139,15 @@ function profile_item_create($psid,$name)
 
 }
 
-function profile_item_update($piid, $psid, $name)
+function profile_item_update($piid, $psid, $position, $name)
 {
     $db_profile_item_update = db_connect();
 
-    $sql = "update " . forum_table("PROFILE_ITEM") . " ";
-    $sql.= "set PSID = $psid, ";
-    $sql.= "NAME = \"$name\" ";
-    $sql.= "where PIID = $piid";
+    $name = addslashes($name);
+
+    $sql = "UPDATE " . forum_table("PROFILE_ITEM") . " ";
+    $sql.= "SET PSID = $psid, POSITION = $position, ";
+    $sql.= "NAME = '$name' WHERE PIID = $piid";
 
     $result = db_query($sql, $db_profile_item_update);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.3 2004-01-26 19:40:30 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.4 2004-02-03 13:01:28 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -149,7 +149,7 @@ echo "            <tr>\n";
 echo "              <td class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"400\">\n";
 echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">Email Settings</td>\n";
+echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['emailsettings']}</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
@@ -176,10 +176,10 @@ echo "            <tr>\n";
 echo "              <td class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"400\">\n";
 echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">Privacy Settings</td>\n";
+echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['privacysettings']}</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
-echo "                    <td>{$lang['ageanddob']}</td>\n";
+echo "                    <td>{$lang['ageanddob']}:</td>\n";
 
 if (isset($user_prefs['DOB_DISPLAY'])) {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $user_prefs['DOB_DISPLAY']), "</td>\n";

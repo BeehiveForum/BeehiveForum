@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.22 2004-02-02 20:47:05 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.23 2004-02-03 13:01:28 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -689,6 +689,10 @@ $lang['showonlyage'] = "Show ma age only, yo";
 $lang['showageanddob'] = "Shizow to othizers";
 $lang['browseanonymously'] = "Keep yo head dizown";
 $lang['showforumstats'] = "Shizow fizorm stats an shit";
+$lang['timezone'] = "Time Zone";
+$lang['language'] = "Language";
+$lang['emailsettings'] = "Email Settings";
+$lang['privacysettings'] = "Privacy Settings";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

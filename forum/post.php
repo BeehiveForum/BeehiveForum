@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.126 2003-09-04 15:53:41 decoyduck Exp $ */
+/* $Id: post.php,v 1.127 2003-09-08 00:54:58 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -576,6 +576,64 @@ echo "<tr>\n";
 
 
 // ======================================
+// =========== OPTIONS COLUMN ===========
+echo "<td valign=\"top\" width=\"210\">\n";
+echo "<table class=\"posthead\" width=\"210\">\n";
+echo "<tr><td>\n";
+
+if ($newthread) {
+
+    echo "<h2>".$lang['folder'].":</h2>\n";
+    echo folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")."\n";
+    echo "<h2>".$lang['threadtitle'].":</h2>\n";
+    echo form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
+
+    echo form_input_hidden("t_newthread","Y")."\n";
+	echo "<br />\n";
+
+}else {
+
+    echo "<h2>".$lang['folder'].":</h2>\n";
+    echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
+    echo "<h2>".$lang['threadtitle'].":</h2>\n";
+    echo _stripslashes($threaddata['TITLE'])."\n";
+
+    echo form_input_hidden("t_tid", $reply_to_tid);
+    echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
+	echo "<br /><br />\n";
+}
+
+echo "<h2>".$lang['to'].":</h2>\n";
+if (!$newthread) {
+    echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true)."<br />\n";
+    echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid)."<br />\n";
+}
+echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false)."<br />\n";
+echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
+
+echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
+echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br />\n";
+
+if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
+
+    echo "<h2>".$lang['admin'].":</h2>\n";
+
+    echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
+    echo "<br />".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
+    echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
+    echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
+}
+
+echo "</td></tr>\n";
+echo "</table>\n";
+echo "</td>\n";
+// ======================================
+
+
+//echo "<td valign=\"top\" width=\"1\">&nbsp;</td>\n";
+
+
+// ======================================
 // =========== MESSAGE COLUMN ===========
 echo "<td valign=\"top\" width=\"500\">\n";
 echo "<table class=\"posthead\" width=\"500\">\n";
@@ -661,64 +719,6 @@ if ($sig_html_changes == true) {
 
 echo "</td></tr>\n";
 echo "</table>";
-echo "</td>\n";
-// ======================================
-
-
-//echo "<td valign=\"top\" width=\"1\">&nbsp;</td>\n";
-
-
-// ======================================
-// =========== OPTIONS COLUMN ===========
-echo "<td valign=\"top\" width=\"210\">\n";
-echo "<table class=\"posthead\" width=\"210\">\n";
-echo "<tr><td>\n";
-
-if ($newthread) {
-
-    echo "<h2>".$lang['folder'].":</h2>\n";
-    echo folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")."\n";
-    echo "<h2>".$lang['threadtitle'].":</h2>\n";
-    echo form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
-
-    echo form_input_hidden("t_newthread","Y")."\n";
-	echo "<br />\n";
-
-}else {
-
-    echo "<h2>".$lang['folder'].":</h2>\n";
-    echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
-    echo "<h2>".$lang['threadtitle'].":</h2>\n";
-    echo _stripslashes($threaddata['TITLE'])."\n";
-
-    echo form_input_hidden("t_tid", $reply_to_tid);
-    echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
-	echo "<br /><br />\n";
-}
-
-echo "<h2>".$lang['to'].":</h2>\n";
-if (!$newthread) {
-    echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true)."<br />\n";
-    echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid)."<br />\n";
-}
-echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false)."<br />\n";
-echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
-
-echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
-echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br />\n";
-
-if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
-
-    echo "<h2>".$lang['admin'].":</h2>\n";
-
-    echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
-    echo "<br />".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
-    echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
-    echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
-}
-
-echo "</td></tr>\n";
-echo "</table>\n";
 echo "</td>\n";
 // ======================================
 

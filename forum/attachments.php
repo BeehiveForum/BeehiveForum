@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.102 2005-01-30 00:23:31 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.103 2005-01-30 01:17:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -210,6 +210,9 @@ if (isset($_POST['upload'])) {
                     if (@move_uploaded_file($tempfile, $filepath)) {
 
                         add_attachment($uid, $aid, $uniqfileid, $filename, $filetype);
+
+                        attachment_create_thumb($filepath);
+
                         $users_free_space -= $filesize;
 
                         if (strlen($filename) > 32) {
@@ -320,10 +323,10 @@ if ($attachments_array = get_attachments(bh_session_get_value('UID'), $aid)) {
 
     foreach ($attachments_array as $key => $attachment) {
 
-        if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
+        if ($attachment_link = attachment_make_link($attachment, false)) {
 
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", attachment_make_link($attachment), "</td>\n";
+            echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
             echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
             echo "                  <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
             echo "                    ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
@@ -367,7 +370,7 @@ if ($attachments_array = get_all_attachments(bh_session_get_value('UID'), $aid))
 
     foreach ($attachments_array as $key => $attachment) {
 
-        if ($attachment_link = attachment_make_link($attachment)) {
+        if ($attachment_link = attachment_make_link($attachment, false)) {
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";

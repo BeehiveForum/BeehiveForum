@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.80 2005-01-30 00:23:32 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.81 2005-01-30 01:17:22 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -274,9 +274,10 @@ function delete_attachment($hash)
                 $result = db_query($sql, $db_delete_attachment);
             }
 
-            // Finally delete the file
+            // Finally delete the file (and it's thumbnail)
 
             @unlink("$attachment_dir/$hash");
+            @unlink("$attachment_dir/$hash.thumb");
         }
     }
 }
@@ -476,9 +477,10 @@ function attachment_embed_check($content)
     return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/ ", $content_check);
 }
 
-function attachment_make_link($attachment)
+function attachment_make_link($attachment, $show_thumb = true)
 {
     if (!is_array($attachment)) return false;
+    if (!is_bool($show_thumb)) $show_thumb = true;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -517,7 +519,7 @@ function attachment_make_link($attachment)
         $attachment['filename'].= "&hellip;";
     }
 
-    if (@$imageinfo = getimagesize($attachment_path)) {
+    if (@$imageinfo = getimagesize("$attachment_dir/{$attachment['hash']}")) {
 
         $title.= "{$lang['dimensions']}: {$imageinfo[0]}x{$imageinfo[1]}, ";
     }
@@ -535,15 +537,111 @@ function attachment_make_link($attachment)
         $title.= "{$lang['downloaded']}: {$attachment['downloads']} {$lang['times']}";
     }
 
-    $attachment_link = "<img src=\"";
-    $attachment_link.= style_image('attach.png');
-    $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
-    $attachment_link.= "alt=\"{$lang['attachment']}\" ";
-    $attachment_link.= "title=\"{$lang['attachment']}\" />";
-    $attachment_link.= "<a href=\"$href\" title=\"$title\" ";
-    $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
+    if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumb) {
+
+        $attachment_link = "<a href=\"$href\" title=\"$title\" ";
+        $attachment_link.= "target=\"_blank\"><img src=\"$attachment_dir/{$attachment['hash']}.thumb\"";
+        $attachment_link.= "border=\"0\" alt=\"$title\" title=\"$title\" /></a>";
+
+    }else {
+
+        $attachment_link = "<img src=\"";
+        $attachment_link.= style_image('attach.png');
+        $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
+        $attachment_link.= "alt=\"{$lang['attachment']}\" ";
+        $attachment_link.= "title=\"{$lang['attachment']}\" />";
+        $attachment_link.= "<a href=\"$href\" title=\"$title\" ";
+        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
+    }
 
     return $attachment_link;
+}
+
+function attachment_create_thumb($filepath)
+{
+    // We're only going to support GIF, JPEG and PNG
+
+    $required_read_functions  = array(1 => 'imagecreatefromgif',
+                                      2 => 'imagecreatefromjpeg',
+                                      3 => 'imagecreatefrompng');
+
+    $required_write_functions = array(1 => 'imagegif',
+                                      2 => 'imagejpeg',
+                                      3 => 'imagepng');
+
+    if (@$image_info = getimagesize($filepath)) {
+
+        if (function_exists($required_read_functions[$image_info[2]])
+            && function_exists($required_write_functions[$image_info[2]])
+            && function_exists('imagecreatetruecolor')) {
+
+            switch ($image_info[2]) {
+
+                case 1: // GIF
+
+                    $src = imagecreatefromgif($filepath);
+                    break;
+
+                case 2: // JPEG
+
+                    $src = imagecreatefromjpeg($filepath);
+                    break;
+
+                case 3: // PNG
+
+                    $src = imagecreatefrompng($filepath);
+                    break;
+
+                default:
+
+                    return false;
+            }
+
+            $target_width  = $image_info[0];
+            $target_height = $image_info[1];
+
+            while ($target_width > 150 || $target_height > 150) {
+
+                $target_width--;
+                $target_height = $target_width * ($image_info[1] / $image_info[0]);
+            }
+
+            $dst = imagecreatetruecolor($target_width, $target_height);
+
+            if (function_exists('imagecopyresampled')) {
+
+                imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
+
+            }else {
+
+                imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
+            }
+
+            switch ($image_info[2]) {
+
+                case 1: // GIF
+
+                    return imagegif($dst, "$filepath.thumb");
+                    break;
+
+                case 2: // JPEG
+
+                    return imagejpeg($dst, "$filepath.thumb");
+                    break;
+
+                case 3: // PNG
+
+                    return imagepng($dst, "$filepath.thumb");
+                    break;
+
+                default:
+
+                    return false;
+            }
+        }
+    }
+
+    return false;
 }
 
 ?>

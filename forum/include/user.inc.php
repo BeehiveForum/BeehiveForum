@@ -108,14 +108,14 @@ function user_update_folders($uid,$folders)
         $allowed = $folders[$i]['allowed'];
         $sql = "select ALLOWED from ".forum_table("USER_FOLDER")." where UID = '$uid' and FID = '$fid'";
         $result = db_query($sql,$db);
-        if(mysql_num_rows($result)){
+        if(db_num_rows($result)){
             $sql = "update ".forum_table("USER_FOLDER")." set ALLOWED = '$allowed' ";
             $sql.= "where UID = '$uid' and FID = '$fid'";
         } else {
             $sql = "insert into ".forum_table("USER_FOLDER")." (UID,FID,ALLOWED) ";
             $sql.= "values ('$uid','$fid','$allowed')";
         }
-        mysql_query($sql,$db);
+        db_query($sql,$db);
     }
 }
 

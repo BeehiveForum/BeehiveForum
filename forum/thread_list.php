@@ -60,7 +60,15 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
     }
 } else {
     $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    if (isset($HTTP_GET_VARS['mark_all_read'])) threads_mark_all_read();
+
+    if (isset($HTTP_GET_VARS['mvr'])) {
+        threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
+    }elseif (isset($HTTP_GET_VARS['mar'])) {
+        threads_mark_all_read();
+    }elseif (isset($HTTP_GET_VARS['mfr'])) {
+        threads_mark_50_read();
+    }
+
     if (!isset($HTTP_GET_VARS['mode'])) {
         if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
             if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
@@ -310,6 +318,10 @@ while (list($key1, $folder_number) = each($folder_order)) {
 		echo "<tr><td class=\"threads\" style=\"border-top: 0px;\" colspan=\"2\">\n";
 		echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 		while (list($key2, $thread) = each($thread_info)) {
+
+		        if (!is_array($visiblethreads)) $visiblethreads = array();
+		        if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
+
 			if ($thread['fid'] == $folder_number) {
 				echo "<tr><td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"16\">";
 
@@ -408,8 +420,32 @@ if ($mode == 0 && !isset($folder)) {
   if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
 }
 
-echo "<tr>\n<td colspan=\"2\">&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark discussions as read</a></td></tr>\n";
+echo "<tr>\n<td>&nbsp;</td>\n<tr>\n";
 echo "</table>\n";
+
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "<tr>\n";
+echo "  <td class=\"smalltext\" colspan=\"2\">Mark as Read:</td>\n";
+echo "</tr>\n";
+
+if (is_array($visiblethreads)) {
+  echo "<tr>\n";
+  echo "  <td>&nbsp;</td>\n";
+  echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mvr&tids=". implode(',', $visiblethreads). "\">Mark these discussions as read</a></td>\n";
+  echo "</tr>\n";
+}
+
+echo "<tr>\n";
+echo "  <td>&nbsp;</td>\n";
+echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mar\">All discussions</a></td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "  <td>&nbsp;</td>\n";
+echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mfr\">Next 50 discussions</a></td>\n";
+echo "</tr>\n";
+echo "</table\n";
+
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";
 if(isset($first_thread)){

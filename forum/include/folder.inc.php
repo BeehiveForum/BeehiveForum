@@ -114,22 +114,23 @@ function folder_get_available()
     return $return;
 }
 
-function user_set_folder_interest($fid, $interest = -1)
+function user_set_folder_interest($fid, $interest)
 {
     global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    $db_user_ignore_folder = db_connect();
 
-    $sql = "delete from ". forum_table("USER_FOLDER"). " where UID = $uid and FID = $fid";
-    $result = db_query($sql, $db_user_ignore_folder);
+    $db_user_set_folder_interest = db_connect();
 
-    if ($interest == -1) {
-    
+    $sql = "select INTEREST from ".forum_table("USER_FOLDER")." where UID = '$uid' and FID = '$fid'";
+    $result = db_query($sql, $db_user_set_folder_interest);
+    if (db_num_rows($result)) {
+	$sql = "update ". forum_table("USER_FOLDER"). " set INTEREST = $interest ";
+	$sql.= "where UID = $uid and FID = $fid";
+    }else {
       $sql = "insert into ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
-      $sql.= "values ($uid, $fid, -1)";
-      $result = db_query($sql, $db_user_ignore_folder);
-
+      $sql.= "values ($uid, $fid, $interest)";
     }
+    $result = db_query($sql, $db_user_set_folder_interest);
 
 }
 

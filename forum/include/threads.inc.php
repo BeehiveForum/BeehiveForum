@@ -28,6 +28,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/thread.inc.php");
 require_once("./include/folder.inc.php");
+require_once("./include/messages.inc.php");
 
 function threads_get_available_folders()
 {
@@ -411,6 +412,50 @@ function threads_mark_all_read()
         db_query($sql, $db_threads_mark_all_read);
 
       }
+
+    }
+
+}
+
+function threads_mark_50_read()
+{
+
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+
+    $db_threads_mark_50_read = db_connect();
+
+    $sql = "SELECT DISTINCT THREAD.TID, THREAD.LENGTH FROM " . forum_table("THREAD") . " THREAD ";
+    $sql.= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
+    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
+    $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50";
+
+    $result = db_query($sql, $db_threads_mark_50_read);
+
+    while ($row = db_fetch_array($result)) {
+
+      messages_update_read($row['TID'], $row['LENGTH'], $HTTP_COOKIE_VARS['bh_sess_uid']);
+
+    }
+
+}
+
+function threads_mark_read($tidarray)
+{
+
+    global $HTTP_COOKIE_VARS;
+
+    $db_threads_mark_read = db_connect();
+
+    foreach($tidarray as $ctid) {
+
+      $sql = "SELECT LENGTH FROM ". forum_table("THREAD"). " WHERE TID = $ctid";
+      $result = db_query($sql, $db_threads_mark_read);
+
+      list($ctlength) = db_fetch_array($result);
+
+      messages_update_read($ctid, $ctlength, $HTTP_COOKIE_VARS['bh_sess_uid']);
 
     }
 

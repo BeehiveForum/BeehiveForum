@@ -36,10 +36,11 @@ function bh_check_gzip()
         return false;
     }
 
-    // Only enable gzip compression for HTTP/1.1 browsers that aren't coming via a proxy server.
+    // Only enable gzip compression for HTTP/1.1 and
+    // browsers that aren't coming via a proxy server.
 
-    if (isset($HTTP_SERVER_VARS['HTTP_VIA'])) return false;
-    if (strpos($HTTP_SERVER_VARS['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
+    //if (isset($HTTP_SERVER_VARS['HTTP_VIA'])) return false;
+    //if (strpos($HTTP_SERVER_VARS['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
 
     // determine which gzip encoding the client asked for
     // (x-gzip = IE; gzip = everything else).
@@ -68,42 +69,42 @@ function bh_gzhandler($contents)
     if ($encoding = bh_check_gzip()) {
 
         // for debugging: add a HTML comment to the bottom of the page.
-        $contents = str_replace("[bh_gzhandler]", "bh_gzhandler: $encoding enabled (level: $gzip_compress_level)", $contents);
+        $contents.= "<!-- bh_gzhandler: $encoding enabled (level: $gzip_compress_level) //-->\n";
 
         // do the compression
         if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
             // generate the error checking bits
-            $size   = strlen($contents);
-            $crc32  = crc32($contents);
-            $length = strlen($gz_contents);
-            $etag   = md5($gz_contents);
+            $size  = strlen($contents);
+            $crc32 = crc32($contents);
 
-            // sends the headers to the client while making sure they are
-            // only sent once. This prevents corrupt gzipped data in PHP
-            // builds which are fickle about the headers.
-            if (!$bh_headers_sent) {
-                header("Content-Encoding: $encoding");
-                header("Vary: Accept-Encoding");
-                header("ETag: \"$etag\"");
-                header("Content-Length: $length");
-                $bh_headers_sent = true;
-            }
-
-            // construct the gzip output with gz headers and error checking bits
+            // construct the gzip output with header
+            // and error checking bits
             $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
             $ret.= substr($gz_contents, 0, strlen($gz_contents) - 4);
             $ret.= pack('V', $crc32);
             $ret.= pack('V', $size);
+
+            // get the length of the compressed page
+            $length = strlen($ret);
+
+            // sends the headers to the client while making
+            // sure they are only sent once.
+            if (!$bh_headers_sent) {
+                header("Content-Encoding: $encoding");
+                header("Vary: Accept-Encoding");
+                header("Content-Length: $length");
+                $bh_headers_sent = true;
+            }
 
             // return the compressed text to PHP.
             return $ret;
 
         }else {
 
-            // compression failed so add additional
-            // debug message and return uncompressed string
-            $contents = str_replace("[bh_gzhandler]", "bh_gzhander: failed during compression", $contents);
+            // compression failed so add additional debug
+            // message and return uncompressed string
+            $contents.= "<!-- bh_gzhander: failed during compression //-->\n";
             return $contents;
 
         }
@@ -111,7 +112,7 @@ function bh_gzhandler($contents)
     }else {
 
         // for debugging: add a HTML comment to the bottom of the page.
-        $contents = str_replace("[bh_gzhandler]", "bh_gzhandler: compression disabled", $contents);
+        $contents.= "<!-- bh_gzhandler: compression disabled or not supported by client //-->\n";
 
         // return the text uncompressed as the client
         // doesn't support it or it has been disabled

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.14 2003-08-06 21:46:36 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.15 2003-08-06 21:47:03 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -320,9 +320,9 @@ if ($attachments_enabled && $pm_allow_attachments) {
 echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML']);
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
+    echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
 }else{
-    echo form_input_hidden("t_dedupe",date("YmdHis"));
+    echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
 echo "</form>\n";

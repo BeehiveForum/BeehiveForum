@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.65 2004-04-17 20:21:47 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.66 2004-04-19 20:29:13 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -152,12 +152,6 @@ $lang['makedefault'] = "Make Default";
 $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
 
-// Error handling messages (error_handler.inc.php) ---------------------
-
-$lang['db_connect_error_1'] = "Some shit got fucked up in tha databizase.";
-$lang['db_connect_error_2'] = "If yo is tha forum mack daddy, ensure tha followin' vizariabizles in yo config.inc.php ain't fucked:";
-$lang['db_connect_error_3'] = "They shizould be set to tha datizabizase shieeeeet given to yo ass by tha man.";
-
 // Admin interface (admin*.php) ----------------------------------------
 
 $lang['accessdenied'] = "Get yo sorry ass outta here, biatch";
@@ -271,7 +265,7 @@ $lang['forumdeletewarning'] = "Are you sure you want to delete the selected foru
 $lang['deleteforum'] = "Delete Forum";
 $lang['defaultforum'] = "Default Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum $new_webtag";
-$lang['failedtocreateforum_1'] = "Failed to create forum"; 
+$lang['failedtocreateforum_1'] = "Failed to create forum";
 $lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.56 2004-04-18 16:17:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.57 2004-04-19 20:29:12 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -37,23 +37,23 @@ function get_table_prefix()
     static $forum_data = false;
 
     if (!$forum_data) {
-    
-        $db_get_table_prefix = db_connect();    
-    
+
+        $db_get_table_prefix = db_connect();
+
         if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
             $webtag = trim($_GET['webtag']);
-        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {        
+        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {
             $webtag = trim($_POST['webtag']);
         }else {
             $webtag = "";
         }
-    
-        $sql = "SELECT FID, CONCAT(WEBTAG, '', '_') AS PREFIX FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+
+        $sql = "SELECT FID, CONCAT(WEBTAG, '', '_') AS PREFIX FROM FORUMS WHERE WEBTAG = '$webtag'";
         $result = db_query($sql, $db_get_table_prefix);
-        
+
         // if we found the post table return the table prefix
         // (same as the webtag with a underscore after it)
-    
+
         if (db_num_rows($result) > 0) {
             $forum_data = db_fetch_array($result);
 	    return $forum_data;
@@ -70,12 +70,12 @@ function get_webtag()
     static $webtag_data = false;
 
     if (!$webtag_data) {
-    
-        $db_get_webtag = db_connect();    
-    
+
+        $db_get_webtag = db_connect();
+
         if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
             $webtag = trim($_GET['webtag']);
-        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {        
+        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {
             $webtag = trim($_POST['webtag']);
         }else {
             $webtag = "";
@@ -85,7 +85,7 @@ function get_webtag()
         // actually exists.
 
 	if ($uid = bh_session_get_value('UID')) {
-    
+
             $sql = "SELECT F.WEBTAG FROM FORUMS F ";
 	    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
             $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
@@ -93,11 +93,11 @@ function get_webtag()
 
 	}else {
 
-            $sql = "SELECT * FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+            $sql = "SELECT * FROM FORUMS WHERE WEBTAG = '$webtag'";
         }
 
         $result = db_query($sql, $db_get_webtag);
-        
+
         if (db_num_rows($result) > 0) {
 
             $webtag_data = db_fetch_array($result);
@@ -120,13 +120,13 @@ function get_webtag()
 	}
 
         $result = db_query($sql, $db_get_webtag);
-    
+
         if (db_num_rows($result) > 0) {
 
             $webtag_data = db_fetch_array($result);
             return $webtag_data['WEBTAG'];
         }
-        
+
         return false;
     }
 
@@ -138,18 +138,18 @@ function get_forum_settings()
     global $default_settings;
 
     static $get_forum_settings = false;
-    
-    $forum_settings = array();    
-    
+
+    $forum_settings = array();
+
     if (!$get_forum_settings) {
-    
+
         $db_get_forum_settings = db_connect();
-    
+
         if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
-    
+
         $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
         $result = db_query($sql, $db_get_forum_settings);
-   
+
         while ($row = db_fetch_array($result)) {
             $forum_settings[$row['SNAME']] = $row['SVALUE'];
             $get_forum_settings = true;
@@ -162,13 +162,13 @@ function get_forum_settings()
 function save_forum_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
-    
+
     $db_save_forum_settings = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
-       
+
     foreach ($forum_settings_array as $sname => $svalue) {
-    
+
         $sname = addslashes($sname);
         $svalue = addslashes($svalue);
 
@@ -183,19 +183,19 @@ function save_forum_settings($forum_settings_array)
 	    $sql.= "WHERE SNAME = '$sname' AND FID = '{$table_data['FID']}'";
 
 	}else {
-        
+
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ('{$table_data['FID']}', '$sname', '$svalue')";
 	}
-	
+
 	$result = db_query($sql, $db_save_forum_settings);
     }
 }
 
 function forum_get_setting($setting_name, $value = false, $default = false)
 {
-    $forum_settings = get_forum_settings();
-   
+    global $forum_settings;
+
     if (isset($forum_settings[$setting_name])) {
         if ($value) {
             if (strtoupper($forum_settings[$setting_name]) == strtoupper($value)) {
@@ -205,43 +205,43 @@ function forum_get_setting($setting_name, $value = false, $default = false)
             return _stripslashes($forum_settings[$setting_name]);
         }
     }
-    
+
     return $default;
-}    
+}
 
 function draw_start_page()
 {
     global $lang;
-    
+
     $db_draw_start_page = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) {
         html_draw_top();
         echo "<h1>{$lang['editstartpage_help']}</h1>\n";
         html_draw_bottom();
 	return;
     }
-    
+
     $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_draw_start_page);
-    
+
     if (db_num_rows($result)) {
-    
+
         $row = db_fetch_array($result);
-        
+
         if (strlen(trim($row['HTML'])) > 0) {
-        
+
             echo $row['HTML'];
 
         }else {
-        
+
             html_draw_top();
             echo "<h1>{$lang['editstartpage_help']}</h1>\n";
             html_draw_bottom();
         }
 
     }else {
-    
+
         html_draw_top();
         echo "<h1>{$lang['editstartpage_help']}</h1>\n";
         html_draw_bottom();
@@ -251,18 +251,18 @@ function draw_start_page()
 function load_start_page()
 {
     $db_load_start_page = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return "";
-    
+
     $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_load_start_page);
-    
+
     if (db_num_rows($result)) {
-    
+
         $row = db_fetch_array($result);
         return $row['HTML'];
     }
-    
+
     return "";
 }
 
@@ -271,7 +271,7 @@ function save_start_page($content)
     $db_save_start_page = db_connect();
 
     $content = addslashes($content);
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
@@ -281,9 +281,9 @@ function save_start_page($content)
 
         $sql = "UPDATE START_MAIN SET HTML = '$content' ";
         $sql.= "WHERE FID = '{$table_data['FID']}'";
-        
+
     }else {
-    
+
         $sql = "INSERT INTO START_MAIN (FID, HTML) ";
         $sql.= "VALUES('{$table_data['FID']}', '$content')";
     }
@@ -301,22 +301,22 @@ function forum_create($webtag, $forum_name, $access)
     if (!is_numeric($access)) $access = 0;
 
     // Only the queen can create forums!!
-    
+
     if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
 
         $uid = bh_session_get_value('UID');
 
         $db_forum_create = db_connect();
-        
-        $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+
+        $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'";
         $result = db_query($sql, $db_forum_create);
-                
+
         if (db_num_rows($result) > 0) {
             return false;
         }
-        
+
 	// Beehive Table Names
-	
+
 	$table_array = array('ADMIN_LOG', 'BANNED_IP', 'DEDUPE',
 	                     'FILTER_LIST', 'FOLDER', 'LINKS',
 	                     'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
@@ -327,15 +327,15 @@ function forum_create($webtag, $forum_name, $access)
                              'STATS', 'THREAD', 'USER_FOLDER',
                              'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
                              'USER_PROFILE', 'USER_SIG', 'USER_THREAD');
-        
+
         // Check to see if any of the Beehive tables already exist.
         // If they do then something is wrong and we should error out.
 
         foreach ($table_array as $table_name) {
-        
+
             $sql = "SHOW TABLES LIKE '{$webtag}_{$table_name}'";
             $result = db_query($sql, $db_forum_create);
-            
+
             if (db_num_rows($result) > 0) return false;
         }
 
@@ -788,16 +788,16 @@ function forum_create($webtag, $forum_name, $access)
 function forum_delete($fid)
 {
     // Only the queen can create forums!!
-    
+
     if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
 
         $db_forum_delete = db_connect();
 
         if (!is_numeric($fid)) return false;
-    
-        $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid'"; 
+
+        $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid'";
         $result = db_query($sql, $db_forum_delete);
-        
+
         if (db_num_rows($result) > 0) {
 
             $forum_data = db_fetch_array($result);
@@ -820,7 +820,7 @@ function forum_delete($fid)
                                  'USER_PROFILE', 'USER_SIG', 'USER_THREAD');
 
             foreach ($table_array as $table_name) {
-        
+
                 $sql = "DROP TABLE IF EXISTS {$forum_data['WEBTAG']}_{$table_name}";
 	        $result = db_query($sql, $db_forum_delete);
 	    }
@@ -836,12 +836,12 @@ function forum_update_access($fid, $access)
     if (!is_numeric($access)) return false;
 
     // Only the queen can change a forums status!!
-    
+
     if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
 
         $db_forum_update_access = db_connect();
-    
-        $sql = "SELECT COUNT(*) FROM FORUMS WHERE FID = '$fid'"; 
+
+        $sql = "SELECT COUNT(*) FROM FORUMS WHERE FID = '$fid'";
         $result = db_query($sql, $db_forum_update_access);
 
 	if (db_num_rows($result) > 0) {
@@ -902,13 +902,13 @@ function forum_get_permissions($fid)
 	$result = db_query($sql, $db_forum_get_permissions);
 
         if (db_num_rows($result)) {
-            
+
             $forum_get_permissions_array = array();
-            
+
             while($row = db_fetch_array($result)) {
 	        $forum_get_permissions_array[] = $row;
             }
-        
+
             return $forum_get_permissions_array;
         }
     }

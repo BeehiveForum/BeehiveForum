@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.92 2004-04-17 20:21:47 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.93 2004-04-19 20:29:13 decoyduck Exp $ */
 
 // International English language file
 
@@ -151,12 +151,6 @@ $lang['default'] = "d3F4ULt";
 $lang['makedefault'] = "M4ke dEph@UL+";
 $lang['unsetdefault'] = "unS3T D3F4UL+";
 $lang['rename'] = "REnAm3";
-
-// Error handling messages (error_handler.inc.php) ---------------------
-
-$lang['db_connect_error_1'] = "AN ERRoR HAS OCCuREd whiL3 C0NneCtin9 tO teh D4+48ASe.";
-$lang['db_connect_error_2'] = "1f j00 4RE +eh phorUM ownEr, Pl3453 en\$urE THe pHoLl0w1nG v4ri@8lE5 1n yOur CoNPh19.InC.PhP @R3 S3+ C0rR3ctly:";
-$lang['db_connect_error_3'] = "TH3y sHOuLD 83 \$e+ +0 +3h d@T4B453 det41l\$ gIVEN +o j00 8y Y0uR H0S+in9 PR0V1DER.";
 
 // Admin interface (admin*.php) ----------------------------------------
 

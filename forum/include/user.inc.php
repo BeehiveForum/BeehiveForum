@@ -122,6 +122,9 @@ function user_update_folders($uid,$folders)
 
 function user_logon($logon, $password)
 {
+
+    global $HTTP_SERVER_VARS;
+
     $md5pass = md5($password);
 
     $sql = "SELECT uid, status FROM ". forum_table("USER"). " WHERE logon = '$logon' AND passwd = '$md5pass'";
@@ -134,10 +137,18 @@ function user_logon($logon, $password)
     } else {
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
+
         if($fa['status'] & USER_PERM_SPLAT){ // User is banned
             $uid = -2;
         }
-        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid", $db_user_logon);
+
+	if (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
+	  $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+	}else {
+	  $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+	}
+
+        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW(), LOGON_FROM = '$ipaddress' where UID = $uid", $db_user_logon);
     }
 
     return $uid;

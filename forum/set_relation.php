@@ -22,7 +22,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -48,10 +48,10 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
     $myuid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
     $db = db_connect();
-    
+
     $sql = "delete from ". forum_table("USER_PEER"). " where UID = $myuid and PEER_UID = $uid";
     db_query($sql, $db);
-    
+
     $sql = "insert into ". forum_table("USER_PEER"). " (UID,PEER_UID,RELATIONSHIP) values ($myuid, $uid, $rel)";
     db_query($sql,$db);
 
@@ -59,12 +59,12 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
 
 if(isset($HTTP_GET_VARS['ret'])){
 
-    header_redirect($ret);
-    
+    header_redirect($HTTP_GET_VARS['ret']);
+
 }else{
 
     header_redirect("./user_profile.php?uid=$uid");
-    
+
 }
 
 ?>

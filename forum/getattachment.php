@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Compress the output
-//require_once("./include/gzipenc.inc.php");
+require_once("./include/gzipenc.inc.php");
 
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
@@ -79,7 +79,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
 
       }else {
 
-        header("Content-Type: ", $attachmentdetails['MIMETYPE']);
+        header("Content-Type: ". $attachmentdetails['MIMETYPE']);
         header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
         header("Content-disposition: filename=". $attachmentdetails['FILENAME']);
 

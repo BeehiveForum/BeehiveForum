@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.63 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: pm.php,v 1.64 2004-08-10 21:43:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -216,13 +216,18 @@ echo "<p>&nbsp;</p>\n";
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-    $pm_elements_array = array();
+    $mid = $_GET['mid'];
 
-    if ($pm_elements_array = pm_single_get($_GET['mid'], $folder)) {
+    if ($pm_elements_array = pm_single_get($mid, $folder)) {
+
         $pm_elements_array['FOLDER'] = $folder;
+        $pm_elements_array['CONTENT'] = pm_get_content($mid);
+
         draw_pm_message($pm_elements_array);
         echo "<p>&nbsp;</p>\n";
+
     }else {
+
         echo "<p>{$lang['messagehasbeendeleted']}</p>\n";
     }
 }

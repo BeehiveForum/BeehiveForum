@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.50 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.51 2004-08-10 21:43:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -186,7 +186,8 @@ if ($valid && isset($_POST['preview'])) {
 
     $edit_html = ($_POST['t_post_html'] == "Y");
 
-    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
+    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
+
         $pm_elements_array['CONTENT'] = $t_content;
 
         $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
@@ -201,7 +202,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else if ($valid && isset($_POST['submit'])) {
 
-    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
+    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
 
         $t_subject = _htmlentities($t_subject);
 
@@ -225,7 +226,7 @@ if ($valid && isset($_POST['preview'])) {
 
 }else {
 
-    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
+    if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
 
         if ($pm_elements_array['TYPE'] != PM_UNREAD) {
             html_draw_top();
@@ -234,7 +235,8 @@ if ($valid && isset($_POST['preview'])) {
             exit;
         }
 
-        $t_content = clean_emoticons($pm_elements_array['CONTENT']);
+        $t_content = pm_get_content($mid);
+        $t_content = clean_emoticons($t_content);
         $t_subject = $pm_elements_array['SUBJECT'];
 
         $t_content = _htmlentities_decode($t_content);

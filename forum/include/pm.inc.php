@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.82 2004-08-07 16:04:02 tribalonline Exp $ */
+/* $Id: pm.inc.php,v 1.83 2004-08-10 21:43:11 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -78,19 +78,19 @@ function pm_add_sentitem($mid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT, AT.AID ";
-    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    // ------------------------------------------------------------
+    // Insert the original PM data as a new row to appear in the
+    // sender's sent items
+    // ------------------------------------------------------------
+
+    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM.TO_UID, ";
+    $sql.= "PM.SUBJECT, PM.CREATED, AT.AID FROM {$table_data['PREFIX']}PM PM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_row = db_fetch_array($result);
-
-    // ------------------------------------------------------------
-    // Insert the original PM data as a new row to appear in the
-    // sender's sent items
-    // ------------------------------------------------------------
 
     $sql = "INSERT INTO {$table_data['PREFIX']}PM (REPLY_TO_MID, TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES ({$db_pm_add_sentitem_row['REPLY_TO_MID']}, ". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
@@ -105,8 +105,14 @@ function pm_add_sentitem($mid)
     // the sender's sent items
     // ------------------------------------------------------------
 
+    $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}PM_CONTENT ";
+    $sql.= "WHERE MID = '$mid'";
+
+    $result = db_query($sql, $db_pm_add_sentitem);
+    $db_pm_add_sentitem_content_row = db_fetch_array($result);
+
     $sql = "INSERT INTO {$table_data['PREFIX']}PM_CONTENT (MID, CONTENT) ";
-    $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
+    $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_content_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
 
@@ -440,11 +446,9 @@ function pm_single_get($mid, $folder)
     $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "PM_CONTENT.CONTENT, AT.AID FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "AT.AID FROM {$table_data['PREFIX']}PM PM ";
     $sql.= "LEFT JOIN USER TUSER ON (TUSER.UID = PM.TO_UID) ";
     $sql.= "LEFT JOIN USER FUSER ON (FUSER.UID = PM.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_CONTENT PM_CONTENT ";
-    $sql.= "ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ";
     $sql.= "ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' ";
@@ -481,7 +485,27 @@ function pm_single_get($mid, $folder)
     }else {
         return false;
     }
+}
 
+function pm_get_content($mid)
+{
+    $db_pm_get_content = db_connect();
+
+    if (!is_numeric($mid)) return false;
+
+    // ------------------------------------------------------------
+    // Fetch the message content as specified by the MID
+    // ------------------------------------------------------------
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}PM_CONTENT ";
+    $sql.= "WHERE MID = '$mid'";
+
+    $result = db_query($sql, $db_pm_get_content);
+    $pm_content = db_fetch_array($result);
+
+    return isset($pm_content['CONTENT']) ? $pm_content['CONTENT'] : "";
 }
 
 function draw_pm_message($pm_elements_array)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.84 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.85 2004-08-10 21:43:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -160,6 +160,8 @@ if (isset($t_rmid) && $t_rmid > 0) {
     $t_recipient_list = pm_get_user($t_rmid);
 
     if ($pm_data = pm_single_get($t_rmid, PM_FOLDER_INBOX)) {
+
+        $pm_data['CONTENT'] = pm_get_content($t_rmid);
 
         if (!isset($_POST['t_subject']) || trim($_POST['t_subject']) == "") {
 

@@ -28,6 +28,8 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
 
     // This function sends the email notification.
     // There is no return value, like.
+    
+    global $HTTP_SERVER_VARS;
 
     $db = db_connect();
 
@@ -67,10 +69,10 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
 
        		$message = strtoupper($mailfrom['LOGON']). " posted a message to you on Beehive Forum\n\n";
        		$message.= "To read that message and others in the same discussion, go to:\n";
-       		$message.= "http://beehiveforum.sourceforge.net/forum/?msg=$msg\n\n";
+       		$message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n\n";
        		$message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
        		$message.= "Note: If you do not wish to receive email notifications of Forum messages\n";
-       		$message.= "posted to you, go to http://beehiveforum.sourceforge.net/forum/, click\n";
+       		$message.= "posted to you, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, click\n";
        		$message.= "on Preferences, unselect the Email Notification checkbox and press Submit.\n";
 
        		$header = "From: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";
@@ -113,10 +115,10 @@ function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
        		$message = strtoupper($mailfrom['LOGON']). " posted a message in\n";
        		$message.= "a thread you have subscribed to on Beehive Forum\n\n";
        		$message.= "To read that message and others in the same discussion, go to:\n";
-       		$message.= "http://beehiveforum.sourceforge.net/forum/?msg=$msg\n\n";
+       		$message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n\n";
        		$message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
        		$message.= "Note: If you do not wish to receive email notifications of new messages\n";
-       		$message.= "in this thread, go to http://beehiveforum.sourceforge.net/forum/?msg=$msg,\n";
+       		$message.= "in this thread, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";
        		$message.= "and adjust your Interest level at the end of the page.\n";
 
        		$header = "From: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";

@@ -123,7 +123,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $error_html.= "<h2>{$lang['emailrequired']}</h2>\n";
       $valid = false;
   }
-  
+
   if (!isset($HTTP_POST_VARS['dob_year']) || !isset($HTTP_POST_VARS['dob_month']) || !isset($HTTP_POST_VARS['dob_day']) || !checkdate($HTTP_POST_VARS['dob_month'], $HTTP_POST_VARS['dob_day'], $HTTP_POST_VARS['dob_year'])) {
           $error_html .= "<h2>{$lang['birthdayrequired']}</h2>\n";
           $valid = false;
@@ -214,13 +214,13 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
               array_unshift($username_array, $uncookie[0]);
 
-              if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-                if ($pwcookie[0] == str_repeat(chr(255), 4)) {
-                  array_unshift($password_array, $passw);
-                  array_unshift($passhash_array, $passh);
-                }else {
+              if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+                if (isset($pwcookie[0]) && isset($phcookie[0])) {
                   array_unshift($password_array, $pwcookie[0]);
                   array_unshift($passhash_array, $phcookie[0]);
+                }else {
+                  array_unshift($password_array, $passw);
+                  array_unshift($passhash_array, $passh);
                 }
               }else {
                 array_unshift($password_array, str_repeat(chr(255), 4));

@@ -154,18 +154,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
   if (isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
 
-    if (isset($HTTP_POST_VARS['savepass']) && ($HTTP_POST_VARS['savepass'] == true)) {
+    if (($key = array_search($HTTP_POST_VARS['logon'], $username_array)) !== false) {
 
-      if (($key = array_search($HTTP_POST_VARS['logon'], $username_array)) !== false) {
+      if (isset($password_array[$key]) && ($HTTP_POST_VARS['password'] == $password_array[$key]) && ($password_array[$key] != str_repeat(chr(255), 4))) {
 
-        if (isset($password_array[$key]) && $HTTP_POST_VARS['password'] == $password_array[$key]) {
-
-          $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $passhash_array[$key], true);
-
-        }
+        $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $passhash_array[$key], true);
 
       }
-
     }
 
     if (!isset($luid)) {
@@ -216,9 +211,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             // Remove the existing values
 
-            array_splice($username_array, $key, 1);
-            array_splice($password_array, $key, 1);
-            array_splice($passhash_array, $key, 1);
+            $uncookie = array_splice($username_array, $key, 1);
+            $pwcookie = array_splice($password_array, $key, 1);
+            $phcookie = array_splice($passhash_array, $key, 1);
 
             // Push the username to the top of the array
 
@@ -228,9 +223,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
             // and push the password and passhash on to
             // their arrays if applicable.
 
-            if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-              array_unshift($password_array, $passw);
-              array_unshift($passhash_array, $passh);
+            if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+              if (isset($pwcookie[0]) && isset($phcookie[0])) {
+                array_unshift($password_array, $pwcookie[0]);
+                array_unshift($passhash_array, $phcookie[0]);
+              }else {
+                array_unshift($password_array, $passw);
+                array_unshift($passhash_array, $passh);
+              }
             }else {
               array_unshift($password_array, str_repeat(chr(255), 4));
               array_unshift($passhash_array, str_repeat(chr(255), 4));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.17 2004-06-03 16:46:46 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.18 2004-06-19 11:33:18 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -705,6 +705,9 @@ $lang['noforumsavailable'] = "There are no forums available.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 $lang['defaultforumsettings'] = "Default Forum Settings";
 $lang['unnamedforum'] = "Unnamed Forum";
+$lang['enterpasswd'] = "Enter Password";
+$lang['passwdprotectedforum'] = "Password Protected Forum";
+$lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 
@@ -1072,6 +1075,8 @@ $lang['searchdiscussions'] = "Sizearch diziscizussions";
 $lang['containingallwords'] = "Cizontizaining all of tha wizords";
 $lang['containinganywords'] = "Cizontizaining any of tha wizords";
 $lang['containingexactphrase'] = "Cizontizaining tha exact thang";
+$lang['usingbooleanquery'] = "Use boolean query";
+$lang['searchbyuser'] = "Search by user (optional)";
 $lang['find'] = "Fizind sizome shizit";
 $lang['wordsshorterthan_1'] = "Wizords shizorter thizan";
 $lang['wordsshorterthan_2'] = "chizaractizers ain't gonna be included";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.21 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.22 2004-06-19 11:30:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,7 +120,18 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['t_access']) && is_array($_POST['t_access'])) {
 
         foreach($_POST['t_access'] as $fid => $new_access) {
-            forum_update_access($fid, $new_access);
+
+            $new_password = false;
+
+            if (isset($_POST['t_password'][$fid]) && strlen(trim($_POST['t_password'][$fid])) > 0) {
+	        $new_password = $_POST['t_password'][$fid];
+            }
+
+	    if ($new_password) {
+                forum_update_access($fid, $new_access, $new_password);
+	    }else {
+	        forum_update_access($fid, $new_access);
+	    }
         }
     }
 
@@ -241,7 +252,7 @@ if (sizeof($forums_array) > 0) {
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['name']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['messages']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['allow']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']} / {$lang['passwd']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['delete']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['defaultforum']}</td>\n";
     echo "                </tr>\n";
@@ -255,8 +266,10 @@ if (sizeof($forums_array) > 0) {
         echo "                  <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
         echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwd']), $forum['ACCESS_LEVEL']), "</td>\n";
 
-        if ($forum['ACCESS_LEVEL'] > 0) {
+        if ($forum['ACCESS_LEVEL'] == 1) {
             echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_forum_access.php?fid={$forum['FID']}'\""), "</td>\n";
+        }else if ($forum['ACCESS_LEVEL'] == 2) {
+	    echo "                  <td align=\"left\">", form_input_password("t_password[{$forum['FID']}]", ""), "</td>\n";
         }else {
             echo "                  <td align=\"center\">&nbsp;</td>\n";
         }

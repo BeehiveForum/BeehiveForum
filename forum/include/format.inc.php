@@ -21,9 +21,9 @@ function format_url2link($html)
 function format_time($time)
 {
 	if (date("j", $time) == date("j") && date("n", $time) == date("n") && date("Y", $time) == date("Y")) {
-		$fmt = date("H:i", $time);
+		$fmt = gmdate("H:i", $time);
 	} else {
-		$fmt = date("j M", $time);
+		$fmt = gmdate("j M", $time);
 	}
     return $fmt;
 }

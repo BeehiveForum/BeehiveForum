@@ -34,7 +34,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
-	$sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, POST.CREATED, POST.CONTENT, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK ";
+	$sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.CONTENT, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK ";
 	$sql .= "FROM POST LEFT JOIN USER FUSER ON POST.from_uid = FUSER.uid LEFT JOIN USER TUSER ON POST.to_uid = TUSER.uid ";
 	$sql .= "WHERE POST.TID = $tid ";
 	$sql .= "AND POST.PID >= $pid ";
@@ -53,7 +53,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 		//echo "<p>" . $message['REPLY_TO_PID'] . "</p>";
 		$messages[$i]['FROM_UID'] = $message['FROM_UID'];
 		$messages[$i]['TO_UID'] = $message['TO_UID'];
-		$messages[$i]['CREATED'] = timestamp_to_date($message['CREATED']);
+		$messages[$i]['CREATED'] = $message['CREATED'];
 		$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
 		$messages[$i]['FNICK'] = $message['FNICK'];
 		if(isset($message['TNICK'])){

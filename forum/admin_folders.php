@@ -49,6 +49,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/format.inc.php");
 
 html_draw_top();
 
@@ -62,9 +63,9 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 // Do updates
 if (isset($HTTP_POST_VARS['submit'])) {
     for($i = 0; $i < $HTTP_POST_VARS['t_count']; $i++) {
-        if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i]) {
+        if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i] || $HTTP_POST_VARS['t_desc_'.$i] != $HTTP_POST_VARS['t_old_desc_'.$i]) {
             $new_title = (trim($HTTP_POST_VARS['t_title_'.$i]) != "") ? $HTTP_POST_VARS['t_title_'.$i] : $HTTP_POST_VARS['t_old_title_'.$i];
-            folder_update($HTTP_POST_VARS['t_fid_'.$i], $new_title, $HTTP_POST_VARS['t_access_'.$i]);
+            folder_update($HTTP_POST_VARS['t_fid_'.$i], $new_title, $HTTP_POST_VARS['t_access_'.$i], _addslashes($HTTP_POST_VARS['t_desc_'.$i]));
             admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 0, 0, 7);
         }
         if($HTTP_POST_VARS['t_fid_'.$i] != $HTTP_POST_VARS['t_move_'.$i]){
@@ -73,7 +74,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
     }
     if(trim($HTTP_POST_VARS['t_title_new']) != "" && $HTTP_POST_VARS['t_title_new'] != "New Folder"){
-        $new_fid = folder_create($HTTP_POST_VARS['t_title_new'],$HTTP_POST_VARS['t_access_new']);
+        $new_fid = folder_create($HTTP_POST_VARS['t_title_new'],$HTTP_POST_VARS['t_access_new'],_addslashes($HTTP_POST_VARS['t_desc_new']));
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
     }
 }
@@ -88,6 +89,7 @@ echo "<form name=\"f_folders\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" 
 echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['foldername']}</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['description']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['accesslevel']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['threads']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['move']}</td>\n";
@@ -103,6 +105,7 @@ foreach ($folder_array as $key => $folder) {
     echo "<tr>\n";
     echo "  <td align=\"left\">". $folder['FID']. form_input_hidden("t_fid_$key", $folder['FID']). "</td>\n";
     echo "  <td align=\"left\">". form_field("t_title_$key", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$key", $folder['TITLE']). "</td>\n";
+    echo "  <td align=\"left\">". form_field("t_desc_$key", $folder['DESCRIPTION'], 32, 255). form_input_hidden("t_old_desc_$key", $folder['DESCRIPTION']). "</td>\n";
 
     // Draw the ACCESS_LEVEL dropdown
     echo "  <td align=\"left\">".form_dropdown_array("t_access_$key", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder['ACCESS_LEVEL']);
@@ -117,13 +120,14 @@ foreach ($folder_array as $key => $folder) {
 echo "<tr>\n";
 echo "  <td align=\"left\">NEW</td>\n";
 echo "  <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 32, 32). "</td>\n";
+echo "  <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
 echo "  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
 echo "  <td align=\"left\">-</td>\n";
 echo "  <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "</tr>\n";
 
-echo "<tr><td colspan=\"5\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
-echo "<tr><td colspan=\"5\" align=\"right\">\n";
+echo "<tr><td colspan=\"6\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
+echo "<tr><td colspan=\"6\" align=\"right\">\n";
 echo form_input_hidden("t_count", sizeof($folder_array));
 echo form_submit();
 echo "</td></tr></table>\n";

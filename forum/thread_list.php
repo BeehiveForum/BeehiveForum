@@ -335,7 +335,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "        <tr>\n";
     echo "          <td class=\"foldername\">\n";
     echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
-    echo "            <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number. "\">". _htmlentities($folder_info[$folder_number]['TITLE']). "</a>\n";
+    echo "            <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number. "\" title=\""._htmlentities($folder_info[$folder_number]['DESCRIPTION'])."\">". _htmlentities($folder_info[$folder_number]['TITLE']). "</a>\n";
     echo "          </td>\n";
 
     if (bh_session_get_value('UID') > 0) {

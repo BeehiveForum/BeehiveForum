@@ -42,7 +42,7 @@ function threads_get_folders()
 
     $db_threads_get_folders = db_connect();
 
-    $sql = "SELECT DISTINCT F.FID, F.TITLE, UF.INTEREST FROM ".forum_table("FOLDER")." F LEFT JOIN ";
+    $sql = "SELECT DISTINCT F.FID, F.TITLE, F.DESCRIPTION, UF.INTEREST FROM ".forum_table("FOLDER")." F LEFT JOIN ";
     $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
     $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) ORDER BY F.FID";
 
@@ -53,9 +53,9 @@ function threads_get_folders()
     }else {
         while($row = db_fetch_array($result)) {
             if (isset($row['INTEREST'])) {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'INTEREST' => $row['INTEREST']);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'INTEREST' => $row['INTEREST']);
             }else {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'INTEREST' => 0);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'INTEREST' => 0);
             }
         }
     }

@@ -1,17 +1,10 @@
-<?php 
-if(isset($sess_uid)){
-    unset($sess_uid);
-}
-
-session_start();
-
-session_register("sess_uid");
+<?php
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 
-if(isset($sess_uid)){
+if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     html_draw_top();
-    echo "User ID " . $sess_uid . " already logged in.";
+    echo "User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.";
     html_draw_bottom();
     exit;
 }
@@ -43,7 +36,7 @@ if($logon==""){
 if($valid){
     $luid = user_logon($logon,$pw);
     if($luid>-1){
-        $sess_uid = $luid;
+        setcookie("bh_sess_uid",$luid);
     } else {
         $error_html = "<h2>Invalid login</h2>";
         $valid = false;
@@ -53,6 +46,7 @@ if($valid){
 html_draw_top();
 
 if($valid){
+    echo "<p>SESSION: $PHPSESSID</p>";
     echo "<p>w00t! You've logged on.</p>";
     echo "<p><a href=\"" . dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/\" target=\"_top\">Go to messages.</a></p>";
 } else {

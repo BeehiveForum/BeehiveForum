@@ -1,11 +1,4 @@
-<?php 
-if(isset($sess_uid)){
-    unset($sess_uid);
-}
-
-session_start();
-session_register("sess_uid");
-
+<?php
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
@@ -14,12 +7,14 @@ require_once("./include/folder.inc.php");
 require_once("./include/threads.inc.php");
 require_once("./include/messages.inc.php");
 
-if(!isset($sess_uid)){
+if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     html_draw_top();
     echo "You must be logged in to post.";
     echo "<a href=\"logon.php\" target=\"_self\">Log on...</a>";
     html_draw_bottom();
     exit;
+} else {
+    $sess_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 }
 
 $valid = true;

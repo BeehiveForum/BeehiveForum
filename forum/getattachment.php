@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.37 2003-07-28 20:58:22 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.38 2003-07-31 22:08:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -62,17 +62,10 @@ if (isset($attachment_data[1])) {
     $hash = explode('/', $attachment_data[1]);
     $hash = $hash[sizeof($hash) - 1];
 
-    $db = db_connect();
+    // Increment the 'Downloaded x times tooltip text'
+    attachment_inc_dload_count($hash);
 
-    $sql  = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
-    $result = db_query($sql, $db);
-
-    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash' limit 0,1";
-    $result = db_query($sql, $db);
-
-    if (db_num_rows($result)) {
-
-        $attachmentdetails = db_fetch_array($result);
+    if ($attachmentdetails = get_attachment_by_hash($hash)) {
 
         if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
 
@@ -131,6 +124,7 @@ if (isset($attachment_data[1])) {
 }
 
 require_once("./include/lang.inc.php");
+
 html_draw_top();
 echo "<h2>{$lang['attachmentproblem']}</h2>\n";
 html_draw_bottom();

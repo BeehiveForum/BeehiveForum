@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.37 2003-07-29 16:26:44 hodcroftcj Exp $ */
+/* $Id: post.inc.php,v 1.38 2003-07-31 22:08:43 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -140,12 +140,14 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
-    while($row = db_fetch_array($result)){
-        if(isset($row['LOGON'])){
+    while ($row = db_fetch_array($result)) {
+
+        if (isset($row['LOGON'])) {
            $logon = $row['LOGON'];
         } else {
-         $logon = "";
+           $logon = "";
         }
+
         if(isset($row['NICKNAME'])){
             $nickname = $row['NICKNAME'];
         } else {
@@ -158,55 +160,52 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         if($fmt_uid != $default_uid && $fmt_uid != 0){
             $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
         }
-        //$html .= ">$fmt_username</option>";
     }
 
     $html .= "</select>";
     return $html;
 }
 
-/* function is_valid_html($html)
+function get_user_posts($uid)
 {
-    $html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
+    $db_get_user_posts = db_connect();
 
-    $opentags = array();
+    $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
+    $result = db_query($sql, $db_get_user_posts);
 
-    $valid = true;
+    if (db_num_rows($result)) {
+        $user_post_array = array();
+	while ($row = db_fetch_array($result)) {
+	    $user_post_array[] = $row;
+	}
+	return $user_post_array;
+    }else {
+        return false;
+    }
+}
 
-    for($i=1; $i<count($html_parts); $i++){
-        if($i%2){
-            if(substr($html_parts[$i],0,1) == "/"){ // closing tag
-                $tag = strtolower(substr($html_parts[$i],1));
-                if(isset($opentags[$tag]) && $opentags[$tag] > 0){
-                    $opentags[$tag]--;
-                } else {
-                    //echo "<p>Tag $tag closed without being opened</p>";
-                    $valid = false;
-                    break;
-                }
-            } else {
-                if(substr($html_parts[$i],-1) != "/"){ // check for XHTML single tag
-                    $bits = explode(" ", $html_parts[$i]);
-                    $tag = strtolower($bits[0]);
-                    if(!isset($opentags[$tag])){
-                        $opentags[$tag] = 1;
-                    } else {
-                        $opentags[$tag]++;
-                    }
-                }
-            }
-        }
+function check_ddkey($ddkey)
+{
+    $db_check_ddkey = db_connect();
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT DDKEY FROM ". forum_table("DEDUPE"). " WHERE UID = $uid";
+    $result = db_query($sql, db_check_ddkey);
+
+    if (db_num_rows($result) > 0) {
+
+        list($ddkey_check) = db_fetch_array($result);
+        $sql = "UPDATE ". forum_table("DEDUPE"). " SET DDKEY = '$ddkey' WHERE UID = $uid";
+
+    }else{
+
+        $sql = "INSERT INTO ". forum_table("DEDUPE"). " (UID, DDKEY) ";
+        $sql.= "VALUES ($uid, '$ddkey')";
+
+        $ddkey_check = false;
     }
 
-    if($valid){
-        $single_tags = array("br","img","hr","p");
-        foreach($opentags as $tag => $n){
-            if(!in_array($tag, $single_tags) && $n > 0){
-                $valid = false;
-            }
-        }
-    }
-    return $valid;
-} */
+    return !($ddkey == $ddkey_check);
+}
 
 ?>

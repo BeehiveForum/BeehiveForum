@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.24 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: thread.inc.php,v 1.25 2003-07-31 22:08:43 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -117,17 +117,14 @@ function thread_get_interest($tid)
 
 function thread_set_interest($tid, $interest, $new = false)
 {
-
     $uid = bh_session_get_value('UID');
 
-    if($new){
-
-        $sql = "insert into ". forum_table("USER_THREAD"). " (UID, TID, INTEREST) values ($uid, $tid, $interest)";
-
-    } else {
-
-        $sql = "update low_priority ". forum_table("USER_THREAD"). " set INTEREST = $interest where UID = $uid and TID = $tid";
-
+    if ($new) {
+        $sql = "insert into ". forum_table("USER_THREAD"). " (UID, TID, INTEREST) ";
+        $sql.= "values ($uid, $tid, $interest)";
+    }else {
+        $sql = "update low_priority ". forum_table("USER_THREAD"). " ";
+        $sql.= "set INTEREST = $interest where UID = $uid and TID = $tid";
     }
 
     $db_thread_set_interest = db_connect();

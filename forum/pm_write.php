@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.12 2003-07-28 20:55:50 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.13 2003-07-31 22:08:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -89,23 +89,13 @@ $valid = true;
 
 if (isset($mid)) {
 
-    $db = db_connect();
-
-    $sql = "select FROM_UID, SUBJECT from ". forum_table("PM"). " where MID = '$mid'";
-    $result = db_query($sql, $db);
-
-    if (db_num_rows($result) > 0) {
-
-        $resultarray = db_fetch_array($result);
-        $t_subject = $resultarray['SUBJECT'];
-
+    if ($pm_data = pm_single_get($mid, PM_FOLDER_INBOX)) {
         if (!isset($HTTP_POST_VARS['t_subject']) || trim($HTTP_POST_VARS['t_subject']) == "") {
-            $t_subject = $resultarray['SUBJECT'];
+            $t_subject = $pm_data['SUBJECT'];
             if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
                 $t_subject = "RE:". $t_subject;
             }
         }
-
     }
 }
 
@@ -131,16 +121,11 @@ if (isset($HTTP_POST_VARS['t_to_uid'])) {
 
 if (substr($t_to_uid, 0, 2) == "U:") {
 
-    $u_login = substr($t_to_uid, 2);
+    $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
 
-    $db = db_connect();
-    $sql = "select UID from ". forum_table("USER"). " where LOGON = '" . $u_login. "'";
+    if ($touser = user_get($u_login)) {
 
-    $result = db_query($sql,$db);
-
-    if (db_num_rows($result) > 0) {
-
-        $touser = db_fetch_array($result);
+        $HTTP_POST_VARS['t_to_uid'] = $touser['UID'];
         $t_to_uid = $touser['UID'];
 
     }else{
@@ -149,7 +134,6 @@ if (substr($t_to_uid, 0, 2) == "U:") {
         $valid = false;
 
     }
-
 }
 
 // User clicked the submit button - check the data that was submitted

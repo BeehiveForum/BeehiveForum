@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.13 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: lpost.php,v 1.14 2003-07-31 22:08:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -89,14 +89,8 @@ if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0,
 
   $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
 
-  $db = db_connect();
-  $sql = "select UID from ". forum_table("USER"). " where LOGON = '" . $u_login. "'";
+  if ($touser = user_get($u_login)) {
 
-  $result = db_query($sql,$db);
-
-  if (db_num_rows($result) > 0) {
-
-    $touser = db_fetch_array($result);
     $HTTP_POST_VARS['t_to_uid'] = $touser['UID'];
     $t_to_uid = $touser['UID'];
 
@@ -190,28 +184,7 @@ if ($valid) {
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
-    $db = db_connect();
-
-    $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ".bh_session_get_value('UID');
-    $result = db_query($sql,$db);
-
-    if (db_num_rows($result) > 0) {
-
-        db_query($sql, $db);
-        list($ddkey) = db_fetch_array($result);
-        $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".bh_session_get_value('UID');
-
-    }else {
-
-        $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".bh_session_get_value('UID').",\"".$HTTP_POST_VARS['t_dedupe']."\")";
-        $ddkey = "";
-
-    }
-
-    db_query($sql,$db);
-    db_disconnect($db);
-
-    if ($ddkey != $HTTP_POST_VARS['t_dedupe']) {
+    if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
 
         if ($newthread) {
 

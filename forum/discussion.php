@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.66 2004-09-13 11:48:53 rowan_hill Exp $ */
+/* $Id: discussion.php,v 1.67 2004-09-14 20:18:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -90,6 +90,10 @@ if (!$user_sess = bh_session_check()) {
 
 $lang = load_language_file();
 
+// Forum Name
+
+$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
@@ -107,10 +111,11 @@ if (!forum_check_access_level()) {
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
 echo "<head>\n";
-echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</title>\n";
+echo "<title>$forum_name</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
 echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
 

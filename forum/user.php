@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.30 2004-08-04 23:46:35 decoyduck Exp $ */
+/* $Id: user.php,v 1.31 2004-09-14 20:18:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -112,12 +112,17 @@ if (bh_session_get_value('UID') == 0) {
 
 $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : forum_get_setting('default_style')). "/style.css";
 
+// Forum Name
+
+$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"DTD/xhtml1-frameset.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
 echo "<head>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
 echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\">\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"180,*\" border=\"1\">\n";
 echo "<frame src=\"./user_menu.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";

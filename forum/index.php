@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.94 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: index.php,v 1.95 2004-09-14 20:18:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -68,6 +68,10 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
 
     $webtag = get_webtag($webtag_search);
 
+    // Forum Name
+
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
     // Calculate how tall the nav frameset should be based on the user's fontsize.
 
     $navsize = bh_session_get_value('FONT_SIZE');
@@ -76,10 +80,11 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
-    echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</title>\n";
+    echo "<title>$forum_name</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
     echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\">\n";
     echo "</head>\n";
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
@@ -90,11 +95,11 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
 
         if (isset($_GET['final_uri'])) {
 
-	    if (stristr(rawurldecode($_GET['final_uri']), "?")) {
+            if (stristr(rawurldecode($_GET['final_uri']), "?")) {
                 echo "<frame src=\"". rawurldecode($_GET['final_uri']). "&amp;webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-	    }else {
+            }else {
                 echo "<frame src=\"". rawurldecode($_GET['final_uri']). "?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-	    }
+            }
 
         }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -112,23 +117,23 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
 
             if ($start_page = bh_session_get_value('START_PAGE')) {
 
-	        if ($start_page == 1) {
-	            $final_uri = "./discussion.php?webtag=$webtag";
-	        }elseif ($start_page == 2) {
-	            $final_uri = "./pm.php?webtag=$webtag";
-	        }elseif ($start_page == 3) {
-	            $final_uri = "./start.php?webtag=$webtag&left=threadlist";
-		}else {
-		    $final_uri = "./start.php?webtag=$webtag";
-		}
+                if ($start_page == 1) {
+                    $final_uri = "./discussion.php?webtag=$webtag";
+                }elseif ($start_page == 2) {
+                    $final_uri = "./pm.php?webtag=$webtag";
+                }elseif ($start_page == 3) {
+                    $final_uri = "./start.php?webtag=$webtag&left=threadlist";
+                }else {
+                    $final_uri = "./start.php?webtag=$webtag";
+                }
 
-	    }else {
+            }else {
 
-	        $final_uri = "./start.php?webtag=$webtag";
-	    }
+                $final_uri = "./start.php?webtag=$webtag";
+            }
 
             echo "<frame src=\"$final_uri\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-	}
+        }
 
     }else {
 
@@ -151,7 +156,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
         }else {
 
             echo "<frame src=\"./forums.php?webtag_search=$webtag_search\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
-	}
+        }
     }
 
 }else {
@@ -160,13 +165,18 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
 
     $lang = load_language_file();
 
+    // Forum Title
+
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
     //echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
-    echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</title>\n";
+    echo "<title>$forum_name</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
     echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\">\n";
     echo "</head>\n";
 
     // Fetch the forum settings

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.82 2004-07-17 11:02:13 hodcroftcj Exp $ */
+/* $Id: post.inc.php,v 1.83 2004-07-23 19:51:44 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -285,9 +285,9 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
         if (isset($default_uid) && $default_uid != 0) {
             $html.= "<option value=\"0\"></option>\n";
-		}else {
+                }else {
             $html.= "<option value=\"0\" selected=\"selected\"></option>\n";
-		}
+                }
     }
 
     $sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
@@ -337,10 +337,10 @@ function get_user_posts($uid)
 
     if (db_num_rows($result)) {
         $user_post_array = array();
-	while ($row = db_fetch_array($result)) {
-	    $user_post_array[] = $row;
-	}
-	return $user_post_array;
+        while ($row = db_fetch_array($result)) {
+            $user_post_array[] = $row;
+        }
+        return $user_post_array;
     }else {
         return false;
     }
@@ -374,81 +374,87 @@ function check_ddkey($ddkey)
     return !($ddkey == $ddkey_check);
 }
 
-
 class MessageText {
 
-	private $html = "";
-	private $text = "";
-	private $original_text = "";
-	private $diff = false;
-	private $emoticons = true;
+        // Note: PHP/5.0 introduces new public, private and protected
+        // modifiers whilst removing the var modifier. However it only
+        // causes problems if PHP/5.0's new STRICT error reporting
+        // is also enabled, hence we're (for the mean while) going to
+        // stick with PHP/4.x's old var modifiers, because for now
+        // it is going to be more compatible with our 'audience'
 
-	function MessageText ($html = 0, $content = "", $emoticons = true) {
-		$this->diff = false;
-		$this->original_text = "";
-		$this->emoticons = $emoticons;
-		$this->setHTML($html);
-		$this->setContent($content);
-	}
+        var $html = "";
+        var $text = "";
+        var $original_text = "";
+        var $diff = false;
+        var $emoticons = true;
 
-	function setHTML ($html) {
-		if ($html == false || $html == "N") {
-			$this->html = 0;
-		} else if ($html == 1 || $html == "A") {
-			$this->html = 1;
-		} else {
-			$this->html = 2;
-		}
+        function MessageText ($html = 0, $content = "", $emoticons = true) {
+                $this->diff = false;
+                $this->original_text = "";
+                $this->emoticons = $emoticons;
+                $this->setHTML($html);
+                $this->setContent($content);
+        }
 
-		$this->setContent($this->getOriginalContent());
-	}
+        function setHTML ($html) {
+                if ($html == false || $html == "N") {
+                        $this->html = 0;
+                } else if ($html == 1 || $html == "A") {
+                        $this->html = 1;
+                } else {
+                        $this->html = 2;
+                }
 
-	function getHTML () {
-		return $this->html;
-	}
+                $this->setContent($this->getOriginalContent());
+        }
 
-	function setContent ($text) {
+        function getHTML () {
+                return $this->html;
+        }
 
-		//$text = _stripslashes($text);
+        function setContent ($text) {
 
-		$this->original_text = $text;
+                //$text = _stripslashes($text);
 
-		if ($this->html == 0) {
-			$text = make_html($text);
-		} else if ($this->html > 0) {
-			$text = fix_html($text, $this->emoticons);
+                $this->original_text = $text;
 
-			if ($this->original_text != tidy_html($text, ($this->html == 1) ? true : false)) {
-				$this->diff = true;
-			}
+                if ($this->html == 0) {
+                        $text = make_html($text);
+                } else if ($this->html > 0) {
+                        $text = fix_html($text, $this->emoticons);
 
-			if ($this->html == 1) {
-				$text = add_paragraphs($text);
-			}
-		}
+                        if ($this->original_text != tidy_html($text, ($this->html == 1) ? true : false)) {
+                                $this->diff = true;
+                        }
 
-		$this->text = $text;
-	}
+                        if ($this->html == 1) {
+                                $text = add_paragraphs($text);
+                        }
+                }
 
-	function getContent () {
-		return $this->text;
-	}
+                $this->text = $text;
+        }
 
-	function getTidyContent () {
-		if ($this->html == 0) {
-			return strip_tags($this->text);
-		} else if ($this->html > 0) {
-			return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false));
-		}
-	}
+        function getContent () {
+                return $this->text;
+        }
 
-	function getOriginalContent () {
-		return $this->original_text;
-	}
+        function getTidyContent () {
+                if ($this->html == 0) {
+                        return strip_tags($this->text);
+                } else if ($this->html > 0) {
+                        return _htmlentities(tidy_html($this->text, ($this->html == 1) ? true : false));
+                }
+        }
 
-	function isDiff () {
-		return $this->diff;
-	}
+        function getOriginalContent () {
+                return $this->original_text;
+        }
+
+        function isDiff () {
+                return $this->diff;
+        }
 }
 
 ?>

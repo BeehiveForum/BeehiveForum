@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.186 2004-04-26 11:21:10 decoyduck Exp $ */
+/* $Id: post.php,v 1.187 2004-04-28 14:28:54 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -98,9 +98,9 @@ $lang = load_language_file();
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag()) {
+if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (bh_session_get_value('UID') == 0) {

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.9 2004-04-25 14:15:33 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.10 2004-04-28 14:28:53 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -56,7 +56,7 @@ $user_sess = bh_session_check();
 
 // Make sure we have a webtag
 
-$webtag = get_webtag();
+$webtag = get_webtag($webtag_search);
 
 // Load Language File
 

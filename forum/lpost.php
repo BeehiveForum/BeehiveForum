@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.43 2004-04-24 18:42:28 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.44 2004-04-28 14:28:53 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -69,7 +69,7 @@ $lang = load_language_file();
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag()) {
+if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./lforums.php");
 }
 

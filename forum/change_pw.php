@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.36 2004-04-26 11:21:07 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.37 2004-04-28 14:28:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,7 +41,7 @@ $lang = load_language_file();
 
 // Check we have a webtag
 
-$webtag = get_webtag();
+$webtag = get_webtag($webtag_search);
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");

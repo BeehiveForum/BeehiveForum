@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.62 2004-04-28 13:03:09 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.63 2004-04-28 14:28:55 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -91,7 +91,7 @@ function get_table_prefix()
     return $forum_data;
 }
 
-function get_webtag()
+function get_webtag(&$webtag_search = false)
 {
     static $webtag_data = false;
 
@@ -147,6 +147,7 @@ function get_webtag()
             }
         }
 
+        $webtag_search = $webtag;
         return false;
     }
 
@@ -956,6 +957,90 @@ function forum_update_default($fid)
 	}
 
         return $result;
+    }
+
+    return false;
+}
+
+function forum_search($search_string)
+{
+    $search_string = addslashes(trim($search_string));
+    $search_string = preg_replace("/[^\w]/", "", $search_string);
+
+    $keywords_array = explode(" ", $search_string);
+
+    $db_forum_search = db_connect();
+    $forum_search_array = array();
+
+    $forum_webtag_sql = "FORUMS.WEBTAG LIKE '%";
+    $forum_webtag_sql.= implode("%' OR FORUMS.WEBTAG LIKE '%", $keywords_array);
+    $forum_webtag_sql.= "%'";
+
+    $forum_settings_sql = "FORUM_SETTINGS.SVALUE LIKE '%";
+    $forum_settings_sql.= implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $keywords_array);
+    $forum_settings_sql.= "%'";
+
+    $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG FROM FORUM_SETTINGS ";
+    $sql.= "LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
+    $sql.= "WHERE $forum_webtag_sql OR (FORUM_SETTINGS.SNAME = 'forum_keywords' ";
+    $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_desc' ";
+    $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_name' ";
+    $sql.= "AND ($forum_settings_sql))";
+
+    $result = db_query($sql, $db_forum_search);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($forum_data = db_fetch_array($result)) {
+
+            $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
+            $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
+
+	    $result_forum_name = db_query($sql, $db_forum_search);
+
+	    if (db_num_rows($result_forum_name)) {
+
+	        $row = db_fetch_array($result_forum_name);
+	        $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
+
+	    }else {
+
+	        $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
+	    }
+
+            $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+            $result_post_count = db_query($sql, $db_forum_search);
+
+            if (db_num_rows($result_post_count)) {
+
+                $row = db_fetch_array($result_post_count);
+                $forum_data['MESSAGES'] = $row['POST_COUNT'];
+
+            }else {
+
+                $forum_data['MESSAGES'] = 0;
+            }
+
+            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
+            $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
+            $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
+
+            $result_description = db_query($sql, $db_forum_search);
+
+            if (db_num_rows($result_description)) {
+
+                $row = db_fetch_array($result_description);
+                $forum_data['DESCRIPTION'] = $row['SVALUE'];
+
+            }else{
+
+                $forum_data['DESCRIPTION'] = "";
+            }
+
+            $forum_search_array[$forum_data['FID']] = $forum_data;
+        }
+
+        return $forum_search_array;
     }
 
     return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.31 2004-08-14 15:11:45 hodcroftcj Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.32 2004-08-14 21:40:37 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -837,7 +837,7 @@ $lang['cannotviewpm'] = "Cannot view PM. Message is gone, homes.";
 $lang['nomessagespecifiedforreply'] = "Ain't no message specified fo' replyin' to";
 $lang['nouserspecified'] = "No bitch specified.";
 $lang['pmnotificationpopup'] = "Yo has a new PM. Would yo like to go to yo inbizox homie?";
-$lang['pmuserspace'] = "PM space per user";
+$lang['pmusermessages'] = "PM messages per user";
 $lang['oldermessages'] = "Older Messages";
 $lang['newermessages'] = "Newer Messages";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.83 2004-08-10 21:43:11 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.84 2004-08-14 21:40:36 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -318,29 +318,29 @@ function pm_get_free_space($uid = false)
 
     if (!$uid) $uid = bh_session_get_value('UID');
 
-    $pm_used_space = 0;
-
-    $max_pm_space = forum_get_setting('pm_max_user_space', false, 102400);
+    $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DISTINCT SUM(CHAR_LENGTH(PM.SUBJECT)) + SUM(CHAR_LENGTH(PM_CONTENT.CONTENT)) AS PM_USED_SPACE ";
-    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_CONTENT PM_CONTENT ";
-    $sql.= "ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "WHERE (PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
-    $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
-    $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
-    $sql.= "OR (PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') ";
-    $sql.= "OR (PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
+    $sql = "SELECT COUNT(MID) AS PM_USER_MESSAGES_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}PM ";
+    $sql.= "WHERE ((TYPE & ". PM_INBOX_ITEMS. " > 0) AND TO_UID = '$uid') ";
+    $sql.= "OR ((TYPE & ". PM_OUTBOX_ITEMS. " > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR ((TYPE & ". PM_SENT_ITEMS. " > 0) AND FROM_UID = '$uid') ";
+    $sql.= "OR (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') ";
+    $sql.= "OR (TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid')";
 
     $result = db_query($sql, $db_pm_get_free_space);
 
     $row = db_fetch_array($result);
 
-    if (isset($row['PM_USED_SPACE'])) return ($max_pm_space - $row['PM_USED_SPACE']);
+    if (isset($row['PM_USER_MESSAGES_COUNT'])) {
 
-    return $max_pm_space;
+        if ($row['PM_USER_MESSAGES_COUNT'] > $pm_max_user_messages) return 0;
+        return ($pm_max_user_messages - $row['PM_USER_MESSAGES_COUNT']);
+    }
+
+    return $pm_max_user_messages;
 }
 
 function pm_get_user($mid)

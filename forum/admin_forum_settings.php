@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.39 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.40 2004-08-14 21:40:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -244,10 +244,10 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['show_pms'] = "N";
     }
 
-    if (isset($_POST['pm_max_user_space']) && is_numeric($_POST['pm_max_user_space'])) {
-        $new_forum_settings['pm_max_user_space'] = ($_POST['pm_max_user_space'] * 1024);
+    if (isset($_POST['pm_max_user_messages']) && is_numeric($_POST['pm_max_user_messages'])) {
+        $new_forum_settings['pm_max_user_messages'] = $_POST['pm_max_user_messages'];
     }else {
-        $new_forum_settings['pm_max_user_space'] = 102400;
+        $new_forum_settings['pm_max_user_messages'] = 100;
     }
 
     if (isset($_POST['pm_allow_attachments']) && $_POST['pm_allow_attachments'] == "Y") {
@@ -664,8 +664,8 @@ echo "                          <fieldset>\n";
 echo "                            <legend>", form_checkbox("show_pms", "Y", $lang['enablepersonalmessages'], forum_get_setting('show_pms', 'Y', false)), "</legend>\n";
 echo "                            <table class=\"posthead\" width=\"100%\">\n";
 echo "                              <tr>\n";
-echo "                                <td>&nbsp;{$lang['pmuserspace']}:</td>\n";
-echo "                                <td>", form_input_text("pm_max_user_space", (forum_get_setting('pm_max_user_space', false, 102400) / 1024), 10, 32), "&nbsp;(KB)&nbsp;</td>\n";
+echo "                                <td>&nbsp;{$lang['pmusermessages']}:</td>\n";
+echo "                                <td>", form_input_text("pm_max_user_messages", forum_get_setting('pm_max_user_messages', false, 100), 10, 32), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
 echo "                                <td>", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], forum_get_setting('pm_allow_attachments', 'Y', false)), "&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.158 2004-08-14 15:11:45 hodcroftcj Exp $ */
+/* $Id: en.inc.php,v 1.159 2004-08-14 21:40:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -449,7 +449,7 @@ $lang['stats'] = "stats";
 $lang['enablestatsdisplay'] = "Enable Stats Display at bottom of message pane";
 $lang['personalmessages'] = "Personal Messages";
 $lang['enablepersonalmessages'] = "Enable Personal Messages";
-$lang['pmuserspace'] = "PM space per user";
+$lang['pmusermessages'] = "PM messages per user";
 $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachments";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";

@@ -66,7 +66,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     return $result;
 }
 
-function post_create_thread($fid, $title)
+function post_create_thread($fid, $title, $poll = 'N')
 {
     $title = mysql_escape_string(htmlentities($title));
 
@@ -74,7 +74,7 @@ function post_create_thread($fid, $title)
 
     $sql = "insert into " . forum_table("THREAD");
     $sql .= " (FID,TITLE,LENGTH,POLL_FLAG,MODIFIED) ";
-    $sql .= "values ($fid,\"$title\",0,\"N\",NOW())";
+    $sql .= "values ($fid, '$title', 0, '$poll', NOW())";
 
     $result = db_query($sql, $db_post_create_thread);
 

@@ -21,7 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.142 2005-03-29 21:48:33 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.143 2005-04-03 16:08:58 rowan_hill Exp $ */
+
+/**
+* Displays and handles the Manage Users and Manage User: [User] pages
+* 
+* Generates the forms relating to user management (kicking and permissions, etc), and handles their sumbission.
+*/
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -166,13 +172,14 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $new_user_perms = (double) 0;
 
-    $t_admintools = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
-    $t_banned     = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
-    $t_wormed     = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
-    $t_globalmod  = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
-    $t_linksmod   = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
+    $t_admintools  = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
+    $t_banned      = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
+    $t_wormed      = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
+    $t_globalmod   = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
+    $t_linksmod    = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
+    $t_ignoreadmin = (double) (isset($_POST['t_ignoreadmin']))? $_POST['t_ignoreadmin']: 0;
 
-    $new_user_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
+    $new_user_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod | $t_ignoreadmin;
 
     if (perm_has_forumtools_access()) {
 
@@ -207,13 +214,13 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_confirm_email;
 
-    if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 2) {
+    if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 1) {
 
          $valid = false;
          echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
     }
 
-    if ($valid && !($new_global_user_perms & USER_PERM_FORUM_TOOLS) && $forum_tools_perm_count < 2) {
+    if ($valid && !($new_global_user_perms & USER_PERM_FORUM_TOOLS) && $forum_tools_perm_count < 1) {
 
         $valid = false;
         echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
@@ -411,6 +418,9 @@ if (isset($_POST['t_delete_posts'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms & USER_PERM_WORMED), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td>", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.84 2004-11-29 22:09:53 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.85 2004-12-05 17:58:05 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -107,7 +107,7 @@ function folder_get_title($fid)
     $sql = "SELECT FOLDER.TITLE FROM {$table_data['PREFIX']}FOLDER FOLDER WHERE FID = $fid";
     $result = db_query($sql, $db_folder_get_title);
 
-    if (!db_num_rows($result)) {
+    if (db_num_rows($result) < 1) {
         $foldertitle = "The Unknown Folder";
     }else {
         $data = db_fetch_array($result);
@@ -246,7 +246,7 @@ function folder_get_available()
 
     $result = db_query($sql, $db_folder_get_available);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $folder_list = array();
 
@@ -297,7 +297,7 @@ function folder_get_all()
 
     $result = db_query($sql, $db_folder_get_all);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $folder_list = array();
 
@@ -331,7 +331,7 @@ function folder_get($fid)
 
     $result = db_query($sql, $db_folder_get);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
         return db_fetch_array($result);
     }else {
         return false;
@@ -351,11 +351,7 @@ function folder_is_valid($fid)
     $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_get_available);
 
-    if (db_num_rows($result)) {
-        return true;
-    }
-
-    return false;
+    return (db_num_rows($result) > 0);
 }
 
 function user_set_folder_interest($fid, $interest)
@@ -400,7 +396,7 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
     $sql = "SELECT ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_thread_type_allowed);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
         $row = db_fetch_array($result);
         return $row['ALLOWED_TYPES'] ? ($row['ALLOWED_TYPES'] & $type) : true;
     } else {
@@ -427,13 +423,18 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
     $result = db_query($sql, $db_folder_get_by_type_allowed);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $allowed_folders = array();
+
         while($row = db_fetch_array($result)) {
             $allowed_folders[] = $row['FID'];
         }
+
         return $allowed_folders;
-    } else {
+
+    }else {
+
         return false;
     }
 }

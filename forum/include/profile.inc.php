@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.29 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.30 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -34,16 +34,15 @@ function profile_section_get_name($psid)
    if (!$table_data = get_table_prefix()) return "The Unknown Section";
 
    $sql = "SELECT PS.NAME FROM {$table_data['PREFIX']}PROFILE_SECTION PS WHERE PS.PSID = $psid";
-   $resource_id = db_query($sql, $db_profile_section_get_name);
+   $result = db_query($sql, $db_profile_section_get_name);
 
-   if (!db_num_rows($resource_id)) {
-     $sectionname = "The Unknown Section";
-   } else {
-     $data = db_fetch_array($resource_id);
-     $sectionname = $data['NAME'];
+   if (db_num_rows($result) > 0) {
+
+       list($sectionname) = db_fetch_array($result, DB_RESULT_NUM);
+       return $sectionname;
    }
 
-   return $sectionname;
+   return "The Unknown Section";
 }
 
 function profile_section_create($name, $position)
@@ -102,13 +101,19 @@ function profile_sections_get()
 
     $result = db_query($sql, $db_profile_section_get);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $profile_sections_get = array();
+
         while($row = db_fetch_array($result)) {
+
             $profile_sections_get[] = $row;
         }
+
         return $profile_sections_get;
+
     }else {
+
         return false;
     }
 }
@@ -128,13 +133,19 @@ function profile_items_get($psid)
 
     $result = db_query($sql, $db_profile_items_get);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $profile_items_get = array();
+
         while($row = db_fetch_array($result)) {
+
             $profile_items_get[] = $row;
         }
+
         return $profile_items_get;
+
     }else {
+
         return false;
     }
 }
@@ -258,11 +269,12 @@ function profile_get_user_values($uid)
 
     $result = db_query($sql, $db_profile_get_user_values);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $profile_values_array = array();
 
         while($row = db_fetch_array($result)) {
+
             $profile_values_array[] = $row;
         }
 

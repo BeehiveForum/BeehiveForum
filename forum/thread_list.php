@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.224 2004-11-30 22:25:26 tribalonline Exp $ */
+/* $Id: thread_list.php,v 1.225 2004-12-05 17:58:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -414,6 +414,31 @@ if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"sma
 
 // Iterate through the information we've just got and display it in the right order
 
+if (bh_session_get_value('UID') == 572) {
+
+    if (isset($_GET['debug'])) {
+
+        echo "  <tr>\n";
+        echo "    <td>\n";
+        echo "      <pre>\n";
+        print_r($folder_order);
+        print_r($folder_info);
+        echo "      </pre>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+
+        html_draw_bottom();
+        exit;
+
+    }else {
+
+        echo "  <tr>\n";
+        echo "    <td><b>Hello Jim, you can be our volunteer for bug testing. <a href=\"./thread_list.php?debug=yes\">Click here</a> please and PM Matt the output. Thank you!</b></td>\n";
+        echo "  </tr>\n";
+    }
+}
+
 while (list($key1, $folder_number) = each($folder_order)) {
 
     echo "  <tr>\n";
@@ -432,6 +457,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "          </td>\n";
 
     if (bh_session_get_value('UID') > 0) {
+
         if ($folder_info[$folder_number]['INTEREST'] == 0) {
             echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\" onclick=\"return confirmFolderIgnore();\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
         }else {

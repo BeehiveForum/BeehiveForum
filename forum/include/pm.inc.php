@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.100 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.101 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -165,7 +165,7 @@ function pm_get_inbox($offset)
 
     $result = db_query($sql, $db_pm_get_inbox);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         while ($result_array = db_fetch_array($result)) {
             $pm_get_inbox_array[] = $result_array;
@@ -214,7 +214,7 @@ function pm_get_outbox($offset)
 
     $result = db_query($sql, $db_pm_get_outbox);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         while ($result_array = db_fetch_array($result)) {
             $pm_get_outbox_array[] = $result_array;
@@ -263,7 +263,7 @@ function pm_get_sent($offset)
 
     $result = db_query($sql, $db_pm_get_outbox);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         while ($result_array = db_fetch_array($result)) {
             $pm_get_outbox_array[] = $result_array;
@@ -314,7 +314,7 @@ function pm_get_saveditems($offset)
 
     $result = db_query($sql, $db_pm_get_saveditems);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         while ($result_array = db_fetch_array($result)) {
             $pm_get_saveditems_array[] = $result_array;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.36 2004-11-29 20:32:23 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.37 2004-12-05 17:58:07 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/profile.inc.php");
@@ -80,13 +80,11 @@ function user_get_profile($uid)
 
         $user_profile = db_fetch_array($result);
 
-        if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) {
-            $user_profile['LAST_LOGON'] = "Unknown";
-        }else {
+        if (isset($user_profile['LAST_LOGON']) && $user_profile['LAST_LOGON'] > 0) {
             $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_LOGON']);
+        }else {
+            $user_profile['LAST_LOGON'] = "Unknown";
         }
-
-        if ($user_profile['LAST_LOGON'] == 0) $user_profile['LAST_LOGON'] = "Unknown";
 
         if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 2 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
             $user_profile['DOB'] = format_birthday($user_prefs['DOB']);

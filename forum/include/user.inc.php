@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.212 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.213 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -200,23 +200,24 @@ function user_logon($logon, $password, $md5hash = false)
 
     $result = db_query($sql, $db_user_logon);
 
-    if (!db_num_rows($result)) {
-        $uid = -1;
-    }else {
+    if (db_num_rows($result) > 0) {
 
-        $fa = db_fetch_array($result);
-        $uid = $fa['UID'];
+        $row = db_fetch_array($result);
 
         // Check to see if the user is banned.
 
-        if (isset($fa['USER_PERM_COUNT']) && $fa['USER_PERM_COUNT'] > 0) {
-            if (isset($fa['USER_PERMS']) && $fa['USER_PERMS'] & USER_PERM_BANNED) {
-                $uid = -2;
+        if (isset($row['USER_PERM_COUNT']) && $row['USER_PERM_COUNT'] > 0) {
+
+            if (isset($row['USER_PERMS']) && $row['USER_PERMS'] & USER_PERM_BANNED) {
+
+                return -2;
             }
         }
+
+        return $row['UID'];
     }
 
-    return $uid;
+    return -1;
 }
 
 function user_get($uid, $hash = false)
@@ -236,7 +237,8 @@ function user_get($uid, $hash = false)
 
     $result = db_query($sql, $db_user_get);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $user_get = db_fetch_array($result);
         return $user_get;
     }
@@ -255,14 +257,13 @@ function user_get_logon($uid)
     $sql = "SELECT LOGON FROM USER WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_logon);
 
-    if(!db_num_rows($result)){
-        $logon = "UNKNOWN";
-    } else {
-        $fa = db_fetch_array($result);
-        $logon = $fa['LOGON'];
+    if (db_num_rows($result) > 0) {
+
+        list($logon) = db_fetch_array($result, DB_RESULT_NUM);
+        return $logon;
     }
 
-    return $logon;
+    return "Unknown";
 }
 
 function user_get_uid($logon)
@@ -276,12 +277,12 @@ function user_get_uid($logon)
     $sql = "SELECT * FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
 
-    if (!db_num_rows($result)) {
-        return false;
-    }else{
+    if (db_num_rows($result) > 0) {
+
         return db_fetch_array($result);
     }
 
+    return false;
 }
 
 function user_get_sig($uid, &$content, &$html)
@@ -295,16 +296,13 @@ function user_get_sig($uid, &$content, &$html)
     $sql = "SELECT CONTENT, HTML FROM {$table_data['PREFIX']}USER_SIG WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_sig);
 
-    if(!db_num_rows($result)){
-        $ret = false;
-    } else {
-        $fa = db_fetch_array($result);
-        $content = $fa['CONTENT'];
-        $html = $fa['HTML'];
-        $ret = true;
+    if (db_num_rows($result) > 0) {
+
+        list($content, $html) = db_fetch_array($result, DB_RESULT_NUM);
+        return true;
     }
 
-    return $ret;
+    return false;
 }
 
 function user_get_prefs($uid)
@@ -361,6 +359,7 @@ function user_get_prefs($uid)
     $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, POST_PAGE FROM USER_PREFS WHERE UID = $uid";
 
     $result = db_query($sql, $db_user_get_prefs);
+
     $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
 
     // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
@@ -480,7 +479,23 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         $sql = "SELECT * FROM USER_PREFS WHERE UID = $uid";
         $result = db_query($sql, $db_user_update_prefs);
 
-        if (db_num_rows($result) == 0) {
+        if (db_num_rows($result) > 0) {
+
+            // previous entry which we will UPDATE
+
+            $values = array();
+
+            foreach($global_prefs as $pref_name => $pref_setting) {
+                 if (user_check_pref($pref_name, $pref_setting)) {
+                     $values[] = "$pref_name = '$pref_setting'";
+                 }
+            }
+
+            $sql = "UPDATE USER_PREFS SET ";
+            $sql.= implode(",", $values);
+            $sql.= " WHERE UID = $uid";
+
+        }else {
 
             // no previous entry, construct an INSERT query
 
@@ -501,22 +516,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             }
 
             $sql .= ")";
-
-        }else {
-
-            // previous entry which we will UPDATE
-
-            $values = array();
-
-            foreach($global_prefs as $pref_name => $pref_setting) {
-                 if (user_check_pref($pref_name, $pref_setting)) {
-                     $values[] = "$pref_name = '$pref_setting'";
-                 }
-            }
-
-            $sql = "UPDATE USER_PREFS SET ";
-            $sql.= implode(",", $values);
-            $sql.= " WHERE UID = $uid";
         }
 
         $result_global = db_query($sql, $db_user_update_prefs);
@@ -556,7 +555,21 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
         $result = db_query($sql, $db_user_update_prefs);
 
-        if (db_num_rows($result) == 0) {
+        if (db_num_rows($result) > 0) {
+
+            // previous entry which we will UPDATE
+
+            $values = array();
+
+            foreach($forum_prefs as $pref_name => $pref_setting) {
+
+                $values[] = "$pref_name = '$pref_setting'";
+            }
+
+            $values = implode(",", $values);
+            $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
+
+        }else {
 
             // no previous entry, construct an INSERT query
 
@@ -577,20 +590,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             }
 
             $sql .= ")";
-
-        }else {
-
-            // previous entry which we will UPDATE
-
-            $values = array();
-
-            foreach($forum_prefs as $pref_name => $pref_setting) {
-
-                $values[] = "$pref_name = '$pref_setting'";
-            }
-
-            $values = implode(",", $values);
-            $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
         }
 
         $result_forum = db_query($sql, $db_user_update_prefs);
@@ -714,13 +713,19 @@ function user_get_forthcoming_birthdays()
 
     $result = db_query($sql, $db_user_get_forthcoming_birthdays);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $birthdays = array();
+
         while ($row = db_fetch_array($result)) {
+
             $birthdays[] = $row;
         }
+
         return $birthdays;
+
     }else {
+
         return false;
     }
 }
@@ -739,31 +744,25 @@ function user_search($usersearch, $offset = 0)
 
     $usersearch = addslashes($usersearch);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N')";
 
     $result = db_query($sql, $db_user_search);
-    $user_search_count = db_num_rows($result);
+    list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_search);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         while ($row = db_fetch_array($result)) {
+
             if (!isset($user_search_array[$row['UID']])) {
+
                 $user_search_array[$row['UID']] = $row;
             }
         }
@@ -771,39 +770,6 @@ function user_search($usersearch, $offset = 0)
 
     return array('user_count' => $user_search_count,
                  'user_array' => $user_search_array);
-}
-
-function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $offset = 0)
-{
-    $db_user_get_all = db_connect();
-
-    if (!$table_data = get_table_prefix()) return array();
-
-    $user_get_all_array = array();
-
-    $sort_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON');
-
-    if (!is_numeric($offset)) $offset = 0;
-    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N') ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-    $sql.= "ORDER BY $sort_by $sort_dir ";
-    $sql.= "LIMIT $offset, 20";
-
-    $result = db_query($sql, $db_user_get_all);
-
-    while($row = db_fetch_array($result)) {
-       $user_get_all_array[] = $row;
-    }
-
-    return $user_get_all_array;
 }
 
 function user_get_aliases($uid)
@@ -826,9 +792,12 @@ function user_get_aliases($uid)
 
     $result = db_query($sql, $db_user_get_aliases);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         while($user_get_aliases_row = db_fetch_array($result)) {
+
             if (!in_array($user_get_aliases_row['IPADDRESS'], $user_ip_address_array) && strlen($user_get_aliases_row['IPADDRESS']) > 0) {
+
                 $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
             }
         }
@@ -845,8 +814,10 @@ function user_get_aliases($uid)
 
     $result = db_query($sql, $db_user_get_aliases);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         while($user_get_aliases_row = db_fetch_array($result)) {
+
             $user_get_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
         }
     }
@@ -867,25 +838,17 @@ function users_get_recent($offset, $limit)
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
                                                         'user_array' => array());
 
-    $sql = "SELECT USER.UID FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE ((LENGTH(USER_PREFS.ANON_LOGON) > 0 AND USER_PREFS.ANON_LOGON = 0) OR ";
-    $sql.= "(LENGTH(USER_PREFS.ANON_LOGON) = 0 AND USER_PREFS_GLOBAL.ANON_LOGON = 0)) ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0";
 
     $result = db_query($sql, $db_users_get_recent);
-    $users_get_recent_count = db_num_rows($result);
+    list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE ((LENGTH(USER_PREFS.ANON_LOGON) > 0 AND USER_PREFS.ANON_LOGON = 0) OR ";
-    $sql.= "(LENGTH(USER_PREFS.ANON_LOGON) = 0 AND USER_PREFS_GLOBAL.ANON_LOGON = 0)) ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, $limit";
 
@@ -919,29 +882,24 @@ function users_search_recent($usersearch, $offset)
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
                                                         'user_array' => array());
 
-    $sql = "SELECT USER.UID FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0";
 
     $result = db_query($sql, $db_users_search_recent);
-    $user_search_count = db_num_rows($result);
+    list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_users_search_recent);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
 
@@ -968,13 +926,19 @@ function user_get_friends($uid)
 
     $result = db_query($sql, $db_user_get_peers);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $user_get_peers_array = array();
+
         while ($row = db_fetch_array($result)) {
+
             $user_get_peers_array[] = $row;
         }
+
         return $user_get_peers_array;
+
     }else {
+
         return false;
     }
 }
@@ -991,13 +955,19 @@ function user_get_ignored($uid)
 
     $result = db_query($sql, $db_user_get_peers);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $user_get_peers_array = array();
+
         while ($row = db_fetch_array($result)) {
+
             $user_get_peers_array[] = $row;
         }
+
         return $user_get_peers_array;
+
     }else {
+
         return false;
     }
 }
@@ -1014,13 +984,18 @@ function user_get_ignored_signatures($uid)
 
     $result = db_query($sql, $db_user_get_peers);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $user_get_peers_array = array();
+
         while ($row = db_fetch_array($result)) {
             $user_get_peers_array[] = $row;
         }
+
         return $user_get_peers_array;
+
     }else {
+
         return false;
     }
 }
@@ -1037,12 +1012,12 @@ function user_get_relationships($uid, $offset = 0)
 
     if (!is_numeric($offset)) $offset = 0;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP <> 0 ORDER BY USER.LOGON ASC";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP <> 0";
 
     $result = db_query($sql, $db_user_get_relationships);
-    $user_get_peers_count = db_num_rows($result);
+    list($user_get_peers_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -1051,9 +1026,12 @@ function user_get_relationships($uid, $offset = 0)
 
     $result = db_query($sql, $db_user_get_relationships);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         while ($row = db_fetch_array($result)) {
+
             if (!isset($user_search_array[$row['UID']])) {
+
                 $user_get_peers_array[$row['UID']] = $row;
             }
         }

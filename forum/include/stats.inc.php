@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.38 2004-11-29 20:32:21 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.39 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -39,7 +39,7 @@ function update_stats()
 
     $result = db_query($sql, $db_update_stats);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $stats_array = db_fetch_array($result);
 
@@ -86,9 +86,10 @@ function get_num_sessions()
 
     $result = db_query($sql, $get_num_sessions);
 
-    if (db_num_rows($result)) {
-        $row = db_fetch_array($result);
-        return $row['USER_COUNT'];
+    if (db_num_rows($result) > 0) {
+
+        list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+        return $user_count;
     }
 
     return 0;
@@ -159,12 +160,15 @@ function get_thread_count()
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_data['PREFIX']}THREAD THREAD";
+    $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD";
+
     $result = db_query($sql, $db_get_thread_count);
 
-    if (db_num_rows($result)) {
-        $row = db_fetch_array($result);
-        return $row['THREADS'];
+    if (db_num_rows($result) > 0) {
+
+        list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+        return $thread_count;
     }
 
     return 0;
@@ -176,12 +180,13 @@ function get_post_count()
 
     $table_data = get_table_prefix();
 
-    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_data['PREFIX']}POST POST";
+    $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$table_data['PREFIX']}POST POST";
     $result = db_query($sql, $db_get_post_count);
 
-    if (db_num_rows($result)) {
-        $row = db_fetch_array($result);
-        return $row['POSTS'];
+    if (db_num_rows($result) > 0) {
+
+        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+        return $post_count;
     }
 
     return 0;
@@ -200,9 +205,10 @@ function get_recent_post_count()
 
     $result = db_query($sql, $db_get_post_count);
 
-    if (db_num_rows($result)) {
-        $row = db_fetch_array($result);
-        return $row['POSTS'];
+    if (db_num_rows($result) > 0) {
+
+        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+        return $post_count;
     }
 
     return 0;
@@ -219,7 +225,8 @@ function get_longest_thread()
 
     $result = db_query($sql, $db_get_longest_thread);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $row = db_fetch_array($result);
         return $row;
     }
@@ -238,7 +245,8 @@ function get_most_users()
 
     $result = db_query($sql, $db_get_most_users);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $row = db_fetch_array($result);
         return $row;
     }
@@ -257,7 +265,8 @@ function get_most_posts()
 
     $result = db_query($sql, $db_get_most_posts);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $row = db_fetch_array($result);
         return $row;
     }
@@ -276,7 +285,8 @@ function get_newest_user()
 
     $result = db_query($sql, $db_get_newest_user);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $row = db_fetch_array($result);
         return $row;
     }

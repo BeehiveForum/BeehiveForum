@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.76 2004-11-29 22:09:54 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.77 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -300,13 +300,19 @@ function search_execute($argarray, &$urlquery, &$error)
         $urlquery.= "&amp;username={$argarray['username']}&amp;user_include={$argarray['user_include']}";
         $urlquery.= "&amp;order_by={$argarray['order_by']}&amp;group_by_thread={$argarray['group_by_thread']}";
 
-        if (db_num_rows($result)) {
+        if (db_num_rows($result) > 0) {
+
             $search_results_array = array();
+
             while ($row = db_fetch_array($result)) {
+
                 $search_results_array[] = $row;
             }
+
             return $search_results_array;
+
         }else {
+
             $error = SEARCH_NO_MATCHES;
             return false;
         }

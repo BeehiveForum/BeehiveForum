@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.90 2004-11-06 21:10:51 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.91 2004-12-05 17:58:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -219,12 +219,18 @@ if ($users_array['user_count'] > 0) {
     echo "    <td align=\"center\">\n";
     echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
-    foreach ($users_array['user_array'] as $resent_user) {
+    foreach ($users_array['user_array'] as $recent_user) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$resent_user['UID']}, '$webtag')\">", apply_wordfilter($resent_user['NICKNAME']), "</a></td>\n";
-        echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($resent_user['LAST_LOGON']), "&nbsp;</td>\n";
+        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", apply_wordfilter($recent_user['NICKNAME']), "</a></td>\n";
+
+        if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {
+            echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_user['LAST_LOGON']), "&nbsp;</td>\n";
+        }else {
+            echo "          <td align=\"right\" nowrap=\"nowrap\">{$lang['unknown']}&nbsp;</td>\n";
+        }
+
         echo "        </tr>\n";
     }
 

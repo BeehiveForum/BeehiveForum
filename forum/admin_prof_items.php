@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.67 2004-11-14 00:45:31 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.68 2004-12-05 17:58:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -259,6 +259,7 @@ if ($profile_items = profile_items_get($psid)) {
 }
 
 // Draw a row for a new section to be created
+
 echo "                <tr>\n";
 echo "                  <td align=\"left\">{$lang['new_caps']}</td>\n";
 echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 64, 64), "</td>";
@@ -286,9 +287,6 @@ echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td><p>{$lang['fieldtypeexample1']}</p></td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td><p>{$lang['fieldtypeexample2']}</p></td>\n";

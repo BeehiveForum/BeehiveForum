@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.145 2004-11-29 22:09:56 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.146 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -146,8 +146,8 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_all);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_all);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 
 }
@@ -187,8 +187,8 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_unread);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_unread);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 
 }
@@ -225,8 +225,8 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_unread_to_me);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_unread_to_me);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 
 }
@@ -266,8 +266,8 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_by_days);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_by_days);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 
 }
@@ -305,8 +305,8 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_by_interest);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_by_interest);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -344,8 +344,8 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_unread_by_interest);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_unread_by_interest);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -382,8 +382,8 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_recently_viewed);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_recently_viewed);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -420,8 +420,8 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_all);
-    list($threads, $folder_order) = threads_process_list($resource_id, $relationship == USER_IGNORED_COMPLETELY);
+    $result = db_query($sql, $db_threads_get_all);
+    list($threads, $folder_order) = threads_process_list($result, $relationship == USER_IGNORED_COMPLETELY);
     return array($threads, $folder_order);
 }
 
@@ -460,8 +460,8 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_unread);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_unread);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -499,8 +499,8 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_polls);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_polls);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -539,8 +539,8 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_all);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_all);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -579,8 +579,8 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "GROUP BY THREAD.TID ORDER BY T_LENGTH DESC, THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_unread);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_unread);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -615,8 +615,8 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_folder);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_folder);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
@@ -657,7 +657,7 @@ function threads_get_most_recent()
 
     $result = db_query($sql, $db_threads_get_recent);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $threads_get_array = array();
 
@@ -716,16 +716,16 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
-    $resource_id = db_query($sql, $db_threads_get_unread);
-    list($threads, $folder_order) = threads_process_list($resource_id);
+    $result = db_query($sql, $db_threads_get_unread);
+    list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
 }
 
 // Arrange the results of a query into the right order for display
 
-function threads_process_list($resource_id, $allow_ignored_completely = false)
+function threads_process_list($result, $allow_ignored_completely = false)
 {
-    $max = db_num_rows($resource_id);
+    $max = db_num_rows($result);
 
     // Default to returning no threads.
 
@@ -749,7 +749,7 @@ function threads_process_list($resource_id, $allow_ignored_completely = false)
 
         for ($i = 0; $i < $max; $i++) {
 
-            $thread = db_fetch_array($resource_id);
+            $thread = db_fetch_array($result);
 
             if (!isset($thread['relationship'])) $thread['relationship'] = 0;
 
@@ -823,9 +823,9 @@ function threads_get_folder_msgs()
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT FID, COUNT(*) AS TOTAL FROM {$table_data['PREFIX']}THREAD GROUP BY FID";
-    $resource_id = db_query($sql, $db_threads_get_folder_msgs);
+    $result = db_query($sql, $db_threads_get_folder_msgs);
 
-    while($folder = db_fetch_array($resource_id)){
+    while($folder = db_fetch_array($result)){
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
 

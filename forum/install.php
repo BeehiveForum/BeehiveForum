@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.16 2004-12-05 15:38:38 decoyduck Exp $ */
+/* $Id: install.php,v 1.17 2004-12-05 17:58:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
     $error_html = "";
 
-    if (isset($_POST['install_method']) && strlen(trim(_stripslashes($_POST['forum_webtag']))) > 0) {
+    if (isset($_POST['install_method']) && strlen(trim(_stripslashes($_POST['install_method']))) > 0) {
 
         if (trim(_stripslashes($_POST['install_method']) == 'install')) {
             $install_method = 0;
@@ -61,7 +61,9 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
             $error_html.= "<h2>You must choose an installation method.</h2>\n";
             $valid = false;
         }
+
     }else {
+
         $error_html.= "<h2>You must choose an installation method.</h2>\n";
         $valid = false;
     }

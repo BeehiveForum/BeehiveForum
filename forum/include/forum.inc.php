@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.92 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.93 2004-12-05 17:58:05 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -811,12 +811,6 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0',";
         $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
-        $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-        $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-        $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
-        $sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
-        $sql.= "  PM_AUTO_PRUNE CHAR(1) NOT NULL DEFAULT 'N',";
-        $sql.= "  PM_AUTO_PRUNE_LENGTH CHAR(3) NOT NULL DEFAULT '60',";
         $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
         $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
         $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
@@ -869,7 +863,7 @@ function forum_create($webtag, $forum_name, $access)
 
         $sql = "CREATE TABLE {$webtag}_VISITOR_LOG (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  LAST_LOGON DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ")";
 
@@ -1100,7 +1094,7 @@ function forum_get_permissions($fid)
 
         $result = db_query($sql, $db_forum_get_permissions);
 
-        if (db_num_rows($result)) {
+        if (db_num_rows($result) > 0) {
 
             $forum_get_permissions_array = array();
 
@@ -1147,7 +1141,7 @@ function forum_get_post_count($webtag)
     $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$webtag}_POST POST ";
     $result_post_count = db_query($sql, $db_forum_get_post_count);
 
-    if (db_num_rows($result_post_count)) {
+    if (db_num_rows($result_post_count) > 0) {
 
         $row = db_fetch_array($result_post_count);
         return $row['POST_COUNT'];
@@ -1223,16 +1217,22 @@ function forum_search($search_string)
 
 function forum_get_all_webtags()
 {
+    $db_forum_get_all_webtags = db_connect();
 
-        $db_forum_get_all_webtags = db_connect();
-        $sql = "SELECT FID, WEBTAG FROM FORUMS";
-        $result = db_query($sql, $db_forum_get_all_webtags);
-        if (db_num_rows($result) > 0) {
-            while ($row = db_fetch_array($result)) {
-                $webtags[$row['FID']] = $row['WEBTAG'];
-            }
-            return $webtags;
+    $sql = "SELECT FID, WEBTAG FROM FORUMS";
+    $result = db_query($sql, $db_forum_get_all_webtags);
+
+    if (db_num_rows($result) > 0) {
+
+        $webtags = array();
+
+        while ($row = db_fetch_array($result)) {
+            $webtags[$row['FID']] = $row['WEBTAG'];
+        }
+
+        return $webtags;
     }
+
     return false;
 }
 

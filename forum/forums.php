@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.33 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: forums.php,v 1.34 2004-12-05 17:58:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -161,7 +161,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
                 }
 
-                if ($forum['LAST_LOGON'] > 0) {
+                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
                     echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
                 }else {
                     echo "                  <td width=\"20%\">{$lang['never']}</td>\n";
@@ -224,7 +224,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
                 }
 
-                if ($forum['LAST_LOGON'] > 0) {
+                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
                     echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
                 }else {
                     echo "                  <td width=\"20%\">{$lang['never']}</td>\n";
@@ -287,7 +287,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
                 }
 
-                if ($forum['LAST_LOGON'] > 0) {
+                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
                     echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
                 }else {
                     echo "                  <td width=\"20%\">{$lang['never']}</td>\n";

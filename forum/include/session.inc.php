@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.145 2004-12-03 15:27:10 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.146 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -252,26 +252,34 @@ function bh_update_visitor_log($uid)
 {
     if (!is_numeric($uid)) return false;
 
+    if (!$table_data = get_table_prefix()) return false;
+
     $db_bh_update_visitor_log = db_connect();
 
-    if ($table_data = get_table_prefix()) {
-        $fid = $table_data['FID'];
-    }else {
-        $fid = 0;
-    }
+    $user_prefs = user_get_prefs($uid);
 
-    $sql = "SELECT LAST_LOGON FROM {$table_data['PREFIX']}VISITOR_LOG WHERE UID = '$uid'";
-    $result = db_query($sql, $db_bh_update_visitor_log);
-
-    if (db_num_rows($result) > 0) {
+    if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) {
 
         $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
-        $sql.= "SET LAST_LOGON = NOW() WHERE UID = '$uid'";
+        $sql.= "SET LAST_LOGON = NULL WHERE UID = '$uid'";
 
     }else {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}VISITOR_LOG ";
-        $sql.= "(UID, LAST_LOGON) VALUES ('$uid', NOW())";
+        $sql = "SELECT LAST_LOGON FROM {$table_data['PREFIX']}";
+        $sql.= "VISITOR_LOG WHERE UID = '$uid'";
+
+        $result = db_query($sql, $db_bh_update_visitor_log);
+
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
+            $sql.= "SET LAST_LOGON = NOW() WHERE UID = '$uid'";
+
+        }else {
+
+            $sql = "INSERT INTO {$table_data['PREFIX']}VISITOR_LOG ";
+            $sql.= "(UID, LAST_LOGON) VALUES ('$uid', NOW())";
+        }
     }
 
     return db_query($sql, $db_bh_update_visitor_log);

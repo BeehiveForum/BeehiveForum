@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.12 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.13 2004-12-05 17:58:04 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -90,7 +90,11 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
-                echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                    echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                }else {
+                    echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
+                }
             }
         }
 
@@ -108,7 +112,11 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
-                echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                    echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                }else {
+                    echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
+                }
             }
         }
 
@@ -126,7 +134,11 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
-                echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                    echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                }else {
+                    echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
+                }
             }
         }
 

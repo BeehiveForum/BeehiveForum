@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.13 2004-11-21 14:08:09 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.14 2004-11-26 16:31:42 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -29,13 +29,23 @@ if (@file_exists("./include/config.inc.php")) {
 
 include_once("./include/html.inc.php");
 
+function dir_exists($dir)
+{
+    if (is_dir(realpath($dir))) {
+
+        if (filetype(realpath($dir)) == 'dir') return true;
+    }
+
+    return false;
+}
+
 function check_install()
 {
     if (!defined("BEEHIVE_INSTALLED")) {
         header_redirect("./install.php");
     }
 
-    if ((file_exists('install') || file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
+    if ((dir_exists('install') || file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -72,6 +82,16 @@ function check_install()
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
+        echo "  <form method=\"get\" action=\"./index.php\">\n";
+        echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+        echo "      <tr>\n";
+        echo "        <td width=\"500\">&nbsp;</td>\n";
+        echo "      </tr>\n";
+        echo "      <tr>\n";
+        echo "        <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Retry\" class=\"button\" /></td>\n";
+        echo "      </tr>\n";
+        echo "    </table>\n";
+        echo "  </form>\n";
         echo "</div>\n";
         echo "</body>\n";
         echo "</html>\n";

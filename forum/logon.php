@@ -110,23 +110,16 @@ if(!$valid){
     echo "</td></tr></table>\n";
     echo "<table class=\"posthead\" width=\"100%\">\n";
     echo "<tr><td align=\"right\">User Name:</td>\n";
-//    echo "<td><input type=\"text\" name=\"logon\" value=\"" . $logon . "\"></td>\n";
     echo "<td>".form_input_text("logon",$logon)."</td\n";
     echo "</tr><tr><td align=\"right\">Password</td>\n";
-//    echo "<td><input type=\"password\" name=\"password\" value=\"" . $password . "\"></td></tr>\n";
     echo "<td>".form_input_password("password",$password)."</td>\n";
     echo "<tr><td>&nbsp;</td><td align=\"right\">\n";
-//    echo "<input type=\"checkbox\" name=\"remember_user\" value=\"Y\"";
-//    if(isset($HTTP_COOKIE_VARS['bh_remember_user']) || $HTTP_POST_VARS['remember_user'] == "Y"){
-//        echo " checked";
-//    }
     echo form_checkbox("remember_user","Y","Remember me",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || $HTTP_POST_VARS['remember_user'] == "Y"));
     echo "</tr></td>\n";
     echo "</table>\n";
     echo "<table class=\"posthead\" width=\"100%\">\n";
     echo "<tr><td align=\"center\">";
-    echo form_submit("submit","Submit");
-    //<input class=\"button\" name=\"submit\" type=\"submit\" value=\"Submit\">\n";
+    echo form_submit();
     echo "</td></tr></table>\n";
     echo "</td></tr></table>\n";
     echo "</form></div>\n";

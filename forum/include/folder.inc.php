@@ -23,14 +23,17 @@ USA
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
+require_once("./include/form.inc.php");
 
 function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 {
-    $html = "<select name=\"${field_name}${suffix}\">";
-    $db = db_connect();
-
     $sql = "select FID, TITLE from " . forum_table("FOLDER");
 
+    return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);
+
+    /* Old code
+    $html = "<select name=\"${field_name}${suffix}\">";
+    $db = db_connect();
     $result = db_query($sql,$db);
 
     $i = 0;
@@ -46,6 +49,7 @@ function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 
     $html .= "</select>";
     return $html;
+    */
 }
 
 function folder_get_title($fid)

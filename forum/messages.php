@@ -28,6 +28,7 @@ require_once("./include/messages.inc.php"); // Message processing functions
 require_once("./include/folder.inc.php"); // Folder processing functions
 require_once("./include/beehive.inc.php"); // Beehive stuff
 require_once("./include/constants.inc.php");
+require_once("./include/form.inc.php");
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -62,7 +63,9 @@ if($closed) $foldertitle .= " (closed)";
 
 $msg_count = count($messages);
 
+echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
 messages_top($foldertitle,stripslashes($threaddata['TITLE']));
+echo "</td></tr></table></div>\n";
 
 if($msg_count>0){
     $first_msg = $messages[0]['PID'];
@@ -75,9 +78,8 @@ if($msg_count>0){
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;
     echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
-    echo "<form name=\"f_keepreading\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
-    echo "<input type=\"submit\" class=\"button\" value=\"Keep reading\">\n";
-    echo "<input type=\"hidden\" name=\"msg\" value=\"$tid.$npid\"></form></td></tr></table>\n";
+    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "Keep reading", "msg", "$tid.$npid");
+    echo "</td></tr></table>\n";
 }
 
 messages_start_panel();

@@ -82,7 +82,15 @@ function change_current_thread (thread_id) {
 		<td>
 			<?
 			// Calls the desired mode (and hides non-available modes from guest users)
+			$labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
+			                "2 Days Back","7 Days Back","High Interest","Unread High Interest",
+			                "I've recently seen","I've ignored","I've subscribed to");
+
 			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
+            form_dropdown_array("mode",range(0,10),$labels,$mode,"onChange=\"submit();\"");
+            form_submit("submit","Go");
+
+			/*Old code
 			echo "<select name=\"mode\" class=\"thread_list_mode\" onChange=\"submit();\">\n";
 
 			echo "<option ";
@@ -135,6 +143,8 @@ function change_current_thread (thread_id) {
 
 			?>
 			</select><input type="submit" value="Go!" class="thread_list_mode" />
+			*/
+            ?>
 			</form>
 		</td>
 	</tr>

@@ -78,9 +78,8 @@ echo "<tr><td>&nbsp;</td></tr>\n";
 
 // Display "Start Reading" button
 echo "<tr><td align=\"center\">\n";
-echo "<form name=\"f_startreading\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
-echo "<input type=\"submit\" class=\"button\" value=\"Start reading\">\n";
-echo "</form></td></tr>\n";
+echo form_quick_button("discussion.php","Start reading");
+echo "</td></tr>\n";
 
 echo "<tr><td>&nbsp;</td></tr>\n";
 

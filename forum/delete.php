@@ -138,11 +138,12 @@ if(isset($error_html)){
     echo $error_html;
 }
 echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
-echo "<input type=\"hidden\" name=\"t_msg\" value=\"$delete_msg\">";
-echo "<input type=\"hidden\" name=\"t_back\" value=\"$back\">";
-echo "<input name=\"submit\" type=\"submit\" value=\"Delete\">";
-echo "&nbsp;&nbsp;<input name=\"cancel\" type=\"submit\" value=\"Cancel\"></form>";
-echo "<p>&nbsp;&nbsp;</p>";
+echo form_input_hidden("t_msg",$delete_msg);
+echo form_input_hidden("t_back",$back);
+echo form_submit("submit","Delete");
+echo "&nbsp;".form_submit("cancel","Cancel");
+echo "</form>\n";
+echo "<p>&nbsp;&nbsp;</p>\n";
 html_draw_bottom();
 
 ?>

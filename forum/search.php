@@ -108,14 +108,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
       if ($error = SEARCH_USER_NOT_FOUND) {
         echo "<h2>The username you specified in the to or from field was not found.</h2>\n";
       }elseif ($error = SEARCH_NO_KEYWORDS) {
-        echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+        echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
       }
       html_draw_bottom();
       exit;
     }
   }else {
     echo "<h1>Search Results</h1>";
-    echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+    echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
     html_draw_bottom();
     exit;
   }
@@ -127,14 +127,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
       if ($error = SEARCH_USER_NOT_FOUND) {
         echo "<h2>The username you specified in the to or from field was not found.</h2>\n";
       }elseif ($error = SEARCH_NO_KEYWORDS) {
-        echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+        echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
       }
       html_draw_bottom();
       exit;
     }
   }else {
     echo "<h1>Search Results</h1>";
-    echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+    echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
     html_draw_bottom();
     exit;
   }
@@ -261,7 +261,7 @@ if (isset($searchsql)) {
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td class="postbody">Words shorter than <?php echo $search_min_word_length; ?> characters will not be included.</td>
+    <td class="postbody">Words shorter than <?php echo isset($search_min_word_length) ? $search_min_word_length : "3"; ?> characters will not be included.</td>
   </tr>
   <tr>
     <td class="postbody" colspan="2">&nbsp;</td>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.132 2004-06-25 14:33:57 decoyduck Exp $ */
+/* $Id: edit.php,v 1.133 2004-06-28 21:51:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -580,7 +580,7 @@ echo "<tr><td>\n";
 echo "<h2>".$lang['folder'].":</h2>\n";
 echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
 echo "<h2>".$lang['threadtitle'].":</h2>\n";
-echo _stripslashes($threaddata['TITLE'])."\n";
+echo apply_wordfilter(_stripslashes($threaddata['TITLE'])), "\n";
 
 echo form_input_hidden("t_msg", $edit_msg);
 echo form_input_hidden("t_to_uid", $to_uid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.67 2004-06-25 14:33:57 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.68 2004-06-28 21:51:03 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/forum.inc.php");
@@ -202,7 +202,8 @@ function delete_attachment($hash)
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.AID, PAF.UID, PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+    $sql = "SELECT PAF.AID, PAF.UID, PAI.TID, PAI.PID, THREAD.FID ";
+    $sql.= "FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";

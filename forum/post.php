@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.202 2004-06-25 14:33:57 decoyduck Exp $ */
+/* $Id: post.php,v 1.203 2004-06-28 21:51:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -630,9 +630,9 @@ echo "<tr><td>\n";
 
 if ($newthread) {
 
-    echo "<h2>".$lang['folder'].":</h2>\n";
+    echo "<h2>{$lang['folder']}:</h2>\n";
     echo folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")."\n";
-    echo "<h2>".$lang['threadtitle'].":</h2>\n";
+    echo "<h2>{$lang['threadtitle']}:</h2>\n";
     echo form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 0, 0, "style=\"width: 190px\"")."\n";
 
     echo form_input_hidden("t_newthread", "Y")."\n";
@@ -643,7 +643,7 @@ if ($newthread) {
     echo "<h2>".$lang['folder'].":</h2>\n";
     echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
     echo "<h2>".$lang['threadtitle'].":</h2>\n";
-    echo _stripslashes($threaddata['TITLE'])."\n";
+    echo apply_wordfilter(_stripslashes($threaddata['TITLE'])), "\n";
 
     echo form_input_hidden("t_tid", $reply_to_tid);
     echo form_input_hidden("t_rpid", $reply_to_pid)."\n";

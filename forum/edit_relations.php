@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.36 2004-10-27 16:43:16 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.37 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -227,10 +227,10 @@ if (sizeof($user_peers['user_array']) > 0) {
         echo "                <tr>\n";
         echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
         echo "                  <td nowrap=\"nowrap\">\n";
-        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", ($user_peer['RELATIONSHIP']&USER_FRIEND)), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
+        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", ($user_peer['RELATIONSHIP']&USER_FRIEND)), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP']&USER_FRIEND) && !($user_peer['RELATIONSHIP']&USER_IGNORED)), "{$lang['normal']}\n";
-        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED, "", ($user_peer['RELATIONSHIP']&USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"Ignored\" />\n";
-        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED_COMPLETELY, "", ($user_peer['RELATIONSHIP']&USER_IGNORED_COMPLETELY)), "<img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"{$lang['ignoredcompletely']}\" />\n";
+        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED, "", ($user_peer['RELATIONSHIP']&USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
+        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED_COMPLETELY, "", ($user_peer['RELATIONSHIP']&USER_IGNORED_COMPLETELY)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
         echo "                  </td>\n";
         echo "                  <td nowrap=\"nowrap\">\n";
         echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP']&USER_IGNORED_SIG)), "{$lang['display']}\n";
@@ -309,10 +309,10 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
                 echo "                <tr>\n";
                 echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
                 echo "                  <td>\n";
-                echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", false), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
+                echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", false), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
                 echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", true), "{$lang['normal']}\n";
-                echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED, "", false), "<img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"Ignored\" />\n";
-                echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED_COMPLETELY, "", false), "<img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"Completely Ignored\" /><img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"Completely Ignored\" />\n";
+                echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED, "", false), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
+                echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED_COMPLETELY, "", false), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
                 echo "                  </td>\n";
                 echo "                  <td>\n";
                 echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", 0, "", true), "{$lang['display']}\n";

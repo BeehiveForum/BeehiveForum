@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.65 2004-09-13 15:59:20 decoyduck Exp $ */
+/* $Id: links.php,v 1.66 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -196,7 +196,7 @@ if ($viewmode == 0) {
         echo "<table>\n";
         // create list of subfolders
         while (list($key, $val) = each($subfolders)) {
-            echo "<tr><td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"folder\" /></td><td class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "style=\"color: gray;\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
+            echo "<tr><td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td><td class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "style=\"color: gray;\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             if (perm_is_moderator() && $folders[$val]['VISIBLE'] == "Y") {
                 echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['hide']}]</a>\n";
             } elseif (perm_is_moderator() && $folders[$val]['VISIBLE'] == "N") {

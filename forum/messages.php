@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.163 2004-11-06 12:39:53 decoyduck Exp $ */
+/* $Id: messages.php,v 1.164 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -272,13 +272,13 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
         $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
       }
       if (sizeof($userpollvotes_array) > 1) {
-        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
+        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
       }else {
-        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
+        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
       }
     }
   }else {
-    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youhavenotvoted']}</td>\n";
+    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youhavenotvoted']}</td>\n";
   }
 
 }
@@ -357,11 +357,11 @@ echo "  <tr>\n";
 echo "    <td colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
-echo "    <td width=\"33%\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
+echo "    <td width=\"33%\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
 
 echo "    <td width=\"33%\" align=\"center\"><p>";
 if (bh_session_get_value('UID') != 0) {
-        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
+        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
 } else {
         echo "&nbsp;";
 }

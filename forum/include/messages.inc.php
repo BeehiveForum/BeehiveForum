@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.306 2004-11-06 12:39:51 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.307 2004-11-06 20:26:29 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -155,13 +155,13 @@ function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky =
 {
     $lang = load_language_file();
 
-    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
+    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
 
     if ($closed) echo "&nbsp;<img src=\"". style_image('thread_closed.png'). "\" height=\"15\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" align=\"middle\" />\n";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\"  title=\"{$lang['highinterest']}\" align=\"middle\" />";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\"  title=\"{$lang['subscribed']}\" align=\"middle\" />";
-    if ($sticky == "Y") echo "&nbsp;<img src=\"". style_image('sticky.png'). "\" height=\"15\" alt=\"{$lang['sticky']}\"  title=\"{$lang['sticky']}\" align=\"middle\" />";
-    if ($locked) echo "&nbsp;<img src=\"". style_image('admin_locked.png'). "\" height=\"15\" alt=\"{$lang['locked']}\"  title=\"{$lang['locked']}\" align=\"middle\" />\n";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" />";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" />";
+    if ($sticky == "Y") echo "&nbsp;<img src=\"". style_image('sticky.png'). "\" height=\"15\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" />";
+    if ($locked) echo "&nbsp;<img src=\"". style_image('admin_locked.png'). "\" height=\"15\" alt=\"{$lang['locked']}\" title=\"{$lang['locked']}\" align=\"middle\" />\n";
 
     echo "</p>";
 }
@@ -261,7 +261,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     } else {
                             $up_arrow.= "#a" . $tid . "_" . ($message['PID'] - 1);
                     }
-                    $up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" width=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
+                    $up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" width=\"10\" border=\"0\" alt=\"{$lang['prev']}\" title=\"{$lang['prev']}\" /></a> ";
             }
             if ($message['PID'] != $msg_count) {
                     $down_arrow = "<a href=\"";
@@ -270,7 +270,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     } else {
                             $down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);
                     }
-                    $down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
+                    $down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
             }
     }
 
@@ -306,9 +306,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
+        echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
     } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
-        echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+        echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
     }
 
     echo "</td>\n";
@@ -337,9 +337,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
         } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
         }
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
@@ -366,7 +366,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if ($is_poll) {
 
-            echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
+            echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
         }
 
         echo $message['PID'] . " {$lang['of']} " . $msg_count;
@@ -465,7 +465,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                 foreach($attachments_array as $attachment) {
 
-                    echo "                  <img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
+                    echo "                  <img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
                     if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                         echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
@@ -513,13 +513,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if ((!$closed && perm_check_folder_permissions($message['FID'], USER_PERM_POST_CREATE)) || perm_is_moderator($message['FID'])) {
 
-                echo "<img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
+                echo "<img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
                 echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\">{$lang['reply']}</a>";
             }
 
             if ((bh_session_get_value('UID') == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_DELETE)) || perm_is_moderator($message['FID'])) {
 
-                echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
+                echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
             }
 
@@ -529,13 +529,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                     if (!poll_is_closed($tid) || perm_is_moderator($message['FID'])) {
 
-                        echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
+                        echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" title=\"{$lang['editpoll']}\" />";
                         echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
                     }
 
                 }else {
 
-                    echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
+                    echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />";
                     echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
 
                 }
@@ -544,21 +544,21 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "</td>\n";
             echo "            <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
-            echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['pm_reply']}\" /></a>&nbsp;";
+            echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['pm_reply']}\" title=\"{$lang['pm_reply']}\" /></a>&nbsp;";
 
-            echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['print']}\" /></a>&nbsp;";
+            echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" /></a>&nbsp;";
 
-            echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['markasunread']}\" /></a>&nbsp;";
+            echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['markasunread']}\" title=\"{$lang['markasunread']}\" /></a>&nbsp;";
 
             if (bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=", $message['FROM_UID'], "&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['relationship']}\" /></a>&nbsp;";
+                echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=", $message['FROM_UID'], "&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" /></a>&nbsp;";
             }
 
             if (perm_is_moderator($message['FID'])) {
 
                 if (perm_has_admin_access()) {
 
-                    echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" /></a>&nbsp;";
+                    echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
                 }
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
@@ -1031,7 +1031,7 @@ function messages_forum_stats($tid, $pid)
         if ($user_show_stats == 1 || $uid == 0) {
 
             if ($uid != 0) {
-                echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=0&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\" alt=\"{$lang['hide_stats']}\" /></a></td>\n";
+                echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=0&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\" alt=\"{$lang['hide_stats']}\" title=\"{$lang['hide_stats']}\" /></a></td>\n";
             }else {
                 echo "      <td class=\"subhead\">&nbsp;</td>\n";
             }
@@ -1216,7 +1216,7 @@ function messages_forum_stats($tid, $pid)
 
         }else {
 
-            echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=1&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\" alt=\"{$lang['show_stats']}\" /></a></td>\n";
+            echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=1&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\" alt=\"{$lang['show_stats']}\" title=\"{$lang['show_stats']}\" /></a></td>\n";
         }
 
         echo "    </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.57 2004-09-13 21:23:14 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.58 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,17 +127,18 @@ $timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,
 // Languages
 
 $available_langs = lang_get_available(); // get list of available languages
-$available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
-array_unshift($available_langs, "");
 
+$available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
+
+array_unshift($available_langs, "");
 
 if (isset($_POST['submit'])) {
 
     $user_prefs = array();
     $user_prefs_global = array();
 
-    if (isset($_POST['timezone'])) {
-        $user_prefs['TIMEZONE'] = _stripslashes(trim($_POST['timezone']));
+    if (isset($_POST['timezone']) && is_numeric($_POST['timezone'])) {
+        $user_prefs['TIMEZONE'] = $_POST['timezone'];
     }else {
         $user_prefs['TIMEZONE'] = 0;
     }
@@ -251,7 +252,7 @@ if (isset($_POST['submit'])) {
         $user_prefs['IMAGES_TO_LINKS'] = "N";
     }
 
-        if (isset($_POST['images_to_links_global'])) {
+    if (isset($_POST['images_to_links_global'])) {
         $user_prefs_global['IMAGES_TO_LINKS'] = ($_POST['images_to_links_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['IMAGES_TO_LINKS'] = false;
@@ -264,7 +265,7 @@ if (isset($_POST['submit'])) {
         $user_prefs['USE_WORD_FILTER'] = "N";
     }
 
-        if (isset($_POST['use_word_filter_global'])) {
+    if (isset($_POST['use_word_filter_global'])) {
         $user_prefs_global['USE_WORD_FILTER'] = ($_POST['use_word_filter_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['USE_WORD_FILTER'] = false;
@@ -314,13 +315,13 @@ if (isset($_POST['submit'])) {
         $user_prefs['STYLE'] = forum_get_setting('default_style');
     }
 
-        if (isset($_POST['style_global'])) {
+    if (isset($_POST['style_global'])) {
         $user_prefs_global['STYLE'] = ($_POST['style_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['STYLE'] = false;
     }
 
-        if (isset($_POST['emoticons'])) {
+    if (isset($_POST['emoticons'])) {
         $user_prefs['EMOTICONS'] = _stripslashes(trim($_POST['emoticons']));
     }else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons');
@@ -344,40 +345,53 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['START_PAGE'] = false;
     }
 
-        $user_prefs['POST_PAGE'] = 0;
-        // toolbar_toggle emots_toggle emots_disable  post_html
-        if (isset($_POST['toolbar_toggle']) && $_POST['toolbar_toggle'] == "Y") {
-                $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
+    $user_prefs['POST_PAGE'] = 0;
+
+    // toolbar_toggle emots_toggle emots_disable  post_html
+
+    if (isset($_POST['toolbar_toggle']) && $_POST['toolbar_toggle'] == "Y") {
+        $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
+    }
+
+    if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
+        $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
+    }
+
+    if (isset($_POST['sig_toggle']) && $_POST['sig_toggle'] == "Y") {
+        $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
+    }
+
+    if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
+        $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
+    }
+
+    if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
+        $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
+    }
+
+    if (isset($_POST['post_html'])) {
+
+        if ($_POST['post_html'] == 0) {
+
+            $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
+
+        }else if ($_POST['post_html'] == 1) {
+
+            $user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
+
+        }else {
+
+            $user_prefs['POST_PAGE'] |= POST_HTML_DEFAULT;
         }
-        if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
-                $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
-        }
-        if (isset($_POST['sig_toggle']) && $_POST['sig_toggle'] == "Y") {
-                $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
-        }
-        if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
-                $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
-        }
-        if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
-                $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
-        }
-        if (isset($_POST['post_html'])) {
-                if ($_POST['post_html'] == 0) {
-                        $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
-                } else if ($_POST['post_html'] == 1) {
-                        $user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
-                } else {
-                        $user_prefs['POST_PAGE'] |= POST_HTML_DEFAULT;
-                }
-        }
+    }
 
     // User's UID for updating with.
 
     $uid = bh_session_get_value('UID');
 
-        // Update USER_PREFS
+    // Update USER_PREFS
 
-        user_update_prefs($uid, $user_prefs, $user_prefs_global);
+    user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
     // Reinitialize the User's Session to save them having to logout and back in
 
@@ -385,13 +399,13 @@ if (isset($_POST['submit'])) {
 
     // IIS bug prevents redirect at same time as setting cookies.
 
-        header_redirect_cookie("./forum_options.php?webtag=$webtag&updated=true");
-
+    header_redirect_cookie("./forum_options.php?webtag=$webtag&updated=true");
 }
 
 if (!isset($uid)) $uid = bh_session_get_value('UID');
 
 // Get User Prefs
+
 $user_prefs = user_get_prefs($uid);
 
 // Start output here
@@ -401,7 +415,9 @@ html_draw_top("emoticons.js");
 echo "<h1>{$lang['forumoptions']}</h1>\n";
 
 if (!empty($error_html)) {
+
     echo $error_html;
+
 }else if (isset($_GET['updated'])) {
 
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
@@ -409,17 +425,21 @@ if (!empty($error_html)) {
     $top_html = html_get_top_page();
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n";
+    echo "<!--\n\n";
+    echo "if (top.document.body.rows) {\n\n";
 
     if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
-        echo "top.document.body.rows='60,' + ". max($user_prefs['FONT_SIZE']* 2, 22) ."+ ',*';\n";
+        echo "    top.document.body.rows='60,' + ". max($user_prefs['FONT_SIZE']* 2, 22) ."+ ',*';\n";
     }else {
-        echo "top.document.body.rows='60,22,*';\n";
+        echo "    top.document.body.rows='60,22,*';\n";
     }
 
-    echo "top.frames['ftop'].location.replace('$top_html');\n";
-    echo "top.frames['fnav'].location.reload();\n";
-    echo "top.frames['main'].frames['left'].location.reload();\n";
+    echo "    top.frames['ftop'].location.replace('$top_html');\n";
+    echo "    top.frames['fnav'].location.reload();\n";
+    echo "    top.frames['main'].frames['left'].location.reload();\n\n";
+    echo "} else if (top.document.body.cols) {\n\n";
+    echo "    top.frames['left'].location.reload();\n\n";
+    echo "}\n\n";
     echo "-->\n";
     echo "</script>";
 }
@@ -448,7 +468,8 @@ if (isset($user_prefs['TIMEZONE']) && is_numeric($user_prefs['TIMEZONE'])) {
 
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) ? $user_prefs['DL_SAVING'] : 0)), "</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) ? $user_prefs['DL_SAVING'] : 0)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

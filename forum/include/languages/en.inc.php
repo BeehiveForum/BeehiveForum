@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.185 2004-11-05 20:52:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.186 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -160,6 +160,8 @@ $lang['top'] = "Top";
 $lang['free'] = "Free";
 $lang['used'] = "Used";
 $lang['days'] = "days";
+$lang['sortasc'] = "Sort Asc";
+$lang['sortdesc'] = "Sort Desc";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -871,6 +873,9 @@ $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
 $lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
 $lang['yourpmfoldersare_1'] = "Your PM folders are";
 $lang['yourpmfoldersare_2'] = "full";
+$lang['currentmessage'] = "Current Message";
+$lang['unreadmessage'] = "Unread Message";
+$lang['readmessage'] = "Read Message";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -987,7 +992,7 @@ $lang['notabletochangevote'] = "You will not be able to change your vote.";
 $lang['pollvotesrandom'] = "Note: Poll votes are randomly generated for preview only.";
 $lang['pollquestion'] = "Poll Question";
 $lang['possibleanswers'] = "Possible Answers";
-$lang['enterpollquestionexp'] = "Enter the answers for your poll question.. If your poll is a \"yes/no\" question, simply enter \"Yes\" for Answer 1 and \"No\" for Answer 2.";
+$lang['enterpollquestionexp'] = "Enter the answers for your poll question.. If your poll is a &quot;yes/no&quot; question, simply enter &quot;Yes&quot; for Answer 1 and &quot;No&quot; for Answer 2.";
 $lang['numberanswers'] = "No. Answers";
 $lang['answerscontainHTML'] = "Answers Contain HTML (not including signature)";
 $lang['optionsdisplay'] = "Answers display type";

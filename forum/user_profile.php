@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.80 2004-11-05 20:52:50 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.81 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,8 +162,8 @@ echo "            <td><h2>&nbsp;", format_user_name($user_profile['LOGON'], $use
 
 if (bh_session_get_value('UID') > 0) {
 
-    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
+    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
 }
 
 echo "</h2></td>\n";
@@ -273,7 +273,7 @@ echo "              <table width=\"100%\" class=\"subhead\">\n";
 if (isset($user_profile['PIC_URL'])) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" /></td>\n";
+    echo "                  <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" alt=\"{$user_profile['PIC_URL']}\" title=\"{$user_profile['PIC_URL']}\" /></td>\n";
     echo "                </tr>\n";
 }
 

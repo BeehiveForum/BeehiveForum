@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.92 2004-11-05 20:52:50 decoyduck Exp $ */
+/* $Id: search.php,v 1.93 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -300,13 +300,13 @@ $error = false;
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
-echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
-echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a><br />\n";
 
 if ($pm_new_count = pm_new_check(false)) {
-    echo "      <img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['new']}]</span><br />\n";
+    echo "      <img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['new']}]</span><br />\n";
 }else {
-    echo "      <img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a><br />\n";
+    echo "      <img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a><br />\n";
 }
 
 echo "    </td>\n";
@@ -337,10 +337,10 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
         $sstart = 0;
     }
 
-    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: ", sizeof($search_results_array), " {$lang['matches']}<br />\n";
+    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: ", sizeof($search_results_array), " {$lang['matches']}<br />\n";
 
     if ($sstart >= 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
     }
 
     echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -408,7 +408,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     echo "</ol>\n";
 
     if (sizeof($search_results_array) == 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
     }
 
 }else if ($error) {
@@ -422,7 +422,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
             echo "<h2>{$lang['notexttosearchfor_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['notexttosearchfor_2']}.</h2>\n";
             break;
         case SEARCH_NO_MATCHES:
-            echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
+            echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
             break;
     }
 }

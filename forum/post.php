@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.122 2003-09-02 00:21:52 tribalonline Exp $ */
+/* $Id: post.php,v 1.123 2003-09-02 01:12:44 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -564,18 +564,115 @@ if (!isset($t_fid)) {
 }
 
 echo "<table class=\"posthead\" width=\"720\">\n";
-echo "<tr><td class=\"subhead\" colspan=\"3\">";
+echo "<tr><td class=\"subhead\" colspan=\"2\">";
 if ($newthread) {
     echo $lang['createnewthread'];
 }else{
     echo $lang['postreply'];
 }
 echo "</td></tr>\n";
-echo "<tr><td valign=\"top\" colspan=\"3\"><span style=\"font-size: 4px\">&nbsp;</span></td></tr>\n";
+//echo "<tr><td valign=\"top\" colspan=\"3\"><span style=\"font-size: 4px\">&nbsp;</span></td></tr>\n";
+echo "<tr>\n";
 
 
-// ------ OPTIONS BAR ------
-echo "<tr><td valign=\"top\" width=\"200\">\n";
+// ======================================
+// =========== MESSAGE COLUMN ===========
+echo "<td valign=\"top\" width=\"500\">\n";
+echo "<table class=\"posthead\" width=\"500\">\n";
+echo "<tr><td>\n";
+
+if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
+    $t_content = isset($t_content) ? _stripslashes($t_content) : "";
+}
+
+$t_sig = _stripslashes($t_sig);
+if (!isset($t_to_uid)) $t_to_uid = -1;
+
+echo "<h2>". $lang['message'] .":</h2>\n";
+
+tools_html(form_submit('submit',$lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+
+echo tools_junk()."\n";
+echo form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
+echo tools_junk()."\n";
+
+echo "\n\n<script language=\"Javascript\">\n";
+echo "  <!--\n";
+echo "    activate_tools();\n";
+echo "  //-->\n";
+echo "</script>\n\n";
+
+if ($content_html_changes == true) {
+
+    echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
+    echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
+    echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
+
+    echo form_input_hidden("old_t_content", htmlentities($old_t_content));
+    echo form_input_hidden("current_t_content", "correct");
+
+	echo "<br /><br />\n";
+}
+
+echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+
+$tph_radio = 1;
+
+if (isset($HTTP_POST_VARS['t_post_html'])) {
+    if ($t_post_html) {
+        $tph_radio = 3;
+    }
+}
+
+echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
+echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
+echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
+
+echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
+
+echo form_submit('submit',$lang['post'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
+echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+
+if ($attachments_enabled) {
+
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('".$aid."')\"");
+    echo form_input_hidden("aid", $aid);
+}
+
+
+// ---- SIGNATURE ----
+echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
+
+echo tools_junk()."\n";
+echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\" ".tools_textfield_js())."\n";
+echo tools_junk()."\n";
+echo form_input_hidden("t_sig_html", $t_sig_html)."\n";
+
+if ($sig_html_changes == true) {
+
+    echo form_radio("sig_code", "correct", $lang['correctedcode'], true, "onClick=\"showSig('correct');\"")."\n";
+    echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
+    echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
+
+    echo form_input_hidden("old_t_sig", htmlentities($old_t_sig));
+    echo form_input_hidden("current_t_sig", "correct");
+}
+
+echo "</td></tr>\n";
+echo "</table>";
+echo "</td>\n";
+// ======================================
+
+
+//echo "<td valign=\"top\" width=\"1\">&nbsp;</td>\n";
+
+
+// ======================================
+// =========== OPTIONS COLUMN ===========
+echo "<td valign=\"top\" width=\"210\">\n";
+echo "<table class=\"posthead\" width=\"210\">\n";
+echo "<tr><td>\n";
 
 if ($newthread) {
 
@@ -585,6 +682,7 @@ if ($newthread) {
     echo form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
 
     echo form_input_hidden("t_newthread","Y")."\n";
+	echo "<br />\n";
 
 }else {
 
@@ -595,9 +693,10 @@ if ($newthread) {
 
     echo form_input_hidden("t_tid", $reply_to_tid);
     echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
+	echo "<br /><br />\n";
 }
 
-echo "<br /><br /><h2>".$lang['to'].":</h2>\n";
+echo "<h2>".$lang['to'].":</h2>\n";
 if (!$newthread) {
     echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true)."<br />\n";
     echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid)."<br />\n";
@@ -616,109 +715,14 @@ if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
     echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
 }
 
+echo "</td></tr>\n";
+echo "</table>\n";
 echo "</td>\n";
-echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
-echo "<td valign=\"top\">\n";
-
-// ============ MESSAGE ==============
-if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-    $t_content = isset($t_content) ? _stripslashes($t_content) : "";
-}
-
-$t_sig = _stripslashes($t_sig);
-if (!isset($t_to_uid)) $t_to_uid = -1;
-
-echo "<h2>". $lang['message'] .":</h2>\n";
-
-tools_html(form_submit('submit',$lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
-
-echo tools_junk()."\n";
-echo form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 18, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
-echo tools_junk()."\n";
-echo "</td></tr>\n";
-
-if ($content_html_changes == true) {
-
-    echo "<tr><td valign=\"top\" width=\"200\">&nbsp;</td>\n";
-    echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
-    echo "<td valign=\"top\">\n";
-    echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
-    echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
-    echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]</span></td></tr>\n";
-
-    echo form_input_hidden("old_t_content", htmlentities($old_t_content));
-    echo form_input_hidden("current_t_content", "correct");
-}
-
-echo "<tr><td valign=\"top\" width=\"200\">&nbsp;</td>\n";
-echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
-echo "<td valign=\"top\">\n";
-echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
-
-$tph_radio = 1;
-
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    if ($t_post_html) {
-        $tph_radio = 3;
-    }
-}
-
-echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
-echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
-echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
-
-echo "<script language=\"Javascript\">\n";
-echo "  <!--\n";
-echo "    activate_tools();\n";
-echo "  //-->\n";
-echo "</script>\n";
-echo "</td></tr>\n";
-
-echo "<tr><td valign=\"top\" width=\"200\">&nbsp;</td>\n";
-echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
-echo "<td valign=\"top\">\n";
-echo "<h2>". $lang['messageoptions'] .":</h2>\n";
-
-echo form_submit('submit',$lang['post'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
-echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
-echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
-
-if ($attachments_enabled) {
-
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('".$aid."')\"");
-    echo form_input_hidden("aid", $aid);
-}
-
-echo "</td></tr>\n";
+// ======================================
 
 
-// ---- SIGNATURE ----
-echo "<tr><td valign=\"top\" width=\"200\">&nbsp;</td>\n";
-echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
-echo "<td valign=\"top\">\n";
-echo "<h2>". $lang['signature'] .":</h2>\n";
-
-echo tools_junk()."\n";
-echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\" ".tools_textfield_js())."\n";
-echo tools_junk()."\n";
-echo form_input_hidden("t_sig_html", $t_sig_html)."\n";
-echo "</td></tr>\n";
-
-if ($sig_html_changes == true) {
-
-    echo "<tr><td valign=\"top\" width=\"200\">&nbsp;</td>\n";
-    echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
-    echo "<td valign=\"top\">\n";
-    echo form_radio("sig_code", "correct", $lang['correctedcode'], true, "onClick=\"showSig('correct');\"")."\n";
-    echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
-    echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]</span></td></tr>\n";
-
-    echo form_input_hidden("old_t_sig", htmlentities($old_t_sig));
-    echo form_input_hidden("current_t_sig", "correct");
-}
-// --------------------
-
-echo "<tr><td colspan=\"3\">&nbsp;</td></tr>\n";
+echo "</tr>\n";
+echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
 
 

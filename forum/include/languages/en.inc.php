@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.91 2004-03-27 19:47:01 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.92 2004-04-04 21:12:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -728,6 +728,7 @@ $lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
 $lang['mycontrols'] = "My Controls";
+$lang['myforums'] = "My Forums";
 $lang['menu'] = "Menu";
 $lang['userexp_1'] = "Use the menu on the left to manage your settings.";
 $lang['userexp_2'] = "<b>User Details</b> allows you to change your name, email address and password.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.11 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.12 2003-09-21 13:36:35 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -72,7 +72,8 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
                       $userprefs['MARK_AS_OF_INT'], $userprefs['POST_PER_PAGE'],
                       $HTTP_GET_VARS['fontsize'], $userprefs['STYLE'], $userprefs['VIEW_SIGS'],
                       $userprefs['START_PAGE'], $userprefs['LANGUAGE'], $userprefs['PM_NOTIFY'],
-                      $userprefs['PM_NOTIFY_EMAIL']);
+                      $userprefs['PM_NOTIFY_EMAIL'], $userprefs['DOB_DISPLAY'], $userprefs['ANON_LOGON'],
+                      $userprefs['SHOW_STATS']);
 
     unset($userprefs);
 

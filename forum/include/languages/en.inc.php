@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.43 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.44 2003-09-21 13:36:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -641,6 +641,7 @@ $lang['neitheragenordob'] = "Do not show to others";
 $lang['showonlyage'] = "Show only age to others";
 $lang['showageanddob'] = "Show to others";
 $lang['browseanonymously'] = "Browse forum anonymously";
+$lang['showforumstats'] = "Show forum stats at bottom of message pane";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

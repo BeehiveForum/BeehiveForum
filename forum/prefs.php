@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.76 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.77 2003-09-21 13:36:35 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -217,6 +217,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $t_anon_logon = 0;
     }
 
+    if (isset($HTTP_POST_VARS['show_stats']) && $HTTP_POST_VARS['show_stats'] == "Y") {
+        $t_show_stats = 1;
+    }else {
+        $t_show_stats = 0;
+    }
+
     if (isset($HTTP_POST_VARS['timezone'])) {
         $t_timezone = $HTTP_POST_VARS['timezone'];
     }else {
@@ -300,7 +306,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                           $t_homepage_url, $t_pic_url, $t_email_notify, $t_timezone, $t_dl_saving,
                           $t_mark_as_of_int, $t_posts_per_page, $t_font_size, $t_style, $t_view_sigs,
                           $t_start_page, $t_language, $t_pm_notify, $t_pm_notify_email, $t_dob_display,
-                          $t_anon_logon);
+                          $t_anon_logon, $t_show_stats);
 
         // Update USER_SIG
 
@@ -523,6 +529,9 @@ if (!empty($error_html)) {
       </tr>
       <tr>
         <td><?php echo form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($t_anon_logon) && $t_anon_logon == 1) ? true : ($user_prefs['ANON_LOGON'] == 1)); ?></td>
+      </tr>
+      <tr>
+        <td><?php echo form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($t_show_stats) && $t_show_stats == 1) ? true : ($user_prefs['SHOW_STATS'] == 1)); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.323 2005-02-06 21:35:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.324 2005-02-09 21:45:34 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -324,10 +324,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
     }
 
-    if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !perm_is_moderator($message['FID'])) {
+    if (forum_get_setting('require_post_approval', 'Y', false)) {
 
-        message_display_approval_req($tid, $message['PID']);
-        return;
+        if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !perm_is_moderator($message['FID'])) {
+
+            message_display_approval_req($tid, $message['PID']);
+            return;
+        }
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
@@ -390,7 +393,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
-            if (isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>{$lang['approvalrequired']}</b> ";
+            if (forum_get_setting('require_post_approval', 'Y', false) && isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>{$lang['approvalrequired']}</b> ";
 
             echo format_time($message['CREATED'], 1);
         }
@@ -535,7 +538,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "              </tr>\n";
         }
 
-        if (isset($message['APPROVED']) && $message['APPROVED'] > 0 && perm_is_moderator($message['FID'])) {
+        if (forum_get_setting('require_post_approval', 'Y', false) && isset($message['APPROVED']) && $message['APPROVED'] > 0 && perm_is_moderator($message['FID'])) {
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
@@ -641,7 +644,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"", style_image('admintool.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
                 }
 
-                if (isset($message['APPROVED']) && $message['APPROVED'] == 0) {
+                if (forum_get_setting('require_post_approval', 'Y', false) && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
 
                     echo "<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a>&nbsp;";
                 }

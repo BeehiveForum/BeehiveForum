@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.116 2004-04-17 20:21:47 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.117 2004-04-19 20:29:13 decoyduck Exp $ */
 
 // International English language file
 
@@ -151,12 +151,6 @@ $lang['default'] = "Default";
 $lang['makedefault'] = "Make Default";
 $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
-
-// Error handling messages (error_handler.inc.php) ---------------------
-
-$lang['db_connect_error_1'] = "An error has occured while connecting to the database.";
-$lang['db_connect_error_2'] = "If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:";
-$lang['db_connect_error_3'] = "They should be set to the database details given to you by your hosting provider.";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -348,7 +342,7 @@ $lang['forumdeletewarning'] = "Are you sure you want to delete the selected foru
 $lang['deleteforum'] = "Delete Forum";
 $lang['defaultforum'] = "Default Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum";
-$lang['failedtocreateforum_1'] = "Failed to create forum"; 
+$lang['failedtocreateforum_1'] = "Failed to create forum";
 $lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------

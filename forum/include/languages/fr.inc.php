@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.67 2004-04-17 20:21:47 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.68 2004-04-19 20:29:13 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -342,7 +342,7 @@ $lang['forumdeletewarning'] = "Are you sure you want to delete the selected foru
 $lang['deleteforum'] = "Delete Forum";
 $lang['defaultforum'] = "Default Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum $new_webtag";
-$lang['failedtocreateforum_1'] = "Failed to create forum"; 
+$lang['failedtocreateforum_1'] = "Failed to create forum";
 $lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
@@ -527,7 +527,7 @@ $lang['hasinvalidemailaddress'] = "has an invalid email address";
 
 // Error handler (errorhandler.inc.php) --------------------------------
 
-$lang['errorpleasewaitandretry'] = "Une erreur a arrivé. 
+$lang['errorpleasewaitandretry'] = "Une erreur a arrivé.
 S'il vous plaît attendre quelques minutes et alors cliqueter le Juger au Nouveau bouton au dessous.";
 $lang['retry'] = "Juger à nouveau";
 $lang['multipleerroronpost'] = "Cette erreur a arrivé plus qu'une fois en tentant la poster/avant-première votre message. Pour votre convienience nous avons inclus votre texte de message et le cas échéant le fil et le message numérotent vous répondiez à au dessous. Vous pouvez souhaiter Sauvegarder une copie du texte ailleurs jusqu'à ce que le forum est disponible encore. .";
@@ -1111,9 +1111,6 @@ $lang['white'] = "Blanc";
 
 $lang['with'] = "with";
 $lang['prev'] = "Prev";
-$lang['db_connect_error_1'] = "An error has occured while connecting to the database.";
-$lang['db_connect_error_2'] = "If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:";
-$lang['db_connect_error_3'] = "They should be set to the database details given to you by your hosting provider.";
 $lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
 $lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your Inbox now?";
 $lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";

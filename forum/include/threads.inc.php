@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.123 2004-05-25 13:49:52 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.124 2004-05-25 15:40:38 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -70,26 +70,25 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
             }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
                 $status = $row['FOLDER_PERM_COUNT'];
-
-            }else {
-
-                $status = null;
             }
 
-            if (isset($row['INTEREST'])) {
+            if (($status & $access_allowed) > 0) {
 
-                $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
-                                                  'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
-                                                  'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
-                                                  'INTEREST'      => $row['INTEREST'],
-                                                  'STATUS'        => $status);
-            }else {
+                if (isset($row['INTEREST'])) {
 
-                $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
-                                                  'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
-                                                  'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
-                                                  'INTEREST'      => 0,
-                                                  'STATUS'        => $status);
+                    $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
+                                                      'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                      'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                      'INTEREST'      => $row['INTEREST'],
+                                                      'STATUS'        => $status);
+                }else {
+
+                    $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
+                                                      'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                      'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                      'INTEREST'      => 0,
+                                                      'STATUS'        => $status);
+                }
             }
         }
 

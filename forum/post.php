@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.196 2004-05-23 12:33:55 decoyduck Exp $ */
+/* $Id: post.php,v 1.197 2004-05-25 15:40:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -229,6 +229,12 @@ if (isset($_POST['t_sig_html'])) {
     }
 }
 
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+    $aid = $_POST['aid'];
+}else{
+    $aid = md5(uniqid(rand()));
+}
+
 if (!isset($post_html)) $post_html = 0;
 if (!isset($sig_html)) $sig_html = 0;
 
@@ -236,7 +242,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim($_POST['t_content']);
 
         if (strlen($t_content) >= 65535) {
             $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
@@ -249,11 +255,15 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
             $valid = false;
         }
 
+    }else {
+
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>\n";
+        $valid = false;
     }
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim(_stripslashes($_POST['t_sig']));
+        $t_sig = trim($_POST['t_sig']);
 
         if (strlen($t_sig) >= 65535) {
             $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
@@ -315,6 +325,21 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
+    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($_fid, USER_PERM_POST_ATTACHMENTS)) {
+
+        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+        $valid = false;
+    }
+
     $newthread = false;
 
 }else{
@@ -336,6 +361,12 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE)) {
 
         $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
+        $valid = false;
+    }
+
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($_fid, USER_PERM_POST_ATTACHMENTS)) {
+
+        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
 }
@@ -438,8 +469,8 @@ if ($valid && isset($_POST['submit'])) {
                 email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
             }
 
-            if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-                if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $_POST['aid']);
+            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+                if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $new_pid, $aid);
             }
         }
 
@@ -483,12 +514,6 @@ if ($valid && isset($_POST['submit'])) {
 }
 
 html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js");
-
-if (!isset($_POST['aid'])) {
-    $aid = md5(uniqid(rand()));
-}else{
-    $aid = $_POST['aid'];
-}
 
 echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
@@ -545,7 +570,7 @@ if ($valid && isset($_POST['preview'])) {
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-    $preview_message['CONTENT'] = $t_content;
+    $preview_message['CONTENT'] = $post->getTidyContent();
 
     if (trim($t_sig) != "") {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";

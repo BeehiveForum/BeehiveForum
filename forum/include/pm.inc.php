@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.14 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.15 2003-08-06 21:46:40 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -251,7 +251,7 @@ function pm_single_get($mid, $folder, $uid = false)
         $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid)) ";
     }
 
-    $sql.= "GROUP BY PM.MID";
+    $sql.= "GROUP BY PM.MID LIMIT 0,1";
     $result = db_query($sql, $db_pm_list_get);
 
     if (db_num_rows($result) > 0) {
@@ -488,7 +488,7 @@ function pm_delete_message($mid)
     $sql.= "FROM ". forum_table("PM"). " PM ";
     $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
     $sql.= "LEFT JOIN ". forum_table("POST_ATTACHMENT_FILES"). " PAF ON (PAF.AID = AT.AID) ";
-    $sql.= "WHERE PM.MID = $mid";
+    $sql.= "WHERE PM.MID = $mid GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_delete_pm);
     $db_delete_pm_row = db_fetch_array($result);

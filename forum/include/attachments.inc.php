@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.74 2004-12-05 17:58:05 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.75 2004-12-11 14:37:29 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -41,7 +41,7 @@ function get_attachments($uid, $aid)
 
     $forum_settings = get_forum_settings();
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "SELECT * FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid' AND AID = '$aid'";
 
     $result = db_query($sql, $db_get_attachments);
@@ -78,7 +78,7 @@ function get_all_attachments($uid, $aid)
 
     $forum_settings = get_forum_settings();
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "SELECT * FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid' AND AID <> '$aid'";
 
     $result = db_query($sql, $db_get_all_attachments);
@@ -114,7 +114,7 @@ function get_users_attachments($uid)
 
     $forum_settings = get_forum_settings();
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "SELECT * FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_get_users_attachments);
@@ -153,7 +153,7 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
+    $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
 
     $result = db_query($sql, $db_add_attachment);
@@ -177,7 +177,7 @@ function delete_attachment_by_aid($aid)
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.HASH FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+    $sql = "SELECT PAF.HASH FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "WHERE PAF.AID = '$aid' AND PAF.UID = '$uid'";
 
     $result = db_query($sql, $db_delete_attachment_by_aid);
@@ -205,8 +205,8 @@ function delete_attachment($hash)
     // is able to delete it, i.e. it belongs to them.
 
     $sql = "SELECT PAF.AID, PAF.UID, PAI.TID, PAI.PID, THREAD.FID ";
-    $sql.= "FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
 
@@ -232,14 +232,14 @@ function delete_attachment($hash)
 
             // Delete the attachment record from the database
 
-            $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+            $sql = "DELETE FROM POST_ATTACHMENT_FILES ";
             $sql.= "WHERE HASH = '$hash'";
 
             $result = db_query($sql, $db_delete_attachment);
 
             // Check to see if there are anymore attachments with the same AID
 
-            $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+            $sql = "SELECT AID FROM POST_ATTACHMENT_FILES ";
             $sql.= "WHERE AID = '{$row['AID']}'";
 
             $result = db_query($sql, $db_delete_attachment);
@@ -249,8 +249,9 @@ function delete_attachment($hash)
 
             if (db_num_rows($result) < 1) {
 
-                $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
-                $sql.= "WHERE AID = '{$row['AID']}'";
+                $sql = "DELETE FROM POST_ATTACHMENT_IDS ";
+                $sql.= "WHERE FID = '{$table_data['FID']}' ";
+                $sql.= "AND AID = '{$row['AID']}'";
 
                 $result = db_query($sql, $db_delete_attachment);
             }
@@ -276,7 +277,7 @@ function get_free_attachment_space($uid)
 
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_free_attachment_space);
 
     while($row = db_fetch_array($result)) {
@@ -300,7 +301,10 @@ function get_attachment_id($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT AID FROM POST_ATTACHMENT_IDS ";
+    $sql.= "WHERE FID = '{$table_data['FID']}' ";
+    $sql.= "AND TID = '$tid' AND PID = '$pid'";
+
     $result = db_query($sql, $db_get_attachment_id);
 
     if (db_num_rows($result) > 0) {
@@ -322,10 +326,10 @@ function get_folder_fid($aid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FOLDER.FID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS POST_ATTACHMENT_IDS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST_ATTACHMENT_IDS.TID) ";
+    $sql = "SELECT FOLDER.FID FROM POST_ATTACHMENT_IDS PAI ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE POST_ATTACHMENT_IDS.AID = '$aid'";
+    $sql.= "WHERE PAI.FID = '{$table_data['FID']}' AND PAI.AID = '$aid'";
 
     $result = db_query($sql, $db_get_folder_fid);
 
@@ -370,13 +374,16 @@ function get_message_link($aid)
 
     $webtag = get_webtag($webtag_search);
 
-    $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS WHERE AID = '$aid'";
+    $sql = "SELECT FORUMS.WEBTAG, PAI.TID, PAI.PID FROM POST_ATTACHMENT_IDS PAI ";
+    $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+    $sql.= "WHERE PAI.FID = '{$table_data['FID']}' AND PAI.AID = '$aid'";
+
     $result = db_query($sql, $db_get_message_link);
 
     if (db_num_rows($result) > 0) {
 
-        $tidpid = db_fetch_array($result);
-        return "./messages.php?webtag=$webtag&amp;msg=". $tidpid['TID']. ".". $tidpid['PID'];
+        $row = db_fetch_array($result);
+        return "./messages.php?webtag={$row['WEBTAG']}&amp;msg={$row['TID']}.{$row['PID']}";
 
     }else{
 
@@ -401,7 +408,7 @@ function get_num_attachments($aid)
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE AID = '$aid'";
+    $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE AID = '$aid'";
     $result = db_query($sql, $db_get_num_attachments);
 
     return db_num_rows($result);
@@ -415,7 +422,7 @@ function get_attachment_by_hash($hash)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
+    $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
     $result = db_query($sql, $db_get_attachment_by_hash);
 
     if (db_num_rows($result) > 0) {
@@ -433,7 +440,7 @@ function attachment_inc_dload_count($hash)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "UPDATE LOW_PRIORITY POST_ATTACHMENT_FILES ";
     $sql.= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";
 
     return db_query($sql, $db_attachment_inc_dload_count);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.47 2004-12-09 18:17:56 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.48 2004-12-11 14:37:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -248,55 +248,6 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['auto_logon'] = "Y";
     }else {
         $new_forum_settings['auto_logon'] = "N";
-    }
-
-    if (isset($_POST['attachments_enabled']) && $_POST['attachments_enabled'] == "Y") {
-        $new_forum_settings['attachments_enabled'] = "Y";
-    }else {
-        $new_forum_settings['attachments_enabled'] = "N";
-    }
-
-    if (isset($_POST['attachment_dir']) && strlen(trim(_stripslashes($_POST['attachment_dir']))) > 0) {
-
-        $new_forum_settings['attachment_dir'] = trim(_stripslashes($_POST['attachment_dir']));
-
-        if (!(@is_dir($new_forum_settings['attachment_dir']))) {
-            @mkdir($new_forum_settings['attachment_dir'], 0755);
-            @chmod($new_forum_settings['attachment_dir'], 0777);
-        }
-
-        if ($fp = @fopen("{$new_forum_settings['attachment_dir']}/bh_attach_test", "w")) {
-
-           fclose($fp);
-           unlink("{$new_forum_settings['attachment_dir']}/bh_attach_test");
-
-        }else {
-
-           $error_html.= "<h2>{$lang['attachmentdirnotwritable']}</h2>\n";
-           $valid = false;
-        }
-
-    }elseif (strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
-        $error_html = "<h2>{$lang['attachmentdirblank']}</h2>\n";
-        $valid = false;
-    }
-
-    if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
-        $new_forum_settings['attachments_max_user_space'] = ($_POST['attachments_max_user_space'] * 1024) * 1024;
-    }else {
-        $new_forum_settings['attachments_max_user_space'] = 1048576; // 1MB in bytes
-    }
-
-    if (isset($_POST['attachments_allow_embed']) && $_POST['attachments_allow_embed'] == "Y") {
-        $new_forum_settings['attachments_allow_embed'] = "Y";
-    }else {
-        $new_forum_settings['attachments_allow_embed'] = "N";
-    }
-
-    if (isset($_POST['attachment_use_old_method']) && $_POST['attachment_use_old_method'] == "Y") {
-        $new_forum_settings['attachment_use_old_method'] = "Y";
-    }else {
-        $new_forum_settings['attachment_use_old_method'] = "N";
     }
 
     if ($valid) {
@@ -658,67 +609,6 @@ echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_20']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['attachments']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td>\n";
-echo "                          <fieldset>\n";
-echo "                            <legend>", form_checkbox("attachments_enabled", "Y", $lang['enableattachments'], forum_get_setting('attachments_enabled', 'Y', false)), "</legend>\n";
-echo "                            <table class=\"posthead\" width=\"100%\">\n";
-echo "                              <tr>\n";
-echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['attachmentdir']}:</td>\n";
-echo "                                <td>", form_input_text("attachment_dir", forum_get_setting('attachment_dir', false, 'attachments'), 45, 32), "&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                              <tr>\n";
-echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['userattachmentspace']}:</td>\n";
-echo "                                <td>", form_input_text("attachments_max_user_space", (forum_get_setting('attachments_max_user_space', false, 1048576) / 1024) / 1024, 10, 32), "&nbsp;(MB)&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                              <tr>\n";
-echo "                                <td colspan=\"2\">", form_checkbox("attachments_allow_embed", "Y", $lang['allowembeddingofattachments'], forum_get_setting('attachments_allow_embed', 'Y', false)), "&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                              <tr>\n";
-echo "                                <td colspan=\"2\">", form_checkbox("attachment_use_old_method", "Y", $lang['usealtattachmentmethod'], forum_get_setting('attachment_use_old_method', 'Y', false)), "&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                            </table>\n";
-echo "                          </fieldset>\n";
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_23']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_24']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_25']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_26']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

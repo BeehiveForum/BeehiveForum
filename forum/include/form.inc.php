@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.61 2004-11-26 09:35:09 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.62 2004-12-11 14:37:29 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -153,7 +153,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
         $html.= " $custom_html ";
     }
 
-    $html.= "/>$text</span>";
+    $html.= "/><label for=\"$name\">$text</label></span>";
     return $html;
 }
 
@@ -171,7 +171,7 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
         $html.= " $custom_html ";
     }
 
-    $html.= "/>$text</span>";
+    $html.= "/><label for=\"$name\">$text</label></span>";
     return $html;
 }
 

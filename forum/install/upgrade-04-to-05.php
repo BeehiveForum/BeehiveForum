@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.7 2004-12-11 00:34:30 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.8 2004-12-11 14:37:29 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -59,17 +59,14 @@ if (isset($forum_webtag) && strlen(trim($forum_webtag)) > 0) {
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "SELECT WEBTAG FROM FORUMS ";
+        $sql = "SELECT FID, WEBTAG FROM FORUMS ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if ($result = db_query($sql, $db_install)) {
 
-            $valid = false;
-            return;
-        }
+            while ($row = db_fetch_array($result)) {
 
-        while ($row = db_fetch_array($result)) {
-
-            $forum_webtag_array[] = $row['WEBTAG'];
+                $forum_webtag_array[$row['FID']] = $row['WEBTAG'];
+            }
         }
     }
 }
@@ -159,22 +156,6 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         }
 
         $sql = "ALTER TABLE POST RENAME {$forum_webtag}_POST";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        $sql = "ALTER TABLE POST_ATTACHMENT_FILES RENAME {$forum_webtag}_POST_ATTACHMENT_FILES";
-
-        if (!$result = db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
-        $sql = "ALTER TABLE POST_ATTACHMENT_IDS RENAME {$forum_webtag}_POST_ATTACHMENT_IDS";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -399,11 +380,12 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_IDS_NEW (";
+        $sql = "CREATE TABLE POST_ATTACHMENT_IDS_NEW (";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-        $sql.= "  PRIMARY KEY  (TID,PID),";
+        $sql.= "  PRIMARY KEY  (FID, TID, PID),";
         $sql.= "  KEY AID (AID)";
         $sql.= ")";
 
@@ -413,8 +395,9 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "INSERT INTO {$forum_webtag}_POST_ATTACHMENT_IDS_NEW (TID, PID, AID) ";
-        $sql.= "SELECT DISTINCT TID, PID, AID FROM {$forum_webtag}_POST_ATTACHMENT_IDS GROUP BY TID, PID";
+        $sql = "INSERT INTO POST_ATTACHMENT_IDS_NEW (FID, TID, PID, AID) ";
+        $sql.= "SELECT DISTINCT 1, TID, PID, AID FROM POST_ATTACHMENT_IDS ";
+        $sql.= "GROUP BY TID, PID";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -422,7 +405,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "DROP TABLE {$forum_webtag}_POST_ATTACHMENT_IDS";
+        $sql = "DROP TABLE POST_ATTACHMENT_IDS";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -430,7 +413,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_IDS_NEW RENAME {$forum_webtag}_POST_ATTACHMENT_IDS";
+        $sql = "ALTER TABLE POST_ATTACHMENT_IDS_NEW RENAME POST_ATTACHMENT_IDS";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1228,7 +1211,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_FILES ADD DELETED TINYINT UNSIGNED DEFAULT '0' NOT NULL";
+        $sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD DELETED TINYINT UNSIGNED DEFAULT '0' NOT NULL";
 
         if (!$result = db_query($sql, $db_install)) {
 

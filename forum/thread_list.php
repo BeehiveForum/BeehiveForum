@@ -110,7 +110,7 @@ while (list($key1, $folder) = each($folder_order)) {
 		while (list($key2, $thread) = each($thread_info)) {
 			if ($thread['fid'] == $folder) {
 				// work out the number of new posts and format something in square brackets accordingly
-				if ($thread['length'] == $thread['last_read']) {
+				/*if ($thread['length'] == $thread['last_read']) {
 					$number = "[".$thread['length']."]";
 					$latest_post = 1;
 				} elseif ($thread['last_read'] == 0) {
@@ -120,6 +120,17 @@ while (list($key1, $folder) = each($folder_order)) {
 					$new_posts = $thread['length'] - $thread['last_read'];
 					$number = "[".$new_posts." new of ".$thread['length']."]";
 					$latest_post = $thread['last_read'] + 1;
+				}*/
+				if ($thread['last_read'] < $thread['length']) {
+					$new_posts = $thread['length'] - $thread['last_read'];
+					$number = "[".$new_posts." new of ".$thread['length']."]";
+					$latest_post = $thread['last_read'] + 1;
+                                }elseif ($thread['last_read'] == 0) {
+					$number = "[".$thread['length']." new]";
+					$latest_post = 1;					
+				}else {
+					$number = "[".$thread['length']."]";
+					$latest_post = 1;
 				}
 				// work out how long ago the thread was posted and format the time to display - this is going to need modification to account for differing timezones
 				if (date("j", $thread['modified']) == date("j") && date("n", $thread['modified']) == date("n") && date("Y", $thread['modified']) == date("Y")) {

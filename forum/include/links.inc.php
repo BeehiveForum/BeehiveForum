@@ -107,13 +107,13 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
 
     $link_base = $link_base ? $link_base : $HTTP_SERVER_VARS['PHP_SELF'];
 
-    $html = $links ? "<a href=\"$link_base?fid=1\">{$folders[1]['NAME']}</a>" : $folders[1]['NAME'];
+    $html = $links ? "<a href=\"$link_base?fid=1\">" . _stripslashes($folders[1]['NAME']) . "</a>" : $folders[1]['NAME'];
     if (is_array($tree)) {
         while ($val = array_pop($tree)) {
             if (($val != $fid && $links) || $link_last_too) {
-                $html .= "&nbsp;>&nbsp;<a href=\"$link_base?fid=$val\">{$folders[$val]['NAME']}</a>";
+                $html .= "&nbsp;>&nbsp;<a href=\"$link_base?fid=$val\">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             } else {
-                $html .= "&nbsp;>&nbsp;{$folders[$val]['NAME']}";
+                $html .= "&nbsp;>&nbsp;". _stripslashes($folders[$val]['NAME']);
             }
         }
     }

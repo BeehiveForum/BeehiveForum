@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.172 2004-04-06 20:35:01 tribalonline Exp $ */
+/* $Id: post.php,v 1.173 2004-04-08 00:29:29 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -698,14 +698,13 @@ echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true
 echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
 
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
-echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br />\n";
-
+echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br /><br />\n";
 
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 if ($emot_prev != "") {
 	echo "<h2>".$lang['emoticons'].":</h2>\n";
-	echo $emot_prev;
+	echo $emot_prev."<br />\n";
 }
 
 if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {

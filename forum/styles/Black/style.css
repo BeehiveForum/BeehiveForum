@@ -374,6 +374,7 @@ A		{
 		margin-left: 40px;
 		margin-right: 10px;
 		padding: 3px;
+		overflow: auto;
 }
 .quote {
 		font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -398,6 +399,8 @@ A		{
 		border: 1px solid #666666;
 		margin: 1;
 		float:left;
+		width: 18px;
+		height: 18px;
 }
 
 .tools_over {
@@ -424,4 +427,13 @@ A		{
 
 .adminipdisplay {
                 font-size: 8pt;
+}
+
+.emoticon_preview {
+		overflow: auto;
+		padding: 2px;
+		background-color: #FFFFFF;
+}
+.emoticon_preview img {
+		cursor: pointer;
 }

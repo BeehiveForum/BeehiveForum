@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.167 2004-04-29 14:03:11 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.168 2004-04-29 21:01:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -363,12 +363,12 @@ function user_get_prefs($uid)
     if (!is_numeric($uid)) return false;
 
     $prefs_array = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
-                         'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
-                         'MARK_AS_OF_INT' => '', 'POSTS_PER_PAGE' => '', 'FONT_SIZE' => '',
-                         'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
-                         'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '', 'ANON_LOGON' => '',
-                         'SHOW_STATS' => '',  'IMAGES_TO_LINKS' => '', 'USE_WORD_FILTER' => '',
-                         'USE_ADMIN_FILTER' => '', 'EMOTICONS' => '', 'ALLOW_EMAIL' => '', 'ALLOW_PM' => '');
+                         'PIC_URL' => '', 'EMAIL_NOTIFY' => 'Y', 'TIMEZONE' => '0', 'DL_SAVING' => 'N',
+                         'MARK_AS_OF_INT' => 'Y', 'POSTS_PER_PAGE' => '20', 'FONT_SIZE' => '10',
+                         'STYLE' => '', 'VIEW_SIGS' => 'Y', 'START_PAGE' => '0', 'LANGUAGE' => '',
+                         'PM_NOTIFY' => 'Y', 'PM_NOTIFY_EMAIL' => 'Y', 'DOB_DISPLAY' => 'Y', 'ANON_LOGON' => 'N',
+                         'SHOW_STATS' => 'Y',  'IMAGES_TO_LINKS' => 'N', 'USE_WORD_FILTER' => 'N',
+                         'USE_ADMIN_FILTER' => 'N', 'EMOTICONS' => '', 'ALLOW_EMAIL' => 'Y', 'ALLOW_PM' => 'Y');
 
     if (!$table_data = get_table_prefix()) return $prefs_array;
 
@@ -403,7 +403,7 @@ function user_update_prefs($uid, $prefs_array)
     $result = db_query($sql, $db_user_update_prefs);
 
     if (empty($prefs_array['TIMEZONE']))       $prefs_array['TIMEZONE']       = 0;
-    if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 5;
+    if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 20;
     if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
 
     if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = forum_get_setting('default_style');

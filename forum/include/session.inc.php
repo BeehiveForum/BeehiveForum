@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.114 2004-04-29 17:16:13 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.115 2004-04-29 21:01:32 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -196,7 +196,7 @@ function bh_session_check($add_guest_sess = true)
                  'LOGON'            => 'GUEST',
                  'PASSWD'           => md5('GUEST'),
                  'STATUS'           => 0,
-                 'POSTS_PER_PAGE'   => 5,
+                 'POSTS_PER_PAGE'   => 20,
                  'TIMEZONE'         => 0,
                  'DL_SAVING'        => 0,
                  'MARK_AS_OF_INT'   => 0,
@@ -306,12 +306,12 @@ function bh_session_end()
 }
 
 // IIS does not support the REQUEST_URI server var, so we will make one for it
-function get_request_uri()
+function get_request_uri($rawurlencode = false)
 {
     $request_uri = "{$_SERVER['PHP_SELF']}?";
 
     foreach ($_GET as $key => $value) {
-        $request_uri.= "{$key}=". rawurlencode($value). "&amp;";
+        $request_uri.= "{$key}=". rawurlencode($value). "&";
     }
 
     // Fix the slashes for forum running from sub-domain.
@@ -319,7 +319,12 @@ function get_request_uri()
     // Any suggestions are welcome on how to handle this better.
 
     $request_uri = preg_replace("/\/\/+/", "/", $request_uri);
-    return $request_uri;
+
+    if ($rawurlencode) {
+        return rawurlencode($request_uri);
+    }else {
+        return $request_uri;
+    }
 }
 
 ?>

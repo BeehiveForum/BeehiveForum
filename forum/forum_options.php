@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.41 2004-04-29 16:53:55 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.42 2004-04-29 21:01:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,7 +92,7 @@ $lang = load_language_file();
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
+    $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -180,7 +180,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['posts_per_page'])) {
         $user_prefs['POSTS_PER_PAGE'] = _stripslashes(trim($_POST['posts_per_page']));
     }else {
-        $user_prefs['POSTS_PER_PAGE'] = 10;
+        $user_prefs['POSTS_PER_PAGE'] = 20;
     }
 
     if (isset($_POST['font_size'])) {
@@ -398,9 +398,9 @@ echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['postsperpage']}:</td>\n";
 
 if (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PAGE'])) {
-    echo "                  <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']), "</td>\n";
+    echo "                  <td>", form_dropdown_array("posts_per_page", array(10, 20, 30), array(10, 20, 30), $user_prefs['POSTS_PER_PAGE']), "</td>\n";
 }else {
-    echo "                  <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), 10), "</td>\n";
+    echo "                  <td>", form_dropdown_array("posts_per_page", array(10, 20, 30), array(10, 20, 30), 10), "</td>\n";
 }
 
 echo "                </tr>\n";

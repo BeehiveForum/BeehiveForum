@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.45 2004-04-28 16:16:59 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.46 2004-04-29 21:01:27 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -59,7 +59,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?webtag=$webtag&final_uri=". rawurlencode(get_request_uri());
+    $uri = "./llogon.php?webtag=$webtag&final_uri=". rawurlencode(get_request_uri(true));
     header_redirect($uri);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.49 2004-04-28 16:16:59 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.50 2004-04-29 21:01:27 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -50,7 +50,7 @@ include_once("./include/threads.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?final_uri=". rawurlencode(get_request_uri());
+    $uri = "./llogon.php?final_uri=". rawurlencode(get_request_uri(true));
     header_redirect($uri);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.111 2004-04-29 12:45:57 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.112 2004-04-29 21:01:31 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -35,7 +35,8 @@ function html_guest_error ()
      html_draw_top();
 
      $webtag = get_webtag($webtag_search);
-     $final_uri = rawurlencode(get_request_uri());
+
+     $final_uri = rawurlencode(get_request_uri(true));
 
      echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
      echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";

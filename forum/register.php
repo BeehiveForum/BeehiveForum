@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.90 2004-04-29 14:02:53 decoyduck Exp $ */
+/* $Id: register.php,v 1.91 2004-04-29 21:01:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -324,6 +324,23 @@ if (isset($_POST['submit'])) {
         $new_user['EMOTICONS'] = forum_get_setting('default_emoticons');
     }
 
+    // Defaults that we don't otherwise set.
+
+    $new_user['HOMEPAGE_URL'] = "";
+    $new_user['PIC_URL'] = "";
+    $new_user['POSTS_PER_PAGE'] = 20;
+    $new_user['FONT_SIZE'] = 10;
+    $new_user['VIEW_SIGS'] = "Y";
+    $new_user['START_PAGE'] = 0;
+    $new_user['DOB_DISPLAY'] = 2;
+    $new_user['ANON_LOGON'] = 0;
+    $new_user['SHOW_STATS'] = 1;
+    $new_user['IMAGES_TO_LINKS'] = "N";
+    $new_user['USE_WORD_FILTER'] = "N";
+    $new_user['USE_ADMIN_FILTER'] = "N";
+    $new_user['ALLOW_EMAIL'] = "Y";
+    $new_user['ALLOW_PM'] = "Y";
+
     if ($valid) {
 
         if ($new_user['PW'] != $new_user['CPW']) {
@@ -526,23 +543,23 @@ echo "            <td class=\"subhead\" colspan=\"2\">{$lang['preferencesoptiona
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">&nbsp;{$lang['alwaysnotifymeofrepliestome']}:</td>\n";
-echo "            <td>", form_radio("EMAIL_NOTIFY", "Y", $lang['yes'], (isset($new_user['EMAIL_NOTIFY']) && $new_user['EMAIL_NOTIFY'] == "Y")), "&nbsp;", form_radio("EMAIL_NOTIFY", "N", $lang['no'], ((isset($new_user['EMAIL_NOTIFY']) && $new_user['EMAIL_NOTIFY'] == "N") || (!isset($new_user['EMAIL_NOTIFY'])))), "</td>\n";
+echo "            <td>", form_radio("EMAIL_NOTIFY", "Y", $lang['yes'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "Y") : true), "&nbsp;", form_radio("EMAIL_NOTIFY", "N", $lang['no'], (isset($new_user['EMAIL_NOTIFY'])) ? ($new_user['EMAIL_NOTIFY'] == "N") : false), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">&nbsp;{$lang['notifyonnewprivatemessage']}:</td>\n";
-echo "            <td>", form_radio("PM_NOTIFY_EMAIL", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY_EMAIL']) && $new_user['PM_NOTIFY_EMAIL'] == "Y")), "&nbsp;", form_radio("PM_NOTIFY_EMAIL", "N", $lang['no'], ((isset($new_user['PM_NOTIFY_EMAIL']) && $new_user['PM_NOTIFY_EMAIL'] == "N") || (!isset($new_user['PM_NOTIFY_EMAIL'])))), "</td>\n";
+echo "            <td>", form_radio("PM_NOTIFY_EMAIL", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "Y") : true), "&nbsp;", form_radio("PM_NOTIFY_EMAIL", "N", $lang['no'], (isset($new_user['PM_NOTIFY_EMAIL'])) ? ($new_user['PM_NOTIFY_EMAIL'] == "N") : false), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">&nbsp;{$lang['popuponnewprivatemessage']}:</td>\n";
-echo "            <td>", form_radio("PM_NOTIFY", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY']) && $new_user['PM_NOTIFY'] == "Y")), "&nbsp;", form_radio("PM_NOTIFY", "N", $lang['no'], ((isset($new_user['PM_NOTIFY']) && $new_user['PM_NOTIFY'] == "N") || (!isset($new_user['PM_NOTIFY'])))), "</td>\n";
+echo "            <td>", form_radio("PM_NOTIFY", "Y", $lang['yes'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "Y") : true), "&nbsp;", form_radio("PM_NOTIFY", "N", $lang['no'], (isset($new_user['PM_NOTIFY'])) ? ($new_user['PM_NOTIFY'] == "N") : false), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">&nbsp;{$lang['automatichighinterestonpost']}:</td>\n";
-echo "            <td>", form_radio("MARK_AS_OF_INT", "Y", $lang['yes'], (isset($new_user['MARK_AS_OF_INT']) && $new_user['MARK_AS_OF_INT'] == "Y")), "&nbsp;", form_radio("MARK_AS_OF_INT", "N", $lang['no'], ((isset($new_user['MARK_AS_OF_INT']) && $new_user['MARK_AS_OF_INT'] == "N") || (!isset($new_user['MARK_AS_OF_INT'])))), "</td>\n";
+echo "            <td>", form_radio("MARK_AS_OF_INT", "Y", $lang['yes'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "Y") : true), "&nbsp;", form_radio("MARK_AS_OF_INT", "N", $lang['no'], (isset($new_user['MARK_AS_OF_INT'])) ? ($new_user['MARK_AS_OF_INT'] == "N") : false), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">&nbsp;{$lang['daylightsaving']}:</td>\n";
-echo "            <td>", form_radio("DL_SAVING", "Y", $lang['yes'], (isset($new_user['DL_SAVING']) && $new_user['DL_SAVING'] == "Y")), "&nbsp;", form_radio("DL_SAVING", "N", $lang['no'], ((isset($new_user['DL_SAVING']) && $new_user['DL_SAVING'] == "N") || (!isset($new_user['DL_SAVING'])))), "</td>\n";
+echo "            <td>", form_radio("DL_SAVING", "Y", $lang['yes'], (isset($new_user['DL_SAVING'])) ? ($new_user['DL_SAVING'] == "Y") : true), "&nbsp;", form_radio("DL_SAVING", "N", $lang['no'], (isset($new_user['DL_SAVING'])) ? ($new_user['DL_SAVING'] == "N") : false), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">&nbsp;{$lang['timezonefromGMT']}</td>\n";

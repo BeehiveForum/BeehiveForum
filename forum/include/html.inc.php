@@ -58,6 +58,13 @@ function _html_draw_top_script()
 	echo "<base target=\"_blank\" />\n";
 }
 
+function _html_draw_post_top2()
+{
+	echo "\t</head>\n";
+	echo "<body onLoad=\"self.focus();document.f_post.t_content.focus();\">\n";
+}
+
+
 function html_draw_top($title = "Beehive Forum")
 {
     _html_draw_top1($title);
@@ -69,6 +76,13 @@ function html_draw_top_script($title = "Beehive Forum")
     _html_draw_top1($title);
     _html_draw_top_script();
     _html_draw_top2();
+}
+
+function html_draw_top_post_script($title = "Beehive Forum")
+{
+    _html_draw_top1($title);
+    _html_draw_top_script();    
+    _html_draw_post_top2();
 }
 
 function html_draw_bottom ()

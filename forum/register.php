@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.77 2004-03-22 12:21:16 decoyduck Exp $ */
+/* $Id: register.php,v 1.78 2004-03-22 15:17:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -69,6 +69,65 @@ if (bh_session_get_value('UID')) {
     exit;
 }
 
+$available_styles = array();
+$style_names = array();
+
+if ($dir = @opendir('styles')) {
+    while (($file = readdir($dir)) !== false) {
+        if (is_dir("styles/$file") && $file != '.' && $file != '..') {
+            if (@file_exists("./styles/$file/desc.txt")) {
+                if ($fp = fopen("./styles/$file/desc.txt", "r")) {
+                    $available_styles[] = $file;
+                    $style_names[] = _htmlentities(fread($fp, filesize("styles/$file/desc.txt")));
+                    fclose($fp);
+                }else {
+                    $available_styles[] = $file;
+                    $style_names[] = $file;
+                }
+            }
+        }
+    }
+    closedir($dir);
+}
+
+array_multisort($style_names, $available_styles);
+
+$available_emots = array();
+$emot_names = array();
+
+if ($dir = @opendir('emoticons')) {
+    while (($file = readdir($dir)) !== false) {
+        if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
+            if (@file_exists("./emoticons/$file/desc.txt")) {
+                if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
+                    $available_emots[] = $file;
+                    $emot_names[] = _htmlentities(fread($fp, filesize("emoticons/$file/desc.txt")));
+                    fclose($fp);
+                }else {
+                    $available_emots[] = $file;
+                    $emot_names[] = $file;
+                }
+            }
+        }
+    }
+    closedir($dir);
+}
+
+array_multisort($emot_names, $available_emots);
+
+$available_langs = lang_get_available(); // Get available languages
+$available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
+array_unshift($available_langs, "");
+
+$timezones = array("GMT -12h", "GMT -11h", "GMT -10h", "GMT -9h30m", "GMT -9h", "GMT -8h30m", "GMT -8h",
+                   "GMT -7h", "GMT -6h", "GMT -5h", "GMT -4h", "GMT -3h30m", "GMT -3h", "GMT -2h", "GMT -1h",
+                   "GMT", "GMT +1h", "GMT +2h", "GMT +3h",  "GMT +3h30m","GMT +4h", "GMT +4h30m", "GMT +5h",
+                   "GMT +5h30m", "GMT +6h", "GMT +6h30m", "GMT +7h", "GMT +8h", "GMT +9h", "GMT +9h30m",
+                   "GMT +10h", "GMT +10h30m", "GMT +11h", "GMT +11h30m", "GMT +12h", "GMT +13h", "GMT +14h");
+
+$timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
+                        6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
+
 $valid = true;
 $error_html = "";
 
@@ -79,24 +138,25 @@ if (isset($HTTP_POST_VARS['submit'])) {
       $t_logon = _stripslashes(trim($HTTP_POST_VARS['logon']));
 
       if (_htmlentities($t_logon) != $t_logon) {
-        $error_html.= "<h2>{$lang['usernamemustnotcontainHTML']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['usernamemustnotcontainHTML']}</h2>\n";
+          $valid = false;
       }
       
       if (!preg_match("/^[a-z0-9_-]+$/i", $t_logon)) {
-        $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
+          $valid = false;
       }
       
       if (strlen($t_logon) < 2) {
-        $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
+          $valid = false;
       }
       
       if (strlen($t_logon) > 15) {
-        $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
+          $valid = false;
       }
+      
   }else {
       $error_html.= "<h2>{$lang['usernamerequired']}</h2>\n";
       $valid = false;
@@ -107,18 +167,18 @@ if (isset($HTTP_POST_VARS['submit'])) {
       $t_pw = _stripslashes(trim($HTTP_POST_VARS['pw']));
       
       if (_htmlentities($t_pw) != $t_pw) {
-        $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+          $valid = false;
       }
       
       if (!preg_match("/^[a-z0-9_-]+$/i", $t_pw)) {
-        $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+          $valid = false;
       }      
       
       if (strlen($t_pw) < 6) {
-        $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+          $valid = false;
       }
       
   }else {
@@ -131,8 +191,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
       $t_cpw = _stripslashes(trim($HTTP_POST_VARS['cpw']));
       
       if (_htmlentities($t_cpw) != $t_cpw) {
-        $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+          $valid = false;
       }
       
   }else {
@@ -145,8 +205,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
       $t_nickname = _stripslashes(trim($HTTP_POST_VARS['nickname']));
       
       if (_htmlentities($t_nickname) != $t_nickname) {
-        $error_html.= "<h2>{$lang['nicknamemustnotcontainHTML']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['nicknamemustnotcontainHTML']}</h2>\n";
+          $valid = false;
       }
       
   }else {
@@ -159,8 +219,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
       $t_email = _stripslashes(trim($HTTP_POST_VARS['email']));
       
       if (_htmlentities($t_email) != $t_email) {
-        $error_html.= "<h2>{$lang['emailmustnotcontainHTML']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['emailmustnotcontainHTML']}</h2>\n";
+          $valid = false;
       }
       
   }else {
@@ -181,8 +241,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
       }
       
       if (strtolower($t_logon) == strtolower($t_pw)) {
-        $error_html.= "<h2>{$lang['usernamesameaspasswd']}</h2>\n";
-        $valid = false;
+          $error_html.= "<h2>{$lang['usernamesameaspasswd']}</h2>\n";
+          $valid = false;
       }
   }
 
@@ -287,10 +347,18 @@ if (isset($HTTP_POST_VARS['submit'])) {
         
           for ($i = 0; $i < sizeof($username_array); $i++) {
 
-            bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
+              bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
+             
+              if (isset($password_array[$i]) && isset($passhash_array[$i]) {
+                        
+                  bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
+                  bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
 
+              }else {
+                        
+                  bh_setcookie("bh_remember_password[$i]", "", time() + YEAR_IN_SECONDS);
+                  bh_setcookie("bh_remember_passhash[$i]", "", time() + YEAR_IN_SECONDS);
+              }
           }
 
           // set / update the cookie that remembers if the user
@@ -322,67 +390,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
   }
 
 }
-
-$available_styles = array();
-$style_names = array();
-
-if ($dir = @opendir('styles')) {
-  while (($file = readdir($dir)) !== false) {
-    if (is_dir("styles/$file") && $file != '.' && $file != '..') {
-      if (@file_exists("./styles/$file/desc.txt")) {
-        if ($fp = fopen("./styles/$file/desc.txt", "r")) {
-          $available_styles[] = $file;
-          $style_names[] = _htmlentities(fread($fp, filesize("styles/$file/desc.txt")));
-          fclose($fp);
-        }else {
-          $available_styles[] = $file;
-          $style_names[] = $file;
-        }
-      }
-    }
-  }
-  closedir($dir);
-}
-
-array_multisort($style_names, $available_styles);
-
-
-$available_emots = array();
-$emot_names = array();
-
-if ($dir = @opendir('emoticons')) {
-    while (($file = readdir($dir)) !== false) {
-        if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
-            if (@file_exists("./emoticons/$file/desc.txt")) {
-                if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
-                    $available_emots[] = $file;
-                    $emot_names[] = _htmlentities(fread($fp, filesize("emoticons/$file/desc.txt")));
-                    fclose($fp);
-                }else {
-                    $available_emots[] = $file;
-                    $emot_names[] = $file;
-                }
-            }
-        }
-    }
-    closedir($dir);
-}
-
-array_multisort($emot_names, $available_emots);
-
-
-$available_langs = lang_get_available(); // Get available languages
-$available_langs_labels = array_merge(array($lang['browsernegotiation']), $available_langs);
-array_unshift($available_langs, "");
-
-$timezones = array("GMT -12h", "GMT -11h", "GMT -10h", "GMT -9h30m", "GMT -9h", "GMT -8h30m", "GMT -8h",
-                   "GMT -7h", "GMT -6h", "GMT -5h", "GMT -4h", "GMT -3h30m", "GMT -3h", "GMT -2h", "GMT -1h",
-                   "GMT", "GMT +1h", "GMT +2h", "GMT +3h",  "GMT +3h30m","GMT +4h", "GMT +4h30m", "GMT +5h",
-                   "GMT +5h30m", "GMT +6h", "GMT +6h30m", "GMT +7h", "GMT +8h", "GMT +9h", "GMT +9h30m",
-                   "GMT +10h", "GMT +10h30m", "GMT +11h", "GMT +11h30m", "GMT +12h", "GMT +13h", "GMT +14h");
-
-$timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
-                        6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
 
 html_draw_top();
 

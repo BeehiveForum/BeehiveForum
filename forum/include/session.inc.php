@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.49 2003-09-21 13:44:00 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.50 2003-09-21 13:46:21 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -150,6 +150,9 @@ function bh_session_init($uid)
 
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
+
+    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE IPADDRESS = '$ipaddress'";
+    $result = db_query($sql, $db_bh_session_init);
 
     $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
     $sql.= "VALUES ('$uid', '$ipaddress', NOW())";

@@ -22,9 +22,12 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
+
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -38,8 +41,8 @@ require_once("./include/html.inc.php");
 
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
+        html_guest_error();
+        exit;
 }
 
 
@@ -70,12 +73,12 @@ if(isset($HTTP_GET_VARS['ret'])){
 
 
     header_redirect($HTTP_GET_VARS['ret']);
-    
+
 } else {
 
 
     header_redirect(dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
-    
+
 }
 
 

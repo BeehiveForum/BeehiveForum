@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Require functions
 require_once("./include/session.inc.php"); // Session functions
 require_once("./include/html.inc.php"); // HTML functions

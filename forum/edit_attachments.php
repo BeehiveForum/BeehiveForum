@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
@@ -32,7 +35,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/config.inc.php");
@@ -42,12 +45,12 @@ require_once("./include/html.inc.php");
 
 if (!$attachments_enabled) {
   header("HTTP/1.0 404 File Not Found");
-  exit;   
+  exit;
 }
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
+        html_guest_error();
+        exit;
 }
 
 require_once("./include/form.inc.php");
@@ -89,10 +92,10 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
     echo "</script>\n";
-  
+
     html_draw_bottom();
     exit;
-  
+
   }
 }
 
@@ -102,44 +105,44 @@ if (isset($HTTP_POST_VARS['submit'])) {
   <tr>
     <td width="300" class="postbody">&nbsp;</td>
     <td width="200" class="postbody">&nbsp;</td>
-    <td width="100" class="postbody">&nbsp;</td>    
+    <td width="100" class="postbody">&nbsp;</td>
   </tr>
 <?php
 
   $attachments = get_attachments($uid, $HTTP_GET_VARS['aid']);
-  
+
   if (is_array($attachments)) {
-  
+
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
       echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "&download=1\" title=\"";
-      
+
       if (strlen($attachments[$i]['filename']) > 16) {
         echo "Filename: ". $attachments[$i]['filename']. ", ";
-      }      
-      
+      }
+
       if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
         echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
       }
-                        
+
       echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
       echo "Downloaded: ". $attachments[$i]['downloads'];
-                        
+
       if ($attachments[$i]['downloads'] == 1) {
         echo " time";
       }else {
         echo " times";
       }
-      
+
       echo "\">";
-      
+
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
       }else{
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
-      
+
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"edit_attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
@@ -150,13 +153,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";
-    
+
       $total_attachment_size += $attachments[$i]['filesize'];
-      
+
     }
-    
+
   }else {
-  
+
     echo "  <tr>\n";
     echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">(none)</td>\n";
     echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
@@ -166,11 +169,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">&nbsp;</td>\n";
     echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
     echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-    echo "  </tr>\n";    
-    
+    echo "  </tr>\n";
+
   }
-    
-  
+
+
 ?>
   <tr>
     <td width="500" colspan="3"><hr width="500"/></td>
@@ -193,11 +196,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
     <td class="postbody" align="center"><?php echo form_submit('submit', 'Close'); ?></td>
-  </tr>  
+  </tr>
 </table>
 </form>
 <?php
 
-  html_draw_bottom(); 
-  
+  html_draw_bottom();
+
 ?>

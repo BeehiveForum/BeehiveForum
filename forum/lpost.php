@@ -23,6 +23,9 @@ USA
 
 ======================================================================*/
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 //Check logged in status
 
 require_once("./include/session.inc.php");
@@ -38,8 +41,8 @@ if(!bh_session_check()){
 require_once("./include/html.inc.php");
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	light_html_guest_error();
-	exit;
+        light_html_guest_error();
+        exit;
 }
 
 require_once("./include/user.inc.php");

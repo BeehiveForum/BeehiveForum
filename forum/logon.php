@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
@@ -51,7 +54,7 @@ if (bh_session_check()) {
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
-    echo form_quick_button("./index.php?$final_uri", "Continue", 0, 0, "_top");
+    echo form_quick_button("./index.php", "Continue", "final_uri", isset($final_uri) ? urlencode($final_uri) : "", "_top");
     echo "</div>\n";
     html_draw_bottom();
     exit;
@@ -214,7 +217,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         $user_prefs = user_get_prefs($luid);
 
-        if (!strstr($final_uri, 'discussion.php') && !isset($msg)) {
+        if (isset($final_uri) && !strstr($final_uri, 'discussion.php') && !isset($msg)) {
           if ($user_prefs['START_PAGE'] == 1) {
             $final_uri = "./discussion.php";
           }else {

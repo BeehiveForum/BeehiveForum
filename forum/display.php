@@ -17,9 +17,12 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
+
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -35,9 +38,9 @@ require_once("./include/form.inc.php");
 
 // Check that required variables are set
 if(!isset($HTTP_GET_VARS['msg'])){
-	$msg = "1.1";
+        $msg = "1.1";
 } else {
-	$msg = $HTTP_GET_VARS['msg'];
+        $msg = $HTTP_GET_VARS['msg'];
 }
 
 list($tid, $pid) = explode('.', $msg);
@@ -58,10 +61,10 @@ messages_top($foldertitle,_stripslashes($threaddata['TITLE']));
 echo "</td></tr></table></div>\n";
 
 if($message){
-	$first_msg = $message['PID'];
-	$message['CONTENT'] = message_get_content($tid, $message['PID']);
-	message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed,false);
-	$last_pid = $message['PID'];
+        $first_msg = $message['PID'];
+        $message['CONTENT'] = message_get_content($tid, $message['PID']);
+        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed,false);
+        $last_pid = $message['PID'];
 }
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";

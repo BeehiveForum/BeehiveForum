@@ -23,6 +23,9 @@ USA
 
 // Frameset for thread list and messages
 
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
+
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
@@ -34,7 +37,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/perm.inc.php");
@@ -49,7 +52,7 @@ if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
     exit;
 }
 
-$stylesheet = "./styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/style.css"; 
+$stylesheet = "./styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/style.css";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
@@ -62,5 +65,5 @@ $stylesheet = "./styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_CO
          <frame src="./admin_menu.php" name="left" border="1">
          <frame src="./admin_main.php" name="right" border="1">
        </frameset>
-       
+
 </html>

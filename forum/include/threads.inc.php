@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.161 2005-02-06 21:35:26 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.162 2005-02-13 19:11:16 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -826,13 +826,17 @@ function threads_mark_all_read()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT TID, LENGTH FROM {$table_data['PREFIX']}THREAD";
+    $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
+    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
+    $sql.= "ORDER BY THREAD.MODIFIED";
+
     $result_threads = db_query($sql, $db_threads_mark_all_read);
 
     while($row = db_fetch_array($result_threads)) {
         messages_update_read($row['TID'], $row['LENGTH'], bh_session_get_value('UID'));
     }
-
 }
 
 function threads_mark_50_read()

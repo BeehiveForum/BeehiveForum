@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.62 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.63 2005-01-27 22:58:14 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -377,7 +377,7 @@ if ($valid && isset($_POST['submit'])) {
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
+            $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 

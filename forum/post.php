@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.234 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: post.php,v 1.235 2005-01-27 22:58:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -575,7 +575,7 @@ if ($valid && isset($_POST['submit'])) {
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
+            $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
 
             if ($high_interest) thread_set_interest($t_tid, 1, $newthread);
 

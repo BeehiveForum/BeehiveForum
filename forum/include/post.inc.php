@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.102 2004-12-22 22:21:10 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.103 2005-01-27 22:58:16 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
 include_once("./include/html.inc.php");
 
-function post_create($tid, $reply_pid, $fuid, $tuid, $content)
+function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
 {
     $db_post_create = db_connect();
     $content = addslashes($content);
@@ -36,6 +36,8 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
         $ipaddress = "";
     }
 
+    $approved = '0';
+
     if (!is_numeric($tid)) return -1;
     if (!is_numeric($reply_pid)) return -1;
     if (!is_numeric($fuid)) return -1;
@@ -43,9 +45,11 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
     if (!$table_data = get_table_prefix()) return -1;
 
+    if (perm_is_moderator($fid)) $approved = 'NOW()';
+
     $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
-    $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, IPADDRESS) ";
-    $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), '$ipaddress')";
+    $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";
+    $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), '$approved', '$ipaddress')";
 
     $result = db_query($sql,$db_post_create);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.139 2005-01-19 21:49:26 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.140 2005-01-27 22:58:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -501,7 +501,7 @@ if ($valid && isset($_POST['submit'])) {
         // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
         $t_tid = post_create_thread($t_fid, $uid, $t_question, 'Y', 'N');
-        $t_pid = post_create($t_tid, 0, $uid, 0, '');
+        $t_pid = post_create($t_fid, $t_tid, 0, $uid, 0, '');
 
         if ($t_poll_type == 2) {
 
@@ -521,7 +521,7 @@ if ($valid && isset($_POST['submit'])) {
                 $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
             }
 
-            post_create($t_tid, 1, $uid, 0, $t_message_text);
+            post_create($t_fid, $t_tid, 1, $uid, 0, $t_message_text);
         }
 
         if ($high_interest) thread_set_interest($t_tid, 1, true);

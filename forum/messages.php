@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.149 2004-06-19 11:30:33 decoyduck Exp $ */
+/* $Id: messages.php,v 1.150 2004-07-07 13:59:21 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -179,8 +179,6 @@ if (isset($_POST['pollsubmit'])) {
 
 }
 
-html_draw_top("openprofile.js", "basetarget=_blank");
-
 if (bh_session_get_value('POSTS_PER_PAGE')) {
     $ppp = bh_session_get_value('POSTS_PER_PAGE');
     if ($ppp < 10) $ppp = 10;
@@ -192,16 +190,20 @@ if (bh_session_get_value('POSTS_PER_PAGE')) {
 $messages = messages_get($tid, $pid, $ppp);
 
 if (!$messages) {
+   html_draw_top();
    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
    html_draw_bottom();
    exit;
 }
 
 if (!$threaddata = thread_get($tid)) {
+   html_draw_top();
    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
    html_draw_bottom();
    exit;
 }
+
+html_draw_top("title="._stripslashes($threaddata['TITLE']), "openprofile.js", "basetarget=_blank");
 
 if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 

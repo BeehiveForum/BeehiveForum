@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.10 2005-01-30 14:10:25 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.11 2005-01-30 18:56:27 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -406,6 +406,103 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE PM ADD INDEX (TYPE)";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE USER_PREFS ADD SHOW_THUMBS CHAR(2) DEFAULT '2' NOT NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD SHOW_THUMBS CHAR(2) DEFAULT '2' NOT NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE USER_PREFS CHANGE PM_AUTO_PRUNE ";
+    $sql.= "PM_AUTO_PRUNE CHAR(3) DEFAULT '-60' NOT NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE USER_PREFS SET PM_AUTO_PRUNE = PM_AUTO_PRUNE_LENGTH ";
+    $sql.= "WHERE PM_AUTO_PRUNE = 'Y'";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE USER_PREFS SET PM_AUTO_PRUNE = PM_AUTO_PRUNE_LENGTH * -1 ";
+    $sql.= "WHERE PM_AUTO_PRUNE = 'N'";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
+    $sql.= "SNAME = 'pm_auto_prune_length' AND FID = $forum_fid";
+
+    if ($result = db_query($sql, $db_install)) {
+
+        list($pm_auto_prune_length) = db_fetch_array($result);
+
+        $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length ";
+        $sql.= "WHERE SVALUE = 'Y' AND SNAME = 'pm_auto_prune' ";
+        $sql.= "AND FID = $forum_fid";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+            $valid = false;
+            return;
+        }
+
+        $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length * -1 ";
+        $sql.= "WHERE SVALUE = 'N' AND SNAME = 'pm_auto_prune' ";
+        $sql.= "AND FID = $forum_fid";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+            $valid = false;
+            return;
+        }
+
+        $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = 'pm_auto_prune_length' ";
+        $sql.= "AND FID = $forum_fid";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+            $valid = false;
+            return;
+        }
+    }
+
+    $sql = "ALTER TABLE USER_PREFS DROP PM_AUTO_PRUNE_LENGTH";
 
     if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.18 2005-01-30 14:10:24 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.19 2005-01-30 18:56:26 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1106,7 +1106,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                                 '0' => array('show_pms'                   => 'Y',
                                              'pm_max_user_messages'       => '100',
                                              'pm_auto_prune'              => 'N',
-                                             'pm_auto_prune_length'       => '60',
+                                             'pm_auto_prune_length'       => '-60',
                                              'pm_allow_attachments'       => 'Y',
                                              'search_min_word_length'     => '3',
                                              'session_cutoff'             => '86400',

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.106 2005-01-30 00:23:32 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.107 2005-01-30 18:56:26 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -927,20 +927,17 @@ function pm_user_prune_folders($uid = false)
 
     $user_prefs = user_get_prefs($uid);
 
-    if (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == 'Y') {
+    if (isset($user_prefs['PM_AUTO_PRUNE']) && intval($user_prefs['PM_AUTO_PRUNE']) > 0) {
 
-        if (isset($user_prefs[' PM_AUTO_PRUNE_LENGTH']) && is_numeric($user_prefs[' PM_AUTO_PRUNE_LENGTH'])) {
+        $pm_prune_length = intval($user_prefs['PM_AUTO_PRUNE']);
+        $pm_prune_length = time() - ($pm_prune_length * DAY_IN_SECONDS);
 
-            $pm_prune_length = intval($user_prefs[' PM_AUTO_PRUNE_LENGTH']);
-            $pm_prune_length = time() - ($pm_prune_length * DAY_IN_SECONDS);
+        $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
+        $sql.= "((TYPE = TYPE & ". PM_READ. " AND TO_UID = '$uid') ";
+        $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid') ";
+        $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";
 
-            $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
-            $sql.= "((TYPE = TYPE & ". PM_READ. " AND TO_UID = '$uid') ";
-            $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid') ";
-            $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";
-
-            $result = db_query($sql, $db_pm_prune_folders);
-        }
+        $result = db_query($sql, $db_pm_prune_folders);
     }
 }
 
@@ -953,9 +950,10 @@ function pm_system_prune_folders()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (forum_get_setting('pm_auto_prune', 'Y', false)) {
+    $pm_prune_length = intval(forum_get_setting('pm_auto_prune'));
 
-        $pm_prune_length = intval(forum_get_setting('pm_auto_prune_length', false, 60));
+    if ($pm_prune_length > 0) {
+
         $pm_prune_length = time() - ($pm_prune_length * DAY_IN_SECONDS);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
@@ -979,10 +977,10 @@ function pm_auto_prune_enabled()
 
     $user_prefs = user_get_prefs($uid);
 
-    if (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == 'Y') return true;
+    if (isset($user_prefs['PM_AUTO_PRUNE']) && intval($user_prefs['PM_AUTO_PRUNE']) > 0) return true;
 
-    return forum_get_setting('pm_auto_prune', 'Y', false);
+    $pm_prune_length = intval(forum_get_setting('pm_auto_prune'));
 
-    return false;
+    return ($pm_prune_length > 0);
 }
 ?>

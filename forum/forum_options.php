@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.66 2005-01-30 17:21:56 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.67 2005-01-30 18:56:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,18 +162,28 @@ if (isset($_POST['submit'])) {
         $user_prefs['PM_INCLUDE_REPLY'] = "N";
     }
 
-    if (isset($_POST['pm_auto_prune']) && $_POST['pm_auto_prune'] == "Y") {
-        $user_prefs['PM_AUTO_PRUNE'] = "Y";
-    } else {
-        $user_prefs['PM_AUTO_PRUNE'] = "N";
-    }
+    if (isset($_POST['pm_auto_prune_enabled']) && $_POST['pm_auto_prune_enabled'] == "Y") {
 
-    if (isset($_POST['pm_auto_prune_length']) && is_numeric($_POST['pm_auto_prune_length'])) {
-        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = $_POST['pm_auto_prune_length'];
-    } else {
-        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = 60;
-    }
+        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
 
+            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'];
+
+        }else {
+
+            $user_prefs['PM_AUTO_PRUNE'] = "-60";
+        }
+
+    }else {
+
+        if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
+
+            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'] * -1;
+
+        }else {
+
+            $user_prefs['PM_AUTO_PRUNE'] = "-60";
+        }
+    }
 
     if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
         $user_prefs['MARK_AS_OF_INT'] = "Y";
@@ -699,13 +709,7 @@ echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_include_reply", "Y", $lang['includepminreply'], (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-
-if (isset($user_prefs['PM_AUTO_PRUNE_LENGTH']) && is_numeric($user_prefs['PM_AUTO_PRUNE_LENGTH'])) {
-    echo "                  <td>", form_checkbox("pm_auto_prune", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == "Y") ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), $user_prefs['PM_AUTO_PRUNE_LENGTH']), " {$lang['days']}</td>\n";
-}else {
-    echo "                  <td>", form_checkbox("pm_auto_prune", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == "Y") ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), 60), " {$lang['days']}</td>\n";
-}
-
+echo "                  <td>", form_checkbox("pm_auto_prune_enabled", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] > 0) ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($user_prefs['PM_AUTO_PRUNE']) ? ($user_prefs['PM_AUTO_PRUNE'] > 0 ? $user_prefs['PM_AUTO_PRUNE'] : $user_prefs['PM_AUTO_PRUNE'] * -1) : 60)), " {$lang['days']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

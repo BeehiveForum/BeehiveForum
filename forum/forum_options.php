@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.48 2004-08-14 15:11:44 hodcroftcj Exp $ */
+/* $Id: forum_options.php,v 1.49 2004-08-14 23:40:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -308,6 +308,9 @@ if (isset($_POST['submit'])) {
         if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
                 $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
         }
+        if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
+                $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
+        }
         if (isset($_POST['post_html'])) {
                 if ($_POST['post_html'] == 0) {
                         $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
@@ -483,7 +486,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 if ($user_prefs['POST_PAGE'] == 0) {
-        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -507,6 +510,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 $emots_disabled = $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISABLED;
 echo "                  <td>", form_checkbox("emots_disable", "Y", $lang['disableemoticonsinpostsbydefault'], $emots_disabled), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+$post_links = $user_prefs['POST_PAGE'] & POST_AUTO_LINKS;
+echo "                  <td>", form_checkbox("post_links", "Y", $lang['automaticallyparseurlsbydefault'], $post_links), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 if (($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0) {

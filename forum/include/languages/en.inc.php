@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.160 2004-08-14 23:15:57 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.161 2004-08-14 23:40:56 tribalonline Exp $ */
 
 // International English language file
 
@@ -747,7 +747,9 @@ $lang['usersinthread'] = "Users in thread";
 $lang['correctedcode'] = "Corrected code";
 $lang['submittedcode'] = "Submitted code";
 $lang['htmlinmessage'] = "HTML in message";
-$lang['emoticonsinmessage'] = "Emoticons in message";
+$lang['disableemoticonsinmessage'] = "Disable emoticons in message";
+$lang['automaticallyparseurls'] = "Automatically parse URLs";
+$lang['setthreadtohighinterest'] = "Set thread to high interest";
 $lang['enabledwithautolinebreaks'] = "Enabled with auto-linebreaks";
 $lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\\n\\nTo view your original code, select the \\'Submitted code\\' radio button.\\nTo view the modified code, select the \\'Corrected code\\' radio button.";
 $lang['messageoptions'] = "Message options";
@@ -933,7 +935,8 @@ $lang['containsinvalidchars'] = "contained invalid characters!";
 $lang['postpage'] = "Post Page";
 $lang['displayhtmltoolbar'] = "Display HTML toolbar";
 $lang['displayemoticonspanel'] = "Display emoticons panel";
-$lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in posts by default";
+$lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in messages by default";
+$lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages by default";
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebreaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";

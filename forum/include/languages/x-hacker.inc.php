@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.123 2004-08-14 23:15:57 rowan_hill Exp $ */
+/* $Id: x-hacker.inc.php,v 1.124 2004-08-14 23:40:56 tribalonline Exp $ */
 
 // International English language file
 
@@ -747,7 +747,9 @@ $lang['usersinthread'] = "u\$ers iN THR34D";
 $lang['correctedcode'] = "cOrR3C+3d COde";
 $lang['submittedcode'] = "5UBM1++ED C0De";
 $lang['htmlinmessage'] = "h+Ml in M3\$s@g3";
-$lang['emoticonsinmessage'] = "emOT1C0NS iN ME5\$@g3";
+$lang['disableemoticonsinmessage'] = "d154b73 3mo+1CoN5 IN M3\$S@ge";
+$lang['automaticallyparseurls'] = "4uT0m471c477y p4r53 UR75";
+$lang['setthreadtohighinterest'] = "537 7hR34d t0 H16H 1n73R357";
 $lang['enabledwithautolinebreaks'] = "ena8l3D w1+h au+0-liNE8r34ks";
 $lang['fixhtmlexplanation'] = "+H1\$ FORUm u53s H+ml F1L+eR1NG. y0UR SUBM1+teD htmL h45 b3EN moD1fiED 8Y +hE Ph1l+ErS 1N S0ME W@Y.\\N\\N+O vI3W yOUr OrI91N@L c0DE, \$El3C+ +HE \\'\$UbMI++ED COde\\' R@DI0 Bu++0N.\\N+O VIeW TEH M0d1pH13D c0dE, 53L3C+ +H3 \\'cOrR3C+eD cOD3\\' R@d1O BU+t0n.";
 $lang['messageoptions'] = "m35\$4GE OP+I0Ns";
@@ -934,6 +936,7 @@ $lang['postpage'] = "p0\$T P@gE";
 $lang['displayhtmltoolbar'] = "d1\$PL4y htmL T0OLB4R";
 $lang['displayemoticonspanel'] = "d1SpL@y 3M0TIc0N\$ p4neL";
 $lang['disableemoticonsinpostsbydefault'] = "D1S@bl3 3m0+1c0NS iN P0ST\$ 8Y D3F@Ult";
+$lang['automaticallyparseurlsbydefault'] = "4uT0m471c477y p4r53 UR75 iN P0ST\$ 8Y D3F@Ult";
 $lang['postinplaintextbydefault'] = "P0\$t IN pl41n TEXt bY D3f4ULT";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "poS+ In H+mL wi+h 4UT0-l1n3bR3@K5 bY DEPH4ult";
 $lang['postinhtmlbydefault'] = "p0\$+ 1N H+ML 8y Def4ul+";

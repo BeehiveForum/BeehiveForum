@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.33 2004-08-14 23:15:57 rowan_hill Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.34 2004-08-14 23:40:56 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -744,7 +744,9 @@ $lang['usersinthread'] = "Homies in thread";
 $lang['correctedcode'] = "The right shit";
 $lang['submittedcode'] = "Yo shit code";
 $lang['htmlinmessage'] = "Fly-ass code in yo message";
-$lang['emoticonsinmessage'] = "Faces n'shit in yo message";
+$lang['disableemoticonsinmessage'] = "Dizisable faces n'shit in yo message";
+$lang['automaticallyparseurls'] = "Make them hizyperlinks";
+$lang['setthreadtohighinterest'] = "Mark thrizead as shit I'm down wit";
 $lang['enabledwithautolinebreaks'] = "Fly-ass code with auto-linebreakin'";
 $lang['fixhtmlexplanation'] = "This forum uses fly-ass filtering, yo. Yo submitted fly-ass code has been modified by tha man in some way.\\n\\nTo view yo original code, select tha \\'Submitted code\\' radio button.\\nTo view tha modified code, select tha \\'Corrected code\\' radio button.";
 $lang['messageoptions'] = "Message optizioizns";
@@ -930,7 +932,8 @@ $lang['containsinvalidchars'] = "contained invalid characters!";
 $lang['postpage'] = "Post Page";
 $lang['displayhtmltoolbar'] = "Display HTML toolbar";
 $lang['displayemoticonspanel'] = "Display emoticons panel";
-$lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in posts by default";
+$lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in messages by default";
+$lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages by default";
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebreaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";

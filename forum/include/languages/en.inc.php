@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.245 2005-03-20 21:47:01 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.246 2005-03-21 10:43:18 decoyduck Exp $ */
 
 // International English language file
 
@@ -473,12 +473,6 @@ $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's 
 
 $lang['requirepostapproval'] = "Require Post Approval";
 
-$lang['userpermissions'] = "User Permissions";
-$lang['admintools'] = "Admin Tools";
-$lang['forumtools'] = "Forum Tools";
-
-$lang['globaluserpermissions'] = "Global user permissions";
-
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
 $lang['changedstatusforuser'] = "Changed user status for '%s'";
@@ -554,6 +548,15 @@ $lang['clearlog'] = "Clear Log";
 
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9, _ - characters";
 $lang['warningnoforums'] = "WARNING: You have no forums set up.";
+
+// Admin Global User Permissions
+
+$lang['userpermissions'] = "User Permissions";
+$lang['admintools'] = "Admin Tools";
+$lang['forumtools'] = "Forum Tools";
+
+$lang['globaluserpermissions'] = "Global user permissions";
+$lang['globalusershelptext'] = "Use this section to specify which users can access the Admin tools and / or Forum tools on <b>All</b> Forums. If you want to specify per-forum user access to Admin tools please visit that forum and apply the permissions to the user via Admin -&gt; Users";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 
@@ -1538,6 +1541,7 @@ $lang['attachmentsallowed'] = "Attachments allowed";
 $lang['htmlpostingallowed'] = "HTML posting allowed";
 $lang['signatureallowed'] = "Signature allowed";
 $lang['guestaccessallowed'] = "Guest access allowed";
+$lang['postapprovalrequired'] = "Post approval required";
 
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.69 2004-01-15 19:20:29 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.70 2004-01-15 19:42:32 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -273,7 +273,13 @@ function get_request_uri()
             $request_uri.= "{$key}=". rawurlencode($value). "&";
         }
     }
-    return $request_uri;    
+    
+    // Fix the slashes for forum running from sub-domain.
+    // Rather dirty hack this, but it's the only idea I've got.
+    // Any suggestions are welcome on how to handle this better.
+    
+    $request_uri = preg_replace("/\/\/+/", "/", $request_uri);
+    return ".$request_uri";
 }
 
 ?>

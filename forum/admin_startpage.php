@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.32 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.33 2004-03-20 19:21:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -65,6 +65,20 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     html_draw_bottom();
     exit;
 
+}
+
+// Check the contents of the start_main.php to see if it
+// is from BeehiveForum 0.4.1.
+
+$md5_check = md5(trim(implode('', file("./start_main.php"))));
+
+if ($md5_check != "283056ca390352695b29e66bcbba85c2") {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<p>{$lang['mustusebh401startmain']}</p>";
+    html_draw_bottom();
+    exit;
 }
 
 html_draw_top();

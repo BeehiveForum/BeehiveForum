@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.40 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.41 2004-03-20 19:21:30 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -406,6 +406,10 @@ $lang['fieldtypeexample1'] = "fo' Boom-box Bizuttons and Drizop Dizown shizit yo
 $lang['fieldtypeexample2'] = "Yo! To crizeate bizasic Gizender boom-box buttons, with two sizelectizions fo' Dogg and Bitch, yo gotta entizer: <b>Gender:Dogg;Bitch</b> in tha Itizem Nizame fizield.";
 $lang['madethreadsticky'] = "Bust a nut on tha thrizead";
 $lang['madethreadnonsticky'] = "Clean that shizit up";
+$lang['editedforumsettings'] = "Edited Forum Settings";
+$lang['sessionsuccessfullyended'] = "Session successfully ended for user";
+$lang['endedsessionforuser'] = "Ended session for user";
+
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 
@@ -793,6 +797,7 @@ $lang['showageanddob'] = "Shizow to othizers";
 $lang['browseanonymously'] = "Keep yo head dizown";
 $lang['showforumstats'] = "Shizow fizorm stats an shit";
 $lang['usewordfilter'] = "Enable word filter.";
+$lang['forceadminwordfilter'] = "Force use of admin word filter on all users (inc. guests)";
 $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";
@@ -986,6 +991,7 @@ $lang['forthcomingbirthdays'] = "Fizorthcizoming Bizirthdizays";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
+$lang['mustusebh401startmain'] = "You must be using the BeehiveForum start_main.php in order to edit your start page here";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

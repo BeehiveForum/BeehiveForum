@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.87 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.88 2004-03-20 19:21:30 decoyduck Exp $ */
 
 // International English language file
 
@@ -317,6 +317,10 @@ $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
 $lang['madethreadsticky'] = "Made Thread Sticky";
 $lang['madethreadnonsticky'] = "Made Thread Non-sticky";
+$lang['editedwordfilter'] = "Edited Word Filter";
+$lang['editedforumsettings'] = "Edited Forum Settings";
+$lang['sessionsuccessfullyended'] = "Session successfully ended for user";
+$lang['endedsessionforuser'] = "Ended session for user";
 $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
@@ -788,6 +792,7 @@ $lang['showageanddob'] = "Show to others";
 $lang['browseanonymously'] = "Browse forum anonymously";
 $lang['showforumstats'] = "Show forum stats at bottom of message pane";
 $lang['usewordfilter'] = "Enable word filter.";
+$lang['forceadminwordfilter'] = "Force use of admin word filter on all users (inc. guests)";
 $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";
@@ -979,6 +984,7 @@ $lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
+$lang['mustusebh401startmain'] = "You must be using the BeehiveForum start_main.php in order to edit your start page here";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.59 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.60 2004-03-20 19:21:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -126,10 +126,11 @@ if (isset($HTTP_GET_VARS['reset'])) {
 echo "<h1>{$lang['admin']} : {$lang['manageusers']}</h1>\n";
 
 if (isset($HTTP_POST_VARS['t_kick'])) {
-    list($uid) = array_keys($HTTP_POST_VARS['t_kick']);
-    if (admin_session_end($uid)) {
-        admin_addlog(0, 0, 0, 0, 0, $uid, 27);
-        echo "<p><b>Session successfully ended for user: <a href=\"javascript:void(0)\" onclick=\"openProfile($uid, '{$webtag['WEBTAG']}')\" target=\"_self\">", user_get_logon($uid), "</a></b></p>\n";
+    list($user_uid) = array_keys($HTTP_POST_VARS['t_kick']);
+    if (admin_session_end($user_uid)) {
+        $admin_uid = bh_session_get_value('UID');
+        admin_addlog($admin_uid, 0, 0, 0, 0, $user_uid, 27);
+        echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '{$webtag['WEBTAG']}')\" target=\"_self\">", user_get_logon($user_uid), "</a></b></p>\n";
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.20 2004-03-19 15:38:31 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.21 2004-03-20 19:21:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -85,13 +85,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
     }
     
-    if (isset($HTTP_POST_VARS['use_admin_filter'])) {
+    if (isset($HTTP_POST_VARS['use_admin_filter']) && $HTTP_POST_VARS['use_admin_filter'] == "Y") {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
     }else {
         $user_prefs['USE_ADMIN_FILTER'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['use_word_filter'])) {
+    if (isset($HTTP_POST_VARS['use_word_filter']) && $HTTP_POST_VARS['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
     }else {
         $user_prefs['USE_WORD_FILTER'] = "N";

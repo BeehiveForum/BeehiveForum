@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.101 2004-04-19 20:06:02 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.102 2004-04-20 21:18:24 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -283,38 +283,42 @@ function style_image($img)
     }
 }
 
-function bh_setcookie($name, $value = "", $expires = 0)
+function bh_setcookie($name, $value, $expires = 0)
 {
     global $cookie_domain;
-
-    $hostname = "";
 
     if (isset($_SERVER['HTTP_HOST']) && strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
 
         $hostname = $_SERVER['HTTP_HOST'];
+        $hostpath = "/";
 
         if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0) {
 
-            if (strstr($cookie_domain, $hostname)) {
+            $cookie_domain = preg_replace("/^http:\/\//", "", trim($cookie_domain));
+            $cookie_path = explode('/', $cookie_domain);
+            $cookie_domain = $cookie_path[0]; unset($cookie_path[0]);
+
+            $cookie_path = implode('/', $cookie_path);
+
+            $cookie_path = preg_replace("/[\/]+$/", "", $cookie_path);
+            $cookie_path = preg_replace("/^[\/]+/", "", $cookie_path);
+
+            if (strstr($hostname, $cookie_domain)) {
                 $hostname = $cookie_domain;
+            }
+
+            if (strlen(trim($cookie_path)) > 0) {
+                $hostpath = "/$cookie_path/";
             }
         }
 
         if (!strstr($hostname, 'localhost')) {
 
-            $hostname = str_replace("www", "", $hostname);
-            $hostname = str_replace("http://", "", $hostname);
-
-            if (substr($hostname, 0, 1) != ".") {
-                $hostname = ".{$hostname}";
-            }
-
-            setcookie($name, $value, $expires, '/', $hostname, 0);
-	    return true;
+            return setcookie($name, $value, $expires, $hostpath, $hostname, 0);
 	}
     }
 
-    setcookie($name, $value, $expires, '/', $hostname, 0);
+    return setcookie($name, $value, $expires);
 }
 
 ?>

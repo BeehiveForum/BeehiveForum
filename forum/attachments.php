@@ -45,13 +45,6 @@ $userinfo = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 $total_attachment_size = 0;
 $aid = $HTTP_GET_VARS['aid'];
 
-if (isset($HTTP_GET_VARS['filename']) && isset($HTTP_GET_VARS['owneruid'])) {
-
-  download_attachment($HTTP_GET_VARS['owneruid'], $HTTP_GET_VARS['filename']);
-  exit;
-  
-}
-
 html_draw_top();
 
 if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments')) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments', 0777);
@@ -89,10 +82,6 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     }
     
   }
-  
-}elseif ($HTTP_POST_VARS['submit'] == 'Move') {
-
-  move_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_VARS['old_aid'], $HTTP_POST_VARS['userfile']);
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Complete') {
 
@@ -147,7 +136,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?uid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&hash=". $attachments[$i]['aid']. "&filename=". $attachments[$i]['filename']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['aid']. $attachments[$i]['hash']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
       
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
@@ -212,7 +201,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?uid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&hash=". $attachments[$i]['aid']. "&filename=". $attachments[$i]['filename']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['aid']. $attachments[$i]['hash']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
       
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
@@ -227,7 +216,6 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "        ". form_input_hidden('old_aid', $attachments[$i]['aid']);
       echo "        ". form_submit('submit', 'Del'). "\n";
-      echo "        ". form_submit('submit', 'Move'). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";

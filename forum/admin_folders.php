@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.73 2004-05-04 23:04:22 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.74 2004-05-05 19:21:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -135,10 +135,6 @@ if (isset($_POST['submit'])) {
                 $folder_data['POSITION'] = $_POST['t_position'][$fid];
             }
 
-            if (isset($_POST['t_access'][$fid]) && is_numeric($_POST['t_access'][$fid])) {
-                $folder_data['ACCESS_LEVEL'] = $_POST['t_access'][$fid];
-            }
-
             folder_update($fid, $folder_data);
             admin_addlog(0, $fid, 0, 0, 0, 0, 7);
         }
@@ -151,7 +147,7 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -161,11 +157,7 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['position']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['foldername']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['accesslevel']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['threadcount']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['more']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['delete']}</td>\n";
 echo "                </tr>\n";
 
 $folder_array = folder_get_all();
@@ -174,32 +166,16 @@ if ($folder_array = folder_get_all()) {
 
     for ($i = 0; $i < sizeof($folder_array); $i++) {
 
-        if (!isset($folder_array[$i]['DESCRIPTION']) || is_null($folder_array[$i]['DESCRIPTION'])) $folder_array[$i]['DESCRIPTION'] = "";
-        if (!isset($folder_array[$i]['ALLOWED_TYPES']) || is_null($folder_array[$i]['ALLOWED_TYPES'])) $folder_array[$i]['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
-
         echo "                <tr>\n";
-        echo "                  <td align=\"left\">", form_dropdown_array("t_position[{$folder_array[$i]['FID']}]", range(1, sizeof($folder_array) + 1), range(1, sizeof($folder_array) + 1), $i + 1), form_input_hidden("t_old_position[{$folder_array[$i]['FID']}]", $i), form_input_hidden("t_fid[{$folder_array[$i]['FID']}]", $folder_array[$i]['FID']), "</td>\n";
-        echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder_array[$i]['FID']}\">{$folder_array[$i]['TITLE']}</a></td>\n";
 
-        // Draw the ACCESS_LEVEL dropdown
-        echo "                  <td align=\"left\">".form_dropdown_array("t_access[{$folder_array[$i]['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), $folder_array[$i]['ACCESS_LEVEL']);
-        echo form_input_hidden("t_old_access[{$folder_array[$i]['FID']}]", $folder_array[$i]['ACCESS_LEVEL']). "</td>\n";
+        if (sizeof($folder_array) > 1) {
+            echo "                  <td align=\"left\">", form_dropdown_array("t_position[{$folder_array[$i]['FID']}]", range(1, sizeof($folder_array) + 1), range(1, sizeof($folder_array) + 1), $i + 1), form_input_hidden("t_old_position[{$folder_array[$i]['FID']}]", $i), form_input_hidden("t_fid[{$folder_array[$i]['FID']}]", $folder_array[$i]['FID']), "</td>\n";
+        }else {
+            echo "                  <td align=\"left\">", $i + 1, "</td>\n";
+        }
 
+        echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder_array[$i]['FID']}\" title=\"Click To Edit Folder Details\">{$folder_array[$i]['TITLE']}</a></td>\n";
         echo "                  <td align=\"left\">". $folder_array[$i]['THREAD_COUNT']. "</td>\n";
-        echo "                  <td align=\"left\">", form_submit("t_more[{$folder_array[$i]['FID']}]", $lang['more']), "</td>\n";
-
-        if ($folder_array[$i]['ACCESS_LEVEL'] > 0) {
-            echo "                  <td align=\"left\" width=\"100\">", form_submit("t_permissions[{$folder_array[$i]['FID']}]", $lang['change']), "</td>\n";
-        }else {
-            echo "                  <td align=\"left\" width=\"100\">&nbsp;</td>\n";
-        }
-
-        if ($folder_array[$i]['THREAD_COUNT'] < 1) {
-            echo "                  <td align=\"left\" width=\"100\">", form_submit("t_delete[{$folder_array[$i]['FID']}]", $lang['delete']), "</td>\n";
-        }else {
-            echo "                  <td align=\"left\" width=\"100\">&nbsp;</td>\n";
-        }
-
         echo "                </tr>\n";
     }
 }

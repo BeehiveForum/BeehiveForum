@@ -69,7 +69,7 @@ if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
     } elseif ($HTTP_POST_VARS['type'] == "moderation") {
         $creator = links_get_creator_uid($HTTP_POST_VARS['lid']);
         if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) {
-            if ($HTTP_POST_VARS['delete'] == "confirm") {
+            if (isset($HTTP_POST_VARS['delete']) && $HTTP_POST_VARS['delete'] == "confirm") {
                 links_delete($HTTP_POST_VARS['lid']);
                 header_redirect("./links.php");
                 exit;

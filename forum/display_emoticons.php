@@ -21,13 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.22 2004-05-05 22:07:06 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.23 2004-05-09 00:57:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
+
+// Installation checking functions
+include_once("./include/install.inc.php");
+
+// Check that Beehive is installed correctly
+check_install();
 
 // Multiple forum support
 include_once("./include/forum.inc.php");

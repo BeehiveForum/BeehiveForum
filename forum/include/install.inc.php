@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.1 2004-05-08 23:56:37 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.2 2004-05-09 00:57:49 decoyduck Exp $ */
 
 include_once("./include/header.inc.php");
 
@@ -31,22 +31,25 @@ function check_install()
         header_redirect("./install/install.php");
     }
 
-    if (@dir_exists('install')) {
+    if (file_exists('install')) {
 
         html_draw_top();
 
+        echo "<h1>BeehiveForum Installation Error</h1>\n";
+        echo "<br />\n";
+        echo "<div align=\"center\">\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
         echo "    <tr>\n";
         echo "      <td>\n";
         echo "        <table class=\"box\">\n";
         echo "          <tr>\n";
         echo "            <td class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"400\">\n";
+        echo "              <table class=\"posthead\" width=\"500\">\n";
         echo "                <tr>\n";
         echo "                  <td colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>Please ensure both the 'install' directory is deleted before attempting to use your Beehive Forum.</td>\n";
+        echo "                  <td>Please ensure the 'install' directory is deleted before attempting to use your Beehive Forum.</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td>&nbsp;</td>\n";
@@ -58,6 +61,7 @@ function check_install()
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
+        echo "</div>\n";
 
         html_draw_bottom();
         exit;

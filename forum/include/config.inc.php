@@ -21,16 +21,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.81 2004-04-20 21:17:59 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.82 2004-05-09 00:57:49 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
+define('BEEHIVE_INSTALLED', 1);
+
 // Database stuff ------------------------------------------------------
 
-$db_server   = "localhost";     // the address of your MySQL server
-$db_username = "beehiveforum";  // your MySQL username
-$db_password = "password";      // your MySQL password
-$db_database = "beehiveforum";  // the name of your MySQL database
+$db_server   = "localhost";	// the address of your MySQL server
+$db_username = "beehiveforum";	// your MySQL username
+$db_password = "password";	// your MySQL password
+$db_database = "beehiveforum";	// the name of your MySQL database
 
 // ---------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.75 2004-05-04 17:10:18 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.76 2004-05-09 00:57:48 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -31,6 +31,12 @@ $forum_settings = get_forum_settings();
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
+
+// Installation checking functions
+include_once("./include/install.inc.php");
+
+// Check that Beehive is installed correctly
+check_install();
 
 include_once("./include/attachments.inc.php");
 include_once("./include/db.inc.php");

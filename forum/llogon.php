@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.34 2004-04-28 16:16:59 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.35 2004-05-09 00:57:48 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -31,6 +31,12 @@ include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
+
+// Installation checking functions
+include_once("./include/install.inc.php");
+
+// Check that Beehive is installed correctly
+check_install();
 
 // Multiple forum support
 include_once("./include/forum.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.35 2003-09-02 10:33:14 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.36 2003-10-21 20:00:08 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -242,7 +242,7 @@ function email_send_pw_reminder($logon)
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
 
-    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM ". forum_table("USER") ." WHERE LOGON '$logon'";
+    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM ". forum_table("USER") ." WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);
 
     if (db_num_rows($result)) {
@@ -252,7 +252,7 @@ function email_send_pw_reminder($logon)
 	if (isset($mailto['UID']) && isset($mailto['EMAIL']) && isset($mailto['PASSWD'])) {
 
             // get the right language for the email
-            $lang = email_get_language($tuid);
+            $lang = email_get_language($mailto['UID']);
 
 	    $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
             $message.= "{$lang['forgotpwemail_3']}:\n\n";
@@ -275,7 +275,7 @@ function email_send_pw_reminder($logon)
                 $recipient = $mailto['EMAIL'];
             }
 
-            if (mail($recipient, "{$lang['passwdresetrequest']} - $forum_name", $msg, $header)) return true;
+            if (mail($recipient, "{$lang['passwdresetrequest']} - $forum_name", $message, $header)) return true;
 	}
     }
 

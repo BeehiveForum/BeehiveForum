@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.121 2003-09-01 22:29:16 tribalonline Exp $ */
+/* $Id: post.php,v 1.122 2003-09-02 00:21:52 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -573,6 +573,8 @@ if ($newthread) {
 echo "</td></tr>\n";
 echo "<tr><td valign=\"top\" colspan=\"3\"><span style=\"font-size: 4px\">&nbsp;</span></td></tr>\n";
 
+
+// ------ OPTIONS BAR ------
 echo "<tr><td valign=\"top\" width=\"200\">\n";
 
 if ($newthread) {

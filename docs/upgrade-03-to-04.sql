@@ -1,11 +1,12 @@
 # Beehive Forum Database Creation
-# Version 0.3 to 0.4-dev Upgrade Script
+# version 0.3 to 0.4 Upgrade
 # http://beehiveforum.sourceforge.net/
 #
-# Schema generated using phpMyAdmin
-# (http://phpmyadmin.sourceforge.net)
-# Generation Time: Jul 24, 2003 at 21:37 PM
-# --------------------------------------------------------
+# Generation Time: Nov 09, 2003 at 03:58 PM
+#
+# $Id: upgrade-03-to-04.sql,v 1.29 2003-11-09 17:53:41 decoyduck Exp $
+#
+# --------------------------------------------------------#
 
 ALTER TABLE USER_PREFS ADD DOB date default '0000-00-00' NULL AFTER LASTNAME;
 ALTER TABLE USER_PREFS ADD LANGUAGE varchar(32) default NULL AFTER START_PAGE;
@@ -31,7 +32,9 @@ ALTER TABLE POLL DROP INDEX TID;
 
 ALTER TABLE POLL_VOTES ADD GROUP_ID MEDIUMINT UNSIGNED DEFAULT '0' NOT NULL AFTER OPTION_NAME;
 
-ALTER TABLE POST ADD EDITED DATETIME 
+ALTER TABLE POST ADD EDITED DATETIME;
+
+ALTER TABLE USER CHANGE LAST_LOGON LAST_LOGON DATETIME DEFAULT NULL;
 
 ALTER TABLE USER_POLL_VOTES ADD UID MEDIUMINT UNSIGNED DEFAULT '0' NOT NULL AFTER TID;
 

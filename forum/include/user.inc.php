@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.190 2004-08-14 21:57:39 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.191 2004-08-15 08:20:06 hodcroftcj Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -1110,34 +1110,14 @@ function user_is_active($uid)
 
 function user_allow_pm($uid)
 {
-    $db_pm_user_allow = db_connect();
-
-    if (!is_numeric($uid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PREFS ";
-    $sql.= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
-
-    $result = db_query($sql, $db_pm_user_allow);
-
-    return (db_num_rows($result) > 0);
+    $prefs = user_get_prefs($uid);
+    return $prefs['ALLOW_PM'] == "Y" ? true : false;
 }
 
 function user_allow_email($uid)
 {
-    $db_pm_user_allow = db_connect();
-
-    if (!is_numeric($uid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PREFS ";
-    $sql.= "WHERE UID = '$uid' AND ALLOW_EMAIL = 'Y'";
-
-    $result = db_query($sql, $db_pm_user_allow);
-
-    return (db_num_rows($result) > 0);
+    $prefs = user_get_prefs($uid);
+    return $prefs['ALLOW_EMAIL'] == "Y" ? true : false;
 }
 
 ?>

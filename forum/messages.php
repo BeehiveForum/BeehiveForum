@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.86 2003-08-31 16:21:06 hodcroftcj Exp $ */
+/* $Id: messages.php,v 1.87 2003-08-31 17:01:29 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -120,7 +120,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 }
 
 // Output XHTML header
-html_draw_top("openprofile.js");
+html_draw_top("openprofile.js", "basetarget=_blank");
 
 if (bh_session_get_value('POSTS_PER_PAGE')) {
     $ppp = bh_session_get_value('POSTS_PER_PAGE');

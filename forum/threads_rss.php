@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.9 2004-09-25 21:15:44 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.10 2004-09-27 11:21:27 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -67,14 +67,13 @@ $build_data = gmdate("D, d M Y H:i:s");
 // echo out the rss feed
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-echo "<?xml-stylesheet type=\"text/xsl\" href=\"styles/threads_rss.xsl\"?>\n";
 echo "<rss version=\"2.0\">\n";
-echo "\t<channel>\n";
-echo "\t\t<title>{$forum_name}</title>\n";
-echo "\t\t<link>http://{$forum_location}</link>\n";
-echo "\t\t<description>{$forum_name} - {$forum_location}</description>\n";
-echo "\t\t<lastBuildDate>{$build_data} UT</lastBuildDate>\n";
-echo "\t\t<generator>$forum_name / www.beehiveforum.net</generator>\n";
+echo "<channel>\n";
+echo "<title>{$forum_name}</title>\n";
+echo "<link>http://{$forum_location}</link>\n";
+echo "<description>{$forum_name} - {$forum_location}</description>\n";
+echo "<lastBuildDate>{$build_data} UT</lastBuildDate>\n";
+echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
 // Get the recent threads (10 of them)
 
@@ -98,24 +97,18 @@ if ($threads_array = threads_get_most_recent()) {
         $t_content = preg_replace('/[\r|\n|\r\n]/', ' ', $t_content);
         $t_content = trim(preg_replace('/[ ]+/', ' ', $t_content));
 
-        echo "\t\t\t<item>\n";
-        echo "\t\t\t\t<guid isPermaLink=\"true\">\n";
-        echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
-        echo "\t\t\t\t</guid>\n";
-        echo "\t\t\t\t<pubDate>{$modified_date} UT</pubDate>\n";
-        echo "\t\t\t\t<title>{$thread['TITLE']}</title>\n";
-        echo "\t\t\t\t<link>\n";
-        echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
-        echo "\t\t\t\t</link>\n";
-        echo "\t\t\t\t<description><![CDATA[{$t_content}]]></description>\n";
-        echo "\t\t\t\t<comments>\n";
-        echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
-        echo "\t\t\t\t</comments>\n";
-        echo "\t\t\t</item>\n";
+        echo "<item>\n";
+        echo "<guid isPermaLink=\"true\">http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
+        echo "<pubDate>{$modified_date} UT</pubDate>\n";
+        echo "<title>{$thread['TITLE']}</title>\n";
+        echo "<link>http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
+        echo "<description><![CDATA[{$t_content}]]></description>\n";
+        echo "<comments>http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
+        echo "</item>\n";
     }
 }
 
-echo "\t</channel>\n";
+echo "</channel>\n";
 echo "</rss>\n";
 
 ?>

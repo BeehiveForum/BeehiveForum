@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.18 2004-04-08 16:47:13 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.19 2004-04-09 12:42:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -481,20 +481,31 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['gzipcompression']}</td>\n";
 echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td>\n";
-echo "                          <fieldset>\n";
-echo "                            <legend>", form_checkbox("gzip_compress_output", "Y", $lang['compresspagesusinggzip'], forum_get_setting('gzip_compress_output', 'Y', false)), "</legend>\n";
-echo "                            &nbsp;{$lang['gzipcompressionlevel']}: ", form_dropdown_array("gzip_compress_level", range(1, 9), range(1, 9), forum_get_setting('gzip_compress_level', false, 1)), "\n";
-echo "                          </fieldset>\n";
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
+
+if (version_compare(phpversion(), "4.2.0")) {
+
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"3\">\n";
+    echo "                    <table class=\"posthead\" width=\"100%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td>\n";
+    echo "                          <fieldset>\n";
+    echo "                            <legend>", form_checkbox("gzip_compress_output", "Y", $lang['compresspagesusinggzip'], forum_get_setting('gzip_compress_output', 'Y', false)), "</legend>\n";
+    echo "                            &nbsp;{$lang['gzipcompressionlevel']}: ", form_dropdown_array("gzip_compress_level", range(1, 9), range(1, 9), forum_get_setting('gzip_compress_level', false, 1)), "\n";
+    echo "                          </fieldset>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+
+}else {
+
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"3\">", form_checkbox("gzip_compress_output", "Y", $lang['compresspagesusinggzip'], forum_get_setting('gzip_compress_output', 'Y', false)), "&nbsp;</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

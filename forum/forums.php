@@ -86,9 +86,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
 
 	if ($forum['UNREAD_TO_ME'] > 0) {
-            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} Unread Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
+            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
 	}else {
-            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} Unread Messages</a></td>\n";	}
+            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages</a></td>\n";	}
 
         echo "          <td width=\"20%\">{$forum['LAST_LOGON']}</td>\n";
         echo "        </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.98 2004-04-11 22:19:21 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.99 2004-04-12 18:42:35 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -119,18 +119,15 @@ function bh_session_check()
                         
                         $result = db_query($sql, $db_bh_session_check);
                             
-                        $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-                        $sql.= "WHERE FID = '{$table_data['FID']}' AND UID = '{$user_sess['UID']}'";
+                        $sql = "DELETE FROM VISITOR_LOG WHERE FID = '{$table_data['FID']}' ";
+                        $sql.= "AND UID = '{$user_sess['UID']}'";
 
                         $result = db_query($sql, $db_bh_session_check);
-
-                        if (db_affected_rows($db_bh_session_check) < 1 && $table_data) {
     
-                            $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                            $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
+                        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
+                        $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
     
-                            $result = db_query($sql, $db_bh_session_check);
-                        }
+                        $result = db_query($sql, $db_bh_session_check);
                     }
                 }
 
@@ -193,7 +190,7 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
     
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
     
     $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
@@ -215,18 +212,15 @@ function bh_session_init($uid)
 
     $result = db_query($sql, $db_bh_session_init);
 
-    $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-    $sql.= "WHERE FID = '{$table_data['FID']}' AND UID = '$uid'";
+    $sql = "DELETE FROM VISITOR_LOG WHERE FID = '{$table_data['FID']}' ";
+    $sql.= "AND UID = '$uid'";
 
     $result = db_query($sql, $db_bh_session_init);
 
-    if (db_affected_rows($db_bh_session_init) < 1 && $table_data) {
+    $sql = "INSERT INTO VISITOR_LOG (FID, UID, LAST_LOGON) ";
+    $sql.= "VALUES ('{$table_data['FID']}', '$uid', NOW())";
     
-        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-        $sql.= "VALUES ('$uid', '{$table_data['FID']}', NOW())";
-    
-        $result = db_query($sql, $db_bh_session_init);
-    }
+    $result = db_query($sql, $db_bh_session_init);
 
     bh_setcookie('bh_sess_hash', $user_hash);
 }

@@ -104,6 +104,7 @@ function get_active_users()
     $db_get_active_users = db_connect();
     
     $table_prefix = get_webtag(true);
+    $forum_webtag = get_webtag();
     
     $session_stamp = time() - $active_sess_cutoff;
 
@@ -118,7 +119,7 @@ function get_active_users()
     $sql.= "USER_PREFS.ANON_LOGON FROM SESSIONS SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
-    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.WEBTAG = '$forum_webtag' ";
     $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     $result = db_query($sql, $db_get_active_users);
@@ -206,7 +207,7 @@ function get_longest_thread()
     
     $table_prefix = get_webtag(true);
 
-    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_prefix}THREAD ";
+    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_prefix}THREAD THREAD ";
     $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
 
     $result = db_query($sql, $db_get_longest_thread);

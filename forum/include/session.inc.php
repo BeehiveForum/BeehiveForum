@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.78 2004-03-11 22:34:40 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.79 2004-03-12 14:30:56 decoyduck Exp $ */
 
 include_once("./include/format.inc.php");
 include_once("./include/forum.inc.php");
@@ -52,6 +52,7 @@ function bh_session_check()
     $ipaddress = get_ip_address();
     
     $table_prefix = get_webtag(true);
+    $forum_webtag = get_webtag();
 
     // Current server time.
 
@@ -67,7 +68,7 @@ function bh_session_check()
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
 	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER.STATUS, ";
-	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME FROM SESSIONS SESSIONS ";
+	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.WEBTAG FROM SESSIONS SESSIONS ";
 	$sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
         $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
@@ -103,6 +104,23 @@ function bh_session_check()
 	    if (isset($user_sess['UID']) && isset($user_sess['LOGON']) && isset($user_sess['PASSWD'])) {
 
                 if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
+                
+                    // If the user is not logged into the current forum, we should
+                    // do that now for them.
+                    
+                    if (strtoupper($user_sess['WEBTAG']) != strtoupper($forum_webtag)) {
+                    
+                        $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' AND WEBTAG = '$forum_webtag'";
+                        $result = db_query($sql, $db_bh_session_check);
+                        
+                        if (db_num_rows($result) == 0) {
+                        
+                            $sql = "INSERT INTO SESSIONS (HASH, UID, IPADDRESS, TIME, WEBTAG) ";
+                            $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '$ipaddress', NOW(), '$forum_webtag')";
+                        
+                            $result = db_query($sql, $db_bh_session_check);
+                        }
+                    }
 
                     // Everything checks out OK. If the user's session is older
                     // then 5 minutes we should update it.
@@ -112,9 +130,9 @@ function bh_session_check()
                         // Update the session
                         
                         $sql = "UPDATE SESSIONS ";
-                        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
-                        $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
-
+                        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), WEBTAG = '$forum_webtag' ";
+                        $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND WEBTAG = '$forum_webtag'";
+  
                         db_query($sql, $db_bh_session_check);
 
   			// Delete expires sessions 			
@@ -161,6 +179,7 @@ function bh_session_init($uid)
     $ipaddress = get_ip_address();
     
     $table_prefix = get_webtag(true);
+    $forum_webtag = get_webtag();
     
     $session_stamp = time() - $session_cutoff;
 
@@ -176,8 +195,8 @@ function bh_session_init($uid)
 
     $user_hash = md5(uniqid($ipaddress));
 
-    $sql = "INSERT INTO SESSIONS (HASH, UID, IPADDRESS, TIME) ";
-    $sql.= "VALUES ('$user_hash', '$uid', '$ipaddress', NOW())";
+    $sql = "INSERT INTO SESSIONS (HASH, UID, IPADDRESS, TIME, WEBTAG) ";
+    $sql.= "VALUES ('$user_hash', '$uid', '$ipaddress', NOW(), '$forum_webtag')";
 
     $result = db_query($sql, $db_bh_session_init);
 

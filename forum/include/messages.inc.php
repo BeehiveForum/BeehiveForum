@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.291 2004-07-26 17:48:53 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.292 2004-08-08 12:18:50 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -802,7 +802,8 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND POST.TID = THREAD.TID ";
     $sql.= "AND POST.PID = 1 ";
-    $sql.= "AND NOT ((USER_THREAD.INTEREST <=> -1) OR (USER_FOLDER.INTEREST <=> -1)) ";
+    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
@@ -862,7 +863,8 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "AND POST.TID = THREAD.TID ";
     $sql.= "AND POST.PID = 1 ";
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
-    $sql.= "AND NOT ((USER_THREAD.INTEREST <=> -1) OR (USER_FOLDER.INTEREST <=> -1)) ";
+    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";

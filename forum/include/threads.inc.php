@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.132 2004-07-30 00:00:23 rowan_hill Exp $ */
+/* $Id: threads.inc.php,v 1.133 2004-08-08 12:18:50 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -219,7 +219,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
-    $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
+    $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND USER.uid = POST2.from_uid ";
     $sql .= "AND POST2.tid = THREAD.tid ";
     $sql .= "AND POST2.pid = 1 ";
@@ -717,16 +717,16 @@ function threads_get_most_recent()
 
         $threads_get_array = array();
 
-	while ($thread = db_fetch_array($result)) {
+        while ($thread = db_fetch_array($result)) {
 
-	    if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
+            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-	    if (!($thread['RELATIONSHIP'] & USER_IGNORED) || $thread['LENGTH'] > 1) {
-	        $threads_get_array[] = $thread;
-	    }
-	}
+            if (!($thread['RELATIONSHIP'] & USER_IGNORED) || $thread['LENGTH'] > 1) {
+                $threads_get_array[] = $thread;
+            }
+        }
 
-	return $threads_get_array;
+        return $threads_get_array;
 
     }else {
         return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.74 2004-08-04 23:46:35 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.75 2004-08-08 12:18:50 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -1107,7 +1107,7 @@ function forum_search($search_string)
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
         $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
         $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
-        $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED <=> 1)) ";
+        $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1)) ";
         $sql.= "AND $forum_webtag_sql OR (FORUM_SETTINGS.SNAME = 'forum_keywords' ";
         $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_desc' ";
         $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_name' ";

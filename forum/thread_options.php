@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.30 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.31 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -218,12 +218,16 @@ if (isset($_POST['interest']) && is_numeric($_POST['interest']) && $_POST['inter
 
 if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
 
-    if (isset($_POST['rename'])) {
+    if (isset($_POST['rename'])&& strlen(trim(_stripslashes($_POST['rename']))) > 0) {
 
-        if ($_POST['rename'] != $threaddata['TITLE'] && trim($_POST['rename']) != "") {
+        $t_rename = trim(_stripslashes($_POST['rename']));
 
-            $threaddata['TITLE'] = _htmlentities($_POST['rename']);
-            thread_change_title($tid, $_POST['rename']);
+        if ($t_rename != $threaddata['TITLE']) {
+
+            $threaddata['TITLE'] = _htmlentities($t_rename);
+            thread_change_title($tid, $threaddata['TITLE']);
+
+            echo $threaddata['TITLE']; exit;
 
             post_add_edit_text($tid, 1);
 
@@ -329,7 +333,7 @@ if (perm_is_moderator($fid)) {
 
 html_draw_top("basetarget=_blank");
 
-echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} ", _stripslashes($threaddata['TITLE']), "</a></h1>\n";
+echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
 echo "<br />\n";
 
 if ($update) {
@@ -394,7 +398,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
     if (thread_is_poll($tid)) {
         echo "                  <td><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
     }else {
-        echo "                  <td>".form_input_text("rename", _stripslashes($threaddata['TITLE']), 30, 64)."</td>\n";
+        echo "                  <td>".form_input_text("rename", $threaddata['TITLE'], 30, 64)."</td>\n";
     }
 
     $thread_type = (thread_is_poll($tid) ? FOLDER_ALLOW_POLL_THREAD : FOLDER_ALLOW_NORMAL_THREAD);

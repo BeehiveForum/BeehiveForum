@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.226 2004-11-02 19:24:21 decoyduck Exp $ */
+/* $Id: post.php,v 1.227 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -200,8 +200,8 @@ if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['pr
 
     $newthread = true;
 
-    if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
-        $t_threadtitle = trim($_POST['t_threadtitle']);
+    if (isset($_POST['t_threadtitle']) && trim(_stripslashes($_POST['t_threadtitle']) != "")) {
+        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
     }else{
         $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
         $valid = false;
@@ -310,7 +310,7 @@ if (!isset($sig_html)) $sig_html = 0;
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
@@ -338,35 +338,43 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 }
 
 if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
-        if (isset($_POST['t_newthread'])) {
-                if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
-                        $t_threadtitle = trim($_POST['t_threadtitle']);
-                }
 
-                if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
-                        $t_fid = $_POST['t_fid'];
-                }
+    if (isset($_POST['t_newthread'])) {
+
+        if (isset($_POST['t_threadtitle']) && trim(_stripslashes($_POST['t_threadtitle']) != "")) {
+
+            $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
         }
 
-        if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-                $t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
+        if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+
+            $t_fid = $_POST['t_fid'];
         }
+    }
 
-        if (isset($_POST['t_sig'])) {
-                $t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
-        }
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
-        if (isset($_POST['emots_toggle_x'])) {
-                $page_prefs ^= POST_EMOTICONS_DISPLAY;
-        } else {
-                $page_prefs ^= POST_SIGNATURE_DISPLAY;
-        }
+        $t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
+    }
 
-        user_update_prefs($uid, array('POST_PAGE' => $page_prefs));
+    if (isset($_POST['t_sig'])) {
 
-        $fix_html = false;
+        $t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
+    }
+
+    if (isset($_POST['emots_toggle_x'])) {
+
+        $page_prefs ^= POST_EMOTICONS_DISPLAY;
+
+    }else {
+
+        $page_prefs ^= POST_SIGNATURE_DISPLAY;
+    }
+
+    user_update_prefs($uid, array('POST_PAGE' => $page_prefs));
+
+    $fix_html = false;
 }
-
 
 if (!isset($t_content)) $t_content = "";
 if (!isset($t_sig)) $t_sig = "";
@@ -765,7 +773,7 @@ if ($newthread) {
     echo "<h2>{$lang['folder']}:</h2>\n";
     echo folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")."\n";
     echo "<h2>{$lang['threadtitle']}:</h2>\n";
-    echo form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 0, 0, "style=\"width: 190px\"")."\n";
+    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
 
     echo form_input_hidden("t_newthread", "Y")."\n";
     echo "<br />\n";
@@ -773,9 +781,9 @@ if ($newthread) {
 }else {
 
     echo "<h2>".$lang['folder'].":</h2>\n";
-    echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
-    echo "<h2>".$lang['threadtitle'].":</h2>\n";
-    echo apply_wordfilter(_stripslashes($threaddata['TITLE'])), "\n";
+    echo $threaddata['FOLDER_TITLE'], "\n";
+    echo "<h2>".$lang['threadtitle'], ":</h2>\n";
+    echo apply_wordfilter($threaddata['TITLE']), "\n";
 
     echo form_input_hidden("t_tid", $reply_to_tid);
     echo form_input_hidden("t_rpid", $reply_to_pid)."\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.60 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.61 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -139,7 +139,7 @@ if (isset($_POST['t_newthread'])) {
 
     $newthread = true;
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
+    if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
     }else {
         $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
@@ -158,7 +158,7 @@ if (isset($_POST['t_newthread'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
         $t_content = _stripslashes($_POST['t_content']);
     }else {
         $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
@@ -205,7 +205,7 @@ if (isset($_POST['t_sig_html'])) {
 
         $fetched_sig = false;
 
-        if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+        if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
                 $t_sig = _stripslashes($_POST['t_sig']);
         }else {
                 $t_sig = "";

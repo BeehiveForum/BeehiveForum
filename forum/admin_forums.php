@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.25 2004-10-27 22:33:16 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.26 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -123,8 +123,8 @@ if (isset($_POST['submit'])) {
 
             $new_password = false;
 
-            if (isset($_POST['t_password'][$fid]) && strlen(trim($_POST['t_password'][$fid])) > 0) {
-                $new_password = $_POST['t_password'][$fid];
+            if (isset($_POST['t_password'][$fid]) && strlen(trim(_stripslashes($_POST['t_password'][$fid]))) > 0) {
+                $new_password = trim(_stripslashes($_POST['t_password'][$fid]));
             }
 
             if ($new_password) {
@@ -135,7 +135,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if (isset($_POST['t_webtag_new']) && strlen(trim($_POST['t_webtag_new'])) > 0) {
+    if (isset($_POST['t_webtag_new']) && strlen(trim(_stripslashes($_POST['t_webtag_new']))) > 0) {
 
         $new_webtag = strtoupper(trim(_stripslashes($_POST['t_webtag_new'])));
 
@@ -144,7 +144,7 @@ if (isset($_POST['submit'])) {
             $valid = false;
         }
 
-        if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
+        if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
             $new_name = trim(_stripslashes($_POST['t_name_new']));
         }else {
             $new_name = "";

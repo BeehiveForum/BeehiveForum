@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.17 2004-11-05 21:14:34 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.18 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -125,7 +125,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 if ($forum_array = forum_get($fid)) {
 
-    echo "<h1>{$lang['admin']} : {$lang['manageforums']} : ", _stripslashes($forum_array['FORUM_SETTINGS']['forum_name']), "</h1>\n";
+    echo "<h1>{$lang['admin']} : {$lang['manageforums']} : ", $forum_array['FORUM_SETTINGS']['forum_name'], "</h1>\n";
 
     if ($forum_array['ACCESS_LEVEL'] < 1) {
         echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";
@@ -133,8 +133,8 @@ if ($forum_array = forum_get($fid)) {
         exit;
     }
 
-    if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
-        $usersearch = trim($_POST['usersearch']);
+    if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
+        $usersearch = trim(_stripslashes($_POST['usersearch']));
     }else {
         $usersearch = '';
     }

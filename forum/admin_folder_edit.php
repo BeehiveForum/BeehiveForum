@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.19 2004-10-25 16:20:23 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.20 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -145,14 +145,14 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
+    if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
         $folder_data['TITLE'] = trim(_stripslashes($_POST['name']));
     }else {
         $error_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['description']) && strlen(trim($_POST['description'])) > 0) {
+    if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
         $folder_data['DESCRIPTION'] = trim(_stripslashes($_POST['description']));
     }else {
         $folder_data['DESCRIPTION'] = "";
@@ -231,11 +231,11 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['nameanddesc'
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                  <td>".form_input_text("name", _stripslashes($folder_data['TITLE']), 30, 64)."</td>\n";
+echo "                  <td>".form_input_text("name", $folder_data['TITLE'], 30, 64)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                  <td>".form_input_text("description", _stripslashes($folder_data['DESCRIPTION']), 30, 64)."</td>\n";
+echo "                  <td>".form_input_text("description", $folder_data['DESCRIPTION'], 30, 64)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.57 2004-11-03 23:31:55 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.58 2004-11-14 16:11:32 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -41,7 +41,7 @@ function thread_get_title($tid)
         $threadtitle = "The Unknown Thread";
     }else {
         $data = db_fetch_array($resource_id);
-        $threadtitle = _stripslashes($data['TITLE']);
+        $threadtitle = $data['TITLE'];
     }
 
     return $threadtitle;

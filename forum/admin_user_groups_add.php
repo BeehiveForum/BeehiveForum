@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.12 2004-11-01 23:58:42 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.13 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -138,14 +138,14 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
+    if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
         $t_name = trim(_stripslashes($_POST['t_name']));
     }else {
         $error_html = "<h2>{$lang['mustentergroupname']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim($_POST['t_description'])) > 0) {
+    if (isset($_POST['t_description']) && strlen(trim(_stripslashes($_POST['t_description']))) > 0) {
         $t_description = trim(_stripslashes($_POST['t_description']));
     }else {
         $t_description = "";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.2 2004-06-28 22:07:31 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.3 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,22 +48,22 @@ $lang = load_language_file();
 // the display of the password dialog again.
 
 if (isset($_GET['webtag'])) {
-    $webtag = trim($_GET['webtag']);
+    $webtag = trim(_stripslashes($_GET['webtag']));
 }else if (isset($_POST['webtag'])) {
-    $webtag = trim($_POST['webtag']);
+    $webtag = trim(_stripslashes($_POST['webtag']));
 }else {
     $webtag = false;
 }
 
 // Check we have the password in the POST data
 
-if (isset($_POST['forum_password']) && strlen(trim($_POST['forum_password'])) > 0) {
+if (isset($_POST['forum_password']) && strlen(trim(_stripslashes($_POST['forum_password']))) > 0) {
     $forum_password = $_POST['forum_password'];
 }else {
     $forum_password = "";
 }
 
-if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
     $ret = "./index.php?webtag=$webtag&final_uri=". rawurlencode($_POST['ret']);
 }else {
     $ret = "./index.php?webtag=$webtag";

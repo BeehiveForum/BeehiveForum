@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.2 2004-11-01 23:58:42 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.3 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,35 +121,35 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    if (isset($_POST['forum_name']) && strlen(trim($_POST['forum_name'])) > 0) {
+    if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
     }else {
         $error_html = "<h2>{$lang['mustsupplyforumname']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['forum_email']) && strlen(trim($_POST['forum_email'])) > 0) {
-        $new_forum_settings['forum_email'] = trim($_POST['forum_email']);
+    if (isset($_POST['forum_email']) && strlen(trim(_stripslashes($_POST['forum_email']))) > 0) {
+        $new_forum_settings['forum_email'] = trim(_stripslashes($_POST['forum_email']));
     }else {
         $error_html = "<h2>{$lang['mustsupplyforumemail']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['forum_desc']) && strlen(trim($_POST['forum_desc'])) > 0) {
-        $new_forum_settings['forum_desc'] = trim($_POST['forum_desc']);
+    if (isset($_POST['forum_desc']) && strlen(trim(_stripslashes($_POST['forum_desc']))) > 0) {
+        $new_forum_settings['forum_desc'] = trim(_stripslashes($_POST['forum_desc']));
     }else {
         $new_forum_settings['forum_desc'] = "";
     }
 
-    if (isset($_POST['forum_keywords']) && strlen(trim($_POST['forum_keywords'])) > 0) {
-        $new_forum_settings['forum_keywords'] = trim($_POST['forum_keywords']);
+    if (isset($_POST['forum_keywords']) && strlen(trim(_stripslashes($_POST['forum_keywords']))) > 0) {
+        $new_forum_settings['forum_keywords'] = trim(_stripslashes($_POST['forum_keywords']));
     }else {
         $new_forum_settings['forum_keywords'] = "";
     }
 
-    if (isset($_POST['default_style']) && strlen(trim($_POST['default_style'])) > 0) {
+    if (isset($_POST['default_style']) && strlen(trim(_stripslashes($_POST['default_style']))) > 0) {
 
-        $new_forum_settings['default_style'] = trim($_POST['default_style']);
+        $new_forum_settings['default_style'] = trim(_stripslashes($_POST['default_style']));
 
         if (!style_exists($new_forum_settings['default_style'])) {
 
@@ -162,8 +162,9 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['default_emoticons']) && strlen(trim($_POST['default_emoticons'])) > 0) {
-        $new_forum_settings['default_emoticons'] = trim($_POST['default_emoticons']);
+    if (isset($_POST['default_emoticons']) && strlen(trim(_stripslashes($_POST['default_emoticons']))) > 0) {
+
+        $new_forum_settings['default_emoticons'] = trim(_stripslashes($_POST['default_emoticons']));
 
         if (!emoticons_set_exists($new_forum_settings['default_emoticons'])) {
             $error_html = "<h2>{$lang['unknownemoticonsname']}</h2>\n";
@@ -175,8 +176,9 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['default_language']) && strlen(trim($_POST['default_language'])) > 0) {
-        $new_forum_settings['default_language'] = trim($_POST['default_language']);
+    if (isset($_POST['default_language']) && strlen(trim(_stripslashes($_POST['default_language']))) > 0) {
+
+        $new_forum_settings['default_language'] = trim(_stripslashes($_POST['default_language']));
 
         if (!_in_array($new_forum_settings['default_language'], $available_langs)) {
 
@@ -290,9 +292,9 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['attachments_enabled'] = "N";
     }
 
-    if (isset($_POST['attachment_dir']) && strlen(trim($_POST['attachment_dir'])) > 0) {
+    if (isset($_POST['attachment_dir']) && strlen(trim(_stripslashes($_POST['attachment_dir']))) > 0) {
 
-        $new_forum_settings['attachment_dir'] = trim($_POST['attachment_dir']);
+        $new_forum_settings['attachment_dir'] = trim(_stripslashes($_POST['attachment_dir']));
 
         if (!(@is_dir($new_forum_settings['attachment_dir']))) {
             @mkdir($new_forum_settings['attachment_dir'], 0755);

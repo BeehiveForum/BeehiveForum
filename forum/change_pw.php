@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.41 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.42 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -68,26 +68,26 @@ if (isset($_POST['submit'])) {
 
             if (isset($_POST['pw']) && isset($_POST['cpw'])) {
 
-                if (trim($_POST['pw']) == trim($_POST['cpw'])) {
+                if (trim(_stripslashes($_POST['pw']) == trim($_POST['cpw']))) {
 
-                    if (_htmlentities(trim($_POST['pw'])) != trim($_POST['pw'])) {
+                    if (_htmlentities(trim(_stripslashes($_POST['pw'])) != trim($_POST['pw']))) {
                         $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
                         $valid = false;
                     }
 
-                    if (!preg_match("/^[a-z0-9_-]+$/i", trim($_POST['pw']))) {
+                    if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['pw'])))) {
                         $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
                         $valid = false;
                     }
 
-                    if (strlen(trim($_POST['pw'])) < 6) {
+                    if (strlen(trim(_stripslashes($_POST['pw']))) < 6) {
                         $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
                         $valid = false;
                     }
 
                     if ($valid) {
 
-                        if (user_change_pw($_POST['uid'], trim($_POST['pw']), $_POST['key'])) {
+                        if (user_change_pw($_POST['uid'], trim(_stripslashes($_POST['pw']), $_POST['key']))) {
 
                             html_draw_top();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.46 2004-11-03 23:31:54 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.47 2004-11-14 16:11:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -100,7 +100,9 @@ function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_d
     $result = db_query($sql, $db_admin_get_log_entries);
 
     if (db_num_rows($result)) {
+
         while ($row = db_fetch_array($result)) {
+
             $admin_log_array[] = $row;
         }
     }

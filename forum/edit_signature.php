@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.41 2004-11-02 19:24:21 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.42 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,7 +119,7 @@ $valid = true;
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['sig_content']) && strlen(trim($_POST['sig_content'])) > 0) {
+    if (isset($_POST['sig_content']) && strlen(trim(_stripslashes($_POST['sig_content']))) > 0) {
         $t_sig_content = trim(_stripslashes($_POST['sig_content']));
     }else {
         $t_sig_content = "";

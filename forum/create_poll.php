@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.129 2004-11-02 19:24:21 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.130 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -212,7 +212,7 @@ if (isset($_POST['t_sig_html'])) {
 
         $fetched_sig = false;
 
-        if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+        if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
                 $t_sig = _stripslashes($_POST['t_sig']);
         }else {
                 $t_sig = "";
@@ -249,7 +249,7 @@ if (isset($_POST['cancel'])) {
 
     $valid = true;
 
-    if (strlen(trim($_POST['question'])) == 0) {
+    if (strlen(trim(_stripslashes($_POST['question']))) == 0) {
         $error_html = "<h2>{$lang['mustenterpollquestion']}</h2>";
         $valid = false;
     }
@@ -287,12 +287,12 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if ($valid && strlen(trim($_POST['answers'][0])) == 0) {
+    if ($valid && strlen(trim(_stripslashes($_POST['answers'][0]))) == 0) {
         $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
         $valid = false;
     }
 
-    if ($valid && strlen(trim($_POST['answers'][1])) == 0) {
+    if ($valid && strlen(trim(_stripslashes($_POST['answers'][1]))) == 0) {
         $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
         $valid = false;
     }
@@ -312,7 +312,7 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
+    if (isset($_POST['t_message_text']) && strlen(trim(_stripslashes($_POST['t_message_text']))) > 0) {
 
         $t_message_text = trim(_stripslashes($_POST['t_message_text']));
 
@@ -345,7 +345,7 @@ if (isset($_POST['cancel'])) {
 
 } else if (isset($_POST['sig_toggle_x'])) {
 
-        if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
+        if (isset($_POST['t_message_text']) && strlen(trim(_stripslashes($_POST['t_message_text']))) > 0) {
                 $t_message_text = _htmlentities(trim(_stripslashes($_POST['t_message_text'])));
         }
 
@@ -422,7 +422,7 @@ if ($valid && isset($_POST['submit'])) {
             $_POST['answers'][$key] = $answers[$key]->getContent();
         }
 
-        $_POST['question'] = trim($_POST['question']);
+        $_POST['question'] = trim(_stripslashes($_POST['question']));
 
         // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 

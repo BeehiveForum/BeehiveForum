@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.83 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.84 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,11 +104,13 @@ if (!$webtag = get_webtag($webtag_search)) {
 // Check that we have access to this forum
 
 if (!forum_check_access_level()) {
+
     $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (forum_get_setting('allow_polls', 'N', false)) {
+
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -185,14 +187,95 @@ if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_
 
 if (isset($_POST['preview']) || isset($_POST['submit'])) {
 
-    if ($valid && strlen(trim($_POST['answers'][0])) == 0) {
-        $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+    if (isset($_POST['question']) && strlen(trim(_stripslashes($_POST['question']))) > 0) {
+        $t_question = trim(_stripslashes($_POST['question']));
+    }else {
+        $error_html = "<h2>{$lang['mustspecifypollquestion']}</h2>";
         $valid = false;
     }
 
-    if ($valid && strlen(trim($_POST['answers'][1])) == 0) {
-        $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+    if (isset($_POST['answers']) && is_array($_POST['answers'])) {
+
+        foreach($_POST['answers'] as $t_answer) {
+
+            if (strlen(trim(_stripslashes($t_answer))) > 0) {
+
+                $t_answers[] = trim(_stripslashes($t_answer));
+            }
+        }
+
+        if (!isset($t_answers[0]) || strlen(trim(_stripslashes($t_answers[0]))) == 0) {
+            $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+            $valid = false;
+        }
+
+        if (!isset($t_answers[1]) || strlen(trim(_stripslashes($t_answers[1]))) == 0) {
+            $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+            $valid = false;
+        }
+    }
+
+    if (isset($_POST['answer_groups']) && is_array($_POST['answer_groups'])) {
+
+        foreach ($_POST['answer_groups'] as $key => $t_answer_group) {
+
+            if (isset($t_answers[$key])) {
+
+                $t_answer_groups[$key] = $t_answer_group;
+            }
+        }
+
+    }else {
+
+        $error_html = "<h2>{$lang['mustprovideanswergroups']}</h2>\n";
         $valid = false;
+    }
+
+    if (isset($_POST['poll_type']) && is_numeric($_POST['poll_type'])) {
+        $t_poll_type = $_POST['poll_type'];
+    }else {
+        $error_html = "<h2>{$lang['mustprovidepolltype']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['show_results']) && is_numeric($_POST['show_results'])) {
+        $t_show_results = $_POST['show_results'];
+    }else {
+        $error_html = "<h2>{$lang['mustprovidepollresultsdisplaytype']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['poll_vote_type']) && is_numeric($_POST['poll_vote_type'])) {
+        $t_poll_vote_type = $_POST['poll_vote_type'];
+    }else {
+        $error_html = "<h2>{$lang['mustprovidepoll_vote_type']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
+        $t_option_type = $_POST['option_type'];
+    }else {
+        $error_html = "<h2>{$lang['mustprovidepolloption_type']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
+        $t_change_vote = $_POST['change_vote'];
+    }else {
+        $error_html = "<h2>{$lang['mustprovidepoll_vote_type']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
+        $t_close_poll = $_POST['close_poll'];
+    }else {
+        $t_close_poll = false;
+    }
+
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+        $t_post_html = 'Y';
+    }else {
+        $t_post_html = 'N';
     }
 
     if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
@@ -200,12 +283,12 @@ if (isset($_POST['preview']) || isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if ($valid && $_POST['polltype'] == 2 && sizeof(array_unique($_POST['answer_groups']))  != 2) {
+    if ($valid && $t_poll_type == 2 && sizeof(array_unique($t_answer_groups))  != 2) {
         $error_html = "<h2>{$lang['tablepollmusthave2groups']}</h2>";
         $valid = false;
     }
 
-    if ($valid && $_POST['polltype'] == 2 && $_POST['changevote'] == 2) {
+    if ($valid && $t_poll_type == 2 && $t_change_vote == 2) {
         $error_html = "<h2>{$lang['nomultivotetabulars']}</h2>";
         $valid = false;
     }
@@ -237,7 +320,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td><h2>". (isset($_POST['question']) ? _htmlentities(_stripslashes($_POST['question'])) : thread_get_title($tid)). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td><h2>". (isset($t_question) ? _htmlentities($t_question) : thread_get_title($tid)). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -254,34 +337,26 @@ if ($valid && isset($_POST['preview'])) {
 
     $ans_h = 0;
 
-    if ($allow_html == true && isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+    if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
         $ans_h = 2;
     }
 
-    foreach($_POST['answers'] as $key => $answer_text) {
+    foreach($t_answers as $key => $answer_text) {
 
-        if (strlen(trim($answer_text)) > 0) {
+        $answer_tmp = new MessageText($ans_h, $answer_text);
+        $poll_answers_array[$key] = $answer_tmp->getContent();
 
-            $answer_tmp = new MessageText($ans_h, _stripslashes($answer_text));
-            $poll_answers_array[$key] = $answer_tmp->getContent();
+        srand((double)microtime()*1000000);
+        $poll_vote = rand(1, 10);
 
-            srand((double)microtime()*1000000);
-            $poll_vote = rand(1, 10);
+        if ($poll_vote > $max_value) $max_value = $poll_vote;
 
-            if ($poll_vote > $max_value) $max_value = $poll_vote;
-
-            $poll_votes_array[] = $poll_vote;
-            $totalvotes += $poll_vote;
-            $optioncount++;
-
-        }else {
-
-            unset($_POST['answers'][$key]);
-            unset($_POST['answer_groups'][$key]);
-        }
+        $poll_votes_array[] = $poll_vote;
+        $totalvotes += $poll_vote;
+        $optioncount++;
     }
 
-    $poll_groups_array = $_POST['answer_groups'];
+    $poll_groups_array = $t_answer_groups;
 
     // Construct the pollresults array that will be used to display the graph
     // Modified to handle the new Group ID.
@@ -291,11 +366,11 @@ if ($valid && isset($_POST['preview'])) {
                          'GROUP_ID'    => $poll_groups_array,
                          'VOTES'       => $poll_votes_array);
 
-    if ($_POST['polltype'] == 1) {
+    if ($t_poll_type == 1) {
 
         $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
 
-    }elseif ($_POST['polltype'] == 0)  {
+    }elseif ($t_poll_type == 0)  {
 
         $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
 
@@ -315,7 +390,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
 
-    if ($_POST['changevote'] == 1) {
+    if ($t_change_vote == 1) {
         $polldata['CONTENT'].= "{$lang['abletochangevote']}";
     }else {
         $polldata['CONTENT'].= "{$lang['notabletochangevote']}";
@@ -334,18 +409,29 @@ if ($valid && isset($_POST['preview'])) {
 
     // Work out when the poll will close.
 
-    if ($_POST['closepoll'] == 0) {
-        $poll_closes = gmmktime() + DAY_IN_SECONDS;
-    }elseif ($_POST['closepoll'] == 1) {
-        $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
-    }elseif ($_POST['closepoll'] == 2) {
-        $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
-    }elseif ($_POST['closepoll'] == 3) {
-        $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
-    }elseif ($_POST['closepoll'] == 4) {
-        $poll_closes = -1;
+    if ($t_close_poll == 0) {
+
+        $t_poll_closes = gmmktime() + DAY_IN_SECONDS;
+
+    }elseif ($t_close_poll == 1) {
+
+        $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
+
+    }elseif ($t_close_poll == 2) {
+
+        $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
+
+    }elseif ($t_close_poll == 3) {
+
+        $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
+
+    }elseif ($t_close_poll == 4) {
+
+        $t_poll_closes = -1;
+
     }else {
-        $poll_closes = false;
+
+        $t_poll_closes = false;
     }
 
     // Check HTML tick box, innit.
@@ -354,42 +440,48 @@ if ($valid && isset($_POST['preview'])) {
 
     $ans_h = 0;
 
-    if ($allow_html == true && isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+    if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
         $ans_h = 2;
     }
 
-    foreach($_POST['answers'] as $key => $poll_answer) {
-        $answers[$key] = new MessageText($ans_h, _stripslashes($poll_answer));
-        $_POST['answers'][$key] = $answers[$key]->getContent();
+    foreach($t_answers as $key => $poll_answer) {
+
+        $answers[$key] = new MessageText($ans_h, $poll_answer);
+        $t_answers[$key] = $answers[$key]->getContent();
     }
 
-    if ($_POST['polltype'] == 2) {
-        $_POST['pollvotetype'] = 1;
+    if ($t_poll_type == 2) {
+
+        $t_poll_vote_type = 1;
     }
 
-    foreach ($_POST['answers'] as $key => $value) {
+    foreach ($t_answers as $key => $value) {
+
         if (!isset($pollresults['OPTION_NAME'][$key])) {
+
             $pollresults['OPTION_NAME'][$key] = "";
         }
     }
 
-    foreach ($_POST['answer_groups'] as $key => $value) {
+    foreach ($t_answer_groups as $key => $value) {
+
         if (!isset($pollresults['GROUP_ID'][$key])) {
+
             $pollresults['GROUP_ID'][$key] = $value;
         }
     }
 
     $hardedit = false;
-    if ($_POST['answers'] != $pollresults['OPTION_NAME'] || $_POST['answer_groups'] != $pollresults['GROUP_ID']
-       ||  ($polldata['POLLTYPE'] != 2 && $_POST['polltype'] == 2)
-       || ($_POST['pollvotetype'] == 1 && $polldata['VOTETYPE'] == 0)) {
+
+    if ($t_answers != $pollresults['OPTION_NAME'] || $t_answer_groups != $pollresults['GROUP_ID'] || ($polldata['POLLTYPE'] != 2 && $t_poll_type == 2) || ($t_poll_vote_type == 1 && $polldata['VOTETYPE'] == 0)) {
         $hardedit = true;
     }
 
-    poll_edit($tid, $_POST['question'], $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype'], $_POST['optiontype'], $hardedit);
+    poll_edit($tid, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $hardedit);
     post_add_edit_text($tid, 1);
 
     if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+
         if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
     }
 
@@ -487,7 +579,7 @@ echo "    <tr>\n";
 echo "      <td><h2>{$lang['pollquestion']}</h2></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>", form_input_text('question', isset($_POST['question']) ? _htmlentities(_stripslashes($_POST['question'])) : thread_get_title($tid), 30, 64), "</td>\n";
+echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : thread_get_title($tid), 30, 64), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
@@ -507,38 +599,38 @@ echo "              <table border=\"0\" class=\"posthead\" cellpadding=\"0\" cel
 
 $available_answers = array(5, 10, 15, 20);
 
-if (isset($_POST['answercount'])) {
+if (isset($t_answer_count)) {
 
-    $answercount = $available_answers[$_POST['answercount']];
-    $answerselection = $_POST['answercount'];
+    $answer_count = $available_answers[$t_answer_count];
+    $answer_selection = $t_answer_count;
 
 }else {
 
     if (sizeof($pollresults['OPTION_ID']) <= 5) {
 
-        $answercount = 5;
-        $answerselection = 0;
+        $answer_count = 5;
+        $answer_selection = 0;
 
     }elseif (sizeof($pollresults['OPTION_ID']) > 5 && sizeof($pollresults['OPTION_ID']) <= 10) {
 
-        $answercount = 10;
-        $answerselection = 1;
+        $answer_count = 10;
+        $answer_selection = 1;
 
     }elseif (sizeof($pollresults['OPTION_ID']) > 10 && sizeof($pollresults['OPTION_ID']) <= 15) {
 
-        $answercount = 15;
-        $answerselection = 2;
+        $answer_count = 15;
+        $answer_selection = 2;
 
     }elseif (sizeof($pollresults['OPTION_ID']) > 15) {
 
-        $answercount = 20;
-        $answerselection = 3;
+        $answer_count = 20;
+        $answer_selection = 3;
     }
 }
 
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>{$lang['numberanswers']}: ", form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), $answerselection), "&nbsp;", form_submit('changecount', $lang['change']) , "</td>\n";
+echo "                  <td>{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $answer_selection), "&nbsp;", form_submit('changecount', $lang['change']) , "</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -555,29 +647,21 @@ echo "                  <td align=\"center\">Answer Group</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 
-$t_post_html = false;
-
-if (isset($_POST['t_post_html'])) {
-
-    if ($_POST['t_post_html'] == "Y") {
-
-        $t_post_html = true;
-
-    }else {
-
-        $t_post_html = false;
-    }
+if (isset($t_post_html) && $t_post_html == 'Y') {
+    $t_post_html = true;
+}else {
+    $t_post_html = false;
 }
 
-for ($i = 0; $i < $answercount; $i++) {
+for ($i = 0; $i < $answer_count; $i++) {
 
     echo "                <tr>\n";
     echo "                  <td>", ($i + 1), ". </td>\n";
     echo "                  <td>";
 
-    if (isset($_POST['answers'][$i])) {
+    if (isset($t_answers[$i])) {
 
-        echo form_input_text("answers[$i]", _htmlentities(clean_emoticons(_stripslashes($_POST['answers'][$i]))), 40, 255);
+        echo form_input_text("answers[$i]", _htmlentities(clean_emoticons($t_answers[$i])), 40, 255);
 
     }else {
 
@@ -587,7 +671,7 @@ for ($i = 0; $i < $answercount; $i++) {
 
             if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
 
-                if (!isset($_POST['t_post_html'])) $t_post_html = true;
+                $t_post_html = true;
 
                 echo form_input_text("answers[$i]", _htmlentities($pollresults['OPTION_NAME'][$i]), 40, 255);
 
@@ -605,19 +689,19 @@ for ($i = 0; $i < $answercount; $i++) {
     echo "  </td>\n";
     echo "  <td align=\"center\">";
 
-    if (isset($_POST['answer_groups'][$i])) {
+    if (isset($t_answer_groups[$i])) {
 
-        echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), $_POST['answer_groups'][$i]), "</td>\n";
+        echo form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), $t_answer_groups[$i]), "</td>\n";
 
     }else {
 
         if (isset($pollresults['GROUP_ID'][$i])) {
 
-            echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), $pollresults['GROUP_ID'][$i]), "</td>\n";
+            echo form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), $pollresults['GROUP_ID'][$i]), "</td>\n";
 
         }else {
 
-            echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), 1), "</td>\n";
+            echo form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), 1), "</td>\n";
         }
     }
 
@@ -638,6 +722,7 @@ echo "            </td>\n";
 echo "          </tr>\n";
 
 if ($polldata['POLLTYPE'] == 0 || $polldata['POLLTYPE'] == 1) {
+
         echo "          <tr>\n";
         echo "            <td>&nbsp;</td>\n";
         echo "          </tr>\n";
@@ -651,15 +736,15 @@ if ($polldata['POLLTYPE'] == 0 || $polldata['POLLTYPE'] == 1) {
         echo "            <td>\n";
         echo "              <table border=\"0\" width=\"400\">\n";
         echo "                <tr>\n";
-        echo "                  <td>", form_radio('polltype', '2', $lang['tablegraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 2 : $polldata['POLLTYPE'] == 2), "</td>\n";
+        echo "                  <td>", form_radio('poll_type', '2', $lang['tablegraph'], isset($t_poll_type) ? $t_poll_type == 2 : $polldata['POLLTYPE'] == 2), "</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
         echo "          </tr>\n";
 }
 
-
 if ($polldata['VOTETYPE'] == 0) {
+
         echo "          <tr>\n";
         echo "            <td>&nbsp;</td>\n";
         echo "          </tr>\n";
@@ -673,7 +758,7 @@ if ($polldata['VOTETYPE'] == 0) {
         echo "            <td>\n";
         echo "              <table border=\"0\" width=\"400\">\n";
         echo "                <tr>\n";
-        echo "                  <td width=\"50%\">", form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 1 : $polldata['VOTETYPE'] == 1), "</td>\n";
+        echo "                  <td width=\"50%\">", form_radio('poll_vote_type', '1', $lang['pollvotepub'], isset($t_poll_vote_type) ? $t_poll_vote_type == 1 : $polldata['VOTETYPE'] == 1), "</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -687,15 +772,11 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-
-
-
 echo "  <h2>{$lang['softedit']}</h2>\n";
 echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table border=\"0\" class=\"posthead\" width=\"500\">\n";
-
 echo "          <tr>\n";
 echo "            <td><h2>{$lang['optionsdisplay']}</h2></td>\n";
 echo "          </tr>\n";
@@ -706,8 +787,8 @@ echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <table border=\"0\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"30%\">", form_radio('optiontype', '0', $lang['radios'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 0 : $polldata['OPTIONTYPE'] == 0), "</td>\n";
-echo "                  <td width=\"30%\">", form_radio('optiontype', '1', $lang['dropdown'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 1 : $polldata['OPTIONTYPE'] == 1), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('option_type', '0', $lang['radios'], isset($t_option_type) ? $t_option_type == 0 : $polldata['OPTIONTYPE'] == 0), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('option_type', '1', $lang['dropdown'], isset($t_option_type) ? $t_option_type == 1 : $polldata['OPTIONTYPE'] == 1), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -725,9 +806,9 @@ echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <table border=\"0\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"25%\">", form_radio('changevote', '1', $lang['yes'], isset($_POST['changevote']) ? $_POST['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1), "</td>\n";
-echo "                  <td width=\"25%\">", form_radio('changevote', '0', $lang['no'], isset($_POST['changevote']) ? $_POST['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0), "</td>\n";
-echo "                  <td>", form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($_POST['changevote']) ? $_POST['changevote'] == 2 : $polldata['CHANGEVOTE'] == 2), "</td>\n";
+echo "                  <td width=\"25%\">", form_radio('change_vote', '1', $lang['yes'], isset($t_change_vote) ? $t_change_vote == 1 : $polldata['CHANGEVOTE'] == 1), "</td>\n";
+echo "                  <td width=\"25%\">", form_radio('change_vote', '0', $lang['no'], isset($t_change_vote) ? $t_change_vote == 0 : $polldata['CHANGEVOTE'] == 0), "</td>\n";
+echo "                  <td>", form_radio('change_vote', '2', $lang['allowmultiplevotes'], isset($t_change_vote) ? $t_change_vote == 2 : $polldata['CHANGEVOTE'] == 2), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -745,11 +826,14 @@ echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <table border=\"0\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"30%\">", form_radio('polltype', '0', $lang['horizgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 0 : $polldata['POLLTYPE'] == 0), "</td>\n";
-echo "                  <td width=\"30%\">", form_radio('polltype', '1', $lang['vertgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 1 : $polldata['POLLTYPE'] == 1), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('poll_type', '0', $lang['horizgraph'], isset($t_poll_type) ? $t_poll_type == 0 : $polldata['POLLTYPE'] == 0), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('poll_type', '1', $lang['vertgraph'], isset($t_poll_type) ? $t_poll_type == 1 : $polldata['POLLTYPE'] == 1), "</td>\n";
+
 if ($polldata['POLLTYPE'] == 2) {
-        echo "                  <td>", form_radio('polltype', '2', $lang['tablegraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 2 : $polldata['POLLTYPE'] == 2), "</td>\n";
+
+    echo "                  <td>", form_radio('polltype', '2', $lang['tablegraph'], isset($t_poll_type) ? $t_poll_type == 2 : $polldata['POLLTYPE'] == 2), "</td>\n";
 }
+
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -767,12 +851,17 @@ echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <table border=\"0\" width=\"400\">\n";
 echo "                <tr>\n";
+
 if ($polldata['VOTETYPE'] == 0) {
-        echo "                  <td width=\"50%\">", form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 0 : $polldata['VOTETYPE'] == 0), "</td>\n";
-} else {
-        echo "                  <td width=\"50%\">", form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 0 : $polldata['VOTETYPE'] == 0), "</td>\n";
-        echo "                  <td width=\"50%\">", form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 1 : $polldata['VOTETYPE'] == 1), "</td>\n";
+
+    echo "                  <td width=\"50%\">", form_radio('poll_vote_type', '0', $lang['pollvoteanon'], isset($t_poll_vote_type) ? $t_poll_vote_type == 0 : $polldata['VOTETYPE'] == 0), "</td>\n";
+
+}else {
+
+    echo "                  <td width=\"50%\">", form_radio('poll_vote_type', '0', $lang['pollvoteanon'], isset($t_poll_vote_type) ? $t_poll_vote_type == 0 : $polldata['VOTETYPE'] == 0), "</td>\n";
+    echo "                  <td width=\"50%\">", form_radio('poll_vote_type', '1', $lang['pollvotepub'], isset($t_poll_vote_type) ? $t_poll_vote_type == 1 : $polldata['VOTETYPE'] == 1), "</td>\n";
 }
+
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -790,8 +879,8 @@ echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <table border=\"0\" width=\"300\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"50%\">", form_radio('showresults', '1', $lang['yes'], isset($_POST['showresults']) ? $_POST['showresults'] == 1 : $polldata['SHOWRESULTS'] == 1), "</td>\n";
-echo "                  <td width=\"50%\">", form_radio('showresults', '0', $lang['no'], isset($_POST['showresults']) ? $_POST['showresults'] == 0 : $polldata['SHOWRESULTS'] == 0), "</td>\n";
+echo "                  <td width=\"50%\">", form_radio('show_results', '1', $lang['yes'], isset($t_show_results) ? $t_show_results == 1 : $polldata['SHOWRESULTS'] == 1), "</td>\n";
+echo "                  <td width=\"50%\">", form_radio('show_results', '0', $lang['no'], isset($t_show_results) ? $t_show_results == 0 : $polldata['SHOWRESULTS'] == 0), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -803,7 +892,7 @@ echo "          <tr>\n";
 echo "            <td>{$lang['changewhenpollcloses']}</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td>", form_dropdown_array('closepoll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($_POST['closepoll']) ? $_POST['closepoll'] : 5), "</td>\n";
+echo "            <td>", form_dropdown_array('close_poll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($t_close_poll) ? $t_close_poll : 5), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>&nbsp;</td>\n";

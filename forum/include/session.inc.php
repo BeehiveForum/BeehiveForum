@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.57 2003-11-20 22:14:31 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.58 2003-11-20 22:37:50 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -59,16 +59,16 @@ function bh_session_check()
 
 	if (db_num_rows($result)) {
 
-	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
+	    $user_sess_check = db_fetch_array($result, MYSQL_ASSOC);
 
-            if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
+            if (user_check_logon($user_sess_check['UID'], $user_sess_check['LOGON'], $user_sess_check['PASSWD'])) {
 
                 // Everything checks out OK, update the user's SESSION entry
                 // in the database.
 
                 $sql = "UPDATE ". forum_table("SESSIONS"). " ";
                 $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
-                $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
+                $sql.= "WHERE SESSID = {$user_sess_check['SESSID']}";
 
                 db_query($sql, $db_bh_session_check);
 
@@ -86,7 +86,18 @@ function bh_session_check()
 
 function bh_session_get_value($session_key)
 {
-    global $HTTP_COOKIE_VARS, $default_style, $default_language;
+    global $user_sess;
+    
+    if (isset($user_sess[$session_key])) return $user_sess[$session_key];
+
+    return false;
+}
+
+// Loads the user's session. Needs to be called by each page.
+
+function bh_load_session()
+{
+    global $HTTP_COOKIE_VARS, $default_style, $default_language, $user_sess;
 
     $db_bh_session_get_value = db_connect();
 
@@ -108,34 +119,28 @@ function bh_session_get_value($session_key)
 
 	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
-	    if (isset($user_sess['UID']) && is_numeric($user_sess['UID']) && $user_sess['UID'] > 0) {
+	    if (isset($user_sess['UID']) && (!is_numeric($user_sess['UID']) || $user_sess['UID'] == 0)) {
 
-	        if (isset($user_sess[$session_key])) return $user_sess[$session_key];
+                // If we're still here, then in all probability we're a guest
+
+                $user_sess = array('UID'            => 0,
+                                   'LOGON'          => 'GUEST',
+                                   'PASSWD'         => md5('GUEST'),
+                                   'STATUS'         => 0,
+                                   'POSTS_PER_PAGE' => 5,
+                                   'TIMEZONE'       => 0,
+                                   'DL_SAVING'      => 0,
+                                   'MARK_AS_OF_INT' => 0,
+                                   'FONT_SIZE'      => 10,
+                                   'STYLE'          => $default_style,
+                                   'VIEW_SIGS'      => 0,
+                                   'START_PAGE'     => 0,
+                                   'LANGUAGE'       => $default_language,
+                                   'PM_NOTIFY'      => 'N',
+                                   'SHOW_STATS'     => 1);
 	    }
 	}
-
-	// If we're still here, then in all probability we're a guest
-
-        $user_sess = array('UID'            => 0,
-                           'LOGON'          => 'GUEST',
-                           'PASSWD'         => md5('GUEST'),
-                           'STATUS'         => 0,
-                           'POSTS_PER_PAGE' => 5,
-                           'TIMEZONE'       => 0,
-                           'DL_SAVING'      => 0,
-                           'MARK_AS_OF_INT' => 0,
-                           'FONT_SIZE'      => 10,
-                           'STYLE'          => $default_style,
-                           'VIEW_SIGS'      => 0,
-                           'START_PAGE'     => 0,
-                           'LANGUAGE'       => $default_language,
-                           'PM_NOTIFY'      => 'N',
-                           'SHOW_STATS'     => 1);
-
-	if (isset($user_sess[$session_key])) return $user_sess[$session_key];
     }
-
-    return false;
 }
 
 // Initialises the session
@@ -219,5 +224,10 @@ function get_request_uri()
         return $request_uri;
     }
 }
+
+// Load the user's session data into a variable to
+// save querying multiple times each page.
+
+bh_load_session();
 
 ?>

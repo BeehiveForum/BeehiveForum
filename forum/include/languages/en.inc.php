@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.31 2003-08-10 17:30:51 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.32 2003-08-30 00:16:23 decoyduck Exp $ */
 
 // International English language file
 
@@ -128,6 +128,8 @@ $lang['print'] = "Print";
 $lang['sticky'] = "Sticky";
 $lang['polls'] = "Polls";
 $lang['user'] = "User";
+$lang['enabled'] = "Enabled";
+$lang['disabled'] = "Disabled";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -465,6 +467,7 @@ $lang['currentlyloggedinas'] = "You are currently logged in as";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 
+$lang['postmessage'] = "Post message";
 $lang['selectfolder'] = "Select folder";
 $lang['messagecontainsHTML'] = "Message Contains HTML";
 $lang['notincludingsignature'] = "(not including signature)";
@@ -484,6 +487,13 @@ $lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in
 $lang['cannotpostthisthreadtype'] = "You cannot post this thread type as there are no available folders that allow it.";
 $lang['threadisclosedforposting'] = "This thread is closed, you cannot post in it!";
 $lang['moderatorthreadclosed'] = "Warning: this thread is closed for posting to normal users.";
+$lang['threadclosed'] = "Thread closed";
+$lang['usersinthread'] = "Users in thread";
+$lang['correctedcode'] = "Corrected code";
+$lang['submittedcode'] = "Submitted code";
+$lang['htmlinmessage'] = "HTML in message";
+$lang['enabledwithautolinebreaks'] = "Enabled with auto-linebreaks";
+$lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\\n\\nTo view your original code, select the \\'Submitted code\\' radio button.\\nTo view the modified code, select the \\'Corrected code\\' radio button.";
 
 // Message display (messages.php) --------------------------------------
 
@@ -810,6 +820,32 @@ $lang['subscribed'] = "Subscribed";
 $lang['ignorethisfolder'] = "Ignore This Folder";
 $lang['stopignoringthisfolder'] = "Stop Ignoring This Folder";
 $lang['stickythreads'] = "Sticky Threads";
-$lang['mostunreadposts'] = "Most unread posts"
+$lang['mostunreadposts'] = "Most unread posts";
+
+// HTML toolbar (htmltools.inc.php) ------------------------------------
+$lang['bold'] = "Bold";
+$lang['italic'] = "Italic";
+$lang['underline'] = "Underline";
+$lang['leftalign'] = "Left-align";
+$lang['center'] = "Center";
+$lang['rightalign'] = "Right-align";
+$lang['list'] = "List";
+$lang['indenttext'] = "Indent text";
+$lang['code'] = "Code";
+$lang['quote'] = "Quote";
+$lang['horizontalrule'] = "Horizontal rule";
+$lang['image'] = "Image";
+$lang['hyperlink'] = "Hyperlink";
+$lang['fontface'] = "Font Face";
+$lang['size'] = "Size";
+$lang['colour'] = "Colour";
+$lang['red'] = "Red";
+$lang['orange'] = "Orange";
+$lang['yellow'] = "Yellow";
+$lang['green'] = "Green";
+$lang['blue'] = "Blue";
+$lang['indigo'] = "Indigo";
+$lang['violet'] = "Violet";
+$lang['white'] = "White";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.36 2003-08-20 02:20:45 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.37 2003-08-30 00:16:23 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -29,7 +29,7 @@ require_once("./include/form.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/format.inc.php");
 
-function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
+function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "")
 {
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
@@ -44,7 +44,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
         $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
     }
 
-    return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);
+    return form_dropdown_sql($field_name.$suffix, $sql, $default_fid, $custom_html);
 }
 
 function folder_get_title($fid)

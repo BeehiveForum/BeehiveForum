@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.45 2003-08-29 00:09:27 decoyduck Exp $ */
+/* $Id: index.php,v 1.46 2003-08-30 00:16:21 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -39,7 +39,7 @@ require_once("./include/lang.inc.php");
 header_no_cache();
 
 if (!isset($HTTP_COOKIE_VARS['bh_remember_username'])) {
-    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+    setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 }
 
 $top_html   = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/top.html";

@@ -342,22 +342,29 @@ A		{
           background-color: #A5D149
 }
 
+.quotetext {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		font-size: 8pt;
+		margin-top: 5px;
+		margin-left: 40px;
+		margin-right: 10px;
+		padding: 3px;
+}
 .code {
 		font-family: monospace;
 		border: 1px solid #CCCCCC;
 		background-color: #EEEEEE;
-		margin-top: 10px;
+		margin-top: 0px;
 		margin-bottom: 10px;
 		margin-left: 40px;
 		margin-right: 10px;
 		padding: 3px;
 }
-
 .quote {
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		border: 1px solid #CCCCCC;
 		background-color: #EEEEEE;
-		margin-top: 10px;
+		margin-top: 0px;
 		margin-bottom: 10px;
 		margin-left: 40px;
 		margin-right: 10px;
@@ -366,7 +373,7 @@ A		{
 
 .tools {
 		margin: 0;
-		width: 350px;
+		width: 410px;
 		padding: 2px;
 		background: #A5D149;
 		border-top: 1px solid buttonhighlight;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.50 2003-08-29 00:09:27 decoyduck Exp $ */
+/* $Id: register.php,v 1.51 2003-08-30 00:16:21 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -270,16 +270,16 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           for ($i = 0; $i < sizeof($username_array); $i++) {
 
-            bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
-            bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
+            setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
+            setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
+            setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
 
           }
 
           // set / update the cookie that remembers if the user
           // has any logon form data.
 
-          bh_setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS, '', str_replace('www', '', strtolower($HTTP_SERVER_VARS['HTTP_HOST'])));
+          setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
 
           html_draw_top();
 

@@ -23,9 +23,6 @@ USA
 
 // Frameset for thread list and messages
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
@@ -34,39 +31,66 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
+require_once("./include/forum.inc.php");
+require_once("./include/db.inc.php");
+require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
-
-html_draw_top();
+require_once("./include/form.inc.php");
 
 if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
+
+    html_draw_top();
     echo "<h1>Access Denied</h1>\n";
     echo "<p>You do not have permission to use this section.</p>";
     html_draw_bottom();
     exit;
+
 }
 
-echo "<table border=\"0\" width=\"100%\">\n";
+html_draw_top();
+
+if (isset($HTTP_POST_VARS['save'])) {
+
+    $content = stripslashes($HTTP_POST_VARS['content']);
+    $content = str_replace(chr(13), '', $content);
+
+    $fp = fopen('./start_main.php', 'w');
+    fwrite($fp, $content);
+    fclose($fp);
+
+    $status_text = "<b>Start page updated</b> <a href=\"./start_main.php\" target=\"_blank\">View Updated Start Page</a><br /><br />";
+
+}else{
+
+    $content = implode(file('./start_main.php'));
+    $content = str_replace(chr(13), '', $content);
+
+}
+
+echo "<form name=\"startpage\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
+echo "<h1>Edit Start Page</h1>\n";
+
+if (isset($status_text)) echo $status_text;
+
+echo "<p>Use this page to edit the Start Page on your forum.</p>\n";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">Tools</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_users.php\" target=\"right\">Users</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_folders.php\" target=\"right\">Folders</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_prof_sect.php\" target=\"right\">Profiles</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_startpage.php\" target=\"right\">Start Page</td>\n";
+echo "    <td>\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td>", form_textarea('content', htmlspecialchars($content), 20, 90, 'off', 'style="font-family: monospace"'), "</td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+echo form_submit('save', 'Save'), "&nbsp;", form_reset(), "\n";
+echo "</form>\n";
 
 html_draw_bottom();
 

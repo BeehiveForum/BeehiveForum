@@ -57,9 +57,9 @@ function form_input_hidden($name, $value = "")
 }
 
 // create a <textarea> field
-function form_textarea($name, $value = "", $rows = 0, $cols = 0)
+function form_textarea($name, $value = "", $rows = 0, $cols = 0, $wrap = "virtual", $custom_html = "")
 {
-    $html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"VIRTUAL\"";
+    $html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"$wrap\" $custom_html";
 
     if($rows) $html.= " rows=\"$rows\"";
     if($cols) $html.= " cols=\"$cols\"";
@@ -139,6 +139,12 @@ function form_radio_array($name, $value, $text, $checked = -1)
 function form_submit($name = "submit", $value = "Submit", $customhtml = "", $class = "button")
 {
     return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" $customhtml />";
+}
+
+// create a form reset button
+function form_reset($name = "reset", $value = "Reset", $customhtml = "", $class = "button")
+{
+    return "<input type=\"reset\" name=\"$name\" value=\"$value\" class=\"$class\" $customhtml />";
 }
 
 // create a button with custom HTML, for onclick methods, etc.

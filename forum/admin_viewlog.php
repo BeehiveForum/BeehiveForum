@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.74 2005-03-13 20:15:23 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.75 2005-03-13 20:26:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -172,77 +172,77 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case CHANGE_USER_STATUS:
 
-                $action_text = "{$lang['changeduserstatus']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['changeduserstatus']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case CHANGE_FORUM_ACCESS:
 
-                $action_text = "{$lang['changedfolderaccess']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['changedfolderaccess']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_ALL_USER_POSTS:
 
-                $action_text = "{$lang['deletedallusersposts']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['deletedallusersposts']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case BANNED_IPADDRESS:
 
-                $action_text = "{$lang['bannedipaddress']} {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['bannedipaddress']} {$admin_log_entry['ENTRY']}";
                 break;
 
             case UNBANNED_IPADDRESS:
 
-                $action_text = "{$lang['unbannedipaddress']} {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['unbannedipaddress']} {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_ALL_ATTACHMENTS:
 
-                $action_text = "{$lang['deletedusersattachments']} {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['deletedusersattachments']} {$admin_log_entry['ENTRY']}";
                 break;
 
             case EDIT_THREAD_OPTIONS:
 
-                $action_text = "{$lang['changedtitleaccessfolder']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['changedtitleaccessfolder']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case MOVED_THREADS:
 
-                $action_text = "{$lang['movedthreads']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['movedthreads']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case CREATE_NEW_FOLDER:
 
-                $action_text = "{$lang['creatednewfolder']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['creatednewfolder']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case CHANGE_PROFILE_SECT:
 
-                $action_text = "{$lang['changedprofilesectiontitle']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['changedprofilesectiontitle']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case ADDED_PROFILE_SECT:
 
-                $action_text = "{$lang['addednewprofilesection']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['addednewprofilesection']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_PROFILE_SECT:
 
-                $action_text = "{$lang['deletedprofilesection']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['deletedprofilesection']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case CHANGE_PROFILE_ITEM:
 
-                $action_text = "{$lang['changedprofileitemtitle']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['changedprofileitemtitle']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case ADDED_PROFILE_ITEM:
 
-                $action_text = "{$lang['addednewprofileitem']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['addednewprofileitem']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_PROFILE_ITEM:
 
-                $action_text = "{$lang['deletedprofileitem']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['deletedprofileitem']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case EDITED_START_PAGE:
@@ -257,32 +257,32 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case MOVED_THREAD:
 
-                $action_text = "{$lang['movedthread']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['movedthread']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case CLOSED_THREAD:
 
-                $action_text = "{$lang['closedthread']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['closedthread']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case OPENED_THREAD:
 
-                $action_text = "{$lang['openedthread']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['openedthread']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case RENAME_THREAD:
 
-                $action_text = "{$lang['renamedthread']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['renamedthread']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_POST:
 
-                $action_text = "{$lang['deletedpost']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['deletedpost']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case EDIT_POST:
 
-                $action_text = "{$lang['editedpost']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['editedpost']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case EDIT_WORD_FILTER:
@@ -292,17 +292,17 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case CREATE_THREAD_STICKY:
 
-                $action_text = "{$lang['madethreadsticky']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['madethreadsticky']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case REMOVE_THREAD_STICKY:
 
-                $action_text = "{$lang['madethreadnonsticky']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['madethreadnonsticky']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case END_USED_SESSION:
 
-                $action_text = "{$lang['endedsessionforuser']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['endedsessionforuser']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case EDIT_FORUM_SETTINGS:
@@ -312,27 +312,27 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case LOCKED_THREAD:
 
-                $action_text = "{$lang['lockedthreadtitlefolder']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['lockedthreadtitlefolder']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case UNLOCKED_THREAD:
 
-                $action_text = "{$lang['unlockedthreadtitlefolder']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['unlockedthreadtitlefolder']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_USER_THREAD_POSTS:
 
-                $action_text = "{$lang['userspostsdeletedinthread']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['userspostsdeletedinthread']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_THREAD:
 
-                $action_text = "{$lang['threaddeleted']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['threaddeleted']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_ATTACHMENT:
 
-                $action_text = "{$lang['deleteduserattachmentfrompost']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['deleteduserattachmentfrompost']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case EDIT_FORUM_LINKS:
@@ -342,22 +342,22 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case APPROVED_POST:
 
-                $action_text = "{$lang['approvedpost']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['approvedpost']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case CREATE_USER_GROUP:
 
-                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case DELETE_USER_GROUP:
 
-                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case ADD_USER_TO_GROUP:
 
-                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['DATA']}";
+                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             default:

@@ -425,7 +425,13 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
         
         if ($pollresults[$i]['votes'] > 0) {
         
-          $polldisplay.= "                <td align=\"center\" valign=\"bottom\" class=\"pollbar". ($i + 1). "\" style=\"height: ". $bar_height * $pollresults[$i]['votes']. "px; width: ". $bar_width. "px\">&nbsp;</td>\n";
+          $polldisplay.= "                <td align=\"center\" valign=\"bottom\">\n";
+          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". $bar_height * $pollresults[$i]['votes']. "px; width: ". $bar_width. "px\">\n";
+          $polldisplay.= "                    <tr>\n";
+          $polldisplay.= "                      <td class=\"pollbar". ($i + 1). "\">&nbsp;</td>\n";
+          $polldisplay.= "                    </tr>\n";
+          $polldisplay.= "                  </table>\n";
+          $polldisplay.= "                </td>\n";
           
         }else {
         

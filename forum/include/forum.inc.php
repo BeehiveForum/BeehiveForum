@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.70 2004-06-19 11:30:34 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.71 2004-06-28 22:07:31 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -169,9 +169,9 @@ function forum_check_password($forum_data)
 
     if (isset($forum_data['ACCESS_LEVEL']) && $forum_data['ACCESS_LEVEL'] == 2) {
 
-        if (isset($_COOKIE["{$forum_data['WEBTAG']}_PASSWORD"])) {
+        if (isset($_COOKIE["bh_{$forum_data['WEBTAG']}_password"])) {
 
-            $passwd = md5($_COOKIE["{$forum_data['WEBTAG']}_PASSWORD"]);
+            $passwd = md5($_COOKIE["bh_{$forum_data['WEBTAG']}_password"]);
 
 	    $sql = "SELECT * FROM FORUMS WHERE FID = '{$forum_data['FID']}' ";
 	    $sql.= "AND ACCESS_LEVEL = 2 AND FORUM_PASSWD = '$passwd'";
@@ -207,6 +207,10 @@ function forum_check_password($forum_data)
         echo "                <tr>\n";
 	echo "                  <td>{$lang['passwd']}</td>\n";
         echo "                  <td>", form_input_password('forum_password', '', 32), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+	echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td>", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td colspan=\"2\">&nbsp;</td>\n";

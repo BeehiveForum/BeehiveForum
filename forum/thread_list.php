@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.212 2004-06-08 19:22:52 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.213 2004-06-17 23:08:43 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -385,7 +385,7 @@ if (bh_session_get_value('UID') > 0) {
     $ignored_folders = array();
 
     while (list($fid, $folder_data) = each($folder_info)) {
-        if (!$folder_data['INTEREST'] || (isset($selectedfolder) && $selectedfolder == $fid)) {
+        if ($folder_data['INTEREST'] == 0 || (isset($selectedfolder) && $selectedfolder == $fid)) {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
         }else {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -427,17 +427,17 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "        <tr>\n";
     echo "          <td class=\"foldername\">\n";
 
-    if ($folder_info[$folder_number]['INTEREST'] == -1) {
-        echo "            <img src=\"".style_image('folder_ignored.png')."\" height=\"15\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
-    }else {
+    if ($folder_info[$folder_number]['INTEREST'] == 0) {
         echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
+    }else {
+        echo "            <img src=\"".style_image('folder_ignored.png')."\" height=\"15\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
     }
 
     echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", apply_wordfilter(_htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))), "\">", apply_wordfilter(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
     echo "          </td>\n";
 
     if (bh_session_get_value('UID') > 0) {
-        if (!$folder_info[$folder_number]['INTEREST']) {
+        if ($folder_info[$folder_number]['INTEREST'] == 0) {
             echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
         }else {
             echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.269 2004-04-15 20:44:26 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.270 2004-04-15 20:46:39 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -247,9 +247,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     // OUTPUT MESSAGE ----------------------------------------------------------
 
     echo "<br /><div align=\"center\">\n";
-    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"2%\" valign=\"top\">$up_arrow<br />$down_arrow</td>\n";
+    echo "<table width=\"100%\" cellspacing=\"0\"cellpadding=\"0\"><tr><td width=\"2%\" valign=\"top\">$up_arrow<br />$down_arrow</td>\n";
     echo "<td>\n";
-    echo "<table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
+    echo "<table width=\"98%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
     echo "<table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\"><tr>\n";
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";

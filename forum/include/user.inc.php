@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.189 2004-08-14 21:40:36 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.190 2004-08-14 21:57:39 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -1111,8 +1111,6 @@ function user_is_active($uid)
 function user_allow_pm($uid)
 {
     $db_pm_user_allow = db_connect();
-
-    return true;
 
     if (!is_numeric($uid)) return false;
 

@@ -21,24 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.16 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.17 2003-10-23 19:16:45 uid81631 Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
-
-function user_profile_create($uid, $piid, $entry)
-{
-    $db_user_profile_create = db_connect();
-
-    $entry = addslashes(_htmlentities($entry));
-
-    $sql = "insert into " . forum_table("USER_PROFILE") . " (UID,PIID,ENTRY) ";
-    $sql.= "values ($uid,$piid, '$entry')";
-
-    $result = db_query($sql, $db_user_profile_create);
-
-    return $result;
-}
 
 function user_profile_update($uid, $piid, $entry)
 {
@@ -46,10 +32,18 @@ function user_profile_update($uid, $piid, $entry)
 
     $entry = addslashes(_htmlentities($entry));
 
-    $sql = "UPDATE " . forum_table("USER_PROFILE") . " ";
-    $sql.= "SET ENTRY = '$entry' WHERE UID = $uid AND PIID = $piid";
+    $sql = "DELETE FROM ". forum_table("USER_PROFILE"). " ";
+    $sql.= "WHERE UID = $uid AND PIID = $piid";
 
-    return db_query($sql, $db_user_profile_update);
+    if (db_query($sql, $db_user_profile_update)) {
+
+        $sql = "INSERT INTO ". forum_table("USER_PROFILE"). " (UID, PIID, ENTRY) ";
+        $sql.= "VALUES ($uid, $piid, '$entry')";
+
+        return db_query($sql, $db_user_profile_update);
+    }
+
+    return false;
 }
 
 function user_get_profile_entries($uid, $psid)

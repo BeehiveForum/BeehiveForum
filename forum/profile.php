@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.php,v 1.23 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: profile.php,v 1.24 2003-10-23 19:16:45 uid81631 Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -64,19 +64,19 @@ echo "<h1>{$lang['editprofile']}</h1>\n";
 $uid = bh_session_get_value('UID');
 
 // Do updates
+
 if (isset($HTTP_POST_VARS['submit'])) {
+
     for ($i = 0; $i < sizeof($HTTP_POST_VARS['t_piid']); $i++) {
-        if ($HTTP_POST_VARS['t_entry'][$i] != $HTTP_POST_VARS['t_old_entry'][$i]) {
-            $entry = trim($HTTP_POST_VARS['t_entry'][$i]);
-            if ($HTTP_POST_VARS['t_new'][$i] == "Y") {
-                user_profile_create($uid, $HTTP_POST_VARS['t_piid'][$i], $entry);
-            } else {
-                user_profile_update($uid, $HTTP_POST_VARS['t_piid'][$i], $entry);
-            }
-        }
+
+        $entry = trim($HTTP_POST_VARS['t_entry'][$i]);
+        user_profile_update($uid, $HTTP_POST_VARS['t_piid'][$i], $entry);
     }
+
     echo "<p>{$lang['profileupdated']}</p>";
+
 }else {
+
     echo "<br />\n";
 }
 
@@ -122,13 +122,13 @@ if ($profile_values = profile_get_user_values($uid)) {
                 echo form_dropdown_array("t_entry[$i]", array_keys($field_values), $field_values, $profile_values[$i]['ENTRY']);
             }
 
-            echo form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "&nbsp;&nbsp;</td>\n";
+            //echo form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "&nbsp;&nbsp;</td>\n";
 
         }elseif ($profile_values[$i]['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" width=\"200\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
-            echo "                  <td valign=\"top\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 57), form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "&nbsp;&nbsp;</td>\n";
+            echo "                  <td valign=\"top\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 57), /* form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), */ "&nbsp;&nbsp;</td>\n";
             echo "                </tr>\n";
 
         }else {
@@ -137,7 +137,7 @@ if ($profile_values = profile_get_user_values($uid)) {
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" width=\"200\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
-            echo "                  <td valign=\"top\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "&nbsp;&nbsp;</td>\n";
+            echo "                  <td valign=\"top\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), /* form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), */ "&nbsp;&nbsp;</td>\n";
             echo "                </tr>\n";
 
         }

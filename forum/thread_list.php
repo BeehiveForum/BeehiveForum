@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.168 2004-02-13 01:14:12 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.169 2004-02-13 11:05:11 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -365,7 +365,13 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
     echo "          <td class=\"foldername\">\n";
-    echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
+    
+    if ($folder_info[$folder_number]['INTEREST'] == -1) {
+        echo "            <img src=\"".style_image('folder_ignored.png')."\" height=\"15\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
+    }else {
+        echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
+    }
+    
     echo "            <a href=\"thread_list.php?mode=0&amp;folder=".$folder_number. "\" title=\""._htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))."\">". _htmlentities($folder_info[$folder_number]['TITLE']). "</a>\n";
     echo "          </td>\n";
 

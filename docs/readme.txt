@@ -491,7 +491,7 @@ Mike Franklin / Simon Roberts / Kevin Yip
 4.3 Graphics
 ============
 
-Nigel Moore / Kevin Yip / Andrew Holgate
+Nigel Moore / Kevin Yip / Andrew Holgate / Mike Quigley
 
 
 4.4 Translations
@@ -515,11 +515,13 @@ Matt Beale
 Mark Rendle - taking time out
 
 
-4.7 Thanks
-==========
+4.7 Special Thanks
+==================
 
 - The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.
+  
+- Mike Quigley for Teh Backup Forum, Breaking lots of things and pimping Beehive without fail.
 
 - SourceForge (http://sourceforge.net) for providing top-notch facilities to us
   (and to thousands of other projects) at absolutely no cost.

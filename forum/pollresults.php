@@ -38,6 +38,24 @@ require_once('./include/html.inc.php');
 
 html_draw_top();
 
+if (isset($HTTP_GET_VARS['tid'])) {
+
+  $tid = $HTTP_GET_VARS['tid'];
+   
+}else {
+
+  echo "<div align=\"center\">";
+  echo "<p>You must specify a poll to view.</p>";
+  echo "<form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\">\n";
+  echo "  ". form_submit('submit', 'Close'). "\n";
+  echo "</form>\n";
+  echo "</div>";
+            
+  html_draw_bottom();
+  exit;
+  
+}  
+
 if ($HTTP_POST_VARS['submit'] == 'Close') {
 
   echo "<script language=\"Javascript\" type=\"text/javascript\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.47 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: search.php,v 1.48 2003-09-30 21:21:39 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -193,6 +193,8 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     foreach ($search_results_array as $search_result) {
 
         $message = messages_get($search_result['TID'], $search_result['PID']);
+        $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
+
         $threaddata = thread_get($search_result['TID']);
 
         if (thread_is_poll($search_result['TID'])) {

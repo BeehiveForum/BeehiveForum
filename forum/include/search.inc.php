@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.36 2003-09-30 21:05:12 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.37 2003-09-30 21:21:39 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -37,7 +37,7 @@ function search_execute($argarray, &$urlquery, &$error)
     $db_search_execute = db_connect();
 
     $searchsql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
-    $searchsql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST_CONTENT.CONTENT ";
+    $searchsql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
     $searchsql.= "FROM ". forum_table("THREAD"). " THREAD ";
     $searchsql.= "LEFT JOIN ". forum_table("POST"). " POST ON (THREAD.TID = POST.TID) ";
     $searchsql.= "LEFT JOIN ". forum_table("POST_CONTENT"). " POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
@@ -240,7 +240,7 @@ function search_execute($argarray, &$urlquery, &$error)
     if (db_num_rows($result)) {
         $search_results_array = array();
 	while ($row = db_fetch_array($result)) {
-	    $search_results_array[] = $row;
+            $search_results_array[] = $row;
 	}
 	return $search_results_array;
     }else {

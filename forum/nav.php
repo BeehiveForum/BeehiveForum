@@ -28,18 +28,13 @@ require_once("./include/header.inc.php");
 
 header_no_cache();
 
+html_draw_top('Nav', 'navpage');
+
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link rel="stylesheet" href="./styles/style.css" type="text/css">
-	</head>
-    <body style="font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px; background-color: #D7D7D7">
         <a href="start.php" target="main">Start</a>&nbsp|&nbsp;
         <a href="discussion.php" target="main">Messages</a>&nbsp|&nbsp;
 <?php
-        
+
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
 
 ?>
@@ -49,7 +44,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
 
 }
 
-if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && $HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER) { 
+if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)) {
 
 ?>
         <a href="admin.php" target="main">Admin</a>&nbsp|&nbsp;

@@ -213,7 +213,7 @@ function user_get_prefs($uid)
     if(!db_num_rows($result)){
         $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'HOMEPAGE_URL' => '',
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
-                    'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '');
+                    'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '', 'STYLE' => '');
     } else {
         $fa = db_fetch_array($result);
     }
@@ -223,7 +223,7 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
-                           $posts_per_page, $font_size)
+                           $posts_per_page, $font_size, $style)
 {
 
     $db_user_update_prefs = db_connect();
@@ -234,12 +234,13 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
     if (empty($timezone)) $timezone = 0;
     if (empty($posts_per_page)) $posts_per_page = 0;
     if (empty($font_size)) $font_size = 0;
+	if (!ereg("([[:alnum:]]+)", $style)) $style = 'beehive';
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
-    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE)";
+    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE)";
     $sql .= " values ($uid, \"". htmlspecialchars($firstname). "\", \"". htmlspecialchars($lastname). "\",";
     $sql .= " \"". htmlspecialchars($homepage_url). "\", \"". htmlspecialchars($pic_url). "\",";
-    $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page, $font_size)";
+    $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page, $font_size, \"$style\")";
 
     $result = db_query($sql, $db_user_update_prefs);
 

@@ -24,20 +24,26 @@ USA
 // style.php : handles site styles with user preferences
 
 require_once("./include/header.inc.php");
+require_once("./include/config.inc.php");
 
 header_no_cache();
 header("Content-Type: text/css");
 
 if (empty($HTTP_GET_VARS['fontsize'])) {
-  $fontsize = "10pt";
+    $fontsize = "10pt";
 }else{
-  $fontsize = $HTTP_GET_VARS['fontsize']."pt";
+    $fontsize = $HTTP_GET_VARS['fontsize']."pt";
 }
 
-$stylesheet = file('styles/style.css');
+if(isset($default_style)){
+    $user_style = empty($HTTP_COOKIE_VARS['bh_sess_style']) ? $default_style : $HTTP_COOKIE_VARS['bh_sess_style'];
+    $stylesheet = file("styles/$user_style/style.css");
+} else {
+    $stylesheet = file('styles/style.css');
+}
 
 while(list($linenum, $line) = each($stylesheet)) {
-  echo str_replace("\$FONTSIZE", $fontsize, $line);
+    echo str_replace("\$FONTSIZE", $fontsize, $line);
 }
 
 ?>

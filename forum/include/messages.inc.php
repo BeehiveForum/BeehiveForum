@@ -139,9 +139,9 @@ function message_get_content($tid,$pid)
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
-    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"./images/high_interest.png\" alt=\"High Interest\" align=\"middle\">";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"./images/subscribe.png\" alt=\"Subscribed\" align=\"middle\">";
+    echo "<p><img src=\"".style_image('folder.png')."\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
+    if ($interest_level == 1) echo "&nbsp;".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\">";
+    if ($interest_level == 2) echo "&nbsp;".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\">";
     echo "</p>";
     // To be expanded later
     
@@ -249,7 +249,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 if (is_array($attachments)) {
                     echo "<p><b>Attachments:</b><br>\n";
                     for ($i = 0; $i < sizeof($attachments); $i++) {
-                        echo "<img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\"><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a> (". format_file_size($attachments[$i]['filesize']). ")<br />\n";
+                        echo "<img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\"><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a> (". format_file_size($attachments[$i]['filesize']). ")<br />\n";
                     }
                     echo "</p>\n";
                 }
@@ -261,17 +261,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if($in_list && $limit_text != false){
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))){
-                echo "<img src=\"./images/star.png\" border=\"0\" />";
+                echo "<img src=\"".style_image('star.png')."\" border=\"0\" />";
                 echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
             }
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
-                echo "&nbsp;&nbsp;<img src=\"./images/folder.png\" border=\"0\" />";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('folder.png')."\" border=\"0\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
-                echo "&nbsp;&nbsp;<img src=\"./images/poll.png\" border=\"0\" />";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('poll.png')."\" border=\"0\" />";
                 echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
             }
 			if(perm_is_moderator()){
-                echo "&nbsp;&nbsp;<img src=\"./images/subscribe.png\" border=\"0\" />";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('subscribe.png')."\" border=\"0\" />";
 				echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."\" target=\"_self\">Privileges</a>";
 			}
             echo "</span></td></tr>";

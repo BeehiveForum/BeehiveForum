@@ -53,10 +53,14 @@ function _html_draw_top1($title = false)
 	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?fontsize=$fontsize\" type=\"text/css\"/>\n";
 }
 
-function _html_draw_top2()
+function _html_draw_top2($body_class = false)
 {
 	echo "\t</head>\n";
-	echo "<body>\n";
+	echo "<body";
+	if ($body_class) {
+		echo " class=\"$body_class\"";
+	}
+	echo ">\n";
 }
 
 function _html_draw_top_script()
@@ -79,10 +83,10 @@ function _html_draw_post_top2()
 }
 
 
-function html_draw_top($title = false)
+function html_draw_top($title = false, $body_class = false)
 {
     _html_draw_top1($title);
-    _html_draw_top2();
+    _html_draw_top2($body_class);
 }
 
 function html_draw_top_script($title = false)
@@ -103,6 +107,21 @@ function html_draw_bottom ()
 {
 	echo "</body>\n";
 	echo "</html>\n";
+}
+
+function style_image($img)
+{
+    global $HTTP_COOKIE_VARS, $default_style;
+
+    // If user styles are enabled, set the directory
+    if(isset($default_style)){
+    	$user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
+    	$style_dir = "./styles/$user_style";
+    } else {
+        $style_dir = '.';
+    }
+
+    return "$style_dir/images/$img";
 }
 
 ?>

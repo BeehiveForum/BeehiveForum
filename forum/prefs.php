@@ -50,6 +50,15 @@ require_once("./include/header.inc.php");
 
 $error_html = "";
 
+if ($style_dir = @opendir("styles")) {
+	while ($style_file = readdir($style_dir)) {
+		if (is_dir("styles/$style_file") && $style_file != "." && $style_file != "..") {
+			$available_styles[count($available_styles)] = $style_file;
+		}
+	}
+	closedir($style_dir);
+}
+
 if(isset($HTTP_POST_VARS['submit'])){
 
     $valid = true;
@@ -93,7 +102,8 @@ if(isset($HTTP_POST_VARS['submit'])){
                           $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
                           @$HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
                           @$HTTP_POST_VARS['dl_saving'], @$HTTP_POST_VARS['mark_as_of_int'],
-                          $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
+                          $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size'],
+                          $HTTP_POST_VARS['style']);
                         
         // Update USER_SIG
         
@@ -219,6 +229,12 @@ html_draw_top();
 
           ?>
         </td>
+      </tr>
+      <tr>
+        <td>Forum Style</td>
+        <td>
+			<?php echo form_dropdown_array("style", $available_styles, $available_styles, $user_prefs['STYLE']); ?>
+		</td>
       </tr>
       <tr>
         <td>&nbsp;</td>

@@ -137,11 +137,28 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           bh_session_init($new_uid);
           
-          $usernames = $HTTP_COOKIE_VARS['bh_remember_user'];
-          $passwords = $HTTP_COOKIE_VARS['bh_remember_password'];
+          // Multiple usernames
+         
+          if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
         
-          if (!is_array($usernames)) $usernames = array();
-          if (!is_array($passwords)) $passwords = array();           
+            if (is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
+        
+              $usernames = $HTTP_COOKIE_VARS['bh_remember_user'];
+              $passwords = $HTTP_COOKIE_VARS['bh_remember_password'];
+          
+            }else {
+        
+              $usernames = array(0 => $HTTP_COOKIE_VARS['bh_remember_user']);
+              $passwords = array(0 => $HTTP_COOKIE_VARS['bh_remember_password']);
+            
+            }
+          
+          }else {
+        
+            $usernames = array();
+            $passwords = array();
+            
+          }
            
           $usernames[] = $HTTP_POST_VARS['logon'];
           $passwords[] = $HTTP_POST_VARS['password'];

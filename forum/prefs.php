@@ -79,15 +79,13 @@ array_multisort($style_names, $available_styles);
 
 $available_langs = lang_get_available(); // get list of available languages
 
-if(isset($HTTP_POST_VARS['submit'])){
+if(isset($HTTP_POST_VARS['submit'])) {
 
     $valid = true;
 
-    if (isset($HTTP_POST_VARS['pw'])) {
-        if (isset($HTTP_POST_VARS['cpw'])) {
-            if ($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']) {
-
-            }else {
+    if (isset($HTTP_POST_VARS['pw']) && trim($HTTP_POST_VARS['pw']) != "") {
+        if (isset($HTTP_POST_VARS['cpw']) && trim($HTTP_POST_VARS['pw']) != "") {
+            if ($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']) {
                 $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
                 $valid = false;
             }
@@ -97,12 +95,12 @@ if(isset($HTTP_POST_VARS['submit'])){
         }
     }
 
-    if(empty($HTTP_POST_VARS['nickname'])){
+    if (empty($HTTP_POST_VARS['nickname'])){
         $error_html .= "<h2>{$lang['nicknamerequired']}</h2>";
         $valid = false;
     }
 
-    if(empty($HTTP_POST_VARS['email'])){
+    if (empty($HTTP_POST_VARS['email'])){
         $error_html .= "<h2>{$lang['emailaddressrequired']}</h2>";
         $valid = false;
     }
@@ -135,7 +133,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         // Update the stored logon password
 
-        if (isset($HTTP_POST_VARS['pw'])) {
+        if (isset($HTTP_POST_VARS['pw']) && trim($HTTP_POST_VARS['pw']) != "") {
 
             // Username array
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.90 2004-04-05 20:54:47 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.91 2004-04-05 21:12:36 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -53,7 +53,7 @@ function bh_session_check()
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
-        if ($table_data = get_table_prefix()) {
+        if (!$table_data = get_table_prefix()) {
 
 	    $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
 	    $sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
@@ -102,68 +102,65 @@ function bh_session_check()
 
 	    if (isset($user_sess['UID']) && isset($user_sess['LOGON']) && isset($user_sess['PASSWD'])) {
 
-                if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
-                
-                    // If the user is not logged into the current forum, we should
-                    // do that now for them.
+                // If the user is not logged into the current forum, we should
+                // do that now for them.
                     
-                    if (strtoupper($user_sess['FID']) <> $table_data['FID']) {
+                if (strtoupper($user_sess['FID']) <> $table_data['FID']) {
                     
-                        $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' AND FID = '{$table_data['FID']}'";
+                    $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' AND FID = '{$table_data['FID']}'";
+                    $result = db_query($sql, $db_bh_session_check);
+                        
+                    if (db_num_rows($result) == 0) {
+                        
+                        $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
+                        $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
+                        $sql.= "'$ipaddress', NOW())";
+                        
                         $result = db_query($sql, $db_bh_session_check);
-                        
-                        if (db_num_rows($result) == 0) {
-                        
-                            $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-                            $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
-                            $sql.= "'$ipaddress', NOW())";
-                        
-                            $result = db_query($sql, $db_bh_session_check);
                             
-                            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() WHERE UID = '{$user_sess['UID']}'";
+                        $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() WHERE UID = '{$user_sess['UID']}'";
+                        $result = db_query($sql, $db_bh_session_check);
+
+                        if (!db_affected_rows($db_bh_session_check)) {
+    
+                            $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
+                            $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
+    
                             $result = db_query($sql, $db_bh_session_check);
-
-                            if (!db_affected_rows($db_bh_session_check)) {
-    
-                                $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                                $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
-    
-                                $result = db_query($sql, $db_bh_session_check);
-                            }
-    
-                            $result = db_query($sql, $db_bh_session_check);                            
                         }
+    
+                        $result = db_query($sql, $db_bh_session_check);                            
                     }
+                }
 
-                    // Everything checks out OK. If the user's session is older
-                    // then 5 minutes we should update it.
+                // Everything checks out OK. If the user's session is older
+                // then 5 minutes we should update it.
 
-		    if ($current_time - $user_sess['TIME'] > 60) {
+                if ($current_time - $user_sess['TIME'] > 60) {
                         
-                        // Update the session
+                    // Update the session
                         
-                        $sql = "UPDATE SESSIONS ";
-                        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$table_data['FID']}' ";
-                        $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
+                    $sql = "UPDATE SESSIONS ";
+                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$table_data['FID']}' ";
+                    $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
   
-                        db_query($sql, $db_bh_session_check);
+                    db_query($sql, $db_bh_session_check);
 
-  			// Delete expires sessions 			
+  		    // Delete expires sessions 			
 
-                        $session_stamp = time() - intval(forum_get_setting('session_cutoff'));  			
+                    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));  			
 
-                        $sql = "DELETE FROM SESSIONS WHERE ";
-                        $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
+                    $sql = "DELETE FROM SESSIONS WHERE ";
+                    $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
-                        db_query($sql, $db_bh_session_check);
+                    db_query($sql, $db_bh_session_check);
 
-                        if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
-                            update_stats();
-                        }
-		    }
+                    if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
+                        update_stats();
+                    }
+                }
 
-                    return $user_sess;
-		}
+                return $user_sess;
             }
 	}
     }

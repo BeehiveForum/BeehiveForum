@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.51 2004-04-05 20:54:47 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.52 2004-04-05 21:12:36 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
@@ -42,7 +42,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $db_search_execute = db_connect();
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $searchsql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
     $searchsql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
@@ -398,7 +398,7 @@ function folder_search_dropdown()
 
     $uid = bh_session_get_value('UID');
     
-    if ($table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
     $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
@@ -426,7 +426,7 @@ function search_draw_user_dropdown($name)
     $db_search_draw_user_dropdown = db_connect();
     $uid = bh_session_get_value('UID');
     
-    if ($table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.102 2004-04-05 20:54:47 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.103 2004-04-05 21:12:36 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -43,7 +43,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
     $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type')";
@@ -89,7 +89,7 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
     $edit_uid = bh_session_get_value('UID');
     $poll_question = addslashes($poll_question);
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     // Rename the thread
 
@@ -150,7 +150,7 @@ function poll_get($tid)
 
     $db_poll_get = db_connect();
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.VIEWED, ";
@@ -206,7 +206,7 @@ function poll_get_votes($tid)
 
     if (!is_numeric($tid)) return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT OPTION_ID, OPTION_NAME, GROUP_ID ";
     $sql.= "FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid' ";
@@ -250,7 +250,7 @@ function poll_get_total_votes($tid)
 
     if (!is_numeric($tid)) return false;
 
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(ID) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "GROUP BY OPTION_ID";
@@ -270,7 +270,7 @@ function poll_get_user_votes($tid, $viewstyle)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($viewstyle)) $viewstyle = 0;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UP.UID, UP.OPTION_ID FROM {$table_data['PREFIX']}USER_POLL_VOTES UP ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (UP.TID = POLL.TID) ";
@@ -302,7 +302,7 @@ function poll_get_user_vote($tid)
 
     $db_poll_get_user_vote = db_connect();
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE PTUID = MD5($tid.$uid) ORDER BY ID";
@@ -1261,7 +1261,7 @@ function poll_close($tid)
 
     if (!is_numeric($tid)) return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND PID = 1";
     $result = db_query($sql, $db_poll_close);
@@ -1287,7 +1287,7 @@ function poll_is_closed($tid)
 
     if (!is_numeric($tid)) return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = $tid";
     $result = db_query($sql, $db_poll_is_closed);
@@ -1310,7 +1310,7 @@ function poll_vote($tid, $vote_array)
 
     $db_poll_vote = db_connect();
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
@@ -1343,7 +1343,7 @@ function poll_delete_vote($tid)
 
     $uid = bh_session_get_value('UID');
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT OPTION_ID FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_delete_vote);
@@ -1362,7 +1362,7 @@ function thread_is_poll($tid)
 
     if (!is_numeric($tid)) return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = $tid";
     $result = db_query($sql, $db_thread_is_poll);

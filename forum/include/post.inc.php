@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.66 2004-04-05 20:54:47 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.67 2004-04-05 21:12:36 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -39,7 +39,7 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
     if (!is_numeric($fuid)) return -1;
     if (!is_numeric($tuid)) return -1;
     
-    if ($table_data = get_table_prefix()) return -1;
+    if (!$table_data = get_table_prefix()) return -1;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
     $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, IPADDRESS) ";
@@ -84,7 +84,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     $db_post_save_attachment_id = db_connect();
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}POST_ATTACHMENT_IDS SET AID = '$aid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
@@ -112,7 +112,7 @@ function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = 
 
     $db_post_create_thread = db_connect();
     
-    if ($table_data = get_table_prefix()) return -1;
+    if (!$table_data = get_table_prefix()) return -1;
 
     $sql = "insert into {$table_data['PREFIX']}THREAD" ;
     $sql.= "(FID,TITLE,LENGTH,POLL_FLAG,STICKY,MODIFIED,CLOSED) ";
@@ -145,7 +145,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
     
-    if ($table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return "";
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
@@ -206,7 +206,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid_recent\" style=\"width: 190px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
     
-    if ($table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return "";
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
@@ -270,7 +270,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
     
-    if ($table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return "";
 
     if (isset($default_uid) && $default_uid != 0) {
         
@@ -329,7 +329,7 @@ function get_user_posts($uid)
 
     if (!is_numeric($uid)) return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST WHERE FROM_UID = '$uid'";
     $result = db_query($sql, $db_get_user_posts);
@@ -350,7 +350,7 @@ function check_ddkey($ddkey)
     $db_check_ddkey = db_connect();
     $uid = bh_session_get_value('UID');
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DDKEY FROM {$table_data['PREFIX']}DEDUPE WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_ddkey);

@@ -81,14 +81,14 @@ if(isset($HTTP_POST_VARS['submit'])){
                         $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
                         $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
                         $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
-                        $HTTP_POST_VARS['posts_per_page']);
+                        $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
         } else {
             user_insert_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
                         $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
                         $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
                         $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
                         $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
-                        $HTTP_POST_VARS['posts_per_page']);
+                        $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
         }
 
         // Update or insert USER_SIG
@@ -156,6 +156,8 @@ echo "<tr><td>&nbsp;</td>";
 echo "<td>".form_checkbox("mark_as_of_int","Y","Automatically mark threads<br />I post in as High Interest",($user_prefs['MARK_AS_OF_INT'] == "Y"))."</td></tr>";
 echo "<tr><td>Posts per page:</td>";
 echo "<td>".form_dropdown_array("posts_per_page",array(5,10,20),array(5,10,20),$user_prefs['POSTS_PER_PAGE'])."</td></tr>";
+echo "<tr><td>Font size:</td>";
+echo "<td>".form_dropdown_array("font_size",range(1,15),range(1,15),$user_prefs['FONT_SIZE'])."</td></tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td class=\"subhead\" colspan=\"2\">Signature</td></tr>";
 echo "<tr><td colspan=\"2\">".form_textarea("sig_content",$user_sig['CONTENT'],4,60);

@@ -38,9 +38,13 @@ function format_user_name($u_logon,$u_nickname)
 
 function format_url2link($html)
 {
-    $fhtml = preg_replace("/\b((http(s?):\/\/)|(www\.))([\w\.]+)([\/\w+\.]+)\b/i",
-        "<a href=\"http$3://$4$5$6\" target=\"_blank\">$2$4$5$6</a>", $html);
-    return $fhtml;
+	// URL:
+    $html = preg_replace("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(\/[-\w\.%~]*)*((\?|#)\S*)?)\b/i",
+        "<a href=\"$1\" target=\"_blank\">$1</a>", $html);
+	// MAIL:
+	$html = preg_replace("/\b(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)*([a-z]{2,}|:\d+))/i",
+		"<a href=\"mailto:$2\">$2</a>", $html);
+    return $html;
 }
 
 function format_time($time, $verbose = 0)

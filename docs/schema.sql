@@ -4,10 +4,21 @@
 # http://phpmyadmin.sourceforge.net/ (download page)
 #
 # Host: mysql.sourceforge.net
-# Generation Time: May 28, 2002 at 04:16 AM
+# Generation Time: Jun 02, 2002 at 02:03 PM
 # Server version: 3.23.36
 # PHP Version: 4.0.6
 # Database : `beehiveforum`
+# --------------------------------------------------------
+
+#
+# Table structure for table `DEDUPE`
+#
+
+CREATE TABLE DEDUPE (
+  UID mediumint(8) unsigned NOT NULL default '0',
+  DDKEY char(32) default NULL,
+  PRIMARY KEY  (UID)
+) TYPE=MyISAM;
 # --------------------------------------------------------
 
 #
@@ -37,9 +48,21 @@ CREATE TABLE POLL (
   O4 varchar(255) default NULL,
   O4_VOTES mediumint(8) unsigned default NULL,
   O5 varchar(255) default NULL,
-  O6_VOTES mediumint(8) unsigned default NULL,
+  O5_VOTES mediumint(8) unsigned default NULL,
   CLOSES datetime default NULL,
   UNIQUE KEY TID (TID)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `POLL_VOTES`
+#
+
+CREATE TABLE POLL_VOTES (
+  TID mediumint(8) unsigned NOT NULL default '0',
+  UID mediumint(8) unsigned NOT NULL default '0',
+  VOTE tinyint(3) unsigned NOT NULL default '0',
+  TSTAMP timestamp(14) NOT NULL
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -117,7 +140,8 @@ CREATE TABLE THREAD (
   POLL_FLAG char(1) default NULL,
   MODIFIED datetime default NULL,
   CLOSED datetime default NULL,
-  PRIMARY KEY  (TID)
+  PRIMARY KEY  (TID),
+  KEY ix_thread_fid (FID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -176,7 +200,8 @@ CREATE TABLE USER_PREFS (
   TIMEZONE tinyint(4) default NULL,
   DL_SAVING char(1) default NULL,
   MARK_AS_OF_INT char(1) default NULL,
-  POSTS_PER_PAGE tinyint(3) unsigned default NULL
+  POSTS_PER_PAGE tinyint(3) unsigned default NULL,
+  FONT_SIZE tinyint(3) unsigned default NULL
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 

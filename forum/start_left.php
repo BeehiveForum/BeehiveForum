@@ -33,7 +33,7 @@ if(!bh_session_check()){
     $uri.= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $uri.= "/logon.php?final_uri=";
     $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
-    
+
     header_redirect($uri);
 }
 
@@ -54,6 +54,7 @@ echo "<tr><td class=\"subhead\">Recent threads</td></tr>";
 
 $db = db_connect();
 
+// Get most recent threads
 $sql = "select T.TID, T.TITLE, T.LENGTH, UT.LAST_READ ";
 $sql.= "from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
 $sql.= "on (T.TID = UT.TID and UT.UID = $uid) ";
@@ -73,10 +74,19 @@ while($row = db_fetch_array($result)){
     echo stripslashes($row['TITLE'])."</a></td></tr>\n";
 }
 
-echo "<tr><td>&nbsp;</td></tr>";
+echo "<tr><td>&nbsp;</td></tr>\n";
+
+// Display "Start Reading" button
+echo "<tr><td align=\"center\">\n";
+echo "<form name=\"f_startreading\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
+echo "<input type=\"submit\" class=\"button\" value=\"Start reading\">\n";
+echo "</form></td></tr>\n";
+
+echo "<tr><td>&nbsp;</td></tr>\n";
 
 echo "<tr><td class=\"subhead\">Recent visitors</td></tr>";
 
+// Get recent visitors
 $sql = "select U.UID, U.LOGON, U.NICKNAME, U.LAST_LOGON ";
 $sql.= "from ".forum_table("USER")." U ";
 $sql.= "order by U.LAST_LOGON desc ";

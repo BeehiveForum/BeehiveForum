@@ -293,10 +293,10 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
     echo "<form name=\"thread_admin\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
-    echo "Rename thread:<input type=\"text\" name=\"t_name\" value=\"$title\" width=\"64\" maxchars=\"64\">";
+    echo "Rename thread:<input type=\"text\" name=\"t_name\" value=\"$title\" width=\"64\" maxchars=\"64\">&nbsp;";
     echo "<input class=\"button\" type=\"submit\" name=\"rename\" value=\"Apply\">";
     echo "<br />Move thread:" . folder_draw_dropdown(0,"t_move");
-    echo "<input class=\"button\" type=\"submit\" name=\"move\" value=\"Move\">\n";
+    echo "&nbsp;<input class=\"button\" type=\"submit\" name=\"move\" value=\"Move\">\n";
     if($closed){
         echo "&nbsp;&nbsp;<input class=\"button\" type=\"submit\" name=\"reopen\" value=\"Reopen for posting\">\n";
     } else {

@@ -25,6 +25,7 @@ USA
 // DOES NOT DISPLAY ANYTHING
 
 require_once("./include/db.inc.php");
+require_once("./include/header.inc.php");
 
 if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])){
     $uid = $HTTP_GET_VARS['uid'];
@@ -47,9 +48,13 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])){
 }
 
 if(isset($HTTP_GET_VARS['ret'])){
-    header("Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'].$ret);
-} else {
-    header("Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'].dirname($HTTP_SERVER_VARS['PHP_SELF'])."/user_profile.php?uid=$uid");
+
+    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$ret);
+    
+}else{
+
+    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].dirname($HTTP_SERVER_VARS['PHP_SELF'])."/user_profile.php?uid=$uid");
+    
 }
 
 ?>

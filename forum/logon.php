@@ -25,6 +25,7 @@ require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/header.inc.php");
 
 // Where are we going after we've logged on?
 if(isset($HTTP_GET_VARS['final_uri'])){
@@ -86,13 +87,7 @@ if($valid){
     }
 }
 
-if($valid){
-    header("Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
-    /*echo "<script language=\"Javascript\" type=\"text/javascript\">";
-    echo "<!--\n parent.location = \"http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri."\";";
-    echo "\n-->\n</script>";*/
-    exit;
-}
+if($valid) header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
 
 html_draw_top();
 

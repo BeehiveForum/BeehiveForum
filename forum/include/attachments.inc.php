@@ -36,7 +36,7 @@ function get_attachments($uid, $aid) {
 
     $db = db_connect();
     
-    $sql = "select * from ". forum_table("POST_ATTACHMENT"). " where UID = '$uid' and AID = '$aid'";
+    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = '$uid' and AID = '$aid'";
     $result = db_query($sql, $db) or die(mysql_error());
     
     while($row = db_fetch_array($result)) {
@@ -70,7 +70,7 @@ function get_all_attachments($uid, $aid) {
 
     $db = db_connect();
     
-    $sql = "select * from ". forum_table("POST_ATTACHMENT"). " where UID = '$uid' and AID <> '$aid'";
+    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = '$uid' and AID <> '$aid'";
     $result = db_query($sql, $db) or die(mysql_error());
     
     while($row = db_fetch_array($result)) {
@@ -99,7 +99,7 @@ function add_attachment($uid, $aid, $filename) {
     
     delete_attachment($uid, $filename); // Remove duplicate entries
     
-    $sql = "insert into ". forum_table("POST_ATTACHMENT"). " (AID, UID, FILENAME) ";
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (AID, UID, FILENAME) ";
     $sql.= "values ('$aid', '$uid', '$filename')";
     
     $result = db_query($sql, $db) or die(mysql_error());
@@ -112,7 +112,7 @@ function delete_attachment($uid, $filename) {
 
     $db = db_connect();
     
-    $sql = "delete from ". forum_table("POST_ATTACHMENT"). " where UID = '$uid' ";
+    $sql = "delete from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = '$uid' ";
     $sql.= "and FILENAME = '$filename'";
     
     $result = db_query($sql, $db) or die(mysql_error());
@@ -125,7 +125,7 @@ function move_attachment($uid, $aid, $filename) {
 
     $db = db_connect();
     
-    $sql = "update ". forum_table("POST_ATTACHMENT"). " set AID = '$aid' ";
+    $sql = "update ". forum_table("POST_ATTACHMENT_FILES"). " set AID = '$aid' ";
 	    $sql.= "where UID = '$uid' and FILENAME = '$filename'";
     
     $result = db_query($sql, $db) or die(mysql_error());

@@ -44,7 +44,7 @@ $userinfo = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 $total_attachment_size = 0;
 $aid = $HTTP_GET_VARS['aid'];
 
-if (isset($HTTP_GET_VARS['filename']) && isset($HTTP_GET_VARS['owneruid']) && isset($HTTP_GET_VARS['download'])) {
+if (isset($HTTP_GET_VARS['filename']) && isset($HTTP_GET_VARS['owneruid'])) {
 
   download_attachment($HTTP_GET_VARS['owneruid'], $HTTP_GET_VARS['filename']);
   exit;
@@ -53,6 +53,7 @@ if (isset($HTTP_GET_VARS['filename']) && isset($HTTP_GET_VARS['owneruid']) && is
 
 html_draw_top();
 
+if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments')) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments', 0777);
 if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON'])) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON'], 0777);
 
 if ($HTTP_POST_VARS['submit'] == 'Del') {
@@ -62,19 +63,18 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
 
-  if (get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']) > filesize($HTTP_POST_FILES['userfile']['tmp_name'])) {
+  if (get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']) < filesize($HTTP_POST_FILES['userfile']['tmp_name'])) {
 
-    move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON']. '/'. $HTTP_POST_FILES['userfile']['name']);
-    add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name']);
-    echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";
-    
-  }else{
-  
     echo "<p>Sorry, you do not have enough free attachment space. Please free some space and try again.</p>";
     unlink($HTTP_POST_FILES['userfile']['tmp_name']);
     
-  }
+  }else {
     
+    move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON']. '/'. $HTTP_POST_FILES['userfile']['name']);
+    add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name']);
+    echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";    
+  
+  }
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Move') {
 
@@ -133,7 +133,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"attachments.php?aid=". $aid. "&owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "&download=true\">". $attachments[$i]['filename']. "</a></td>\n";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"attachments.php?aid=". $aid. "&owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "\">". $attachments[$i]['filename']. "</a></td>\n";
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". number_format($attachments[$i]['filesize'], 2, '.', ','). " bytes</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";
@@ -191,7 +191,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"attachments.php?aid=". $aid. "&owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "&download=true\">". $attachments[$i]['filename']. "</a></td>\n";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"attachments.php?aid=". $aid. "&owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "\">". $attachments[$i]['filename']. "</a></td>\n";
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". number_format($attachments[$i]['filesize'], 2, '.', ','). " bytes</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";

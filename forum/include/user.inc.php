@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.95 2003-09-15 17:41:47 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.96 2003-09-16 12:34:43 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -59,7 +59,9 @@ function user_create($logon, $password, $nickname, $email)
 
     $md5pass = md5($password);
 
-    $ipaddress = get_ip_address();
+    if (!$ipaddress = get_ip_address()) {
+        $ipaddress = "";
+    }
 
     $sql = "INSERT INTO " . forum_table("USER") . " (LOGON, PASSWD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$ipaddress')";
@@ -176,18 +178,16 @@ function user_logon($logon, $password, $md5hash = false)
 
     if(!db_num_rows($result)){
         $uid = -1;
-    } else {
+    }else {
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
 
         if (isset($fa['status']) && $fa['status'] & USER_PERM_SPLAT) { // User is banned
-       $uid = -2;
+            $uid = -2;
         }
 
-        if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
-     $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
-        }else {
-     $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+        if (!$ipaddress = get_ip_address()) {
+            $ipaddress = "";
         }
 
         db_query("update ".forum_table("USER")." set LAST_LOGON = NOW(), LOGON_FROM = '$ipaddress' where UID = $uid", $db_user_logon);

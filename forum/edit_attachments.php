@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.31 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.32 2004-02-27 00:24:12 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -187,6 +187,11 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
         echo "        ", form_input_hidden('userfile', $attachments[$i]['filename']), "\n";
         echo "        ", form_input_hidden('f_aid', $attachments[$i]['aid']), "\n";
+        
+        if (isset($aid)) {
+            echo "        ", form_input_hidden('aid', $aid), "\n";
+        }
+        
         echo "        ", form_input_hidden('uid', $uid), "\n";
         echo "        ", form_input_hidden('popup', $popup), "\n";
         echo "        ", form_submit('delete', $lang['delete']), "\n";
@@ -236,22 +241,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
   echo "  </tr>\n";
   echo "</table>\n";
   
-  if ($popup) {
-  
-      echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
-
-      if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
-
-      echo form_input_hidden('uid', $uid), "\n";
-      echo form_input_hidden('popup', $popup), "\n";
-      echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-      echo "  <tr>\n";
-      echo "    <td class=\"postbody\" align=\"center\">", form_submit('close', $lang['close']), "</td>\n";
-      echo "  </tr>\n";
-      echo "</table>\n";
-      echo "</form>\n";
-
-  }elseif (isset($attachments_enabled) && $attachments_enabled) {
+  if (isset($attachments_enabled) && $attachments_enabled) {
 
       if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
           $aid = $HTTP_GET_VARS['aid'];
@@ -268,6 +258,22 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
       echo "  </tr>\n";
       echo "</table>\n";
       echo "</form>\n";    
+  }
+  
+  if ($popup) {
+  
+      echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
+
+      if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
+
+      echo form_input_hidden('uid', $uid), "\n";
+      echo form_input_hidden('popup', $popup), "\n";
+      echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+      echo "  <tr>\n";
+      echo "    <td class=\"postbody\" align=\"center\">", form_submit('close', $lang['close']), "</td>\n";
+      echo "  </tr>\n";
+      echo "</table>\n";
+      echo "</form>\n";
   }
 
   html_draw_bottom();

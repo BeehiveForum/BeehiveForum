@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.152 2004-02-22 14:27:21 decoyduck Exp $ */
+/* $Id: post.php,v 1.153 2004-02-27 00:24:12 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -422,8 +422,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
             }
             
-            if (isset($HTTP_POST_VARS['aid']) && isset($new_pid) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
-                post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);            
+            if (isset($HTTP_POST_VARS['aid']) && isset($attachments_enabled) && $attachments_enabled) {
+                if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);
             }             
         }      
 
@@ -751,7 +751,7 @@ echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if ($attachments_enabled) {
+if (isset($attachments_enabled) && $attachments_enabled) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}')\"");
     echo form_input_hidden("aid", $aid);

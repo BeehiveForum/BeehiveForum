@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.85 2004-01-27 22:07:12 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.86 2004-02-27 00:24:13 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -106,13 +106,13 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
 
     $sql = "UPDATE ". forum_table("POLL"). " SET CHANGEVOTE = '$change_vote', ";
     $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
-    $sql.= "VOTETYPE = '$poll_vote_type', ";
+    $sql.= "VOTETYPE = '$poll_vote_type' ";
     
     if ($closes) {
         if ($closes > 0) {
-            $sql.= "CLOSES = FROM_UNIXTIME($closes) ";
+            $sql.= ", CLOSES = FROM_UNIXTIME($closes) ";
         }else {
-            $sql.= "CLOSES = NULL ";
+            $sql.= ", CLOSES = NULL ";
         }
     }
     
@@ -212,7 +212,7 @@ function poll_get_votes($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT OPTION_ID, OPTION_NAME, GROUP_ID, VOTES ";
+    $sql = "SELECT OPTION_ID, OPTION_NAME, GROUP_ID ";
     $sql.= "FROM ". forum_table('POLL_VOTES'). " WHERE TID = '$tid' ";
 
     $result = db_query($sql, $db_poll_get_votes);
@@ -225,10 +225,18 @@ function poll_get_votes($tid)
     $pollresults = array();
 
     while($row = db_fetch_array($result)) {
+
         $option_ids[]    = $row['OPTION_ID'];
         $option_names[]  = $row['OPTION_NAME'];
         $option_groups[] = $row['GROUP_ID'];
-        $option_votes[]  = $row['VOTES'];
+        
+        $sql = "SELECT COUNT(ID) AS VOTES FROM USER_POLL_VOTES ";
+        $sql.= "WHERE OPTION_ID = '{$row['OPTION_ID']}' ";
+        $sql.= "AND TID = '$tid'";
+        
+        $result_vote_count = db_query($sql, $db_poll_get_votes);
+        $row_vote_count    = db_fetch_array($result_vote_count);
+        $option_votes[]    = $row_vote_count['VOTES'];
     }
 
     $pollresults = array('OPTION_ID'   => $option_ids,
@@ -1290,7 +1298,7 @@ function poll_vote($tid, $vote_array)
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
 
-    if ($polldata['CHANGEVOTE'] == 2 || $uid == 0) {
+    /*if ($polldata['CHANGEVOTE'] == 2 || $uid == 0) {
 
       foreach ($vote_array as $user_vote) {
 
@@ -1300,7 +1308,9 @@ function poll_vote($tid, $vote_array)
         $result = db_query($sql, $db_poll_vote);
       }
 
-    }elseif (!poll_get_user_vote($tid)) {
+    }else */
+    
+    if (!poll_get_user_vote($tid)) {
 
       foreach ($vote_array as $user_vote) {
 
@@ -1318,10 +1328,10 @@ function poll_vote($tid, $vote_array)
 
         $result = db_query($sql, $db_poll_vote);
 
-        $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES + 1 ";
+        /*$sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES + 1 ";
         $sql.= "where TID = $tid and OPTION_ID = $user_vote";
 
-        $result = db_query($sql, $db_poll_vote);
+        $result = db_query($sql, $db_poll_vote); */
       }
     }
 }
@@ -1339,11 +1349,11 @@ function poll_delete_vote($tid)
 
     if (db_num_rows($result) > 0) {
 
-        while($userpollvote = db_fetch_array($result)) {
+        /*while($userpollvote = db_fetch_array($result)) {
 
             $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES - 1 where OPTION_ID = ". $userpollvote['OPTION_ID']. " and TID = $tid";
             db_query($sql, $db_poll_delete_vote);
-        }
+        } */
 
       $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)";
       $result = db_query($sql, $db_poll_delete_vote);

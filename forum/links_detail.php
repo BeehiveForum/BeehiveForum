@@ -77,6 +77,11 @@ if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
                 links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(htmlentities($HTTP_POST_VARS['description'])));
                 $lid = $HTTP_POST_VARS['lid'];
             }
+	    if (isset($HTTP_POST_VARS['hide']) && $HTTP_POST_VARS['hide'] == "confirm") {
+	        links_change_visibility($HTTP_POST_VARS['lid'], false);
+	    }elseif (!isset($HTTP_POST_VARS['hide']) || (isset($HTTP_POST_VARS['hide']) && $HTTP_POST_VARS['hide'] != "confirm")) {
+	        links_change_visibility($HTTP_POST_VARS['lid'], true);
+	    }
         }
     }
 }
@@ -114,7 +119,7 @@ $error = $error ? $error : "&nbsp;";
 echo "<p>$error</p>\n";
 echo "<table class=\"box\" cellpadding=\"5\" cellspacing=\"2\" align=\"center\">\n";
 echo "<tr><td class=\"subhead\" align=\"right\">Address:</td><td class=\"posthead\"><a href=\"links.php?lid=$lid&action=go\" target=\"_blank\">{$link['URI']}</td></tr>\n";
-echo "<tr><td class=\"subhead\" align=\"right\">Submitted by:</td><td class=\"posthead\">" . format_user_name($link['LOGON'], $link['NICKNAME']) . "</td></tr>\n";
+echo "<tr><td class=\"subhead\" align=\"right\">Submitted by:</td><td class=\"posthead\">", (isset($link['LOGON']) ? format_user_name($link['LOGON'], $link['NICKNAME']) : "Unknown User"), "</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">Description:</td><td class=\"posthead\">" . _stripslashes($link['DESCRIPTION']) . "</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">Date:</td><td class=\"posthead\">" . format_time($link['CREATED']) . "</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">Clicks:</td><td class=\"posthead\">{$link['CLICKS']}</td></tr>\n";
@@ -158,7 +163,7 @@ $comments = links_get_comments($lid);
 if ($comments) {
     echo "<table width=\"90%\" align=\"center\">\n";
     while (list($key, $val) = each($comments)) {
-        echo "<tr class=\"subhead\"><td>Comment by " . format_user_name($val['LOGON'], $val['NICKNAME']) . " [" . format_time($val['CREATED'], true) . "]";
+        echo "<tr class=\"subhead\"><td>Comment by ", (isset($val['LOGON']) ? format_user_name($val['LOGON'], $val['NICKNAME']) : "Unknown User"), " [" . format_time($val['CREATED'], true) . "]";
         if (perm_is_moderator() || $val['UID'] == bh_session_get_value('UID')) echo " <a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[delete]</a>";
         echo "</td></tr>\n";
         echo "<tr class=\"posthead\"><td>" . _stripslashes($val['COMMENT']) . "</td></tr>\n";
@@ -196,6 +201,7 @@ if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
     echo "<tr><td align=\"right\">Edit address:</td><td>" . form_input_text("uri", $link['URI'], 60, 255) . "</td></tr>\n";
     echo "<tr><td align=\"right\">Edit description:</td><td>" . form_input_text("description", _stripslashes($link['DESCRIPTION']), 60) . "</td></tr>\n";
     echo "<tr><td align=\"right\">Delete:</td><td>" . form_checkbox("delete", "confirm", "") . "</td></tr>\n";
+    echo "<tr><td align=\"right\">Hide:</td><td>" . form_checkbox("hide", "confirm", "", (isset($link['VISIBLE']) && $link['VISIBLE'] == 'N')) . "</td></tr>\n";
     echo "<tr><td>&nbsp;</td><td>" . form_submit() . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table\n";

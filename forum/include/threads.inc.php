@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.95 2003-11-17 22:02:12 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.96 2003-11-27 13:52:23 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -71,6 +71,8 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
 
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
 
@@ -108,6 +110,8 @@ function threads_get_unread($uid) // get unread messages for $uid
 
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
     // Formulate query
 
@@ -148,6 +152,8 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $folders = threads_get_available_folders();
     $db_threads_get_unread_to_me = db_connect();
 
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
     // Formulate query
 
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
@@ -185,6 +191,9 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 
     $folders = threads_get_available_folders();
     $db_threads_get_by_days = db_connect();
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+    if (!is_numeric($days)) $days = 1;
 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
@@ -225,6 +234,9 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $folders = threads_get_available_folders();
     $db_threads_get_by_interest = db_connect();
 
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+    if (!is_numeric($interest)) $interest = 1;
+
     // Formulate query
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
@@ -261,6 +273,9 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 
     $folders = threads_get_available_folders();
     $db_threads_get_unread_by_interest = db_connect();
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+    if (!is_numeric($interest)) $interest = 1;
 
     // Formulate query
 
@@ -300,6 +315,8 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $folders = threads_get_available_folders();
     $db_threads_get_recently_viewed = db_connect();
 
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
     // Formulate query
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
@@ -338,6 +355,8 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
 
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
     // Formulate query
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
@@ -375,6 +394,8 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
 
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
     // Formulate query
 
@@ -416,6 +437,8 @@ function threads_get_polls($uid, $start = 0)
     $folders = threads_get_available_folders();
     $db_threads_get_polls = db_connect();
 
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
 
@@ -454,6 +477,9 @@ function threads_get_sticky($uid, $start = 0)
 
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+    if (!is_numeric($start)) $start = 0;
 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
@@ -494,6 +520,8 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
 
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
     // Formulate query
 
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
@@ -531,6 +559,9 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 function threads_get_folder($uid, $fid, $start = 0)
 {
     $db_threads_get_folder = db_connect();
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+    if (!is_numeric($start)) $start = 0;
 
     // Formulate query
 
@@ -727,6 +758,8 @@ function threads_mark_50_read()
 function threads_mark_read($tidarray)
 {
     $db_threads_mark_read = db_connect();
+
+    if (!is_array($tidarray)) return false;
 
     foreach($tidarray as $ctid) {
 

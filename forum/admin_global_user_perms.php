@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_global_user_perms.php,v 1.4 2005-03-14 13:27:15 decoyduck Exp $ */
+/* $Id: admin_global_user_perms.php,v 1.5 2005-03-21 10:43:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -208,6 +208,17 @@ echo "<form name=\"f_folders\" action=\"admin_global_user_perms.php\" method=\"p
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
+echo "    <tr>\n";
+echo "      <td>{$lang['globalusershelptext']}</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

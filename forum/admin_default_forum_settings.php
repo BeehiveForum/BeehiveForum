@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.21 2005-03-20 17:53:30 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.22 2005-03-21 10:43:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -294,6 +294,14 @@ if (!empty($error_html)) {
 echo "<br />\n";
 echo "<form name=\"prefs\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>{$lang['settingsaffectallforumswarning']}</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -571,12 +579,6 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td><p>{$lang['settingsaffectallforumswarning']}</p></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.93 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.94 2005-03-21 10:43:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -257,6 +257,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td><b>G</b></td>\n";
 echo "                  <td>{$lang['guestaccessallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>V</b></td>\n";
+echo "                  <td>{$lang['postapprovalrequired']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"8\">&nbsp;</td>\n";

@@ -4,7 +4,7 @@
 # http://phpmyadmin.sourceforge.net/ (download page)
 #
 # Host: mysql.sourceforge.net
-# Generation Time: May 22, 2002 at 04:01 AM
+# Generation Time: May 24, 2002 at 03:46 AM
 # Server version: 3.23.36
 # PHP Version: 4.0.6
 # Database : `beehiveforum`
@@ -17,6 +17,7 @@
 CREATE TABLE FOLDER (
   FID mediumint(8) unsigned NOT NULL auto_increment,
   TITLE varchar(32) default NULL,
+  ACCESS_LEVEL tinyint(4) default '0',
   PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -54,6 +55,7 @@ CREATE TABLE POST (
   TO_UID mediumint(8) unsigned default NULL,
   VIEWED datetime default NULL,
   CREATED timestamp(14) NOT NULL,
+  STATUS tinyint(4) default '0',
   PRIMARY KEY  (TID,PID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -76,7 +78,7 @@ CREATE TABLE POST_CONTENT (
   TID mediumint(8) unsigned NOT NULL default '0',
   PID mediumint(8) unsigned NOT NULL default '0',
   CONTENT text,
-  KEY  (TID,PID)
+  PRIMARY KEY  (TID,PID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -141,7 +143,8 @@ CREATE TABLE USER (
 CREATE TABLE USER_FOLDER (
   UID mediumint(8) unsigned default NULL,
   FID mediumint(8) unsigned default NULL,
-  INTEREST tinyint(4) default NULL,
+  INTEREST tinyint(4) default '0',
+  ALLOWED tinyint(4) default '0',
   KEY UID (UID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

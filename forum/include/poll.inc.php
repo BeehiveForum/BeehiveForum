@@ -33,7 +33,7 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
     $db_poll_create = db_connect();
 
     $sql = "insert into ". forum_table("POLL"). " (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS) ";
-    $sql.= "values ('$tid', '$closes', '$change_vote', '$poll_type', '$show_results')";
+    $sql.= "values ('$tid', from_unixtime($closes), '$change_vote', '$poll_type', '$show_results')";
 
     if (db_query($sql, $db_poll_create)) {
 

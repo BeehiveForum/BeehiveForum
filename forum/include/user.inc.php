@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.238 2005-04-04 17:29:27 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.239 2005-04-05 21:55:29 rowan_hill Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -91,6 +91,20 @@ function user_update($uid, $nickname, $email)
 
     $sql = "UPDATE USER SET NICKNAME = '$nickname', ";
     $sql.= "EMAIL = '$email' WHERE UID = $uid";
+
+    return db_query($sql, $db_user_update);
+}
+
+function user_update_nickname($uid, $nickname)
+{
+    $db_user_update = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $nickname = addslashes(_htmlentities($nickname));
+
+    $sql = "UPDATE USER SET NICKNAME = '$nickname' ";
+    $sql.= "WHERE UID = $uid";
 
     return db_query($sql, $db_user_update);
 }

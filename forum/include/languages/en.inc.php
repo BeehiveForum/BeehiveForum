@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.260 2005-04-05 18:03:33 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.261 2005-04-05 21:55:29 rowan_hill Exp $ */
 
 // International English language file
 
@@ -288,6 +288,8 @@ $lang['nouserspecified'] = "No user specified for editing.";
 $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
 $lang['userstatus'] = "User Status";
+$lang['userdetails'] = "User Details";
+$lang['nicknameheader'] = "Nickname:";
 $lang['warning_caps'] = "WARNING";
 $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";

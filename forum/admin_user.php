@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.143 2005-04-03 16:08:58 rowan_hill Exp $ */
+/* $Id: admin_user.php,v 1.144 2005-04-05 21:55:28 rowan_hill Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -137,6 +137,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 $user = user_get($uid);
 $user_perms = perm_get_user_permissions($uid);
 
+
+
 // Draw the form
 echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$user['LOGON']}</h1>\n";
 
@@ -167,6 +169,28 @@ if (isset($_POST['t_confirm_delete_posts'])) {
 if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_delete_posts'] != "Y")) {
 
     $valid = true;
+    
+    // User details
+    if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
+
+        $user_details['NICKNAME'] = trim(_stripslashes($_POST['t_nickname']));
+
+        if (nickname_is_banned($user_details['NICKNAME'])) {
+
+            $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+            $valid = false;
+            
+        } else {
+        
+            user_update_nickname($uid, $user_details['NICKNAME']);
+            
+        }
+
+    }else {
+
+        $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
+        $valid = false;
+    }
 
     // Local user permissions
 
@@ -385,6 +409,43 @@ if (isset($_POST['t_delete_posts'])) {
     echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";
 
 }else {
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['userdetails']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table width=\"90%\" class=\"posthead\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"150\">{$lang['nicknameheader']}</td>\n";
+    echo "                        <td>", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td><a href=\"edit_signature.php?webtag=$webtag&amp;siguid=$uid\" target=\"right\">{$lang['editsignature']}</a></td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+
+
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";

@@ -54,7 +54,7 @@ html_draw_top();
 
 if($valid){
     echo "<p>w00t! You've logged on.</p>";
-    echo "<p><a href=\"messages.php\">Go to messages.</a></p>";
+    echo "<p><a href=\"" . dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/\" target=\"_top\">Go to messages.</a></p>";
 } else {
     echo "<h1>User Logon</h1>";
     if(isset($error_html)){
@@ -69,6 +69,7 @@ if($valid){
     echo "<td><input type=\"text\" name=\"pw\" value=\"" . $password . "\"></td>";
     echo "</tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></table>";
     echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
+    echo "</form></div>";
 }
 
 html_draw_bottom();

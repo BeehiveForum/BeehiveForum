@@ -92,7 +92,27 @@ function message_display($tid, $message)
     echo "<tr><td class=\"postbody\">\n";
     echo $message['content']."\n";
     echo "</td></tr>\n";
-    echo "<tr><td><p class=\"postresponse\">Reply</p></td></tr></table>\n";
+    echo "<tr><td><p class=\"postresponse\"><a href=\"post.php?replyto=$tid.".$message['pid']."\">Reply</a></p></td></tr></table>\n";
     echo "</td></tr></table></div>\n";
+}
+
+function message_get_user($tid,$pid)
+{
+    $db = db_connect();
+    
+    $sql = "select from_uid from POST where tid = $tid and pid = $pid";
+
+    $result = db_query($sql,$db);
+
+    if($result){
+        $fa = db_fetch_array($result);
+        $uid = $fa['from_uid'];
+    } else {
+        $uid = "";
+    }
+
+    db_disconnect($db);
+
+    return $uid;
 }
 ?>

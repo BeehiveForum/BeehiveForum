@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.57 2004-01-04 15:28:37 decoyduck Exp $ */
+/* $Id: register.php,v 1.58 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -372,7 +372,7 @@ if (strlen($error_html) > 0) {
 
 ?>
 <div align="center">
-<form name="register" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
+<form name="register" action="./register.php" method="POST">
   <table class="box" cellpadding="0" cellspacing="0" align="center" width="500">
     <tr>
       <td>

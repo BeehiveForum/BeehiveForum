@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.67 2003-12-02 22:02:24 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.68 2004-01-14 20:42:27 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -200,14 +200,14 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
 
-    if ($uid > 0) {
+    /*if ($uid > 0) {
 
         // If we're not logging in as a guest we should delete any
 	// stale sessions for this UID.
 
         $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
 	$result = db_query($sql, $db_bh_session_init);
-    }
+    } */
 
     // Generate a unique random MD5 hash for the user's cookie
     // from their IP Address.
@@ -232,7 +232,7 @@ function bh_session_end()
 
     if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 
-        $uid = bh_session_get_value('UID'); 
+        /*$uid = bh_session_get_value('UID'); 
 
         if ($uid > 0) {
 
@@ -241,7 +241,7 @@ function bh_session_end()
 
             $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
 	    $result = db_query($sql, $db_bh_session_end);
-        }
+        } */
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.php,v 1.27 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: profile.php,v 1.28 2004-01-14 20:42:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -80,7 +80,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 if ($profile_values = profile_get_user_values($uid)) {
 
     // Draw the form
-    echo "<form name=\"f_profile\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\" target=\"_self\">\n";
+    echo "<form name=\"f_profile\" action=\"./profile.php\" method=\"post\" target=\"_self\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";

@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.61 2004-03-11 22:34:34 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: admin_user.php,v 1.62 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,41 +29,44 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/admin.inc.php");
+include_once("./include/attachments.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/edit.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/ip.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/perm.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/post.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
 
 if (!bh_session_check()) {
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
-include_once("./include/perm.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/db.inc.php");
-include_once("./include/user.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/poll.inc.php");
-include_once("./include/config.inc.php");
-include_once("./include/edit.inc.php");
-include_once("./include/ip.inc.php");
-include_once("./include/admin.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/post.inc.php");
-
 if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
-if (isset($HTTP_POST_VARS['cancel'])) {
-    header_redirect($HTTP_POST_VARS['ret']);
-}
-
-if (isset($HTTP_GET_VARS['ret'])) {
-    $ret = $HTTP_GET_VARS['ret'];
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+    $ret = "./messages.php?msg={$HTTP_GET_VARS['msg']}";
 }elseif (isset($HTTP_POST_VARS['ret'])) {
     $ret = $HTTP_POST_VARS['ret'];
 }else {
     $ret = "admin_users.php?webtag=$webtag";
+}
+
+if (isset($HTTP_POST_VARS['cancel'])) {
+    header_redirect($ret);
 }
 
 html_draw_top();

@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.6 2004-03-11 22:34:36 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: edit_relations.php,v 1.7 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,9 +29,18 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/fixhtml.inc.php");
+include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/post.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
+include_once("./include/user_rel.inc.php");
 
 if (!bh_session_check()) {
 
@@ -46,16 +52,6 @@ if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
-
-include_once("./include/html.inc.php");
-include_once("./include/user.inc.php");
-include_once("./include/post.inc.php");
-include_once("./include/fixhtml.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/header.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/user_rel.inc.php");
-include_once("./include/lang.inc.php");
 
 // Start output here
 
@@ -123,9 +119,10 @@ if (!empty($error_html)) {
     }
 }
 
+echo "<br />\n";
+
 if ($user_peers = user_get_relationships($uid, $start)) {
 
-    echo "<br />\n";
     echo "<form name=\"prefs\" action=\"edit_relations.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
     
     if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
@@ -230,7 +227,7 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
             if ($user['UID'] != $uid) {
         
                 echo "                <tr>\n";
-                echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']})\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+                echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']})\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
                 echo "                  <td>\n";
                 echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", false), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
                 echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", true), "{$lang['normal']}\n";

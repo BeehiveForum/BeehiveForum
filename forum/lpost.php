@@ -23,10 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.27 2004-03-11 22:34:36 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: lpost.php,v 1.28 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -37,10 +34,26 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
+//Multiple forum support
+include_once("./include/forum.inc.php");
 
-include_once("./include/session.inc.php");
+include_once("./include/config.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/email.inc.php");
+include_once("./include/fixhtml.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/light.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/post.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+include_once("./include/user.inc.php");
 
 if (!bh_session_check() || bh_session_get_value('UID') == 0){
 
@@ -49,27 +62,10 @@ if (!bh_session_check() || bh_session_get_value('UID') == 0){
 
 }
 
-include_once("./include/html.inc.php");
-
 if (bh_session_get_value('UID') == 0) {
         light_html_guest_error();
         exit;
 }
-
-include_once("./include/user.inc.php");
-include_once("./include/post.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/folder.inc.php");
-include_once("./include/thread.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/fixhtml.inc.php");
-include_once("./include/email.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/db.inc.php");
-include_once("./include/config.inc.php");
-include_once("./include/poll.inc.php");
-include_once("./include/light.inc.php");
-include_once("./include/lang.inc.php");
 
 // Check that there are some available folders for this thread type
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {

@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.175 2004-03-11 22:34:37 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: thread_list.php,v 1.176 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,18 +29,21 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-// Require functions
-include_once("./include/html.inc.php"); // HTML functions
-include_once("./include/threads.inc.php"); // Thread processing functions
-include_once("./include/format.inc.php"); // Formatting functions
-include_once("./include/form.inc.php"); // Form drawing functions
-include_once("./include/header.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/folder.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
 include_once("./include/constants.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
+include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
 include_once("./include/pm.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+include_once("./include/threads.inc.php");
 include_once("./include/word_filter.inc.php");
 
 if(!bh_session_check()){

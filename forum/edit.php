@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.86 2004-03-11 22:34:35 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: edit.php,v 1.87 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,9 +29,26 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/admin.inc.php");
+include_once("./include/attachments.inc.php");
+include_once("./include/config.inc.php");
+include_once("./include/edit.inc.php");
+include_once("./include/fixhtml.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/htmltools.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/post.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+include_once("./include/user.inc.php");
 
 if(!bh_session_check()){
 
@@ -49,21 +63,6 @@ if(bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
-
-include_once("./include/user.inc.php");
-include_once("./include/post.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/folder.inc.php");
-include_once("./include/thread.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/fixhtml.inc.php");
-include_once("./include/edit.inc.php");
-include_once("./include/poll.inc.php");
-include_once("./include/attachments.inc.php");
-include_once("./include/config.inc.php");
-include_once("./include/admin.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/htmltools.inc.php");
 
 if (!isset($allow_post_editing)) $allow_post_editing = true;
 if (!isset($post_edit_time)) $post_edit_time = 0;

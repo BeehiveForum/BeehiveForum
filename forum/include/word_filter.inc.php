@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.4 2004-03-11 15:09:36 tribalonline Exp $ */
+/* $Id: word_filter.inc.php,v 1.5 2004-03-12 18:46:51 decoyduck Exp $ */
+
+include_once("./include/forum.inc.php");
 
 // Loads the user's word filter into an array.
 // Saves having to query the database every time
@@ -44,9 +46,9 @@ function load_wordfilter()
     while($row = db_fetch_array($result)) {
     
         if ($row['PREG_EXPR'] == 1) {
-			if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $row['MATCH_TEXT'])) {
-				$row['MATCH_TEXT'] = "/".$row['MATCH_TEXT']."/i";
-			}
+            if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $row['MATCH_TEXT'])) {
+                $row['MATCH_TEXT'] = "/{$row['MATCH_TEXT']}/i";
+            }
             $pattern_array[] = _stripslashes($row['MATCH_TEXT']);
         } else {
             $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT']), "/"). "/i";

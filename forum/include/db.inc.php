@@ -21,34 +21,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.42 2004-03-11 22:34:37 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.43 2004-03-12 18:46:51 decoyduck Exp $ */
 
-// PROVIDES BASIC DATABASE FUNCTIONALITY
-// This is desgined to be be referenced in an include() or require() statement
-// in any script where access to the database is needed. Use these functions
-// instead of the usual database functions.
+include_once("./include/config.inc.php");
 
 // Connects to the database and returns the connection ID
 
-include_once("./include/lang.inc.php");
-include_once("./include/constants.inc.php");
-
-if (!isset($bh_query_count)) $bh_query_count = 0;
-
 function db_connect ()
 {
-    global $lang;
+    global $db_server, $db_username, $db_password, $db_database;
     static $connection_id = false;
 
     if (!$connection_id) {
 
-        require ("./include/config.inc.php"); // requires database information
-
         if ($connection_id = @mysql_connect($db_server, $db_username, $db_password)) {
-            mysql_select_db($db_database, $connection_id) or trigger_error(BH_DB_CONNECT_ERROR, FATAL);
+            mysql_select_db($db_database, $connection_id) or trigger_error(BH_DB_CONNECT_ERROR, E_USER_ERROR);
 	    return $connection_id;
 	}else {
-            trigger_error(BH_DB_CONNECT_ERROR, FATAL);
+            trigger_error(BH_DB_CONNECT_ERROR, E_USER_ERROR);
 	}        
     }
 
@@ -68,15 +58,11 @@ function db_disconnect ($connection_id)
 
 function db_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS, $bh_query_count;
-
-    $bh_query_count++;
-
     if ($resource_id = mysql_query($sql, $connection_id)) {
         return $resource_id;
     }else {
         $mysql_error = mysql_error($connection_id);
-        trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", FATAL);
+        trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", E_USER_ERROR);
     }
 }
 
@@ -84,16 +70,12 @@ function db_query ($sql, $connection_id)
 
 function db_unbuffered_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS, $bh_query_count;
-
-    $bh_query_count++;
-
     if (function_exists("mysql_unbuffered_query")) {
         if ($resource_id = mysql_unbuffered_query($sql, $connection_id)) {
             return $resource_id;
         }else {
             $mysql_error = mysql_error($connection_id);
-            trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", FATAL);
+            trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", E_USER_ERROR);
 	}
     }else {
         db_query($sql, $connection_id);
@@ -126,12 +108,9 @@ function db_fetch_array ($resource_id, $result_type = MYSQL_BOTH)
 // Seeks to the specified row in a SELECT query (0 based)
 function db_data_seek ($resource_id, $row_number)
 {
-
     $seek_result = @mysql_data_seek($resource_id, $row_number);
     return $seek_result;
-
 }
-
 
 // Returns the AUTO_INCREMENT ID from the last insert statement
 function db_insert_id($resource_id)

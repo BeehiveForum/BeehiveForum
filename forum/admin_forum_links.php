@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.61 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: admin_forum_links.php,v 1.1 2004-08-17 18:28:53 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,13 +45,14 @@ include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
+include_once("./include/forum_links.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/perm.inc.php");
-include_once("./include/profile.inc.php");
 include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
@@ -109,55 +110,55 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-html_draw_top();
-
 if (!(perm_has_admin_access())) {
+
+    html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
-}
-
-// Do updates
-
-if (isset($_POST['submit'])) {
-
-    if (isset($_POST['t_psid'])) {
-
-        foreach($_POST['t_psid'] as $psid => $value) {
-
-            if (($_POST['t_name'][$psid] != $_POST['t_old_name'][$psid]) || ($_POST['t_position'][$psid] != $_POST['t_old_position'][$psid])) {
-
-                $new_name = (trim($_POST['t_name'][$psid]) != "") ? $_POST['t_name'][$psid] : $_POST['t_old_name'][$psid];
-                profile_section_update($_POST['t_psid'][$psid], $_POST['t_position'][$psid], $new_name);
-                admin_addlog(0, 0, 0, 0, $_POST['t_psid'][$psid], 0, 10);
-            }
-        }
-
-    }
-
-    if (trim($_POST['t_name_new']) != "" && trim($_POST['t_name_new']) != $lang['newsection']) {
-
-        $new_psid = profile_section_create(trim($_POST['t_name_new']), (isset($_POST['t_psid']) ? sizeof($_POST['t_psid']) : 1));
-        admin_addlog(0, 0, 0, 0, $new_psid, 0, 11);
-
-    }
-
-}elseif (isset($_POST['t_delete'])) {
-
-    list($psid) = array_keys($_POST['t_delete']);
-    profile_section_delete($psid);
-    admin_addlog(0, 0, 0, 0, 0, $psid, 15);
 
 }
 
-// Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageprofilesections']}</h1>\n";
-echo "<br />\n";
-echo "<div align=\"center\">\n";
-echo "<form name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\n";
+if (isset($_POST['l_lid'])) {
+	$first_mark = false;
+	foreach($_POST['l_lid'] as $lid => $value) {
+		if (isset($_POST['l_delete'][$lid])) {
+			// Delete
+			forum_links_delete($lid);
+
+		} else if (!$first_mark) {
+			$first_mark = true;
+			if ($lid == 0) {
+				forum_links_add(1, $_POST['l_title'][$lid], "");
+			} else {
+				forum_links_update($lid, 1, $_POST['l_title'][$lid], "");
+			}
+
+		} else {
+			// Update
+			forum_links_update($lid, $_POST['l_pos'][$lid] + 1, $_POST['l_title'][$lid], $_POST['l_uri'][$lid]);
+		}
+	}
+}
+if (isset($_POST['l_title_new']) && $_POST['l_title_new'] != "" && isset($_POST['l_pos_new']) && isset($_POST['l_uri_new'])) {
+	forum_links_add($_POST['l_pos_new'] + 1, $_POST['l_title_new'], $_POST['l_uri_new']);
+}
+
+html_draw_top();
+
+echo "<h1>{$lang['admin']} : {$lang['editforumlinks']}</h1>\n";
+echo "<p>{$lang['editforumlinks_exp']}</p>\n";
+
+
+$links = forum_links_get_links();
+
+if (isset($status_text)) echo $status_text;
+
+
+echo "<form method=\"post\" action=\"admin_forum_links.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -165,39 +166,48 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['position']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['items']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deletesection']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['position']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['name']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['address']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['delete']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+
+$lid = isset($links[0]) ? $links[0]['LID'] : 0;
+
+echo "                  <td>". form_input_hidden("l_lid[$lid]", $lid) . $lang['top'] ."</td>\n";
+echo "                  <td>". form_field("l_title[$lid]", isset($links[0]) ? $links[0]['TITLE'] : "", 32, 64) ."</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if ($profile_sections = profile_sections_get()) {
+for ($i=1; $i<count($links); $i++) {
+	$lid = $links[$i]['LID'];
+	echo "                <tr>\n";
 
-    for ($i = 0; $i < sizeof($profile_sections); $i++) {
+	if (count($links) > 2) {
+		echo "                  <td>", form_dropdown_array("l_pos[$lid]", range(1, count($links)-1), range(1, count($links)-1), $i), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
+	} else {
+		echo "                  <td>1", form_input_hidden("l_pos[$lid]", 1), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
+	}
 
-        echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_sections[$i]['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_sections[$i]['PSID']}]", $i), form_input_hidden("t_psid[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['PSID']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME'] ,64, 64), form_input_hidden("t_old_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_sections[$i]['PSID']}'\""), "</a></td>\n";
-
-        if (!profile_items_get($profile_sections[$i]['PSID'])) {
-            echo "                  <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";
-        }else{
-            echo "                  <td>&nbsp;</td>\n";
-        }
-
-        echo "                </tr>\n";
-    }
+	echo "                  <td>". form_field("l_title[$lid]", $links[$i]['TITLE'], 32, 64) ."</td>\n";
+	echo "                  <td>". form_field("l_uri[$lid]", $links[$i]['URI'], 32, 255) ."</td>\n";
+	echo "                  <td>". form_submit("l_delete[$lid]", $lang['delete']) ."</td>\n";
+	echo "                </tr>\n";
 }
 
-// Draw a row for a new section to be created
 echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['newcaps']}</td>\n";
-echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newsection'], 64, 64), "</td>\n";
-echo "                  <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
+echo "                  <td>". form_input_hidden("l_pos_new", $i).$lang['newcaps'] ."</td>\n";
+echo "                  <td>". form_field("l_title_new", "", 32, 64) ."</td>\n";
+echo "                  <td>". form_field("l_uri_new", "", 32, 255) ."</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -209,11 +219,11 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">". form_submit("submit", $lang['submit'])." ".form_reset() ."</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+
 echo "</form>\n";
-echo "</div>\n";
 
 html_draw_bottom();
 

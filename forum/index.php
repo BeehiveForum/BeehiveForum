@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.93 2004-08-01 16:04:12 rowan_hill Exp $ */
+/* $Id: index.php,v 1.94 2004-08-17 18:28:53 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -71,7 +71,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     // Calculate how tall the nav frameset should be based on the user's fontsize.
 
     $navsize = bh_session_get_value('FONT_SIZE');
-    $navsize = ($navsize) ? $navsize * 2 : 20;
+    $navsize = max(($navsize ? $navsize * 2 : 22), 22);
 
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";

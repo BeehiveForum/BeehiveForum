@@ -34,7 +34,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/perm.inc.php");
@@ -57,8 +57,7 @@ if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
 // Do updates
 if(isset($HTTP_POST_VARS['submit'])){
     for($i=0;$i<$HTTP_POST_VARS['t_count'];$i++){
-        if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i]
-        || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i]){
+        if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i]) {
             $new_title = (trim($HTTP_POST_VARS['t_title_'.$i]) != "") ? $HTTP_POST_VARS['t_title_'.$i] : $HTTP_POST_VARS['t_old_title_'.$i];
             folder_update($HTTP_POST_VARS['t_fid_'.$i],$new_title,$HTTP_POST_VARS['t_access_'.$i]);
         }
@@ -70,7 +69,6 @@ if(isset($HTTP_POST_VARS['submit'])){
         folder_create($HTTP_POST_VARS['t_title_new'],$HTTP_POST_VARS['t_access_new']);
     }
 }
-
 
 // Draw the form
 echo "<h1>Manage Folders</h1>\n";
@@ -87,34 +85,23 @@ echo "<td class=\"subhead\">Threads</td>\n";
 echo "<td class=\"subhead\">Move</td>\n";
 echo "</tr>\n";
 
-$db = db_connect();
+$folder_array = folder_get_all();
 
-$sql = "select FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, count(*) as THREAD_COUNT ";
-$sql.= "from " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
-$sql.= " on (THREAD.FID = FOLDER.FID) ";
-$sql.= "group by FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
-
-$result = db_query($sql,$db);
-
-$result_count = db_num_rows($result);
-
-for($i=0;$i<$result_count;$i++){
-
-    $row = db_fetch_array($result);
-
+foreach ($folder_array as $folder) {
     // If the thread count is 1, then it's probably 0.
-    if($row['THREAD_COUNT'] == 1) $row['THREAD_COUNT'] = 0;
+    if($folder['THREAD_COUNT'] == 1) $folder['THREAD_COUNT'] = 0;
 
-    echo "<tr><td>".$row['FID'].form_input_hidden("t_fid_$i",$row['FID'])."</td>\n";
-    echo "<td>".form_field("t_title_$i",$row['TITLE'],32,32);
-    echo form_input_hidden("t_old_title_$i",$row['TITLE'])."</td>";
+    echo "<tr>";
+    echo "  <td>".$folder['FID'].form_input_hidden("t_fid_$i",$folder['FID'])."</td>\n";
+    echo "  <td>". form_field("t_title_$i", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$i", $folder['TITLE']). "</td>\n";
 
     // Draw the ACCESS_LEVEL dropdown
-    echo "<td>".form_dropdown_array("t_access_$i",array(-1,0,1),array("Closed","Open","Restricted"),$row['ACCESS_LEVEL']);
-    echo form_input_hidden("t_old_access_$i",$row['ACCESS_LEVEL'])."</td>\n";
+    echo "  <td>".form_dropdown_array("t_access_$i", array(-1,0,1), array("Closed", "Open", "Restricted"), $folder['ACCESS_LEVEL']);
+    echo form_input_hidden("t_old_access_$i", $folder['ACCESS_LEVEL']). "</td>\n";
 
-    echo "<td>".$row['THREAD_COUNT']."</td>\n";
-    echo "<td>" . folder_draw_dropdown($row['FID'],"t_move","_$i") . "</td></tr>\n";
+    echo "  <td>". $folder['THREAD_COUNT']. "</td>\n";
+    echo "  <td>". folder_draw_dropdown($folder['FID'], "t_move", "_$i"). "</td>\n";
+    echo "</tr>\n";
 }
 
 // Draw a row for a new folder to be created

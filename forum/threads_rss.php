@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.8 2004-09-19 16:22:00 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.9 2004-09-25 21:15:44 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -95,6 +95,8 @@ if ($threads_array = threads_get_most_recent()) {
 
         $t_content = $parsed_message->getMessage();
         $t_content = strip_tags(_htmlentities_decode($t_content));
+        $t_content = preg_replace('/[\r|\n|\r\n]/', ' ', $t_content);
+        $t_content = trim(preg_replace('/[ ]+/', ' ', $t_content));
 
         echo "\t\t\t<item>\n";
         echo "\t\t\t\t<guid isPermaLink=\"true\">\n";

@@ -204,11 +204,11 @@ function add_tag (tag, a, v, enclose) {
 		if (valid == true) {
 			extra_left = left_bound.substr(i) + extra_left;
 			left_bound = left_bound.substr(0, i);
-		} else {
+		}/* else {
 			str = str.replace(/(^[^<>]*)>/, "$1&gt;");
 			str_enclose = str;
 			se += 3;
-		}
+		}*/
 	} else if (/<[^<>]*$/.test(left_bound) == true) {
 		var re = new RegExp("<[^<>]*$");
 		re = re.exec(left_bound);
@@ -217,7 +217,7 @@ function add_tag (tag, a, v, enclose) {
 	}
 
 	var mark = valid;
-	for (i=0; i<str.length; i++) {
+/*	for (i=0; i<str.length; i++) {
 		ca = str.charAt(i);
 		if (ca == ">" && mark != true) {
 			str = str.substr(0, i) + "&gt;" + str.substr(i+1);
@@ -227,7 +227,7 @@ function add_tag (tag, a, v, enclose) {
 		} else if (ca == "<") {
 			mark = true;
 		}
-	}
+	}*/
 	str_enclose = str;
 
 	str_enclose = extra_left + str_enclose;
@@ -276,11 +276,11 @@ function add_tag (tag, a, v, enclose) {
 		if (valid == true) {
 			extra_right += right_bound.substr(0, i+1);
 			right_bound = right_bound.substr(i+1);
-		} else {
+		}/* else {
 			str = str.replace(/<([^<>]*$)/, "&lt;$1");
 			str_enclose = str_enclose.replace(/<([^<>]*$)/, "&lt;$1");
 			se += 3;
-		}
+		}*/
 	} else if (/^[^<>]*>/.test(right_bound) == true) {
 		var re = new RegExp("^[^<>]*>");
 		re = re.exec(right_bound);
@@ -289,7 +289,7 @@ function add_tag (tag, a, v, enclose) {
 	}
 
 	var mark = valid;
-	for (i=str.length; i>=0; i--) {
+/*	for (i=str.length; i>=0; i--) {
 		ca = str.charAt(i);
 		if (ca == "<" && mark != true) {
 			str = str.substr(0, i) + "&lt;" + str.substr(i+1);
@@ -299,7 +299,7 @@ function add_tag (tag, a, v, enclose) {
 		} else if (ca == ">") {
 			mark = true;
 		}
-	}
+	}*/
 
 	str_enclose += extra_right;
 	var str_enclose_extra_right = extra_right.length;
@@ -489,7 +489,7 @@ function add_tag (tag, a, v, enclose) {
 
 
 function add_text(text) {
-	if (navigator.userAgent.indexOf('Opera') > -1) {
+	if (!active_field.createTextRange && !active_field.setSelectionRange) {
 		active_field.value += text;
 		return;
 	}

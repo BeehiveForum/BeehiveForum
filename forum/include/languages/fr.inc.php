@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.59 2004-04-12 14:31:20 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.60 2004-04-12 15:34:48 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -393,6 +393,7 @@ $lang['showdeletedattachments'] = "Show Deleted Attachments in messages";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments in messages / signatures";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
+$lang['pmuserspace'] = "PM space per user";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -750,6 +751,10 @@ $lang['cannoteditpm'] = "Ne peut pas éditer ceci PM. Il a été déjà regardé par l
 $lang['cannotviewpm'] = "Ne peut pas regarder PM. Le message n'existe pas ou c'est inaccessible par vous";
 $lang['nomessagespecifiedforreply'] = "Aucun message a spécifié pour la réponse à";
 $lang['nouserspecified'] = "Aucun utilisateur a spécifié.";
+$lang['oldermessages'] = "Older Messages";
+$lang['newermessages'] = "Newer Messages";
+$lang['notenoughfreespace'] = "does not have enough free space to receive this message";
+$lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -828,6 +833,8 @@ $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";
 $lang['privacysettings'] = "Privacy Settings";
 $lang['includeadminfilter'] = "Include admin word filter in my list.";
+$lang['allowpersonalmessages'] = "Allow other users to send me personal messages";
+$lang['allowemails'] = "Allow other users to send me emails via my profile";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

@@ -437,3 +437,18 @@ A		{
 .emoticon_preview img {
 		cursor: pointer;
 }
+
+.pmbar_text {
+		font-size: 8pt;
+}
+
+.pmbar_container {
+		height: 18px;
+		width: 100%;
+		border: 1px solid #000000;
+}
+
+.pmbar {
+		height: 16px;
+		background-color: #996699;
+}

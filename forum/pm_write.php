@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.59 2004-04-12 13:56:38 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.60 2004-04-12 15:34:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -173,12 +173,18 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
                 $to_logon = trim($t_recipient);
 
                 if ($to_user = user_get_uid($to_logon)) {
-                    
+
                     if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
                         $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
                         $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
                         $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                     }
+                    
+                    if (!user_allow_pm($to_user['UID'])) {
+                    
+		        $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
+			$valid = false;
+		    }
 
 		    if (pm_get_free_space($to_user['UID']) < (strlen(trim($t_subject)) + strlen(trim($t_content)))) {
 
@@ -335,10 +341,11 @@ echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['wri
 echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<br />\n";
 
 if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
     echo $error_html;
+    echo "<br />\n";
 }
 
 if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {

@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.67 2004-04-11 22:01:18 decoyduck Exp $
+# $Id: schema.sql,v 1.68 2004-04-12 15:34:48 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -651,6 +651,9 @@ CREATE TABLE DEFAULT_USER_PREFS (
   IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,
   USE_WORD_FILTER CHAR(1) DEFAULT NULL,
   USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,
+  EMOTICONS VARCHAR(255) DEFAULT NULL,
+  ALLOW_EMAIL CHAR(1) DEFAULT NULL,
+  ALLOW_PM CHAR(1) DEFAULT NULL,
   PRIMARY KEY  (UID,UID)
 ) TYPE=MYISAM;
 

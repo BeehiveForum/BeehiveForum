@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.158 2004-04-11 22:19:22 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.159 2004-04-12 15:34:50 decoyduck Exp $ */
 
 function user_count()
 {
@@ -353,7 +353,7 @@ function user_get_prefs($uid)
                          'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
                          'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '', 'ANON_LOGON' => '',
                          'SHOW_STATS' => '',  'IMAGES_TO_LINKS' => '', 'USE_WORD_FILTER' => '',
-                         'USE_ADMIN_FILTER' => '', 'EMOTICONS' => '');
+                         'USE_ADMIN_FILTER' => '', 'EMOTICONS' => '', 'ALLOW_EMAIL' => '', 'ALLOW_PM' => '');
     
     if (!$table_data = get_table_prefix()) return $prefs_array;
 
@@ -397,7 +397,7 @@ function user_update_prefs($uid, $prefs_array)
     $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
     $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, ";
-    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS) ";
+    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM) ";
     $sql.= "VALUES ($uid, '{$prefs_array['FIRSTNAME']}', '{$prefs_array['LASTNAME']}', '{$prefs_array['DOB']}', ";
     $sql.= "'{$prefs_array['HOMEPAGE_URL']}', '{$prefs_array['PIC_URL']}', '{$prefs_array['EMAIL_NOTIFY']}', ";
     $sql.= "'{$prefs_array['TIMEZONE']}', '{$prefs_array['DL_SAVING']}', '{$prefs_array['MARK_AS_OF_INT']}', ";
@@ -405,7 +405,8 @@ function user_update_prefs($uid, $prefs_array)
     $sql.= "'{$prefs_array['VIEW_SIGS']}', '{$prefs_array['START_PAGE']}', '{$prefs_array['LANGUAGE']}', ";
     $sql.= "'{$prefs_array['PM_NOTIFY']}', '{$prefs_array['PM_NOTIFY_EMAIL']}', '{$prefs_array['DOB_DISPLAY']}', ";
     $sql.= "'{$prefs_array['ANON_LOGON']}', '{$prefs_array['SHOW_STATS']}', '{$prefs_array['IMAGES_TO_LINKS']}', ";
-    $sql.= "'{$prefs_array['USE_WORD_FILTER']}', '{$prefs_array['USE_ADMIN_FILTER']}', '{$prefs_array['EMOTICONS']}')";
+    $sql.= "'{$prefs_array['USE_WORD_FILTER']}', '{$prefs_array['USE_ADMIN_FILTER']}', '{$prefs_array['EMOTICONS']}', ";
+    $sql.= "'{$prefs_array['ALLOW_EMAIL']}', '{$prefs_array['ALLOW_PM']}')";
     
     $result = db_query($sql, $db_user_update_prefs);
 
@@ -952,6 +953,38 @@ function user_is_active($uid)
 
     $sql = "SELECT SESSID FROM SESSIONS WHERE UID = '$uid'";
     $result = db_query($sql, $db_user_is_active);
+
+    return (db_num_rows($result) > 0);
+}
+
+function user_allow_pm($uid)
+{
+    $db_pm_user_allow = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PREFS ";
+    $sql.= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
+
+    $result = db_query($sql, $db_pm_user_allow);
+
+    return (db_num_rows($result) > 0);
+}
+
+function user_allow_email($uid)
+{
+    $db_pm_user_allow = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PREFS ";
+    $sql.= "WHERE UID = '$uid' AND ALLOW_EMAIL = 'Y'";
+
+    $result = db_query($sql, $db_pm_user_allow);
 
     return (db_num_rows($result) > 0);
 }

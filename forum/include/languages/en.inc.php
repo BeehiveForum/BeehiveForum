@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.108 2004-04-12 14:31:20 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.109 2004-04-12 15:34:48 decoyduck Exp $ */
 
 // International English language file
 
@@ -766,6 +766,7 @@ $lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your 
 $lang['oldermessages'] = "Older Messages";
 $lang['newermessages'] = "Newer Messages";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
+$lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -826,6 +827,8 @@ $lang['daylightsaving'] = "Adjust for daylight saving";
 $lang['autohighinterest'] = "Automatically mark threads I post in as High Interest";
 $lang['convertimagestolinks'] = "Automatically convert embedded images in posts into links";
 $lang['globallyignoresigs'] = "Globally ignore user signatures";
+$lang['allowpersonalmessages'] = "Allow other users to send me personal messages";
+$lang['allowemails'] = "Allow other users to send me emails via my profile";
 $lang['timezonefromGMT'] = "Timezone";
 $lang['postsperpage'] = "Posts per page";
 $lang['fontsize'] = "Font size";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.57 2004-04-12 14:31:20 tribalonline Exp $ */
+/* $Id: gangsta.inc.php,v 1.58 2004-04-12 15:34:48 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -764,6 +764,11 @@ $lang['cannotviewpm'] = "Cannot view PM. Message is gone, homes.";
 $lang['nomessagespecifiedforreply'] = "Ain't no message specified fo' replyin' to";
 $lang['nouserspecified'] = "No bitch specified.";
 $lang['pmnotificationpopup'] = "Yo has a new PM. Would yo like to go to yo inbizox homie?";
+$lang['pmuserspace'] = "PM space per user";
+$lang['oldermessages'] = "Older Messages";
+$lang['newermessages'] = "Newer Messages";
+$lang['notenoughfreespace'] = "does not have enough free space to receive this message";
+$lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -844,6 +849,8 @@ $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";
 $lang['privacysettings'] = "Privacy Settings";
 $lang['includeadminfilter'] = "Include admin word filter in my list.";
+$lang['allowpersonalmessages'] = "Allow other users to send me personal messages";
+$lang['allowemails'] = "Allow other users to send me emails via my profile";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

@@ -168,7 +168,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
 }
 
-function threads_get_unread_to_me($uid) // get unread messages to $uid
+function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores folder interest level)
 {
 
     $folders = threads_get_available_folders();
@@ -367,6 +367,8 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
 
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
+
+    // Formulate query
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";

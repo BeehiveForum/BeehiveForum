@@ -69,8 +69,19 @@ if ($pid == '') $pid = 1;
 
 if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
-  poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
-  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
+  if (isset($HTTP_POST_VARS['pollvote'])) {
+
+    poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
+    header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
+    
+  }else {
+  
+    html_draw_top();
+    echo "<h2>You must select an option to vote for.</h2>";
+    html_draw_bottom();
+    exit;
+    
+  }
   
 }elseif (isset($HTTP_POST_VARS['pollclose'])) {
 

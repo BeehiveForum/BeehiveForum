@@ -368,7 +368,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
 {
 
-    usort($pollresults, "poll_sort");
+    //usort($pollresults, "poll_sort");
 
     $polldisplay = "            <table width=\"100%\" align=\"center\">\n";
     
@@ -381,7 +381,13 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
         
         if ($pollresults[$i]['votes'] > 0) {
         
-          $polldisplay.= "                <td class=\"pollbar". ($i + 1). "\" style=\"height: 25px; width: ". $bar_width * $pollresults[$i]['votes']. "px\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"300\">\n";
+          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". $bar_width * $pollresults[$i]['votes']. "px\">\n";
+          $polldisplay.= "                    <tr>\n";
+          $polldisplay.= "                      <td class=\"pollbar". ($i + 1). "\">&nbsp;</td>\n";
+          $polldisplay.= "                    </tr>\n";
+          $polldisplay.= "                  </table>\n";
+          $polldisplay.= "                </td>\n";
           
         }else {
         
@@ -392,7 +398,7 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
         $polldisplay.= "              </tr>\n";
         $polldisplay.= "              <tr>\n";
         $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['votes']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['votes'], 0). "%)</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['votes']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['votes'], 2). "%)</td>\n";
         $polldisplay.= "              </tr>\n";
         
       }
@@ -408,7 +414,7 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
 function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
 {
 
-    usort($pollresults, "poll_sort");
+    //usort($pollresults, "poll_sort");
 
     $polldisplay = "            <table width=\"460\" align=\"center\">\n";
     $polldisplay.= "              <tr>\n";
@@ -438,7 +444,7 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
     
       if (!empty($pollresults[$i]['option'])) {
      
-        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "<br />". $pollresults[$i]['votes']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['votes'], 0). "%)</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "<br />". $pollresults[$i]['votes']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['votes'], 2). "%)</td>\n";
         
       }
       

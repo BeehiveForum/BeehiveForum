@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.67 2005-03-14 13:27:20 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.68 2005-03-18 23:58:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -380,7 +380,14 @@ if ($valid && isset($_POST['submit'])) {
 
             }
 
-            $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
+            if ($newthread) {
+
+                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+
+            }else {
+
+                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+            }
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_high_interest($t_tid, 1, $newthread);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.2 2005-03-14 21:16:35 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.3 2005-03-18 23:58:56 decoyduck Exp $ */
 
 function db_connect()
 {
@@ -59,7 +59,11 @@ function db_enable_big_selects($connection_id)
 
 function db_query($sql, $connection_id)
 {
-    return mysqli_query($connection_id, $sql);
+    if ($result = mysqli_query($connection_id, $sql)) {
+        return $result;
+    }
+
+    db_trigger_error($connection_id);
 }
 
 function db_unbuffered_query ($sql, $connection_id)
@@ -85,6 +89,12 @@ function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 function db_insert_id($result)
 {
     return mysqli_insert_id($result);
+}
+
+function db_trigger_error($connection_id)
+{
+    $errstr = db_error($connection_id);
+    trigger_error($errstr, E_USER_ERROR);
 }
 
 function db_error($result)

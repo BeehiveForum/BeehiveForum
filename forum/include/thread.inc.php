@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.67 2005-03-15 21:30:07 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.68 2005-03-18 23:58:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -56,8 +56,9 @@ function thread_get($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
-    $sql.= "THREAD.STICKY, UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
+    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, ";
+    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
     $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
@@ -249,10 +250,13 @@ function thread_can_view($tid = 0, $uid = 0)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($uid)) return false;
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid' AND FID IN ($fidlist)";
+    $sql = "SELECT COUNT(*) FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "WHERE TID = '$tid' AND FID IN ($fidlist)";
+
     $result = db_query($sql,$db_thread_can_view);
 
-    return (db_num_rows($result) > 0);
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    return ($thread_count > 0);
 }
 
 function thread_set_sticky($tid, $sticky = true, $sticky_until = false)

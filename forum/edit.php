@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.82 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: edit.php,v 1.83 2004-02-27 00:24:11 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -378,6 +378,10 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $updated = post_update($tid, $pid, $t_content);
 
         if ($updated) {
+        
+            if (isset($HTTP_POST_VARS['aid']) && isset($attachments_enabled) && $attachments_enabled) {
+                if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
+            }
 
             if (perm_is_moderator() && ($HTTP_POST_VARS['t_from_uid'] != bh_session_get_value('UID'))) {
                 admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
@@ -625,9 +629,13 @@ if ($edit_type == "html") {
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo form_input_hidden('aid', $aid);
+}else {
+    $aid = md5(uniqid(rand()));
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo form_input_hidden('aid', $aid);
 }
-
 
 // ---- SIGNATURE ----
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";

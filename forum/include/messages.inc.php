@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.227 2004-02-22 15:24:39 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.228 2004-02-27 00:24:12 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -359,7 +359,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</table></td></tr>\n";
 
     if(!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
+
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
+        
         if($in_list && $msg_count > 0) {
 
             if ($is_preview) {
@@ -405,7 +407,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<tr><td class=\"postbody\" align=\"left\">". $message['CONTENT']. "</td></tr>\n";
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
-
+            
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
             $attachments = get_attachments($message['FROM_UID'], $aid);
 
@@ -419,7 +421,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 for ($i = 0; $i < sizeof($attachments); $i++) {
                     if (isset($attachments[$i]['deleted']) && !$attachments[$i]['deleted']) {
                         $visible_attachments[] = $attachments[$i];
-                    }elseif ($attachments_show_deleted) {
+                    }elseif (isset($attachments_show_deleted) && $attachments_show_deleted) {
                         $visible_attachments[] = $attachments[$i];
                     }
                 }
@@ -443,11 +445,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                         
                         if (isset($visible_attachments[$i]['deleted']) && $visible_attachments[$i]['deleted']) {
                         
-                            echo "{$attachments[$i]['filename']} - <b>{$lang['deleted']}</b><br />";
+                            echo "{$visible_attachments[$i]['filename']} - <b>{$lang['deleted']}</b><br />";
                            
                         }else {
                             
-                            echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\"";
+                            echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
 
                             if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
                                 echo " target=\"_blank\"";
@@ -457,20 +459,20 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                             echo " title=\"";
 
-                            if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+                            if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
                                 echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                             }
  
-                            echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
-                            echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+                            echo "{$lang['size']}: ". format_file_size($visible_attachments[$i]['filesize']). ", ";
+                            echo "{$lang['downloaded']}: ". $visible_attachments[$i]['downloads'];
 
-                            if ($attachments[$i]['downloads'] == 1) {
+                            if ($visible_attachments[$i]['downloads'] == 1) {
                                 echo " {$lang['time']}";
                             }else {
                                 echo " {$lang['times']}";
                             }
 
-                            echo "\">{$attachments[$i]['filename']}</a><br />";
+                            echo "\">{$visible_attachments[$i]['filename']}</a><br />";
 
                         }
                     }
@@ -484,9 +486,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
 
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
+        
             echo "<tr>\n";
             echo "  <td width=\"25%\">&nbsp;</td>\n";
             echo "  <td width=\"50%\" nowrap=\"nowrap\">";
+            
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP)) || (bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";

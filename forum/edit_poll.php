@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.38 2004-01-27 22:07:12 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.39 2004-02-27 00:24:12 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -235,6 +235,11 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   }
 
   poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
+
+  if (isset($HTTP_POST_VARS['aid']) && isset($attachments_enabled) && $attachments_enabled) {
+    if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
+  }  
+  
   header_redirect("./discussion.php?msg=$tid.1");
 
 }else {
@@ -571,7 +576,12 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
   echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
   if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo form_input_hidden('aid', $aid);
+  }else {
+    $aid = md5(uniqid(rand()));
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo form_input_hidden('aid', $aid);
   }
 
   echo "</form>\n";

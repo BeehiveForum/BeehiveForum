@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.15 2004-02-06 17:33:02 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.16 2004-02-27 00:24:12 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -132,6 +132,10 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
         if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
             $t_content = make_html($t_content);
         }
+                
+        if (isset($HTTP_POST_VARS['aid']) && isset($attachments_enabled) && $attachments_enabled) {
+            if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) pm_save_attachment_id($mid, $HTTP_POST_VARS['aid']);
+        }         
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
             header_redirect("pm.php?folder=2");
@@ -182,7 +186,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }
 }
 
-html_draw_top("openprofile.js", "basetarget=_blank");
+html_draw_top("openprofile.js", "edit.js", "basetarget=_blank");
 draw_header_pm();
 
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
@@ -229,7 +233,12 @@ if ($edit_html) {
 }
 
 if ($aid = get_pm_attachment_id($mid)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo form_input_hidden('aid', $aid);
+}else {
+    $aid = md5(uniqid(rand()));
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid');\"");
+    echo form_input_hidden('aid', $aid);
 }
 
 echo "</form>\n";

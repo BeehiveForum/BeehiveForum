@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.18 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: email.php,v 1.19 2003-08-26 18:30:48 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -111,29 +111,50 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 html_draw_top("{$lang['email']} ".$to_user['LOGON']);
 
-echo "<h1>{$lang['email']} ".$to_user['LOGON']."</h1>\n";
-
 if (isset($error)) echo $error;
 
 if (!isset($subject)) $subject = "";
 if (!isset($message)) $message = "";
 
-echo "<div align=\"center\">";
-echo "<form name=\"f_email\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\" method=\"POST\">\n";
-echo "<table border=\"0\" width=\"96%\">\n";
-echo "<tr><td class=\"subhead\">{$lang['from']}:</td>\n";
-echo "<td class=\"posthead\">".$from_user['EMAIL']."</td></tr>\n";
-echo "<tr><td class=\"subhead\">{$lang['subject']}:</td>\n";
-echo "<td class=\"posthead\">".form_field("t_subject",$subject,32,128)."</td></tr>\n";
-echo "<tr><td class=\"subhead\" valign=\"top\">{$lang['message']}:</td>\n";
-echo "<td class=\"posthead\">".form_textarea("t_message",$message,8,32)."</td></tr>\n";
-echo "<tr><td class=\"subhead\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-echo "<td class=\"posthead\" align=\"right\">\n";
-echo form_field("t_to_uid",$to_uid,0,0,"hidden");
-echo form_submit("submit",$lang['send'])."\n";
-echo form_submit("cancel",$lang['cancel'])."\n";
-echo "</tr></table>\n";
-echo "</form>";
+echo "<div align=\"center\">\n";
+echo "  <form name=\"f_email\" action=\"./email.php\" method=\"POST\">\n";
+echo "    ", form_input_hidden("t_to_uid", $to_uid), "\n";
+echo "    <table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "            <tr>\n";
+echo "              <td><h2>&nbsp;{$lang['email']}&nbsp;{$to_user['LOGON']}</h2></td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "          <table width=\"100%\" class=\"posthead\" border=\"0\">\n";
+echo "            <tr>\n";
+echo "              <td>\n";
+echo "                <table width=\"100%\">\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" width=\"25%\">{$lang['from']}:</td>\n";
+echo "                    <td class=\"posthead\">{$from_user['NICKNAME']} ({$from_user['EMAIL']})</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\">{$lang['subject']}:</td>\n";
+echo "                    <td class=\"posthead\">", form_field("t_subject", $subject, 54, 128), "</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" valign=\"top\">{$lang['message']}:</td>\n";
+echo "                    <td class=\"posthead\">", form_textarea("t_message", $message, 12, 51), "</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>&nbsp;</td>\n";
+echo "                    <td class=\"posthead\" align=\"right\">", form_submit("submit", $lang['send']), "&nbsp;", form_submit("cancel", $lang['cancel']), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                </table>\n";
+echo "              </td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

@@ -21,16 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.25 2004-03-11 22:34:38 decoyduck Exp $ */
-
-// Functions for the links database
-
-include_once('./include/db.inc.php');
-include_once('./include/forum.inc.php');
-include_once('./include/header.inc.php');
-include_once('./include/html.inc.php');
-include_once('./include/form.inc.php');
-include_once('./include/format.inc.php');
+/* $Id: links.inc.php,v 1.26 2004-03-12 18:46:51 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
@@ -141,13 +132,13 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     if (strstr($link_base, "?")) {
         $html = $links ? "<a href=\"$link_base&fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
     }else {
-        $html = $links ? "<a href=\"$link_base?fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
+        $html = $links ? "<a href=\"$link_base&fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
     }
 
     if (is_array($tree)) {
         while ($val = array_pop($tree)) {
             if (($val != $fid && $links) || $link_last_too) {
-                $html .= "&nbsp;>&nbsp;<a href=\"$link_base?fid=$val\">" . _stripslashes($folders[$val]['NAME']) . "</a>";
+                $html .= "&nbsp;>&nbsp;<a href=\"$link_base&fid=$val\">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             } else {
                 $html .= "&nbsp;>&nbsp;". _stripslashes($folders[$val]['NAME']);
             }

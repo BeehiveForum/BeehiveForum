@@ -21,14 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.42 2004-03-11 22:34:40 decoyduck Exp $ */
-
-include_once("./include/form.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/user.inc.php");
-include_once("./include/config.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/lang.inc.php");
+/* $Id: search.inc.php,v 1.43 2004-03-12 18:46:51 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
@@ -414,7 +407,7 @@ function folder_search_dropdown()
     $table_prefix = get_webtag(true);
 
     $sql = "select DISTINCT F.FID, F.TITLE from {$table_prefix}FOLDER F left join ";
-    $sql."{$table_prefix}USER_FOLDER UF on (UF.FID = F.FID and UF.UID = '$uid') ";
+    $sql.= "{$table_prefix}USER_FOLDER UF on (UF.FID = F.FID and UF.UID = '$uid') ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
     $result = db_query($sql, $db_folder_search_dropdown);

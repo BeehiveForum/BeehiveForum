@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.50 2004-03-11 22:34:37 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: user_profile.php,v 1.51 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,16 +29,18 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-// Require functions
-include_once("./include/html.inc.php"); // HTML functions
-include_once("./include/user.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/user_rel.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
 include_once("./include/constants.inc.php");
+include_once("./include/format.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/user_profile.inc.php");
 include_once("./include/profile.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
+include_once("./include/user_profile.inc.php");
+include_once("./include/user_rel.inc.php");
 
 bh_session_check();
 

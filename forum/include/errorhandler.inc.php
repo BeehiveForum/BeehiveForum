@@ -21,22 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.35 2004-03-11 22:34:37 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.36 2004-03-12 18:46:51 decoyduck Exp $ */
 
-// Error Handler
-
-include_once("./include/config.inc.php");
-include_once("./include/html.inc.php");
+include_once("./include/constants.inc.php");
 include_once("./include/form.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
-include_once("./include/session.inc.php");
 
-// Redefine the user error constants
-define("FATAL", E_USER_ERROR);
-define("ERROR", E_USER_WARNING);
-define("WARNING", E_USER_NOTICE);
-
-// Set the error reporting level (Default: FATAL | ERROR | WARNING)
+// Set the error reporting level (Default: E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE)
 error_reporting(E_ALL);
 
 // Beehive Error Handler Function
@@ -83,15 +75,15 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
             switch ($errno) {
 
-                case FATAL:
+                case E_USER_ERROR:
                     echo "<p><b>FATAL</b> [$errno] $errstr</p>\n";
                     echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
-                case ERROR:
+                case E_USER_WARNING:
                     echo "<p><b>ERROR</b> [$errno] $errstr</p>\n";
                     echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
-                case WARNING:
+                case E_USER_NOTICE:
                     echo "<p><b>WARNING</b> [$errno] $errstr</p>\n";
                     echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
                     break;
@@ -191,15 +183,15 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
                 switch ($errno) {
 
-                    case FATAL:
+                    case E_USER_ERROR:
                         echo "            <p><b>FATAL</b> [$errno] $errstr</p>\n";
                         echo "            <p>Fatal error in line $errline of file $errfile</p>\n";
                         break;
-                    case ERROR:
+                    case E_USER_WARNING:
                         echo "            <p><b>ERROR</b> [$errno] $errstr</p>\n";
                         echo "            <p>Error in line $errline of file $errfile</p>\n";
                         break;
-                    case WARNING:
+                    case E_USER_NOTICE:
                         echo "            <p><b>WARNING</b> [$errno] $errstr</p>\n";
                         echo "            <p>Warning in line $errline of file $errfile</p>\n";
                         break;

@@ -21,19 +21,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.28 2004-03-11 22:34:37 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.29 2004-03-12 18:46:51 decoyduck Exp $ */
 
-//Multiple forum support
-include_once("./include/forum.inc.php");
+// Compress the output
+include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/constants.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
-include_once("./include/messages.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
+include_once("./include/user_rel.inc.php");
 
 if(!bh_session_check()){
 
@@ -41,8 +49,6 @@ if(!bh_session_check()){
     header_redirect($uri);
 
 }
-
-include_once("./include/html.inc.php");
 
 if(bh_session_get_value('UID') == 0) {
         html_guest_error();
@@ -64,12 +70,6 @@ if (isset($HTTP_GET_VARS['edit_rel']) && is_numeric($HTTP_GET_VARS['edit_rel']))
 }else {
     $edit_rel = false;
 }
-
-include_once("./include/user.inc.php");
-include_once("./include/user_rel.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/format.inc.php");
 
 $my_uid = bh_session_get_value('UID');
 

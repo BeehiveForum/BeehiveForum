@@ -21,15 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.79 2004-03-12 14:30:56 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.80 2004-03-12 18:46:51 decoyduck Exp $ */
 
+include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
-include_once("./include/forum.inc.php");
-include_once("./include/config.inc.php");
-include_once("./include/user.inc.php");
 include_once("./include/ip.inc.php");
-include_once("./include/html.inc.php");
 include_once("./include/stats.inc.php");
+include_once("./include/user.inc.php");
 
 // An array to cache the user session in - saves querying the database lots of times.
 
@@ -46,7 +44,7 @@ function bh_session_check()
     if (!isset($show_stats)) $show_stats = true;
     if (!isset($session_cutoff)) $session_cutoff = 86400;
 
-    ip_check();
+    //ip_check();
 
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();

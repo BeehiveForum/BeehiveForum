@@ -21,15 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.6 2004-03-11 22:34:37 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.7 2004-03-12 18:46:51 decoyduck Exp $ */
+
+// Compress the output
+include_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
 
-include_once("./include/user.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/messages.inc.php");
 include_once("./include/format.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
 
 if (!bh_session_check()) {
     $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());

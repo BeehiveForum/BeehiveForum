@@ -21,19 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fontsize.php,v 1.15 2004-03-11 22:34:36 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
-
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
+/* $Id: fontsize.php,v 1.16 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-include_once("./include/header.inc.php");
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
+
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
 include_once("./include/config.inc.php");
+include_once("./include/header.inc.php");
 include_once("./include/session.inc.php");
 
 bh_session_check();

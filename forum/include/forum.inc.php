@@ -21,16 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.9 2004-03-11 22:34:38 decoyduck Exp $ */
-
-// Forum-handling functions
-
-// Fetches the webtag from the GET/POST var, checks for it in the
-// database and returns a value.
+/* $Id: forum.inc.php,v 1.10 2004-03-12 18:46:51 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
-include_once("./include/lang.inc.php");
 include_once("./include/form.inc.php");
+include_once("./include/lang.inc.php");
 
 function get_webtag($prefix = false)
 {

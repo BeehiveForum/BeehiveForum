@@ -21,25 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.243 2004-03-11 22:34:38 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.244 2004-03-12 18:46:51 decoyduck Exp $ */
 
-// Included functions for displaying messages in the main frameset.
-
-include_once("./include/db.inc.php"); // Database functions
-include_once("./include/thread.inc.php"); // Thread processing functions
-include_once("./include/format.inc.php"); // Formatting functions
-include_once("./include/perm.inc.php"); // Permissions functions
-include_once("./include/forum.inc.php"); // Forum functions
-include_once("./include/form.inc.php"); // Form functions
-include_once("./include/user.inc.php"); // User functions
-include_once("./include/folder.inc.php");
-include_once("./include/fixhtml.inc.php");
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/stats.inc.php");
-include_once("./include/word_filter.inc.php");
+include_once("./include/folder.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {

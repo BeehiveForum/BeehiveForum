@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.45 2004-03-11 22:34:35 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: delete.php,v 1.46 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,9 +29,23 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/admin.inc.php");
+include_once("./include/edit.inc.php");
+include_once("./include/fixhtml.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/post.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+include_once("./include/user.inc.php");
 
 if (!bh_session_check()) {
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
@@ -47,18 +58,6 @@ if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
-
-include_once("./include/user.inc.php");
-include_once("./include/post.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/folder.inc.php");
-include_once("./include/thread.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/fixhtml.inc.php");
-include_once("./include/edit.inc.php");
-include_once("./include/poll.inc.php");
-include_once("./include/admin.inc.php");
-include_once("./include/lang.inc.php");
 
 // Check if the user is viewing signatures.
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));

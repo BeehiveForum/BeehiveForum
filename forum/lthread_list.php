@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.29 2004-03-11 22:34:36 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: lthread_list.php,v 1.30 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -35,18 +32,18 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-// "LIGHT" THREAD LIST DISPLAY
+//Multiple forum support
+include_once("./include/forum.inc.php");
 
-// Require functions
-include_once("./include/html.inc.php");
-include_once("./include/threads.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/folder.inc.php");
 include_once("./include/constants.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/light.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/format.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/light.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/threads.inc.php");
 
 if(!bh_session_check() || bh_session_get_value('UID') == 0){
 

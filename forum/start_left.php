@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.53 2004-03-11 22:34:37 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: start_left.php,v 1.54 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,12 +29,21 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-// Frameset for thread list and messages
+//Multiple forum support
+include_once("./include/forum.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
-include_once("./include/header.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/folder.inc.php");
 include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
+include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/perm.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+include_once("./include/threads.inc.php");
 
 if (!bh_session_check()) {
 
@@ -45,16 +51,6 @@ if (!bh_session_check()) {
     header_redirect($uri);
 
 }
-
-include_once("./include/perm.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/db.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/thread.inc.php");
-include_once("./include/folder.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/threads.inc.php");
 
 html_draw_top("openprofile.js");
 
@@ -124,7 +120,7 @@ echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">", form_quick_button("discussion.php?webtag=$webtag","{$lang['startreading']} >>", 0, 0, "main"), "</td>\n";
+echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">", form_quick_button("discussion.php", "{$lang['startreading']} &gt;&gt;", "webtag", $webtag, "main"), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";

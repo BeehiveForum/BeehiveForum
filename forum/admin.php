@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.30 2004-03-11 22:34:34 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: admin.php,v 1.31 2004-03-12 18:46:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,11 +29,13 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
 
+include_once("./include/constants.inc.php");
 include_once("./include/header.inc.php");
-include_once("./include/messages.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/session.inc.php");
 
 if (!bh_session_check()) {
 
@@ -44,12 +43,6 @@ if (!bh_session_check()) {
     header_redirect($uri);
 
 }
-
-include_once("./include/perm.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/config.inc.php");
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     html_draw_top();

@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.59 2004-03-11 22:34:34 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: attachments.php,v 1.60 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,9 +29,18 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/attachments.inc.php");
+include_once("./include/config.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
 
 if (!bh_session_check()) {
 
@@ -42,11 +48,6 @@ if (!bh_session_check()) {
     header_redirect($uri);
 
 }
-
-include_once("./include/config.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/format.inc.php");
 
 if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
@@ -243,7 +244,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
             if ($attachment_use_old_method) {
                 echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\" title=\"";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
             }            
 
             if (strlen($attachments[$i]['filename']) > 16) {

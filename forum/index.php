@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.58 2004-03-11 22:34:36 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: index.php,v 1.59 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,13 +29,14 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-// Main page
-// Disable caching when showing logon page
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/config.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/lang.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
-include_once("./include/config.inc.php");
-include_once("./include/lang.inc.php");
 
 if (!isset($auto_logon)) $auto_logon = true;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.112 2004-03-12 14:30:56 decoyduck Exp $ */
+/* $Id: logon.php,v 1.113 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,17 +32,17 @@ include_once("./include/errorhandler.inc.php");
 //Multiple forum support
 include_once("./include/forum.inc.php");
 
-include_once("./include/html.inc.php");
-include_once("./include/user.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/header.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/form.inc.php");
 include_once("./include/beehive.inc.php");
-include_once("./include/format.inc.php");
 include_once("./include/config.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
+include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
 
 if (isset($HTTP_GET_VARS['final_uri'])) {
 

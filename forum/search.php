@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.56 2004-03-11 22:34:37 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: search.php,v 1.57 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,32 +29,32 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/config.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/fixhtml.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/pm.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/search.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+include_once("./include/threads.inc.php");
+include_once("./include/user.inc.php");
 
 if(!bh_session_check()){
 
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
-
-include_once("./include/search.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/folder.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/user.inc.php");
-include_once("./include/threads.inc.php");
-include_once("./include/thread.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/fixhtml.inc.php");
-include_once("./include/poll.inc.php");
-include_once("./include/config.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/pm.inc.php");
 
 if (isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
     $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];

@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.21 2004-03-11 22:34:35 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: change_pw.php,v 1.22 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,13 +29,16 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-include_once("./include/html.inc.php");
-include_once("./include/user.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/db.inc.php");
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
 include_once("./include/config.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/user.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {
 

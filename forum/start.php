@@ -21,10 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.21 2004-03-11 22:34:37 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: start.php,v 1.22 2004-03-12 18:46:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,11 +29,12 @@ include_once("./include/gzipenc.inc.php");
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
-// Frameset for start page
+//Multiple forum support
+include_once("./include/forum.inc.php");
 
-//Check logged in status
-include_once("./include/session.inc.php");
+include_once("./include/config.inc.php");
 include_once("./include/header.inc.php");
+include_once("./include/session.inc.php");
 
 if(!bh_session_check()){
 
@@ -44,8 +42,6 @@ if(!bh_session_check()){
     header_redirect($uri);
 
 }
-
-include_once("./include/config.inc.php");
 
 if (!isset($forum_name)) $forum_name = "A Beehive Forum";
 

@@ -105,7 +105,7 @@ while($row = db_fetch_array($result)){
 echo "</table></td>\n";
 
 echo "<td valign=\"top\"><table width=\"100%\" class=\"subhead\">";
-echo "<tr><td>Send email</td></tr>\n";
+echo "<tr><td><a href=\"email.php?uid=$uid\">Send email</a></td></tr>\n";
 
 $sql = "select RELATIONSHIP from " . forum_table("USER_PEER") . " USER_PEER ";
 $sql.= "where UID = '" . $HTTP_COOKIE_VARS['bh_sess_uid'] . "' ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.28 2004-08-02 13:40:49 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.29 2004-08-07 15:23:05 rowan_hill Exp $ */
 
 // Gangsta language file
 
@@ -1212,6 +1212,12 @@ $lang['blue'] = "Blue";
 $lang['indigo'] = "Indigo";
 $lang['violet'] = "Violet";
 $lang['white'] = "Honky";
+$lang['black'] = "Blizack";
+$lang['grey'] = "Grey";
+$lang['pink'] = "Pink";
+$lang['lightgreen'] = "Light green";
+$lang['lightblue'] = "Light blue";
+
 
 // Forum stats (stats.inc.php) -----------------------------------------
 

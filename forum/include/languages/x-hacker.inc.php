@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.85 2004-04-12 03:11:36 tribalonline Exp $ */
+/* $Id: x-hacker.inc.php,v 1.86 2004-04-12 14:31:20 tribalonline Exp $ */
 
 // International English language file
 
@@ -295,6 +295,10 @@ $lang['movedthread'] = "m0v3d thR3@D";
 $lang['closedthread'] = "CL0\$ED tHRE@D";
 $lang['openedthread'] = "0PEneD thrE4D";
 $lang['renamedthread'] = "R3n4MEd tHRE4D";
+$lang['lockedthreadtitlefolder'] = "Locked Thread Title/Folder";
+$lang['unlockedthreadtitlefolder'] = "Unlocked Thread Title/Folder";
+$lang['userspostsdeletedinthread'] = "User's Posts Deleted in Thread";
+$lang['threaddeleted'] = "Thread Deleted";
 $lang['deletedpost'] = "Del3+eD P05+";
 $lang['editedpost'] = "eD1TEd PoS+";
 $lang['editedwordfilter'] = "3dIt3d woRD pHIlt3R";

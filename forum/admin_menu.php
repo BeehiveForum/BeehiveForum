@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.56 2004-08-17 20:13:49 tribalonline Exp $ */
+/* $Id: admin_menu.php,v 1.57 2004-09-19 16:22:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,22 +120,11 @@ if ($webtag) {
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_folders.php?webtag=$webtag\" target=\"right\">{$lang['folders']}</a></td>\n";
     echo "  </tr>\n";
-}
-
-if (perm_has_forumtools_access()) {
-
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\"><a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"right\">{$lang['profiles']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['forumsettings']}</a></td>\n";
-    echo "  </tr>\n";
-}
-
-if ($webtag) {
-
-    echo "  <tr>\n";
-    echo "    <td class=\"postbody\"><a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"right\">{$lang['profiles']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_startpage.php?webtag=$webtag\" target=\"right\">{$lang['startpage']}</a></td>\n";
@@ -153,6 +142,24 @@ if ($webtag) {
     echo "    <td class=\"postbody\"><a href=\"admin_viewlog.php?webtag=$webtag\" target=\"right\">{$lang['viewlog']}</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
+}
+
+
+if (perm_has_forumtools_access()) {
+
+    echo "<table border=\"0\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">Forums</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['defaultforumsettings']}</a></td>\n";
+    echo "  </tr>\n";
 }
 
 html_draw_bottom();

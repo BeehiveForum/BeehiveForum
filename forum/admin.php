@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.58 2004-09-14 20:18:10 decoyduck Exp $ */
+/* $Id: admin.php,v 1.59 2004-09-19 16:22:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -113,7 +113,7 @@ echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n"
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\">\n";
 echo "</head>\n";
-echo "<frameset cols=\"150,*\" border=\"1\">\n";
+echo "<frameset cols=\"180,*\" border=\"1\">\n";
 echo "  <frame src=\"./admin_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
 echo "  <frame src=\"./admin_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 echo "</frameset>\n";

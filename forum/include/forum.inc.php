@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.84 2004-09-15 18:00:55 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.85 2004-09-19 16:22:01 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -252,23 +252,52 @@ function get_forum_settings()
     static $get_forum_settings = false;
 
     $forum_settings = array();
+    $default_forum_settings = array();
 
     if (!$get_forum_settings) {
 
         $db_get_forum_settings = db_connect();
 
-        if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
-
-        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
+        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
         $result = db_query($sql, $db_get_forum_settings);
 
         while ($row = db_fetch_array($result)) {
-            $forum_settings[$row['SNAME']] = $row['SVALUE'];
+            $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
             $get_forum_settings = true;
+        }
+
+        if ($table_data = get_table_prefix()) {
+
+            $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
+            $result = db_query($sql, $db_get_forum_settings);
+
+            while ($row = db_fetch_array($result)) {
+                $forum_settings[$row['SNAME']] = $row['SVALUE'];
+                $get_forum_settings = true;
+            }
         }
     }
 
-    return array_merge($default_settings, $forum_settings);
+    return array_merge($default_settings, $default_forum_settings, $forum_settings);
+}
+
+function get_default_forum_settings()
+{
+    global $default_settings;
+
+    $db_get_forum_settings = db_connect();
+
+    $default_forum_settings = array();
+
+    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
+    $result = db_query($sql, $db_get_forum_settings);
+
+    while ($row = db_fetch_array($result)) {
+        $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
+        $get_forum_settings = true;
+    }
+
+    return array_merge($default_settings, $default_forum_settings);
 }
 
 function save_forum_settings($forum_settings_array)
@@ -298,6 +327,37 @@ function save_forum_settings($forum_settings_array)
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ('{$table_data['FID']}', '$sname', '$svalue')";
+        }
+
+        $result = db_query($sql, $db_save_forum_settings);
+    }
+}
+
+function save_default_forum_settings($forum_settings_array)
+{
+    if (!is_array($forum_settings_array)) return false;
+
+    $db_save_forum_settings = db_connect();
+
+    foreach ($forum_settings_array as $sname => $svalue) {
+
+        $sname = addslashes($sname);
+        $svalue = addslashes($svalue);
+
+        $sql = "SELECT FID FROM FORUM_SETTINGS WHERE ";
+        $sql.= "SNAME = '$sname' AND FID = '0'";
+
+        $result = db_query($sql, $db_save_forum_settings);
+
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' ";
+            $sql.= "WHERE SNAME = '$sname' AND FID = '0'";
+
+        }else {
+
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ('0', '$sname', '$svalue')";
         }
 
         $result = db_query($sql, $db_save_forum_settings);

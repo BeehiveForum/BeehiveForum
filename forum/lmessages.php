@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.16 2004-01-26 19:40:34 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.17 2004-02-20 22:04:25 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -105,15 +105,13 @@ if (bh_session_get_value('POSTS_PER_PAGE')) {
 
 $messages = messages_get($tid,$pid,$ppp);
 $threaddata = thread_get($tid);
-$closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
-if($closed) $foldertitle .= " ({$lang['closed']})";
 
 $show_sigs = false; // explicitly set sigs not to show in light mode
 
 $msg_count = count($messages);
 
-light_messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTEREST']);
+light_messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
 
 if($msg_count > 0){
     $first_msg = $messages[0]['PID'];
@@ -137,19 +135,19 @@ if($msg_count > 0){
 
           if ($message['PID'] == 1) {
 
-            light_poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true);
+            light_poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true);
             $last_pid = $message['PID'];
 
           }else {
 
-            light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, $show_sigs);
+            light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, true, $show_sigs);
             $last_pid = $message['PID'];
 
           }
 
         }else {
 
-          light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, false, $show_sigs);
+          light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, false, $show_sigs);
           $last_pid = $message['PID'];
 
         }

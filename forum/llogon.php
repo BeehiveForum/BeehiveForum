@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.37 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.38 2004-12-01 09:25:47 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -137,10 +137,9 @@ if (isset($_POST['submit'])) {
 
             if (!strstr(php_sapi_name(), 'cgi')) {
                 header("HTTP/1.0 500 Internal Server Error");
-            }else {
-                echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
             }
 
+            echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
             exit;
 
         }else {

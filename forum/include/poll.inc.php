@@ -70,7 +70,7 @@ function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $
     $db_poll_edit = db_connect();
 
     // Rename the thread
-    
+
     $sql = "update ".forum_table("THREAD")." set TITLE = \"$poll_question\" where TID = $tid";
     $result = db_query($sql, $db_poll_edit);
 
@@ -507,7 +507,7 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
         if ($pollresults[$i]['VOTES'] > 0) {
 
           $polldisplay.= "                <td width=\"300\">\n";
-          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". $bar_width * $pollresults[$i]['VOTES']. "px\">\n";
+          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". floor($bar_width * $pollresults[$i]['VOTES']). "px\">\n";
           $polldisplay.= "                    <tr>\n";
           $polldisplay.= "                      <td class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
           $polldisplay.= "                    </tr>\n";

@@ -46,6 +46,15 @@ if(isset($HTTP_POST_VARS['t_newthread'])){
     }
 }
 
+if($valid){
+    if($t_post_html == "Y"){
+        if(!is_valid_html($t_content)){
+            $valid = false;
+            $error_html = "<h2>Your HTML markup is invalid</h2>";
+        }
+    }
+}
+
 html_draw_top();
 
 /* echo "<table border=\"1\">";
@@ -142,10 +151,22 @@ echo "<td align=\"right\">To:</td>";
 echo "<td>";
 echo post_draw_to_dropdown($t_to_uid);
 echo "</td></tr></table>";
-echo "<tr><td><textarea name=\"t_content\" cols=\"40\" rows=\"10\" wrap=\"VIRTUAL\"></textarea></td></tr>";
+echo "<tr><td><textarea name=\"t_content\" cols=\"40\" rows=\"10\" wrap=\"VIRTUAL\">";
+if(isset($t_content)){
+    if($t_post_html == "Y"){
+        echo stripslashes(htmlentities($t_content));
+    } else {
+        echo $t_content;
+    }
+}
+echo "</textarea></td></tr>";
 echo "<tr><td><textarea name=\"t_sig\" cols=\"40\" rows=\"4\" wrap=\"VIRTUAL\">$sig_content</textarea>";
 echo "<input type=\"hidden\" name=\"t_sig_html\" value=\"$sig_html\"></td></tr>";
-echo "<tr><td><input type=\"checkbox\" name=\"t_post_html\" value=\"Y\">&nbsp;Contains HTML</td></tr></table>";
+echo "<tr><td><input type=\"checkbox\" name=\"t_post_html\" value=\"Y\"";
+if($t_post_html == "Y"){
+    echo " checked";
+}
+echo ">&nbsp;Contains HTML</td></tr></table>";
 echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
 echo "</form>";
 

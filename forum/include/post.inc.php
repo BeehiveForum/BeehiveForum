@@ -118,4 +118,47 @@ function post_draw_to_dropdown($default_uid)
     return $html;
 }
 
+function is_valid_html($html)
+{
+    $html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
+
+    $opentags = array();
+
+    $valid = true;
+
+    for($i=1; $i<count($html_parts); $i++){
+        if($i%2){
+            if(substr($html_parts[$i],0,1) == "/"){ // closing tag
+                $tag = strtolower(substr($html_parts[$i],1));
+                if(isset($opentags[$tag]) && $opentags[$tag] > 0){
+                    $opentags[$tag]--;
+                } else {
+                    echo "<p>Tag $tag closed without being opened</p>";
+                    $return = false;
+                    break;
+                }
+            } else {
+                if(substr($html_parts[$i],-1) != "/"){ // check for XHTML single tag
+                    $bits = explode(" ", $html_parts[$i]);
+                    if(!isset($opentags[$bits[0]])){
+                        $opentags[$bits[0]] = 1;
+                    } else {
+                        $opentags[$bits[0]]++;
+                    }
+                }
+            }
+        }
+    }
+
+    if($valid){
+        $single_tags = array("br","img","hr","p");
+        foreach($opentags as $tag => $n){
+            if(!in_array($tag, $single_tags) && $n > 0){
+                $valid = false;
+            }
+        }
+    }
+    return $valid;
+}
+
 ?>

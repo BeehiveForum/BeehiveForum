@@ -5,9 +5,17 @@ session_register("sess_uid");
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 
-if(isset($sess_uid)){
+// Where are we going after we've logged on?
+if(isset($HTTP_GET_VARS['final_uri'])){
+    $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
+} else {
+    $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/";
+}
+
+if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     html_draw_top();
-    echo "User ID " . $sess_uid . " already logged in.";
+    echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>";
+    echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>";
     html_draw_bottom();
     exit;
 }
@@ -94,7 +102,7 @@ html_draw_top();
 
 if($valid){
     echo "<p>Huzzah! Your user record has been created successfully!</p>";
-    echo "<p><a href=\"messages.php\">Go to messages.</a></p>";
+    echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>";
 } else {
     echo "<h1>User Registration</h1>";
     if(isset($error_html)){
@@ -106,9 +114,9 @@ if($valid){
     echo "<tr><td align=\"right\">Login Name</td>";
     echo "<td><input type=\"text\" name=\"logon\" value=\"" . $logon . "\"></td>";
     echo "</tr><tr><td align=\"right\">Password</td>";
-    echo "<td><input type=\"text\" name=\"pw\" value=\"" . $password . "\"></td>";
+    echo "<td><input type=\"password\" name=\"pw\" value=\"" . $password . "\"></td>";
     echo "</tr><tr><td align=\"right\">Confirm</td>";
-    echo "<td><input type=\"text\" name=\"cpw\" value=\"" . $cpassword . "\"></td>";
+    echo "<td><input type=\"password\" name=\"cpw\" value=\"" . $cpassword . "\"></td>";
     echo "</tr><tr><td align=\"right\">Nickname</td>";
     echo "<td><input type=\"text\" name=\"nickname\" value=\"" . $nickname . "\"></td>";
     echo "</tr><tr><td align=\"right\">Email</td>";

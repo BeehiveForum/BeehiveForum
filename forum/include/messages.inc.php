@@ -85,12 +85,12 @@ function message_display($tid, $message, $msg_count, $first_msg)
 
     echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a><br /><div align=\"center\">\n";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
-    echo "<table width=\"100%\" border=\"0\"><tr>\n";
-    echo "<td class=\"posthead\" width=\"4%\" align=\"right\">\n";
-    echo "<p class=\"posttofromlabel\">From:<br>To:</p></td>\n";
-    echo "<td class=\"posthead\" width=\"92%\">\n";
-    echo "<p class=\"posttofrom\">" . $message['FNICK'] . "<br>" . $message['TNICK'] . "</p></td>\n";
-    echo "<td class=\"posthead\" width=\"4%\" align=\"right\" nowrap>\n";
+    echo "<table class=\"posthead\" width=\"100%\" border=\"0\"><tr>\n";
+    echo "<td width=\"4%\" align=\"right\">\n";
+    echo "<p class=\"posttofromlabel\">From:<br />To:</p></td>\n";
+    echo "<td width=\"92%\">\n";
+    echo "<p class=\"posttofrom\">" . $message['FNICK'] . "<br />" . $message['TNICK'] . "</p></td>\n";
+    echo "<td width=\"4%\" align=\"right\" nowrap>\n";
     echo "<p class=\"postinfo\">";
     echo format_time($message['CREATED']);
     //echo $message['CREATED'];
@@ -130,10 +130,10 @@ function messages_nav_strip($tid,$pid,$length)
     // The first section, 1-x
     if($spid > 1){
         if($pid > 1){
-            $navbits[0] = "<a href=\"messages.php?msg=$tid.1\">" . mess_nav_range(1,$spid) . "</a>";
+            $navbits[0] = "<a href=\"messages.php?msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
         } else {
             $c = 0;
-            $navbits[0] = mess_nav_range(1,$spid); // Don't add <a> tag for current section
+            $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
         }
     }
 
@@ -223,7 +223,7 @@ function messages_update_read($tid,$pid,$uid)
         $fa = db_fetch_array($result);
         if($pid > $fa['LAST_READ']){
             $sql = "update USER_THREAD set LAST_READ = $pid  where UID = $uid and TID = $tid";
-            echo "<p>$sql</p>";
+            //echo "<p>$sql</p>";
             db_query($sql,$db);
         }
     } else {

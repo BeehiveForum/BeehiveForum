@@ -345,7 +345,7 @@ if(!empty($error_html)) {
     </table>
     <table class="posthead" width="400">
       <tr>
-        <td width="150"><?php echo $lang['timezonefromGMT']; ?></td>
+        <td><?php echo $lang['timezonefromGMT']; ?></td>
         <td><?php echo form_dropdown_array("timezone", range(-11,11), range(-11,11), $user_prefs['TIMEZONE']); ?></td>
       </tr>
       <tr>

@@ -62,7 +62,7 @@ function _html_draw_top1($title = false)
         if (is_dir("./styles/$user_style")) {
             $stylesheet = "styles/$user_style/style.css";
         }else {
-	    $stylesheet = "styles/style.css";
+            $stylesheet = "styles/style.css";
         }
 
     }else {
@@ -138,7 +138,7 @@ function style_image($img)
 
     $file = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/images/$img";
 
-    if (file_exists($file)) {
+    if (@file_exists($file)) {
         return $file;
     } else {
         return "./images/$img";

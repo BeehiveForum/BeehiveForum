@@ -30,6 +30,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/make_style.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/constants.inc.php");
 
 // Start Here
 
@@ -51,7 +52,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             clearstatcache();
 
-            if (!file_exists("./styles/$stylename/style.css")) {
+            if (!@file_exists("./styles/$stylename/style.css")) {
 
                 if (@mkdir("./styles/$stylename", 0755)) {
 
@@ -61,7 +62,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     fwrite($fp, (isset($HTTP_POST_VARS['styledesc']) && strlen($HTTP_POST_VARS['styledesc']) > 0) ? $HTTP_POST_VARS['styledesc'] : $stylename);
                     fclose($fp);
 
-                    $stylesheet = implode('', file('./styles/make_style.css'));
+                    $stylesheet = implode('', file("./styles/make_style.css"));
                     $fp = fopen("./styles/$stylename/style.css", "w");
 
                     foreach ($HTTP_POST_VARS['elements'] as $key => $value) {
@@ -200,7 +201,7 @@ echo "            <td class=\"posthead\" width=\"250\">\n";
 echo "              <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                <tr>\n";
 
-list ($boxr, $boxg, $boxb) = hexToDec($elements[box]);
+list ($boxr, $boxg, $boxb) = hexToDec($elements['box']);
 
 if (($boxr < 150 and $boxg < 150 and $boxb < 150) or (($boxr + $boxg + $boxb) / 3) < 85) {
     $text_colour = "#ffffff";
@@ -240,7 +241,7 @@ echo "                  <td class=\"posthead\">or enter a hex colour to base a n
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">\n";
-echo "                    <form action=\"$PHP_SELF\" method=\"get\">\n";
+echo "                    <form action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"get\">\n";
 echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "&nbsp;", form_submit('submit', 'Go'), "\n";
 echo "                    </form>\n";
 echo "                  </td>\n";
@@ -321,26 +322,26 @@ reset($elements);
 <table width="96%" cellpadding="0" cellspacing="0" align="center" class="box">
   <tr>
     <td>
-      <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="background-color: #<?php echo $elements[body]; ?>; color: #<?php echo contrastFont($elements[body]); ?>">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="background-color: #<?php echo $elements['body']; ?>; color: #<?php echo contrastFont($elements['body']); ?>">
         <tr>
-          <td colspan="3" class="navpage" height="20" style="background-color: #<?php echo $elements[navpage]; ?>; color: #<?php echo contrastFont($elements[navpage]); ?>">&nbsp;&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements[navpage]); ?>">Start</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements[navpage]); ?>">Messages</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements[navpage]); ?>">Links</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements[navpage]); ?>">Preferences</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements[navpage]); ?>">Profile</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements[navpage]); ?>">Admin</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements[navpage]); ?>">Logout</a>
+          <td colspan="3" class="navpage" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>">&nbsp;&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Start</a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Messages</a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Links</a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Preferences</a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Profile</a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Admin</a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Logout</a>
           </td>
         </tr>
         <tr>
           <td width="240" align="center" valign="top">
             <table width="220" border="0" cellpadding="0" cellspacing="0">
               <tr>
-                <td class="postbody" style="color: #<?php echo contrastFont($elements[body]); ?>" colspan="2">
-                  <img src="./images/post.png" height="15" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[body]); ?>">New Discussion</a><br />
-                  <img src="./images/poll.png" height="15" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[body]); ?>">Create Poll</a><br />
-                  <img src="./images/search.png" height="15" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[body]); ?>">Search</a><br />
+                <td class="postbody" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2">
+                  <img src="./images/post.png" height="15" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">New Discussion</a><br />
+                  <img src="./images/poll.png" height="15" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">Create Poll</a><br />
+                  <img src="./images/search.png" height="15" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">Search</a><br />
                 </td>
               </tr>
               <tr>
@@ -364,7 +365,7 @@ reset($elements);
                       <option value="11">Started by Friend</option>
                       <option value="12">Unread std by Friend</option>
                     </select>
-                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements[button]; ?>; color: #<?php echo contrastFont($elements[button]); ?>" onclick="return false" />
+                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
                 </td>
               </tr>
@@ -372,7 +373,7 @@ reset($elements);
                 <td colspan="2">
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td class="foldername"><img src="./images/folder.png" height="15" /><a href="#" style="color: #<?php echo contrastFont($elements[body]); ?>">General</a></td>
+                      <td class="foldername"><img src="./images/folder.png" height="15" /><a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">General</a></td>
                       <td class="folderpostnew" width="15"><a href="#"><img src="images/folder_hide.png" border="0" height="15" /></a></td>
                     </tr>
                   </table>
@@ -382,25 +383,25 @@ reset($elements);
                 <td colspan="2">
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[box]); ?>; border-bottom-width: 0px; border-right-width: 0px" align="left" valign="top" width="50%" nowrap="nowrap">
-                        <a href="#" class="folderinfo" style="color: #<?php echo contrastFont($elements[threads]); ?>">1 threads</a>
+                      <td class="threads" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>; border-color: #<?php echo contrastFont($elements['box']); ?>; border-bottom-width: 0px; border-right-width: 0px" align="left" valign="top" width="50%" nowrap="nowrap">
+                        <a href="#" class="folderinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 threads</a>
                       </td>
-                      <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[box]); ?>; border-bottom-width: 0px; border-left-width: 0px" align="right" valign="top" width="50%" nowrap="nowrap">
-                        <a href="#" class="folderpostnew" style="color: #<?php echo contrastFont($elements[threads]); ?>">Post New</a>
+                      <td class="threads" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>; border-color: #<?php echo contrastFont($elements['box']); ?>; border-bottom-width: 0px; border-left-width: 0px" align="right" valign="top" width="50%" nowrap="nowrap">
+                        <a href="#" class="folderpostnew" style="color: #<?php echo contrastFont($elements['threads']); ?>">Post New</a>
                       </td>
                     </tr>
                   </table>
                 </td>
               </tr>
               <tr>
-                <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[box]); ?>; border-top-width: 0px" colspan="2">
+                <td class="threads" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>; border-color: #<?php echo contrastFont($elements['box']); ?>; border-top-width: 0px" colspan="2">
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td valign="top" align="center" nowrap="nowrap" width="16">
                         <img src="./images/current_thread.png" align="middle" height="15" />&nbsp;
                       </td>
-                      <td valign="top"><a href="#" class="threadname" style="color: #<?php echo contrastFont($elements[threads]); ?>">Welcome</a>&nbsp;<img src="./images/high_interest.png" height="15" >&nbsp;<span class="threadxnewofy" style="color: #<?php echo contrastFont($elements[threads]); ?>">[2]</span></td>
-                      <td valign="top" nowrap="nowrap" align="right"><span class="threadtime" style="color: #<?php echo contrastFont($elements[threads]); ?>">16 Mar&nbsp;</span></td>
+                      <td valign="top"><a href="#" class="threadname" style="color: #<?php echo contrastFont($elements['threads']); ?>">Welcome</a>&nbsp;<img src="./images/high_interest.png" height="15" >&nbsp;<span class="threadxnewofy" style="color: #<?php echo contrastFont($elements['threads']); ?>">[2]</span></td>
+                      <td valign="top" nowrap="nowrap" align="right"><span class="threadtime" style="color: #<?php echo contrastFont($elements['threads']); ?>">16 Mar&nbsp;</span></td>
                     </tr>
                   </table>
                 </td>
@@ -411,11 +412,11 @@ reset($elements);
             </table>
             <table width="220" border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td class="smalltext" style="color: #<?php echo contrastFont($elements[body]); ?>" colspan="2">Mark as Read:</td>
+                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2">Mark as Read:</td>
               </tr>
               <tr>
                 <td>&nbsp;</td>
-                <td class="smalltext" style="color: #<?php echo contrastFont($elements[body]); ?>">
+                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>">
                   <form name="f_mark" method="get" action="">
                     <input type="hidden" name="tids" class="bhinputtext" value="1">
                     <select name="markread" class="bhselect">
@@ -423,21 +424,21 @@ reset($elements);
                       <option value="1">Next 50 discussions</option>
                       <option value="2">Visible discussions</option>
                     </select>
-                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements[button]; ?>; color: #<?php echo contrastFont($elements[button]); ?>" onclick="return false" />
+                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
                 </td>
               </tr>
             </table>
             <table width="220" border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td class="smalltext" style="color: #<?php echo contrastFont($elements[body]); ?>" colspan="2">Navigate:</td>
+                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2">Navigate:</td>
               </tr>
               <tr>
                 <td>&nbsp;</td>
-                <td class="smalltext" style="color: #<?php echo contrastFont($elements[body]); ?>">
+                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>">
                   <form name="f_nav" method="get" action="">
                     <input type="text" name="msg" class="bhinputtext" value="1.1" size="10">
-                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements[button]; ?>; color: #<?php echo contrastFont($elements[button]); ?>" onclick="return false" />
+                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
                 </td>
               </tr>
@@ -448,25 +449,25 @@ reset($elements);
             <div align="center">
               <table width="96%" border="0">
                 <tr>
-                  <td style="color: #<?php echo contrastFont($elements[body]); ?>"><p style="color: #<?php echo contrastFont($elements[body]); ?>"><img src="./images/folder.png" />&nbsp;General: Welcome&nbsp;<img src="./images/high_interest.png" height="15" ></p></td>
+                  <td style="color: #<?php echo contrastFont($elements['body']); ?>"><p style="color: #<?php echo contrastFont($elements['body']); ?>"><img src="./images/folder.png" />&nbsp;General: Welcome&nbsp;<img src="./images/high_interest.png" height="15" ></p></td>
                 </tr>
               </table>
             </div>
             <br />
             <div align="center">
-              <table width="96%" class="box" style="background-color: #<?php echo $elements[box]; ?>; color: #<?php echo contrastFont($elements[box]) ?>; border-style: solid; border-width: 1px; border-color: #<?php echo contrastFont($elements[box]);?>" cellspacing="0" cellpadding="0">
+              <table width="96%" class="box" style="background-color: #<?php echo $elements['box']; ?>; color: #<?php echo contrastFont($elements['box']) ?>; border-style: solid; border-width: 1px; border-color: #<?php echo contrastFont($elements['box']);?>" cellspacing="0" cellpadding="0">
                 <tr>
                   <td>
-                    <table width="100%" class="posthead" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>" cellspacing="1" cellpadding="0">
+                    <table width="100%" class="posthead" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>" cellspacing="1" cellpadding="0">
                       <tr>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements[threads]); ?>">&nbsp;From:&nbsp;</span></td>
-                        <td nowrap="nowrap" width="98%"><span class="posttofrom"><a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">User</a></span></td>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements[threads]); ?>">14 Mar 23:56&nbsp;</span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;From:&nbsp;</span></td>
+                        <td nowrap="nowrap" width="98%"><span class="posttofrom"><a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">User</a></span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">14 Mar 23:56&nbsp;</span></td>
                       </tr>
                       <tr>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements[threads]); ?>">&nbsp;To:&nbsp;</span></td>
-                        <td nowrap="nowrap" width="98%"><span class="posttofrom" style="color: #<?php echo contrastFont($elements[threads]); ?>">ALL</span></td>
-                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements[threads]); ?>">1 of 2&nbsp;</span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;To:&nbsp;</span></td>
+                        <td nowrap="nowrap" width="98%"><span class="posttofrom" style="color: #<?php echo contrastFont($elements['threads']); ?>">ALL</span></td>
+                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 of 2&nbsp;</span></td>
                       </tr>
                     </table>
                   </td>
@@ -475,10 +476,10 @@ reset($elements);
                   <td>
                     <table width="100%">
                       <tr align="right">
-                        <td colspan="3"><span class="postnumber" style="color: #<?php echo contrastFont($elements[box]); ?>"><a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">1.1</a> in reply to <a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">1.2</a>&nbsp;</span></td>
+                        <td colspan="3"><span class="postnumber" style="color: #<?php echo contrastFont($elements['box']); ?>"><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.1</a> in reply to <a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.2</a>&nbsp;</span></td>
                       </tr>
                       <tr>
-                        <td class="postbody" style="color: #<?php echo contrastFont($elements[box]); ?>">Message Preview</td>
+                        <td class="postbody" style="color: #<?php echo contrastFont($elements['box']); ?>">Message Preview</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
@@ -489,10 +490,10 @@ reset($elements);
                       <tr>
                         <td align="center">
                           <span class="postresponse">
-                            <img src="./images/post.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Reply</a>&nbsp;&nbsp;
-                            <img src="./images/delete.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Delete</a>&nbsp;&nbsp;
-                            <img src="./images/edit.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Edit</a>&nbsp;&nbsp;
-                            <img src="./images/admintool.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Privileges</a>
+                            <img src="./images/post.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Reply</a>&nbsp;&nbsp;
+                            <img src="./images/delete.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Delete</a>&nbsp;&nbsp;
+                            <img src="./images/edit.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Edit</a>&nbsp;&nbsp;
+                            <img src="./images/admintool.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Privileges</a>
                           </span>
                         </td>
                       </tr>
@@ -503,10 +504,10 @@ reset($elements);
             </div>
             <p>&nbsp;</p>
             <div align="center">
-            <table width="96%" class="messagefoot" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>">
+            <table width="96%" class="messagefoot" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>">
               <tr>
                 <td align="center">
-                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements[threads]); ?>">Show messages: &nbsp;1 &nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">2</a></p>
+                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements['threads']); ?>">Show messages: &nbsp;1 &nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">2</a></p>
                   <p align="center"></p>
                   <form name="rate_interest" target="_self" action="" method="POST">
                     Rate my interest:
@@ -514,28 +515,28 @@ reset($elements);
                     <span class="bhinputradio"><input type="radio" name="interest" value="0" checked />Normal </span>
                     <span class="bhinputradio"><input type="radio" name="interest" value="1" />Interested </span>
                     <span class="bhinputradio"><input type="radio" name="interest" value="2" />Subscribe </span>&nbsp;
-                    <input type="submit" name="submit" value="Apply" class="button" style="background-color: #<?php echo $elements[button]; ?>; color: #<?php echo contrastFont($elements[button]); ?>" onclick="return false" />
+                    <input type="submit" name="submit" value="Apply" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
-                  <p style="color: #<?php echo contrastFont($elements[threads]); ?>">Adjust text size: <a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Smaller</a> 10 <a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Larger</a></p>
+                  <p style="color: #<?php echo contrastFont($elements['threads']); ?>">Adjust text size: <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">Smaller</a> 10 <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">Larger</a></p>
                   <p align="center"></p>
                   <div align="center">
-                    <table width="96%" class="posthead" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>">
+                    <table width="96%" class="posthead" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>">
                       <tr>
                         <td width="60%" class="smalltext">
                           Beehive Forum &nbsp;|&nbsp;
-                          <a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">FAQ</a>&nbsp;|&nbsp;
-                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements[threads]); ?>">Docs</a> &nbsp;|&nbsp;
-                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements[threads]); ?>">Support</a>
+                          <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">FAQ</a>&nbsp;|&nbsp;
+                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>">Docs</a> &nbsp;|&nbsp;
+                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>">Support</a>
                         </td>
-                        <td width="40%" align="right" class="smalltext">&copy;<?php echo date('Y'); ?> <a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Project BeehiveForum</a></td>
+                        <td width="40%" align="right" class="smalltext">&copy;<?php echo date('Y'); ?> <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">Project BeehiveForum</a></td>
                       </tr>
                     </table>
                   </div>
                 </td>
               </tr>
             </table>
-            <p><h1 style="background-color: #<?php echo $elements[h1]; ?>; color: #<?php echo contrastFont($elements[h1]); ?>">H1 Tag</h1></p>
-            <p class="subhead" style="background-color: #<?php echo $elements[subhead]; ?>; color: #<?php echo contrastFont($elements[subhead]); ?>">Subhead</p>
+            <p><h1 style="background-color: #<?php echo $elements['h1']; ?>; color: #<?php echo contrastFont($elements['h1']); ?>">H1 Tag</h1></p>
+            <p class="subhead" style="background-color: #<?php echo $elements['subhead']; ?>; color: #<?php echo contrastFont($elements['subhead']); ?>">Subhead</p>
             <p>&nbsp;</p>
           </td>
         </tr>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.127 2003-09-08 00:54:58 tribalonline Exp $ */
+/* $Id: post.php,v 1.128 2003-09-09 03:25:54 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -219,7 +219,7 @@ if ($valid) {
         $t_content = fix_html($t_content);
 
         if ($auto_linebreaks == true) {
-            $t_content = nl2br($t_content);
+            $t_content = add_paragraphs($t_content);
         }
 
         if ($old_t_content != $t_content) {
@@ -679,6 +679,9 @@ $tph_radio = 1;
 if (isset($HTTP_POST_VARS['t_post_html'])) {
     if ($t_post_html) {
         $tph_radio = 3;
+		if ($auto_linebreaks == true) {
+			$tph_radio = 2;
+		}
     }
 }
 

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.76 2004-05-02 16:16:58 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.77 2004-05-20 10:34:27 tribalonline Exp $ */
 
 include_once("./include/emoticons.inc.php");
 include_once("./include/html.inc.php");
@@ -654,7 +654,7 @@ function tidy_html_callback ($matches)
 
 function clean_emoticons($html)
 {
-	return preg_replace("/<span class=\"e_[^>]*\" title=\"[^>]*\"><span>([^<]*)<\/span><\/span>/i", "$1", $html);
+	return preg_replace("/<span class=\"e_[^>]*\" title=\"[^>]*\"><span[^>]*>([^<]*)<\/span><\/span>/i", "$1", $html);
 }
 
 function clean_styles ($style)

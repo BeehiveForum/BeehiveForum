@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.18 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.19 2004-05-20 10:34:27 tribalonline Exp $ */
 
 // Emoticon filter file
 
@@ -54,8 +54,8 @@ for ($i=0; $i<count($e_keys); $i++) {
 				$a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
 				$a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
 
-				$pattern_array_2[] = "/". $a_f."<span class=[^>]+><span>".$a_m."<\/span><\/span>".$a_e ."/i";
-				$replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span>$a2</span></span>";
+				$pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
+				$replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
 			}
 		}
 	}
@@ -75,13 +75,19 @@ function emoticons_convert ($content) {
 		//$front = ""; //'(?<!<span|title=\")';// "(?<!<span)((>|^)[^<]*?)";
 		//$end = ""; //"(?!<\/span><\/span>)";
 
+		//$front = (preg_match("/^\w/", $k)) ? '\b' : '\B';
+		//$end = (preg_match("/\w$/", $k)) ? '\b' : '\B';
+
+		$front = "(?<=\s|^)";
+		$end = "(?=\s|$)";
+
 		if ($k != $k3) {
-			$pattern_array[] = "/(?<!http)". preg_quote($k3, "/") ."/i";
-			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
+			$pattern_array[] = "/$front". preg_quote($k3, "/") ."$end/";
+			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
 		}
 
-		$pattern_array[] = "/(?<!http)". preg_quote($k, "/") ."/i";
-		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
+		$pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
+		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
 	}
 
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
@@ -92,26 +98,33 @@ function emoticons_convert ($content) {
 		$content = $new_content;
 	}
 
-	$content = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span>[^<]+<\/span>)/ie", "emoticons_regex_output('\\1')", $content);
+	$content = preg_replace_callback("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)/", "emoticons_callback", $content);
 
 	return $content;
 }
 
-function emoticons_regex_output($text) {
-    $text = urldecode($text);
-    // accounts for stripslashes 'bug' when using /e modifier
-    // see comments at:
-    // http://uk2.php.net/manual/en/function.preg-replace.php
-    $text = str_replace('\"', '"', $text);
-    return $text;
+function emoticons_callback ($matches)
+{
+    return urldecode($matches[1]);
 }
 
 function emoticons_get_sets() {
 	$sets = array();
+	$sets2 = array();
 	if ($dir = @opendir('emoticons')) {
 		while (($file = readdir($dir)) !== false) {
-			if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
-				if (@file_exists("./emoticons/$file/style.css")) {
+			if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
+				if ($file == "none" || $file == "text") {
+					if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
+						$content = fread($fp, filesize("emoticons/$file/desc.txt"));
+						$content = split("\n", $content);
+						$sets2[$file] = _htmlentities($content[0]);
+						fclose($fp);
+					}else {
+						$sets2[$file] = _htmlentities($file);
+					}
+
+				} else if (@file_exists("./emoticons/$file/style.css")) {
 					if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
 						$content = fread($fp, filesize("emoticons/$file/desc.txt"));
 						$content = split("\n", $content);
@@ -129,27 +142,30 @@ function emoticons_get_sets() {
 	asort($sets);
 	reset($sets);
 
-	$sets = array_merge(array('none' => 'None'), $sets);
+	$sets = array_merge($sets2, $sets);
 
 	return $sets;
 }
 
 function emoticons_set_exists ($set) {
-	if (file_exists('./emoticons/'.$set.'/style.css') || $set == 'none') {
+	if (file_exists('./emoticons/'.$set.'/style.css') || $set == 'text') {
 		return true;
 	}
 	return false;
 }
 
-function emoticons_preview ($set, $width=190, $height=100) {
+function emoticons_preview ($set, $width=190, $height=100, $num = 35) {
 	global $emoticon_text;
+	global $lang;
+	global $webtag;
+
 	$str = "";
 
 	if (!emoticons_set_exists($set)) {
 		$set = forum_get_setting('default_emoticons');
 	}
 
-	if ($set != 'none') {
+	if ($set != 'text' && $set != 'none') {
 		$path = "./emoticons/$set";
 		$fp = fopen("$path/style.css", "r");
 		$style = fread($fp, filesize("$path/style.css"));
@@ -167,7 +183,7 @@ function emoticons_preview ($set, $width=190, $height=100) {
 		array_multisort($emot_match, SORT_DESC, $emot_text, $emot_image);
 
 		$str.= "<div style=\"width:".$width."px; height:".$height."px\" class=\"emoticon_preview\">\n";
-		for ($i=0; $i<count($emot_match); $i++) {
+		for ($i=0; $i<min(count($emot_match), $num); $i++) {
 			$tmp_t = "";
 			for ($j=1; $j<count($emot_match[$i]); $j++) {
 				$tmp_t.= " ".$emot_match[$i][$j];
@@ -175,8 +191,11 @@ function emoticons_preview ($set, $width=190, $height=100) {
 			$tmp_i = $emot_image[$i];
 			$tmp_ts = $emot_match[$i][0];
 
-			$str.= "<img src=\"$path/". $tmp_i ."\" title=\"". $tmp_ts.$tmp_t ."\" onclick=\"add_text('". str_replace("'", "\\'", $tmp_ts) ."');\" /> ";
+			$str.= "<img src=\"$path/". $tmp_i ."\" title=\"". $tmp_ts.$tmp_t ."\" onclick=\"add_text(' ". str_replace("'", "\\'", $tmp_ts) ." ');\" /> ";
 
+		}
+		if ($num < count($emot_match)) {
+			$str.= "<p><b><a href=\"#\" target=\"_self\" onclick=\"openEmoticons('user','$webtag');\">{$lang['more']}</a></b></p>";
 		}
 		$str.= "</div>";
 	}

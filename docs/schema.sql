@@ -4,9 +4,9 @@
 #
 # Schema generated using phpMyAdmin
 # (http://phpmyadmin.sourceforge.net)
-# Generation Time: Jul 24, 2003 at 21:37 PM
+# Generation Time: Dec 07, 2003 at 21:15 PM
 #
-# $Id: schema.sql,v 1.54 2003-11-09 20:34:07 decoyduck Exp $
+# $Id: schema.sql,v 1.55 2003-12-07 21:29:36 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -74,7 +74,7 @@ CREATE TABLE FOLDER (
   ACCESS_LEVEL tinyint(4) default '0',
   DESCRIPTION varchar(255) default NULL,
   ALLOWED_TYPES tinyint(3) default NULL,
-  POSITION mediumint(8) unsigned default 0,
+  POSITION mediumint(8) unsigned default '0',
   PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
 
@@ -185,7 +185,7 @@ CREATE TABLE PM_ATTACHMENT_IDS (
 # --------------------------------------------------------
 
 #
-# Table structure for table `PM_CONENT`
+# Table structure for table `PM_CONTENT`
 #
 
 CREATE TABLE PM_CONTENT (
@@ -208,7 +208,7 @@ CREATE TABLE POLL (
   POLLTYPE tinyint(1) NOT NULL default '0',
   SHOWRESULTS tinyint(1) NOT NULL default '1',
   VOTETYPE tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY (TID)
+  PRIMARY KEY  (TID)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -314,8 +314,8 @@ CREATE TABLE PROFILE_ITEM (
   PIID mediumint(8) unsigned NOT NULL auto_increment,
   PSID mediumint(8) unsigned default NULL,
   NAME varchar(64) default NULL,
-  TYPE tinyint(3) unsigned default 0,
-  POSITION mediumint(8) unsigned default 0,
+  TYPE tinyint(3) unsigned default '0',
+  POSITION mediumint(8) unsigned default '0',
   PRIMARY KEY  (PIID)
 ) TYPE=MyISAM;
 
@@ -338,7 +338,7 @@ INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (6, 1, 'Birthday (DD/MM)');
 CREATE TABLE PROFILE_SECTION (
   PSID mediumint(8) unsigned NOT NULL auto_increment,
   NAME varchar(64) default NULL,
-  POSITION mediumint(8) unsigned default 0,
+  POSITION mediumint(8) unsigned default '0',
   PRIMARY KEY  (PSID)
 ) TYPE=MyISAM;
 
@@ -355,10 +355,12 @@ INSERT INTO PROFILE_SECTION (PSID, NAME) VALUES (1, 'Personal');
 
 CREATE TABLE SESSIONS (
   SESSID mediumint(8) unsigned NOT NULL auto_increment,
+  HASH varchar(32) NOT NULL default '',
   UID mediumint(8) unsigned NOT NULL default '0',
   IPADDRESS varchar(15) NOT NULL default '',
   TIME datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`SESSID`)
+  PRIMARY KEY  (SESSID),
+  KEY HASH (HASH)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -394,7 +396,7 @@ CREATE TABLE THREAD (
   POLL_FLAG char(1) default NULL,
   MODIFIED datetime default NULL,
   CLOSED datetime default NULL,
-  STICKY varchar(1) default NULL,
+  STICKY char(1) default NULL,
   STICKY_UNTIL datetime default NULL,
   PRIMARY KEY  (TID),
   KEY ix_thread_fid (FID),
@@ -419,7 +421,7 @@ CREATE TABLE USER (
   NICKNAME varchar(32) default NULL,
   EMAIL varchar(80) default NULL,
   STATUS int(16) default NULL,
-  LAST_LOGON datetime NOT NULL,
+  LAST_LOGON datetime NOT NULL default '0000-00-00 00:00:00',
   LOGON_FROM varchar(15) default NULL,
   PRIMARY KEY  (UID)
 ) TYPE=MyISAM;
@@ -469,7 +471,7 @@ CREATE TABLE USER_POLL_VOTES (
   UID mediumint(8) unsigned NOT NULL default '0',
   PTUID varchar(32) NOT NULL default '',
   OPTION_ID mediumint(8) unsigned NOT NULL default '0',
-  TSTAMP datetime NOT NULL,
+  TSTAMP datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (ID,TID,PTUID)
 ) TYPE=MyISAM;
 
@@ -483,7 +485,7 @@ CREATE TABLE USER_PREFS (
   UID mediumint(8) unsigned default NULL,
   FIRSTNAME varchar(32) default NULL,
   LASTNAME varchar(32) default NULL,
-  DOB date default '0000-00-00' NULL,
+  DOB date default '0000-00-00',
   HOMEPAGE_URL varchar(255) default NULL,
   PIC_URL varchar(255) default NULL,
   EMAIL_NOTIFY char(1) default NULL,
@@ -544,4 +546,5 @@ CREATE TABLE USER_THREAD (
   INTEREST tinyint(4) default NULL,
   UNIQUE KEY ix_user_thread_1 (UID,TID)
 ) TYPE=MyISAM;
+    
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.139 2003-11-28 20:31:59 decoyduck Exp $ */
+/* $Id: post.php,v 1.140 2003-12-07 21:29:36 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -616,7 +616,7 @@ if ($newthread) {
     echo "<h2>".$lang['folder'].":</h2>\n";
     echo folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")."\n";
     echo "<h2>".$lang['threadtitle'].":</h2>\n";
-    echo form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
+    echo form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 0, 0, "style=\"width: 190px\"")."\n";
 
     echo form_input_hidden("t_newthread", "Y")."\n";
     echo "<br />\n";

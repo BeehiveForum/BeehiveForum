@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.51 2003-12-07 17:34:47 decoyduck Exp $ */
+/* $Id: index.php,v 1.52 2003-12-07 21:29:36 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -72,7 +72,8 @@ if (bh_session_check()) {
 
     // Calculate how tall the nav frameset should be based on the user's fontsize.
     
-    $navsize = bh_session_get_value('FONT_SIZE') * 2;
+    $navsize = bh_session_get_value('FONT_SIZE');
+    $navsize = ($navsize) ? $navsize * 2 : 20;
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.94 2003-09-06 18:18:48 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.95 2003-09-15 17:41:47 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -109,7 +109,7 @@ function user_change_pw($uid, $password, $hash = false)
 function user_get_status($uid)
 {
 
-    $sql = "select STATUS from ". forum_table("USER") . " where UID = $uid";
+    $sql = "SELECT STATUS FROM ". forum_table("USER") . " WHERE UID = $uid";
     $db_user_get_status = db_connect();
 
     $result = db_query($sql, $db_user_get_status);

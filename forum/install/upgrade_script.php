@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.22 2004-09-14 17:42:16 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.23 2004-09-26 19:35:33 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -704,12 +704,6 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_PM ADD NOTIFIED TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL";
-
-    if (!$result = mysql_query($sql, $db_install)) {
-        $valid = false;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_PM ADD REPLY_TO_MID MEDIUMINT(8) UNSIGNED NOT NULL AFTER MID";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.94 2004-09-15 08:14:22 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.95 2004-09-26 19:35:33 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -84,7 +84,7 @@ function pm_add_sentitem($mid)
     // sender's sent items
     // ------------------------------------------------------------
 
-    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM.TO_UID, ";
+    $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, ";
     $sql.= "PM.SUBJECT, PM.CREATED, AT.AID FROM {$table_data['PREFIX']}PM PM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
@@ -93,8 +93,8 @@ function pm_add_sentitem($mid)
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_row = db_fetch_array($result);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}PM (REPLY_TO_MID, TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
-    $sql.= "VALUES ({$db_pm_add_sentitem_row['REPLY_TO_MID']}, ". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}PM (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
+    $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
     $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}', 1)";
 
@@ -151,7 +151,7 @@ function pm_get_inbox($offset)
     $result_array  = db_fetch_array($result);
     $message_count = $result_array['MESSAGE_COUNT'];
 
-    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
@@ -196,7 +196,7 @@ function pm_get_outbox($offset)
     $result_array  = db_fetch_array($result);
     $message_count = $result_array['MESSAGE_COUNT'];
 
-    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
@@ -241,7 +241,7 @@ function pm_get_sent($offset)
     $result_array  = db_fetch_array($result);
     $message_count = $result_array['MESSAGE_COUNT'];
 
-    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
@@ -287,7 +287,7 @@ function pm_get_saveditems($offset)
     $result_array  = db_fetch_array($result);
     $message_count = $result_array['MESSAGE_COUNT'];
 
-    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
@@ -443,7 +443,7 @@ function pm_single_get($mid, $folder)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PM.MID, PM.REPLY_TO_MID, PM.TYPE, PM.TO_UID, PM.FROM_UID, ";
+    $sql = "SELECT PM.MID, PM.TYPE, PM.TO_UID, PM.FROM_UID, ";
     $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
@@ -571,20 +571,9 @@ function draw_pm_message($pm_elements_array)
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table width=\"100%\">\n";
-
-    if (isset($pm_elements_array['REPLY_TO_MID']) && $pm_elements_array['REPLY_TO_MID'] > 0) {
-
-        echo "          <tr align=\"right\">\n";
-        echo "            <td colspan=\"3\"><span class=\"postnumber\">{$lang['inreplyto']} <a href=\"pm.php?webtag=$webtag&amp;mid={$pm_elements_array['REPLY_TO_MID']}\" target=\"_self\">#{$pm_elements_array['REPLY_TO_MID']}</a></span>&nbsp;</td>\n";
-        echo "          </tr>\n";
-
-    }else {
-
-        echo "          <tr align=\"right\">\n";
-        echo "            <td colspan=\"3\">&nbsp;</td>\n";
-        echo "          </tr>\n";
-    }
-
+    echo "          <tr align=\"right\">\n";
+    echo "            <td colspan=\"3\">&nbsp;</td>\n";
+    echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td class=\"postbody\" align=\"left\">", apply_wordfilter($pm_elements_array['CONTENT']), "</td>\n";
     echo "          </tr>\n";
@@ -708,12 +697,11 @@ function pm_save_attachment_id($mid, $aid)
     return $result;
 }
 
-function pm_send_message($tuid, $trmid, $subject, $content)
+function pm_send_message($tuid, $subject, $content)
 {
     $db_pm_send_message = db_connect();
 
     if (!is_numeric($tuid)) return false;
-    if (!is_numeric($trmid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -726,8 +714,8 @@ function pm_send_message($tuid, $trmid, $subject, $content)
     // Insert the main PM Data into the database
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}PM (TYPE, REPLY_TO_MID, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
-    $sql.= "VALUES (". PM_UNREAD. ", '$trmid', '$tuid', '$fuid', '$subject', NOW(), 0)";
+    $sql = "INSERT INTO {$table_data['PREFIX']}PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
+    $sql.= "VALUES (". PM_UNREAD. ", '$tuid', '$fuid', '$subject', NOW(), 0)";
 
     $result = db_query($sql, $db_pm_send_message);
 

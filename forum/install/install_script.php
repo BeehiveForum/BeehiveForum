@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.23 2004-09-14 17:42:15 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.24 2004-09-26 19:35:33 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -263,7 +263,6 @@ if(!$result = mysql_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE {$forum_webtag}_PM (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  REPLY_TO_MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.173 2003-09-21 13:36:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.174 2003-09-21 13:38:47 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -930,7 +930,7 @@ function messages_forum_stats()
 
     if (bh_session_get_value('SHOW_STATS') == 1) {
 
-        echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./<img src=\"", style_image('stats_hide.png'), "\"></td>\n";
+        echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./user_stats.php?show_stats=0\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\"></a></td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>\n";
@@ -991,7 +991,7 @@ function messages_forum_stats()
 
     }else {
 
-        echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./<img src=\"", style_image('stats_show.png'), "\"></td>\n";
+        echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./user_stats.php?show_stats=1\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\"></a></td>\n";
     }
 
     echo "    </tr>\n";

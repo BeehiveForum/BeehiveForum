@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.97 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.98 2003-09-21 13:36:36 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -324,7 +324,7 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
             $email_notify = "",$timezone = 0,$dl_saving = "",$mark_as_of_int = "",
             $posts_per_page = 5, $font_size = 10, $style, $view_sigs = "",
             $start_page = 0, $language = "", $pm_notify = "", $pm_notify_email = "", $dob_display = 0,
-            $anon_logon = "")
+            $anon_logon = "", $show_stats = "")
 {
 
     global $default_style;
@@ -341,12 +341,12 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
-    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON) ";
+    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS) ";
     $sql.= "values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
     $sql.= "'". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "', ";
     $sql.= "'". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int', ";
     $sql.= "$posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language', '$pm_notify', ";
-    $sql.= "'$pm_notify_email', '$dob_display', '$anon_logon')";
+    $sql.= "'$pm_notify_email', '$dob_display', '$anon_logon', '$show_stats')";
 
     $result = db_query($sql, $db_user_update_prefs);
 

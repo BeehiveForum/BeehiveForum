@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.72 2004-05-17 15:56:59 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.73 2004-05-26 11:27:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -159,7 +159,13 @@ if (isset($_POST['cancel'])) {
     header_redirect($uri);
 }
 
-if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT)) {
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+    $aid = $_POST['aid'];
+}else{
+    $aid = md5(uniqid(rand()));
+}
+
+if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {
 
     html_draw_top();
 
@@ -179,6 +185,11 @@ if (isset($_POST['preview']) || isset($_POST['submit'])) {
 
     if ($valid && strlen(trim($_POST['answers'][1])) == 0) {
         $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+        $valid = false;
+    }
+
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
 }
@@ -326,8 +337,8 @@ if ($valid && isset($_POST['preview'])) {
     poll_edit($tid, $_POST['question'], $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
     post_add_edit_text($tid, 1);
 
-    if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-        if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($tid, $pid, $_POST['aid']);
+    if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+        if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
     }
 
     header_redirect("./discussion.php?webtag=$webtag&msg=$tid.1");

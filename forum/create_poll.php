@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.113 2004-05-25 22:09:11 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.114 2004-05-26 11:27:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -159,6 +159,12 @@ if (isset($_POST['t_sig_html'])) {
     }
 }
 
+if (!isset($_POST['aid'])) {
+    $aid = md5(uniqid(rand()));
+}else{
+    $aid = $_POST['aid'];
+}
+
 if (!isset($post_html)) $post_html = 0;
 if (!isset($sig_html)) $sig_html = 0;
 
@@ -191,9 +197,15 @@ if (isset($_POST['cancel'])) {
             $valid = false;
         }
 
-        if (!perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE)) {
+        if (!perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE | USER_PERM_POST_READ)) {
 
             $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>\n";
+            $valid = false;
+        }
+
+        if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+
+            $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
             $valid = false;
         }
     }
@@ -312,8 +324,8 @@ if ($valid && isset($_POST['submit'])) {
 
         poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
 
-        if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-            if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($t_tid, $t_pid, $_POST['aid']);
+        if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+            if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $t_pid, $aid);
         }
 
         if (strlen($t_message_text) > 0) {
@@ -338,12 +350,6 @@ if ($valid && isset($_POST['submit'])) {
 html_draw_top("basetarget=_blank", "openprofile.js", "post.js", "htmltools.js");
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
-
-if (!isset($_POST['aid'])) {
-    $aid = md5(uniqid(rand()));
-}else{
-    $aid = $_POST['aid'];
-}
 
 if ($valid && isset($_POST['preview'])) {
 

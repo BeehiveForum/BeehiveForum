@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.198 2004-05-25 15:51:15 decoyduck Exp $ */
+/* $Id: post.php,v 1.199 2004-05-26 11:27:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -300,7 +300,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE)) {
+    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -325,7 +325,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE)) {
+    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -334,7 +334,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
@@ -358,13 +358,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE)) {
+    if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE | USER_PERM_POST_READ)) {
 
         $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
@@ -723,7 +723,7 @@ echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);

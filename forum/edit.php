@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.129 2004-05-25 15:51:15 decoyduck Exp $ */
+/* $Id: edit.php,v 1.130 2004-05-26 11:27:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -214,7 +214,7 @@ if (isset($_POST['cancel'])) {
     header_redirect($uri);
 }
 
-if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT)) {
+if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {
 
     html_draw_top();
 
@@ -325,7 +325,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
@@ -378,7 +378,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
@@ -645,7 +645,7 @@ echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 
     if ($aid = get_attachment_id($tid, $pid)) {
         echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");

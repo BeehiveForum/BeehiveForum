@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.74 2004-05-17 15:56:59 decoyduck Exp $ */
+/* $Id: delete.php,v 1.75 2004-05-26 11:27:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -159,7 +159,7 @@ if (isset($_POST['cancel'])) {
     header_redirect($uri);
 }
 
-if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT)) {
+if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {
 
     html_draw_top();
 

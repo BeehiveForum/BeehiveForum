@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.125 2004-05-25 22:09:11 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.126 2004-05-26 11:27:46 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -46,10 +46,12 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID <> 0) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUPS GROUPS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID AND GROUPS.AUTO_GROUP = 1) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
     $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
     $sql.= "GROUP BY FOLDER.FID ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.18 2005-01-28 23:50:30 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.19 2005-03-13 20:15:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -116,27 +116,27 @@ if (isset($_POST['submit'])) {
         $t_allowed_types = FOLDER_ALLOW_ALL_THREAD;
     }
 
-    $t_post_read     = (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
-    $t_post_create   = (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
-    $t_thread_create = (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
-    $t_post_edit     = (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
-    $t_post_delete   = (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
-    $t_post_attach   = (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
-    $t_post_html     = (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
-    $t_post_sig      = (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
-    $t_guest_access  = (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
-    $t_post_approval = (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
+    $t_post_read     = (double) (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
+    $t_post_create   = (double) (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
+    $t_thread_create = (double) (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
+    $t_post_edit     = (double) (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
+    $t_post_delete   = (double) (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
+    $t_post_attach   = (double) (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
+    $t_post_html     = (double) (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
+    $t_post_sig      = (double) (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
+    $t_guest_access  = (double) (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
+    $t_post_approval = (double) (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
 
     // We need a double / float here because we're storing a high bit value
 
-    $t_permissions = (double)$t_post_read | $t_post_create | $t_thread_create;
-    $t_permissions = (double)$t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
-    $t_permissions = (double)$t_permissions | $t_post_html | $t_post_sig | $t_guest_access | $t_post_approval;
+    $t_permissions = (double) $t_post_read | $t_post_create | $t_thread_create;
+    $t_permissions = (double) $t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
+    $t_permissions = (double) $t_permissions | $t_post_html | $t_post_sig | $t_guest_access | $t_post_approval;
 
     if ($valid) {
 
         $new_fid = folder_create($t_name, $t_description, $t_allowed_types, $t_permissions);
-        admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
+        admin_add_log_entry(CREATE_NEW_FOLDER, $t_name);
 
         $add_success = rawurlencode($t_name);
         header_redirect("./admin_folders.php?webtag=$webtag&add+success=$add_success");

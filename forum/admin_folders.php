@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.91 2005-03-09 23:26:50 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.92 2005-03-13 20:15:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -111,8 +111,12 @@ if (isset($_POST['submit'])) {
                 $folder_data['POSITION'] = $_POST['t_position'][$fid];
             }
 
+            if (isset($_POST['t_old_position'][$fid]) && is_numeric($_POST['t_old_position'][$fid])) {
+                $folder_data['OLD_POSITION'] = $_POST['t_old_position'][$fid];
+            }
+
             folder_update($fid, $folder_data);
-            admin_addlog(0, $fid, 0, 0, 0, 0, 7);
+            admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
         }
     }
 }

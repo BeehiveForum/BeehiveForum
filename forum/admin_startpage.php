@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.61 2005-02-16 23:39:32 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.62 2005-03-13 20:15:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -100,13 +100,13 @@ if (isset($_POST['submit'])) {
         $content = "";
     }
 
-    if (save_start_page($content)) {
+    if (forum_save_start_page($content)) {
 
         $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
         $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
         $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
 
-        admin_addlog(0, 0, 0, 0, 0, 0, 16);
+        admin_add_log_entry(EDITED_START_PAGE);
 
     }else {
 
@@ -135,7 +135,7 @@ if (isset($_POST['submit'])) {
                 $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
                 $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
 
-                admin_addlog(0, 0, 0, 0, 0, 0, 16);
+                admin_add_log_entry(EDITED_START_PAGE);
 
             }else {
 
@@ -154,7 +154,7 @@ html_draw_top("dictionary.js", "htmltools.js");
 echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
 echo "<p>{$lang['editstartpageexp']}</p>\n";
 
-$content = load_start_page();
+$content = forum_load_start_page();
 
 if (isset($status_text)) echo $status_text;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.66 2005-02-16 23:39:32 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.67 2005-03-13 20:15:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -104,6 +104,18 @@ if (isset($_POST['submit'])) {
                 $valid = false;
             }
 
+            if (isset($_POST['t_old_name'][$psid]) && strlen(trim(_stripslashes($_POST['t_old_name'][$psid]))) > 0) {
+                $t_old_name = trim(_stripslashes($_POST['t_old_name'][$psid]));
+            }else {
+                $valid = false;
+            }
+
+            if (isset($_POST['t_old_position'][$psid]) && is_numeric($_POST['t_old_position'][$psid])) {
+                $t_old_position = $_POST['t_old_position'][$psid];
+            }else {
+                $valid = false;
+            }
+
             if (isset($_POST['t_position'][$psid]) && is_numeric($_POST['t_position'][$psid])) {
                 $t_new_position = $_POST['t_position'][$psid];
             }else {
@@ -113,7 +125,9 @@ if (isset($_POST['submit'])) {
             if ($valid) {
 
                 profile_section_update($psid, $t_new_position, $t_new_name);
-                admin_addlog(0, 0, 0, 0, $psid, 0, 10);
+
+                $log_data = array($t_old_name, $t_old_position, $t_new_name, $t_new_position);
+                admin_add_log_entry(CHANGE_PROFILE_SECT, $log_data);
             }
         }
 
@@ -144,16 +158,19 @@ if (isset($_POST['submit'])) {
     if ($valid) {
 
         $new_psid = profile_section_create($t_name_new, $t_position_new);
-        admin_addlog(0, 0, 0, 0, $new_psid, 0, 11);
+        admin_add_log_entry(ADDED_PROFILE_SECT, $t_name_new);
 
     }
 
 }elseif (isset($_POST['t_delete'])) {
 
     list($psid) = array_keys($_POST['t_delete']);
-    profile_section_delete($psid);
-    admin_addlog(0, 0, 0, 0, 0, $psid, 15);
 
+    $profile_name = profile_section_get_name($psid);
+
+    profile_section_delete($psid);
+
+    admin_add_log_entry(DELETE_PROFILE_ITEM, $profile_name);
 }
 
 // Draw the form

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.50 2005-03-06 23:36:41 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.51 2005-03-13 20:15:53 decoyduck Exp $ */
 
 // Beehive Version
 
@@ -140,5 +140,46 @@ define("PROFILE_ITEM_SMALL_TEXT", 2);
 define("PROFILE_ITEM_MULTI_TEXT", 3);
 define("PROFILE_ITEM_RADIO", 4);
 define("PROFILE_ITEM_DROPDOWN", 5);
+
+// Admin log ACTIONs
+
+define("CHANGE_USER_STATUS", 1);
+define("CHANGE_FORUM_ACCESS", 2);
+define("DELETE_ALL_USER_POSTS", 3);
+define("BANNED_IPADDRESS", 4);
+define("UNBANNED_IPADDRESS", 5);
+define("DELETE_ALL_ATTACHMENTS", 6);
+define("EDIT_THREAD_OPTIONS", 7);
+define("MOVED_THREADS", 8);
+define("CREATE_NEW_FOLDER", 9);
+define("CHANGE_PROFILE_SECT", 10);
+define("ADDED_PROFILE_SECT", 11);
+define("DELETE_PROFILE_SECT", 12);
+define("CHANGE_PROFILE_ITEM", 13);
+define("ADDED_PROFILE_ITEM", 14);
+define("DELETE_PROFILE_ITEM", 15);
+define("EDITED_START_PAGE", 16);
+define("CREATED_NEW_STYLE", 17);
+define("MOVED_THREAD", 18);
+define("CLOSED_THREAD", 19);
+define("OPENED_THREAD", 20);
+define("RENAME_THREAD", 21);
+define("DELETE_POST", 22);
+define("EDIT_POST", 23);
+define("EDIT_WORD_FILTER", 24);
+define("CREATE_THREAD_STICKY", 25);
+define("REMOVE_THREAD_STICKY", 26);
+define("END_USED_SESSION", 27);
+define("EDIT_FORUM_SETTINGS", 28);
+define("LOCKED_THREAD", 29);
+define("UNLOCKED_THREAD", 30);
+define("DELETE_USER_THREAD_POSTS", 31);
+define("DELETE_THREAD", 32);
+define("DELETE_ATTACHMENT", 33);
+define("EDIT_FORUM_LINKS", 34);
+define("APPROVED_POST", 35);
+define("CREATE_USER_GROUP", 36);
+define("DELETE_USER_GROUP", 37);
+define("ADD_USER_TO_GROUP", 38);
 
 ?>

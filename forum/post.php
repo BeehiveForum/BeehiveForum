@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.241 2005-03-09 23:26:51 decoyduck Exp $ */
+/* $Id: post.php,v 1.242 2005-03-13 20:15:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,7 +41,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");

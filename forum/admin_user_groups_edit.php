@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.22 2005-03-09 23:37:40 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.23 2005-03-13 20:15:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/attachments.inc.php");
@@ -147,17 +147,17 @@ if (isset($_POST['submit'])) {
     $t_globalmod  = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
     $t_linksmod   = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
 
-    $new_group_perms = (double) ($t_banned | $t_wormed | $t_globalmod | $t_linksmod);
+    $new_group_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
 
     if (perm_has_forumtools_access()) {
 
-        $new_group_perms = (double)$new_group_perms | $t_admintools;
-        $new_group_perms = (double)$new_group_perms | ($group_permissions & USER_PERM_FORUM_TOOLS);
+        $new_group_perms = (double) $new_group_perms | $t_admintools;
+        $new_group_perms = (double) $new_group_perms | ($group_permissions & USER_PERM_FORUM_TOOLS);
 
     }else {
 
-        $new_group_perms = (double)$new_group_perms | ($group_permissions & USER_PERM_ADMIN_TOOLS);
-        $new_group_perms = (double)$new_group_perms | ($group_permissions & USER_PERM_FORUM_TOOLS);
+        $new_group_perms = (double) $new_group_perms | ($group_permissions & USER_PERM_ADMIN_TOOLS);
+        $new_group_perms = (double) $new_group_perms | ($group_permissions & USER_PERM_FORUM_TOOLS);
     }
 
     if ($valid) {
@@ -170,21 +170,21 @@ if (isset($_POST['submit'])) {
 
                 foreach ($t_update_perms_array as $fid) {
 
-                    $t_post_read     = (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
-                    $t_post_create   = (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
-                    $t_thread_create = (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
-                    $t_post_edit     = (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
-                    $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
-                    $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
-                    $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-                    $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-                    $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
-                    $t_post_approval = (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
+                    $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
+                    $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
+                    $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
+                    $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
+                    $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
+                    $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
+                    $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
+                    $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                    $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                    $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
-                    $new_group_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
-                    $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete;
-                    $new_group_perms = (double)$new_group_perms | $t_moderator | $t_post_attach;
-                    $new_group_perms = (double)$new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;;
+                    $new_group_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
+                    $new_group_perms = (double) $new_group_perms | $t_post_edit | $t_post_delete;
+                    $new_group_perms = (double) $new_group_perms | $t_moderator | $t_post_attach;
+                    $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;;
 
                     perm_update_group_folder_perms($gid, $fid, $new_group_perms);
                 }
@@ -196,21 +196,21 @@ if (isset($_POST['submit'])) {
 
                 foreach ($t_new_perms_array as $fid) {
 
-                    $t_post_read     = (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
-                    $t_post_create   = (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
-                    $t_thread_create = (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
-                    $t_post_edit     = (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
-                    $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
-                    $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
-                    $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-                    $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-                    $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
-                    $t_post_approval = (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
+                    $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
+                    $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
+                    $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
+                    $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
+                    $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
+                    $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
+                    $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
+                    $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                    $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                    $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
-                    $new_group_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
-                    $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete;
-                    $new_group_perms = (double)$new_group_perms | $t_moderator | $t_post_attach;
-                    $new_group_perms = (double)$new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;;
+                    $new_group_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
+                    $new_group_perms = (double) $new_group_perms | $t_post_edit | $t_post_delete;
+                    $new_group_perms = (double) $new_group_perms | $t_moderator | $t_post_attach;
+                    $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;;
 
                     perm_add_group_folder_perms($gid, $fid, $new_group_perms);
                 }

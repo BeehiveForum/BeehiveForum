@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.57 2005-01-19 21:49:26 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.58 2005-03-13 20:15:24 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -134,7 +134,7 @@ if (isset($_POST['submit'])) {
     save_forum_settings($new_forum_settings);
 
     $uid = bh_session_get_value('UID');
-    admin_addlog($uid, 0, 0, 0, 0, 0, 28);
+    admin_add_log_entry(EDIT_WORD_FILTER);
 
     if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 

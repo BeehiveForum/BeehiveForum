@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.65 2005-03-06 23:36:40 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.66 2005-03-13 20:15:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/constants.inc.php");
 include_once("./include/header.inc.php");
@@ -139,7 +139,7 @@ if (perm_has_forumtools_access()) {
     echo "    <td class=\"postbody\"><a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['globalforumsettings']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\"><a href=\"admin_global_user_perms.php?webtag=$webtag\" target=\"right\">{$lang['globaluserpermissions']}</a></td>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_global_user_perms.php?webtag=$webtag\" target=\"right\">{$lang['userpermissions']}</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }

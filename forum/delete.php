@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.85 2005-02-04 19:35:35 decoyduck Exp $ */
+/* $Id: delete.php,v 1.86 2005-03-13 20:15:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -187,7 +187,9 @@ if ($valid) {
 
         if (post_delete($tid, $pid)) {
 
-            admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 22);
+            if (perm_is_moderator($t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+                admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
+            }
 
             echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
             echo "<br />\n";

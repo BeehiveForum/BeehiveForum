@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.71 2005-03-04 22:54:07 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.72 2005-03-13 20:15:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -175,7 +175,7 @@ if (isset($_POST['submit'])) {
 
                         $success = true;
 
-                        admin_addlog(0, 0, 0, 0, 0, 0, 17);
+                        admin_add_log_entry(CREATED_NEW_STYLE, $stylename);
                         echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
                     }
                 }
@@ -185,7 +185,7 @@ if (isset($_POST['submit'])) {
 
                 if (!$success) {
 
-                    admin_addlog(0, 0, 0, 0, 0, 0, 17);
+                    admin_add_log_entry(CREATED_NEW_STYLE, $stylename);
 
                     $style_download = "/*======================================================================\n";
                     $style_download.= "Copyright Project BeehiveForum 2002\n\n";

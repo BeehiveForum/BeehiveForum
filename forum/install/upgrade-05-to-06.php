@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.32 2005-03-10 21:17:52 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.33 2005-03-13 20:15:56 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -203,6 +203,33 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    // Admin log has changed to be more simplified
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_ADMIN_LOG";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_ADMIN_LOG (";
+    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  CREATED DATETIME DEFAULT NULL,";
+    $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  DATA MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (ID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
 
     // Permissions system has changed to be global tables
 

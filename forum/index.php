@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.105 2005-03-10 21:17:51 decoyduck Exp $ */
+/* $Id: index.php,v 1.106 2005-03-13 20:15:29 decoyduck Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -40,7 +40,7 @@ check_install();
 //Multiple forum support
 include_once("./include/forum.inc.php");
 
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");

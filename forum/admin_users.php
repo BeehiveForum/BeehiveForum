@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.95 2005-01-19 21:49:26 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.96 2005-03-13 20:15:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -145,9 +145,12 @@ if (isset($_GET['reset'])) {
 echo "<h1>{$lang['admin']} : {$lang['manageusers']}</h1>\n";
 
 if (isset($_POST['t_kick'])) {
+
     list($user_uid) = array_keys($_POST['t_kick']);
+
     if (admin_session_end($user_uid)) {
-        admin_addlog($user_uid, 0, 0, 0, 0, 0, 27);
+
+        admin_add_log_entry(END_USED_SESSION, $user_uid);
         echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">", user_get_logon($user_uid), "</a></b></p>\n";
     }
 }

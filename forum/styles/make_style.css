@@ -85,7 +85,8 @@ A                   { background-color: transparent; color: #$text_colour[body];
 .posttofrom A       { background-color: transparent; color: #$text_colour[threads] }
 
 .postresponse       { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt;
-                      font-style: normal; color: #$text_colour[body]; text-align: center }
+                      font-style: normal; color: #$text_colour[body]; background-color: #$elements[body]; 
+                      text-align: center }
 
 .messagefoot        { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10pt;
                       font-style: normal; background-color: #$elements[threads]; border-width: 0px;
@@ -134,3 +135,5 @@ A                   { background-color: transparent; color: #$text_colour[body];
 .pollbar4           { background-color: #F4AA00 }
 
 .pollbar5           { background-color: #D42AD4 }
+
+.highlight	    { background-color: #$elements[threads] }

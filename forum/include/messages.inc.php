@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.152 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: messages.inc.php,v 1.153 2003-07-29 09:58:46 hodcroftcj Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -423,9 +423,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
         }
+        
+        echo "</table>\n";
+        echo "<table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
 
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
-            echo "<tr><td align=\"center\"><span class=\"postresponse\">";
+            echo "<tr><td>";
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
@@ -462,7 +465,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\">{$lang['privileges']}</a>";
             }
 
-            echo "</span></td></tr>";
+            echo "</td></tr>";
         }
         echo "</table>\n";
     }

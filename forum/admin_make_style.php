@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.15 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: admin_make_style.php,v 1.16 2003-07-29 09:58:45 hodcroftcj Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -499,14 +499,14 @@ reset($elements);
                       <tr>
                         <td class="postbody"></td>
                       </tr>
+                    </table>
+                    <table width="100%" class="postresponse" style="background-color: #<?php echo $elements['body']; ?>; color: #<?php echo contrastFont($elements['body']); ?>" cellspacing="1" cellpadding="0">
                       <tr>
                         <td align="center">
-                          <span class="postresponse">
                             <img src="./images/post.png" height="15" border="0" alt="<?php echo $lang['reply']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['reply']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></bdo>
                             <img src="./images/delete.png" height="15" border="0" alt="<?php echo $lang['delete']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['delete']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></bdo>
                             <img src="./images/edit.png" height="15" border="0" alt="<?php echo $lang['edit']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['edit']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></bdo>
                             <img src="./images/admintool.png" height="15" border="0" alt="<?php echo $lang['privileges']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['privileges']; ?></a>
-                          </span>
                         </td>
                       </tr>
                     </table>

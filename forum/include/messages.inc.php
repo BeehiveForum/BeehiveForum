@@ -281,6 +281,8 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
         }
+    } else {
+        $navbits[0] = "<a href=\"messages.php?msg=$tid.1\" target=\"_self\">" . mess_nav_range(1,abs($spid-1)) . "</a>";
     }
 
     // The middle section(s)
@@ -311,17 +313,17 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     $html = "Show messages:";
 
     if($length <= $ppp){
-        $html .= " <a href=\"messages.php?msg=$tid.1\" target=\"_self\">All</a>";
+        $html .= " <a href=\"messages.php?msg=$tid.1\" target=\"_self\">All</a>\n";
     }
-    $i=0;
-    foreach($navbits as $bit){
+    
+    for($i=0;$i<=$max;$i++){
         // Only display first, last and those within 3 of the current section
+        //echo "$i : $max\n";
         if((abs($c - $i) < 4) || $i == 0 || $i == $max){
-            $html .= " " . $bit;
+            $html .= "\n&nbsp;" . $navbits[$i];
         } else if(abs($c - $i) == 4){
-            $html .= "...";
+            $html .= "\n&nbsp;...";
         }
-        $i++;
     }
 
     echo "<p align=\"center\" class=\"smalltext\">" . $html . "</p>\n";

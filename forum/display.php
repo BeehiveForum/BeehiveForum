@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.52 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: display.php,v 1.53 2004-08-17 23:46:32 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -128,7 +128,7 @@ if (!thread_can_view($tid, bh_session_get_value('UID'))) {
 }
 
 // Check if the user is viewing signatures.
-$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Output XHTML header
 html_draw_top("basetarget=_blank", "openprofile.js");

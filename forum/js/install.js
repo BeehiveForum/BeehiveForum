@@ -52,21 +52,27 @@ function confirm_install(button) {
     var install_form = getFormObj('install_form');
 
     if (install_type.selectedIndex == 1) {
-        confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!'
+        confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';
+	confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
     }else if (install_type.selectedIndex == 2) {
-        confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!'
+        confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!\n\n';
+	confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
     }else if (install_type.selectedIndex > 2) {
-        confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!'
+        confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!\n\n';
+	confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
     }
 
-    if (window.confirm(confirm_text)) {
+    if (install_type.selectedIndex > 0) {
 
-        disable_button(button);
-        install_form.submit();
-	return true;
+        if (window.confirm(confirm_text)) {
+
+            disable_button(button);
+            install_form.submit();
+            return true;
+        }
+
+        return false;
     }
-
-    return false;
 }
 
 function show_install_help(topic) {

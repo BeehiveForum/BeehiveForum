@@ -256,7 +256,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
 	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
 	$sql .= "WHERE THREAD.fid = $fid ";
-	$sql .= "AND USER_THREAD.UID = $uid ";
+	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
 	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT $start, 50";
@@ -269,42 +269,51 @@ function threads_get_folder($uid, $fid, $start = 0)
 
 function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
 {
+    
     if (db_num_rows($resource_id)) { // check that the set of threads returned is not empty
+    
         // If the user has clicked on a folder header, we want that folder to be first in the list
-	    global $HTTP_GET_VARS;
-	    if (isset($HTTP_GET_VARS['folder'])) $folder_order[] = $HTTP_GET_VARS['folder'];
+        
+	global $HTTP_GET_VARS;
+	
+	if (isset($HTTP_GET_VARS['folder'])) $folder_order[] = $HTTP_GET_VARS['folder'];
 
-	    // Loop through the results and construct an array to return
+	// Loop through the results and construct an array to return
+	
     	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
-		$thread = db_fetch_array($resource_id);
+    	
+	    $thread = db_fetch_array($resource_id);
 
-		// If this folder ID has not been encountered before, make it the next folder in the order to be displayed
-		if (!isset($folder_order)) {
-			$folder_order[] = $thread['fid'];
-        } else {
-			if (!in_array($thread['fid'], $folder_order)) $folder_order[] = $thread['fid'];
-		}
+	    // If this folder ID has not been encountered before, make it the next folder in the order to be displayed
+	    if (!isset($folder_order)) {
+                $folder_order[] = $thread['fid'];
+            }else{
+                if (!in_array($thread['fid'], $folder_order)) $folder_order[] = $thread['fid'];
+            }
 
-		$lst[$i]['tid'] = $thread['tid'];
-		$lst[$i]['fid'] = $thread['fid'];
-		$lst[$i]['title'] = stripslashes($thread['title']);
-		$lst[$i]['length'] = $thread['length'];
+            $lst[$i]['tid'] = $thread['tid'];
+            $lst[$i]['fid'] = $thread['fid'];
+            $lst[$i]['title'] = stripslashes($thread['title']);
+            $lst[$i]['length'] = $thread['length'];
 
-		if (isset($thread['last_read'])) { // special case - last_read may be NULL, in which case PHP will complain that the array index doesn't exist if we don't do this
-			$lst[$i]['last_read'] = $thread['last_read'];
-		} else {
-			$lst[$i]['last_read'] = 0;
-		}
+            if (isset($thread['last_read'])) { // special case - last_read may be NULL, in which case PHP will complain that the array index doesn't exist if we don't do this
+                $lst[$i]['last_read'] = $thread['last_read'];
+            }else{
+                $lst[$i]['last_read'] = 0;
+            }
 
-                $lst[$i]['interest'] = isset($thread['interest']) ? $thread['interest'] : 0;
-		$lst[$i]['modified'] = $thread['modified'];
+            $lst[$i]['interest'] = isset($thread['interest']) ? $thread['interest'] : 0;
+            $lst[$i]['modified'] = $thread['modified'];
 
-	    }
-    } else { // special case - no threads returned, but we have to return something
+        }
+        
+    }else{ // special case - no threads returned, but we have to return something
         $lst = 0;
         $folder_order = 0;
     }
-	return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
+    
+    return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
+    
 }
 
 function threads_get_folder_msgs()

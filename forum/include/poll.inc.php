@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.95 2004-03-17 17:20:35 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.96 2004-03-18 23:42:31 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -1140,7 +1140,7 @@ function poll_public_ballot($tid, $viewstyle)
 
                   $polldisplay.= "              <tr>\n";
                   $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']})\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '{$webtag['WEBTAG']}')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
                   $polldisplay.= "              </tr>\n";
                 }
               }
@@ -1178,7 +1178,7 @@ function poll_public_ballot($tid, $viewstyle)
 
           $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
           $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']})\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '{$webtag['WEBTAG']}')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
           $polldisplay.= "              </tr>\n";
 
           for ($i = 0; $i < sizeof($optionid_array); $i++) {

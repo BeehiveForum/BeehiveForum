@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.164 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: post.php,v 1.165 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -760,7 +760,7 @@ echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="clos
 
 if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}')\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '{$webtag['WEBTAG']}')\"");
     echo form_input_hidden("aid", $aid);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.57 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.58 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -213,7 +213,7 @@ echo "                </tr>\n";
 if ($uid == bh_session_get_value('UID')) {
 
     echo "                <tr>\n";
-    echo "                  <td><a href=\"javascript:void(0)\" onclick=\"launchAttachProfileWin();\" target=\"_self\">{$lang['editmyattachments']}</a></td>\n";
+    echo "                  <td><a href=\"javascript:void(0)\" onclick=\"launchAttachProfileWin('{$webtag['WEBTAG']}');\" target=\"_self\">{$lang['editmyattachments']}</a></td>\n";
     echo "                </tr>\n";
 }
 

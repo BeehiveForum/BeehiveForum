@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.29 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.30 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -98,7 +98,7 @@ if ($user_search_array) {
 
     foreach ($user_search_array as $user_search) {
         echo "        <tr>\n";
-        echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $user_search['UID'], ")\">", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</a></td>\n";
+        echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile({$user_search['UID']}, '{$webtag['WEBTAG']}')\">", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</a></td>\n";
         echo "          <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_search['LAST_LOGON']), "</td>\n";
         echo "        </tr>\n";
     }

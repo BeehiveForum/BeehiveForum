@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.35 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.36 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -113,7 +113,7 @@ if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
         html_draw_bottom();
         exit;
     }
-    $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
+    $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile($uid, '{$webtag['WEBTAG']}')\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
 }else {
     html_draw_top();
     echo "<h1>{$lang['error']}:</h1>";

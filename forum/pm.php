@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.34 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: pm.php,v 1.35 2004-03-18 23:42:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -240,26 +240,26 @@ if (sizeof($listmessages_array) == 0) {
         if ($folder == 1 || $folder == 2) {
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['TO_UID'] . ")\" target=\"_self\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['TO_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
             echo format_user_name($listmessages_array[$i]['TLOGON'], $listmessages_array[$i]['TNICK']) . "</a>";
             echo "</td>\n";
 
         }elseif ($folder == 3) {
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['TO_UID'] . ")\" target=\"_self\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['TO_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
             echo format_user_name($listmessages_array[$i]['TLOGON'], $listmessages_array[$i]['TNICK']) . "</a>";
             echo "</td>\n";
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['FROM_UID'] . ")\" target=\"_self\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['FROM_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
             echo format_user_name($listmessages_array[$i]['FLOGON'], $listmessages_array[$i]['FNICK']) . "</a>";
             echo "</td>\n";
 
         }else {
 
             echo "      <td class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['FROM_UID'] . ")\" target=\"_self\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$listmessages_array[$i]['FROM_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
             echo format_user_name($listmessages_array[$i]['FLOGON'], $listmessages_array[$i]['FNICK']) . "</a>";
             echo "</td>\n";
 

@@ -157,8 +157,6 @@ list($dob_year, $dob_month, $dob_day) = explode('-', $user_prefs['DOB']);
 
 html_draw_top();
 
-echo $user_prefs['DOB'];
-
 echo "<h1>User Preferences</h1>\n";
 
 if(!empty($error_html)) {

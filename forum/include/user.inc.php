@@ -282,7 +282,7 @@ function user_get_prefs($uid)
     $result = db_query($sql, $db_user_get_prefs);
 
     if(!db_num_rows($result)){
-        $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'HOMEPAGE_URL' => '',
+        $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
                     'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
                     'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '');
@@ -293,7 +293,7 @@ function user_get_prefs($uid)
     return $fa;
 }
 
-function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
+function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
                            $posts_per_page, $font_size, $style, $view_sigs, $start_page = 0)
 {
@@ -308,9 +308,9 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
     if (empty($font_size)) $font_size = 0;
         if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
-    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
+    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL,";
     $sql.= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE)";
-    $sql.= " values ($uid, '". htmlspecialchars($firstname). "', '". htmlspecialchars($lastname). "',";
+    $sql.= " values ($uid, '". htmlspecialchars($firstname). "', '". htmlspecialchars($lastname). "', '$dob', ";
     $sql.= " '". htmlspecialchars($homepage_url). "', '". htmlspecialchars($pic_url). "',";
     $sql.= " '". htmlspecialchars($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int',";
     $sql.= " $posts_per_page, $font_size, '$style', '$view_sigs', '$start_page')";

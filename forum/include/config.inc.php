@@ -109,7 +109,7 @@ $allow_post_editing = true;     // allow users to edit their posts
 $post_edit_time = 0;            // time that users can edit posts for in
                                 // hours after posting, 0 = infinite
 
-$allow_polls = true             // Allows the creation of polls.
+$allow_polls = true;            // Allows the creation of polls.
 
 // ---------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.118 2004-04-20 10:01:33 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.119 2004-04-25 16:47:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -997,7 +997,7 @@ $lang['globallyignoredsig_exp'] = "No signatures are displayed.";
 $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
 $lang['notexttosearchfor_1'] = "You did not specify any words to search for or the words were under";
-$lang['notexttosearchfor_2'] = "characters long";
+$lang['notexttosearchfor_2'] = "characters long or you did not enter a username to search against";
 $lang['foundzeromatches'] = "Found: 0 matches";
 $lang['found'] = "Found";
 $lang['matches'] = "matches";

@@ -21,24 +21,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.8 2003-11-20 19:40:51 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.9 2003-11-29 20:28:04 decoyduck Exp $ */
 
-// French language file Ver 0.2
-// By Kriv
+// French language file Ver 0.3
+// By Mark Krywonos and Endo
 // All sections are complete but will probabily contain gramattical errors.
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "iso-8859-1"; // ISO Charset code
-$lang['_isocode'] = "fr";    // ISO-639 language code
-$lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
+$lang['_charset'] = "UTF-8";
+$lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
 
 
 // Common words --------------------------------------------------------
 
 $lang['add'] = "Ajouter";
 $lang['remove'] = "Enlever";
-$lang['go'] = "Aller";
+$lang['go'] = "Valider";
 $lang['folder'] = "Dossier";
 $lang['folders'] = "Dossiers";
 $lang['thread'] = "fil";
@@ -46,15 +45,15 @@ $lang['threads'] = "fils";
 $lang['message'] = "Message";
 $lang['from'] = "De";
 $lang['to'] = "A";
-$lang['all_caps'] = "TOUT";
+$lang['all_caps'] = "Tous";
 $lang['of'] = "de";
-$lang['reply'] = "Réponse";
+$lang['reply'] = "Répondre";
 $lang['delete'] = "Delete";
 $lang['del'] = "Effacer";
 $lang['edit'] = "Editer";
 $lang['privileges'] = "Privilèges";
-$lang['ignore'] = "Négliger";
-$lang['normal'] = "Normal";
+$lang['ignore'] = "Désactivé";
+$lang['normal'] = "Activé";
 $lang['interested'] = "Intéressé";
 $lang['subscribe'] = "S'abonne";
 $lang['apply'] = "S'appliquer";
@@ -67,7 +66,6 @@ $lang['soldier'] = "Soldat";
 $lang['worker'] = "Ouvrier";
 $lang['worm'] = "Ver";
 $lang['wasp'] = "Guêpe";
-$lang['with'] = "avec";
 $lang['splat'] = "Splat";
 $lang['attachment'] = "Attachment";
 $lang['attachments'] = "Attachments";
@@ -88,7 +86,7 @@ $lang['clear'] = "Clair";
 $lang['action'] = "Action";
 $lang['unknown'] = "Inconnu";
 $lang['none'] = "aucun";
-$lang['preview'] = "Avant-première";
+$lang['preview'] = "Aperçu";
 $lang['post'] = "Poste";
 $lang['posts'] = "Postes";
 $lang['change'] = "Changement";
@@ -107,10 +105,9 @@ $lang['passwd'] = "Mot de passe";
 $lang['ignored'] = "Négligé";
 $lang['guest'] = "Invité";
 $lang['next'] = "Après";
-$lang['prev'] = "Précédent";
 $lang['others'] = "Autres";
 $lang['nickname'] = "Surnom";
-$lang['emailaddress'] = "Adresse d'e-mail";
+$lang['emailaddress'] = "Adresse mél";
 $lang['confirm'] = "Confirmer";
 $lang['email'] = "Email";
 $lang['new'] = "nouveau";
@@ -122,7 +119,7 @@ $lang['guesterror_1'] = "Désolé, vous avez besoin d'être abonné pour utiliser ce
 $lang['guesterror_2'] = "Login maintenant";
 $lang['on'] = "sur";
 $lang['unread'] = "non lu";
-$lang['all'] = "Tout";
+$lang['all'] = "Tous";
 $lang['me_caps'] = "ME";
 $lang['by'] = "par";
 $lang['permissions'] = "Permissions";
@@ -130,18 +127,12 @@ $lang['position'] = "Position";
 $lang['or'] = "ou";
 $lang['hours'] = "Heures";
 $lang['type'] = "Type";
-$lang['print'] = "Caractères";
+$lang['print'] = "Print";
 $lang['sticky'] = "Sticky";
 $lang['polls'] = "Sondages";
 $lang['user'] = "Utilisateur";
 $lang['enabled'] = "Rendu capable";
 $lang['disabled'] = "Rendu infirme";
-
-// Error handling messages (error_handler.inc.php) ---------------------
-
-$lang['db_connect_error_1'] = "An error has occured while connecting to the database.";
-$lang['db_connect_error_2'] = "If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:";
-$lang['db_connect_error_3'] = "They should be set to the database details given to you by your hosting provider.";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -162,7 +153,7 @@ $lang['adminexp_1'] = "Utiliser le menu sur le gauche pour gérer des choses dans
 $lang['adminexp_2'] = "<b>Utilisateurs</b> vous permet de régler les permissions d'utilisateur, y compris nommer d'Editeurs et bâillonner les gens.";
 $lang['adminexp_3'] = "Usage <b>Dossiers</b> pour ajouter de nouveaux dossiers ou change les noms d'une existante.";
 $lang['adminexp_4'] = "<b>Profils</b> vous permettre de change les articles apparaissant dans les profils d'utilisateur.";
-$lang['adminexp_5'] = "Choisir <b>Commencer la Page</b> pour éditer la page de début de forum.";
+$lang['adminexp_5'] = "Choisir <b>Commencer par la page</b> pour éditer la page de Démarrage de forum.";
 $lang['adminexp_6'] = "Utilisation <b>Style de forum</b> vous permet de créer les nouveaux arrangements de couleur pour le forum.";
 $lang['adminexp_7'] = "Les mots dans le <b>Filtre de mot</b> peut être édité.";
 $lang['adminexp_8'] = "Regarde le <b>Journal de bord administratif</b> pour voir que quels modérateurs de forum d'actions ont-ils pris récemment.";
@@ -171,7 +162,7 @@ $lang['newstyle'] = "Nouveau style";
 $lang['successfullycreated'] = "avec succès créé.";
 $lang['stylesdirnotwritable'] = "L'annuaire de styles n'est pas writeable. S'il vous plaît CHMOD l'annuaire de styles et juger à nouveau.";
 $lang['stylealreadyexists'] = "Un style avec ce nom de fichier existe déjà.";
-$lang['stylenofilename'] = "Vous n'êtes pas entré un nom de fichier pour épargner le style avec.";
+$lang['stylenofilename'] = "Vous n'êtes pas entré un nom de fichier pour Sauvegarder le style avec.";
 $lang['stylenotauthorised'] = "Vous n'êtes pas autorisé de créer les styles de forum.";
 $lang['styleexp'] = "Utiliser cette page pour aider crée un style au hasard engendré pour votre forum.";
 $lang['stylecontrols'] = "Contrôles";
@@ -183,14 +174,14 @@ $lang['enterhexcolour'] = "ou entrer une couleur de sort pour baser un nouveau s
 $lang['savestyle'] = "Epargner ce style";
 $lang['styledesc'] = "Desc de style.";
 $lang['fileallowedchars'] = "(les lettres minuscules (a-z), les numéros (0-9) et les soulignés (_) seulement)";
-$lang['stylepreview'] = "Avant-première de style";
+$lang['stylepreview'] = "Aperçu de style";
 $lang['welcome'] = "Accueil";
-$lang['messagepreview'] = "Avant-première de message";
+$lang['messagepreview'] = "Aperçu";
 $lang['h1tag'] = "H1 Tag";
 $lang['subhead'] = "Subhead";
 $lang['users'] = "Utilisateurs";
 $lang['profiles'] = "Profils";
-$lang['startpage'] = "Commencer la Page";
+$lang['startpage'] = "Commencer par la page";
 $lang['forumstyle'] = "Style de forum";
 $lang['wordfilter'] = "Filtre de mot";
 $lang['viewlog'] = "Journal de bord de vue";
@@ -208,10 +199,10 @@ $lang['newsection'] = "Nouvelle Section";
 $lang['manageprofilesections'] = "Gérer les Sections de Profil";
 $lang['sectionname'] = "Nom de section";
 $lang['items'] = "Articles";
-$lang['startpageupdated'] = "Commencer la Page mise à jour";
-$lang['viewupdatedstartpage'] = "Regarder la Page mise à jour de Début";
-$lang['editstartpage'] = "Editer la Page de Début";
-$lang['editstartpageexp'] = "Utiliser cette page pour éditer la Page de Début sur votre forum.";
+$lang['startpageupdated'] = "Commencer par la page mise à jour";
+$lang['viewupdatedstartpage'] = "Regarder la Page mise à jour de Démarrage";
+$lang['editstartpage'] = "Editer la Page de Démarrage";
+$lang['editstartpageexp'] = "Utiliser cette page pour éditer la Page de Démarrage sur votre forum.";
 $lang['nouserspecified'] = "Aucun utilisateur a spécifié pour éditer.";
 $lang['manageuser'] = "Gérer l'Utilisateur";
 $lang['manageusers'] = "Gérer des Utilisateurs";
@@ -265,7 +256,7 @@ $lang['deletedprofilesection'] = "La Section effacée de Profil";
 $lang['changedprofileitemtitle'] = "Le titre changé d'Article de Profil pour l'article";
 $lang['addednewprofileitem'] = "Supplémentaire le Nouvel Article de Profil";
 $lang['deletedprofileitem'] = "L'Article effacé de Profil";
-$lang['editedstartpage'] = "La Page éditée de Début";
+$lang['editedstartpage'] = "La Page éditée de Démarrage";
 $lang['savednewstyle'] = "Epargné le Nouveau Style";
 $lang['movedthread'] = "Fil déplacé";
 $lang['closedthread'] = "Fil fermé";
@@ -291,7 +282,7 @@ $lang['nousers'] = "Aucuns utilisateurs";
 $lang['addnewuser'] = "Ajouter le Nouvel Utilisateur";
 $lang['adduser'] = "Ajouter l'Utilisateur";
 $lang['searchforuser'] = "Cherche l'Utilisateur";
-$lang['browsernegotiation'] = "Le navigateur a négocié";
+$lang['browsernegotiation'] = "Choix du navigateur par défaut";
 $lang['largetextfield'] = "Le grand Champ de Texte";
 $lang['mediumtextfield'] = "Le Champ moyen de Texte";
 $lang['smalltextfield'] = "Le petit Champ de Texte";
@@ -323,13 +314,12 @@ $lang['otherattachmentsincludingpm'] = "Les autres Attachements (y compris PM le
 $lang['totalsize'] = "Taille totale";
 $lang['freespace'] = "Espace libre";
 $lang['attachmentproblem'] = "Il y avait un problème téléchargeant cet attachement. S'il vous plaît essayer encore plus tard.";
-$lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
 $lang['passwdchanged'] = "Le mot de passe a changé";
 $lang['passedchangedexp'] = "Votre mot de passe a été changé.";
-$lang['gotologin'] = "Aller à l'écran de Login";
+$lang['gotologin'] = "Valider à l'écran de Login";
 $lang['updatefailed'] = "Met à jour échoué";
 $lang['passwdsdonotmatch'] = "Passwords do not match.";
 $lang['allfieldsrequired'] = "Les mots de passe pas allumette. ";
@@ -374,7 +364,7 @@ $lang['subject'] = "Sujet";
 $lang['send'] = "Envoyer";
 $lang['msgnotificationemail_1'] = "a posté un message à vous sur";
 $lang['msgnotificationemail_2'] = "Le sujet est";
-$lang['msgnotificationemail_3'] = "Pour lire ce message et ces autres dans la discussion pareille, aller à";
+$lang['msgnotificationemail_3'] = "Pour lire ce message et ces autres dans la discussion pareille, Valider à";
 $lang['msgnotificationemail_4'] = "Note: Si vous ne souhaitez pas recevoir les notifications d'e-mail de messages de Forum";
 $lang['msgnotificationemail_5'] = "posté à vous, allez à";
 $lang['msgnotificationemail_6'] = "déclic";
@@ -383,9 +373,9 @@ $lang['msgnotification_subject'] = "La Notification de message de";
 $lang['subnotification_1'] = "a posté un message dans un fil vous";
 $lang['subnotification_2'] = "s'est abonné à sur";
 $lang['subnotification_3'] = "Le sujet est";
-$lang['subnotification_4'] = "Pour lire ce message et ces autres dans la discussion pareille, aller à";
+$lang['subnotification_4'] = "Pour lire ce message et ces autres dans la discussion pareille, Valider à";
 $lang['subnotification_5'] = "Note: Si vous ne souhaitez pas recevoir les notifications d'e-mail de nouveaux messages";
-$lang['subnotification_6'] = "dans ce fil, aller à";
+$lang['subnotification_6'] = "dans ce fil, Valider à";
 $lang['subnotification_7'] = "et ajuster votre niveau d'Intérêt à la fin de la page.";
 $lang['subnotification_subject'] = "La Notification de souscription de";
 $lang['pmnotification_1'] = "a posté un PM à vous sur";
@@ -402,7 +392,7 @@ $lang['pmnotification_subject'] = "PM la Notification de";
 $lang['errorpleasewaitandretry'] = "Une erreur a arrivé. 
 S'il vous plaît attendre quelques minutes et alors cliqueter le Juger au Nouveau bouton au dessous.";
 $lang['retry'] = "Juger à nouveau";
-$lang['multipleerroronpost'] = "Cette erreur a arrivé plus qu'une fois en tentant la poster/avant-première votre message. Pour votre convienience nous avons inclus votre texte de message et le cas échéant le fil et le message numérotent vous répondiez à au dessous. Vous pouvez souhaiter épargner une copie du texte ailleurs jusqu'à ce que le forum est disponible encore. .";
+$lang['multipleerroronpost'] = "Cette erreur a arrivé plus qu'une fois en tentant la poster/avant-première votre message. Pour votre convienience nous avons inclus votre texte de message et le cas échéant le fil et le message numérotent vous répondiez à au dessous. Vous pouvez souhaiter Sauvegarder une copie du texte ailleurs jusqu'à ce que le forum est disponible encore. .";
 $lang['replymsgnumber'] = "Le Numéro de Message de réponse";
 $lang['errormsgfordevs'] = "Le Message d'erreur pour les administrations de serveur et les entrepreneurs";
 
@@ -418,8 +408,8 @@ $lang['passwdresetexp_2'] = "un lien pour remettre à l'état initial votre mot de
 $lang['validusernamerequired'] = "Un username valide est exigé";
 $lang['forgotpasswd'] = "Mot de passe oublié";
 $lang['forgotpasswdexp_1'] = "Entrer votre nom de logon au-dessus de et un e-mail contenant un lien permet";
-$lang['forgotpasswdexp_2'] = "vous changer votre mot de passe sera envoyé à votre adresse d'e-mail enregistrée";
-$lang['couldnotsendpasswordreminder'] = "vous changer votre mot de passe sera envoyé à votre adresse d'e-mail enregistrée.";
+$lang['forgotpasswdexp_2'] = "vous changer votre mot de passe sera envoyé à votre Adresse mél enregistrée";
+$lang['couldnotsendpasswordreminder'] = "vous changer votre mot de passe sera envoyé à votre Adresse mél enregistrée.";
 $lang['request'] = "Demande";
 
 // Frameset things (index.php) -----------------------------------------
@@ -443,7 +433,7 @@ $lang['1subfolder'] = "1 subfolder dans cette catégorie";
 $lang['subfoldersinthiscategory'] = "subfolders dans cette catégorie";
 $lang['linksdelexp'] = "Les entrées dans un dossier effacé seront transférées au dossier de parent. Seulement les dossiers qui ne contiennent pas subfolders peuvent être effacés.";
 $lang['listview'] = "Vue de liste";
-$lang['listviewcannotaddfolders'] = "Ne peut pas ajouter de dossier dans cette vue. Montrant 20 entrées à la fois.";
+$lang['listviewcannotaddfolders'] = "Ne peut pas ajouter de dossier dans cette vue. Le maximum de démonstration 30 entrées.";
 $lang['rating'] = "Classement";
 $lang['commentsslashvote'] = "Les commentaires / le Vote";
 $lang['nolinksinfolder'] = "Aucuns liens dans ce dossier.";
@@ -506,16 +496,16 @@ $lang['currentlyloggedinas'] = "Vous êtes actuellement abonnés comme";
 
 $lang['postmessage'] = "Poster le message";
 $lang['selectfolder'] = "Dossier privilégié";
-$lang['messagecontainsHTML'] = "Le message Contient HTML";
+$lang['messagecontainsHTML'] = "Le message contient de l'HTML";
 $lang['notincludingsignature'] = "(pas y compris la signature)";
 $lang['mustenterpostcontent'] = "Vous devez entrer quelque contenu pour la poste!";
-$lang['messagepreview'] = "Avant-première de message";
+$lang['messagepreview'] = "Aperçu";
 $lang['invalidusername'] = "Username nul!";
 $lang['mustenterthreadtitle'] = "Vous devez entrer un titre pour le fil!";
 $lang['pleaseselectfolder'] = "S'il vous plaît choisir un dossier!";
 $lang['errorcreatingpost'] = "L'erreur crée la poste! S'il vous plaît essayer encore dans quelques minutes.";
 $lang['createnewthread'] = "Créer le nouveau fil";
-$lang['postreply'] = "Réponse de poste";
+$lang['postreply'] = "En réponse à";
 $lang['threadtitle'] = "Titre de fil";
 $lang['messagehasbeendeleted'] = "Le message a été effacé.";
 $lang['converttoHTML'] = "Convertir à HTML";
@@ -537,7 +527,7 @@ $lang['notallowedembedattachmentsignature'] = "Vous n'êtes pas permis d'enfoncer
 
 // Message display (messages.php) --------------------------------------
 
-$lang['inreplyto'] = "Dans la réponse à";
+$lang['inreplyto'] = "En réponse à";
 $lang['showmessages'] = "Montrer des messages";
 $lang['ratemyinterest'] = "Evaluer mon intérêt";
 $lang['adjtextsize'] = "Ajuster la taille de texte";
@@ -577,7 +567,7 @@ $lang['stickyuntil'] = "Collant jusqu' à";
 
 // Navigation strip (nav.php) ------------------------------------------
 
-$lang['start'] = "Début";
+$lang['start'] = "Démarrage";
 $lang['messages'] = "Messages";
 $lang['pminbox'] = "PM Inbox";
 $lang['pmsentitems'] = "Articles envoyés";
@@ -616,7 +606,7 @@ $lang['newpasswd'] = "Nouveau Mot de passe";
 $lang['confirmpasswd'] = "Confirmer le Mot de passe";
 $lang['passwdsdonotmatch'] = "Les mots de passe pas allumette!";
 $lang['nicknamerequired'] = "Le surnom est exigé!";
-$lang['emailaddressrequired'] = "L'adresse d'e-mail est exige!";
+$lang['emailaddressrequired'] = "Adresse mél est exige!";
 $lang['jan'] = "Janvier";
 $lang['feb'] = "Février";
 $lang['mar'] = "Mars";
@@ -631,32 +621,32 @@ $lang['nov'] = "Novembre";
 $lang['dec'] = "Décembre";
 $lang['userpreferences'] = "Préférences d'utilisateur";
 $lang['preferencesupdated'] = "Les préférences avec succès ont été mises à jour.";
-$lang['leaveblanktoretaincurrentpasswd'] = "Le vide de congé pour retenir le mot de passe actuel";
-$lang['firstname'] = "Premier nom";
-$lang['lastname'] = "Dernier nom";
+$lang['leaveblanktoretaincurrentpasswd'] = "Omettre les champs pour retenir le mot de passe actuel";
+$lang['firstname'] = "Prénom";
+$lang['lastname'] = "Nom de famille";
 $lang['dateofbirth'] = "Date de naissance";
-$lang['homepageURL'] = "Page d'accueil URL";
-$lang['pictureURL'] = "L'image URL";
-$lang['forumoptions'] = "Options de forum";
-$lang['notifybyemail'] = "Notifier par l'e-mail de postes me";
-$lang['notifyofnewpm'] = "Notifier par popup de nouveaux messages de PM me";
-$lang['notifyofnewpmemail'] = "Notifier par l'e-mail de nouveaux messages de PM me";
-$lang['daylightsaving'] = "Ajuster pour l'économie de lumière";
-$lang['autohighinterest'] = "Automatiquement la marque enfile je poste dans comme l'Haut Intérêt";
-$lang['globallyignoresigs'] = "Globalement négliger les signatures d'utilisateur";
-$lang['timezonefromGMT'] = "Timezone";
-$lang['postsperpage'] = "Les postes par la page";
-$lang['fontsize'] = "Taille de jeu de caractères";
+$lang['homepageURL'] = "URL de votre page d'accueil";
+$lang['pictureURL'] = "URL de votre image";
+$lang['forumoptions'] = "Options";
+$lang['notifybyemail'] = "Me notifier par mél de messages";
+$lang['notifyofnewpm'] = "Me notifier par popup de nouveaux messages personels.";
+$lang['notifyofnewpmemail'] = "Me notifier par mél de nouveaux messages personels";
+$lang['daylightsaving'] = "DST";
+$lang['autohighinterest'] = "Automatiquement marquer comme intéressant les discussions dans lesquelles je participe";
+$lang['globallyignoresigs'] = "Ignorer globalement les signatures d'utilisateurs";
+$lang['timezonefromGMT'] = "Fuseau horaire";
+$lang['postsperpage'] = "Nombre de messages par page";
+$lang['fontsize'] = "Taille du jeu de caractères";
 $lang['forumstyle'] = "Style de forum";
-$lang['startpage'] = "Commencer la page";
-$lang['containsHTML'] = "Contient HTML";
+$lang['startpage'] = "Commencer par la page";
+$lang['containsHTML'] = "contient de l'HTML";
 $lang['preferredlang'] = "Langue préférée";
-$lang['ageanddob'] = "Vieillir et la date de naissance";
-$lang['neitheragenordob'] = "Pas le spectacle aux autres";
-$lang['showonlyage'] = "Montrer seulement l'âge aux autres";
-$lang['showageanddob'] = "Montrer aux autres";
-$lang['browseanonymously'] = "Brouter le forum anonymement";
-$lang['showforumstats'] = "Montrer stats au forum au fond de volet de message";
+$lang['ageanddob'] = "Age et date de naissance";
+$lang['neitheragenordob'] = "ne pas l'afficher aux autres";
+$lang['showonlyage'] = "afficher uniquement l'âge aux autres";
+$lang['showageanddob'] = "afficher aux autres";
+$lang['browseanonymously'] = "Naviguer le forum anonymement";
+$lang['showforumstats'] = "Afficher les statistiques du forum en bas du volet de messagerie.";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 
@@ -714,7 +704,6 @@ $lang['editpoll'] = "Editer le Sondage";
 $lang['results'] = "Résultats";
 $lang['resultdetails'] = "Le résultat Détaille";
 $lang['changevote'] = "Vote de changement";
-$lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
 
 // Profiles (profile.php) ----------------------------------------------
 
@@ -749,7 +738,7 @@ $lang['confirmationpasswdrequired'] = "Un mot de passe de confirmation est exigé
 $lang['nicknamemustnotcontainHTML'] = "Surnommer ne doit pas contenir les étiquettes de HTML";
 $lang['nicknamerequired'] = "Un surnom est exigé";
 $lang['emailmustnotcontainHTML'] = "Envoie un e-mail à ne doit pas contenir les étiquettes de HTML";
-$lang['emailrequired'] = "Une adresse d'e-mail est exigée";
+$lang['emailrequired'] = "Une Adresse mél est exigée";
 $lang['passwdsdonotmatch'] = "Les mots de passe pas allumette";
 $lang['usernamesameaspasswd'] = "Username et le mot de passe doivent être différents";
 $lang['usernameexists'] = "Désolé, un utilisateur avec ce nom existe déjà";
@@ -831,7 +820,7 @@ $lang['groupsresultsbythread'] = "Le groupe résulte par le fil";
 
 $lang['recentthreads'] = "Fil récents";
 $lang['startreading'] = "Commencer la Lecture";
-$lang['threadoptions'] = "Enfiler des Options";
+$lang['threadoptions'] = "Options";
 $lang['showmorevisitors'] = "Montrer plus de Visiteurs";
 $lang['forthcomingbirthdays'] = "Prochains Anniversaires";
 
@@ -853,12 +842,12 @@ $lang['iveignored'] = "J'ai négligé";
 $lang['ivesubscribedto'] = "Je se suis abonné à";
 $lang['startedbyfriend'] = "Commencé par l'ami";
 $lang['unreadstartedbyfriend'] = "Non lu commencé par l'ami";
-$lang['goexcmark'] = "Aller!";
+$lang['goexcmark'] = "Valider!";
 $lang['folderinterest'] = "Intérêt de dossier";
 $lang['postnew'] = "Poster Nouveau";
 $lang['currentthread'] = "Fil actuel";
 $lang['highinterest'] = "Haut Intérêt";
-$lang['markasread'] = "La marque comme A Lu";
+$lang['markasread'] = "Marquer comme lu";
 $lang['next50discussions'] = "Prochain 50 discussions";
 $lang['visiblediscussions'] = "Discussions visibles";
 $lang['navigate'] = "Naviguer";
@@ -907,24 +896,5 @@ $lang['blue'] = "Bleu";
 $lang['indigo'] = "Indigo";
 $lang['violet'] = "Violet";
 $lang['white'] = "Blanc";
-
-// Forum Stats (messages.inc.php - messages_forum_stats()) -------------
-
-$lang['forumstats'] = "Forum Stats";
-$lang['guests'] = "guests";
-$lang['members'] = "members";
-$lang['anonymousmembers'] = "anonymous members";
-$lang['viewcompletelist'] = "View Complete List";
-$lang['ourmembershavemadeatotalof'] = "Our members have made a total of";
-$lang['threadsand'] = "threads and";
-$lang['postslowercase'] = "posts";
-$lang['longestthreadis'] = "Longest thread is";
-$lang['therehavebeen'] = "There have been";
-$lang['postsmadeinthelastsixtyminutes'] = "posts made in the last 60 minutes";
-$lang['mostpostsevermadeinasinglesixtyminuteperiodwas'] = "Most posts ever made in a single 60 minute period was";
-$lang['wehave'] = "We have";
-$lang['registeredmembers'] = "registered members";
-$lang['thenewestmemberis'] = "The newest member is";
-$lang['mostuserseveronlinewas'] = "Most users ever online was";
 
 ?>

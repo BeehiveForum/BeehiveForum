@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.31 2003-08-01 20:00:50 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.32 2003-08-08 23:49:51 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -64,20 +64,29 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 
 // Do updates
 if (isset($HTTP_POST_VARS['submit'])) {
-    for($i = 0; $i < $HTTP_POST_VARS['t_count']; $i++) {
-        if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i] || $HTTP_POST_VARS['t_desc_'.$i] != $HTTP_POST_VARS['t_old_desc_'.$i] || $HTTP_POST_VARS['t_allow_'.$i] != $HTTP_POST_VARS['t_old_allow_'.$i]) {
-            $new_title = (trim($HTTP_POST_VARS['t_title_'.$i]) != "") ? $HTTP_POST_VARS['t_title_'.$i] : $HTTP_POST_VARS['t_old_title_'.$i];
-            folder_update($HTTP_POST_VARS['t_fid_'.$i], $new_title, $HTTP_POST_VARS['t_access_'.$i], _addslashes($HTTP_POST_VARS['t_desc_'.$i]), $HTTP_POST_VARS['t_allow_'.$i]);
-            admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 0, 0, 7);
-        }
-        if($HTTP_POST_VARS['t_fid_'.$i] != $HTTP_POST_VARS['t_move_'.$i]){
-            folder_move_threads($HTTP_POST_VARS['t_fid_'.$i], $HTTP_POST_VARS['t_move_'.$i]);
-            admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 0, 0, 8);
+
+    if (isset($HTTP_POST_VARS['t_fid'])) {
+
+        foreach($HTTP_POST_VARS['t_fid'] as $fid => $value) {
+
+            if ($HTTP_POST_VARS['t_title'][$fid] != $HTTP_POST_VARS['t_old_title'][$fid] || $HTTP_POST_VARS['t_access'][$fid] != $HTTP_POST_VARS['t_old_access'][$fid] || $HTTP_POST_VARS['t_desc'][$fid] != $HTTP_POST_VARS['t_old_desc'][$fid] || $HTTP_POST_VARS['t_allow'][$fid] != $HTTP_POST_VARS['t_old_allow'][$fid] || ($HTTP_POST_VARS['t_position'][$fid] != $HTTP_POST_VARS['t_old_position'][$fid])) {
+                $new_title = (trim($HTTP_POST_VARS['t_title'][$fid]) != "") ? $HTTP_POST_VARS['t_title'][$fid] : $HTTP_POST_VARS['t_old_title'][$fid];
+                folder_update($HTTP_POST_VARS['t_fid'][$fid], $new_title, $HTTP_POST_VARS['t_access'][$fid], _addslashes($HTTP_POST_VARS['t_desc'][$fid]), $HTTP_POST_VARS['t_allow'][$fid], $HTTP_POST_VARS['t_position'][$fid]);
+                admin_addlog(0, $HTTP_POST_VARS['t_fid'][$fid], 0, 0, 0, 0, 7);
+            }
+
+            if ($HTTP_POST_VARS['t_fid'][$fid] != $HTTP_POST_VARS['t_move'][$fid]) {
+                folder_move_threads($HTTP_POST_VARS['t_fid'][$fid], $HTTP_POST_VARS['t_move'][$fid]);
+                admin_addlog(0, $HTTP_POST_VARS['t_fid'][$fid], 0, 0, 0, 0, 8);
+            }
         }
     }
-    if(trim($HTTP_POST_VARS['t_title_new']) != "" && $HTTP_POST_VARS['t_title_new'] != "New Folder"){
-        $new_fid = folder_create($HTTP_POST_VARS['t_title_new'],$HTTP_POST_VARS['t_access_new'],_addslashes($HTTP_POST_VARS['t_desc_new']),$HTTP_POST_VARS['t_allow_new']);
+
+    if (trim($HTTP_POST_VARS['t_title_new']) != "" && trim($HTTP_POST_VARS['t_title_new']) != $lang['newfolder']) {
+
+        $new_fid = folder_create($HTTP_POST_VARS['t_title_new'], $HTTP_POST_VARS['t_access_new'], _addslashes($HTTP_POST_VARS['t_desc_new']), $HTTP_POST_VARS['t_allow_new'], (isset($HTTP_POST_VARS['t_fid']) ? sizeof($HTTP_POST_VARS['t_fid']) : 1));
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
+
     }
 }
 
@@ -91,7 +100,7 @@ echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['id']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['position']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['foldername']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['description']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['accesslevel']}</td>\n";
@@ -108,31 +117,34 @@ $folder_array = folder_get_all();
 $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lang['both']);
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
-foreach ($folder_array as $key => $folder) {
+if ($folder_array = folder_get_all()) {
 
-    // If the thread count is 1, then it's probably 0.
-    if($folder['THREAD_COUNT'] == 1) $folder['THREAD_COUNT'] = 0;
+    for ($i = 0; $i < sizeof($folder_array); $i++) {
 
-    echo "          <tr>\n";
-    echo "            <td align=\"left\">". $folder['FID']. form_input_hidden("t_fid_$key", $folder['FID']). "</td>\n";
-    echo "            <td align=\"left\">". form_field("t_title_$key", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$key", $folder['TITLE']). "</td>\n";
-    echo "            <td align=\"left\">". form_field("t_desc_$key", _stripslashes($folder['DESCRIPTION']), 32, 255). form_input_hidden("t_old_desc_$key", _stripslashes($folder['DESCRIPTION'])). "</td>\n";
+        // if the thread count is 1, then it's probably 0.
+        if ($folder_array[$i]['THREAD_COUNT'] == 1) $folder_array[$i]['THREAD_COUNT'] = 0;
 
-    // Draw the ACCESS_LEVEL dropdown
-    echo "            <td align=\"left\">".form_dropdown_array("t_access_$key", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder['ACCESS_LEVEL']);
-    echo form_input_hidden("t_old_access_$key", $folder['ACCESS_LEVEL']). "</td>\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\">", form_dropdown_array("t_position[{$folder_array[$i]['FID']}]", range(1, sizeof($folder_array) + 1), range(1, sizeof($folder_array) + 1), $i + 1), form_input_hidden("t_old_position[{$folder_array[$i]['FID']}]", $i), form_input_hidden("t_fid[{$folder_array[$i]['FID']}]", $folder_array[$i]['FID']), "</td>\n";
+        echo "            <td align=\"left\">". form_field("t_title[{$folder_array[$i]['FID']}]", $folder_array[$i]['TITLE'], 32, 32). form_input_hidden("t_old_title[{$folder_array[$i]['FID']}]", $folder_array[$i]['TITLE']). "</td>\n";
+        echo "            <td align=\"left\">". form_field("t_desc[{$folder_array[$i]['FID']}]", _stripslashes($folder_array[$i]['DESCRIPTION']), 32, 255). form_input_hidden("t_old_desc[{$folder_array[$i]['FID']}]", _stripslashes($folder_array[$i]['DESCRIPTION'])). "</td>\n";
 
-    echo "            <td align=\"left\">". $folder['THREAD_COUNT']. "</td>\n";
-    echo "            <td align=\"left\">". folder_draw_dropdown($folder['FID'], "t_move", "_$key"). "</td>\n";
-    echo "            <td align=\"left\">". form_dropdown_array("t_allow_$key", $allow_values, $allow_labels, $folder['ALLOWED_TYPES'] ? $folder['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow_$key", $folder['ALLOWED_TYPES'])."</td>\n";
+        // Draw the ACCESS_LEVEL dropdown
+        echo "            <td align=\"left\">".form_dropdown_array("t_access[{$folder_array[$i]['FID']}]", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder_array[$i]['ACCESS_LEVEL']);
+        echo form_input_hidden("t_old_access[{$folder_array[$i]['FID']}]", $folder_array[$i]['ACCESS_LEVEL']). "</td>\n";
 
-    if ($folder['ACCESS_LEVEL'] > 0) {
-        echo "            <td align=\"left\">", form_button("permissions", $lang['permissions'], "onclick=\"document.location.href='admin_folder_access.php?fid={$folder['FID']}'\""), "</td>\n";
-    }else {
-        echo "            <td align=\"left\">&nbsp;</td>";
+        echo "            <td align=\"left\">". $folder_array[$i]['THREAD_COUNT']. "</td>\n";
+        echo "            <td align=\"left\">". folder_draw_dropdown($folder_array[$i]['FID'], "t_move", "[{$folder_array[$i]['FID']}]"). "</td>\n";
+        echo "            <td align=\"left\">". form_dropdown_array("t_allow[{$folder_array[$i]['FID']}]", $allow_values, $allow_labels, $folder_array[$i]['ALLOWED_TYPES'] ? $folder_array[$i]['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow[{$folder_array[$i]['FID']}]", $folder_array[$i]['ALLOWED_TYPES'])."</td>\n";
+
+        if ($folder_array[$i]['ACCESS_LEVEL'] > 0) {
+            echo "            <td align=\"left\">", form_button("permissions", $lang['permissions'], "onclick=\"document.location.href='admin_folder_access.php?fid={$folder_array[$i]['FID']}'\""), "</td>\n";
+        }else {
+            echo "            <td align=\"left\">&nbsp;</td>";
+        }
+
+        echo "</tr>\n";
     }
-
-    echo "</tr>\n";
 }
 
 // Draw a row for a new folder to be created

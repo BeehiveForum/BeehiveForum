@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.34 2003-08-05 03:11:21 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.35 2003-08-08 23:49:51 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -61,15 +61,15 @@ function folder_get_title($fid)
    return $foldertitle;
 }
 
-function folder_create($title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
+function folder_create($title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $position)
 {
     $db_folder_create = db_connect();
 
     $title = _addslashes($title);
     $description = _addslashes($description);
 
-    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES) ";
-    $sql.= "values ('$title', $access, '$description', $allowed_types)";
+    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
+    $sql.= "values ('$title', $access, '$description', $allowed_types, $position)";
 
     $result = db_query($sql, $db_folder_create);
 
@@ -82,7 +82,7 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
     return $new_fid;
 }
 
-function folder_update($fid, $title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
+function folder_update($fid, $title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $position)
 {
     $db_folder_update = db_connect();
 
@@ -91,7 +91,7 @@ function folder_update($fid, $title, $access, $description = "", $allowed_types 
 
     $sql = "UPDATE LOW_PRIORITY ". forum_table("FOLDER"). " SET TITLE = '$title', ";
     $sql.= "ACCESS_LEVEL = $access, DESCRIPTION = '$description', ";
-    $sql.= "ALLOWED_TYPES = $allowed_types WHERE FID = $fid";
+    $sql.= "ALLOWED_TYPES = $allowed_types, POSITION = $position WHERE FID = $fid";
 
     return db_query($sql, $db_folder_update);
 }
@@ -113,7 +113,8 @@ function folder_get_available()
 
     $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
     $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+    $sql.= "ORDER BY F.POSITION";
 
     $result = db_query($sql, $db_folder_get_available);
 
@@ -133,10 +134,11 @@ function folder_get_all()
     $db_folder_get_all = db_connect();
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, COUNT(*) AS THREAD_COUNT ";
+    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(*) AS THREAD_COUNT ";
     $sql.= "FROM " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
     $sql.= "ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "GROUP BY FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
+    $sql.= "GROUP BY FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL ";
+    $sql.= "ORDER BY FOLDER.POSITION";
 
     $result = db_query($sql, $db_folder_get_all);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.214 2004-07-07 13:59:22 tribalonline Exp $ */
+/* $Id: thread_list.php,v 1.215 2004-07-30 00:00:23 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -222,9 +222,9 @@ if (bh_session_get_value('UID') == 0) {
   $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
                     $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
                     $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                    $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
+                    $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['unreadtoday']);
 
-  echo form_dropdown_array("mode",range(0,15),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+  echo form_dropdown_array("mode",range(0,16),$labels,$mode,"onchange=\"submit()\""). "\n        ";
 
 }
 
@@ -287,6 +287,9 @@ if (isset($folder)) {
             break;
         case 15: // Most unread posts
             list($thread_info, $folder_order) = threads_get_longest_unread($uid);
+            break;
+        case 16: // Unread today
+            list($thread_info, $folder_order) = threads_get_unread_by_days($uid);
             break;
 	default: // Default to all threads
 	    list($thread_info, $folder_order) = threads_get_all($uid, $start_from);

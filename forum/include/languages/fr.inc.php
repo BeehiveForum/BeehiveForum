@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.92 2004-07-25 20:04:30 rowan_hill Exp $ */
+/* $Id: fr.inc.php,v 1.93 2004-07-30 00:00:18 rowan_hill Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -1129,6 +1129,7 @@ $lang['iveignored'] = "J'ai négligé";
 $lang['ivesubscribedto'] = "Je se suis abonné à";
 $lang['startedbyfriend'] = "Commencé par l'ami";
 $lang['unreadstartedbyfriend'] = "Non lu commencé par l'ami";
+$lang['unreadtoday'] = "Unread today";
 $lang['goexcmark'] = "Valider!";
 $lang['folderinterest'] = "Intérêt de dossier";
 $lang['postnew'] = "Poster Nouveau";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.131 2004-06-18 10:33:30 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.132 2004-07-30 00:00:23 rowan_hill Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -731,6 +731,51 @@ function threads_get_most_recent()
     }else {
         return false;
     }
+}
+
+function threads_get_unread_by_days($uid, $days = 1) // get unread messages for $uid
+{
+
+    $folders = threads_get_available_folders();
+    $db_threads_get_unread = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
+
+    // Formulate query
+
+    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
+    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql .= "JOIN USER USER ";
+    $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
+    $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
+    $sql .= "WHERE THREAD.fid in ($folders) ";
+    $sql .= "AND USER.uid = POST.from_uid ";
+    $sql .= "AND POST.tid = THREAD.tid ";
+    $sql .= "AND POST.pid = 1 ";
+    $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
+    $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+    $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+    $sql .= "GROUP BY THREAD.tid ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "LIMIT 0, 50";
+
+    $resource_id = db_query($sql, $db_threads_get_unread);
+    list($threads, $folder_order) = threads_process_list($resource_id);
+    return array($threads, $folder_order);
+
 }
 
 // Arrange the results of a query into the right order for display

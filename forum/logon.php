@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.124 2004-03-22 12:21:16 decoyduck Exp $ */
+/* $Id: logon.php,v 1.125 2004-03-22 15:17:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -226,26 +226,22 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     array_unshift($password_array, "");
                     array_unshift($passhash_array, "");
                 }
-                
-                if ($luid == 12) {
-                
-                    echo "Debug for Quig (STOP BREAKING THE COOKIES :@):";
-                    echo "<pre>\n";
-                    print_r($username_array);
-                    print_r($password_array);
-                    print_r($passhash_array);
-                    echo "</pre>\n";
-                    exit;
 
-                }else {
-
-                    // set / update the username and password cookies
+                // set / update the username and password cookies
         
-                    for ($i = 0; $i < sizeof($username_array); $i++) {
+                for ($i = 0; $i < sizeof($username_array); $i++) {
 
-                        bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
+                    bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
+                        
+                    if (isset($password_array[$i]) && isset($passhash_array[$i]) {
+                        
                         bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
                         bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
+
+                    }else {
+                        
+                        bh_setcookie("bh_remember_password[$i]", "", time() + YEAR_IN_SECONDS);
+                        bh_setcookie("bh_remember_passhash[$i]", "", time() + YEAR_IN_SECONDS);
                     }
                 }
 

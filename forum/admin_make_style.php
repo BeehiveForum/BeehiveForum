@@ -159,7 +159,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     foreach ($HTTP_POST_VARS['elements'] as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
-        echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=", $value, "&mode=", $mode, "\">", strtoupper($value), "</a>\n";
+        echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=", $value, "&mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
         echo "                  </td>\n";
 
     }
@@ -169,8 +169,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     foreach ($elements as $key => $value) {
 
-        echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $colour, "\" align=\"center\">\n";
-        echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=", $colour, "&mode=", $mode, "\">", strtoupper($colour), "</a>\n";
+        echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $colour, "; color: #", contrastFont($colour), "\" align=\"center\">\n";
+        echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=", $colour, "&mode=", $mode, "\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
         echo "                  </td>\n";
 
         $elements[$key] = $colour;
@@ -269,7 +269,7 @@ echo "                          <td>", form_input_text("stylename", isset($HTTP_
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td class=\"posthead\">Style Name:</td>\n";
-echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 20, 10), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
+echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 20, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </form>\n";
@@ -286,6 +286,35 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";
+
+/*
+?>
+<pre>
+    if ($sat > 0.8 && $rgb[2] == $b) {
+      $text_colour = "FFFFFF";
+    }elseif ($sat > 0.8) {
+      if ($lum < 0.4) {
+        $text_colour = "FFFFFF";
+      }else {
+        $text_colour = "000000";
+      }
+    }else {
+      if ($lum < 0.6) {
+        $text_colour = "FFFFFF";
+      }else {
+        $text_colour = "000000";
+      }
+    }
+</pre>
+<?php
+
+foreach($elements as $key => $value) {
+    echo "<p>", contrastFont($value, true), "</p>\n";
+}
+
+reset($elements);
+
+*/
 
 ?>
 <p>Style Preview:</p>
@@ -353,10 +382,10 @@ echo "</div>\n";
                 <td colspan="2">
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[threads]); ?>; border-bottom-width: 0px; border-right-width: 0px" align="left" valign="top" width="50%" nowrap="nowrap">
+                      <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[box]); ?>; border-bottom-width: 0px; border-right-width: 0px" align="left" valign="top" width="50%" nowrap="nowrap">
                         <a href="#" class="folderinfo" style="color: #<?php echo contrastFont($elements[threads]); ?>">1 threads</a>
                       </td>
-                      <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[threads]); ?>; border-bottom-width: 0px; border-left-width: 0px" align="right" valign="top" width="50%" nowrap="nowrap">
+                      <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[box]); ?>; border-bottom-width: 0px; border-left-width: 0px" align="right" valign="top" width="50%" nowrap="nowrap">
                         <a href="#" class="folderpostnew" style="color: #<?php echo contrastFont($elements[threads]); ?>">Post New</a>
                       </td>
                     </tr>
@@ -364,7 +393,7 @@ echo "</div>\n";
                 </td>
               </tr>
               <tr>
-                <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[threads]); ?>; border-top-width: 0px" colspan="2">
+                <td class="threads" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>; border-color: #<?php echo contrastFont($elements[box]); ?>; border-top-width: 0px" colspan="2">
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td valign="top" align="center" nowrap="nowrap" width="16">
@@ -425,7 +454,7 @@ echo "</div>\n";
             </div>
             <br />
             <div align="center">
-              <table width="96%" class="box" style="background-color: #<?php echo $elements[box]; ?>; color: #<?php echo contrastFont($elements[box]); ?>" cellspacing="0" cellpadding="0">
+              <table width="96%" class="box" style="background-color: #<?php echo $elements[box]; ?>; color: #<?php echo contrastFont($elements[box]) ?>; border-style: solid; border-width: 1px; border-color: #<?php echo contrastFont($elements[box]);?>" cellspacing="0" cellpadding="0">
                 <tr>
                   <td>
                     <table width="100%" class="posthead" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>" cellspacing="1" cellpadding="0">
@@ -460,10 +489,10 @@ echo "</div>\n";
                       <tr>
                         <td align="center">
                           <span class="postresponse">
-                            <img src="./images/post.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Reply</a>&nbsp;&nbsp;
-                            <img src="./images/delete.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Delete</a>&nbsp;&nbsp;
-                            <img src="./images/edit.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Edit</a>&nbsp;&nbsp;
-                            <img src="./images/admintool.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Privileges</a>
+                            <img src="./images/post.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Reply</a>&nbsp;&nbsp;
+                            <img src="./images/delete.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Delete</a>&nbsp;&nbsp;
+                            <img src="./images/edit.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Edit</a>&nbsp;&nbsp;
+                            <img src="./images/admintool.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">Privileges</a>
                           </span>
                         </td>
                       </tr>

@@ -123,7 +123,7 @@ function randSort()
 // background colour and uses the data to chooses between white
 // or black for the font colour of the supplied.
 
-function contrastFont($hex) {
+function contrastFont($hex, $debug = false) {
 
     list ($r, $g, $b) = hexToDec($hex);
     $rgb = array((double)$r / 255, (double)$g / 255, (double)$b / 255);
@@ -142,12 +142,14 @@ function contrastFont($hex) {
             $sat = ($rgb[2] - $rgb[0]) / (2 - $rgb[2] - $rgb[0]);
         }
 
-        if ($rgb[2] == $r) {
+        if (($rgb[2] * 255) == $r) {
             $hue = ($g - $b) / ($rgb[2] - $rgb[0]);
-        }elseif ($rgb[2] == $g) {
+        }elseif (($rgb[2] * 255) == $g) {
             $hue = 2 + ($b - $r) / ($rgb[2] - $rgb[0]);
-        }else {
+        }elseif (($rgb[2] * 255) == $b) {
             $hue = 4 + ($r - $g) / ($rgb[2] - $rgb[0]);
+        }else {
+            $hue = 0;
         }
 
         $hue /= 6;
@@ -155,14 +157,28 @@ function contrastFont($hex) {
 
     }
 
-    if ($sat > 0.5) {
-      $text_colour = "000000";
-    }else {
-      if ($lum < 0.5) {
+    if ($sat > 0.8 && (($rgb[2] * 255) == $b && $r < 128 && $g < 128)) {
+      $text_colour = "FFFFFF";
+    }elseif ($sat > 0.8) {
+      if ($lum < 0.4) {
         $text_colour = "FFFFFF";
       }else {
         $text_colour = "000000";
       }
+    }else {
+      if ($lum < 0.6) {
+        $text_colour = "FFFFFF";
+      }else {
+        $text_colour = "000000";
+      }
+    }
+
+    if ($debug) {
+      $return = "<span style=\"background-color: #$hex; color: #$text_colour\">". strtoupper($hex). "</span><br>\n";
+      $return.= "hue: $hue<br>\nsat: $sat<br>\nlum: $lum<br>\nfont: $text_colour<br>\n";
+      $return.= "r: $r<br>\nb: $b<br>\ng: $g<br>\n";
+      $return.= "max: ". $rgb[2]. "<br>\nmin: ". $rgb[0]. "<br>\n";
+      return $return;
     }
 
     return $text_colour;

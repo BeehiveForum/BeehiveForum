@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.12 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.13 2004-11-21 17:34:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -148,11 +148,11 @@ if (isset($_POST['delete'])) {
 
 echo "<h1>{$lang['admin']} : {$lang['usergroups']}</h1>\n";
 
-if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {) {
+if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {
     echo "<h2>{$lang['successfullyaddedgroup']}: ", _stripslashes($_GET['add_success']), "</h2>\n";
 }
 
-if (isset($_GET['del_success']) && strlen(trim(_stripslashes($_GET['del_success']))) > 0) {) {
+if (isset($_GET['del_success']) && strlen(trim(_stripslashes($_GET['del_success']))) > 0) {
     echo "<h2>{$lang['successfullydeletedgroup']}: ", _stripslashes($_GET['del_success']), "</h2>\n";
 }
 

@@ -84,7 +84,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
       $threadtitle = "";
       foreach($keywords as $word) {
           if (strlen($word) >= $search_min_word_length) {
-              $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%<div class=\"sig\">%' AND ";
+              $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' AND ";
           }
       }
 
@@ -136,7 +136,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
       $threadtitle = "";
       foreach($keywords as $word) {
           if (strlen($word) >= $search_min_word_length) {
-              $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%<div class=\"sig\">%' OR ";
+              $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' OR ";
           }
       }
 

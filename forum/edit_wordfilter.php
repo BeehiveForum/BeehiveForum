@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.8 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.9 2004-03-12 22:41:37 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -123,7 +123,7 @@ echo "                  <td class=\"subhead\">&nbsp;Replacement Text</td>\n";
 echo "                  <td class=\"subhead\">&nbsp;PREG Expr.</td>\n";
 echo "                </tr>\n";
 
-foreach ($word_filter_array as $word_filter) {
+foreach ($word_filter_array as $key => $word_filter) {
 
     echo "                <tr>\n";
     
@@ -134,9 +134,9 @@ foreach ($word_filter_array as $word_filter) {
         echo "                  <td>&nbsp;</td>\n";
     }else {
         echo "                  <td>&nbsp;</td>\n";    
-        echo "                  <td>", form_input_text("match[]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
-        echo "                  <td>", form_input_text("replace[]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
-        echo "                  <td align=\"center\">", form_checkbox("preg_expr[]", "Y", "", $word_filter['PREG_EXPR']), "</td>\n";
+        echo "                  <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
+        echo "                  <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
+        echo "                  <td align=\"center\">", form_checkbox("preg_expr[$key]", "Y", "", $word_filter['PREG_EXPR']), "</td>\n";
     }
     
     echo "                </tr>\n";

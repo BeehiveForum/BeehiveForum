@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.132 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.133 2004-03-12 22:41:37 decoyduck Exp $ */
 
 function user_count()
 {
@@ -868,8 +868,10 @@ function user_get_word_filter($incadminfilter = false)
     
     $uid = bh_session_get_value('UID');    
 
-    $sql = "SELECT * FROM {$table_prefix}FILTER_LIST WHERE UID = '$uid'";
-    if ($incadminfilter) $sql.= " OR UID = 0 ORDER BY UID DESC";
+    $sql = "SELECT * FROM {$table_prefix}FILTER_LIST WHERE UID = '$uid' ";
+    if ($incadminfilter) $sql.= "OR UID = 0 ";
+    $sql.= "ORDER BY ID";
+    
     $result = db_query($sql, $db_user_get_word_filter);
 
     $filter_array = array();

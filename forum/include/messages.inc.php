@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.279 2004-04-29 15:58:33 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.280 2004-04-30 15:50:34 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -237,7 +237,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 		}
 		if ($message['PID'] != $msg_count) {
 			$down_arrow = "<a href=\"";
-			if ($first_msg + bh_session_get_value('POSTS_PER_PAGE') -1 == $message['PID']) {
+			if ($first_msg + bh_session_get_value('POSTS_PER_PAGE') - 1 == $message['PID']) {
 				$down_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1);
 			} else {
 				$down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);

@@ -17,35 +17,45 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Navigation strip
+// Frameset for thread list and messages
 
+//Check logged in status
+require_once("./include/session.inc.php");
+if(!bh_session_check()){
+    $go = "Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $go .= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $go .= "/logon.php?final_uri=";
+    $go .= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
+    header($go);
+}
+
+require_once("./include/perm.inc.php");
+require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
-require_once("./include/header.inc.php");
 
-header_no_cache();
+if(!$HTTP_COOKIE_VARS[bh_sess_ustatus] & USER_PERM_SOLDIER){
+    html_draw_top();
+    echo "<h1>Access Denied</h1>\n";
+    echo "<p>You do not have permission to use this section.</p>";
+    html_draw_bottom();
+    exit;
+}
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
-    <body style="font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px; background-color: #999999">
-        <a href="#">Start</a>&nbsp;
-        <a href="discussion.php" target="main">Messages</a>&nbsp;
-        <a href="prefs.php" target="main">Preferences</a>&nbsp;
-<?
-if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER){
-?>
-        <a href="admin.php" target="main">Admin</a>&nbsp;
-<?
-}
-?>
-        <a href="#">Logout</a>
+	<body>
+        <h1>Forum Admin</h1>
+        <p>Use the menu on the left to manage things in your forum</p>
+        <p><b>Users</b> allows you to set user permissions, including appointing Editors and gagging people</p>
+        <p>Use <b>Folders</b> to add new folders or change the names of existing ones</p>
     </body>
 </html>

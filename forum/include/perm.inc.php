@@ -21,12 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+require_once("./include/constants.inc.php");
+
 // Included functions for checking user permissions
 
 function perm_is_moderator()
 {
     global $HTTP_COOKIE_VARS;
-    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] >= 8);
+    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WORKER);
 }
 
 ?>

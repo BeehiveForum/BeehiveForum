@@ -100,8 +100,19 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
 }elseif (isset($HTTP_POST_VARS['pollclose'])) {
 
-  poll_close($HTTP_POST_VARS['tid']);
-  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
+  if (isset($HTTP_POST_VARS['confirm_pollclose'])) {
+  
+    poll_close($HTTP_POST_VARS['tid']);
+    header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
+    
+  }else {
+  
+    html_draw_top_script();
+    poll_confirm_close($HTTP_POST_VARS['tid']);
+    html_draw_bottom();
+    exit;
+    
+  }
 
 }elseif (isset($HTTP_POST_VARS['pollchangevote'])) {
 
@@ -176,9 +187,14 @@ if($last_pid < $threaddata['LENGTH']){
 }
 
 messages_start_panel();
+messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
-messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
+if($threaddata['POLL_FLAG'] == 'Y') {
+    echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\">View Results</a>\n";
+}
+
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+
 	messages_interest_form($tid, $pid);
 	messages_fontsize_form($tid, $pid);
 

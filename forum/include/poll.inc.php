@@ -322,7 +322,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td align=\"center\">". form_submit('pollclose', 'End Poll'). "</td>\n";
+            $polldata['CONTENT'].= "          <td align=\"center\">\n". form_submit('pollclose', 'End Poll'). "</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
           }
@@ -488,6 +488,48 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
 
     return $polldisplay;
 
+}
+
+function poll_confirm_close($tid)
+{
+
+    global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
+    
+    if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
+        edit_refuse();
+        return;
+    }    
+    
+    $preview_message = messages_get($tid, 1, 1);
+    
+    if($preview_message['TO_UID'] == 0) {
+    
+        $preview_message['TLOGON'] = "ALL";
+        $preview_message['TNICK'] = "ALL";
+        
+    }else {
+    
+        $preview_tuser = user_get($preview_message['TO_UID']);
+        $preview_message['TLOGON'] = $preview_tuser['LOGON'];
+        $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
+        
+    }
+    
+    $preview_fuser = user_get($preview_message['FROM_UID']);
+    $preview_message['FLOGON'] = $preview_fuser['LOGON'];
+    $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
+    
+    echo "<h2>Are you sure you want to close the following Poll?</h2>\n";
+    
+    poll_display($tid, $preview_message, 0, 0, false);
+    
+    echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
+    echo form_input_hidden("tid", $tid);
+    echo form_input_hidden("confirm_pollclose", "Y");
+    echo form_submit("pollclose", "End Poll");
+    echo "&nbsp;".form_submit("cancel", "Cancel");
+    echo "</form>\n";
+    
 }
 
 function poll_close($tid)

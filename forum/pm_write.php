@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.102 2005-02-06 00:38:47 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.103 2005-02-16 23:39:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -674,7 +674,7 @@ if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo $tools->toolbar(false, form_submit('submit', $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "class=\"post_content\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\"", "post_content"), "\n";
 
 echo "          </td>\n";
 echo "        </tr>\n";

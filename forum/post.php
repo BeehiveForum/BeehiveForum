@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.238 2005-02-06 00:49:04 decoyduck Exp $ */
+/* $Id: post.php,v 1.239 2005-02-16 23:39:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -856,7 +856,7 @@ if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "class=\"post_content\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\"", "post_content"), "\n";
 
 if ($post->isDiff() && $fix_html) {
 
@@ -910,7 +910,7 @@ if ($allow_sig == true) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" class=\"signature_content\""), "</td>\n";
+        echo "    <td colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
         echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 
         if ($sig->isDiff() && $fix_html && !$fetched_sig) {

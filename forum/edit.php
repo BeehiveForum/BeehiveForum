@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.70 2003-11-09 13:56:15 decoyduck Exp $ */
+/* $Id: edit.php,v 1.71 2003-11-10 21:10:05 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -610,7 +610,7 @@ if ($edit_type == "html") {
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin($aid, $from_uid);");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('$aid');\"");
 }
 
 

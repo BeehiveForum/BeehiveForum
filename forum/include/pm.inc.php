@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.88 2004-09-13 19:37:18 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.89 2004-09-13 21:23:15 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -974,9 +974,9 @@ function pm_system_prune_folders()
 {
     $db_pm_prune_folders = db_connect();
 
-    if (forum_get_setting('pm_prune_folders', false, 0) > 0) {
+    if (forum_get_setting('pm_auto_prune', false, 'N') == 'Y') {
 
-        $pm_prune_length = time() - forum_get_setting('pm_forum_prune_length', false, 60);
+        $pm_prune_length = time() - forum_get_setting('pm_auto_prune_length', false, 60);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
         $sql.= "(PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. ") ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.41 2004-08-17 20:37:59 rowan_hill Exp $ */
+/* $Id: admin_forum_settings.php,v 1.42 2004-09-13 21:23:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -248,6 +248,18 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['pm_max_user_messages'] = $_POST['pm_max_user_messages'];
     }else {
         $new_forum_settings['pm_max_user_messages'] = 100;
+    }
+
+    if (isset($_POST['pm_auto_prune']) && $_POST['pm_auto_prune'] == "Y") {
+        $new_forum_settings['pm_auto_prune'] = "Y";
+    }else {
+        $new_forum_settings['pm_auto_prune'] = "N";
+    }
+
+    if (isset($_POST['pm_auto_prune_length']) && is_numeric($_POST['pm_auto_prune_length'])) {
+        $new_forum_settings['pm_auto_prune_length'] = $_POST['pm_auto_prune_length'];
+    }else {
+        $new_forum_settings['pm_auto_prune_length'] = 60;
     }
 
     if (isset($_POST['pm_allow_attachments']) && $_POST['pm_allow_attachments'] == "Y") {
@@ -663,11 +675,15 @@ echo "                          <fieldset>\n";
 echo "                            <legend>", form_checkbox("show_pms", "Y", $lang['enablepersonalmessages'], forum_get_setting('show_pms', 'Y', false)), "</legend>\n";
 echo "                            <table class=\"posthead\" width=\"100%\">\n";
 echo "                              <tr>\n";
-echo "                                <td>&nbsp;{$lang['pmusermessages']}:</td>\n";
+echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['pmusermessages']}:</td>\n";
 echo "                                <td>", form_input_text("pm_max_user_messages", forum_get_setting('pm_max_user_messages', false, 100), 10, 32), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td>", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], forum_get_setting('pm_allow_attachments', 'Y', false)), "&nbsp;</td>\n";
+echo "                                <td>", form_checkbox("pm_auto_prune", "Y", $lang['autopruneuserspmfoldersevery'], forum_get_setting('pm_auto_prune', 'Y', false)), "&nbsp;</td>\n";
+echo "                                <td>", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), forum_get_setting('pm_auto_prune_length', false, 60)), " <span class=\"admin_settings_text\">{$lang['days']}</span>&nbsp;</td>\n";
+echo "                              </tr>\n";
+echo "                              <tr>\n";
+echo "                                <td colspan=\"2\">", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], forum_get_setting('pm_allow_attachments', 'Y', false)), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                            </table>\n";
 echo "                          </fieldset>\n";
@@ -762,11 +778,11 @@ echo "                          <fieldset>\n";
 echo "                            <legend>", form_checkbox("attachments_enabled", "Y", $lang['enableattachments'], forum_get_setting('attachments_enabled', 'Y', false)), "</legend>\n";
 echo "                            <table class=\"posthead\" width=\"100%\">\n";
 echo "                              <tr>\n";
-echo "                                <td>&nbsp;{$lang['attachmentdir']}:</td>\n";
+echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['attachmentdir']}:</td>\n";
 echo "                                <td>", form_input_text("attachment_dir", forum_get_setting('attachment_dir', false, 'attachments'), 45, 32), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td>&nbsp;{$lang['userattachmentspace']}:</td>\n";
+echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['userattachmentspace']}:</td>\n";
 echo "                                <td>", form_input_text("attachments_max_user_space", (forum_get_setting('attachments_max_user_space', false, 1048576) / 1024) / 1024, 10, 32), "&nbsp;(MB)&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";

@@ -485,3 +485,7 @@ A		{
 		overflow: auto;
 		padding: 2px;
 }
+
+.admin_settings_text {
+                font-size: 8pt;
+}

@@ -27,7 +27,7 @@ USA
 // Begin emoticons
 // --------------------------------------
 
-// Standard emoticons
+// Default emoticons
 $emoticon[':-)'] = "smile";
 $emoticon[':)'] = "smile";
 $emoticon[';-)'] = "wink";
@@ -36,8 +36,8 @@ $emoticon[':-('] = "sad";
 $emoticon[':('] = "sad";
 $emoticon[':\'-('] = "cry";
 $emoticon[':\'('] = "cry";
-$emoticon[':-P'] = "tease";
-$emoticon[':P'] = "tease";
+$emoticon[':-P'] = "tongue";
+$emoticon[':P'] = "tongue";
 $emoticon[':-D'] = "grin";
 $emoticon[':D'] = "grin";
 $emoticon[':-S'] = "confused";
@@ -52,15 +52,15 @@ $emoticon[':-@'] = "angry";
 $emoticon[':@'] = "angry";
 $emoticon[':-$'] = "embarrassed";
 $emoticon[':$'] = "embarrassed";
-
-// Peter Boughton's emoticons
-$emoticon['}:>'] = "evil_cheeky";
-$emoticon[':>'] = "cheeky";
+$emoticon['(a)'] = "angel";
+$emoticon['(6)'] = "devil";
 $emoticon['B-)'] = "shades";
 $emoticon['B)'] = "shades";
-$emoticon['8-)'] = "shades";
-$emoticon['8)'] = "shades";
-$emoticon[':o)'] = "smile_big_nose";
+$emoticon['(h)'] = "shades";
+
+// Peter Boughton's emoticons
+$emoticon[':>'] = "cheeky";
+$emoticon['}:>'] = "evil_cheeky";
 $emoticon[':O)'] = "smile_big_nose";
 $emoticon['>.<'] = "cringe";
 $emoticon['^.^'] = "happy";
@@ -69,6 +69,9 @@ $emoticon['^.^'] = "happy";
 // --------------------------------------
 // End emoticons
 // --------------------------------------
+
+krsort($emoticon);
+reset($emoticon);
 
 $emoticon_text = array();
 foreach ($emoticon as $k => $v) {
@@ -84,12 +87,13 @@ function emoticons_convert ($content) {
 		$k2 = _htmlentities($k);
 
 		$front = (preg_match("/^\w/", $k2)) ? '\b' : '\B';
+		$end = (preg_match("/\w$/", $k2)) ? '\b' : '\B';
 
-		$pattern_array[] = "/".$front."(". preg_quote($k, "/"). ")(\s|$)/i";
-		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>\\2";
+		$pattern_array[] = "/(?<=\s|^)".preg_quote($k, "/")."(?=\s|$)/i";
+		$replace_array[] = " <span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span> ";
 
 		if ($k2 != $k) {
-			$pattern_array[] = "/".$front."(". preg_quote($k2, "/"). ")(\s|$)/i";
+			$pattern_array[] = "/(?<=\s|^)".preg_quote($k2, "/")."(?=\s|$)/i";
 			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
 		}
 	}

@@ -1,6 +1,7 @@
 .e_smile { /* :) :-) */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/smile.png");
     background-repeat: no-repeat;
 }
@@ -11,6 +12,7 @@
 .e_wink { /* ;) ;-) */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/wink.png");
     background-repeat: no-repeat;
 }
@@ -21,6 +23,7 @@
 .e_sad { /* :( :-( */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/sad.png");
     background-repeat: no-repeat;
 }
@@ -31,6 +34,7 @@
 .e_cry { /* :'( :'-( */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/cry.png");
     background-repeat: no-repeat;
 }
@@ -38,19 +42,21 @@
 	display: none;
 }
 
-.e_tease { /* :P :-P */
+.e_tongue { /* :P :-P */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/tease.png");
     background-repeat: no-repeat;
 }
-.e_tease span {
+.e_tongue span {
 	display: none;
 }
 
 .e_grin { /* :D :-D */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/grin.png");
     background-repeat: no-repeat;
 }
@@ -61,6 +67,7 @@
 .e_confused { /* :S :-S */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/confused.png");
     background-repeat: no-repeat;
 }
@@ -71,6 +78,7 @@
 .e_plain { /* :| :-| */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/plain.png");
     background-repeat: no-repeat;
 }
@@ -81,6 +89,7 @@
 .e_unsure { /* :/ :-/ */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/unsure.png");
     background-repeat: no-repeat;
 }
@@ -91,6 +100,7 @@
 .e_shock { /* :O :-O */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/shock.png");
     background-repeat: no-repeat;
 }
@@ -101,6 +111,7 @@
 .e_angry { /* :@ :-@ */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/angry.png");
     background-repeat: no-repeat;
 }
@@ -111,6 +122,7 @@
 .e_sidelook { /* ¬_¬ */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/sidelook.png");
     background-repeat: no-repeat;
 }
@@ -121,6 +133,7 @@
 .e_cringe { /* >.< */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/cringe.png");
     background-repeat: no-repeat;
 }
@@ -131,6 +144,7 @@
 .e_cheeky { /* :> */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/cheeky.png");
     background-repeat: no-repeat;
 }
@@ -141,6 +155,7 @@
 .e_evil_cheeky { /* }:> */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/evil_cheeky.png");
     background-repeat: no-repeat;
 }
@@ -151,6 +166,7 @@
 .e_happy { /* ^.^ */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/happy.png");
     background-repeat: no-repeat;
 }
@@ -161,6 +177,7 @@
 .e_shades { /* B-) B) 8-) 8) */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/shades.png");
     background-repeat: no-repeat;
 }
@@ -171,6 +188,7 @@
 .e_smile_big_nose { /* :o) :O) */
 	padding-left: 15px;
     height: 13px;
+	font-size: 13px;
     background-image: url("./images/smile_big_nose.png");
     background-repeat: no-repeat;
 }

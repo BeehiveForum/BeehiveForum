@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.11 2004-03-23 03:49:51 tribalonline Exp $ */
+/* $Id: admin_forum_settings.php,v 1.12 2004-03-25 18:02:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -102,7 +102,7 @@ $emot_names = array();
 
 if ($dir = @opendir('emoticons')) {
     while (($file = readdir($dir)) !== false) {
-        if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
+        if (is_dir("emoticons/$file") && $file != '.' && $file != '..' && $file != 'none') {
             if (@file_exists("./emoticons/$file/desc.txt")) {
                 if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
                     $available_emots[] = $file;
@@ -119,6 +119,9 @@ if ($dir = @opendir('emoticons')) {
 }
 
 array_multisort($emot_names, $available_emots);
+
+array_unshift($emot_names, "None");
+array_unshift($available_emots, "none");
 
 
 if (isset($HTTP_POST_VARS['submit'])) {

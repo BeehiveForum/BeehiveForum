@@ -46,6 +46,8 @@ require_once("./include/form.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/poll.inc.php");
 
+$valid = true;
+
 if (isset($HTTP_POST_VARS['cancel'])) {
 
   $uri = "./discussion.php";
@@ -166,7 +168,18 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
 
     if (strlen($t_message_text) > 0) {
+
+      if($t_message_html != "Y") $t_message_text = make_html($t_message_text);
+
+      if($t_sig) {
+
+        if($t_sig_html != "Y") $t_sig = make_html($t_sig);
+        $t_message_text.= "\n<div class=\"sig\">". $t_sig. "</div>";
+
+      }    
+      
       post_create($tid, 1, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, $t_message_text);
+      
     }
 
     if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($tid, 1, true);

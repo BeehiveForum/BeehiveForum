@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.31 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: forums.php,v 1.32 2004-10-29 21:10:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,7 +122,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
     if ($forums_array = get_my_forums()) {
 
         echo "<h1>{$lang['myforums']}</h1>\n";
-        echo "<br>\n";
+        echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
 
@@ -320,9 +320,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
     }else {
 
         echo "<h1>{$lang['myforums']}</h1>\n";
-        echo "<br>\n";
+        echo "<br />\n";
         echo "<h2>{$lang['noforumsavailable']}</h2>\n";
-        echo "<br>\n";
+        echo "<br />\n";
     }
 
 }else {
@@ -330,7 +330,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
     if ($forums_array = get_forum_list()) {
 
         echo "<h1>{$lang['availableforums']}</h1>\n";
-        echo "<br>\n";
+        echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
         echo "    <tr>\n";
@@ -378,9 +378,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
     }else {
 
         echo "<h1>{$lang['availableforums']}</h1>\n";
-        echo "<br>\n";
+        echo "<br />\n";
         echo "<h2>{$lang['noforumsavailablelogin']}</h2>\n";
-        echo "<br>\n";
+        echo "<br />\n";
     }
 }
 

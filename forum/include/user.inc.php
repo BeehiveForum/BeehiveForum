@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.90 2003-09-03 15:21:37 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.91 2003-09-03 22:32:39 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -440,7 +440,7 @@ function user_guest_enabled()
 function user_get_dob($uid)
 {
     $prefs = user_get_prefs($uid);
-    if ($prefs['DOB_DISPLAY'] == 2 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
+    if (isset($prefs['DOB_DISPLAY']) && $prefs['DOB_DISPLAY'] == 2 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
         return format_birthday($prefs['DOB']);
     } else {
         return false;
@@ -451,7 +451,7 @@ function user_get_age($uid)
 {
     $prefs = user_get_prefs($uid);
 
-    if ($prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
+    if (isset($prefs['DOB_DISPLAY']) && $prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
         return format_age($prefs['DOB']);
     }else {
         return false;

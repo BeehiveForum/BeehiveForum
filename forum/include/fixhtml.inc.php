@@ -20,18 +20,46 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.99 2005-04-03 15:34:53 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.100 2005-04-03 16:30:48 tribalonline Exp $ */
 
-include_once(BH_INCLUDE_PATH. "geshi.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
+/** A range of functions for filtering/cleaning posted HTML
+*
+* fix_html - strips illegal tags; enforces correct nesting of tags; converts BH custom tags; more!
+* clean_attributes - strips illegal attributes; makes sure attributes are put in quotes etc.
+* tidy_html - unconverts BH custom tags; removes auto-links
+* tidy_html_callback - used by tidy_html to unconvert BH custom <code> tags
+* clean_styles - stops absolute CSS positioning; stops a javascript hack
+* add_paragraphs - fancier version of nl2br. Can add <p> tags but this is temperamental at times
+* make_html - equivalent of fix_html when HTML isn't used - converts links to HTML, calls add_paragraphs
+* make_links - automatically turns http://... mailto:... ...@... text into HTML links
+*
+*/
+
+/**
+*
+*/
+
 include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "geshi.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
-// fix_html - process html to prevent it breaking the forum
-//            (e.g. close open tags, filter certain tags)
-
-// "$bad_tags" is an array of tags to be filtered
-
+/**
+* Processes html to prevent it breaking the forum (e.g. close open tags, filter certain tags)
+*
+* First splits $html into text/html and runs through it 'cleaning' (e.g. '>' becomes '&gt;' and
+* tags in $bad_tags are converted to text) and converting custom tags like <code>/<quote>. The
+* GeSHi code highlighter is called at this step.
+* Next, now that the code is 'clean', every tag is checked to make sure it opens/closes and
+* is nested correctly. Singular tags (e.g. <hr />) have closing tags removed.
+* Finally the code is reconstructed. If $links = true then http://.. etc. are converted to
+* HTML links at this point.
+*
+* @return string
+* @param string $html HTML to be parsed
+* @param boolean $emoticons Toggle to allow emoticons (default=true). 'false' just sets $html = "<noemots>$html</noemots>";
+* @param boolean $links Toggle to automatically convert http://.. etc. to HTML links (default=true)
+* @param array $bad_tags Illegal tags to be filtered (there is a default: array("plaintext", "applet", ...))
+*/
 function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
 {
     $fix_html_code_text = 'code:';
@@ -645,11 +673,17 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
     }
 }
 
-function fix_html_error_handler () {
-    return;
-}
-
-// $tag being everything with the < and >, e.g. $tag = 'a href="file.html"';
+/**
+* Limits HTML tags to certain attributes
+*
+* Every tag can be assigned an array of valid attributes. There is also an array of
+* globally valid attributes. This function strips invalid attributes and makes sure
+* that valid attributes are properly formed.
+* e.g. clean_attributes('a href=file.htm onclick=alert("hi")') returns 'a href="file.htm"'
+*
+* @return string
+* @param string $tag Everything between the < and > (e.g. $tag = 'a href="file.html"').
+*/
 function clean_attributes ($tag)
 {
     $valid = array();
@@ -823,6 +857,20 @@ function clean_attributes ($tag)
     return $new_tag;
 }
 
+/**
+* Literally tidies HTML
+*
+* After fix_html is run this function reverses the conversion of custom BH tags like
+* <quote> and <code>. If $links is set to true then links of the form
+* <a href="http://..">http://..</a> are converted back to the text http://..
+* If $linebreaks is set to true then <br /> and <p>..</p> are converted into newline
+* characters.
+*
+* @return string
+* @param string $html The HTML to be tidied.
+* @param boolean $linebreaks Toggle if <br /> and <p> tags are to be converted (default=true)
+* @param boolean $links Toggle if HTML links are to be converted to text (default=true)
+*/
 function tidy_html ($html, $linebreaks = true, $links = true)
 {
     // turn <br /> and <p>...</p> back into linebreaks
@@ -971,24 +1019,57 @@ function tidy_html ($html, $linebreaks = true, $links = true)
     return $html;
 }
 
-function tidy_html_callback($matches)
+/**
+* Used by tidy_html to convert <code> tags
+*
+* @return string
+* @param array $matches Array returned by preg_replace_callback
+*/
+function tidy_html_callback ($matches)
 {
-    $lang = "";
-
-   // if (isset($matches[1])) $lang = substr($matches[1], 1);
-//echo "<xmp>";
-//print_r(get_html_translation_table (HTML_ENTITIES));
-//echo "</xmp>";
     return "<code language=\"{$matches[1]}\">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
 }
 
-function clean_styles($style)
+/** 
+* 'Cleans' inline styles
+*
+* Called by clean_attributes function, this function prevents absolute CSS positioning and
+* stops an IE hack that allows Javascripts to be run.
+*
+* @return string
+* @param string $style The inline CSS style text (e.g. <span style="font:italic"> would need $style="font:italic")
+*/
+function clean_styles ($style)
 {
     $style = preg_replace("/position\s*:\s*absolute\s*;?/i", "", $style);
     $style = preg_replace("/background\s*:\s*url\s*\(\s*javascript\s*:/i", "background:url(", $style);
     return $style;
 }
 
+/**
+* Adds <br /> and <p>..</p> tags to text.
+*
+* This is similar to the PHP function nl2br() but it only adds tags to text, e.g.:
+* <code>Demo text
+* <ul>
+*   <li>Unordered list
+*       First entry</li>
+* </ul>
+* End demo</code>
+* This would become:
+* <code>Demo text<br />
+* <ul>
+*   <li>Unordered list<br />
+*       First entry</li>
+* </ul>
+* End demo</code>
+* This function can also add <p>..</p> tags but this functionality is experimental.
+*
+* @return string
+* @param string $html The HTML which needs <br /> and <p> tags adding.
+* @param boolean $base Toggle indicates HTML isn't nested within other HTML (default=true)
+* @param boolean $br_only Toggle indicates not to use <p> tags (default=true)
+*/
 function add_paragraphs ($html, $base = true, $br_only = true)
 {
     $html = str_replace("\r", "", $html);
@@ -1289,7 +1370,16 @@ function add_paragraphs ($html, $base = true, $br_only = true)
     return $return;
 }
 
-function make_html($html, $br_only = false, $emoticons = true, $links = true)
+/**
+* Converts plain text into HTML by adding linebreaks/links
+*
+* @return string
+* @param string $html The text to be converted to HTML
+* @param boolean $br_only Toggle to only use <br /> tags and not <p> tags (default=false)
+* @param boolean $emoticons Toggle to allow emoticons in message (default=true), false just sets $html = "<noemots>$html</noemots>"
+* @param boolean $links Toggle to allow automatic conversion of text links to HTML (default=true)
+*/
+function make_html ($html, $br_only = false, $emoticons = true, $links = true)
 {
     $html = _htmlentities($html);
 
@@ -1306,6 +1396,12 @@ function make_html($html, $br_only = false, $emoticons = true, $links = true)
     return $html;
 }
 
+/**
+* Converts text links/email address into HTML
+*
+* @return string
+* @param string $html Text to be parsed for links.
+*/
 function make_links ($html)
 {
     $html = " ".$html;

@@ -21,13 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.19 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: interest.php,v 1.20 2004-02-08 17:01:46 decoyduck Exp $ */
 
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING
-
-// Compress the output
-require_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");

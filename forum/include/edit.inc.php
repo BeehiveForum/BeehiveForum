@@ -66,6 +66,10 @@ function post_delete($tid, $pid)
     $sql .= "where TID = $tid and PID = $pid";
     
     $result = db_query($sql, $db_post_delete);
+
+    $sql = "delete from ". forum_table("THREAD"). " where TID = $tid and LENGTH = 1";
+    $result = db_query($sql, $db_post_delete);
+
     $return = ($result) ? true : false;
 
     return $return;

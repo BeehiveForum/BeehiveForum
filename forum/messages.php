@@ -86,7 +86,7 @@ if ($pid == '') $pid = 1;
 
 if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
 	html_draw_top();
-	echo "<h2>The requested thread could not be found or access was denied.</h2>";
+	echo "<h2>The requested thread could not be found. It has either been deleted or access was denied.</h2>";
 	html_draw_bottom();
 	exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.95 2005-03-20 21:47:01 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.96 2005-03-21 15:36:06 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -374,7 +374,10 @@ function folder_is_valid($fid)
 
     if (!is_numeric($fid)) return false;
 
-    $sql = "SELECT COUNT(*) FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
+    $sql = "SELECT COUNT(*) AS FOLDER_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER ";
+    $sql.= "WHERE FID = '$fid'";
+
     $result = db_query($sql, $db_folder_get_available);
 
     list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.166 2005-03-18 23:58:40 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.167 2005-03-21 15:36:07 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -810,7 +810,7 @@ function threads_any_unread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(*) FROM {$table_data['PREFIX']}THREAD T ";
+    $sql = "SELECT COUNT(*) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD T ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD UT ";
     $sql.= "ON (T.TID = UT.TID AND UT.UID = '$uid') ";
     $sql.= "WHERE T.LENGTH > UT.LAST_READ ";

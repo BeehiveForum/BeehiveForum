@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.46 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.47 2004-03-20 22:33:32 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 
@@ -136,7 +136,7 @@ function thread_get_interest($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
+    $sql = "SELECT INTEREST FROM {$webtag['PREFIX']}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
     $result = db_query($sql, $db_thread_get_interest);
 
     if (db_num_rows($result)) {

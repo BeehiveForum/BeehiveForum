@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.182 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.183 2004-03-20 22:33:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -612,7 +612,8 @@ if (bh_session_get_value('UID') != 0) {
     echo "  <tr>\n";
     echo "    <td>&nbsp;</td>\n";
     echo "    <td class=\"smalltext\">\n";
-    echo "      <form name=\"f_mark\" method=\"get\" action=\"thread_list.php?webtag={$webtag['WEBTAG']}\">\n";
+    echo "      <form name=\"f_mark\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "        ", form_input_hidden('webtag', $webtag['WEBTAG']), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
 
@@ -640,9 +641,10 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "    <td class=\"smalltext\">\n";
-echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php?webtag={$webtag['WEBTAG']}\" target=\"right\">\n";
-echo "        ", form_input_text('msg', '1.1', 10). "\n";
-echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+echo "        ", form_input_hidden('webtag', $webtag['WEBTAG']), "\n";
+echo "        ", form_input_text('msg', '1.1', 10), "\n";
+echo "        ", form_submit("go",$lang['goexcmark']), "\n";
 echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

@@ -210,9 +210,11 @@ if($valid){
         }
         if($t_sig){
             if($t_sig_html != "Y"){
-                $t_sig = make_html($t_sig);
-            }
-            $preview_message['CONTENT'] = stripslashes($preview_message['CONTENT'] . "<div class=\"sig\">$t_sig</div>");
+                $preview_sig = make_html($t_sig);
+            } else {
+				$preview_sig = $t_sig;
+			}
+            $preview_message['CONTENT'] = stripslashes($preview_message['CONTENT'] . "<div class=\"sig\">$preview_sig</div>");
         }
         message_display(0,$preview_message,0,0,false);
         echo "<br />\n";

@@ -77,7 +77,7 @@ function post_create_thread($fid,$title)
 function make_html($text)
 {
     $html = stripslashes($text);
-    $html = htmlentities($html,ENT_QUOTES);
+    $html = htmlentities($html,ENT_NOQUOTES);
     $html = format_url2link($html);
     $html = nl2br($html);
 

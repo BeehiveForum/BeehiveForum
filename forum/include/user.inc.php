@@ -389,4 +389,19 @@ function user_get_last_logon_time($uid)
          
          return $last_logon['LAST_LOGON'];
 }
+
+function user_guest_enabled()
+{
+
+         $db_user_guest_account = db_connect();
+         
+         $sql = "SELECT UID FROM ". forum_table("USER"). " WHERE LOGON = 'GUEST' AND PASSWD = MD5('GUEST')";
+         $result = db_query($sql, $db_user_guest_account);
+        
+         $guest_account = db_fetch_array($result);
+
+         return isset($guest_account['UID']);
+
+}
+
 ?>

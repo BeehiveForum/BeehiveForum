@@ -67,6 +67,15 @@ $attachment_dir = 'attachments';
 // ---------------------------------------------------------------------
 
 
+// Guest Account -------------------------------------------------------
+
+$guest_account_enabled = true;  // Enable the use of forum guest account
+                                // Requires the creation of a GUEST user
+				// with the password also set as GUEST.
+
+// ---------------------------------------------------------------------
+
+
 // GZIP Output Compression ---------------------------------------------
 
 // This compresses the output of the PHP scripts using GZIP encoding.

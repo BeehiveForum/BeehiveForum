@@ -253,27 +253,27 @@ if (isset($error_html)) echo $error_html;
         <table class="posthead" width="100%">
           <tr>
             <td align="right" class="posthead">Login Name&nbsp;</td>
-            <td><?php echo form_field("logon", _stripslashes($HTTP_POST_VARS['logon']), 32, 32); ?></td>
+            <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes($HTTP_POST_VARS['logon']) : ''), 32, 32); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Password&nbsp;</td>
-            <td><?php echo form_field("pw", _stripslashes($HTTP_POST_VARS['pw']), 32, 32,"password"); ?></td>
+            <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes($HTTP_POST_VARS['pw']) : ''), 32, 32,"password"); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Confirm&nbsp;</td>
-            <td><?php echo form_field("cpw", _stripslashes($HTTP_POST_VARS['cpw']), 32, 32,"password"); ?></td>
+            <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes($HTTP_POST_VARS['cpw']) : ''), 32, 32,"password"); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Nickname&nbsp;</td>
-            <td><?php echo form_field("nickname", _stripslashes($HTTP_POST_VARS['nickname']), 32, 32); ?></td>
+            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes($HTTP_POST_VARS['nickname']) : ''), 32, 32); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Email&nbsp;</td>
-            <td><?php echo form_field("email", _stripslashes($HTTP_POST_VARS['email']), 32, 80); ?></td>
+            <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes($HTTP_POST_VARS['email']) : ''), 32, 80); ?></td>
           </tr>
           <tr>
             <td>&nbsp;</td>
-            <td><?php echo form_checkbox("remember_user", "Y", "Remember password", ($HTTP_POST_VARS['remember_user'] == "Y")); ?></td>
+            <td><?php echo form_checkbox("remember_user", "Y", "Remember password", (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")); ?></td>
           </tr>
         </table>
         <table class="posthead" width="100%">

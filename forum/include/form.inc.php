@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.52 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.53 2004-04-28 20:38:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -272,7 +272,7 @@ function form_button($name, $value, $custom_html, $class="button")
 
 function form_quick_button($href, $label, $var = false, $value = false, $target = "_self")
 {
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" ";
     echo "target=\"$target\" autocomplete=\"off\">";

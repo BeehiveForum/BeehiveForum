@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.115 2004-04-26 11:21:13 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.116 2004-04-28 20:38:58 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -339,7 +339,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $uid = bh_session_get_value('UID');
 
@@ -1093,7 +1093,7 @@ function poll_public_ballot($tid, $viewstyle)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $totalvotes = array();
     $max_value  = array();
@@ -1223,7 +1223,7 @@ function poll_confirm_close($tid)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $preview_message = messages_get($tid, 1, 1);
 

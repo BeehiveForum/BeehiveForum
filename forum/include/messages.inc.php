@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.276 2004-04-26 11:21:12 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.277 2004-04-28 20:38:57 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -159,7 +159,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
@@ -529,7 +529,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     // Less than 20 messages, no nav needed
 
@@ -621,7 +621,7 @@ function messages_interest_form($tid,$pid)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $interest = thread_get_interest($tid);
     $chk = array("","","","");
@@ -643,7 +643,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?msg=$tid.$pid\" method=\"post\">\n";
@@ -701,7 +701,7 @@ function messages_edit_thread($fid, $tid, $pid, $title)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
@@ -946,7 +946,7 @@ function messages_fontsize_form($tid, $pid)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $fontstrip = "<p>{$lang['adjtextsize']}: ";
 
@@ -993,7 +993,7 @@ function messages_forum_stats($tid, $pid)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");

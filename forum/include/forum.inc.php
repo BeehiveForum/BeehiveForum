@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.64 2004-04-28 18:36:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.65 2004-04-28 20:38:56 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -91,7 +91,7 @@ function get_table_prefix()
     return $forum_data;
 }
 
-function get_webtag(&$webtag_search = false)
+function get_webtag(&$webtag_search)
 {
     static $webtag_data = false;
 
@@ -232,7 +232,7 @@ function forum_get_setting($setting_name, $value = false, $default = false)
 
 function load_start_page()
 {
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     if (@file_exists("forums/$webtag/start_main.php")) {
 
@@ -245,7 +245,7 @@ function load_start_page()
 
 function save_start_page($content)
 {
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     if (!is_dir("forums")) mkdir("forums", 0755);
     if (!is_dir("forums/$webtag")) mkdir("forums/$webtag", 0755);

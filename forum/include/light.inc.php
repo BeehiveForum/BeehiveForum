@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.44 2004-04-28 16:16:47 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.45 2004-04-28 20:38:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -143,7 +143,7 @@ function light_form_radio($name, $value, $text, $checked = false)
 
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $lang = load_language_file();
 
@@ -363,7 +363,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         light_message_display_deleted($tid, $message['PID']);
@@ -541,7 +541,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 {
     $lang = load_language_file();
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     // Less than 20 messages, no nav needed
     if($pid == 1 && $length < $ppp){

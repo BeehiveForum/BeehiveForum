@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.108 2004-04-28 17:04:03 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.109 2004-04-28 20:38:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -34,7 +34,7 @@ function html_guest_error ()
 
      html_draw_top();
 
-     $webtag = get_webtag();
+     $webtag = get_webtag($webtag_search);
      $final_uri = rawurlencode(get_request_uri());
 
      echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
@@ -62,7 +62,7 @@ function html_message_type_error()
 
 function html_get_top_page()
 {
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $forum_settings = get_forum_settings();
 
@@ -97,7 +97,7 @@ function html_get_top_page()
 
 function html_get_style_sheet()
 {
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $forum_settings = get_forum_settings();
 
@@ -205,7 +205,7 @@ function html_draw_top()
     $meta_refresh = false;
 
     $forum_settings = get_forum_settings();
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     foreach($arg_array as $key => $func_args) {
 

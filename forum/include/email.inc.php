@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.64 2004-04-26 11:21:12 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.65 2004-04-28 20:38:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -37,7 +37,7 @@ function email_sendnotification($tuid, $msg, $fuid)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $sql = "SELECT PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
     $sql.= "{$table_data['PREFIX']}USER_PREFS PREFS, ";
@@ -119,7 +119,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $sql = "SELECT USER.UID, USER.NICKNAME, USER.EMAIL FROM ";
     $sql.= "{$table_data['PREFIX']}USER_THREAD USER_THREAD, ";
@@ -198,7 +198,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $sql = "SELECT PREFS.PM_NOTIFY_EMAIL, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
     $sql.= "{$table_data['PREFIX']}USER_PREFS PREFS, USER PROFILE ";
@@ -276,7 +276,7 @@ function email_send_pw_reminder($logon)
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);

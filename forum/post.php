@@ -422,7 +422,7 @@ if(isset($t_sig)) {
 }
 
 if(!isset($t_to_uid)){
-    $t_to_uid = 0;
+    $t_to_uid = -1;
 }
 
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";

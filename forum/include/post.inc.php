@@ -100,20 +100,20 @@ function post_draw_to_dropdown($default_uid)
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
-	$top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
-	$result = db_query($top_sql,$db_post_draw_to_dropdown);
-	if(db_num_rows($result)>0){
-		$top_user = db_fetch_array($result);
-		$fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-		$html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
-	}
+    $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
+    $result = db_query($top_sql,$db_post_draw_to_dropdown);
+    if(db_num_rows($result)>0){
+        $top_user = db_fetch_array($result);
+        $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+        $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+    }
 
     $html .= "<option value=\"0\">ALL</option>\n";
 
-	$sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
-	$sql.= "from ".forum_table("USER")." U ";
-	$sql.= "order by U.LAST_LOGON desc ";
-	$sql.= "limit 0, 20";
+    $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
+    $sql.= "from ".forum_table("USER")." U where U.UID > 0 ";
+    $sql.= "order by U.LAST_LOGON desc ";
+    $sql.= "limit 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 

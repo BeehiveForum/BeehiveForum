@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.293 2004-08-14 23:16:00 rowan_hill Exp $ */
+/* $Id: messages.inc.php,v 1.294 2004-08-26 17:22:29 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -157,7 +157,7 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     $lang = load_language_file();
 
@@ -204,43 +204,55 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     // Check for search words to highlight -------------------------------------
 
-    if (sizeof($highlight) > 0) {
-        $message_parts = preg_split('/([<|>])/', $message['CONTENT'], -1, PREG_SPLIT_DELIM_CAPTURE);
-        foreach ($highlight as $word) {
+    if (sizeof($highlight_array) > 0) {
+
+        $highlight_pattern = array();
+        $highlight_replace = array();
+
+        foreach ($highlight_array as $key => $word) {
+
             $word = preg_quote($word, '/');
-            for ($i = 0; $i < sizeof($message_parts); $i++) {
-                if (!($i % 4)) {
-                    $message_parts[$i] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $message_parts[$i]);
-                }
+
+            $highlight_pattern[$key] = "/($word)/i";
+            $highlight_replace[$key] = "<span class=\"highlight\">$word</span>\n";
+        }
+
+        $message_parts = preg_split('/([<|>])/', $message['CONTENT'], -1, PREG_SPLIT_DELIM_CAPTURE);
+
+        for ($i = 0; $i < sizeof($message_parts); $i++) {
+            if (!($i % 4)) {
+                $message_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $message_parts[$i]);
             }
         }
+
         $message['CONTENT'] = implode('', $message_parts);
     }
 
-        // Little up/down arrows to the left of each message -----------------------
+    // Little up/down arrows to the left of each message -----------------------
 
-        $up_arrow = "";
-        $down_arrow = "";
-        if ($in_list && !$is_preview) {
-                if ($message['PID'] != 1) {
-                        $up_arrow = "<a href=\"";
-                        if ($message['PID'] == $first_msg) {
-                                $up_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] - 1);
-                        } else {
-                                $up_arrow.= "#a" . $tid . "_" . ($message['PID'] - 1);
-                        }
-                        $up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" width=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
-                }
-                if ($message['PID'] != $msg_count) {
-                        $down_arrow = "<a href=\"";
-                        if ($first_msg + bh_session_get_value('POSTS_PER_PAGE') - 1 == $message['PID']) {
-                                $down_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1);
-                        } else {
-                                $down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);
-                        }
-                        $down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
-                }
-        }
+    $up_arrow = "";
+    $down_arrow = "";
+
+    if ($in_list && !$is_preview) {
+            if ($message['PID'] != 1) {
+                    $up_arrow = "<a href=\"";
+                    if ($message['PID'] == $first_msg) {
+                            $up_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] - 1);
+                    } else {
+                            $up_arrow.= "#a" . $tid . "_" . ($message['PID'] - 1);
+                    }
+                    $up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" width=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
+            }
+            if ($message['PID'] != $msg_count) {
+                    $down_arrow = "<a href=\"";
+                    if ($first_msg + bh_session_get_value('POSTS_PER_PAGE') - 1 == $message['PID']) {
+                            $down_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1);
+                    } else {
+                            $down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);
+                    }
+                    $down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
+            }
+    }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 

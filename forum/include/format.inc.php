@@ -154,18 +154,16 @@ function _htmlentities($text)
 // Lazy reversal of _htmlentities
 // (borrowed from: http://uk.php.net/manual/en/function.html-entity-decode.php)
 
-function _htmlentities_reverse($text)
+function _htmlentities_decode($text)
 {
-    $trans_tbl = get_html_translation_table (HTML_ENTITIES);
-    $trans_tbl = array_flip ($trans_tbl);
-    return strtr ($string, $trans_tbl);
-}
+    //$text = strtr($text, array_flip(get_html_translation_table(HTML_ENTITIES)));
+    //$text = preg_replace("/&#([0-9]+);/me", "chr('\\1')", $text);
+    //return $text;
 
-function unhtmlentities ($string)
-{
-    $trans_tbl = get_html_translation_table (HTML_ENTITIES);
-    $trans_tbl = array_flip ($trans_tbl);
-    return strtr ($string, $trans_tbl);
+    $trans_tbl = get_html_translation_table(HTML_ENTITIES);
+    $trans_tbl = array_flip($trans_tbl);
+    return strtr($text, $trans_tbl);
+
 }
 
 // Checks for Magic Quotes and perform stripslashes if nessecary

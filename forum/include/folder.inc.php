@@ -143,6 +143,29 @@ function folder_get_all()
 
 }
 
+// Checks that a $fid is a valid folder and is accessible by the user.
+
+function folder_is_valid($fid)
+{
+
+    $uid = bh_session_get_value('UID');
+    $db_folder_get_available = db_connect();
+
+    $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
+    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
+    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+    $sql.= "and F.FID = $fid";
+
+    $result = db_query($sql, $db_folder_get_available);
+
+    if (db_num_rows($result)) {
+        return true;
+    }
+
+    return false;
+
+}
+
 function user_set_folder_interest($fid, $interest)
 {
     $uid = bh_session_get_value('UID');

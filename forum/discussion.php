@@ -50,13 +50,18 @@ if(!bh_session_get_value('UID')){
 
 require_once("./include/config.inc.php");
 
-if (isset($HTTP_GET_VARS['msg'])) {
-    $msg = $HTTP_GET_VARS['msg'];
+if (isset($HTTP_GET_VARS['folder']) && folder_is_valid($HTTP_GET_VARS['folder'])) {
+    $folder = $HTTP_GET_VARS['folder'];
+    $msg = messages_get_most_recent(bh_session_get_value('UID'), $folder);
 }else {
-    if (bh_session_get_value('UID')) {
-        $msg = messages_get_most_recent(bh_session_get_value('UID'));
+    if (isset($HTTP_GET_VARS['msg'])) {
+        $msg = $HTTP_GET_VARS['msg'];
     }else {
-        $msg = "1.1";
+        if (bh_session_get_value('UID')) {
+            $msg = messages_get_most_recent(bh_session_get_value('UID'));
+        }else {
+            $msg = "1.1";
+        }
     }
 }
 
@@ -69,7 +74,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 <link rel="stylesheet" href="./styles/style.css" type="text/css" />
 </head>
 <frameset cols="250,*" border="1">
-  <frame src="./thread_list.php?msg=<?php echo $msg; ?>" name="left" frameborder="0" framespacing="0" />
-  <frame src="./messages.php?msg=<?php echo $msg; ?>" name="right" frameborder="0" framespacing="0" />
+  <frame src="./thread_list.php<?php if (isset($folder)) { echo "?mode=0&amp;folder=$folder"; }else if (isset($msg)) { echo "?msg=$msg"; } ?>" name="left" frameborder="0" framespacing="0" />
+  <frame src="./messages.php<?php if (isset($msg)) echo "?msg=$msg"; ?>" name="right" frameborder="0" framespacing="0" />
 </frameset>
 </html>

@@ -666,11 +666,12 @@ $lang['preferencesoptional'] = "Preferences (Optional)";
 $lang['register'] = "Register";
 $lang['rememberpasswd'] = "Remember password";
 $lang['birthdayrequired'] = "Your date of birth is required or is invalid";
-$lang['alwaysnotifymeofrepliestome'] = "Always notify me of replies to me";
+$lang['alwaysnotifymeofrepliestome'] = "Notify on reply to me";
 $lang['notifyonnewprivatemessage'] = "Notify on new Private Message";
 $lang['popuponnewprivatemessage'] = "Pop up on new Private Message";
 $lang['automatichighinterestonpost'] = "Automatic high interest on post";
 $lang['itemsmarkedwithaasterixarerequired'] = "Items marked with a * are required";
+$lang['confirmpassword'] = "Confirm Password";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

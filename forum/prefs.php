@@ -355,7 +355,7 @@ if(!empty($error_html)) {
     <table class="posthead" width="400">
       <tr>
         <td><?php echo $lang['timezonefromGMT']; ?></td>
-        <td><?php echo form_dropdown_array("timezone", range(-11,11), array('GMT - 12 hours'), $user_prefs['TIMEZONE']); ?></td>
+        <td><?php echo form_dropdown_array("timezone", range(-11,11), $timezones, $user_prefs['TIMEZONE']); ?></td>
       </tr>
       <tr>
         <td><?php echo $lang['postsperpage']; ?></td>
@@ -439,7 +439,7 @@ if(!empty($error_html)) {
         <td align="right"><?php echo form_checkbox("sig_html", "Y", $lang['containsHTML'], ($user_sig['HTML'] == "Y")); ?></td>
       </tr>
     </table>
-    <?php echo form_submit("submit", $lang['submit']); ?>
+    <?php echo form_submit("submit", $lang['save']); ?>
   </form>
 </div>
 <?php html_draw_bottom(); ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.66 2003-08-30 00:16:21 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.67 2003-08-30 00:25:56 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -221,14 +221,33 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
         bh_session_init(bh_session_get_value('UID'));
 
-        header_redirect("./prefs.php?updated=true");
+        // IIS bug prevents redirect at same time as setting cookies.
 
-        echo "<pre>\n";
-        print_r($HTTP_POST_VARS);
-        echo "</pre>\n";
+        if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
+            header_redirect("./prefs.php?updated=true");
+
+        }else {
+
+            html_draw_top();
+
+            // Try a Javascript redirect
+            echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+            echo "<!--\n";
+            echo "document.location.href = './prefs.php?updated=true';\n";
+            echo "//-->\n";
+            echo "</script>";
+
+            // If they're still here, Javascript's not working. Give up, give a link.
+            echo "<div align=\"center\"><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>";
+            echo "<p>{$lang['userpreferences']}</p>";
+
+            form_quick_button("./prefs.php", $lang['continue'], "", "", "_top");
+
+            html_draw_bottom();
+            exit;
+        }
     }
-
 }
 
 $user = user_get(bh_session_get_value('UID'));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.37 2004-01-15 00:17:21 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.38 2004-01-29 18:32:33 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -59,7 +59,7 @@ require_once("./include/attachments.inc.php");
 
 if (isset($HTTP_GET_VARS['replyto']) && is_numeric($HTTP_GET_VARS['replyto'])) {
     $mid = $HTTP_GET_VARS['replyto'];
-}elseif (isset($HTTP_POST_VARS['replyto']) && is_numeric($HTTP_GET_VARS['replyto'])) {
+}elseif (isset($HTTP_POST_VARS['replyto']) && is_numeric($HTTP_POST_VARS['replyto'])) {
     $mid = $HTTP_POST_VARS['replyto'];
 }
 
@@ -98,7 +98,7 @@ $valid = true;
 if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
     if (isset($HTTP_POST_VARS['t_subject']) && trim($HTTP_POST_VARS['t_subject']) != "") {
-        $t_subject = trim($HTTP_POST_VARS['t_subject']);
+        $t_subject = _htmlentities(trim($HTTP_POST_VARS['t_subject']));
     }else {
         $error_html = "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
@@ -189,8 +189,6 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
 
-        $t_subject = _htmlentities($t_subject);
-
         if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
             $t_content = make_html($t_content);
         }
@@ -252,7 +250,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $pm_preview_array['FNICK']  = $preview_fuser['NICKNAME'];
     $pm_preview_array['FROM_UID'] = $preview_fuser['UID'];
 
-    $pm_preview_array['SUBJECT'] = _htmlentities($t_subject);
+    $pm_preview_array['SUBJECT'] = $t_subject;
     $pm_preview_array['CREATED'] = mktime();
     $pm_preview_array['AID'] = $aid;
 
@@ -300,7 +298,7 @@ echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
 echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _htmlentities(_stripslashes($t_subject)) : "", 42), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _stripslashes($t_subject) : "", 42), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td align=\"right\">{$lang['to']}: </td>\n";
@@ -334,6 +332,7 @@ if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
+if (isset($mid)) echo form_input_hidden("replyto", $mid), "\n";
 echo "</form>\n";
 
 if (isset($mid)) {

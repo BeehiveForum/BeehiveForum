@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.58 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.59 2004-05-04 23:04:22 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -95,18 +95,33 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
     return $new_fid;
 }
 
-function folder_update($fid, $title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $position)
+function folder_update($fid, $folder_data)
 {
     $db_folder_update = db_connect();
 
-    $title = addslashes($title);
-    $description = addslashes($description);
+    if (!is_numeric($fid)) return false;
+    if (!is_array($folder_data)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '$title', ";
-    $sql.= "ACCESS_LEVEL = $access, DESCRIPTION = '$description', ";
-    $sql.= "ALLOWED_TYPES = $allowed_types, POSITION = $position WHERE FID = $fid";
+    $folder_data = array_merge(folder_get($fid), $folder_data);
+
+    foreach($folder_data as $key => $value) {
+        if (!is_numeric($value)) {
+            $folder_data[$key] = addslashes($value);
+        }
+    }
+
+    if (!isset($folder_data['TITLE'])) return false;
+    if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = '';
+
+    if (!isset($folder_data['ACCESS_LEVEL']) || !is_numeric($folder_data['ACCESS_LEVEL'])) $folder_data['ACCESS_LEVEL'] = 0;
+    if (!isset($folder_data['ALLOWED_TYPES']) || !is_numeric($folder_data['ALLOWED_TYPES'])) $folder_data['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
+    if (!isset($folder_data['POSITION']) || !is_numeric($folder_data['POSITION'])) $folder_data['POSITION'] = 0;
+
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_data['TITLE']}', ";
+    $sql.= "ACCESS_LEVEL = {$folder_data['ACCESS_LEVEL']}, DESCRIPTION = '{$folder_data['DESCRIPTION']}', ";
+    $sql.= "ALLOWED_TYPES = {$folder_data['ALLOWED_TYPES']}, POSITION = {$folder_data['POSITION']} WHERE FID = $fid";
 
     return db_query($sql, $db_folder_update);
 }

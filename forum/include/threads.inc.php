@@ -21,21 +21,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.144 2004-11-21 17:26:07 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.145 2004-11-29 22:09:56 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
+include_once("./include/user.inc.php");
 
 function threads_get_available_folders()
 {
     return folder_get_available();
 }
 
-function threads_get_folders($access_allowed = USER_PERM_POST_READ)
+function threads_get_folders()
 {
     $uid = bh_session_get_value('UID');
 
     $db_threads_get_folders = db_connect();
+
+    $access_allowed = USER_PERM_POST_READ;
 
     if (!$table_data = get_table_prefix()) return false;
     if (!is_numeric($access_allowed)) return false;
@@ -80,22 +83,25 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
                 $status = (double)$status | USER_PERM_POST_DELETE | USER_PERM_POST_ATTACHMENTS;
             }
 
-            if (($status & $access_allowed) > 0) {
+            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
 
-                if (isset($row['INTEREST'])) {
+                if (($status & $access_allowed) > 0) {
 
-                    $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
-                                                      'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
-                                                      'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
-                                                      'INTEREST'      => $row['INTEREST'],
-                                                      'STATUS'        => $status);
-                }else {
+                    if (isset($row['INTEREST'])) {
 
-                    $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
-                                                      'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
-                                                      'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
-                                                      'INTEREST'      => 0,
-                                                      'STATUS'        => $status);
+                        $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
+                                                          'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                          'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                          'INTEREST'      => $row['INTEREST'],
+                                                          'STATUS'        => $status);
+                    }else {
+
+                        $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
+                                                          'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                          'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                          'INTEREST'      => 0,
+                                                          'STATUS'        => $status);
+                    }
                 }
             }
         }
@@ -623,8 +629,6 @@ function threads_get_most_recent()
     $fidlist = folder_get_available();
 
     if (!$uid = bh_session_get_value('UID')) $uid = 0;
-
-    $access_allowed = USER_PERM_POST_READ;
 
     $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, T.POLL_FLAG, UT.LAST_READ, ";
     $sql.= "UNIX_TIMESTAMP(T.MODIFIED) AS MODIFIED, UP.RELATIONSHIP, ";

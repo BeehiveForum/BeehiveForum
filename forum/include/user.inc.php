@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.154 2004-04-06 19:57:37 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.155 2004-04-07 08:54:35 decoyduck Exp $ */
 
 function user_count()
 {
@@ -64,11 +64,9 @@ function user_create($logon, $password, $nickname, $email)
     if (!$ipaddress = get_ip_address()) {
         $ipaddress = "";
     }
-    
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
-    $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email')";
+    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email')";
 
     $db_user_create = db_connect();
     $result = db_query($sql, $db_user_create);

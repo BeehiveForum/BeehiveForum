@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.46 2004-04-08 07:49:09 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.47 2004-04-08 13:17:20 decoyduck Exp $ */
 
 // Create a form field
 
@@ -267,11 +267,11 @@ function form_button($name, $value, $custom_html, $class="button")
 
 function form_quick_button($href, $label, $var = false, $value = false, $target = "_self")
 {
-    $table_data = get_table_prefix();
+    $webtag = get_webtag();
     
     echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" ";
     echo "target=\"$target\" autocomplete=\"off\">";
-    echo "  ", form_input_hidden("webtag", $table_data['WEBTAG']), "\n";
+    echo "  ", form_input_hidden("webtag", $webtag), "\n";
 
     if ($var) {
         if (is_array($var)) {

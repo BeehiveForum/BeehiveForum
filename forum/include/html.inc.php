@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.94 2004-04-08 07:49:09 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.95 2004-04-08 13:17:20 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -32,10 +32,10 @@ function html_guest_error ()
      
      html_draw_top();
      
-     $table_data = get_table_prefix();
+     $webtag = get_webtag();
      $final_uri = rawurlencode(get_request_uri());
      
-     echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag={$table_data['WEBTAG']}";
+     echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
      echo "&final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
      html_draw_bottom();
 }
@@ -130,7 +130,7 @@ function html_draw_top()
     $arg_array = func_get_args();
     $meta_refresh = false;
 
-    $table_data = get_table_prefix();
+    $webtag = get_webtag();
 
     foreach($arg_array as $key => $func_args) {
 
@@ -178,7 +178,7 @@ function html_draw_top()
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
     
     if ($meta_refresh) {
-        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag={$table_data['WEBTAG']}\">\n";
+        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
 
     if (forum_get_setting('default_style')) {
@@ -213,7 +213,7 @@ function html_draw_top()
     $fontsize = bh_session_get_value('FONT_SIZE');
     
     if ($fontsize && $fontsize != '10') {
-        echo "<style type=\"text/css\">@import \"fontsize.php?webtag={$table_data['WEBTAG']}\";</style>\n";
+        echo "<style type=\"text/css\">@import \"fontsize.php?webtag=$webtag\";</style>\n";
     }
     
     if (isset($HTTP_GET_VARS['fontresize'])) {
@@ -233,7 +233,7 @@ function html_draw_top()
 	    echo "<!--\n\n";
             echo "function pm_notification() {\n";
             echo "    if (window.confirm('{$lang['pmnotificationpopup']}')) {\n";
-            echo "        top.frames['main'].location.replace('pm.php?webtag={$table_data['WEBTAG']}');\n";
+            echo "        top.frames['main'].location.replace('pm.php?webtag=$webtag');\n";
             echo "    }\n";
             echo "    return true;\n";
             echo "}\n\n";

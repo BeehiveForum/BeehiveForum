@@ -206,10 +206,11 @@ function pm_single_get($mid, $folder, $uid = false)
     // Fetch the single message as specified by the MID
     // ------------------------------------------------------------
 
-    $sql = "SELECT PM.TYPE, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, PM_CONTENT.CONTENT, AT.AID ";
-    $sql.= "FROM ". forum_table("PM"). " PM ";
-    $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = PM.FROM_UID) ";
+    $sql = "SELECT PM.MID, PM.TYPE, PM.TO_UID, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "PM_CONTENT.CONTENT, AT.AID FROM ". forum_table("PM"). " PM ";
+    $sql.= "LEFT JOIN ". forum_table("USER"). " TUSER ON (TUSER.UID = PM.TO_UID) ";
+    $sql.= "LEFT JOIN ". forum_table("USER"). " FUSER ON (FUSER.UID = PM.FROM_UID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = $mid ";
@@ -247,9 +248,11 @@ function pm_single_get($mid, $folder, $uid = false)
 
 }
 
-function draw_pm_message($pm_elements_array, $replyto = false)
+function draw_pm_message($pm_elements_array)
 {
     global $HTTP_SERVER_VARS, $lang;
+
+    $uid = bh_session_get_value('UID');
 
     echo "<div align=\"center\">\n";
     echo "  <table width=\"90%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -257,11 +260,21 @@ function draw_pm_message($pm_elements_array, $replyto = false)
     echo "      <td>\n";
     echo "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
     echo "          <tr>\n";
-    echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
-    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['FROM_UID'] . ")\" target=\"_self\">";
-    echo format_user_name($pm_elements_array['LOGON'], $pm_elements_array['NICKNAME']), "</a>";
-    echo "</span></td>\n";
+
+    if ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
+        echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+        echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['FROM_UID'] . ")\" target=\"_self\">";
+        echo format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']), "</a>";
+        echo "</span></td>\n";
+    }else {
+        echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+        echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['TO_UID'] . ")\" target=\"_self\">";
+        echo format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']), "</a>";
+        echo "</span></td>\n";
+    }
+
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
@@ -327,8 +340,8 @@ function draw_pm_message($pm_elements_array, $replyto = false)
     echo "          <tr>\n";
     echo "            <td align=\"center\">\n";
 
-    if ($replyto) {
-        echo "<span class=\"postresponse\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto=$replyto\" target=\"_self\">{$lang['reply']}</a></span>\n";
+    if (isset($pm_elements_array['MID'])) {
+        echo "<span class=\"postresponse\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></span>\n";
     }
 
     echo "</td>\n";

@@ -228,22 +228,31 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     if ($HTTP_POST_VARS['t_to_uid'] == 0) {
 
-        $pm_elements_array['LOGON'] = "ALL";
-        $pm_elements_array['NICKNAME'] = "ALL";
-        $pm_elements_array['FROM_UID'] = 0;
+        $pm_elements_array['TLOGON'] = "ALL";
+        $pm_elements_array['TNICK']  = "ALL";
+        $pm_elements_array['TO_UID'] = 0;
 
     }else{
 
         $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
-        $pm_elements_array['LOGON'] = $preview_tuser['LOGON'];
-        $pm_elements_array['NICKNAME'] = $preview_tuser['NICKNAME'];
-        $pm_elements_array['FROM_UID'] = $preview_tuser['UID'];
+
+        $pm_elements_array['TLOGON'] = $preview_tuser['LOGON'];
+        $pm_elements_array['TNICK']  = $preview_tuser['NICKNAME'];
+        $pm_elements_array['TO_UID'] = $preview_tuser['UID'];
 
     }
+
+    $preview_fuser = user_get(bh_session_get_value('UID'));
+
+    $pm_elements_array['FLOGON'] = $preview_tuser['LOGON'];
+    $pm_elements_array['FNICK'] = $preview_tuser['NICKNAME'];
+    $pm_elements_array['FROM_UID'] = $preview_tuser['UID'];
 
     $pm_elements_array['SUBJECT'] = $t_subject;
     $pm_elements_array['CREATED'] = mktime();
     $pm_elements_array['AID'] = $aid;
+
+    $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
     if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
         $pm_elements_array['CONTENT'] = make_html($t_content);

@@ -133,11 +133,8 @@ if (isset($HTTP_GET_VARS['mid'])) {
     $pm_elements_array = array();
 
     if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder_bitwise)) {
-        if ($folder == 0) {
-            draw_pm_message($pm_elements_array, $HTTP_GET_VARS['mid']);
-        }else {
-            draw_pm_message($pm_elements_array);
-        }
+        $pm_elements_array['FOLDER'] = $folder_bitwise;
+        draw_pm_message($pm_elements_array);
         echo "<p>&nbsp;</p>\n";
     }else {
         echo "<p>{$lang['messagehasbeendeleted']}</p>\n";

@@ -38,6 +38,7 @@ define('PM_READ', 4);       // Read PM
 define('PM_SENT', 8);       // Sent PM
 define('PM_SAVED_IN', 16);  // Saved Received PM
 define('PM_SAVED_OUT', 32); // Saved Sent PM
+define('PM_PREVIEW', 64);   // Previewed Message (pm_write.php)
 
 // PM Folders - defines what can be stored in each folder
 

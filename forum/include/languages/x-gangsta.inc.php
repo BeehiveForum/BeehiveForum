@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.16 2004-05-25 22:09:12 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.17 2004-06-03 16:46:46 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -970,6 +970,10 @@ $lang['results'] = "Rizesults";
 $lang['resultdetails'] = "Rizesult Dizetizails";
 $lang['changevote'] = "Change yo mizind";
 $lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
+$lang['mustvoteforallgroups'] = "You must vote in every group.";
+$lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";
+$lang['nomultivotetabulars'] = "Tabular format polls cannot be multi-vote";
+$lang['tablegraph'] = "Tabular format";
 
 // Profiles (profile.php) ----------------------------------------------
 

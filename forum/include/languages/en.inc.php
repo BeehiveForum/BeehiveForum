@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.141 2004-05-25 22:09:12 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.142 2004-06-03 16:42:48 decoyduck Exp $ */
 
 // International English language file
 
@@ -760,6 +760,7 @@ $lang['docs'] = "Docs";
 $lang['support'] = "Support";
 $lang['threadcouldnotbefound'] = "The requested thread could not be found or access was denied.";
 $lang['mustselectpolloption'] = "You must select an option to vote for!";
+$lang['mustvoteforallgroups'] = "You must vote in every group.";
 $lang['keepreading'] = "Keep reading";
 $lang['backtothreadlist'] = "Back to thread list";
 $lang['postdoesnotexist'] = "That post does not exist in this thread!";
@@ -921,6 +922,8 @@ $lang['mustenterpollquestion'] = "You must enter a poll question";
 $lang['groupcountmustbelessthananswercount'] = "Number of answer groups must be less than total number of answers";
 $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
+$lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";
+$lang['nomultivotetabulars'] = "Tabular format polls cannot be multi-vote";
 $lang['cannotcreatemultivotepublicballot'] = "You cannot create multi-vote public ballots. Public ballots require the use of vote logging to work.";
 $lang['abletochangevote'] = "You will be able to change your vote.";
 $lang['abletovotemultiple'] = "You will be able to vote multiple times.";
@@ -943,6 +946,7 @@ $lang['pollvotepub'] = "Public ballot";
 $lang['pollresultnote'] = "<b>Note:</b> Choosing 'Public ballot' will overide the poll result type.";
 $lang['horizgraph'] = "Horizontal graph";
 $lang['vertgraph'] = "Vertical graph";
+$lang['tablegraph'] = "Tabular format";
 $lang['publicviewable'] = "Public ballot";
 $lang['polltypewarning'] = "<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for.";
 $lang['expiration'] = "Expiration";

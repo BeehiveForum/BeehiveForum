@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.147 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: messages.php,v 1.148 2004-06-03 16:42:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -133,8 +133,19 @@ if (isset($_POST['pollsubmit'])) {
 
   if (isset($_POST['pollvote'])) {
 
-    poll_vote($_POST['tid'], $_POST['pollvote']);
-    header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
+    if (poll_check_tabular_votes($_POST['tid'], $_POST['pollvote'])) {
+    
+        poll_vote($_POST['tid'], $_POST['pollvote']);
+        header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
+        
+    } else {
+
+        html_draw_top();
+        echo "<h2>{$lang['mustvoteforallgroups']}</h2>";
+        html_draw_bottom();
+        exit;
+    
+    }
 
   }else {
 

@@ -44,7 +44,9 @@ require_once("./include/form.inc.php");
 $error_html = "";
 
 if(isset($HTTP_POST_VARS['submit'])){
+
     $valid = true;
+    
     if(isset($HTTP_POST_VARS['pw'])){
         if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']){
             $error_html = "<h2>Passwords do not match</h2>";
@@ -105,9 +107,9 @@ if(isset($HTTP_POST_VARS['submit'])){
         user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$user_sig['CONTENT'],$user_sig['HTML']);
         $user_sig_exist = (count($user_sig) > 0);
     }
-} else {
+    
+}else {
 
-// Get preferences
     if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
         $user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
         $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
@@ -157,7 +159,13 @@ echo "<td>".form_checkbox("mark_as_of_int","Y","Automatically mark threads<br />
 echo "<tr><td>Posts per page:</td>";
 echo "<td>".form_dropdown_array("posts_per_page",array(5,10,20),array(5,10,20),$user_prefs['POSTS_PER_PAGE'])."</td></tr>";
 echo "<tr><td>Font size:</td>";
-echo "<td>".form_dropdown_array("font_size",range(1,15),range(1,15),$user_prefs['FONT_SIZE'])."</td></tr>";
+
+if ($user_prefs['FONT_SIZE'] == '') {
+  echo "<td>".form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), "10pt")."</td></tr>";
+}else{
+  echo "<td>".form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE'])."</td></tr>";
+}
+
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td class=\"subhead\" colspan=\"2\">Signature</td></tr>";
 echo "<tr><td colspan=\"2\">".form_textarea("sig_content",$user_sig['CONTENT'],4,60);

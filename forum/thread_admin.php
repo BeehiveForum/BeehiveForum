@@ -70,9 +70,17 @@ if(isset($HTTP_POST_VARS['move'])){
 }
 
 if(isset($HTTP_GET_VARS['ret'])){
-    header("Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'].$ret);
+
+    header ("Request-URI: ". $HTTP_GET_VARS['ret']);
+    header ("Content-Location: ". $HTTP_GET_VARS['ret']);
+    header ("Location: ". $HTTP_GET_VARS['ret']);
+    
 } else {
-    header("Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'].dirname($HTTP_SERVER_VARS['PHP_SELF'])."/messages.php");
+
+    header ("Request-URI: ". dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
+    header ("Content-Location: ". dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
+    header ("Location: ". dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
+    
 }
 
 ?>

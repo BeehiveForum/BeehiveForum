@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.81 2004-04-26 11:21:08 decoyduck Exp $ */
+/* $Id: index.php,v 1.82 2004-04-27 19:22:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -266,12 +266,13 @@ if ($user_sess = bh_session_check()) {
     }
 }
 
+echo "<noframes>\n";
+echo "<body>\n";
+echo "<h1>{$lang['noframessupport']}</h1>\n";
+echo "<p>{$lang['uselightversion']}</p>\n";
+echo "</body>\n";
+echo "</noframes>\n";
+echo "</frameset>\n";
+echo "</html>\n";
+
 ?>
-<noframes>
-<body>
-<h1><?php echo $lang['noframessupport']; ?></h1>
-<p><?php echo $lang['uselightversion']; ?></p>
-</body>
-</noframes>
-</frameset>
-</html>

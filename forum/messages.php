@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.79 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: messages.php,v 1.80 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -177,7 +177,7 @@ echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">";
 
-messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTEREST']);
+messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTEREST'],$threaddata['STICKY']);
 
 echo "    </td>\n";
 
@@ -263,7 +263,7 @@ if (bh_session_get_value('UID') != 0) {
         messages_fontsize_form($tid, $pid);
 
         if(perm_is_moderator()){
-                messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed);
+                messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false);
         }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.25 2003-07-31 22:08:43 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.26 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -51,7 +51,7 @@ function thread_get($tid)
 
    $uid = bh_session_get_value('UID');
 
-   $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
+   $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
    $sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID ";
    $sql.= "FROM ". forum_table("THREAD"). " THREAD ";
@@ -144,6 +144,21 @@ function thread_can_view($tid = 0, $uid = 0)
         $count = db_num_rows($result);
 
         return ($count > 0);
+}
+
+function thread_set_sticky($tid, $sticky = true)
+{
+    $db_thread_set_sticky = db_connect();
+    
+    if ($sticky) {
+        $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = \"Y\" WHERE TID = $tid";
+    } else {
+        $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = \"N\" WHERE TID = $tid";
+    }
+    
+    $result = db_query($sql,$db_thread_set_sticky);
+    
+    return $result;
 }
 
 ?>

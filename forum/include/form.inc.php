@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.25 2003-08-01 02:58:36 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.26 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // form.inc.php : form item functions
 
@@ -131,7 +131,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = ""
 }
 
 // create a <input type="radio">
-function form_radio($name, $value, $text, $checked = false)
+function form_radio($name, $value, $text, $checked = false, $custom_html= "")
 {
     $html = "<span class=\"bhinputradio\"><input type=\"radio\" name=\"$name\" value=\"$value\"";
     if($checked) $html .= " checked=\"checked\"";

@@ -46,6 +46,9 @@
 20 - Opened Thread
 21 - Renamed Thread
 
+25 - Made Thread Sticky
+26 - Made Thread Non-sticky
+
 
 ---        delete.php        ---
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.154 2003-07-29 16:26:43 hodcroftcj Exp $ */
+/* $Id: messages.inc.php,v 1.155 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -151,12 +151,13 @@ function message_get_content($tid,$pid)
     return isset($fa['CONTENT']) ? $fa['CONTENT'] : "";
 }
 
-function messages_top($foldertitle, $threadtitle, $interest_level = 0)
+function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N")
 {
     global $lang;
     echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;$foldertitle: $threadtitle";
     if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
     if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
+    if ($sticky == "Y") echo "&nbsp;<img src=\"". style_image('sticky.png'). "\" height=\"15\" alt=\"{$lang['sticky']}\" align=\"middle\" />";
     echo "</p>";
     // To be expanded later
 
@@ -607,7 +608,7 @@ function messages_interest_form($tid,$pid)
     echo "</div>\n";
 }
 
-function messages_admin_form($fid, $tid, $pid, $title, $closed = false)
+function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false)
 {
     global $HTTP_SERVER_VARS, $lang;
 
@@ -625,11 +626,17 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false)
     echo "<p>{$lang['movethread']}: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", $lang['move']);
 
     if ($closed) {
-        echo "&nbsp;".form_submit("reopen",$lang['reopenforposting']). "</p>\n";
+        echo "&nbsp;".form_submit("reopen",$lang['reopenforposting']);
     } else {
-        echo "&nbsp;".form_submit("close",$lang['closeforposting']). "</p>\n";
+        echo "&nbsp;".form_submit("close",$lang['closeforposting']);
     }
-
+    
+    if ($sticky) {
+            echo "&nbsp;".form_submit("nonsticky",$lang['makenonsticky']). "</p>\n";
+    } else {
+            echo "&nbsp;".form_submit("sticky",$lang['makesticky']). "</p>\n";
+    }
+    
     echo form_input_hidden("t_tid",$tid);
     echo form_input_hidden("t_pid",$pid);
     echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.16 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: admin_viewlog.php,v 1.17 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Frameset for thread list and messages
 
@@ -281,6 +281,12 @@ if (db_num_rows($result)) {
                 break;
             case 24:
                 $action_text = "{$lang['editedwordfilter']}";
+                break;
+            case 25;
+                $action_text = "{$lang['madethreadsticky']}: '$thread_title'";
+                break;
+            case 26;
+                $action_text = "{$lang['madethreadnonsticky']}: '$thread_title'";
                 break;
             default:
                 $action_text = "{$lang['unknown']}";

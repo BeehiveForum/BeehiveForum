@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.38 2003-07-31 22:08:43 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.39 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -83,15 +83,16 @@ function post_save_attachment_id($tid, $pid, $aid)
     return $result;
 }
 
-function post_create_thread($fid, $title, $poll = 'N')
+function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = false)
 {
     $title = addslashes(_htmlentities($title));
+    $closed = $closed ? "NOW()" : "NULL";
 
     $db_post_create_thread = db_connect();
 
     $sql = "insert into " . forum_table("THREAD");
-    $sql .= " (FID,TITLE,LENGTH,POLL_FLAG,MODIFIED) ";
-    $sql .= "values ($fid, '$title', 0, '$poll', NOW())";
+    $sql .= " (FID,TITLE,LENGTH,POLL_FLAG,STICKY,MODIFIED,CLOSED) ";
+    $sql .= "values ($fid, '$title', 0, '$poll', '$sticky', NOW(), $closed)";
 
     $result = db_query($sql, $db_post_create_thread);
 
@@ -190,7 +191,7 @@ function check_ddkey($ddkey)
     $uid = bh_session_get_value('UID');
 
     $sql = "SELECT DDKEY FROM ". forum_table("DEDUPE"). " WHERE UID = $uid";
-    $result = db_query($sql, db_check_ddkey);
+    $result = db_query($sql, $db_check_ddkey);
 
     if (db_num_rows($result) > 0) {
 

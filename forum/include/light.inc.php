@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.13 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: light.inc.php,v 1.14 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -118,12 +118,13 @@ function light_poll_confirm_close($tid)
 
 }
 
-function light_messages_top($foldertitle, $threadtitle, $interest_level = 0)
+function light_messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N")
 {
     global $lang;
     echo "<h2>$foldertitle: $threadtitle";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
     if ($interest_level == 2) echo "&nbsp;<font color=\"#FF0000\">({$lang['subscribed']})</font>";
+    if ($sticky == "Y") echo "&nbsp;({$lang['sticky']})";
     echo "</h2>";
 }
 

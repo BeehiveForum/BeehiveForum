@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.161 2004-01-16 19:51:55 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.162 2004-01-19 20:56:29 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -76,9 +76,9 @@ if (bh_session_get_value('UID') == 0) {
     $user = bh_session_get_value('UID');
 
     if (isset($HTTP_GET_VARS['markread'])) {
-
-        if ($HTTP_GET_VARS['markread'] == 2 && isset($HTTP_GET_VARS['tids']) && is_array($HTTP_GET_VARS['tids'])) {
-            threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
+       
+        if ($HTTP_GET_VARS['markread'] == 2 && isset($HTTP_GET_VARS['tid_array']) && is_array($HTTP_GET_VARS['tid_array'])) {
+            threads_mark_read($HTTP_GET_VARS['tid_array']);
         }elseif ($HTTP_GET_VARS['markread'] == 0) {
             threads_mark_all_read();
         }elseif ($HTTP_GET_VARS['markread'] == 1) {
@@ -428,7 +428,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 while (list($key2, $thread) = each($thread_info)) {
 
                     if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
-                    if (!in_array("{$thread['tid']}.{$thread['length']}", $visiblethreads)) $visiblethreads[] = "{$thread['tid']}.{$thread['length']}";
+                    if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
 
                     if ($thread['fid'] == $folder_number) {
 
@@ -593,7 +593,10 @@ if (bh_session_get_value('UID') != 0) {
     if (isset($visiblethreads) && is_array($visiblethreads)) {
 
         $labels[] = $lang['visiblediscussions'];
-        echo "        ", form_input_hidden("tids", implode(',', $visiblethreads)), "\n";
+        
+        for ($i = 0; $i < sizeof($visiblethreads); $i++) {
+            echo "        ", form_input_hidden("tid_array[]", $visiblethreads[$i]), "\n";
+        }
     }
 
     echo "        ", form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n";

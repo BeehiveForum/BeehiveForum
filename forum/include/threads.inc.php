@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.97 2003-12-18 21:25:53 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.98 2004-01-19 20:56:29 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -766,7 +766,7 @@ function threads_mark_read($tidarray)
     $db_threads_mark_read = db_connect();
 
     if (!is_array($tidarray)) return false;
-
+    
     foreach($tidarray as $ctid) {
 
         $sql = "SELECT LENGTH FROM ". forum_table("THREAD"). " WHERE TID = $ctid";

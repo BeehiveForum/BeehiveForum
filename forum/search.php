@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.51 2004-01-15 19:20:29 decoyduck Exp $ */
+/* $Id: search.php,v 1.52 2004-01-19 20:56:29 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -54,6 +54,7 @@ require_once("./include/poll.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/pm.inc.php");
 
 if (isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
     $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
@@ -143,7 +144,13 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
 echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
 echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
-echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./search.php\" target=\"right\">{$lang['search']}</a><br />\n";
+
+if ($pm_new_count = pm_new_check(false)) {
+    echo "      <img src=\"", style_image('pmnewmessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"./pm.php\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['new']}]</span><br />\n";
+}else {
+    echo "      <img src=\"", style_image('pmnomessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"./pm.php\" target=\"main\">{$lang['pminbox']}</a><br />\n";
+}
+
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
@@ -263,6 +270,37 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 	    break;
     }
 }
+
+echo "<p>&nbsp;</p>\n";
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "    <td class=\"smalltext\">\n";
+echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+echo "        ", form_input_text('msg', '1.1', 10). "\n";
+echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "    <td class=\"smalltext\">\n";
+echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
+echo "        ", form_input_text("search_string", "", 20). "\n";
+echo "        ", form_submit("submit", $lang['find']). "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
 
 html_draw_bottom();
 

@@ -1,6 +1,6 @@
 Beehive Forum Release Notes
 
-What's new in 0.5 ("TBD", released 5th Never)
+What's new in 0.5 ("What You Have Is Enough", released 10th December 2004)
 =================
 
 - Notes

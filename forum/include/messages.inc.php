@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.261 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.262 2004-04-12 03:11:38 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -449,15 +449,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "</td>\n";
 	    echo "<td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
-            echo "<a href=\"display.php?webtag=$webtag&msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['print']}\" align=\"middle\" /></a>&nbsp;";
+            echo "<a href=\"display.php?webtag=$webtag&msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+
+            echo "<a href=\"thread_options.php?webtag=$webtag&tid=$tid&mar=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
             if (bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "<a href=\"user_rel.php?webtag=$webtag&uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"user_rel.php?webtag=$webtag&uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
             }
 
             if (perm_is_soldier()){
 
-                echo "<a href=\"admin_user.php?webtag=$webtag&uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"admin_user.php?webtag=$webtag&uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
 	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
@@ -533,7 +535,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     }
 
     // The middle section(s)
-    while($spid + ($ppp - 1) <= $length){
+    while($spid + ($ppp - 1) < $length){
         if($spid == $pid){
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
@@ -761,6 +763,51 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     $sql.= "AND PID BETWEEN '$spid' AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
     db_query($sql, $db_message_update_read);
+}
+
+function messages_set_read($tid, $pid, $uid)
+{
+    $db_message_set_read = db_connect();
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+    if (!is_numeric($uid)) return false;
+
+    // Check for existing entry in USER_THREAD
+    
+    if (!$table_data = get_table_prefix()) return false;
+
+	$lr = 0;
+
+    $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
+    $result = db_query($sql, $db_message_set_read);
+
+    if (db_num_rows($result) > 0) {
+
+        $fa = db_fetch_array($result);
+
+        if (isset($fa['LAST_READ'])) {
+            $lr = $fa['LAST_READ'];
+        }
+
+		$sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+		$sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+		$sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+
+		db_query($sql, $db_message_set_read);
+
+    }else {
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+        db_query($sql, $db_message_set_read);
+    }
+
+	// Mark posts as Viewed...
+	$sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST ";
+	$sql.= "SET VIEWED = NOW() ";
+	$sql.= "WHERE TID = '$tid' AND PID BETWEEN '$lr' AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
+
+	db_query($sql, $db_message_set_read);
 }
 
 function messages_get_most_recent($uid, $fid = false)

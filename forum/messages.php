@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.129 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: messages.php,v 1.130 2004-04-12 03:11:38 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -309,25 +309,12 @@ messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
 if ($threaddata['POLL_FLAG'] == 'Y') {
-    echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
+	echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
 }
 
 if (bh_session_get_value('UID') != 0) {
-
-        messages_interest_form($tid, $pid);
-        messages_fontsize_form($tid, $pid);
-
-        if (perm_is_moderator()) {
-        
-            messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $threaddata['CLOSED'], ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL'], $threaddata['ADMIN_LOCK']);
-            
-        }elseif (($threaddata['FROM_UID'] == bh_session_get_value('UID')) && $threaddata['ADMIN_LOCK'] == 0) {
-                    
-            if (((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS))) {
-        
-                messages_edit_thread($threaddata['FID'], $tid, $pid, $threaddata['TITLE']);
-            }
-        }
+	messages_fontsize_form($tid, $pid);
+	echo "<p><a href=\"thread_options.php?webtag=$webtag&tid=$tid\" target=\"_self\">{$lang['threadoptions']}</a></p>\n";
 }
 
 draw_beehive_bar();

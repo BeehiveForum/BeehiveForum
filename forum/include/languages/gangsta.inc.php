@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.55 2004-04-11 23:41:09 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.56 2004-04-12 03:11:36 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -1125,5 +1125,19 @@ $lang['wehave'] = "We's got";
 $lang['registeredmembers'] = "rizegistizered homiez";
 $lang['thenewestmemberis'] = "The greenest-ass homie is";
 $lang['mostuserseveronlinewas'] = "Mizost homiez ever chillin' at the one tizime was";
+
+// Thread Options (thread_options.php) ---------------------------------
+
+$lang['updatesmade'] = "Updates Made";
+$lang['useroptions'] = "User Options";
+$lang['markedasread'] = "Marked as read";
+$lang['postsoutof'] = "posts out of";
+$lang['interest'] = "Interest";
+$lang['adminoptions'] = "Admin Options";
+$lang['closedforposting'] = "Closed for posting";
+$lang['locktitleandfolder'] = "Lock title and folder";
+$lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
+$lang['deletethread'] = "Delete thread";
+$lang['markasunread'] = "Mark as unread";
 
 ?>

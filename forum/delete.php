@@ -63,6 +63,9 @@ require_once("./include/edit.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/admin.inc.php");
 
+// Check if the user is viewing signatures.
+$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+
 $valid = true;
 
 if(isset($HTTP_POST_VARS['submit'])) {
@@ -165,7 +168,7 @@ if ($valid) {
 
     }else {
 
-      message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true, true);
+      message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
 
     }
 }

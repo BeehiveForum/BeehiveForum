@@ -96,6 +96,9 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     header_redirect($uri);
 }
 
+// Check if the user is viewing signatures.
+$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+
 $valid = true;
 
 html_draw_top_script();
@@ -315,7 +318,7 @@ $threaddata = thread_get($tid);
 
 if ($valid) {
     echo "<h2>Message Preview:</h2>";
-    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true, true);
+    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
 }
 
 html_draw_bottom();

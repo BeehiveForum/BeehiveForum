@@ -52,6 +52,9 @@ require_once("./include/form.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/poll.inc.php");
 
+// Check if the user is viewing signatures.
+$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+
 $valid = true;
 
 if (isset($HTTP_POST_VARS['cancel'])) {
@@ -240,7 +243,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
 
-    if (strlen(trim($HTTP_POST_VARS['answers'][$i])) > 0) {
+    if (isset($HTTP_POST_VARS['answers'][$i]) && strlen(trim($HTTP_POST_VARS['answers'][$i])) > 0) {
 
       if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
         $poll_option = fix_html($HTTP_POST_VARS['answers'][$i]);
@@ -310,7 +313,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "</table>\n";
   $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">Note: Poll votes are randomly generated for preview only.</p>\n";
 
-  message_display(0, $polldata, 0, 0, false, false, false);
+  message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
 
   if (strlen($t_message_text) > 0) {
 
@@ -331,7 +334,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
       $t_sig = " ";
     }
 
-    message_display(0, $polldata, 0, 0, false, false, false);
+    message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
 
   }
 

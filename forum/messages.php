@@ -170,7 +170,7 @@ $msg_count = count($messages);
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td>";
+echo "    <td align=\"left\">";
 
 messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTEREST']);
 

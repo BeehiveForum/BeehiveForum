@@ -217,7 +217,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
     echo "<table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\"><tr>\n";
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;From:&nbsp;</span></td>\n";
-    echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
+    echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
@@ -225,7 +225,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     $temp_ignore = false;
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-    if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+    if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
         $temp_ignore = true;
     }
@@ -252,7 +252,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "&nbsp;</span></td>\n";
     echo "</tr><tr>\n";
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;To:&nbsp;</span></td>\n";
-    echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
+    echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
@@ -334,7 +334,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             $message['CONTENT'] .= "</div>";
         }
 
-        echo "<tr><td class=\"postbody\">". $message['CONTENT']. "</td></tr>\n";
+        echo "<tr><td class=\"postbody\" align=\"left\">". $message['CONTENT']. "</td></tr>\n";
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
@@ -344,7 +344,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             if (is_array($attachments)) {
 
                 echo "<tr><td>&nbsp;</td></tr>\n";
-                echo "<tr><td class=\"postbody\">\n";
+                echo "<tr><td class=\"postbody\" align=\"left\">\n";
                 echo "<b>Attachments:</b><br />\n";
 
                 for ($i = 0; $i < sizeof($attachments); $i++) {
@@ -383,7 +383,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         }
 
-        if (($in_list && $limit_text != false) || $is_poll) {
+        /*echo "\$in_list: ", ($in_list) ? "true" : "false", "<br>\n";
+        echo "\$closed: ", ($closed) ? "true" : "false", "<br>\n";
+        echo "\$limit_text: ", ($limit_text) ? "true" : "false", "<br>\n";
+        echo "\$is_poll: ", ($is_poll) ? "true" : "false", "<br>\n";
+        echo "\$show_sigs: ", ($show_sigs) ? "true" : "false", "<br>\n";
+        echo "\$is_preview: ", ($is_preview) ? "true" : "false", "<br>\n"; */
+
+        if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
 
@@ -565,8 +572,8 @@ function messages_admin_form($tid, $pid, $title, $closed = false)
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid";
     echo "\" method=\"post\">\n";
-    echo "<p>Rename thread:". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
-    echo "<p>Move thread:" . folder_draw_dropdown(0,"t_move"). "&nbsp;".form_submit("move", "Move");
+    echo "<p>Rename thread: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
+    echo "<p>Move thread: " . folder_draw_dropdown(0,"t_move"). "&nbsp;".form_submit("move", "Move");
 
     if ($closed) {
         echo "&nbsp;".form_submit("reopen","Reopen for posting"). "</p>\n";

@@ -47,6 +47,9 @@ list($tid, $pid) = explode('.', $msg);
 if (!is_numeric($pid)) $pid = 1;
 if (!is_numeric($tid)) $tid = 1;
 
+// Check if the user is viewing signatures.
+$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+
 // Output XHTML header
 html_draw_top_script();
 
@@ -60,10 +63,10 @@ echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
 messages_top($foldertitle,_stripslashes($threaddata['TITLE']));
 echo "</td></tr></table></div>\n";
 
-if($message){
+if ($message) {
         $first_msg = $message['PID'];
         $message['CONTENT'] = message_get_content($tid, $message['PID']);
-        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed,false);
+        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, false, false, $show_sigs, true);
         $last_pid = $message['PID'];
 }
 

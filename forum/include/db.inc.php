@@ -21,34 +21,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.65 2005-03-10 21:17:51 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.66 2005-03-14 13:27:24 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
-    include_once("./include/config.inc.php");
+    include_once(BH_INCLUDE_PATH. "/config.inc.php");
 }
 
-include_once("./include/constants.inc.php");
-include_once("./include/server.inc.php");
+include_once(BH_INCLUDE_PATH. "/constants.inc.php");
+include_once(BH_INCLUDE_PATH. "/server.inc.php");
 
 if (isset($db_extension)) {
 
     if ($db_extension == 'mysql') {
 
-        include_once("./include/db/db_mysql.inc.php");
+        include_once(BH_INCLUDE_PATH. "/db/db_mysql.inc.php");
 
     }elseif ($db_extension == 'mysqli') {
 
-        include_once("./include/db/db_mysqli.inc.php");
+        include_once(BH_INCLUDE_PATH. "/db/db_mysqli.inc.php");
 
     }else {
 
         if (@extension_loaded('mysql')) {
 
-            include_once("./include/db/db_mysql.inc.php");
+            include_once(BH_INCLUDE_PATH. "/db/db_mysql.inc.php");
 
         }elseif (@extension_loaded('mysqli')) {
 
-            include_once("./include/db/db_mysqli.inc.php");
+            include_once(BH_INCLUDE_PATH. "/db/db_mysqli.inc.php");
         }
     }
 
@@ -56,11 +56,11 @@ if (isset($db_extension)) {
 
     if (@extension_loaded('mysql')) {
 
-        include_once("./include/db/db_mysql.inc.php");
+        include_once(BH_INCLUDE_PATH. "/db/db_mysql.inc.php");
 
     }elseif (@extension_loaded('mysqli')) {
 
-        include_once("./include/db/db_mysqli.inc.php");
+        include_once(BH_INCLUDE_PATH. "/db/db_mysqli.inc.php");
     }
 }
 

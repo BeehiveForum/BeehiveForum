@@ -21,37 +21,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.145 2005-03-13 20:15:30 decoyduck Exp $ */
+/* $Id: logon.php,v 1.146 2005-03-14 13:27:20 decoyduck Exp $ */
+
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
-include_once("./include/gzipenc.inc.php");
+include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-include_once("./include/errorhandler.inc.php");
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-include_once("./include/install.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
 
 // Multiple forum support
-include_once("./include/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch the forum settings
 $forum_settings = forum_get_settings();
 
-include_once("./include/beehive.inc.php");
-include_once("./include/constants.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/header.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/logon.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/user.inc.php");
+include_once(BH_INCLUDE_PATH. "beehive.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Retrieve the final_uri request
 

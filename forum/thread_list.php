@@ -21,40 +21,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.236 2005-03-13 20:15:51 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.237 2005-03-14 13:27:23 decoyduck Exp $ */
+
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
-include_once("./include/gzipenc.inc.php");
+include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-include_once("./include/errorhandler.inc.php");
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-include_once("./include/install.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
 
 // Multiple forum support
-include_once("./include/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch the forum settings
 $forum_settings = forum_get_settings();
 
-include_once("./include/constants.inc.php");
-include_once("./include/folder.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/header.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/logon.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/pm.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/thread.inc.php");
-include_once("./include/threads.inc.php");
-include_once("./include/word_filter.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
+include_once(BH_INCLUDE_PATH. "pm.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "thread.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
 

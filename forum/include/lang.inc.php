@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.19 2005-01-26 21:33:24 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.20 2005-03-14 13:27:25 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
-    include_once("./include/config.inc.php");
+    include_once(BH_INCLUDE_PATH. "/config.inc.php");
 }
 
-include_once("./include/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "/forum.inc.php");
 
 function load_language_file()
 {
@@ -44,7 +44,7 @@ function load_language_file()
 
             if (@file_exists("./include/languages/{$pref_language}.inc.php")) {
 
-                include_once("./include/languages/{$pref_language}.inc.php");
+                include_once(BH_INCLUDE_PATH. "/languages/{$pref_language}.inc.php");
                 return $lang;
             }
         }
@@ -52,7 +52,7 @@ function load_language_file()
          // if the browser doesn't send an Accept-Language header, give up.
 
         if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            include_once("./include/languages/{$default_language}.inc.php");
+            include_once(BH_INCLUDE_PATH. "/languages/{$default_language}.inc.php");
             return $lang;
         }
 
@@ -86,7 +86,7 @@ function load_language_file()
 
             if (@file_exists("./include/languages/{$langs[$key]}.inc.php")) {
 
-                include_once("./include/languages/{$langs[$key]}.inc.php");
+                include_once(BH_INCLUDE_PATH. "/languages/{$langs[$key]}.inc.php");
                 return $lang;
             }
         }

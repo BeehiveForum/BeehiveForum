@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.112 2005-03-06 16:49:32 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.113 2005-03-14 13:27:26 decoyduck Exp $ */
 
-include_once("./include/attachments.inc.php");
-include_once("./include/forum.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/user.inc.php");
+include_once(BH_INCLUDE_PATH. "/attachments.inc.php");
+include_once(BH_INCLUDE_PATH. "/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "/user.inc.php");
 
 function pm_markasread($mid)
 {

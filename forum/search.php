@@ -161,6 +161,13 @@ if (isset($searchsql)) {
       if (strlen($message['CONTENT']) > 100) {
       
         $message['CONTENT'] = substr(strip_tags($message['CONTENT']), 0, 100);
+        $cropto = strrpos($message['CONTENT'], ' ');
+        
+        if ($cropto > 0) {
+        
+          $message['CONTENT'] = substr($message['CONTENT'], 0, $cropto);
+          
+        }
         
       }
       

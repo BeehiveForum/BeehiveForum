@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.58 2004-04-10 10:27:05 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.59 2004-04-10 23:52:28 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -122,7 +122,7 @@ function pm_add_sentitem($mid)
     }
 }
 
-function pm_list_get($folder)
+function pm_list_get($folder, $offset = 0)
 {
     $pms = array();
 
@@ -130,6 +130,7 @@ function pm_list_get($folder)
     $uid = bh_session_get_value('UID');
 
     if (!is_numeric($folder)) return false;
+    if (!is_numeric($offset)) $offset = 0;
 
     // ------------------------------------------------------------
     // Get a list of messages in the specified folder
@@ -155,7 +156,9 @@ function pm_list_get($folder)
         $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
     }
 
-    $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC";
+    $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
+    $sql.= "LIMIT $offset, 10";
+
     $result = db_query($sql, $db_pm_list_get);
 
     while ($row = db_fetch_array($result)) {

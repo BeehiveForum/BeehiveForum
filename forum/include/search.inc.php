@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.92 2005-03-08 16:52:55 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.93 2005-03-08 17:09:37 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -510,7 +510,7 @@ function search_index_post()
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT SET INDEXED = 1 ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-        $result = db_query($sql, $db_search_index_post);
+        //$result = db_query($sql, $db_search_index_post);
 
         // Tidy the content up (remove URLs, new lines and HTML)
 
@@ -527,7 +527,9 @@ function search_index_post()
         $content = preg_replace($drop_char_match, " ", $content);
         $content = preg_replace("/ +/", " ", $content);
 
-        $content_array = preg_split("/\b/", trim($content));
+        preg_match_all("/([\w']+)/i", $content, $content_array);
+
+        $content_array = $content_array[0];
 
         $keyword_array = array();
         $keyword_query = array();
@@ -539,7 +541,7 @@ function search_index_post()
 
             if (strlen($keyword_add) > ($search_min_word_length - 1) && strlen($keyword_add) < 65 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
 
-                if (!_in_array($keyword_array, $keyword_add)) {
+                if (!_in_array($keyword_add, $keyword_array)) {
 
                     $keyword_array[] = $keyword_add;
                     $keyword_query[] = "('$forum_fid', '$tid', '$pid', '$keyword_sql')";

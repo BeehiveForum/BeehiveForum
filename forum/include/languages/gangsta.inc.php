@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.9 2003-11-20 19:40:51 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.10 2003-11-27 15:45:36 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -104,6 +104,7 @@ $lang['passwd'] = "Pizassword";
 $lang['ignored'] = "Gatted";
 $lang['guest'] = "Gizuest";
 $lang['next'] = "Nizext";
+$lang['prev'] = "Prizev"
 $lang['others'] = "Izothers";
 $lang['nickname'] = "Nizicknizame";
 $lang['emailaddress'] = "Email addrizess";
@@ -736,6 +737,7 @@ $lang['ignorethisuser'] = "Ignizore this wack-ass cunt";
 $lang['age'] = "Aizge";
 $lang['aged'] = "aizged";
 $lang['birthday'] = "Bizirthdizay";
+$lang['editmyattachments'] = "Edit Ma Attizachmentz";
 
 // Registration (register.php) -----------------------------------------
 

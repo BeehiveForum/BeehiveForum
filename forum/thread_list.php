@@ -177,7 +177,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
     list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'], $thread['modified'], $thread['closed'])  = thread_get($tid);
     
-    $thread['title'] = stripslashes($thread['title']);    
+    $thread['title'] = stripslashes($thread['title']);
     
     if ($thread['tid'] == $tid) {
     

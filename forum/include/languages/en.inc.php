@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.171 2004-09-12 11:46:38 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.172 2004-09-13 12:34:12 tribalonline Exp $ */
 
 // International English language file
 
@@ -303,6 +303,7 @@ $lang['lockedthreadtitlefolder'] = "Locked Thread Title/Folder";
 $lang['unlockedthreadtitlefolder'] = "Unlocked Thread Title/Folder";
 $lang['userspostsdeletedinthread'] = "User's Posts Deleted in Thread";
 $lang['deleteduserattachmentfrompost'] = "Deleted User's Attachment From Post";
+$lang['editedforumlinks'] = "Edited Forum Links";
 $lang['threaddeleted'] = "Thread Deleted";
 $lang['deletedpost'] = "Deleted Post";
 $lang['editedpost'] = "Edited Post";

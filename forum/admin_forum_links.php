@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.1 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: admin_forum_links.php,v 1.2 2004-09-13 12:34:11 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -140,9 +140,15 @@ if (isset($_POST['l_lid'])) {
 			forum_links_update($lid, $_POST['l_pos'][$lid] + 1, $_POST['l_title'][$lid], $_POST['l_uri'][$lid]);
 		}
 	}
+
+    $uid = bh_session_get_value('UID');
+    admin_addlog($uid, 0, 0, 0, 0, 0, 35);
 }
 if (isset($_POST['l_title_new']) && $_POST['l_title_new'] != "" && isset($_POST['l_pos_new']) && isset($_POST['l_uri_new'])) {
 	forum_links_add($_POST['l_pos_new'] + 1, $_POST['l_title_new'], $_POST['l_uri_new']);
+
+    $uid = bh_session_get_value('UID');
+    admin_addlog($uid, 0, 0, 0, 0, 0, 35);
 }
 
 html_draw_top();

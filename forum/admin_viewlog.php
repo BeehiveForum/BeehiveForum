@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.64 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.65 2004-09-13 12:34:11 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -345,6 +345,9 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 break;
             case 34:
                 $action_text = "{$lang['deleteduserattachmentfrompost']}: $tid.$pid";
+                break;
+            case 35:
+                $action_text = "{$lang['editedforumlinks']}";
                 break;
             default:
                 $action_text = "{$lang['unknown']}";

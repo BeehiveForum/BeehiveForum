@@ -78,14 +78,14 @@ echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\">Member</td>\n";
+echo "          <td class=\"subhead\" align=\"left\">Member</td>\n";
 echo "          <td class=\"subhead\" align=\"right\" width=\"200\">Last Visit</td>\n";
 echo "        </tr>\n";
 
 while ($row = db_fetch_array($result)) {
 
   echo "        <tr>\n";
-  echo "          <td class=\"postbody\"><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $row['UID'], ")\">", format_user_name($row['LOGON'], $row['NICKNAME']), "</a></td>\n";
+  echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $row['UID'], ")\">", format_user_name($row['LOGON'], $row['NICKNAME']), "</a></td>\n";
   echo "          <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($row['LAST_LOGON']), "</td>\n";
   echo "        </tr>\n";
 
@@ -98,10 +98,14 @@ echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\">Recent Visitors</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
+  }
+}else {
+  if ($start >= 20) {
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
   }
 }
 
@@ -111,10 +115,10 @@ echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\">Search for a user not in list:</td>\n";
+echo "          <td class=\"subhead\" align=\"left\">Search for a user not in list:</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td class=\"posthead\">\n";
+echo "          <td class=\"posthead\" align=\"left\">\n";
 echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" target=\"_self\">\n";
 echo "              Username: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', 'Search'), " ", form_submit('submit', 'Clear'), "\n";
 echo "            </form>\n";

@@ -99,7 +99,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
     if ($valid) {
 
-        if(@$HTTP_POST_VARS['sig_html'] == "Y"){
+        if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y"){
             $HTTP_POST_VARS['sig_content'] = fix_html($HTTP_POST_VARS['sig_content']);
         }else {
             $HTTP_POST_VARS['sig_content'] = _stripslashes($HTTP_POST_VARS['sig_content']);
@@ -139,7 +139,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
                         $HTTP_POST_VARS['sig_content'],
-                        @$HTTP_POST_VARS['sig_html']);
+                        isset($HTTP_POST_VARS['sig_html']) ? $HTTP_POST_VARS['sig_html'] : '');
 
         // Update the User's Session to save them having to logout and back in
 

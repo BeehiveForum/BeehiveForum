@@ -94,7 +94,23 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
   }else {
 
-    $new_status = $HTTP_POST_VARS['t_worker'] | $HTTP_POST_VARS['t_worm'] | $HTTP_POST_VARS['t_wasp'] | $HTTP_POST_VARS['t_splat'];
+    $new_status = 0;
+
+    if (isset($HTTP_POST_VARS['t_worker'])) {
+      $new_status = $HTTP_POST_VARS['t_worker'];
+    }
+
+    if (isset($HTTP_POST_VARS['t_worm'])) {
+      $new_status = $new_status | $HTTP_POST_VARS['t_worm'];
+    }
+    
+    if (isset($HTTP_POST_VARS['t_wasp'])) {
+      $new_status = $new_status | $HTTP_POST_VARS['t_wasp'];
+    }
+
+    if (isset($HTTP_POST_VARS['t_splat'])) {
+      $new_status = $new_status | $HTTP_POST_VARS['t_splat'];
+    }
 
     if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
         $new_status = $new_status | $HTTP_POST_VARS['t_soldier'];
@@ -111,12 +127,17 @@ if(isset($HTTP_POST_VARS['submit'])) {
     $user['STATUS'] = $new_status;
 
     // Private folder permissions
-    for($i = 0; $i < $HTTP_POST_VARS['t_fcount']; $i++){
+
+    if (isset($HTTP_POST_VARS['t_fcount'])) {
+
+      for($i = 0; $i < $HTTP_POST_VARS['t_fcount']; $i++){
         $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
         $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
-    }
+      }
 
-    user_update_folders($uid, $uf);
+      user_update_folders($uid, $uf);
+
+    }
 
     if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
     

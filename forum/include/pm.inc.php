@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.18 2003-09-03 15:21:37 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.19 2003-09-03 18:56:22 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -489,7 +489,7 @@ function pm_delete_message($mid)
     // delete the attachment as well.
     // ------------------------------------------------------------
 
-    if ($db_delete_pm_row['TYPE'] == PM_SENT) {
+    if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID']) && get_num_attachments($db_delete_pm_row['AID']) > 0) {
         delete_attachment($db_delete_pm_row['FROM_UID'], $db_delete_pm_row['AID'], $db_delete_pm_row['FILENAME']);
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.20 2003-09-03 15:21:33 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.21 2003-09-03 18:56:19 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -63,6 +63,13 @@ if (isset($HTTP_GET_VARS['replyto'])) {
     $mid = $HTTP_POST_VARS['replyto'];
 }
 
+// User clicked cancel
+
+if (isset($HTTP_POST_VARS['cancel'])) {
+    $uri = (isset($mid)) ? "./pm.php?mid=$mid" : "./pm.php";
+    header_redirect($uri);
+}
+
 // Get the To UID
 
 if (isset($HTTP_GET_VARS['uid'])) {
@@ -89,13 +96,6 @@ if (isset($mid)) {
         html_draw_bottom();
         exit;
     }
-}
-
-// User clicked cancel
-
-if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = "./pm.php". (isset($mid)) ? "?mid=$mid" : "";
-    header_redirect($uri);
 }
 
 // Assume everything is correct (form input, etc)
@@ -129,9 +129,7 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
     if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
         $t_to_logon = substr($HTTP_POST_VARS['t_to_uid'], 2);
-        if ($touser = user_get_uid($t_to_logon)) {
-            $to_to_uid = $touser['UID'];
-        }else {
+        if (!($t_to_uid = user_get_uid($t_to_logon))) {
             $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
             $valid = false;
         }
@@ -310,8 +308,8 @@ if (isset($HTTP_POST_VARS['t_dedupe'])) {
 echo "</form>\n";
 
 if (isset($mid)) {
-    echo "<p>in reply to:</p>";
-    draw_pm_message($pm_elements_array);
+    echo "<h1>{$lang['inreplyto']}</h1><br />";
+    draw_pm_message($pm_data);
 }
 
 html_draw_bottom ();

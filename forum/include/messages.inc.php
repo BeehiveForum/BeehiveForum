@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.326 2005-02-14 19:17:48 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.327 2005-02-14 23:09:20 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -161,6 +161,8 @@ function message_get_content($tid, $pid)
 
 function message_apply_wikilinks($content)
 {
+    $webtag = get_webtag($webtag_search);
+
     if (forum_get_setting('enable_wiki_integration', 'Y', false)) {
 
         $wiki_location = forum_get_setting('wiki_integration_uri', '', '');
@@ -179,6 +181,9 @@ function message_apply_wikilinks($content)
 
                 $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content);
             }
+
+            $content = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\">\\1</a>", $content);
+            $content = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\">\\1</a>", $content);
         }
     }
 

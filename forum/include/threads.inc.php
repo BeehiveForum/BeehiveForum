@@ -25,6 +25,7 @@ USA
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
+require_once("./include/format.inc.php"); // Formatting functions
 
 function threads_get_folders()
 {
@@ -51,9 +52,6 @@ function threads_get_all($uid) // get "all" threads (i.e. most recent threads, i
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
 
-	//$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, USER.logon, USER.nickname, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
-	//$sql .= "FROM ". forum_table("USER") . " USER, " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
-	
 	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
@@ -74,10 +72,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 	$db = db_connect();
 
 	// Formulate query
-	
-	//$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, USER.logon, USER.nickname, UNIX_TIMESTAMP(THREAD.modified) AS modified ";	
-	//$sql .= "FROM ". forum_table("USER") . " USER, " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
-	
+
 	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";	
 	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
@@ -124,8 +119,6 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
 		$lst[$i]['modified'] = $thread['modified'];
 		
-		//$lst[$i]['authorlogon'] = $thread['logon'];
-		//$lst[$i]['authornick'] = $thread['logon'];
 	}
 	return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
 }
@@ -222,4 +215,15 @@ function threads_get_folder_msgs()
 	db_disconnect($db);
 	return $folder_msgs;
 }
+
+function thread_get_author($tid)
+{
+	$db = db_connect();
+	$sql = "SELECT * FROM USER, POST WHERE USER.UID = POST.FROM_UID AND POST.TID = $tid";
+	$resource_id = db_query($sql, $db);
+	$author = db_fetch_array($resource_id);
+	db_disconnect($db);
+	return $author['LOGON'];
+}
+	
 ?>

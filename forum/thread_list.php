@@ -179,9 +179,9 @@ while (list($key1, $folder) = each($folder_order)) {
 				} else {
 					$thread_time = date("j M", $thread['modified']);
 				}
-
+				
 				echo "&nbsp;</td><td valign\"top\">";
-				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ".format_user_name($thread['authorlogon'], $thread['authornick'])."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a> <span class=\"threadxnewofy\">".$number."</span>";
+				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". thread_get_author($thread['tid']) ."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a> <span class=\"threadxnewofy\">".$number."</span>";
 				echo "</td><td valign=\"top\" nowrap=\"nowrap\">";
 				echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";
 				echo "</td></tr>\n";

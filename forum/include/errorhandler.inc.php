@@ -69,7 +69,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                echo form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
+                echo form_input_hidden($key, _htmlspecialchars(_stripslashes($value))), "\n";
             }
 
             echo form_submit(md5(uniqid(rand())), 'Retry');
@@ -77,7 +77,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
 
                 echo "<p>This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</p>\n";
-                echo form_textarea("t_content", htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85);
+                echo form_textarea("t_content", _htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85);
 
                 if (isset($HTTP_GET_VARS['replyto'])) {
 	      
@@ -133,7 +133,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td>\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                echo "            ", form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
+                echo "            ", form_input_hidden($key, _htmlspecialchars(_stripslashes($value))), "\n";
             }
 
             echo "          </td>\n";
@@ -157,7 +157,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 echo "          <td>&nbsp;</td>\n";
                 echo "        </tr>\n";
                 echo "        <tr>\n";
-                echo "          <td>", form_textarea("t_content", htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85), "</td>\n";
+                echo "          <td>", form_textarea("t_content", _htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85), "</td>\n";
                 echo "        </tr>\n";
 
                 if (isset($HTTP_GET_VARS['replyto'])) {

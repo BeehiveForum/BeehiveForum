@@ -80,8 +80,8 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     }
     if ($name == "") $error = "You must specify a name!";
     if (!$error) {
-        $name = addslashes(htmlentities($name));
-        $description = addslashes(htmlentities($description));
+        $name = addslashes(_htmlspecialchars($name));
+        $description = addslashes(_htmlspecialchars($description));
         links_add($uri, $name, $description, $fid, $uid);
         header_redirect("./links.php?fid=$fid");
         exit;
@@ -91,7 +91,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     $name = $HTTP_POST_VARS['name'];
     if ($name == "") $error = "You must specify a name!";
     if (!$error) {
-        $name = addslashes(htmlentities($name));
+        $name = addslashes(_htmlspecialchars($name));
         links_add_folder($fid, $name, true);
         header_redirect("./links.php?fid=$fid");
         exit;

@@ -340,7 +340,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
 
-   $t_content = nl2br(htmlentities(_stripslashes($t_content)));
+   $t_content = nl2br(_htmlspecialchars(_stripslashes($t_content)));
    $t_post_html = "Y";
 
 }
@@ -406,7 +406,7 @@ if ($newthread) {
     echo "<p>Select folder: ";
     echo folder_draw_dropdown($t_fid) . "</p>\n";
     echo "<p>Thread title: ";
-    echo light_form_input_text("t_threadtitle", htmlspecialchars(_stripslashes($t_threadtitle)), 30, 64);
+    echo light_form_input_text("t_threadtitle", _htmlspecialchars(_stripslashes($t_threadtitle)), 30, 64);
     echo "</p>\n";
     echo form_input_hidden("t_newthread","Y");
 
@@ -439,9 +439,9 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<p>To: ". post_draw_to_dropdown($t_to_uid) . form_submit("submit","Post") ."</p>\n";
-echo "<p>".light_form_textarea("t_content", isset($t_content) ? htmlspecialchars($t_content) : "", 15, 85). "</p>\n";
+echo "<p>".light_form_textarea("t_content", isset($t_content) ? _htmlspecialchars($t_content) : "", 15, 85). "</p>\n";
 
-echo "<p>Signature:<br />".light_form_textarea("t_sig", htmlspecialchars($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
+echo "<p>Signature:<br />".light_form_textarea("t_sig", _htmlspecialchars($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
 echo "<p>".light_form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
 echo "<p>".light_form_submit("submit","Post");
 echo "&nbsp;".light_form_submit("preview","Preview");

@@ -62,7 +62,7 @@ if ($dir = @opendir('styles')) {
       if (@file_exists("./styles/$file/desc.txt")) {
         if ($fp = fopen("./styles/$file/desc.txt", "r")) {
           $available_styles[] = $file;
-          $style_names[] = htmlspecialchars(fread($fp, filesize("styles/$file/desc.txt")));
+          $style_names[] = _htmlspecialchars(fread($fp, filesize("styles/$file/desc.txt")));
           fclose($fp);
         }else {
           $available_styles[] = $file;
@@ -155,7 +155,7 @@ $user = user_get(bh_session_get_value('UID'));
 $user_prefs = user_get_prefs(bh_session_get_value('UID'));
 user_get_sig(bh_session_get_value('UID'), $user_sig['CONTENT'], $user_sig['HTML']);
 
-// Arrys for Birthday
+// Arrays for Birthday
 
 $birthday_days   = array(' ', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
 $birthday_months = array(' ', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
@@ -346,7 +346,7 @@ if(!empty($error_html)) {
         <td class="subhead" colspan="2">Signature</td>
       </tr>
       <tr>
-        <td colspan="2"><?php echo form_textarea("sig_content", htmlspecialchars(_stripslashes($user_sig['CONTENT'])), 4, 60); ?></td>
+        <td colspan="2"><?php echo form_textarea("sig_content", _htmlspecialchars(_stripslashes($user_sig['CONTENT'])), 4, 60); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

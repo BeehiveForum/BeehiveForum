@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.53 2004-01-26 19:40:47 decoyduck Exp $ */
+/* $Id: search.php,v 1.54 2004-02-24 18:34:03 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -64,14 +64,13 @@ if (isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
 
 html_draw_top();
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($HTTP_POST_VARS['search_string'])) {
     $search_arguments = $HTTP_POST_VARS;
     $search_string = $HTTP_POST_VARS['search_string'];
 }elseif (isset($HTTP_GET_VARS['sstart'])) {
     $search_arguments = $HTTP_GET_VARS;
     $search_string = $HTTP_GET_VARS['search_string'];
 }else {
-
     echo "<h1>", $lang['searchmessages'], "</h1>\n";
     echo "<form method=\"post\" action=\"search.php\" target=\"left\">\n";
     echo form_input_hidden('sstart', '0'), "\n";

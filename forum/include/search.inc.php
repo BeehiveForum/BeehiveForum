@@ -60,7 +60,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
     if ($fromuid > -1) $fromtouser.= " AND POST.FROM_UID = ". $fromuid;
   }
 
-  if (!empty(trim($argarray['search_string']))) {
+  if (strlen(trim($argarray['search_string'])) > 0) {
 
     if ($argarray['method'] == 1) { // AND
 
@@ -68,29 +68,48 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       $threadtitle = "";
       foreach($keywords as $word) {
-          $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' AND ";
+          if (strlen($word) > 3) {
+              $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%<div class=\"sig\">%' AND ";
+          }
       }
 
       $postcontent = "";
       foreach($keywords as $word) {
-        $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%' AND ";
+          if (strlen($word) > 3) {
+              $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">%' AND ";
+          }
       }
 
-      $threadtitle = substr($threadtitle, 0, -5);
-      $postcontent = substr($postcontent, 0, -5);
+      $threadtitle = trim(substr($threadtitle, 0, -5));
+      $postcontent = trim(substr($postcontent, 0, -5));
 
-      if (@$argarray['me_only'] == 'Y') {
+      if ((strlen($threadtitle) > 0) && (strlen($postcontent) > 0)) {
 
-        $searchsql.= " (". $folders. " AND ". $threadtitle. " AND (POST.TO_UID = ".
-        $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".
-        $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") OR (". $postcontent.
-        " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'].
-        " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") ";
+        if (isset($argarray['me_only']) && $argarray['me_only'] == 'Y') {
+
+          $searchsql.= $folders. " AND (";
+
+          if (strlen($threadtitle) > 0) $searchsql.= $threadtitle. " AND ";
+          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".  $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ") OR (";
+
+          if (strlen($postcontent) > 0) $searchsql.= $postcontent. " AND ";
+          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ")";
+
+        }else {
+
+          $searchsql.= "(". $folders;
+          if (strlen($threadtitle) > 0) $searchsql.= " AND ". $threadtitle;
+          $searchsql.= $daterange. $fromtouser. ") ";
+
+          $searchsql.= "OR (". $folders;
+          if (strlen($postcontent) > 0) $searchsql.= " AND ". $postcontent;
+          $searchsql.= $daterange. $fromtouser. ") ";
+
+        }
 
       }else {
 
-        $searchsql.= " (". $folders. " AND ". $threadtitle. " ". $daterange. " ". $fromtouser. ")";
-        $searchsql.= " OR (". $folders. " AND ". $postcontent. " ". $daterange. " ". $fromtouser. ") ";
+        return false;
 
       }
 
@@ -100,36 +119,55 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       $threadtitle = "";
       foreach($keywords as $word) {
-        $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' OR ";
+          if (strlen($word) > 3) {
+              $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%<div class=\"sig\">%' OR ";
+          }
       }
 
       $postcontent = "";
       foreach($keywords as $word) {
-        $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">' OR ";
+          if (strlen($word) > 3) {
+              $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">%' OR ";
+          }
       }
 
       $threadtitle = substr($threadtitle, 0, -4);
       $postcontent = substr($postcontent, 0, -4);
 
-      if ($argarray['me_only'] == 'Y') {
+      if ((strlen($threadtitle) > 0) && (strlen($postcontent) > 0)) {
 
-        $searchsql = " (". $folders. " AND ". $threadtitle. " AND (POST.TO_UID = ".
-        $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".
-        $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") OR (". $postcontent.
-        " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'].
-        " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") ";
+        if ($argarray['me_only'] == 'Y') {
+
+          $searchsql = $folders. " AND (";
+
+          if (strlen($threadtitle) > 0) $searchsql.= $threadtitle. " AND ";
+          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ") OR (";
+
+          if (strlen($postcontent) > 0) $searchsql.= $postcontent. " AND ";
+          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ")";
+
+        }else {
+
+          $searchsql.= "(". $folders;
+          if (strlen($threadtitle) > 0) $searchsql.= " AND ". $threadtitle;
+          $searchsql.= $daterange. $fromtouser. ")";
+
+          $searchsql.= " OR (". $folders;
+          if (strlen($postcontent) > 0) $searchsql.= " AND ". $postcontent;
+          $searchsql.= $daterange. $fromtouser. ")";
+
+        }
 
       }else {
 
-        $searchsql.= " (". $folders. " AND ". $threadtitle. " ". $daterange. " ". $fromtouser. ")";
-        $searchsql.= " OR (". $folders. " AND ". $postcontent. " ". $daterange. " ". $fromtouser. ") ";
+        return false;
 
       }
 
     }elseif ($argarray['method'] == 3) { // EXACT
 
-      $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes(trim($argarray['search_string'])). "%' ";
-      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". _addslashes(trim($argarray['search_string'])). "%<div class=\"sig\">') ";
+      $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes(trim($argarray['search_string'])). "%'";
+      $searchsql.= " OR POST_CONTENT.CONTENT LIKE '%". _addslashes(trim($argarray['search_string'])). "%')";
       $searchsql.= $daterange;
 
       if ($argarray['me_only'] == 'Y') {
@@ -147,17 +185,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
   }else {
 
-    if ($argarray['me_only'] == 'Y') {
-
-      $searchsql.= $folders. " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
-      $searchsql.= " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")";
-      $searchsql.= " ". $daterange;
-
-    }else {
-
-      $searchsql.= $folders. " ". $fromtouser. " ". $daterange;
-
-    }
+    return false;
 
   }
 
@@ -167,10 +195,14 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
     $searchsql.= " ORDER BY POST.CREATED";
   }
 
+  $searchsql.= " LIMIT ". $argarray['sstart']. ", 50";
+
   $urlquery = "&fid=". $argarray['fid']. "&date_from=". $argarray['date_from']. "&date_to=". $argarray['date_to'];
   $urlquery.= "&search_string=". rawurlencode(trim($argarray['search_string'])). "&method=". $argarray['method']. "&me_only=". $argarray['me_only'];
   $urlquery.= "&to_other=". $argarray['to_other']. "&to_uid=". $argarray['to_uid']. "&from_other=". $argarray['from_other'];
   $urlquery.= "&from_uid=". $argarray['from_uid']. "&order_by=". $argarray['order_by'];
+
+  return true;
 
 }
 
@@ -306,7 +338,7 @@ function search_date_range($from, $to)
 
     }
 
-    if (isset($from_timestamp)) $range = "AND POST.CREATED >= FROM_UNIXTIME($from_timestamp)";
+    if (isset($from_timestamp)) $range = " AND POST.CREATED >= FROM_UNIXTIME($from_timestamp)";
     if (isset($to_timestamp)) $range.= " AND POST.CREATED <= FROM_UNIXTIME($to_timestamp)";
 
     return $range;

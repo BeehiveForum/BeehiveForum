@@ -22,6 +22,7 @@ USA
 ======================================================================*/
 
 // Require functions
+require_once("./include/session.inc.php"); // Session functions
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/thread.inc.php"); // Thread processing functions
 require_once("./include/messages.inc.php"); // Message processing functions
@@ -30,6 +31,8 @@ require_once("./include/beehive.inc.php"); // Beehive stuff
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/header.inc.php");
+require_once("./include/user.inc.php");
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -41,6 +44,19 @@ if (!isset($HTTP_GET_VARS['msg'])) {
     }
 } else {
     $msg = $HTTP_GET_VARS['msg'];
+}
+
+if (isset($HTTP_GET_VARS['fontsize'])) {
+    
+    $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
+                      $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'], $userprefs['EMAIL_NOTIFY'],
+                      $userprefs['TIMEZONE'], $userprefs['DL_SAVING'], $userprefs['MARK_AS_OF_INT'],
+                      $userprefs['POST_PER_PAGE'], $HTTP_GET_VARS['fontsize']);
+                      
+    bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+    header_redirect($HTTP_SERVER_VARS['PHP_SELF']. "?msg=$msg");
+    
 }
 
 list($tid, $pid) = explode('.', $msg);
@@ -86,12 +102,7 @@ messages_start_panel();
 
 messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
 messages_interest_form($tid, $pid);
-
-if (isset($HTTP_GET_VARS['fontsize'])) {
-  message_fontsize_form($HTTP_GET_VARS['fontsize'], $tid, $pid);
-}else{
-  message_fontsize_form(NULL, $tid, $pid);
-}
+messages_fontsize_form($tid, $pid);
 
 if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
     messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);

@@ -23,33 +23,16 @@ USA
 
 // style.php : handles site styles with user preferences
 
-require_once("./include/session.inc.php");
-require_once("./include/user.inc.php");
-require_once("./include/header.inc.php");
-
-header_no_cache();
-header("Content-type: text/css");
-
-if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-
-  $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-  $userprefs['FONT_SIZE'] .= 'pt';
-  
-}else {
-
-  $userprefs['FONT_SIZE'] = '10pt';
-  
+if (empty($HTTP_GET_VARS['fontsize'])) {
+  $fontsize = "10pt";
+}else{
+  $fontsize = $HTTP_GET_VARS['fontsize']."pt";
 }
-
-if ($userprefs['FONT_SIZE'] == 'pt') $userprefs['FONT_SIZE'] = '10pt';
 
 $stylesheet = file('styles/style.css');
 
 while(list($linenum, $line) = each($stylesheet)) {
-  
-  echo str_replace("\$FONTSIZE", $userprefs['FONT_SIZE'], $line);
-  
+  echo str_replace("\$FONTSIZE", $fontsize, $line);
 }
-
 
 ?>

@@ -21,15 +21,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+require_once("./include/header.inc.php");
+
 function _html_draw_top1($title)
 {
+
+        global $HTTP_COOKIE_VARS;
+        
+        header_no_cache(); // Hopefully this will stop Opera from caching the PHP pages, but I doubt it.
+
 	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
 	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
 	echo "\t<head>\n";
 	echo "\t\t<title>$title</title>\n";
 	echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
-	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?". md5(uniqid(rand())). "\" type=\"text/css\"/>\n";
+	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?". md5(uniqid(rand())). "&fontsize=". $HTTP_COOKIE_VARS['bh_sess_fontsize']. "\" type=\"text/css\"/>\n";
 }
 
 function _html_draw_top2()

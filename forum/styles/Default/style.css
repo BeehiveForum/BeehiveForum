@@ -215,7 +215,8 @@ A		{
           font-size: 10pt;
           font-style: normal;
           color: #000000;
-          text-align: center
+          background-color: #EAEFF4;
+          text-align: center;
 }
 
 .messagefoot {

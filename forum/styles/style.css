@@ -209,7 +209,8 @@ A		{
           font-size: 10pt;
           font-style: normal;
           color: #000000;
-          text-align: center
+          background-color: #EAEFF4;
+          text-align: center;
 }
 
 .messagefoot {
@@ -319,4 +320,8 @@ A		{
 
 .pollbar5 {
           background-color: #D42AD4
+}
+
+.highlight { 
+          background-color: #C8D7E6
 }

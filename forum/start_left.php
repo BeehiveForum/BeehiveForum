@@ -26,6 +26,7 @@ USA
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/form.inc.php");
 
 if(!bh_session_check()){
 
@@ -48,7 +49,7 @@ require_once("./include/threads.inc.php");
 
 html_draw_top_script();
 
-echo "<table class=\"posthead\" border=\"0\" width=\"100%\">";
+echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">";
 
 echo "<tr><td class=\"subhead\">Recent threads</td></tr>";
 
@@ -63,6 +64,8 @@ $sql.= "limit 0, 10";
 
 $result = db_query($sql,$db);
 
+echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
+
 while($row = db_fetch_array($result)){
     $tid = $row['TID'];
     if($row['LAST_READ'] && $row['LENGTH'] > $row['LAST_READ']){
@@ -70,15 +73,23 @@ while($row = db_fetch_array($result)){
     } else {
         $pid = 1;
     }
-    echo "<tr><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\">";
+    echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
+    
+    if (($row['last_read'] == 0) || ($row['last_read'] < $row['length'])) {
+        echo "<img src=\"./images/star.png\" name=\"t".$row['tid']."\" align=\"absmiddle\" />";
+    } elseif ($row['last_read'] < $row['length']) {
+        echo "<img src=\"./images/bullet.png\" name=\"t".$row['tid']."\" align=\"absmiddle\" />";
+    }    
+    
+    echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\">";
     echo stripslashes($row['TITLE'])."</a></td></tr>\n";
 }
 
-echo "<tr><td>&nbsp;</td></tr>\n";
+echo "</table></td></tr><tr><td>&nbsp;</td></tr>\n";
 
 // Display "Start Reading" button
 echo "<tr><td align=\"center\">\n";
-echo form_quick_button("discussion.php","Start reading");
+echo form_quick_button("discussion.php","Start reading >>");
 echo "</td></tr>\n";
 
 echo "<tr><td>&nbsp;</td></tr>\n";
@@ -86,21 +97,23 @@ echo "<tr><td>&nbsp;</td></tr>\n";
 echo "<tr><td class=\"subhead\">Recent visitors</td></tr>";
 
 // Get recent visitors
-$sql = "select U.UID, U.LOGON, U.NICKNAME, U.LAST_LOGON ";
+$sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
 $sql.= "from ".forum_table("USER")." U ";
 $sql.= "order by U.LAST_LOGON desc ";
 $sql.= "limit 0, 10";
 
 $result = db_query($sql,$db);
 
+echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
+
 while($row = db_fetch_array($result)){
-    echo "<tr><td>";
-    echo "<a href=\"#\" onclick=\"openProfile(".$row['UID'].")\">";
+    echo "<tr><td><img src=\"images/bullet.png\" width=\"12\" height=\"16\" /></td>";
+    echo "<td><a href=\"#\" onclick=\"openProfile(".$row['UID'].")\">";
     echo format_user_name($row['LOGON'], $row['NICKNAME']) . "</a>";
-    echo "</td></tr>\n";
+    echo "</td><td align=\"right\" nowrap=\"nowrap\">". format_time($row['LAST_LOGON']). "&nbsp;</td></tr>\n";
 }
 
-echo "</table>\n";
+echo "</table></td></tr></table>\n";
 
 html_draw_bottom();
 

@@ -150,13 +150,20 @@ function user_check_logon($uid, $logon, $md5pass)
 
       $db_user_check_logon = db_connect();
 
-      $sql = "SELECT uid FROM ". forum_table("USER"). " WHERE uid = '$uid' AND logon = '$logon' AND passwd = '$md5pass'";
+      $sql = "SELECT STATUS FROM ". forum_table("USER"). " WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
       $result = db_query($sql, $db_user_check_logon);
 
       if (!db_num_rows($result)) {
           return false;
       }else {
-          return true;
+
+          list($status) = db_fetch_array($result);
+
+	  if ($status & USER_PERM_SPLAT) {
+	    return false;
+	  }else {
+            return true;
+	  }
       }
 
     }else {

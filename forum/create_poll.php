@@ -239,7 +239,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     if (strlen(trim($HTTP_POST_VARS['answers'][$i])) > 0) {
 
-      if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
+      if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
         $poll_option = fix_html($HTTP_POST_VARS['answers'][$i]);
       }else {
         $poll_option = make_html($HTTP_POST_VARS['answers'][$i]);
@@ -300,7 +300,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    </td>";
   $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "</table>\n";
-  $polldata['CONTENT'].= "<br><br>\n";
+  $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">Note: Poll votes are randomly generated for preview only.</p>\n";
 
   message_display(0, $polldata, 0, 0, false, false, false);
 
@@ -414,7 +414,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
 
 		    echo "<tr>\n";
                     echo "  <td>", $i + 1, ". </td>\n";
-                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 64), "</td>\n";
+                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 64), "</td>\n";
 		    echo "</tr>\n";
 
 		  }

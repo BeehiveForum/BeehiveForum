@@ -41,7 +41,7 @@ require_once('./include/html.inc.php');
 
 html_draw_top();
 
-if ($HTTP_POST_VARS['submit'] == 'Close') {
+if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == 'Close') {
 
   echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
   echo "  window.close();\n";
@@ -55,7 +55,7 @@ if ($HTTP_POST_VARS['submit'] == 'Close') {
 if (isset($HTTP_GET_VARS['tid'])) {
 
   $tid = $HTTP_GET_VARS['tid'];
-   
+
 }else {
 
   echo "<div align=\"center\">";
@@ -64,16 +64,18 @@ if (isset($HTTP_GET_VARS['tid'])) {
   echo "  ". form_submit('submit', 'Close'). "\n";
   echo "</form>\n";
   echo "</div>";
-            
+
   html_draw_bottom();
   exit;
-  
-} 
+
+}
 
 $polldata     = poll_get($tid);
 $pollresults  = poll_get_votes($tid);
 
 $totalvotes   = 0;
+$max_value    = 0;
+$optioncount  = 0;
 
 for ($i = 1; $i <= sizeof($pollresults); $i++) {
   $totalvotes = $totalvotes + $pollresults[$i]['VOTES'];

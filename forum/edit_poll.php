@@ -45,19 +45,19 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
   $edit_msg = $HTTP_GET_VARS['msg'];
   list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
-  
+
 }elseif (isset($HTTP_POST_VARS['t_msg'])) {
 
   $edit_msg = $HTTP_POST_VARS['t_msg'];
   list($tid, $pid) = explode('.', $HTTP_POST_VARS['t_msg']);
-  
+
 }else {
 
   $valid = false;
   $error_html = "<h2>No message specified for editing</h2>";
-  
+
 }
-                
+
 $polldata    = poll_get($tid);
 $pollresults = poll_get_votes($tid);
 
@@ -105,19 +105,55 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
-  $polldata['CONTENT'].= "            <ul>\n";
+
+  $pollresults = array();
+
+  $max_value   = 0;
+  $totalvotes  = 0;
+  $optioncount = 0;
 
   for ($i = 1; $i <= sizeof($HTTP_POST_VARS['answers']); $i++) {
-    if (strlen($HTTP_POST_VARS['answers'][$i]) > 0) {
+
+    if (strlen(trim($HTTP_POST_VARS['answers'][$i])) > 0) {
+
       if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $polldata['CONTENT'].= "          <li>". fix_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
+        $poll_option = fix_html($HTTP_POST_VARS['answers'][$i]);
       }else {
-        $polldata['CONTENT'].= "          <li>". make_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
+        $poll_option = make_html($HTTP_POST_VARS['answers'][$i]);
       }
+
+      srand((double)microtime()*1000000);
+      $poll_vote = rand(1, 10);
+
+      if ($poll_vote > $max_value) $max_value = $poll_vote;
+
+      $totalvotes += $poll_vote;
+      $optioncount++;
+
+      $pollresults[$i] = array('OPTION_ID' => $i, 'OPTION_NAME' => $poll_option, 'VOTES' => $poll_vote);
+
     }
   }
 
-  $polldata['CONTENT'].= "            </ul>\n";
+  if ($max_value > 0) {
+
+    $horizontal_bar_width = floor((300 / $max_value));
+
+    $vertical_bar_height = floor((200 / $max_value));
+    $vertical_bar_width = floor((400 / $optioncount));
+
+  }
+
+  if ($HTTP_POST_VARS['polltype'] == 0) {
+
+    $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
+
+  }else {
+
+    $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
+
+  }
+
   $polldata['CONTENT'].= "          </td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "      </table>\n";
@@ -141,7 +177,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    </td>";
   $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "</table>\n";
-  $polldata['CONTENT'].= "<br><br>\n";
+  $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">Note: Poll votes are randomly generated for preview only.</p>\n";
 
 }elseif ($valid && isset($HTTP_POST_VARS['submit'])) {
 
@@ -160,9 +196,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   }else {
     $poll_closes = false;
   }
-  
-  // Check HTML tick box, innit.  
-  
+
+  // Check HTML tick box, innit.
+
   for ($i = 1; $i <= sizeof($HTTP_POST_VARS['answers']); $i++) {
     if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
       $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
@@ -170,17 +206,17 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
       $HTTP_POST_VARS['answers'][$i] = make_html($HTTP_POST_VARS['answers'][$i]);
     }
   }
-  
+
   poll_edit($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
-  
+
   echo "<div align=\"center\">";
   echo "<p>Edit Applied to Poll $tid.$pid</p>";
   echo form_quick_button("discussion.php", "Continue", "msg", "$tid.$pid");
   echo "</div>";
-            
+
   html_draw_bottom();
   exit;
-  
+
 }else {
 
   $polldata['TLOGON'] = "ALL";
@@ -202,13 +238,55 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
-  $polldata['CONTENT'].= "            <ul>\n";
-  
-  foreach($pollresults as $pollquestion) {
-    $polldata['CONTENT'].= "          <li>". $pollquestion['OPTION_NAME']. "</li>\n";
+
+  $max_value   = 0;
+  $totalvotes  = 0;
+  $optioncount = 0;
+
+  for ($i = 1; $i <= sizeof($pollresults); $i++) {
+
+    if (!empty($pollresults[$i]['OPTION_NAME'])) {
+
+      if ($pollresults[$i]['VOTES'] > $max_value) $max_value = $pollresults[$i]['VOTES'];
+      $optioncount++;
+
+    }
+
   }
 
-  $polldata['CONTENT'].= "            </ul>\n";
+  if ($max_value > 0) {
+
+    $horizontal_bar_width = floor((300 / $max_value));
+
+    $vertical_bar_height = floor((200 / $max_value));
+    $vertical_bar_width = floor((400 / $optioncount));
+
+  }
+
+  if ($polldata['SHOWRESULTS'] == 1) {
+
+    if ($polldata['POLLTYPE'] == 0) {
+
+      $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
+
+    }else {
+
+      $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
+
+    }
+
+  }else {
+
+    $polldata['CONTENT'].= "            <ul>\n";
+
+    foreach($pollresults as $pollquestion) {
+      $polldata['CONTENT'].= "          <li>". $pollquestion['OPTION_NAME']. "</li>\n";
+    }
+
+    $polldata['CONTENT'].= "            </ul>\n";
+
+  }
+
   $polldata['CONTENT'].= "          </td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "      </table>\n";
@@ -233,12 +311,12 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "</table>\n";
   $polldata['CONTENT'].= "<br><br>\n";
-  
+
   if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $polldata['FROM_UID'] && !perm_is_moderator()) {
     edit_refuse($tid, $pid);
     exit;
-  }  
-  
+  }
+
 }
 
 if (isset($error_html)) echo $error_html;
@@ -252,42 +330,42 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
   <table class="box" cellpadding="0" cellspacing="0" width="500">
     <tr>
       <td>
-        <table border="0" class="posthead" width="500">        
+        <table border="0" class="posthead" width="500">
           <tr>
             <td><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</td>
           </tr>
           <tr>
             <td><hr /></td>
-          </tr>          
+          </tr>
           <tr>
             <td><h2>Answers</h2></td>
-          </tr>          
+          </tr>
           <tr>
             <td>
               <table class="posthead" cellpadding="0" cellspacing="0" width="500">
                 <?php
-                
-	          $available_answers = array(5, 10, 15, 20);                
-                  
+
+	          $available_answers = array(5, 10, 15, 20);
+
 	          if (isset($HTTP_POST_VARS['answercount'])) {
 	            $answercount = $available_answers[$HTTP_POST_VARS['answercount']];
-                    $answerselection = $HTTP_POST_VARS['answercount'];	            
-	          }else {                  
+                    $answerselection = $HTTP_POST_VARS['answercount'];
+	          }else {
                     if (sizeof($pollresults) <= 5) {
                       $answercount = 5;
                       $answerselection = 0;
                     }elseif (sizeof($pollresults) >= 10 && sizeof($pollresults) < 15) {
                       $answercount = 10;
-                      $answerselection = 1;                      
+                      $answerselection = 1;
                     }elseif (sizeof($pollresults) >= 15 && sizeof($pollresults) < 20) {
                       $answercount = 15;
-                      $answerselection = 2;                      
+                      $answerselection = 2;
                     }else {
                       $answercount = 20;
-                      $answerselection = 3;                      
+                      $answerselection = 3;
                     }
                   }
-                  
+
                 ?>
 	        <tr>
 		  <td>&nbsp;</td>
@@ -304,7 +382,7 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
 		    echo "<tr>\n";
                     echo "  <td>", $i, ". </td>\n";
                     echo "  <td>";
-                    
+
                     if (isset($HTTP_POST_VARS['answers'][$i])) {
                       echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 64);
                     }else {
@@ -318,7 +396,7 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
 		        echo form_input_text("answers[$i]", '', 40, 64);
 		      }
                     }
-                    
+
                     echo "  </td>\n";
 		    echo "</tr>\n";
 
@@ -400,7 +478,7 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
           </tr>
           <tr>
             <td>&nbsp;</td>
-          </tr>          
+          </tr>
         </table>
       </td>
     </tr>
@@ -410,15 +488,15 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
   echo form_submit("submit", "Apply"). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel", "Cancel");
 
   if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");    
+    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
   }
 
   echo "</form>\n";
-    
+
   if ($valid) {
     echo "<h2>Message Preview:</h2>";
     message_display(0, $polldata, 0, 0, false, false, false);
-  }    
+  }
 
   html_draw_bottom();
 

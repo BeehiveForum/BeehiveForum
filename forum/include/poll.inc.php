@@ -583,12 +583,12 @@ function poll_confirm_close($tid)
 
     global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
 
+    $preview_message = messages_get($tid, 1, 1);
+
     if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse();
         return;
     }
-
-    $preview_message = messages_get($tid, 1, 1);
 
     if($preview_message['TO_UID'] == 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.147 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.148 2003-10-19 15:07:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -426,10 +426,15 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                         if ($thread['last_read'] == 0) {
 
-                            $number = "[".$thread['length']."&nbsp;{$lang['new']}]";
+                            if ($thread['length'] > 0) {
+                                $number = "[{$thread['length']}&nbsp;{$lang['new']}]";
+                            }else {
+                                $number = "[1&nbsp;{$lang['new']}]";
+                            }
+
                             $latest_post = 1;
 
-                            if(!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }else {
@@ -442,19 +447,24 @@ while (list($key1, $folder_number) = each($folder_order)) {
                             $number = "[".$new_posts."&nbsp;{$lang['new']}&nbsp;{$lang['of']}&nbsp;".$thread['length']."]";
                             $latest_post = $thread['last_read'] + 1;
 
-                            if(!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }else {
                                 echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }
 
-                        } else {
+                        }else {
 
-                            $number = "[".$thread['length']."]";
+                            if ($thread['length'] > 0) {
+                                $number = "[{$thread['length']}]";
+                            }else {
+                                $number = "[1]";
+                            }
+
                             $latest_post = 1;
 
-                            if(!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             } else {

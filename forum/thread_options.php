@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.6 2004-04-12 23:51:58 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.7 2004-04-13 00:27:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,17 +139,10 @@ $update = false;
 
 if (isset($HTTP_POST_VARS['back'])) {
 
-    if (isset($tid) && isset($pid)) {
-        $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid";
-    }else {
-        $uri = "./messages.phpwebtag=$webtag";
-    }
-        
+    $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid";
     header_redirect($uri);
     exit;
 }
-
-html_draw_top("basetarget=_blank");
 
 // User Options
 
@@ -163,7 +156,10 @@ if (isset($HTTP_POST_VARS['markasread']) && is_numeric($HTTP_POST_VARS['markasre
 
     $threaddata['LAST_READ'] = $HTTP_GET_VARS['mar'];
     messages_set_read($tid, $threaddata['LAST_READ'], $uid);
-    $update = true;
+    
+    $uri = "./messages.php?webtag=$webtag&msg=$tid.{$threaddata['LAST_READ']}&mar=1";
+    header_redirect($uri);
+    exit;
 }
 
 if (isset($HTTP_POST_VARS['interest']) && is_numeric($HTTP_POST_VARS['interest']) && $HTTP_POST_VARS['interest'] != $threaddata['INTEREST']) {
@@ -270,6 +266,8 @@ if (perm_is_moderator()) {
         }
     }
 }
+
+html_draw_top("basetarget=_blank");
 
 echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
 echo "<br />\n";

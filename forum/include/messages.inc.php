@@ -546,7 +546,8 @@ function messages_fontsize_form($tid, $pid)
       if ($fontsmaller < 1) $fontsmaller = 1;
       if ($fontlarger > 15) $fontlarger = 15;
         
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\" target=\"_self\">Larger</a>";
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ";
+      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\" target=\"_self\">Larger</a>";
       
     }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 1) {
     

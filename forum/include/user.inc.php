@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.126 2004-03-03 22:43:25 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.127 2004-03-05 21:29:29 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -177,7 +177,6 @@ function user_update_folders($uid, $folders)
 
 function user_logon($logon, $password, $md5hash = false)
 {
-
     global $HTTP_SERVER_VARS;
 
     if ($md5hash) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.87 2004-09-13 15:59:21 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.88 2004-09-13 19:37:18 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -936,6 +936,56 @@ function pm_get_unread_count()
 
     $result = db_query($sql, $db_pm_get_unread_count);
     return db_num_rows($result);
+}
+
+// Function to prune the current user's PM Folders
+// Takes an optional UID parameter. If not specified
+// it uses the current user's UID.
+
+function pm_user_prune_folders($uid = false)
+{
+    $db_pm_prune_folders = db_connect();
+
+    if (!$uid) $uid = bh_session_get_value('UID');
+
+    $user_prefs = user_get_prefs($uid);
+
+    if (isset($user_prefs['PM_PRUNE_FOLDERS']) && $user_prefs['PM_PRUNE_FOLDERS'] == 'Y') {
+
+        if (isset($user_prefs['PM_PRUNE_LENGTH']) && is_numeric($user_prefs['PM_PRUNE_LENGTH'])) {
+
+            $pm_prune_length = time() - ($user_prefs['PM_PRUNE_LENGTH'] * DAY_IN_SECONDS);
+
+            $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
+            $sql.= "((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
+            $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
+            $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid')) ";
+            $sql.= "AND PM.CREATED < FROM_UNIXTIME('$pm_prune_length')";
+
+            $result = db_query($sql, $db_pm_prune_folders);
+        }
+    }
+}
+
+// Same as above, but this function prunes everyone's folders
+// based on the settings set by the forum admin.
+
+function pm_system_prune_folders()
+{
+    $db_pm_prune_folders = db_connect();
+
+    if (forum_get_setting('pm_prune_folders', false, 0) > 0) {
+
+        $pm_prune_length = time() - forum_get_setting('pm_forum_prune_length', false, 60);
+
+        $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
+        $sql.= "(PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. ") ";
+        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. ") ";
+        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. ") ";
+        $sql.= "AND PM.CREATED < FROM_UNIXTIME('$pm_prune_length')";
+
+        $result = db_query($sql, $db_pm_prune_folders);
+    }
 }
 
 ?>

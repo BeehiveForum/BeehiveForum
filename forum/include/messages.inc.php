@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.267 2004-04-13 14:04:03 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.268 2004-04-15 15:06:51 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -219,9 +219,37 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'] = implode('', $message_parts);
     }
 
+	// Little up/down arrows to the left of each message -----------------------
+
+	$up_arrow = "";
+	$down_arrow = "";
+	if ($in_list && !$is_preview) {
+		if ($message['PID'] != 1) {
+			$up_arrow = "<a href=\"";
+			if ($message['PID'] == $first_msg) {
+				$up_arrow.= "messages.php?webtag=$webtag&msg=$tid.". ($message['PID'] - 1);
+			} else {
+				$up_arrow.= "#a" . $tid . "_" . ($message['PID'] - 1);
+			}
+			$up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" height=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
+		}
+		if ($message['PID'] != $msg_count) {
+			$down_arrow = "<a href=\"";
+			if ($first_msg + bh_session_get_value('POSTS_PER_PAGE') -1 == $message['PID']) {
+				$down_arrow.= "messages.php?webtag=$webtag&msg=$tid.". ($message['PID'] + 1);
+			} else {
+				$down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);
+			}
+			$down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" height=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
+		}
+	}
+
     // OUTPUT MESSAGE ----------------------------------------------------------
 
     echo "<br /><div align=\"center\">\n";
+	if (trim($up_arrow.$down_arrow) != "") {
+	    echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>$up_arrow$down_arrow</td></tr></table>\n";
+	}
     echo "<table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
     echo "<table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\"><tr>\n";
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";

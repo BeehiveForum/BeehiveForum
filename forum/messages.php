@@ -80,7 +80,7 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
 
 }
 
-list($tid, $pid) = explode('.', $msg);
+@list($tid, $pid) = explode('.', $msg);
 if ($tid == '') $tid = 1;
 if ($pid == '') $pid = 1;
 
@@ -142,6 +142,11 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
 }
 
 $messages = messages_get($tid,$pid,$ppp);
+if (!$messages) {
+   echo "<h2>That post does not exist in this thread!</h2>\n";
+   html_draw_bottom();
+   exit;
+}
 $threaddata = thread_get($tid);
 $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);

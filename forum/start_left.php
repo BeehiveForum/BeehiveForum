@@ -35,7 +35,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
@@ -50,9 +50,10 @@ require_once("./include/folder.inc.php");
 
 html_draw_top_script();
 
-echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">";
-
-echo "<tr><td class=\"subhead\">Recent threads</td></tr>";
+echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"subhead\">Recent threads</td>\n";
+echo "  </tr>\n";
 
 // Get available folders
 $fidlist = folder_get_available();
@@ -76,40 +77,58 @@ $sql .= "LIMIT 0, 10";
 
 $result = db_query($sql, $db);
 
-echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td>\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
 while($row = db_fetch_array($result)){
+
     $tid = $row['TID'];
+
     if($row['LAST_READ'] && $row['LENGTH'] > $row['LAST_READ']){
         $pid = $row['LAST_READ'] + 1;
     } else {
         $pid = 1;
     }
-    echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
-    
+
+    echo "        <tr>\n";
+    echo "          <td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
+
     if (($row['LAST_READ'] == 0) || ($row['LAST_READ'] < $row['LENGTH'])) {
         echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
     } elseif ($row['LAST_READ'] == $row['LENGTH']) {
         echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"absmiddle\" />";
     }
 
-    echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($row['LOGON'], $row['NICKNAME']) . "\">";
+    echo "&nbsp;</td>\n";
+    echo "          <td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($row['LOGON'], $row['NICKNAME']) . "\">";
     echo _stripslashes($row['TITLE'])."</a>&nbsp;";
+
     if ($row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\">";
     if ($row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\">";
-    echo "</td></tr>\n";
+
+    echo "          </td>\n";
+    echo "        </tr>\n";
+
 }
 
-echo "</table></td></tr><tr><td>&nbsp;</td></tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
 
 // Display "Start Reading" button
-echo "<tr><td align=\"center\">\n";
-echo form_quick_button("discussion.php","Start reading >>", 0, 0, "main");
-echo "</td></tr>\n";
-
-echo "<tr><td>&nbsp;</td></tr>\n";
-
-echo "<tr><td class=\"subhead\">Recent visitors</td></tr>";
+echo "  <tr>\n";
+echo "    <td align=\"center\">", form_quick_button("discussion.php","Start reading >>", 0, 0, "main"), "</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"subhead\">Recent visitors</td>\n";
+echo "  </tr>\n";
 
 // Get recent visitors
 $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
@@ -119,15 +138,41 @@ $sql.= "limit 0, 10";
 
 $result = db_query($sql, $db);
 
-echo "<tr><td><table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
+echo "  <tr>\n";
+echo "    <td>\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
 while($row = db_fetch_array($result)){
-    echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\"><img src=\"".style_image('bullet.png')."\" width=\"12\" height=\"16\" /></td>";
-    echo "<td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">". $row['NICKNAME']. "</a>";
-    echo "</td><td align=\"right\" nowrap=\"nowrap\">". format_time($row['LAST_LOGON']). "&nbsp;</td></tr>\n";
+
+    echo "        <tr>\n";
+    echo "          <td valign=\"top\" align=\"middle\" nowrap=\"nowrap\"><img src=\"".style_image('bullet.png')."\" width=\"12\" height=\"16\" /></td>\n";
+    echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">". $row['NICKNAME']. "</a></td>\n";
+    echo "          <td align=\"right\" nowrap=\"nowrap\">". format_time($row['LAST_LOGON']). "&nbsp;</td>\n";
+    echo "        </tr>\n";
+
 }
 
-echo "</table></td></tr></table>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"subhead\" colspan=\"2\">Navigate:</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>\n";
+echo "      <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
+echo form_input_text('msg', '1.1', 10). "\n        ";
+echo form_submit("go","Go!"). "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
 
 html_draw_bottom();
 

@@ -260,7 +260,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           if (!empty($pollresults[$i]['OPTION_NAME'])) {
 
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td class=\"postbody\">". form_radio("pollvote", $pollresults[$i]['OPTION_ID'], '', false). "&nbsp;". $pollresults[$i]['OPTION_NAME']. "</td>\n";
+            $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\">". form_radio("pollvote", $pollresults[$i]['OPTION_ID'], '', false). "&nbsp;". $pollresults[$i]['OPTION_NAME']. "</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
           }

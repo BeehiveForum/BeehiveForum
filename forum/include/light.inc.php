@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.59 2004-10-29 20:42:48 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.60 2004-11-02 17:23:01 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -41,7 +41,7 @@ function light_html_draw_top ($title = false)
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={lang['_charset']}\"/>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\"/>\n";
 
     $stylesheet = html_get_style_sheet();
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
@@ -425,7 +425,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     }else {
 
-        echo "<p><b>{$lang['from']}: ", format_user_name($message['FLOGON'], $message['FNICK']), "<br />";;
+        echo "<p><b>{$lang['from']}: ", format_user_name($message['FLOGON'], $message['FNICK']), "</b><br />";;
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.106 2004-03-16 23:03:22 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.107 2004-03-16 23:46:28 decoyduck Exp $ */
 
 function threads_get_available_folders()
 {
@@ -156,9 +156,10 @@ function threads_get_unread($uid) // get unread messages for $uid
 
 function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores folder interest level)
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_unread_to_me = db_connect();
+    
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -170,7 +171,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
-    $sql ."{$webtag['PREFIX']}POST POST ";
+    $sql .= "{$webtag['PREFIX']}POST POST ";
     $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$webtag['PREFIX']}POST POST2 ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
@@ -255,7 +256,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD, ";
-    $sql ."{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql .= "{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
@@ -297,7 +298,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD, ";
-    $sql ."{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql .= "{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
@@ -339,7 +340,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD, ";
-    $sql ."{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql .= "{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";

@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -40,7 +40,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 // Check that required variables are set
@@ -56,7 +56,7 @@ if (!isset($HTTP_GET_VARS['msg'])) {
 }
 
 if (isset($HTTP_GET_VARS['fontsize'])) {
-    
+
     $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
     user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
                       $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'], $userprefs['EMAIL_NOTIFY'],
@@ -66,7 +66,7 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
 
     bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
     header_redirect($HTTP_SERVER_VARS['PHP_SELF']. "?msg=$msg");
-    
+
 }
 
 list($tid, $pid) = explode('.', $msg);
@@ -75,7 +75,7 @@ if ($pid == '') $pid = 1;
 
 if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
 	html_draw_top();
-	echo "<h2>Access denied</h2>";
+	echo "<h2>The requested thread could not be found or access was denied.</h2>";
 	html_draw_bottom();
 	exit;
 }
@@ -88,26 +88,26 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
     poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
     header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
-    
+
   }else {
-  
+
     html_draw_top();
     echo "<h2>You must select an option to vote for.</h2>";
     html_draw_bottom();
     exit;
-    
+
   }
-  
+
 }elseif (isset($HTTP_POST_VARS['pollclose'])) {
 
   poll_close($HTTP_POST_VARS['tid']);
-  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");  
-  
+  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
+
 }elseif (isset($HTTP_POST_VARS['pollchangevote'])) {
 
   poll_delete_vote($HTTP_POST_VARS['tid']);
-  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");  
-  
+  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
+
 }
 
 // Output XHTML header
@@ -136,32 +136,32 @@ echo "</td></tr></table></div>\n";
 if($msg_count > 0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
-    
+
         if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
         } else {
             $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
         }
-        
+
         if($threaddata['POLL_FLAG'] == 'Y') {
-        
+
           if ($message['PID'] == 1) {
-        
+
             poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true);
             $last_pid = $message['PID'];
-            
+
           }else {
-          
+
             message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, $show_sigs);
             $last_pid = $message['PID'];
-            
+
           }
-          
+
         }else {
-        
+
           message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, false, $show_sigs);
           $last_pid = $message['PID'];
-          
+
         }
     }
 }

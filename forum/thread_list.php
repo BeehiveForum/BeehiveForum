@@ -63,11 +63,11 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
     if (isset($HTTP_GET_VARS['markread'])) {
 
-      if ($HTTP_GET_VARS['markread'] == 'mvr') {
+      if ($HTTP_GET_VARS['markread'] == 2) {
         threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
-      }elseif ($HTTP_GET_VARS['markread'] == 'mar') {
+      }elseif ($HTTP_GET_VARS['markread'] == 0) {
         threads_mark_all_read();
-      }elseif ($HTTP_GET_VARS['markread'] == 'mfr') {
+      }elseif ($HTTP_GET_VARS['markread'] == 1) {
         threads_mark_50_read();
       }
 
@@ -290,10 +290,10 @@ while (list($key1, $folder_number) = each($folder_order)) {
 	echo "</td>\n";
 	echo "<td class=\"folderpostnew\" width=\"15\">\n";
 
-        if (!$folder_info[$folder_number]['INTEREST']) {
-	  echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=-1\"><img src=\"". style_image('high_interest.png'). "\" border=\"0\" height=\"15\" alt=\"Ignore This Folder\" /></a>\n";
+	if (!$folder_info[$folder_number]['INTEREST']) {
+		echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"Ignore This Folder\" /></a>\n";
 	}else {
-          echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=0\"><img src=\"". style_image('low_interest.png'). "\" border=\"0\" height=\"15\" alt=\"Stop Ignoring This Folder\" /></a>\n";
+		echo "<a href=\"user_folder.php?fid=". $folder_number. "&interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"Stop Ignoring This Folder\" /></a>\n";
 	}
 
 	echo "</td>\n";
@@ -304,7 +304,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 	if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || ($HTTP_GET_VARS['folder'] == $folder_number)) {
 
-            if (is_array($thread_info)) {
+		if (is_array($thread_info)) {
 
 		echo "<tr>\n";
 		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">";
@@ -427,39 +427,49 @@ if ($mode == 0 && !isset($folder)) {
 echo "<tr>\n<td>&nbsp;</td>\n<tr>\n";
 echo "</table>\n";
 
-echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-echo "<tr>\n";
-echo "  <td class=\"smalltext\" colspan=\"2\">Mark as Read:</td>\n";
-echo "</tr>\n";
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 
-if (is_array($visiblethreads)) {
-  echo "<tr>\n";
-  echo "  <td>&nbsp;</td>\n";
-  echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?markread=mvr&tids=". implode(',', $visiblethreads). "\" title=\"Mark read all the threads currently visible in the Thread List.\">Current visible discussions</a></td>\n";
-  echo "</tr>\n";
+	echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+	echo "<tr>\n";
+	echo "  <td class=\"smalltext\" colspan=\"2\">Mark as Read:</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "  <td>&nbsp;</td>\n";
+	echo "  <td class=\"smalltext\">\n";
+	echo "    <form name=\"f_mark\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
+
+	$labels = array("All Discussions","Next 50 discussions");
+	$max_range = 1;
+
+	if (is_array($visiblethreads)) {
+		$labels[2] = "Visible discussions";
+		echo form_input_hidden("tids",implode(',', $visiblethreads));
+		$max_range = 2;
+	}
+
+	echo form_dropdown_array("markread", range(0, $max_range), $labels, 0). "\n        ";
+	echo form_submit("go","Go!"). "\n";
+	echo "    </form>\n";
+	echo "  </td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 }
 
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "<tr>\n";
+echo "  <td class=\"smalltext\" colspan=\"2\">Navigate:</td>\n";
+echo "</tr>\n";
 echo "<tr>\n";
 echo "  <td>&nbsp;</td>\n";
-echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?markread=mar\" title=\"Mark _ALL_ threads as read. This will leave you with no unread messages.\">All discussions</a></td>\n";
+echo "  <td class=\"smalltext\">\n";
+echo "    <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+echo form_input_text('msg', '1.1', 5). "\n        ";
+echo form_submit("go","Go!"). "\n";
+echo "    </form>\n";
+echo "  </td>\n";
 echo "</tr>\n";
-
-echo "<tr>\n";
-echo "  <td>&nbsp;</td>\n";
-echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?markread=mfr\" title=\"Mark next 50 unread messages as read (May include threads not currently visible in Thread List)\">Next 50 discussions</a></td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "  <td>&nbsp;</td>\n";
-echo "  <td>&nbsp;</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "  <td>&nbsp;</td>\n";
-echo "  <td class=\"smalltext\">(Temporary: Will change this to a drop down (unless Andy beats me to it))</td>\n";
-echo "</tr>\n";
-
-echo "</table\n";
+echo "</table>\n";
 
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.346 2005-04-04 11:28:13 rowan_hill Exp $ */
+/* $Id: messages.inc.php,v 1.347 2005-04-04 11:54:51 rowan_hill Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -781,7 +781,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         echo "            </table>\n";
 
-        if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
+        //if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
+        if (!$is_preview) {
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";

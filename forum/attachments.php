@@ -98,7 +98,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
     <td width="300" class="postbody" valign="top">1. Enter filename to upload :</td>
-    <td class="postbody"><?php echo form_field('userfile', '', '', 0, 'file'); ?> (Max 2MB)</td>
+    <td class="postbody"><?php echo form_field('userfile', '', '', 0, 'file'); ?></td>
   </tr>
   <tr>
     <td class="postbody">&nbsp;</td>
@@ -133,7 +133,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"attachments.php?aid=". $aid. "&owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "\">". $attachments[$i]['filename']. "</a></td>\n";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "&download=1\">". $attachments[$i]['filename']. "</a></td>\n";
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". number_format($attachments[$i]['filesize'], 2, '.', ','). " bytes</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";
@@ -191,7 +191,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"200\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"attachments.php?aid=". $aid. "&owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "\">". $attachments[$i]['filename']. "</a></td>\n";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "&download=1\">". $attachments[$i]['filename']. "</a></td>\n";
       echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". number_format($attachments[$i]['filesize'], 2, '.', ','). " bytes</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";

@@ -35,11 +35,12 @@ function bh_session_check()
     }
 
     $check = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    $check .= " " . $HTTP_COOKIE_VARS['bh_sess_ustatus'];
-    $check .= " " . $HTTP_COOKIE_VARS['bh_sess_ppp'];
-    $check .= " " . $HTTP_COOKIE_VARS['bh_sess_tz'];
-    $check .= " " . $HTTP_COOKIE_VARS['bh_sess_dlsav'];
-    $check .= " " . BH_SESS_HASH;
+    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_ustatus'];
+    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_ppp'];
+    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_tz'];
+    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_dlsav'];
+    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_markread'];
+    $check.= " " . BH_SESS_HASH;
 
     if(md5($check) != $HTTP_COOKIE_VARS['bh_sess_check']){
         return false;
@@ -51,7 +52,7 @@ function bh_session_check()
 
 function bh_session_init($uid)
 {
-    $sql = "select USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING ";
+    $sql = "select USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT ";
     $sql .= "from " . forum_table("USER") . " USER ";
     $sql .= "left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
     $sql .= "where USER.UID = $uid";
@@ -86,20 +87,27 @@ function bh_session_init($uid)
         } else {
             $user_dlsav = 0;
         }
+        if ($fa['MARK_AS_OF_INT '] == "Y") {
+            $user_markread = 1;
+        } else {
+            $user_markread = 0;
+        }
     }
 
     $check = $uid;
-    $check .= " " . $user_status;
-    $check .= " " . $user_ppp;
-    $check .= " " . $user_tz;
-    $check .= " " . $user_dlsav;
-    $check .= " " . BH_SESS_HASH;
+    $check.= " " . $user_status;
+    $check.= " " . $user_ppp;
+    $check.= " " . $user_tz;
+    $check.= " " . $user_dlsav;
+    $check.= " " . $user_markread;
+    $check.= " " . BH_SESS_HASH;
 
     setcookie("bh_sess_uid",$uid);
     setcookie("bh_sess_ustatus",$user_status);
     setcookie("bh_sess_ppp",$user_ppp);
     setcookie("bh_sess_tz", $user_tz);
     setcookie("bh_sess_dlsav", $user_dlsav);
+    setcookie("bh_sess_markread", $user_markread);
     setcookie("bh_sess_check",md5($check));
 }
 
@@ -110,6 +118,7 @@ function bh_session_end()
     setcookie("bh_sess_ppp","",-3600);
     setcookie("bh_sess_tz","",-3600);
     setcookie("bh_sess_dlsav","",-3600);
+    setcookie("bh_sess_markread","",-3600);
     setcookie("bh_sess_check","",-3600);
 }
 

@@ -646,11 +646,11 @@ function autoCheckSpell(webtag) {
 
     if (active_field.value.length == 0) return true;
     
-    if (form_obj && form_obj.checked = true && !auto_check_spell_started) {
+    if (form_obj && form_obj.checked == true && !auto_check_spell_started) {
 
-         auto_check_spell_started = true;
-         openSpellCheck(webtag);
-	 return false;
+        auto_check_spell_started = true;
+        openSpellCheck(webtag);
+		return false;
     }
 }
 

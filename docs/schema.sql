@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.47 2003-09-02 19:48:58 decoyduck Exp $
+# $Id: schema.sql,v 1.48 2003-09-02 19:49:20 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -217,7 +217,7 @@ CREATE TABLE POLL (
 # Table structure for table `POLL_VOTES`
 #
 
-CREATE TABLE poll_votes (
+CREATE TABLE POLL_VOTES (
   TID mediumint(8) unsigned NOT NULL default '0',
   OPTION_ID mediumint(8) unsigned NOT NULL auto_increment,
   OPTION_NAME char(255) NOT NULL default '0',

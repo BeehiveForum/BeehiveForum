@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.186 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.187 2004-11-13 18:59:42 decoyduck Exp $ */
 
 // International English language file
 
@@ -494,7 +494,7 @@ $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum num
 $lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
 $lang['forum_settings_help_13'] = "This settings defines the mimumum word length that is allowed to to be searched for in AND and OR based searches. Words smaller than the value specified will be removed from the query automatically. Exact phrase searches are not effected by this setting";
 $lang['forum_settings_help_14'] = "<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
-$lang['forum_settings_help_15'] = "<b>Active session cut off</b> is the maximum time before a user's is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
+$lang['forum_settings_help_15'] = "<b>Active session cut off</b> is the maximum time before a user's session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
 $lang['forum_settings_help_16'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
 $lang['forum_settings_help_17'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don't want your users to be able to send each other PMs you can disable this option.";
 $lang['forum_settings_help_18'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.33 2004-11-10 17:57:30 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.34 2004-11-13 18:59:42 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -1058,7 +1058,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    $sql = "DELETE FROM SESSIONS";
+    $sql = "DROP TABLE SESSIONS";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -1067,44 +1067,14 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE SESSIONS ADD FID MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= db_error($db_install);
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE SESSIONS DROP INDEX HASH";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= db_error($db_install);
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE SESSIONS DROP SESSID";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= db_error($db_install);
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE SESSIONS ADD PRIMARY KEY (UID, IPADDRESS)";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= db_error($db_install);
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE SESSIONS ADD INDEX ";
-    $sql.= "SESSION_HASH_UID_IP (HASH, UID, IPADDRESS)";
+    $sql = "CREATE TABLE SESSIONS (";
+    $sql.= "  HASH varchar(32) NOT NULL default '',";
+    $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
+    $sql.= "  IPADDRESS varchar(15) NOT NULL default '',";
+    $sql.= "  TIME datetime NOT NULL default '0000-00-00 00:00:00',";
+    $sql.= "  FID mediumint(8) unsigned NOT NULL default '0',";
+    $sql.= "  PRIMARY KEY  (HASH, UID, IPADDRESS)";
+    $sql.= ")";
 
     if (!$result = db_query($sql, $db_install)) {
 

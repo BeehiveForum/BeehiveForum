@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.58 2005-03-13 20:15:18 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.59 2005-03-13 22:17:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -81,11 +81,31 @@ if (!perm_has_admin_access()) {
 }
 
 $error_html = "";
-// Languages
 
-$available_langs = lang_get_available(); // get list of available languages
+// get list of available languages
 
-if (isset($_POST['submit'])) {
+$available_langs = lang_get_available();
+
+// Get the available forum styles and emoticons
+
+$available_styles = styles_get_available();
+$available_emoticons = emoticons_get_available();
+
+// Get the forum settings just for this forum
+
+$current_forum_settings = forum_get_settings(true);
+
+if (isset($_POST['changepermissions'])) {
+
+    header_redirect("admin_forum_access.php?webtag=$webtag&fid={$current_forum_settings['fid']}");
+    exit;
+
+}elseif (isset($_POST['changepassword'])) {
+
+    header_redirect("admin_forum_set_passwd.php?webtag=$webtag&fid={$current_forum_settings['fid']}");
+    exit;
+
+}elseif (isset($_POST['submit'])) {
 
     $valid = true;
 
@@ -160,6 +180,10 @@ if (isset($_POST['submit'])) {
 
         $error_html = "<h2>{$lang['mustchoosedefaultlang']}</h2>\n";
         $valid = false;
+    }
+
+    if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
+        forum_update_access($current_forum_settings['fid'], $_POST['access_level']);
     }
 
     if (isset($_POST['require_post_approval']) && $_POST['require_post_approval'] == "Y") {
@@ -242,10 +266,10 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        save_forum_settings($new_forum_settings);
+        forum_save_settings($new_forum_settings);
 
         $uid = bh_session_get_value('UID');
-        admin_add_log_entry(EDIT_FORUM_SETTINGS, $forum_settings['FID']);
+        admin_add_log_entry(EDIT_FORUM_SETTINGS, $current_forum_settings['fid']);
 
         if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
             header_redirect("./admin_forum_settings.php?webtag=$webtag&updated=true");
@@ -271,21 +295,12 @@ if (isset($_POST['submit'])) {
     }
 }
 
-// Get the available forum styles and emoticons
-
-$available_styles = styles_get_available();
-$available_emoticons = emoticons_get_available();
-
-// Get the forum settings just for this forum
-
-$current_forum_settings = get_forum_settings(true);
-
 // Start Output Here
 
-html_draw_top("emoticons.js", "admin.js");
+html_draw_top("emoticons.js");
 
 if ($webtag) {
-    echo "<h1>{$lang['forumsettings']} : ", forum_get_setting('forum_name', false, 'Unknown Forum'), "</h1>\n";
+    echo "<h1>{$lang['forumsettings']} : ", (isset($current_forum_settings['forum_name']) ? $current_forum_settings['forum_name'] : 'Unknown Forum'), "</h1>\n";
 }else {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
@@ -319,34 +334,34 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['forumname']}:</td>\n";
-echo "                        <td>", form_input_text("forum_name", forum_get_setting('forum_name', false, 'A Beehive Forum'), 42, 32), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("forum_name", (isset($current_forum_settings['forum_name']) ? $current_forum_settings['forum_name'] : 'A Beehive Forum'), 42, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['forumemail']}:</td>\n";
-echo "                        <td>", form_input_text("forum_email", forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("forum_email", (isset($current_forum_settings['forum_email']) ? $current_forum_settings['forum_email'] : 'admin@abeehiveforum.net'), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['forumdesc']}:</td>\n";
-echo "                        <td>", form_input_text("forum_desc", forum_get_setting('forum_desc', false, ''), 42, 80), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("forum_desc", (isset($current_forum_settings['forum_desc']) ? $current_forum_settings['forum_desc'] : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['forumkeywords']}:</td>\n";
-echo "                        <td>", form_input_text("forum_keywords", forum_get_setting('forum_keywords', false, ''), 42, 80), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("forum_keywords", (isset($current_forum_settings['forum_keywords']) ? $current_forum_settings['forum_keywords'] : ''), 42, 80), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['defaultstyle']}:</td>\n";
-echo "                        <td>", form_dropdown_array("default_style", array_keys($available_styles), array_values($available_styles), forum_get_setting('default_style', false, 'Beehive')), "</td>\n";
+echo "                        <td>", form_dropdown_array("default_style", array_keys($available_styles), array_values($available_styles), (isset($current_forum_settings['default_style']) && in_array($current_forum_settings['default_style'], array_keys($available_styles)) ? $current_forum_settings['default_style'] : 'beehive')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['defaultemoticons']} [<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
-echo "                        <td>", form_dropdown_array("default_emoticons", array_keys($available_emoticons), array_values($available_emoticons), forum_get_setting('default_emoticons')), "</td>\n";
+echo "                        <td>", form_dropdown_array("default_emoticons", array_keys($available_emoticons), array_values($available_emoticons), (isset($current_forum_settings['default_emoticons']) && in_array($current_forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $current_forum_settings['default_emoticons'] : 'none')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['defaultlanguage']}:</td>\n";
-echo "                        <td>", form_dropdown_array("default_language", $available_langs, $available_langs, forum_get_setting('default_language', false, 'en')), "</td>\n";
+echo "                        <td>", form_dropdown_array("default_language", $available_langs, $available_langs, (isset($current_forum_settings['default_language']) && in_array($current_forum_settings['default_language'], $available_langs) ? $current_forum_settings['default_language'] : 'en')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">&nbsp;</td>\n";
@@ -370,31 +385,55 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['mainsettings']}</td>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['forumaccesssettings']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['forumaccessstatus']}:</td>\n";
-echo "                        <td>", form_radio("forum_access", 0, $lang['open'], forum_get_setting('forum_access', 0, true)), "</td>\n";
+echo "                        <td>", form_radio("access_level", 0, $lang['open'], (isset($current_forum_settings['access_level']) && $current_forum_settings['access_level'] == 0 ? true : false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">&nbsp;</td>\n";
-echo "                        <td>", form_radio("forum_access", 0, $lang['closed'], forum_get_setting('forum_access', 0, true)), "</td>\n";
+echo "                        <td>", form_radio("access_level", -1, $lang['closed'], (isset($current_forum_settings['access_level']) && $current_forum_settings['access_level'] == -1 ? true : false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">&nbsp;</td>\n";
-echo "                        <td>", form_radio("forum_access", 0, $lang['restricted'], forum_get_setting('forum_access', 0, true)), "&nbsp;<span class=\"bhinputradio\">[<a href=\"admin_forum_access.php?webtag=$webtag&fid=1\">{$lang['changepermissions']}</a>]</span></td>\n";
+echo "                        <td>", form_radio("access_level", 1, $lang['restricted'], (isset($current_forum_settings['access_level']) && $current_forum_settings['access_level'] == 1 ? true : false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">&nbsp;</td>\n";
-echo "                        <td>", form_radio("forum_access", 0, $lang['passwordprotected'], forum_get_setting('forum_access', 0, true)), "&nbsp;<span class=\"bhinputradio\">[<a href=\"admin_forum_access.php?webtag=$webtag&fid=1\">{$lang['changepassword']}</a>]</span></td>\n";
+echo "                        <td>", form_radio("access_level", 2, $lang['passwordprotected'], (isset($current_forum_settings['access_level']) && $current_forum_settings['access_level'] == 2 ? true : false)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>&nbsp;</td>\n";
 echo "                        <td>&nbsp;</td>\n";
 echo "                      </tr>\n";
+
+if ($current_forum_settings['access_level'] == 1) {
+
+    echo "                      <tr>\n";
+    echo "                        <td width=\"220\">&nbsp;</td>\n";
+    echo "                        <td>", form_submit("changepermissions", $lang['changepermissions']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td>&nbsp;</td>\n";
+    echo "                        <td>&nbsp;</td>\n";
+    echo "                      </tr>\n";
+
+}elseif ($current_forum_settings['access_level'] == 2) {
+
+    echo "                      <tr>\n";
+    echo "                        <td width=\"220\">&nbsp;</td>\n";
+    echo "                        <td>", form_submit("changepassword", $lang['changepassword']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td>&nbsp;</td>\n";
+    echo "                        <td>&nbsp;</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
@@ -421,19 +460,19 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['requirepostapproval']}:</td>\n";
-echo "                        <td>", form_radio("require_post_approval", "Y", $lang['yes'], (isset($forum_settings['require_post_approval']) && $forum_settings['require_post_approval'] == "Y")), "&nbsp;", form_radio("require_post_approval", "N", $lang['no'], (isset($forum_settings['require_post_approval']) && $forum_settings['require_post_approval'] == "N") || !isset($forum_settings['require_post_approval'])), "</td>\n";
+echo "                        <td>", form_radio("require_post_approval", "Y", $lang['yes'], (isset($current_forum_settings['require_post_approval']) && $current_forum_settings['require_post_approval'] == "Y")), "&nbsp;", form_radio("require_post_approval", "N", $lang['no'], (isset($current_forum_settings['require_post_approval']) && $current_forum_settings['require_post_approval'] == "N") || !isset($current_forum_settings['require_post_approval'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['allowpostoptions']}:</td>\n";
-echo "                        <td>", form_radio("allow_post_editing", "Y", $lang['yes'], (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "Y")), "&nbsp;", form_radio("allow_post_editing", "N", $lang['no'], (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "N") || !isset($forum_settings['allow_post_editing'])), "</td>\n";
+echo "                        <td>", form_radio("allow_post_editing", "Y", $lang['yes'], (isset($current_forum_settings['allow_post_editing']) && $current_forum_settings['allow_post_editing'] == "Y")), "&nbsp;", form_radio("allow_post_editing", "N", $lang['no'], (isset($current_forum_settings['allow_post_editing']) && $current_forum_settings['allow_post_editing'] == "N") || !isset($current_forum_settings['allow_post_editing'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['postedittimeout']}:</td>\n";
-echo "                        <td>", form_input_text("post_edit_time", forum_get_setting('post_edit_time', false, '0'), 20, 32), "</td>\n";
+echo "                        <td>", form_input_text("post_edit_time", (isset($current_forum_settings['post_edit_time']) && $current_forum_settings == false ? $current_forum_settings['post_edit_time'] : '0'), 20, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['maximumpostlength']}:</td>\n";
-echo "                        <td>", form_input_text("maximum_post_length", forum_get_setting('maximum_post_length', false, '6226'), 20, 32), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("maximum_post_length", (isset($current_forum_settings['maximum_post_length']) && $current_forum_settings == false ? $current_forum_settings['maximum_post_length'] : '6226'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
@@ -467,15 +506,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['enablewikiintegration']}:</td>\n";
-echo "                        <td>", form_radio("enable_wiki_integration", "Y", $lang['yes'], (isset($forum_settings['enable_wiki_integration']) && $forum_settings['enable_wiki_integration'] == "Y")), "&nbsp;", form_radio("enable_wiki_integration", "N", $lang['no'], (isset($forum_settings['enable_wiki_integration']) && $forum_settings['enable_wiki_integration'] == "N") || !isset($forum_settings['enable_wiki_integration'])), "</td>\n";
+echo "                        <td>", form_radio("enable_wiki_integration", "Y", $lang['yes'], (isset($current_forum_settings['enable_wiki_integration']) && $current_forum_settings['enable_wiki_integration'] == "Y")), "&nbsp;", form_radio("enable_wiki_integration", "N", $lang['no'], (isset($current_forum_settings['enable_wiki_integration']) && $current_forum_settings['enable_wiki_integration'] == "N") || !isset($current_forum_settings['enable_wiki_integration'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['enablewikiquicklinks']}:</td>\n";
-echo "                        <td>", form_radio("enable_wiki_quick_links", "Y", $lang['yes'], (isset($forum_settings['enable_wiki_quick_links']) && $forum_settings['enable_wiki_quick_links'] == "Y")), "&nbsp;", form_radio("enable_wiki_quick_links", "N", $lang['no'], (isset($forum_settings['enable_wiki_quick_links']) && $forum_settings['enable_wiki_quick_links'] == "N") || !isset($forum_settings['enable_wiki_quick_links'])), "</td>\n";
+echo "                        <td>", form_radio("enable_wiki_quick_links", "Y", $lang['yes'], (isset($current_forum_settings['enable_wiki_quick_links']) && $current_forum_settings['enable_wiki_quick_links'] == "Y")), "&nbsp;", form_radio("enable_wiki_quick_links", "N", $lang['no'], (isset($current_forum_settings['enable_wiki_quick_links']) && $current_forum_settings['enable_wiki_quick_links'] == "N") || !isset($current_forum_settings['enable_wiki_quick_links'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['wikiintegrationuri']}:</td>\n";
-echo "                        <td>", form_input_text("wiki_integration_uri", forum_get_setting('wiki_integration_uri', false, 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
+echo "                        <td>", form_input_text("wiki_integration_uri", (isset($current_forum_settings['wiki_integration_uri']) && $current_forum_settings == false ? $current_forum_settings['wiki_integration_uri'] : 'http://en.wikipedia.org/wiki/[WikiWord]'), 42, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
@@ -510,7 +549,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['enablelinkssection']}:</td>\n";
-echo "                        <td>", form_radio("show_links", "Y", $lang['yes'], (isset($forum_settings['show_links']) && $forum_settings['show_links'] == "Y")), "&nbsp;", form_radio("show_links", "N", $lang['no'], (isset($forum_settings['show_links']) && $forum_settings['show_links'] == "N") || !isset($forum_settings['show_links'])), "</td>\n";
+echo "                        <td>", form_radio("show_links", "Y", $lang['yes'], (isset($current_forum_settings['show_links']) && $current_forum_settings['show_links'] == "Y")), "&nbsp;", form_radio("show_links", "N", $lang['no'], (isset($current_forum_settings['show_links']) && $current_forum_settings['show_links'] == "N") || !isset($current_forum_settings['show_links'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
@@ -543,7 +582,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['allowcreationofpolls']}:</td>\n";
-echo "                        <td>", form_radio("allow_polls", "Y", $lang['yes'], (isset($forum_settings['allow_polls']) && $forum_settings['allow_polls'] == "Y")), "&nbsp;", form_radio("allow_polls", "N", $lang['no'], (isset($forum_settings['allow_polls']) && $forum_settings['allow_polls'] == "N") || !isset($forum_settings['allow_polls'])), "</td>\n";
+echo "                        <td>", form_radio("allow_polls", "Y", $lang['yes'], (isset($current_forum_settings['allow_polls']) && $current_forum_settings['allow_polls'] == "Y")), "&nbsp;", form_radio("allow_polls", "N", $lang['no'], (isset($current_forum_settings['allow_polls']) && $current_forum_settings['allow_polls'] == "N") || !isset($current_forum_settings['allow_polls'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
@@ -576,7 +615,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['enablestatsdisplay']}:</td>\n";
-echo "                        <td>", form_radio("show_stats", "Y", $lang['yes'], (isset($forum_settings['show_stats']) && $forum_settings['show_stats'] == "Y")), "&nbsp;", form_radio("show_stats", "N", $lang['no'], (isset($forum_settings['show_stats']) && $forum_settings['show_stats'] == "N") || !isset($forum_settings['show_stats'])), "</td>\n";
+echo "                        <td>", form_radio("show_stats", "Y", $lang['yes'], (isset($current_forum_settings['show_stats']) && $current_forum_settings['show_stats'] == "Y")), "&nbsp;", form_radio("show_stats", "N", $lang['no'], (isset($current_forum_settings['show_stats']) && $current_forum_settings['show_stats'] == "N") || !isset($current_forum_settings['show_stats'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
@@ -609,7 +648,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['allowsearchenginespidering']}:</td>\n";
-echo "                        <td>", form_radio("allow_search_spidering", "Y", $lang['yes'], (isset($forum_settings['allow_search_spidering']) && $forum_settings['allow_search_spidering'] == "Y")), "&nbsp;", form_radio("allow_search_spidering", "N", $lang['no'], (isset($forum_settings['allow_search_spidering']) && $forum_settings['allow_search_spidering'] == "N") || !isset($forum_settings['allow_search_spidering'])), "</td>\n";
+echo "                        <td>", form_radio("allow_search_spidering", "Y", $lang['yes'], (isset($current_forum_settings['allow_search_spidering']) && $current_forum_settings['allow_search_spidering'] == "Y")), "&nbsp;", form_radio("allow_search_spidering", "N", $lang['no'], (isset($current_forum_settings['allow_search_spidering']) && $current_forum_settings['allow_search_spidering'] == "N") || !isset($current_forum_settings['allow_search_spidering'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
@@ -642,11 +681,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['enableguestaccount']}:</td>\n";
-echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "Y")), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "N") || !isset($forum_settings['guest_account_enabled'])), "</td>\n";
+echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($current_forum_settings['guest_account_enabled']) && $current_forum_settings['guest_account_enabled'] == "Y")), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($current_forum_settings['guest_account_enabled']) && $current_forum_settings['guest_account_enabled'] == "N") || !isset($current_forum_settings['guest_account_enabled'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['autologinguests']}:</td>\n";
-echo "                        <td>", form_radio("auto_logon", "Y", $lang['yes'], (isset($forum_settings['auto_logon']) && $forum_settings['auto_logon'] == "Y")), "&nbsp;", form_radio("auto_logon", "N", $lang['no'], (isset($forum_settings['auto_logon']) && $forum_settings['auto_logon'] == "N") || !isset($forum_settings['auto_logon'])), "</td>\n";
+echo "                        <td>", form_radio("auto_logon", "Y", $lang['yes'], (isset($current_forum_settings['auto_logon']) && $current_forum_settings['auto_logon'] == "Y")), "&nbsp;", form_radio("auto_logon", "N", $lang['no'], (isset($current_forum_settings['auto_logon']) && $current_forum_settings['auto_logon'] == "N") || !isset($current_forum_settings['auto_logon'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.52 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.53 2004-03-10 20:21:05 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -144,7 +144,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     if (isset($default_uid) && $default_uid != 0){ 
 
-        $top_sql = "SELECT LOGON, NICKNAME FROM {$table_prefix}USER where UID = '$default_uid'";
+        $top_sql = "SELECT LOGON, NICKNAME FROM USER where UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
@@ -160,7 +160,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     }
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM {$table_prefix}USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "FROM USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "ORDER by U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -203,7 +203,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     if (isset($default_uid) && $default_uid != 0) {
 
-        $top_sql = "select LOGON, NICKNAME from {$table_prefix}USER where UID = '$default_uid'";
+        $top_sql = "select LOGON, NICKNAME from USER where UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
@@ -219,7 +219,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     }
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM {$table_prefix}USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "FROM USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "ORDER by U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -263,7 +263,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
 
     if (isset($default_uid) && $default_uid != 0) {
         
-        $top_sql = "SELECT LOGON, NICKNAME FROM {$table_prefix}USER WHERE UID = '$default_uid'";
+        $top_sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
@@ -280,7 +280,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
 
     $sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
     $sql.= "FROM {$table_prefix}POST P ";
-    $sql.= "LEFT JOIN {$table_prefix}USER U ON (P.FROM_UID = U.UID) ";
+    $sql.= "LEFT JOIN USER U ON (P.FROM_UID = U.UID) ";
     $sql.= "WHERE P.TID = '$tid' ";
     $sql.= "LIMIT 0, 20";
 

@@ -80,7 +80,7 @@ function get_num_sessions()
     
     $session_stamp = time() - $active_sess_cutoff;
 
-    $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM {$table_prefix}SESSIONS ";
+    $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp)";
     
     $result = db_query($sql, $get_num_sessions);
@@ -115,8 +115,8 @@ function get_active_users()
     // Current active users
 
     $sql = "SELECT DISTINCT SESSIONS.UID, SESSIONS.TIME, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PREFS.ANON_LOGON FROM {$table_prefix}SESSIONS SESSIONS ";
-    $sql.= "LEFT JOIN {$table_prefix}USER USER ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "USER_PREFS.ANON_LOGON FROM SESSIONS SESSIONS ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
     $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
@@ -151,7 +151,7 @@ function get_thread_count()
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_prefix}THREAD";
+    $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_prefix}THREAD THREAD";
     $result = db_query($sql, $db_get_thread_count);
 
     if (db_num_rows($result)) {
@@ -168,7 +168,7 @@ function get_post_count()
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_prefix}POST";
+    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_prefix}POST POST";
     $result = db_query($sql, $db_get_post_count);
 
     if (db_num_rows($result)) {
@@ -187,7 +187,7 @@ function get_recent_post_count()
 
     $post_stamp = time() - HOUR_IN_SECONDS;
 
-    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_prefix}POST ";
+    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_prefix}POST POST ";
     $sql.= "WHERE CREATED >= FROM_UNIXTIME($post_stamp)";
 
     $result = db_query($sql, $db_get_post_count);

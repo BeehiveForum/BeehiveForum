@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.128 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.129 2004-03-10 20:21:05 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -36,7 +36,7 @@ function user_count()
    
    $table_prefix = get_table_prefix();
 
-   $sql = "SELECT COUNT(UID) AS COUNT FROM {$table_prefix}USER ";
+   $sql = "SELECT COUNT(UID) AS COUNT FROM USER ";
    $sql.= "WHERE USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')";
 
    $result = db_query($sql, $db_user_count);
@@ -53,7 +53,7 @@ function user_exists($logon)
 
     $logon = addslashes($logon);
 
-    $sql = "SELECT uid FROM {$table_prefix}USER WHERE logon = '$logon'";
+    $sql = "SELECT uid FROM USER WHERE logon = '$logon'";
     $result = db_query($sql, $db_user_exists);
 
     return (db_num_rows($result) > 0);
@@ -74,7 +74,7 @@ function user_create($logon, $password, $nickname, $email)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "INSERT INTO {$table_prefix}USER (LOGON, PASSWD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
+    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$ipaddress')";
 
     $db_user_create = db_connect();
@@ -98,7 +98,7 @@ function user_update($uid, $nickname, $email)
     $nickname = addslashes(_htmlentities($nickname));
     $email = addslashes(_htmlentities($email));
 
-    $sql = "UPDATE {$table_prefix}USER SET NICKNAME = '$nickname', ";
+    $sql = "UPDATE USER SET NICKNAME = '$nickname', ";
     $sql.= "EMAIL = '$email' WHERE UID = $uid";
 
     return db_query($sql, $db_user_update);
@@ -111,7 +111,7 @@ function user_change_pw($uid, $password, $hash = false)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "UPDATE {$table_prefix}USER SET PASSWD = '$password' WHERE UID = $uid ";
+    $sql = "UPDATE USER SET PASSWD = '$password' WHERE UID = $uid ";
 
     if ($hash) {
         $hash = addslashes($hash);
@@ -129,7 +129,7 @@ function user_get_status($uid)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT STATUS FROM {$table_prefix}USER WHERE UID = $uid";
+    $sql = "SELECT STATUS FROM USER WHERE UID = $uid";
     $db_user_get_status = db_connect();
 
     $result = db_query($sql, $db_user_get_status);
@@ -147,7 +147,7 @@ function user_update_status($uid, $status)
 
     if (!is_numeric($uid)) return false;
 
-    $sql = "UPDATE {$table_prefix}USER SET STATUS = $status ";
+    $sql = "UPDATE USER SET STATUS = $status ";
     $sql.= "WHERE UID = $uid";
 
     $result = db_query($sql, $db_user_update_status);
@@ -205,7 +205,7 @@ function user_logon($logon, $password, $md5hash = false)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT UID, STATUS FROM {$table_prefix}USER WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
+    $sql = "SELECT UID, STATUS FROM USER WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
 
     $db_user_logon = db_connect();
     $result = db_query($sql, $db_user_logon);
@@ -225,7 +225,7 @@ function user_logon($logon, $password, $md5hash = false)
             $ipaddress = "";
         }
 
-	$sql = "UPDATE {$table_prefix}USER SET LAST_LOGON = NOW(), ";
+	$sql = "UPDATE USER SET LAST_LOGON = NOW(), ";
 	$sql.= "LOGON_FROM = '$ipaddress' WHERE UID = '$uid'";
 
         db_query($sql, $db_user_logon);
@@ -246,7 +246,7 @@ function user_check_logon($uid, $logon, $md5pass)
         
         $table_prefix = get_table_prefix();
 
-        $sql = "SELECT STATUS FROM {$table_prefix}USER WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
+        $sql = "SELECT STATUS FROM USER WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
         $result = db_query($sql, $db_user_check_logon);
 
         if (db_num_rows($result)) {
@@ -275,7 +275,7 @@ function user_get($uid, $hash = false)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT * FROM {$table_prefix}USER WHERE UID = $uid ";
+    $sql = "SELECT * FROM USER WHERE UID = $uid ";
 
     if ($hash) {
         $hash = addslashes($hash);
@@ -300,7 +300,7 @@ function user_get_logon($uid)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "select LOGON from {$table_prefix}USER where uid = $uid";
+    $sql = "select LOGON from USER where uid = $uid";
 
     $result = db_query($sql, $db_user_get_logon);
 
@@ -322,7 +322,7 @@ function user_get_uid($logon)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT UID, LOGON, NICKNAME FROM {$table_prefix}USER WHERE LOGON = '$logon'";
+    $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
 
     if (!db_num_rows($result)) {
@@ -514,7 +514,7 @@ function user_get_last_logon_time($uid, $verbose = true)
     $table_prefix = get_table_prefix();
 
     $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM {$table_prefix}USER USER ";
+    $sql.= "FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "WHERE USER.UID = $uid";    
     
@@ -538,7 +538,7 @@ function user_guest_enabled()
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT UID, STATUS FROM {$table_prefix}USER WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
+    $sql = "SELECT UID, STATUS FROM USER WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
     $result = db_query($sql, $db_user_guest_account);
 
     if (db_num_rows($result)) {
@@ -587,7 +587,7 @@ function user_get_forthcoming_birthdays()
 
     $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) ";
     $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
-    $sql .= "FROM {$table_prefix}USER U, {$table_prefix}USER_PREFS UP ";
+    $sql .= "FROM USER U, {$table_prefix}USER_PREFS UP ";
     $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
     $sql .= "AND MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW())+ 365, 365) > 0 "; 
     $sql .= "ORDER BY DAYS_TO_BIRTHDAY ASC ";
@@ -621,7 +621,7 @@ function user_search($usersearch, $sort_by = "USER.LAST_LOGON", $sort_dir = "DES
     $usersearch = addslashes($usersearch);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER.LOGON_FROM, USER.STATUS FROM {$table_prefix}USER USER ";
+    $sql.= "USER.LOGON_FROM, USER.STATUS FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "WHERE (LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND NOT (USER_PREFS.ANON_LOGON <=> 1) ";
@@ -656,7 +656,7 @@ function user_get_all($sort_by = "USER.LAST_LOGON", $sort_dir = "ASC", $offset =
     if (!in_array($sort_by, $sort_array)) $sort_by = 'USER.LAST_LOGON';
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER.LOGON_FROM, USER.STATUS FROM {$table_prefix}USER USER ";
+    $sql.= "USER.LOGON_FROM, USER.STATUS FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
@@ -686,7 +686,7 @@ function user_get_aliases($uid)
     
     // Get the user's last known logon IP
     
-    $sql = "SELECT LOGON_FROM FROM {$table_prefix}USER WHERE UID = '$uid'";
+    $sql = "SELECT LOGON_FROM FROM USER WHERE UID = '$uid'";
     $result = db_query($sql, $db_user_get_aliases);
     
     $user_get_aliases_row = db_fetch_array($result);
@@ -714,7 +714,7 @@ function user_get_aliases($uid)
     
     $user_ip_address_list = implode("' OR LOGON_FROM = '", $user_ip_address_array);    
     
-    $sql = "SELECT UID, LOGON, LOGON_FROM AS IPADDRESS FROM {$table_prefix}USER ";
+    $sql = "SELECT UID, LOGON, LOGON_FROM AS IPADDRESS FROM USER ";
     $sql.= "WHERE (LOGON_FROM = '$user_ip_address_list') AND UID <> $uid ";
     $sql.= "ORDER BY UID DESC LIMIT 0, 10";
     
@@ -731,7 +731,7 @@ function user_get_aliases($uid)
     $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);    
     
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, POST.IPADDRESS FROM {$table_prefix}POST ";
-    $sql.= "LEFT JOIN {$table_prefix}USER USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
     $sql.= "ORDER BY POST.TID DESC LIMIT 0, 10";
 
@@ -753,7 +753,7 @@ function users_get_recent()
     $table_prefix = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM {$table_prefix}USER USER ";
+    $sql.= "FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1)";
     $sql.= "ORDER BY USER.LAST_LOGON DESC ";
@@ -778,7 +778,7 @@ function user_get_friends($uid)
     
     $table_prefix = get_table_prefix();
     
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM {$table_prefix}USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 1";
 
@@ -801,7 +801,7 @@ function user_get_ignored($uid)
     
     $table_prefix = get_table_prefix();
     
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM {$table_prefix}USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 2";
 
@@ -824,7 +824,7 @@ function user_get_ignored_signatures($uid)
     
     $table_prefix = get_table_prefix();
     
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM {$table_prefix}USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 3";
 
@@ -849,7 +849,7 @@ function user_get_relationships($uid, $offset = 0)
     
     if (!is_numeric($offset)) $offset = 0;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM {$table_prefix}USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP <> 0 ORDER BY USER.LOGON ASC ";    
     $sql.= "LIMIT $offset, 20";

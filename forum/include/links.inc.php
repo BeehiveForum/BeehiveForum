@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.22 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.23 2004-03-10 20:21:04 decoyduck Exp $ */
 
 // Functions for the links database
 
@@ -51,7 +51,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     $sql .= "FROM {$table_prefix}LINKS LINKS ";
     $sql .= "LEFT JOIN {$table_prefix}LINKS_VOTE LINKS_VOTE ";
     $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER USER ";
+    $sql .= "LEFT JOIN USER USER ";
     $sql .= "ON (LINKS.UID = USER.UID) ";
     $sql .= "WHERE LINKS.FID = $fid ";
     if (!$invisible) $sql .= "AND LINKS.VISIBLE = 'Y' ";
@@ -213,7 +213,7 @@ function links_get_single($lid)
     $sql  = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, ";
     $sql .= "LINKS.VISIBLE, LINKS.CLICKS, USER.LOGON, USER.NICKNAME, AVG(LINKS_VOTE.RATING) AS RATING, COUNT(LINKS_VOTE.RATING) AS VOTES ";
     $sql .= "FROM {$table_prefix}LINKS LINKS ";
-    $sql .= "LEFT JOIN {$table_prefix}USER USER ";
+    $sql .= "LEFT JOIN USER USER ";
     $sql .= "ON (LINKS.UID = USER.UID) ";
     $sql .= "LEFT JOIN {$table_prefix}LINKS_VOTE LINKS_VOTE ";
     $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
@@ -250,7 +250,7 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
     $sql .= "FROM {$table_prefix}LINKS LINKS ";
     $sql .= "LEFT JOIN {$table_prefix}LINKS_VOTE LINKS_VOTE ";
     $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER USER ";
+    $sql .= "LEFT JOIN USER USER ";
     $sql .= "ON (LINKS.UID = USER.UID) ";
     if (!$invisible) $sql .= "WHERE LINKS.VISIBLE = 'Y' ";
     $sql .= "GROUP BY LINKS.LID ";
@@ -370,7 +370,7 @@ function links_get_comments($lid)
     $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
     $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT ";
     $sql .= "FROM {$table_prefix}LINKS_COMMENT LINKS_COMMENT ";
-    $sql .= "LEFT JOIN {$table_prefix}USER USER ";
+    $sql .= "LEFT JOIN USER USER ";
     $sql .= "ON (LINKS_COMMENT.UID = USER.UID) ";
     $sql .= "WHERE LINKS_COMMENT.LID = '$lid' ORDER BY CREATED ASC";
 

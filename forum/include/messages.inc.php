@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.240 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.241 2004-03-10 20:21:04 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -56,13 +56,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP ";
     $sql .= "from {$table_prefix}POST POST ";
-    $sql .= "left join {$table_prefix}USER FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql .= "left join {$table_prefix}USER TUSER on (POST.to_uid = TUSER.uid) ";
+    $sql .= "left join USER FUSER on (POST.from_uid = FUSER.uid) ";
+    $sql .= "left join USER TUSER on (POST.to_uid = TUSER.uid) ";
     $sql .= "left join {$table_prefix}USER_PEER USER_PEER_TO ";
     $sql .= "on (USER_PEER_TO.uid = '$uid' and USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql .= "left join {$table_prefix}USER_PEER USER_PEER_FROM ";
     $sql .= "on (USER_PEER_FROM.uid = '$uid' and USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql .= "left join {$table_prefix}USER EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";
+    $sql .= "left join USER EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";
     $sql .= "where POST.TID = '$tid' ";
     $sql .= "and POST.PID >= '$pid' ";
     $sql .= "order by POST.PID ";
@@ -76,8 +76,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
     $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
     $sql .= "from {$table_prefix}POST POST, {$table_prefix}POST_CONTENT POST_CONTENT ";
-    $sql .= "left join {$table_prefix}USER FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql .= "left join {$table_prefix}USER TUSER on (POST.to_uid = TUSER.uid) ";
+    $sql .= "left join USER FUSER on (POST.from_uid = FUSER.uid) ";
+    $sql .= "left join USER TUSER on (POST.to_uid = TUSER.uid) ";
     $sql .= "left join {$table_prefix}USER_PEER USER_PEER ";
     $sql .= "on (USER_PEER.uid = '$uid' and USER_PEER.PEER_UID = POST.FROM_UID) ";
     $sql .= "where POST.TID = '$tid' ";

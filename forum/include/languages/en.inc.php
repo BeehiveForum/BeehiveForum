@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.181 2004-09-24 20:16:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.182 2004-09-25 16:31:05 decoyduck Exp $ */
 
 // International English language file
 
@@ -866,7 +866,8 @@ $lang['notenoughfreespace'] = "does not have enough free space to receive this m
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
 $lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
-$lang['pmfreespace'] = "PM Free Space";
+$lang['yourpmfoldersare_1'] = "Your PM folders are";
+$lang['yourpmfoldersare_2'] = "full";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

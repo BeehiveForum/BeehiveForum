@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.72 2004-09-24 20:16:48 decoyduck Exp $ */
+/* $Id: pm.php,v 1.73 2004-09-25 16:31:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -382,7 +382,7 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">Your PM folders are {$pm_used_percent}% full</td>\n";
+echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">{$lang['yourpmfoldersare']} {$pm_used_percent}% {$lang['yourpmfoldersare_2']}</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>";

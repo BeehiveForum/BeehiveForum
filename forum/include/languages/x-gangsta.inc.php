@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.46 2004-09-24 20:16:36 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.47 2004-09-25 16:31:06 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -859,7 +859,8 @@ $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to sen
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 $lang['includepminreply'] = "Include message body when replying to PM";
-$lang['pmfreespace'] = "PM Free Space";
+$lang['yourpmfoldersare_1'] = "Your PM folders are";
+$lang['yourpmfoldersare_2'] = "full";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

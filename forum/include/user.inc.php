@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.145 2004-03-21 18:58:24 tribalonline Exp $ */
+/* $Id: user.inc.php,v 1.146 2004-04-01 16:39:05 decoyduck Exp $ */
 
 function user_count()
 {
@@ -142,14 +142,19 @@ function user_update_status($uid, $status)
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($status)) return false;
-    
-    $sql = "DELETE FROM USER_STATUS WHERE UID = $uid AND FID = '{$webtag['FID']}'";
+
+    $sql = "UPDATE USER_STATUS SET STATUS = '$status' ";
+    $sql.= "WHERE UID = '$uid' AND FID = '{$webtag['FID']}'";
+
     $result = db_query($sql, $db_user_update_status);
 
-    $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) ";
-    $sql.= "VALUES ('$uid', '{$webtag['FID']}', '$status')";
+    if (!db_affected_rows($db_user_update_status)) {
     
-    $result = db_query($sql, $db_user_update_status);
+        $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) ";
+        $sql.= "VALUES ('$uid', '{$webtag['FID']}', '$status')";
+    
+        $result = db_query($sql, $db_user_update_status);
+    }
 
     return $result;
 }
@@ -304,8 +309,7 @@ function user_get_logon($uid)
     
     $webtag = get_webtag();
 
-    $sql = "select LOGON from USER where uid = $uid";
-
+    $sql = "SELECT LOGON FROM USER WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_logon);
 
     if(!db_num_rows($result)){
@@ -440,13 +444,18 @@ function user_update_sig($uid, $content, $html)
     
     $webtag = get_webtag();
 
-    $sql = "delete from {$webtag['PREFIX']}USER_SIG where UID = $uid";
-    $result = db_query($sql, $db_user_update_sig);
-
-    $sql = "insert into {$webtag['PREFIX']}USER_SIG (UID, CONTENT, HTML)";
-    $sql .= " values ($uid, '$content', '$html')";
+    $sql = "UPDATE {$webtag['PREFIX']}USER_SIG SET CONTENT = '$content', ";
+    $sql.= "HTML = '$html' WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_user_update_sig);
+
+    if (!db_affacted_rows($db_user_update_sig)) {
+
+        $sql = "INSERT INTO {$webtag['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
+        $sql.= "VALUES ('$uid', '$content', '$html')";
+
+        $result = db_query($sql, $db_user_update_sig);
+    }
 
     return $result;
 }
@@ -475,8 +484,7 @@ function user_get_global_sig($uid)
     
     $webtag = get_webtag();
 
-    $sql = "select VIEW_SIGS from {$webtag['PREFIX']}USER_PREFS where uid = $uid";
-
+    $sql = "SELECT VIEW_SIGS FROM {$webtag['PREFIX']}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_update_global_sig);
 
     if (db_num_rows($result)) {

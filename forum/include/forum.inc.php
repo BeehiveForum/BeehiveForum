@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.25 2004-03-22 12:21:16 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.26 2004-04-01 16:39:04 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -120,16 +120,19 @@ function save_forum_settings($forum_settings_array)
     
         $sname = addslashes($sname);
         $svalue = addslashes($svalue);
+
+	$sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' ";
+	$sql.= "WHERE SNAME = '$sname' AND FID = '{$webtag['FID']}'";
+
+	$result = db_query($sql, $db_save_forum_settings);
+
+	if (!db_affected_rows($db_save_forum_settings)) {
         
-        $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = '$sname' AND ";
-        $sql.= "FID = '{$webtag['FID']}'";
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ('{$webtag['FID']}', '$sname', '$svalue')";
         
-        $result = db_query($sql, $db_save_forum_settings);        
-        
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-        $sql.= "VALUES ('{$webtag['FID']}', '$sname', '$svalue')";
-        
-        $result = db_query($sql, $db_save_forum_settings);
+            $result = db_query($sql, $db_save_forum_settings);
+	}
     }
 }
 
@@ -208,14 +211,21 @@ function save_start_page($content)
     
     $webtag = get_webtag();
     $content = addslashes($content);
+
+    $sql = "UPDATE START_MAIN SET HTML = '$content' ";
+    $sql.= "WHERE FID = '{$webtag['FID']}'";
     
-    $sql = "DELETE FROM START_MAIN WHERE FID = '{$webtag['FID']}'";
     $result = db_query($sql, $db_save_start_page);
+
+    if (!db_affected_rows($db_save_start_page)) {
     
-    $sql = "INSERT INTO START_MAIN (FID, HTML) ";
-    $sql.= "VALUES('{$webtag['FID']}', '$content')";
+        $sql = "INSERT INTO START_MAIN (FID, HTML) ";
+        $sql.= "VALUES('{$webtag['FID']}', '$content')";
+
+	$result = db_query($sql, $db_save_start_page);
+    }
     
-    return db_query($sql, $db_save_start_page);
+    return $result;
 }
 
 ?>

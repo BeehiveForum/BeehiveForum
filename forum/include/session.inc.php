@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.87 2004-03-19 11:58:42 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.88 2004-04-01 16:39:05 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -112,11 +112,16 @@ function bh_session_check()
                         
                             $result = db_query($sql, $db_bh_session_check);
                             
-                            $sql = "DELETE FROM VISITOR_LOG WHERE UID = '{$user_sess['UID']}'";
+                            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() WHERE UID = $uid";
                             $result = db_query($sql, $db_bh_session_check);
+
+                            if (!db_affected_rows($db_bh_session_check)) {
     
-                            $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                            $sql.= "VALUES ('$uid', '{$webtag['FID']}', NOW())";
+                                $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
+                                $sql.= "VALUES ('$uid', '{$webtag['FID']}', NOW())";
+    
+                                $result = db_query($sql, $db_bh_session_check);
+                            }
     
                             $result = db_query($sql, $db_bh_session_check);                            
                         }
@@ -199,14 +204,17 @@ function bh_session_init($uid)
     $sql.= "'$ipaddress', NOW())";
 
     $result = db_query($sql, $db_bh_session_init);
-    
-    $sql = "DELETE FROM VISITOR_LOG WHERE UID = '$uid'";
+
+    $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() WHERE UID = $uid";
     $result = db_query($sql, $db_bh_session_init);
+
+    if (!db_affected_rows($db_bh_session_init)) {
     
-    $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-    $sql.= "VALUES ('$uid', '{$webtag['FID']}', NOW())";
+        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
+        $sql.= "VALUES ('$uid', '{$webtag['FID']}', NOW())";
     
-    $result = db_query($sql, $db_bh_session_init);
+        $result = db_query($sql, $db_bh_session_init);
+    }
 
     bh_setcookie('bh_sess_hash', $user_hash);
 }

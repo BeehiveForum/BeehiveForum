@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.254 2004-03-27 20:27:49 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.255 2004-04-01 16:39:05 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -37,42 +37,23 @@ function messages_get($tid, $pid = 1, $limit = 1)
    
     $webtag = get_webtag();
 
-    $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-    $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON as EDIT_LOGON, POST.IPADDRESS, ";
-    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
-    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP ";
-    $sql .= "from {$webtag['PREFIX']}POST POST ";
-    $sql .= "left join USER FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql .= "left join USER TUSER on (POST.to_uid = TUSER.uid) ";
-    $sql .= "left join {$webtag['PREFIX']}USER_PEER USER_PEER_TO ";
-    $sql .= "on (USER_PEER_TO.uid = '$uid' and USER_PEER_TO.PEER_UID = POST.TO_UID) ";
-    $sql .= "left join {$webtag['PREFIX']}USER_PEER USER_PEER_FROM ";
-    $sql .= "on (USER_PEER_FROM.uid = '$uid' and USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql .= "left join USER EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";
-    $sql .= "where POST.TID = '$tid' ";
-    $sql .= "and POST.PID >= '$pid' ";
-    $sql .= "order by POST.PID ";
-    $sql .= "limit 0, " . $limit;
-
-    /* OLD SQL - the CONTENT has been removed from the main select for memory efficiency
-                 and to improve the MySQL performance by keeping the TEXT field separate
-                 =======================================================================
-    $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-    $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, POST_CONTENT.CONTENT, ";
-    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
-    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
-    $sql .= "from {$webtag['PREFIX']}POST POST, {$webtag['PREFIX']}POST_CONTENT POST_CONTENT ";
-    $sql .= "left join USER FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql .= "left join USER TUSER on (POST.to_uid = TUSER.uid) ";
-    $sql .= "left join {$webtag['PREFIX']}USER_PEER USER_PEER ";
-    $sql .= "on (USER_PEER.uid = '$uid' and USER_PEER.PEER_UID = POST.FROM_UID) ";
-    $sql .= "where POST.TID = '$tid' ";
-    $sql .= "and POST.PID >= '$pid' ";
-    $sql .= "and POST_CONTENT.TID = POST.TID and POST_CONTENT.PID = POST.PID ";
-    $sql .= "order by POST.PID ";
-    $sql .= "limit 0, " . $limit;
-    */
+    $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
+    $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
+    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
+    $sql .= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
+    $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP ";
+    $sql .= "FROM {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
+    $sql .= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql .= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
+    $sql .= "WHERE POST.TID = '$tid' ";
+    $sql .= "AND POST.PID >= '$pid' ";
+    $sql .= "ORDER BY POST.PID ";
+    $sql .= "LIMIT 0, $limit";
 
     $resource_id = db_unbuffered_query($sql, $db_message_get);
 

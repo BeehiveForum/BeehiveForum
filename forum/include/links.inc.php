@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.28 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.29 2004-04-01 16:39:05 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
@@ -326,13 +326,20 @@ function links_vote($lid, $vote, $uid)
     
     $webtag = get_webtag();
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}LINKS_VOTE WHERE UID = '$uid' AND LID = '$lid'";
+    $sql = "UPDATE {$webtag['PREFIX']}LINKS_VOTE SET RATING = '$vote', TSTAMP = NOW() ";
+    $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
+
     $result = db_query($sql, $db_links_vote);
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}LINKS_VOTE (LID, UID, RATING, TSTAMP) ";
-    $sql.= "VALUES ($lid, $uid, $vote, NOW())";
+    if (!db_affected_rows($db_links_vote)) {
 
-    return db_query($sql, $db_links_vote);
+        $sql = "INSERT INTO {$webtag['PREFIX']}LINKS_VOTE (LID, UID, RATING, TSTAMP) ";
+        $sql.= "VALUES ($lid, $uid, $vote, NOW())";
+
+	$result = db_query($sql, $db_links_vote);
+    }
+
+    return $result;
 }
 
 function links_add_comment($lid, $uid, $comment)

@@ -411,6 +411,49 @@ function add_tag (tag, a, v, enclose) {
 	return str;
 }
 
+
+function add_text(text) {
+	if (navigator.userAgent.indexOf('Opera') > -1) {
+		active_field.value += text;
+		return;
+	}
+
+	var str = get_selection();
+
+	var ss = get_selection_start();
+	var se = ss + str.length; // get_selection_end();
+
+	ss = se;
+
+	var left_bound = active_field.value.substr(0, ss);
+	var right_bound = active_field.value.substr(ss);
+
+	var extra_left = "", extra_right = "";
+
+	if (/<[^<>]*$/.test(left_bound) == true) {
+		var re = new RegExp("^[^<>]*>");
+		re = re.exec(right_bound);
+		ss += (re != null) ? re[0].length : 0;
+	}
+
+	active_field.value = active_field.value.substr(0, ss) + text + active_field.value.substr(ss);
+
+	if (active_field.setSelectionRange) {
+		active_field.focus();
+		active_field.setSelectionRange(ss, ss + text.length);
+
+	} else if (active_field.createTextRange) {
+		ss -= active_field.value.substr(0, ss+1).split(/\n/).length-1;
+		var range = active_field.createTextRange();
+		range.collapse(true);
+		range.moveEnd('character', ss + text.length);
+		range.moveStart('character', ss);
+		range.select();
+	}
+
+	return;
+}
+
 function change_attribute(tag, a, v){
 	tag = tag.substr(1, tag.length-2);
 	var split_tag = tag.split(/\s+/);
@@ -480,6 +523,10 @@ function add_image () {
 // Emoticon preview popup
 function openEmoticons(pack, webtag) {
 	window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons','width=500, height=400, scrollbars=1');
+}
+
+function emoticon(val) {
+	add_text(unescape(val));
 }
 
 // Used in auto-list-thing

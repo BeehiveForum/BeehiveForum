@@ -68,6 +68,7 @@ $emoticon['>.<'] = "cringe";
 $emoticon['^.^'] = "happy";
 
 
+
 // --------------------------------------
 // End emoticons
 // --------------------------------------
@@ -136,12 +137,12 @@ function emoticons_convert ($content) {
 		$content = $new_content;
 	}
 
-	$content = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span>[^<]+<\/span>)/ie", "emot_regex_output('\\1')", $content);
+	$content = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span>[^<]+<\/span>)/ie", "emoticons_regex_output('\\1')", $content);
 
 	return $content;
 }
 
-function emot_regex_output($text) {
+function emoticons_regex_output($text) {
     $text = urldecode($text);
     // accounts for stripslashes 'bug' when using /e modifier
     // see comments at:
@@ -149,4 +150,76 @@ function emot_regex_output($text) {
     $text = str_replace('\"', '"', $text);
     return $text;
 }
+
+function emoticons_get_sets() {
+	$sets = array();
+	if ($dir = @opendir('emoticons')) {
+		while (($file = readdir($dir)) !== false) {
+			if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
+				if (@file_exists("./emoticons/$file/style.css")) {
+					if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
+						$content = fread($fp, filesize("emoticons/$file/desc.txt"));
+						$content = split("\n", $content);
+						$sets[$file] = _htmlentities($content[0]);
+						fclose($fp);
+					}else {
+						$sets[$file] = _htmlentities($file);
+					}
+				}
+			}
+		}
+		closedir($dir);
+	}
+
+	asort($sets);
+	reset($sets);
+
+	$sets = array_merge(array('none' => 'None'), $sets);
+
+	return $sets;
+}
+
+function emoticons_set_exists ($set) {
+	if (file_exists('./emoticons/'.$set.'/style.css') || $set == 'none') {
+		return true;
+	}
+	return false;
+}
+
+function emoticons_preview ($set, $width=200, $height=100) {
+	global $emoticon_text;
+	$html = "";
+
+	if (emoticons_set_exists($set)) {
+		$path = "./emoticons/$set";
+		$fp = fopen("$path/style.css", "r");
+		$style = fread($fp, filesize("$path/style.css"));
+
+		preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
+
+		for ($i=0; $i<count($matches[1]); $i++) {
+			if (isset($emoticon_text[$matches[1][$i]])) {
+				$emot_match[] = $emoticon_text[$matches[1][$i]];
+				$emot_text[] = $matches[1][$i];
+				$emot_image[] = $matches[2][$i];
+			}
+		}
+
+		array_multisort($emot_match, $emot_text, $emot_image);
+
+		$html.= "<div style=\"width:".$width."px; height:".$height."px\" class=\"emoticon_preview\">";
+		for ($i=0; $i<count($emot_match); $i++) {
+			$tmp = " ";
+			for ($j=0; $j<count($emot_match[$i]); $j++) {
+				$tmp.= $emot_match[$i][$j]." ";
+			}
+			$html.= "<a href=\"#\" onclick=\"emoticon('".urlencode($emot_match[$i][0])."');return false;\" target=\"_self\">";
+			$html.= "<img src=\"$path/".$emot_image[$i]."\" title=\"".$tmp."\" border=\"0\" / ></a> ";
+		}
+		$html.= "</div>";
+	}
+
+	return $html;
+}
+
 ?>

@@ -105,7 +105,7 @@ foreach ($folder_array as $key => $folder) {
     echo "<tr>\n";
     echo "  <td align=\"left\">". $folder['FID']. form_input_hidden("t_fid_$key", $folder['FID']). "</td>\n";
     echo "  <td align=\"left\">". form_field("t_title_$key", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$key", $folder['TITLE']). "</td>\n";
-    echo "  <td align=\"left\">". form_field("t_desc_$key", $folder['DESCRIPTION'], 32, 255). form_input_hidden("t_old_desc_$key", $folder['DESCRIPTION']). "</td>\n";
+    echo "  <td align=\"left\">". form_field("t_desc_$key", _stripslashes($folder['DESCRIPTION']), 32, 255). form_input_hidden("t_old_desc_$key", _stripslashes($folder['DESCRIPTION'])). "</td>\n";
 
     // Draw the ACCESS_LEVEL dropdown
     echo "  <td align=\"left\">".form_dropdown_array("t_access_$key", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder['ACCESS_LEVEL']);

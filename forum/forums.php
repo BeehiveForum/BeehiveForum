@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.15 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: forums.php,v 1.16 2004-04-23 22:11:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,6 +52,10 @@ include_once("./include/user.inc.php");
 // to be able to see this page.
 
 $user_sess = bh_session_check();
+
+// Load Language File
+
+$lang = load_language_file();
 
 html_draw_top("basetarget=_top");
 
@@ -113,7 +117,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 	        }else {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
                 }
-  
+
 		if ($forum['LAST_LOGON'] > 0) {
                     echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
 		}else {
@@ -294,7 +298,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "        </tr>\n";
 
         foreach ($forums_array as $forum) {
-    
+
             echo "        <tr>\n";
             echo "          <td width=\"25%\">\n";
             echo "            <a href=\"#\">[?]</a>&nbsp;";

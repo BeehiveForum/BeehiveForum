@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.64 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.65 2004-04-23 22:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,9 +52,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -72,7 +72,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -84,6 +84,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -141,7 +145,7 @@ $t_content = "";
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     $error_html = "";
-    
+
     if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
         $t_subject = _htmlentities(trim($_POST['t_subject']));
     }else {
@@ -177,9 +181,9 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
                         $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
                         $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                     }
-                    
+
                     if (!user_allow_pm($to_user['UID'])) {
-                    
+
 		        $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
 			$valid = false;
 		    }

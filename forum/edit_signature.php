@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.26 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.27 2004-04-23 22:10:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,9 +50,9 @@ include_once("./include/htmltools.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -70,7 +70,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -82,6 +82,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -129,7 +133,7 @@ if (isset($_POST['submit'])) {
         $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
         $valid = false;
     }
-    
+
     if ($valid) {
 
         // User's UID for updating with.
@@ -138,8 +142,8 @@ if (isset($_POST['submit'])) {
 
         // Update USER_SIG
 
-        user_update_sig($uid, $t_sig_content, $t_sig_html);    
-        
+        user_update_sig($uid, $t_sig_content, $t_sig_html);
+
         // Reinitialize the User's Session to save them having to logout and back in
 
         bh_session_init($uid);

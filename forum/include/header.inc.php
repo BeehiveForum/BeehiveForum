@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.14 2003-11-04 19:11:26 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.15 2004-04-23 22:12:11 decoyduck Exp $ */
 
 // header.inc.php:
 // Functions for manipulating the HTTP header
@@ -30,7 +30,7 @@ USA
 
 function header_no_cache()
 {
-    global $lang;
+    $lang = load_language_file();
 
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.77 2004-04-20 21:18:28 decoyduck Exp $ */
+/* $Id: index.php,v 1.78 2004-04-23 22:11:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -62,6 +62,10 @@ if (isset($_GET['autologon']) && $_GET['autologon'] == 0) {
 if ($user_sess = bh_session_check()) {
 
     // User is actually logged in. Show them the relevant frameset.
+
+    // Load language file
+
+    $lang = load_language_file();
 
     // Fetch the forum settings
 
@@ -168,6 +172,10 @@ if ($user_sess = bh_session_check()) {
 
         bh_session_init(0); // auto login as guest
 
+        // Load language file
+
+        $lang = load_language_file();
+
         // Fetch the forum settings
 
         $webtag = get_webtag();
@@ -224,6 +232,10 @@ if ($user_sess = bh_session_check()) {
 	}
 
     }else {
+
+        // Load language file
+
+        $lang = load_language_file();
 
         // Fetch the forum settings
 

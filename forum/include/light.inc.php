@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.38 2004-04-22 16:28:05 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.39 2004-04-23 22:12:12 decoyduck Exp $ */
 
 function light_html_draw_top ($title = false)
 {
-    global $lang, $forum_settings;
+    $lang = load_language_file();
 
     if (!isset($title) || !$title) {
         $title = forum_get_setting('forum_name');
@@ -71,8 +71,7 @@ function light_form_submit($name = "submit", $value = "Submit")
 
 function light_poll_confirm_close($tid)
 {
-
-    global $_SERVER, $lang;
+    $lang = load_language_file();
 
     if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse($tid, 1);
@@ -113,7 +112,7 @@ function light_poll_confirm_close($tid)
 
 function light_messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
-    global $lang;
+    $lang = load_language_file();
     echo "<h2>$foldertitle: $threadtitle";
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
@@ -132,7 +131,7 @@ function light_form_radio($name, $value, $text, $checked = false)
 
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $_SERVER, $lang;
+    $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');
 
@@ -347,7 +346,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -517,7 +516,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
 function light_message_display_deleted($tid,$pid)
 {
-    global $lang;
+    $lang = load_language_file();
 
     echo "<p>{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}</p>\n";
     echo "<hr />";
@@ -525,7 +524,7 @@ function light_message_display_deleted($tid,$pid)
 
 function light_messages_nav_strip($tid,$pid,$length,$ppp)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -599,7 +598,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
 function light_html_guest_error ()
 {
-     global $lang;
+     $lang = load_language_file();
      light_html_draw_top();
      echo "<h1>{$lang['guesterror']}</h1>";
      light_html_draw_bottom();
@@ -685,7 +684,7 @@ function light_form_input_password($name, $value = "", $width = 0, $maxchars = 0
 
 function light_html_message_type_error()
 {
-    global $lang;
+    $lang = load_language_file();
     light_html_draw_top();
     echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
     light_html_draw_bottom();

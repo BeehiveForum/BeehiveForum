@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.67 2004-04-23 17:28:48 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.68 2004-04-23 22:12:17 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -47,7 +47,7 @@ function pm_markasread($mid)
 
 function pm_edit_refuse()
 {
-    global $lang;
+    $lang = load_language_file();
 
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
@@ -59,7 +59,7 @@ function pm_edit_refuse()
 
 function pm_error_refuse()
 {
-    global $lang;
+    $lang = load_language_file();
 
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
@@ -458,7 +458,7 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -580,7 +580,7 @@ function draw_pm_message($pm_elements_array)
 
 function draw_header_pm()
 {
-    global $lang;
+    $lang = load_language_file();
 
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.28 2004-04-17 17:39:27 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.29 2004-04-23 22:11:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,6 +31,9 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum settings
+$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -73,7 +76,12 @@ if (isset($_POST['submit'])) {
     }
 }
 
-// Fetch the forum webtag and settings
+// Load language file
+
+$lang = load_language_file();
+
+// Make sure we have a webtag
+
 $webtag = get_webtag();
 
 html_draw_top();

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.183 2004-04-23 12:51:43 decoyduck Exp $ */
+/* $Id: post.php,v 1.184 2004-04-23 22:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,6 +92,10 @@ if (!$user_sess = bh_session_check()) {
     exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 

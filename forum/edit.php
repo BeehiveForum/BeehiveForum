@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.117 2004-04-17 18:41:00 decoyduck Exp $ */
+/* $Id: edit.php,v 1.118 2004-04-23 22:10:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -57,9 +57,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -77,7 +77,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -89,6 +89,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -219,7 +223,7 @@ $sig = new MessageText($sig_html);
 
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
 	$t_content = $_POST['t_content'];
-	
+
 	if ($post_html && attachment_embed_check($t_content)) {
 		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
 		$valid = false;
@@ -319,7 +323,7 @@ if (isset($_POST['preview'])) {
 	}
 
     if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
-    
+
         echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
         echo "<br />\n";
 
@@ -338,7 +342,7 @@ if (isset($_POST['preview'])) {
         html_draw_bottom();
         exit;
     }
-    
+
     $preview_message = $editmessage;
 
     if ($valid) {
@@ -347,9 +351,9 @@ if (isset($_POST['preview'])) {
         $updated = post_update($tid, $pid, $t_content_tmp);
 
         if ($updated) {
-        
+
             post_add_edit_text($tid, $pid);
-            
+
             if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
                 if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($tid, $pid, $_POST['aid']);
             }
@@ -390,7 +394,7 @@ if (isset($_POST['preview'])) {
         $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
         if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
-        
+
             echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
             echo "<br />\n";
 

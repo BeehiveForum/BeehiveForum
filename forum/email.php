@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.48 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: email.php,v 1.49 2004-04-23 22:10:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,9 +48,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -68,7 +68,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -80,6 +80,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -116,7 +120,7 @@ $from_user = user_get(bh_session_get_value('UID'));
 if (isset($_POST['submit'])) {
 
     $valid = true;
-    
+
     $message = _stripslashes($_POST['t_message']);
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
@@ -125,7 +129,7 @@ if (isset($_POST['submit'])) {
         $error = "<h2>{$lang['entersubjectformessage']}:</h2>";
         $valid = false;
     }
-    
+
     if (isset($_POST['t_message']) && strlen(trim(_stripslashes($_POST['t_message']))) > 0) {
         $message = trim(_stripslashes($_POST['t_message']));
     }else {
@@ -144,15 +148,15 @@ if (isset($_POST['submit'])) {
     }
 
     if ($valid) {
-    
-        $email_lang = email_get_language($to_user['UID']);    
+
+        $email_lang = email_get_language($to_user['UID']);
 
         $message = wordwrap($message . "\n\n{$lang['msgsentfrombeehiveforumby']} ".$from_user['LOGON']);
-                       
+
         $header = "From: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
         $header.= "Reply-To: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
         $header.= "Content-type: text/plain; charset={$email_lang['_charset']}\n";
-        $header.= "X-Mailer: PHP/". phpversion();        
+        $header.= "X-Mailer: PHP/". phpversion();
 
         html_draw_top("title={$lang['emailresult']}");
 
@@ -164,7 +168,7 @@ if (isset($_POST['submit'])) {
         }else {
             echo "<p>{$lang['msgfail']}</p>";
         }
-        
+
         form_quick_button("./user_profile.php", $lang['continue'], "uid", $to_uid);
         html_draw_bottom();
         exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.68 2004-04-10 21:45:32 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.69 2004-04-23 22:12:11 decoyduck Exp $ */
 
 include_once("./include/word_filter.inc.php");
 
@@ -67,7 +67,7 @@ function format_url2link($html)
 
     // MAIL:
     $html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
-       
+
     return substr($html, 1);
 }
 
@@ -161,7 +161,7 @@ function timestamp_amend_bst($timestamp)
 
 function _htmlentities($text)
 {
-    global $lang;
+    $lang = load_language_file();
 
     return htmlspecialchars($text);
 

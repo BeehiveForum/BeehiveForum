@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.35 2004-03-13 00:12:41 decoyduck Exp $ */
+/* $Id: beehive.inc.php,v 1.36 2004-04-23 22:12:08 decoyduck Exp $ */
 
 function draw_beehive_bar()
 {
-    global $lang;
+    $lang = load_language_file();
 
     echo "<div align=\"center\">\n";
     echo "<table width=\"96%\" class=\"posthead\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.46 2004-04-17 18:40:59 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.47 2004-04-23 22:10:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,9 +49,9 @@ include_once("./include/session.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -69,7 +69,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -81,6 +81,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -106,32 +110,32 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['stylename']) && strlen(trim($_POST['stylename'])) > 0) {
 
         // Get the style filename
-        
+
         $stylename = trim($_POST['stylename']);
         $stylename = strtolower(str_replace(" ", "_", $stylename));
         $stylename = preg_replace("/[^a-z|0-9|'_']/", "", $stylename);
-        
+
         // Get the style desc - if no description use the filename.
-        
+
         if (isset($_POST['styledesc']) && strlen(trim($_POST['styledesc'])) > 0) {
             $styledesc = trim($_POST['styledesc']);
         }else {
             $styledesc = $stylename;
         }
-        
+
         clearstatcache();
-        
+
         // Read in the master style sheet.
-       
+
         $stylesheet = implode('', file("./styles/make_style.css"));
-        
+
         // Modify it with the colours specified by the post data.
-        
+
         foreach ($_POST['elements'] as $key => $value) {
             $stylesheet = str_replace("\$elements[$key]", strtoupper($value), $stylesheet);
             $stylesheet = str_replace("\$text_colour[$key]", strtoupper(contrastFont($value)), $stylesheet);
-        }        
-        
+        }
+
         // Save the style sheet
 
         if (!@file_exists("./styles/$stylename/style.css")) {
@@ -139,34 +143,34 @@ if (isset($_POST['submit'])) {
             /*if (@mkdir("./styles/$stylename", 0755)) {
 
                 @chmod("./styles/$stylename", 0777);
-                
+
                 // Save the style desc
 
                 if (@$fp = fopen("./styles/$stylename/desc.txt", "w")) {
-                    
+
                     fwrite($fp, $styledesc);
                     fclose($fp);
 
                     if (@$fp = fopen("./styles/$stylename/style.css", "w")) {
-   
+
                         fwrite($fp, $stylesheet);
                         fclose($fp);
 
                         $success = true;
-                            
+
                         admin_addlog(0, 0, 0, 0, 0, 0, 17);
                         echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
                     }
                 }
             }*/
-            
+
             // We failed to save the style locally, so send it to the user
             // so they can then upload it to the server via FTP.
-            
+
             if (!$success) {
-                
+
                 admin_addlog(0, 0, 0, 0, 0, 0, 17);
-                
+
                 $style_download = "/*======================================================================\n";
 		$style_download.= "Copyright Project BeehiveForum 2002\n\n";
 		$style_download.= "This file is part of BeehiveForum.\n\n";
@@ -190,24 +194,24 @@ if (isset($_POST['submit'])) {
                 $style_download.= "*** this style.css file.\n\n";
                 $style_download.= "======================================================================*/\n\n";
                 $style_download.= $stylesheet;
-                       
-                $length = strlen($style_download);                
-                
+
+                $length = strlen($style_download);
+
                 header("Content-Type: application/x-ms-download", true);
                 header("Content-Length: $length", true);
-                header("Content-disposition: attachment; filename=\"style.css\"", true);                
+                header("Content-disposition: attachment; filename=\"style.css\"", true);
                 echo $style_download;
                 exit;
-            }            
+            }
 
         }else {
-        
+
             echo "<h2>{$lang['stylealreadyexists']}</h2>\n";
         }
 
     }else {
-    
-        echo "<h2>{$lang['stylenofilename']}</h2>\n";    
+
+        echo "<h2>{$lang['stylenofilename']}</h2>\n";
     }
 }
 

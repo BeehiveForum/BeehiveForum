@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.37 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.38 2004-04-23 22:11:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,9 +52,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -72,7 +72,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -84,6 +84,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -180,10 +184,10 @@ if ($valid && isset($_POST['preview'])) {
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
 
         $t_subject = _htmlentities($t_subject);
-                
+
         if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
             if (get_num_attachments($_POST['aid']) > 0) pm_save_attachment_id($mid, $_POST['aid']);
-        }         
+        }
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
             header_redirect("pm.php?webtag=$webtag&folder=3");

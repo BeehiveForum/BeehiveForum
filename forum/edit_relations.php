@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.22 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.23 2004-04-23 22:10:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,9 +49,9 @@ include_once("./include/user_rel.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -69,7 +69,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -81,6 +81,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -138,7 +142,7 @@ if (isset($_POST['add'])) {
                     }
                 }else {
                     $update_array[] = $lang['relationshipupdatefailed'];
-                }                
+                }
             }
         }
     }
@@ -165,11 +169,11 @@ echo "<br />\n";
 if ($user_peers = user_get_relationships($uid, $start)) {
 
     echo "<form name=\"prefs\" action=\"edit_relations.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
-    
+
     if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
         echo "  ", form_input_hidden("usersearch", trim($_POST['usersearch'])), "\n";
     }
-    
+
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -180,11 +184,11 @@ if ($user_peers = user_get_relationships($uid, $start)) {
     echo "                <tr>\n";
     echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
     echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";    
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
     echo "                </tr>\n";
-    
+
     foreach ($user_peers as $user_peer) {
-        echo "                <tr>\n";    
+        echo "                <tr>\n";
         echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
         echo "                  <td>\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", ($user_peer['RELATIONSHIP'] & USER_FRIEND)), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
@@ -193,8 +197,8 @@ if ($user_peers = user_get_relationships($uid, $start)) {
         echo "                  </td>\n";
         echo "                  <td>\n";
         echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['display']}\n";
-        echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", USER_IGNORED_SIG, "", ($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['ignore']}\n";        
-        echo "                  </td>\n";        
+        echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", USER_IGNORED_SIG, "", ($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['ignore']}\n";
+        echo "                  </td>\n";
         echo "                </tr>\n";
     }
 
@@ -229,23 +233,23 @@ if ($user_peers = user_get_relationships($uid, $start)) {
             echo "      </td>\n";
             echo "    </td>\n";
         }
-    }   
-    
+    }
+
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
-    echo "    </tr>\n";   
+    echo "    </tr>\n";
     echo "  </table>\n";
-    echo "</form>\n";    
+    echo "</form>\n";
     echo "<br />\n";
 }
 
 if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
 
     $usersearch = trim($_POST['usersearch']);
-    
+
     echo "<form method=\"post\" action=\"edit_relations.php?webtag=$webtag\" target=\"_self\">\n";
     echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
@@ -258,15 +262,15 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
     echo "                <tr>\n";
     echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
     echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";    
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
     echo "                </tr>\n";
-    
+
     if ($user_search_array = user_search($usersearch)) {
-    
+
         foreach ($user_search_array as $user) {
-        
+
             if ($user['UID'] != $uid) {
-        
+
                 echo "                <tr>\n";
                 echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
                 echo "                  <td>\n";
@@ -276,19 +280,19 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
                 echo "                  </td>\n";
                 echo "                  <td>\n";
                 echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", 0, "", true), "{$lang['display']}\n";
-                echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", USER_IGNORED_SIG, "", false), "{$lang['ignore']}\n";        
-                echo "                  </td>\n";            
+                echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", USER_IGNORED_SIG, "", false), "{$lang['ignore']}\n";
+                echo "                  </td>\n";
                 echo "                </tr>\n";
             }
         }
 
     }else {
-    
+
         echo "      <tr>\n";
         echo "        <td class=\"posthead\" colspan=\"7\" align=\"left\">{$lang['nomatches']}</td>\n";
         echo "      </tr>\n";
     }
-    
+
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
@@ -303,9 +307,9 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
-    echo "    </tr>\n";    
+    echo "    </tr>\n";
     echo "  </table>\n";
-    echo "</form>\n";   
+    echo "</form>\n";
 }
 
 echo "<form method=\"post\" action=\"edit_relations.php?webtag=$webtag\" target=\"_self\">\n";

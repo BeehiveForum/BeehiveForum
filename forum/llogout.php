@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.19 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.20 2004-04-23 22:11:09 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -54,6 +54,10 @@ if (!$user_sess = bh_session_check()) {
     header_redirect($uri);
 }
 
+// Load language file
+
+$lang = load_language_file();
+
 // Check we have a webtag
 
 $webtag = get_webtag();
@@ -61,7 +65,7 @@ $webtag = get_webtag();
 // Where are we going after we've logged off?
 
 if (isset($_POST['submit'])) {
-    
+
     bh_session_end();
 
     if (!strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS

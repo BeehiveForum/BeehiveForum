@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.43 2004-04-20 11:22:04 tribalonline Exp $ */
+/* $Id: admin_startpage.php,v 1.44 2004-04-23 22:10:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,9 +51,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -71,7 +71,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -83,6 +83,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -107,11 +111,11 @@ if (isset($_POST['submit'])) {
 
     $content = _stripslashes($_POST['content']);
     save_start_page($content);
-    
+
     $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
     $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
     $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
-    
+
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
 }else{

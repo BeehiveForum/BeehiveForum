@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.50 2004-04-17 18:41:02 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.51 2004-04-23 22:11:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,9 +51,9 @@ include_once("./include/thread.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -71,7 +71,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -83,6 +83,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -97,21 +101,21 @@ if (isset($_POST['rename']) && isset($_POST['t_tid']) && is_numeric($_POST['t_ti
 
     $tid  = $_POST['t_tid'];
     $name = $_POST['t_name'];
-    
-    $threaddata = thread_get($tid);    
-    
+
+    $threaddata = thread_get($tid);
+
     // Only Queens, Soldiers, Workers and thread creators can rename threads.
-    
+
     if (perm_is_moderator()) {
-    
+
         thread_change_title($tid, $name);
         post_add_edit_text($tid, 1);
         admin_addlog(0, 0, $tid, 0, 0, 0, 21);
-    
+
     }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID') && $threaddata['ADMIN_LOCK'] == 0) {
 
         if (((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS))) {
-        
+
             thread_change_title($tid, $name);
             post_add_edit_text($tid, 1);
             admin_addlog(0, 0, $tid, 0, 0, 0, 21);
@@ -122,22 +126,22 @@ if (isset($_POST['rename']) && isset($_POST['t_tid']) && is_numeric($_POST['t_ti
 
     $tid = $_POST['t_tid'];
     $fid = $_POST['t_move'];
-    
-    $threaddata = thread_get($tid);    
-    
+
+    $threaddata = thread_get($tid);
+
     if (perm_is_moderator()) {
-    
+
         thread_change_folder($tid, $fid);
         admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
 
     }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID') && $threaddata['ADMIN_LOCK'] == 0) {
-    
+
         if (((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS))) {
-        
+
             thread_change_folder($tid, $fid);
             admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
         }
-    }    
+    }
 
  }else {
 
@@ -162,15 +166,15 @@ if (isset($_POST['rename']) && isset($_POST['t_tid']) && is_numeric($_POST['t_ti
         $tid = $_POST['t_tid'];
         thread_set_closed($tid, false);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
-        
+
     }else if (isset($_POST['lock']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
-    
+
         $tid = $_POST['t_tid'];
         thread_admin_lock($tid, true);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
 
     }else if (isset($_POST['unlock']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
-    
+
         $tid = $_POST['t_tid'];
         thread_admin_lock($tid, false);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);

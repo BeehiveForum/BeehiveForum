@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.84 2005-02-06 00:38:51 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.85 2005-02-06 21:35:25 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -65,8 +65,9 @@ function search_execute($argarray, &$urlquery, &$error)
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (THREAD.TID = POST.TID) ";
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
     $search_sql.= "ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
-    $search_sql.= "WHERE (USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. " = 0 ";
-    $search_sql.= "OR USER_PEER.RELATIONSHIP & ". USER_IGNORED. " = 0 ";
+    $search_sql.= "WHERE ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+    $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) AND ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {

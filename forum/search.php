@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.99 2005-02-06 00:38:49 decoyduck Exp $ */
+/* $Id: search.php,v 1.100 2005-02-06 21:35:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -278,36 +278,10 @@ if (isset($_POST['search_string'])) {
 $urlquery = "";
 $error = false;
 
-echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"2\">\n";
-echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
-echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+// Draw discussion dropdown
+thread_list_draw_top(0);
 
-if ($pm_new_count = pm_new_check(false)) {
-    echo "      <img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['new']}]</span><br />\n";
-}else {
-    echo "      <img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a><br />\n";
-}
-
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td colspan=\"2\">&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td colspan=\"2\">\n";
-echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
-echo "        ", form_input_hidden("webtag", $webtag), "\n";
-
-threads_draw_discussions_dropdown($mode);
-
-echo form_submit("go", $lang['goexcmark']), "\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
 echo "</table>\n";
-
 echo "<h1>{$lang['searchresults']}</h1>\n";
 
 if ($search_results_array = search_execute($search_arguments, $urlquery, $error)) {

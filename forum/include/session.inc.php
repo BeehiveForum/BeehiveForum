@@ -53,9 +53,9 @@ function bh_session_check()
 function bh_session_init($uid)
 {
     $sql = "select USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT ";
-    $sql .= "from " . forum_table("USER") . " USER ";
-    $sql .= "left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
-    $sql .= "where USER.UID = $uid";
+    $sql.= "from " . forum_table("USER") . " USER ";
+    $sql.= "left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
+    $sql.= "where USER.UID = $uid";
 
     $db_bh_session_init = db_connect();
     $result = db_query($sql, $db_bh_session_init);
@@ -65,6 +65,7 @@ function bh_session_init($uid)
         $user_ppp = 20;
         $user_tz = 0;
         $user_dlsav = 0;
+        $user_markread = 0;
     } else {
         $fa = db_fetch_array($result);
         if($fa['STATUS']){
@@ -87,7 +88,7 @@ function bh_session_init($uid)
         } else {
             $user_dlsav = 0;
         }
-        if ($fa['MARK_AS_OF_INT '] == "Y") {
+        if ($fa['MARK_AS_OF_INT'] == "Y") {
             $user_markread = 1;
         } else {
             $user_markread = 0;

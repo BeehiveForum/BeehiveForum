@@ -169,7 +169,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
-      if (user_get_status($message['FROM_UID']) & USER_PERM_WORM) {
+      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
         message_display_deleted($tid, $message['PID']);
 	return;
       }
@@ -215,6 +215,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+	    if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
             echo format_time($message['CREATED'], 1);
         }
     }
@@ -357,7 +358,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if(perm_is_soldier()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" />";
-                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."\" target=\"_self\">Privileges</a>";
+                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.", $message['PID']. "\" target=\"_self\">Privileges</a>";
             }
 
             echo "</span></td></tr>";

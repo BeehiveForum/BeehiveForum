@@ -57,6 +57,11 @@ if (!file_exists($top_html)) {
 </head>
 <?php
 
+if (isset($HTTP_GET_VARS['autologon']) && $HTTP_GET_VARS['autologon'] == 0) {
+    bh_session_end();
+    $auto_logon = false;
+}
+
 if (bh_session_check()) {
 
     // User is actually logged in. Show them the relevant frameset.
@@ -108,7 +113,28 @@ if (bh_session_check()) {
         echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
         echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
         echo "<frame src=\"./nav.php\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-        echo "<frame src=\"./start.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        if (isset($HTTP_GET_VARS['final_uri'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }elseif(isset($HTTP_GET_VARS['msg'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else if (isset($HTTP_GET_VARS['folder'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?folder=". $HTTP_GET_VARS['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else if (isset($HTTP_GET_VARS['pmid'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". urlencode("./pm.php?mid=". $HTTP_GET_VARS['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else {
+
+            echo "<frame src=\"./logon.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }
 
     }else {
 

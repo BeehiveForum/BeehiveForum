@@ -34,78 +34,115 @@ function rn($r) {
 
 function translate($string) {
 
-    $string = strtolower($string);
-    $stringArray = explode(' ', $string);
+    $string_parts = preg_split('/([<|>])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-    // Process Words
+    // Process Specific Words
 
-    for ($i = 0; $i < sizeof($stringArray); $i++) {
+    for ($i = 0; $i < sizeof($string_parts); $i++) {
 
-        $strword = $stringArray[$i];
+        if (!($i % 4)) {
 
-        if ($strword == "am" && $stringArray[$i + 1] == "good") {
-            $strword = "ownz0r";
-            $i++;
+            $str_words = explode(' ', strtolower($string_parts[$i]));
+
+            for ($j = 0; $j < sizeof($str_words); $j++) {
+
+                $str_word = $str_words[$j];
+
+                if ($str_word == "am" && $str_words[$i + 1] == "good") {
+                    $str_word = "ownz0r";
+                    $i++;
+                }
+
+                if ($str_word == "is" && $str_words[$i + 1] == "good") {
+                    $str_word = "ownz0rz";
+                    $i++;
+                }
+
+                if ($str_word == "the" && rn(10) > 6) $str_word = "teh";
+                if ($str_word == "you") $str_word = "j00";
+
+                $str_translated = $str_translated. $str_word. " ";
+            }
+
+        }else {
+
+            $str_translated = $str_translated. trim($string_parts[$i]);
+
         }
-
-        if ($strword == "is" && $stringArray[$i + 1] == "good") {
-            $strword = "ownz0rz";
-            $i++;
-        }
-
-        if ($strword == "the" && rn(10) > 6) $strword = "teh";
-        if ($strword == "you") $strword = "j00";
-
-        $strtranslated = $strtranslated. $strword. " ";
     }
+
+    $string_parts = preg_split('/([<|>])/', $str_translated, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     //Process Individual Chars
 
-    for ($i = 0; $i < strlen($strtranslated); $i++) {
+    for ($i = 0; $i < sizeof($string_parts); $i++) {
 
-        $char = $strtranslated[$i];
+        if (!($i % 4)) {
 
-        if ($char == "a" && rn(10) > 7) $char = "@";
-        if ($char == "a" && rn(10) > 2) $char = "4";
-        if ($char == "b" && rn(10) > 5) $char = "8";
-        if ($char == "d" && rn(10) > 10) $char = "|)";
-        if ($char == "e" && rn(10) > 5) $char = "3";
-        if ($char == "f" && rn(10) > 5) $char = "ph";
-        if ($char == "g" && rn(10) > 5) $char = "9";
-        if ($char == "h" && rn(10) > 10) $char = "|-|";
-        if ($char == "i" && rn(10) > 5) $char = "1";
-        if ($char == "k" && rn(10) > 10) $char = "|<";
-        if ($char == "m" && rn(10) > 10) $char = "|\/|";
-        if ($char == "n" && rn(10) > 10) $char = "|\|";
-        if ($char == "o" && rn(10) > 5) $char = "0";
+            for ($j = 0; $j < strlen($string_parts[$i]); $j++) {
 
-        if ($char == "q" && $strtranslated[$i + 1] == "u") {
-            $char = "kw";
-            $i++;
+                $char = substr($string_parts[$i], $j, 1);
+
+                if ($char == "a" && rn(10) > 7) $char = "@";
+                if ($char == "a" && rn(10) > 2) $char = "4";
+                if ($char == "b" && rn(10) > 5) $char = "8";
+                if ($char == "d" && rn(10) > 10) $char = "|)";
+                if ($char == "e" && rn(10) > 5) $char = "3";
+                if ($char == "f" && rn(10) > 5) $char = "ph";
+                if ($char == "g" && rn(10) > 5) $char = "9";
+                if ($char == "h" && rn(10) > 10) $char = "|-|";
+                if ($char == "i" && rn(10) > 5) $char = "1";
+                if ($char == "k" && rn(10) > 10) $char = "|&gt;";
+                if ($char == "m" && rn(10) > 10) $char = "|\/|";
+                if ($char == "n" && rn(10) > 10) $char = "|\|";
+                if ($char == "o" && rn(10) > 5) $char = "0";
+
+                if ($char == "q" && $string_parts[$i + 1] == "u") {
+                    $char = "kw";
+                    $i++;
+                }
+
+                if ($char == "s" && rn(10) > 7) $char = "$";
+                if ($char == "s" && rn(10) > 2) $char = "5";
+                if ($char == "t" && rn(10) > 5) $char = "+";
+                if ($char == "v" && rn(10) > 10) $char = "\/";
+                if ($char == "w" && rn(10) > 10) $char = "\/\/";
+                if ($char == "x" && rn(10) > 10) $char = "&gt;&lt;";
+
+                $string_new = $string_new. $char;
+            }
+
+        }else {
+
+            $string_new = $string_new. $string_parts[$i];
         }
-
-        if ($char == "s" && rn(10) > 7) $char = "$";
-        if ($char == "s" && rn(10) > 2) $char = "5";
-        if ($char == "t" && rn(10) > 5) $char = "+";
-        if ($char == "v" && rn(10) > 10) $char = "\/";
-        if ($char == "w" && rn(10) > 10) $char = "\/\/";
-        if ($char == "x" && rn(10) > 10) $char = "><";
-
-        $string_new = $string_new. $char;
     }
 
     // Randomize case
 
-    for ($i = 0; $i < strlen($string_new); $i++) {
+    $string_parts = preg_split('/([<|>])/', $string_new, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        $char = $string_new[$i];
+    for ($i = 0; $i < sizeof($string_parts); $i++) {
 
-        if (rn(10) > 5) $char = strtoupper($char);
-        $str_out.= $char;
+        if (!($i % 4)) {
 
+            for ($j = 0; $j < strlen($string_parts[$i]); $j++) {
+
+                $char = substr($string_parts[$i], $j, 1);
+
+                if (rn(10) > 5) $char = strtoupper($char);
+                $str_out = $str_out. $char;
+
+            }
+
+        }else {
+
+            $str_out = $str_out. $string_parts[$i];
+
+        }
     }
 
-    return trim($str_out);
+    return trim(str_replace(' <', '<', $str_out));
 }
 
 // Start here

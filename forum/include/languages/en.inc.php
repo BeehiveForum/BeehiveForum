@@ -111,7 +111,7 @@ $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
 $lang['error'] = "Error";
 $lang['reset'] = "Reset";
-$lang['guesterror'] = "Sorry, you need to be logged in to use this feature.";
+$lang['guesterror'] = "Sorry, you need to be logged in to use this feature. <a href=\"logout.php?final_uri=". get_request_uri(). "\" target=\"_top\">Login Now</a>.";
 $lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";

@@ -49,7 +49,11 @@ if (!bh_session_get_value('UID')) {
 // User was a guest that now wants to logon
 
 if (bh_session_get_value('UID') == 0) {
-    $uri = "./index.php";
+    if (isset($HTTP_GET_VARS['final_uri'])) {
+        $uri = "./index.php?final_uri=". $HTTP_GET_VARS['final_uri'];
+    }else {
+        $uri = "./index.php";
+    }
     bh_session_end();
     setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
     header_redirect($uri);

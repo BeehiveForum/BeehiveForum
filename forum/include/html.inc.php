@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.141 2004-12-12 12:40:08 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.142 2004-12-19 13:20:32 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -246,7 +246,8 @@ function html_draw_top()
     $onload_array = array();
     $onunload_array = array();
     $arg_array = func_get_args();
-    $meta_refresh = false;
+    $meta_refresh_delay = false;
+    $meta_refresh_url = false;
     $robots = false;
 
     $forum_settings = get_forum_settings();
@@ -279,8 +280,17 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^refresh=/i", $func_args)) {
-            $meta_refresh = substr($func_args, 8);
+        if (preg_match("/^refresh=([^:]*):([^$]*)$/i", $func_args, $func_matches)) {
+
+            if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
+
+                if (isset($func_matches[2])) {
+
+                     $meta_refresh_delay = $func_matches[1];
+                     $meta_refresh_url = $func_matches[2];
+                }
+            }
+
             unset($arg_array[$key]);
         }
 
@@ -288,8 +298,8 @@ function html_draw_top()
             $robots = substr($func_args, 7);
             unset($arg_array[$key]);
         } else {
-                        $robots = "noindex,follow";
-                }
+            $robots = "noindex,follow";
+        }
     }
 
     if (!isset($title)) $title = forum_get_setting('forum_name');
@@ -320,8 +330,8 @@ function html_draw_top()
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 
-    if ($meta_refresh) {
-        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\" />\n";
+    if ($meta_refresh_delay && $meta_refresh_url) {
+        echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url=./{$meta_refresh_url}\" />\n";
     }
 
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} RSS Feed\" href=\"threads_rss.php\" />\n";

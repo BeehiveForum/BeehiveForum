@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.38 2004-03-19 15:27:31 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.39 2004-03-19 15:38:32 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -252,6 +252,9 @@ $lang['matchedtext'] = "Matched Text";
 $lang['replacementtext'] = "Replacement Text";
 $lang['preg'] = "PREG";
 $lang['wholeword'] = "Whole Word";
+$lang['word_filter_help_1'] = "<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument.";
+$lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument.";
+$lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

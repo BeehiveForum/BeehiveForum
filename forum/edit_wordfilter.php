@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.19 2004-03-19 15:27:31 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.20 2004-03-19 15:38:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -217,7 +217,12 @@ echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <p>{$lang['word_filter_help_1']}</p>\n";
+echo "  <p>{$lang['word_filter_help_2']}</p>\n";
+echo "  <p>{$lang['word_filter_help_3']}</p>\n";
 echo "</form>\n";
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.55 2004-11-14 16:11:31 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.56 2004-11-28 22:57:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,7 +122,7 @@ if (!(perm_has_admin_access())) {
 
 $allowed_file_exts = array('html', 'htm', 'shtml', 'cgi', 'pl', 'php', 'php3', 'phtml', 'txt');
 
-html_draw_top("htmltools.js");
+html_draw_top("dictionary.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
 echo "<p>{$lang['editstartpageexp']}</p>\n";

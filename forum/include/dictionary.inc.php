@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.6 2004-11-27 01:33:45 tribalonline Exp $ */
+/* $Id: dictionary.inc.php,v 1.7 2004-11-28 22:57:04 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
@@ -95,9 +95,9 @@ class dictionary {
         foreach($this->content_array as $key => $word) {
 
             if ($key == $this->current_word) {
-                echo "<span class=\"highlight\">$word</span>";
+                echo "<span class=\"highlight\">", _htmlentities($word), "</span>";
             }else {
-                echo "$word";
+                echo _htmlentities($word);
             }
         }
     }

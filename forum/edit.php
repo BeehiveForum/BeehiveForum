@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.154 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: edit.php,v 1.155 2004-11-28 22:57:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -243,7 +243,7 @@ $valid = true;
 
 $fix_html = true;
 
-html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "htmltools.js", "emoticons.js");
+html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js");
 
 $t_content = "";
 $t_sig = "";
@@ -257,6 +257,7 @@ if (isset($_POST['t_post_emots'])) {
 } else {
         $emots_enabled = true;
 }
+
 if (isset($_POST['t_post_links'])) {
         if ($_POST['t_post_links'] == "enabled") {
                 $links_enabled = true;
@@ -265,6 +266,16 @@ if (isset($_POST['t_post_links'])) {
         }
 } else {
         $links_enabled = false;
+}
+
+if (isset($_POST['t_check_spelling'])) {
+        if ($_POST['t_check_spelling'] == "enabled") {
+                $spelling_enabled = true;
+        } else {
+                $spelling_enabled = false;
+        }
+} else {
+        $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
 
 $post_html = 0;
@@ -767,6 +778,7 @@ if ($preview_message['TLOGON'] != "ALL") {
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br /><br />\n";
 
 $emot_user = bh_session_get_value('EMOTICONS');
@@ -815,7 +827,7 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-        echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+        echo $tools->toolbar(false, form_submit("submit", $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
@@ -845,9 +857,9 @@ if ($allow_html == true) {
 }
 
 echo "<br /><br />\n";
-echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
-echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
-echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+echo form_submit('submit',$lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
+echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
 if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 

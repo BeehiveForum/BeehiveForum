@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.191 2004-11-27 01:33:45 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.192 2004-11-28 22:57:04 decoyduck Exp $ */
 
 // International English language file
 
@@ -773,6 +773,7 @@ $lang['htmlinmessage'] = "HTML in message";
 $lang['emoticonsinmessage'] = "Emoticons in message";
 $lang['disableemoticonsinmessage'] = "Disable emoticons in message";
 $lang['automaticallyparseurls'] = "Automatically parse URLs";
+$lang['automaticallycheckspelling'] = "Automatically check spelling";
 $lang['setthreadtohighinterest'] = "Set thread to high interest";
 $lang['enabledwithautolinebreaks'] = "Enabled with auto-linebreaks";
 $lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\\n\\nTo view your original code, select the \\'Submitted code\\' radio button.\\nTo view the modified code, select the \\'Corrected code\\' radio button.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.86 2003-08-29 00:09:31 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.87 2003-08-30 00:16:23 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -202,14 +202,12 @@ function user_check_logon($uid, $logon, $md5pass)
 
         $db_user_check_logon = db_connect();
 
-        $sql = "SELECT STATUS FROM ". forum_table("USER"). " ";
-        $sql.= "WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
-
+        $sql = "SELECT STATUS FROM ". forum_table("USER"). " WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
         $result = db_query($sql, $db_user_check_logon);
 
         if (db_num_rows($result)) {
             $user_status = db_fetch_array($result);
-	    if (isset($user_status['STATUS']) && $user_status['STATUS'] & USER_PERM_SPLAT) {
+	    if ($user_status['STATUS'] & USER_PERM_SPLAT) {
                 header("HTTP/1.0 500 Internal Server Error");
                 exit;
 	    }

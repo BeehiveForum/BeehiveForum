@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.56 2003-08-29 00:09:31 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.57 2003-08-30 00:16:23 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -67,11 +67,11 @@ function html_message_type_error()
 //      <script src="openprofile.js"> tag within the HTML output.
 //
 //      To retain the old functionality as well as offer all this
-//      html_draw_top also supports 3 named arguments, which
+//      html_draw_top also supports 4 named arguments, which
 //      you can use to alter the default page title, body class
 //      and also specify functions to be called by the browser in
-//      the body tag's onload event. These have to be called in a
-//      specific manner. For example:
+//      the body tag's onload and onunload events. These have to be
+//      called in a specific manner. For example:
 //
 //      html_draw_top("title=Navigation", "class=nav");
 //
@@ -122,22 +122,28 @@ function html_draw_top()
     global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_name, $default_style, $lang;
 
     $onload_array = array();
+    $onunload_array = array();
     $arg_array = func_get_args();
 
     foreach($arg_array as $key => $func_args) {
 
-        if (preg_match("/^title=/", $func_args)) {
+        if (preg_match("/^title=/i", $func_args)) {
             if (!isset($title)) $title = substr($func_args, 6);
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^class=/", $func_args)) {
+        if (preg_match("/^class=/i", $func_args)) {
             if (!isset($body_class)) $body_class = substr($func_args, 6);
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^onload=/", $func_args)) {
+        if (preg_match("/^onload=/i", $func_args)) {
             $onload_array[] = substr($func_args, 7);
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match("/^onunload=/i", $func_args)) {
+            $onunload_array[] = substr($func_args, 9);
             unset($arg_array[$key]);
         }
     }
@@ -175,7 +181,7 @@ function html_draw_top()
 
     if (basename($HTTP_SERVER_VARS['PHP_SELF']) != 'pm.php') {
         if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/pm_notification.js\" />\n";
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/pm_notification.js\"></script>\n";
             if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
         }
     }
@@ -189,9 +195,10 @@ function html_draw_top()
     }
 
     $onload = trim(implode(";", $onload_array));
+    $onunload = trim(implode(";", $onunload_array));
 
     echo "</head>\n\n";
-    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", (strlen($onload) > 0) ? " onload=\"$onload\"" : "", "\">\n";
+    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", (strlen($onload) > 0) ? " onload=\"$onload\"" : "", (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "", ">\n";
 }
 
 function html_draw_bottom ()

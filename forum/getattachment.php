@@ -21,13 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.38 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.39 2003-08-30 00:16:21 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
-
-// Compress the output
-require_once("./include/gzipenc.inc.php");
 
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
@@ -74,6 +71,10 @@ if (isset($attachment_data[1])) {
             $filepath = $attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']));
             $filename = basename($attachmentdetails['FILENAME']);
 
+            // Filesize for Content-Length header.
+
+            $length = filesize($filepath);
+
             // Are we viewing or downloading the attachment?
 
             if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
@@ -116,6 +117,7 @@ if (isset($attachment_data[1])) {
                 header("Etag: \"$local_etag\"", true);
             }
 
+            header("Content-Length: $length", true);
             header("Content-disposition: inline; filename=$filename", true);
             readfile($filepath);
             exit;

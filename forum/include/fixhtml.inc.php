@@ -20,8 +20,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.40 2003-07-27 12:42:04 hodcroftcj Exp $ */
-
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
 
@@ -41,6 +39,8 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
         $html = _stripslashes($html);
 		$html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
+		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "menu", "meta", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
+
 		for ($i=0;$i<count($html_parts);$i++) {
 			if ($i%2) {
 				// remove trailing / in single tags: <  />
@@ -50,34 +50,83 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				// <code><b>Text</b></code>
 				// with
 				// <pre>&lt;b&gt;Text&lt;b&gt;</pre>
-				if (substr($html_parts[$i], 0, 4) == "code") {
-					$tmpcode = "";
-					$html_parts[$i] = "pre";
-					for ($j=$i+1;$j<count($html_parts);$j++) {
-						if ($j%2) {
-							if (substr($html_parts[$j], 0, 5) == "/code") {
-								$html_parts[$j] = "/pre";
-								array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
-								$tmpcode = "<closed>";
-								break;
+				$tag = explode(" ", $html_parts[$i]);
+				if (substr($tag[0], 0, 1) == "/") {
+					$close = true;
+					$tag = substr($tag[0], 1);
+				} else {
+					$close = false;
+					$tag = $tag[0];
+				}
+				$tag = strtolower($tag);
+				if (in_array($tag, $htmltags)) {
+					if ($tag == "code") {
+						$tmpcode = "";
+						$html_parts[$i] = "pre class=\"code\"";
+						for ($j=$i+1;$j<count($html_parts);$j++) {
+							if ($j%2) {
+								if (substr($html_parts[$j], 0, 5) == "/code") {
+									$html_parts[$j] = "/pre";
+									array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
+									$tmpcode = "<closed>";
+									break;
 
+								} else {
+									$tmpcode .= htmlspecialchars("<".$html_parts[$j].">");
+								}
 							} else {
-								$tmpcode .= htmlspecialchars("<".$html_parts[$j].">");
+								$tmpcode .= $html_parts[$j];
 							}
-						} else {
-							$tmpcode .= $html_parts[$j];
 						}
+						if ($tmpcode != "<closed>") {
+							array_splice($html_parts, $i+1, 0, array("", "/pre"));
+							$i += 2;
+						}
+						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "code:", "/b", "", "/div", ""));
+						$i += 8;
+
+					} else if ($tag == "quote" && $close == true) {
+						$html_parts[$i] = "/div";
+					} else if ($tag == "quote") {
+						$source_name = stristr($html_parts[$i], " source=");
+						$source_name = substr($source_name, 8);
+						if (strlen($source_name) > 0) {
+							$qu = substr($source_name, 0, 1);
+							if ($qu == "\"" || $qu == "'") {
+								$source_pos = 1;
+							} else {
+								$source_pos = 0;
+								$qu = false;
+							}
+							for ($j=$source_pos; $j<=strlen($source_name); $j++) {
+								$ctmp = substr($source_name, $j, 1);
+								if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == " ")) {
+									if ($ctmp != " ") {
+										$j--;
+									}
+									break;
+								}
+							}
+							$source_name = substr($source_name, $source_pos, $j);
+						} else {
+							$source_name = "";
+						}
+								
+						$html_parts[$i] = "div class=\"quote\"";
+						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", $source_name, "/div", ""));
+						$i += 8;
 					}
-					if ($tmpcode != "<closed>") {
-						array_splice($html_parts, $i+1, 0, array("", "/pre"));
-						$i += 2;
-					}
+				} else {
+					$html_parts[$i-1].= "&lt;".$html_parts[$i]."&gt;";
+					$html_parts[$i] = "";
 				}
 			} else {
 				$html_parts[$i] = str_replace("<", "&lt;", $html_parts[$i]);
 				$html_parts[$i] = str_replace(">", "&gt;", $html_parts[$i]);
 			}
 		}
+
+		$close = "";
 
 		$opentags = array();
 		$last_tag = array();
@@ -291,7 +340,9 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 		// reconstruct the HTML
 		for($i=0; $i<count($html_parts); $i++){
 			if($i%2){
-				$ret_text .= "<$html_parts[$i]>";
+				if ($html_parts[$i] != "" && $html_parts[$i] != "/") {
+					$ret_text .= "<".$html_parts[$i].">";
+				}
 			} else {
 				$ret_text .= $html_parts[$i];
 			}

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.112 2003-08-24 17:34:34 decoyduck Exp $ */
+/* $Id: post.php,v 1.113 2003-08-30 00:16:21 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -63,6 +63,7 @@ require_once("./include/config.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/htmltools.inc.php");
 
 // Check that there are some available folders for this thread type
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
@@ -85,22 +86,43 @@ $newthread = false;
 
 if (isset($HTTP_POST_VARS['t_post_html'])) {
     $t_post_html = $HTTP_POST_VARS['t_post_html'];
+	if ($t_post_html == "enabled_auto") {
+		$t_post_html = true;
+		$auto_linebreaks = true;
+	} else if ($t_post_html == "enabled") {
+		$t_post_html = true;
+		$auto_linebreaks = false;
+	} else {
+		$t_post_html = false;
+	}
 }
 
-if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
+$t_to_uid_others = "";
 
-    $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
+if (isset($HTTP_POST_VARS['to_radio'])) {
+	$to_radio = $HTTP_POST_VARS['to_radio'];
 
-    if ($touser = user_get_uid($u_login)) {
+	if ($to_radio == "others") {
 
-        $HTTP_POST_VARS['t_to_uid'] = $touser;
-        $t_to_uid = $touser;
+		$t_to_uid_others = $HTTP_POST_VARS['t_to_uid_others'];
 
-    }else{
+		if ($touser = user_get_uid($t_to_uid_others)) {
 
-        $error_html = "<h2>{$lang['invalidusername']}</h2>";
-        $valid = false;
-    }
+			$HTTP_POST_VARS['t_to_uid'] = $touser;
+			$t_to_uid = $touser;
+
+		}else{
+
+			$error_html = "<h2>{$lang['invalidusername']}</h2>";
+			$valid = false;
+		}
+	} else if ($to_radio == "in_thread") {
+		$t_to_uid = $HTTP_POST_VARS['t_to_uid_in_thread'];
+		$HTTP_POST_VARS['t_to_uid'] = $t_to_uid;
+	} else {
+		$t_to_uid = $HTTP_POST_VARS['t_to_uid_recent'];
+		$HTTP_POST_VARS['t_to_uid'] = $t_to_uid;
+	}
 }
 
 if (isset($HTTP_POST_VARS['t_newthread'])) {
@@ -129,12 +151,13 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
         $t_content = $HTTP_POST_VARS['t_content'];
     }else{
+		$t_content = "";
         $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
     $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-    $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
+    $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
 
 }else{
 
@@ -157,22 +180,37 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     }
 }
 
+$content_html_changes = false;
+$sig_html_changes = false;
+
 if ($valid) {
 
     if (isset($t_post_html) && $t_post_html == "Y") {
+		$old_t_content = _stripslashes($t_content);
         $t_content = fix_html($t_content);
+
+		if ($auto_linebreaks == true) {
+			$t_content = nl2br($t_content);
+		}
+
+		if ($old_t_content != $t_content) {
+			$content_html_changes = true;
+		}
     }
 
-    if (isset($t_sig)) {
-        if ($t_sig_html == "Y") {
-          $t_sig = fix_html($t_sig);
-        }
+    if (isset($t_sig) && $t_sig_html == "Y") {
+		$old_t_sig = _stripslashes($t_sig);
+		$t_sig = fix_html($t_sig);
+
+		if ($old_t_sig != $t_sig) {
+			$sig_html_changes = true;
+		}
     }
 
 }else {
 
     if (isset($t_post_html) && $t_post_html == "Y") {
-        $t_content = _stripslashes($t_content);
+        $t_content = isset($t_content) ? _stripslashes($t_content) : "";
     }
 
     if (isset($t_sig)) {
@@ -215,36 +253,28 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if ((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
+    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
 
         html_draw_top();
-        echo "<h1>{$lang['postreply']}</h1>\n";
-        echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-        html_draw_bottom();
-        exit;
 
-    }else {
+		echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
+		echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
 
-        if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+		echo "<table class=\"posthead\" width=\"600\" align=\"center\">\n";
+		echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+		echo "<tr><td>\n";
 
-            if (!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
-                html_draw_top();
-                echo "<h1>{$lang['postreply']}</h1>\n";
-                echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
-                html_draw_bottom();
-                exit;
-            }
+		echo "<h2>".$lang['messagehasbeendeleted']."</h2>\n";
+	    echo "</td></tr>\n";
 
-        }
+		echo "<tr><td align=\"center\">\n";
+		echo form_submit('cancel', $lang['cancel']);
+		echo "</td></tr>\n";
+		echo "</table></form>\n";
 
-        if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
+		html_draw_bottom();
+		exit;
 
-            html_draw_top();
-            echo "<h1>{$lang['postreply']}</h1>\n";
-            echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-            html_draw_bottom();
-            exit;
-        }
     }
 }
 
@@ -267,7 +297,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 $t_sticky = "N";
             }
 
-            $t_tid = post_create_thread($t_fid, _stripslashes($t_threadtitle), "N", $t_sticky, $t_closed);
+            $t_tid = post_create_thread($t_fid, ($t_threadtitle), "N", $t_sticky, $t_closed);
             $t_rpid = 0;
 
         }else{
@@ -308,7 +338,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $HTTP_POST_VARS['t_to_uid'], $t_content);
+            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $HTTP_POST_VARS['t_to_uid'], addslashes($t_content));
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 
@@ -362,7 +392,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
 }
 
-html_draw_top("onload=document.f_post.t_content.focus()");
+html_draw_top("onUnload=clearFocus()", "post.js", "openprofile.js", "htmltools.js");
 
 if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = md5(uniqid(rand()));
@@ -370,9 +400,38 @@ if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = $HTTP_POST_VARS['aid'];
 }
 
+echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
+echo "<br /><form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+
+if (!$newthread) {
+	if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+		echo "<table class=\"posthead\" width=\"600\" align=\"center\">\n";
+		echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
+		echo "<tr><td>\n";
+
+		if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
+			echo "<h2>".$lang['moderatorthreadclosed']."</h2>\n";
+		    echo "</td></tr>\n";
+
+		} else {
+			echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
+		    echo "</td></tr>\n";
+
+			echo "<tr><td align=\"center\">\n";
+			echo form_submit('cancel', $lang['cancel']);
+			echo "</td></tr>\n";
+			echo "</table></form>\n";
+
+			html_draw_bottom();
+			exit;
+		}
+	}
+}
+
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
-    echo "<h1>{$lang['messagepreview']}</h1>";
+	echo "<table class=\"posthead\" width=\"600\" align=\"center\">\n";
+	echo "<tr><td class=\"subhead\">{$lang['messagepreview']}</td></tr>";
 
     if ($HTTP_POST_VARS['t_to_uid'] == 0) {
 
@@ -426,8 +485,16 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $preview_message['CREATED'] = mktime();
     $preview_message['AID'] = $aid;
 
+	echo "<tr><td>\n";
     message_display(0, $preview_message, 0, 0, true, false, false, false, $show_sigs, true);
-    echo "<br />\n";
+    echo "</td></tr>\n";
+
+	echo "<tr><td align=\"center\">\n";
+	echo form_submit('submit',$lang['post'], 'onclick="closeAttachWin(); clearFocus()"')." ";
+	echo form_submit('cancel', $lang['cancel'], 'onclick="closeAttachWin(); clearFocus()"');
+	echo "</td></tr>\n";
+	echo "<tr><td>&nbsp;</td></tr>\n";
+	echo "</table>\n";
 }
 
 if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
@@ -446,22 +513,22 @@ if (!$newthread) {
 
 }
 
-if (!isset($t_sig) || !$t_sig) {
+if (!isset($t_sig)) {
     $has_sig = user_get_sig(bh_session_get_value('UID'),$t_sig,$t_sig_html);
 }else{
     $has_sig = true;
 }
 
-if ($newthread) {
-    echo "<h1>{$lang['createnewthread']}</h1>\n";
-}else{
-    echo "<h1>{$lang['postreply']}</h1>\n";
-}
 if (isset($error_html)) {
+	echo "<table class=\"posthead\" width=\"600\" align=\"center\">\n";
+	echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>";
+	echo "<tr><td>\n";
     echo $error_html . "\n";
+    echo "</td></tr>\n";
+	echo "</table>\n";
 }
 
-echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+/*echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 echo "function launchOthers() {\n\n";
 echo "  newUser = prompt(\"{$lang['pleaseentermembername']}\",document.f_post.t_to_uid.options[0].text);\n";
@@ -470,8 +537,7 @@ echo "    if (newUser != document.f_post.t_to_uid.options[0].text) {\n";
 echo "      document.f_post.t_to_uid.options[0] = new Option(newUser, \"U:\" + newUser, true, true);\n";
 echo "    }\n  }\n}\n";
 echo "//-->\n";
-echo "</script>\n";
-echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo "</script>\n";*/
 
 if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
@@ -481,38 +547,61 @@ if (!isset($t_fid)) {
     $t_fid = 0;
 }
 
+echo "<table class=\"posthead\" width=\"600\" align=\"center\">\n";
+echo "<tr><td class=\"subhead\" colspan=\"3\">";
+if ($newthread) {
+    echo $lang['createnewthread'];
+}else{
+    echo $lang['postreply'];
+}
+echo "</td></tr>\n";
+echo "<tr><td valign=\"top\" colspan=\"3\"><span style=\"font-size: 4px\">&nbsp;</span></td></tr>\n";
+
+echo "<tr><td valign=\"top\" width=\"160\">\n";
+
 if ($newthread) {
 
-    echo "<table>\n";
-    echo "<tr><td><h2>{$lang['selectfolder']}:</h2></td></tr>\n";
-    echo "<tr><td>" . folder_draw_dropdown($t_fid,"t_fid","",FOLDER_ALLOW_NORMAL_THREAD) . "</td></tr>\n";
-    echo "<tr><td><h2>{$lang['threadtitle']}:</h2></td></tr>\n";
-    echo "<tr><td>".form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 30, 64);
-    echo "\n";
-    echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
-    echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
-    echo "</table>\n";
+	echo "<h2>".$lang['folder'].":</h2>\n";
+	echo folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 160px\"")."\n";
+	echo "<h2>".$lang['threadtitle'].":</h2>\n";
+	echo form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 0, 0, "style=\"width: 160px\"")."\n";
+
+    echo form_input_hidden("t_newthread","Y")."\n";
 
 }else {
 
-    if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+	echo "<h2>".$lang['folder'].":</h2>\n";
+	echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
+	echo "<h2>".$lang['threadtitle'].":</h2>\n";
+	echo _stripslashes($threaddata['TITLE'])."\n";
 
-        if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
-            echo "<h1>{$lang['moderatorthreadclosed']}</h1>\n";
-        } else {
-            echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
-            html_draw_bottom();
-            exit;
-        }
-    }
-
-    echo "<h2>{$lang['threadtitle']}: ". _stripslashes($threaddata['TITLE']). "</h2>\n";
     echo form_input_hidden("t_tid", $reply_to_tid);
-    echo form_input_hidden("t_rpid", $reply_to_pid)."</td></tr>\n";
-
-
+    echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
 }
 
+echo "<h2>".$lang['to'].":</h2>\n";
+if (!$newthread) {
+	echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true)."<br />\n";
+	echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid)."<br />\n";
+}
+echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false)."<br />\n";
+echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
+
+echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
+echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 160px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br />\n";
+
+if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
+    echo "<p>".form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
+    echo "<br />".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
+    echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
+    echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
+}
+
+echo "</td>\n";
+echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
+echo "<td valign=\"top\">\n";
+
+// ============ MESSAGE ==============
 if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
     $t_content = isset($t_content) ? _stripslashes($t_content) : "";
 }
@@ -520,46 +609,92 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
 $t_sig = _stripslashes($t_sig);
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td>{$lang['to']}: ". post_draw_to_dropdown($t_to_uid). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("submit",$lang['post']) ."</td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "      <table border=\"0\" class=\"posthead\">\n";
-echo "        <tr>\n";
-echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td>{$lang['signature']}:<br />".form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td>", form_checkbox("t_post_html", "Y", "{$lang['messagecontainsHTML']} {$lang['notincludingsignature']}", (isset($t_post_html) && $t_post_html == "Y")), "</td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-echo form_submit('submit',$lang['post'], 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit('preview', $lang['preview']);
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit('cancel', $lang['cancel']);
+echo "<h2>". $lang['message'] .":</h2>\n";
+
+tools_html();
+
+echo tools_junk()."\n";
+echo form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 0, "virtual", "style=\"width: 400px\" tabindex=\"1\" ".tools_textfield_js())."\n";
+echo tools_junk()."\n";
+echo "</td></tr>\n";
+
+if ($content_html_changes == true) {
+	echo "<tr><td valign=\"top\" width=\"160\">&nbsp;</td>\n";
+	echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
+	echo "<td valign=\"top\">\n";
+	echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
+	echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
+	echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]</span></td></tr>\n";
+
+	echo form_input_hidden("old_t_content", htmlentities($old_t_content));
+	echo form_input_hidden("current_t_content", "correct");
+}
+
+echo "<tr><td valign=\"top\" width=\"160\">&nbsp;</td>\n";
+echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
+echo "<td valign=\"top\">\n";
+echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+$tph_radio = 1;
+if (isset($HTTP_POST_VARS['t_post_html'])) {
+	if ($t_post_html) {
+		$tph_radio = 3;
+	}
+}
+echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1)." \n";
+echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
+echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
+
+echo "<script language=\"Javascript\">\n";
+echo "  <!--\n";
+echo "    activate_tools();\n";
+echo "  //-->\n";
+echo "</script>\n";
+echo "</td></tr>\n";
+
+echo "<tr><td valign=\"top\" width=\"160\">&nbsp;</td>\n";
+echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
+echo "<td valign=\"top\">\n";
+echo "<h2>". $lang['signature'] .":</h2>\n";
+
+echo tools_junk()."\n";
+echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "style=\"width: 400px\" ".tools_textfield_js())."\n";
+echo tools_junk()."\n";
+echo form_input_hidden("t_sig_html", $t_sig_html)."\n";
+echo "</td></tr>\n";
+
+if ($sig_html_changes == true) {
+	echo "<tr><td valign=\"top\" width=\"160\">&nbsp;</td>\n";
+	echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
+	echo "<td valign=\"top\">\n";
+	echo form_radio("sig_code", "correct", $lang['correctedcode'], true, "onClick=\"showSig('correct');\"")."\n";
+	echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
+	echo "&nbsp;[<a href=\"#\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]</span></td></tr>\n";
+
+	echo form_input_hidden("old_t_sig", htmlentities($old_t_sig));
+	echo form_input_hidden("current_t_sig", "correct");
+}
+
+echo "<tr><td valign=\"top\" width=\"160\">&nbsp;</td>\n";
+echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
+echo "<td valign=\"top\">\n";
+
+echo form_submit('submit',$lang['post'], 'onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'onClick="clearFocus()"');
+echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'onclick="closeAttachWin(); clearFocus()"');
 
 if ($attachments_enabled) {
 
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('".$aid."')\"");
     echo form_input_hidden("aid", $aid);
 
 }
 
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML'])."\n";
-if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
-    echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
-    echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
-}
+//echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML'])."\n";
+
+echo "</td></tr>\n";
+echo "<tr><td colspan=\"3\">&nbsp;</td></tr>\n";
+echo "</table>\n";
+
 
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
@@ -568,11 +703,11 @@ if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",date("YmdHis"));
 }
 
-echo "</form>\n";
-
 if (!$newthread) {
 
-    echo "<h1>{$lang['inreplyto']}:</h1>\n";
+	echo "<table class=\"posthead\" width=\"600\" align=\"center\">\n";
+	echo "<tr><td class=\"subhead\">". $lang['inreplyto'] .":</td></tr>\n";
+	echo "<tr><td>\n";
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
@@ -584,9 +719,11 @@ if (!$newthread) {
 
     }
 
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
-
+	echo "<br /></td></tr>\n";
+	echo "</table>\n";
 }
+
+echo "</form>\n";
 
 html_draw_bottom();
 

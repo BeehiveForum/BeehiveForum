@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.42 2003-08-20 02:20:45 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.43 2003-08-30 00:16:23 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -159,6 +159,111 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
         if($fmt_uid != $default_uid && $fmt_uid != 0){
             $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
+        }
+    }
+
+    $html .= "</select>";
+    return $html;
+}
+
+function post_draw_to_dropdown_recent($default_uid, $show_all = true)
+{
+    $html = "<select name=\"t_to_uid_recent\" style=\"width: 160px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
+    $db_post_draw_to_dropdown = db_connect();
+
+    if(isset($default_uid) && $default_uid != 0){
+        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
+            $result = db_query($top_sql,$db_post_draw_to_dropdown);
+            if(db_num_rows($result)>0){
+                    $top_user = db_fetch_array($result);
+                    $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+                    $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
+            }
+    }
+
+    if ($show_all) {
+        $html .= "<option value=\"0\">ALL</option>\n";
+    }
+
+    $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM ".forum_table("USER")." U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "ORDER by U.LAST_LOGON DESC ";
+    $sql.= "LIMIT 0, 20";
+
+    $result = db_query($sql, $db_post_draw_to_dropdown);
+
+    while ($row = db_fetch_array($result)) {
+
+        if (isset($row['LOGON'])) {
+           $logon = $row['LOGON'];
+        } else {
+           $logon = "";
+        }
+
+        if(isset($row['NICKNAME'])){
+            $nickname = $row['NICKNAME'];
+        } else {
+            $nickname = "";
+        }
+
+        $fmt_uid = $row['UID'];
+        $fmt_username = format_user_name($logon,$nickname);
+
+        if($fmt_uid != $default_uid && $fmt_uid != 0){
+            $html .= "<option value=\"$fmt_uid\">".$fmt_username."</option>\n";
+        }
+    }
+
+    $html .= "</select>";
+    return $html;
+}
+
+function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
+{
+    $html = "<select name=\"t_to_uid_in_thread\" style=\"width: 160px\" onClick=\"checkToRadio(0)\">\n";
+    $db_post_draw_to_dropdown = db_connect();
+
+    if(isset($default_uid) && $default_uid != 0){
+        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
+            $result = db_query($top_sql,$db_post_draw_to_dropdown);
+            if(db_num_rows($result)>0){
+                    $top_user = db_fetch_array($result);
+                    $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+                    $html .= "<option value=\"$default_uid\" selected=\"selected\">".$fmt_username."</option>\n";
+            }
+    }
+
+    if ($show_all) {
+        $html .= "<option value=\"0\">ALL</option>\n";
+    }
+
+	$sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
+	$sql.= "FROM ".forum_table("POST")." P ";
+	$sql.= "LEFT JOIN ".forum_table("USER")." U ON (P.FROM_UID = U.UID) ";
+	$sql.= "WHERE P.TID = $tid ";
+    $sql.= "LIMIT 0, 20";
+
+    $result = db_query($sql, $db_post_draw_to_dropdown);
+
+    while ($row = db_fetch_array($result)) {
+
+        if (isset($row['LOGON'])) {
+           $logon = $row['LOGON'];
+        } else {
+           $logon = "";
+        }
+
+        if(isset($row['NICKNAME'])){
+            $nickname = $row['NICKNAME'];
+        } else {
+            $nickname = "";
+        }
+
+        $fmt_uid = $row['UID'];
+        $fmt_username = format_user_name($logon,$nickname);
+
+        if($fmt_uid != $default_uid && $fmt_uid != 0){
+            $html .= "<option value=\"$fmt_uid\">".$fmt_username."</option>\n";
         }
     }
 

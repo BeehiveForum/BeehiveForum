@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.30 2003-08-18 13:44:07 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.31 2003-08-30 00:16:23 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -29,12 +29,12 @@ require_once("./include/db.inc.php");
 require_once("./include/lang.inc.php");
 
 // create a <input type="text"> field
-function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text")
+function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text", $custom_html = "")
 {
 
     global $lang;
 
-    $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\"";
+    $html = trim("<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" $custom_html");
     $html.= " value=\"$value\"";
 
     if($width) $html.= " size=\"$width\"";
@@ -45,20 +45,20 @@ function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text
     return $html. " autocomplete=\"off\" />";
 }
 
-function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
+function form_input_text($name, $value = "", $width = 0, $maxchars = 0, $custom_html = "")
 {
-    return form_field($name, $value, $width, $maxchars, "text");
+    return form_field($name, $value, $width, $maxchars, "text", $custom_html);
 }
 
-function form_input_password($name, $value = "", $width = 0, $maxchars = 0)
+function form_input_password($name, $value = "", $width = 0, $maxchars = 0, $custom_html = "")
 {
-    return form_field($name,$value,$width,$maxchars,"password");
+    return form_field($name, $value, $width, $maxchars, "password", $custom_html);
 }
 
 // create a <input type="hidden"> field
-function form_input_hidden($name, $value = "")
+function form_input_hidden($name, $value = "", $custom_html = "")
 {
-    return form_field($name, $value, 0, 0, "hidden");
+    return form_field($name, $value, 0, 0, "hidden", $custom_html);
 }
 
 // create a <textarea> field
@@ -82,11 +82,11 @@ function form_textarea($name, $value = "", $rows = 0, $cols = 0, $wrap = "virtua
 }
 
 // create a <select> dropdown with values from database
-function form_dropdown_sql($name, $sql, $default)
+function form_dropdown_sql($name, $sql, $default, $custom_html = "")
 {
     global $lang;
 
-    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" dir=\"". $lang['_textdir']. "\">";
+    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" dir=\"". $lang['_textdir']. "\" ". $custom_html .">";
 
     $db_form_dropdown_sql = db_connect();
     $result = db_query($sql, $db_form_dropdown_sql);

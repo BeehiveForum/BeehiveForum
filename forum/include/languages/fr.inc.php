@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.105 2004-08-17 10:03:41 rowan_hill Exp $ */
+/* $Id: fr.inc.php,v 1.106 2004-08-17 18:28:53 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -155,6 +155,7 @@ $lang['makedefault'] = "Make Default";
 $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
+$lang['top'] = "Top";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -399,6 +400,9 @@ $lang['uploadattachments'] = "Upload attachments";
 $lang['moderatefolder'] = "Moderate folder";
 $lang['postinhtml'] = "Post in HTML";
 $lang['postasignature'] = "Post a signature";
+
+$lang['editforumlinks'] = "Edit Forum Links";
+$lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list displayed in the top-right of the forum frameset. If no links are set, the drop-down list will not be displayed.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

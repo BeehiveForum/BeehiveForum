@@ -28,6 +28,7 @@ require_once('./include/html.inc.php');
 require_once('./include/form.inc.php');
 require_once('./include/format.inc.php');
 require_once('./include/constants.inc.php');
+require_once('./include/attachments.inc.php');
 
 function pm_markasread($mid)
 {
@@ -48,11 +49,11 @@ function pm_add_sentitem($mid)
     $db_pm_add_sentitem = db_connect();
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT ";
+    $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT, AT.AID ";
     $sql.= "FROM ". forum_table("PM"). " PM ";
-    $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON ";
-    $sql.= "(PM_CONTENT.MID = PM.MID) ";
-    $sql.= "WHERE PM.MID = $mid";
+    $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
+    $sql.= "WHERE PM.MID = $mid GROUP BY PM.MID";
 
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_row = db_fetch_array($result);
@@ -79,6 +80,17 @@ function pm_add_sentitem($mid)
     $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
+
+    // ------------------------------------------------------------
+    // Insert a duplicate attachment ID so that it appears in
+    // the sender's Sent Items
+    // ------------------------------------------------------------
+
+    $sql = "INSERT INTO ". forum_table("PM_ATTACHMENT_IDS"). " (MID, AID) ";
+    $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";
+
+    $result = db_query($sql, $db_pm_add_sentitem);
+
 }
 
 function pm_list_get($folder)
@@ -95,10 +107,11 @@ function pm_list_get($folder)
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK ";
+    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
     $sql.= "FROM ". forum_table("PM"). " PM ";
-    $sql.= "LEFT JOIN " . forum_table("USER"). " FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN " . forum_table("USER"). " TUSER ON (PM.TO_UID = TUSER.UID) WHERE ";
+    $sql.= "LEFT JOIN ". forum_table("USER"). " FUSER ON (PM.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN ". forum_table("USER"). " TUSER ON (PM.TO_UID = TUSER.UID) ";
+    $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) WHERE ";
 
     if (($folder == PM_FOLDER_INBOX)) {
         $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = $uid ";
@@ -109,7 +122,7 @@ function pm_list_get($folder)
         $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid)";
     }
 
-    $sql.= "ORDER BY CREATED DESC";
+    $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC";
     $result = db_query($sql, $db_pm_list_get);
 
     while ($row = db_fetch_array($result)) {
@@ -194,10 +207,11 @@ function pm_single_get($mid, $folder, $uid = false)
     // ------------------------------------------------------------
 
     $sql = "SELECT PM.TYPE, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, PM_CONTENT.CONTENT ";
+    $sql.= "USER.LOGON, USER.NICKNAME, PM_CONTENT.CONTENT, AT.AID ";
     $sql.= "FROM ". forum_table("PM"). " PM ";
     $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = PM.FROM_UID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = $mid ";
 
     if (($folder == PM_FOLDER_INBOX)) {
@@ -209,6 +223,7 @@ function pm_single_get($mid, $folder, $uid = false)
         $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid)) ";
     }
 
+    $sql.= "GROUP BY PM.MID";
     $result = db_query($sql, $db_pm_list_get);
 
     if (db_num_rows($result) > 0) {
@@ -219,7 +234,7 @@ function pm_single_get($mid, $folder, $uid = false)
         // Check to see if we should add a sent item before delete
         // ------------------------------------------------------------
 
-        if (($db_pm_list_get_row['TYPE'] == PM_NEW) || ($db_pm_list_get_row['TYPE'] == PM_UNREAD)) {
+        if ($folder == PM_FOLDER_INBOX && ($db_pm_list_get_row['TYPE'] == PM_NEW) || ($db_pm_list_get_row['TYPE'] == PM_UNREAD)) {
             pm_markasread($mid);
             pm_add_sentitem($mid);
         }
@@ -234,7 +249,7 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array, $replyto = false)
 {
-    global $lang;
+    global $HTTP_SERVER_VARS, $lang;
 
     echo "<div align=\"center\">\n";
     echo "  <table width=\"90%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -242,15 +257,15 @@ function draw_pm_message($pm_elements_array, $replyto = false)
     echo "      <td>\n";
     echo "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
     echo "          <tr>\n";
-    echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}&nbsp;</span></td>\n";
-    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">\n";
-    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['FROM_UID'] . ")\" target=\"_self\">\n";
-    echo format_user_name($pm_elements_array['LOGON'], $pm_elements_array['NICKNAME']), "</a>\n";
+    echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['FROM_UID'] . ")\" target=\"_self\">";
+    echo format_user_name($pm_elements_array['LOGON'], $pm_elements_array['NICKNAME']), "</a>";
     echo "</span></td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">".stripslashes($pm_elements_array['SUBJECT'])."</span></td>\n";
+    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", _stripslashes($pm_elements_array['SUBJECT']), "</span></td>\n";
     echo "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_elements_array['CREATED']), "&nbsp;</span></td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
@@ -265,6 +280,50 @@ function draw_pm_message($pm_elements_array, $replyto = false)
     echo "          <tr>\n";
     echo "            <td class=\"postbody\" align=\"left\">", $pm_elements_array['CONTENT'], "</td>\n";
     echo "          </tr>\n";
+
+    if (isset($pm_elements_array['AID'])) {
+
+        $aid = $pm_elements_array['AID'];
+        $attachments = get_attachments($pm_elements_array['FROM_UID'], $aid);
+
+        if (is_array($attachments)) {
+
+            echo "          <tr>\n";
+            echo "            <td>&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"postbody\" align=\"left\">\n";
+            echo "              <b>{$lang['attachments']}:</b><br />\n";
+
+            for ($i = 0; $i < sizeof($attachments); $i++) {
+
+                echo "              <img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "\" target=\"_blank\" title=\"";
+
+                if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+                    echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                }
+
+                echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+                echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+
+                if ($attachments[$i]['downloads'] == 1) {
+                    echo " {$lang['time']}";
+                }else {
+                    echo " {$lang['times']}";
+                }
+
+                echo "\">". $attachments[$i]['filename']. "</a><br />\n";
+
+            }
+
+            echo "            </td>\n";
+            echo "          </tr>\n";
+
+        }
+
+    }
+
     echo "          <tr>\n";
     echo "            <td align=\"center\">\n";
 
@@ -297,38 +356,18 @@ function draw_header_pm()
     echo "</script>\n";
 }
 
-function draw_new_pm($t_subject, $t_content, $t_to_uid, $t_post_html)
+function pm_save_attachment_id($mid, $aid)
 {
-    global $lang;
 
-    echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-    echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-    echo "  <tr>\n";
-    echo "    <td>\n";
-    echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-    echo "          <td>", form_field("t_subject", isset($t_subject) ? stripslashes(_htmlentities($t_subject)) : "", 32), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"right\">{$lang['to']}: </td>\n";
-    echo "          <td>", pm_draw_to_dropdown($t_to_uid), "&nbsp;", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "</td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "      <table border=\"0\" class=\"posthead\">\n";
-    echo "        <tr>\n";
-    echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td><span class=\"bhinputcheckbox\">", form_checkbox('t_post_html', 'Y', $lang['messagecontainsHTML'], ($t_post_html == 'Y')), "</td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
-    echo form_submit('submit', $lang['cancel']), "&nbsp;", form_submit('convert_html', $lang['converttoHTML']);
-    echo "</form>\n";
+    // ------------------------------------------------------------
+    // Save the attachment ID for the PM
+    // ------------------------------------------------------------
+
+    $db_pm_save_attachment_id = db_connect();
+    $sql = "INSERT INTO ". forum_table("PM_ATTACHMENT_IDS"). " (MID, AID) values ($mid, '$aid')";
+
+    $result = db_query($sql, $db_pm_save_attachment_id);
+    return $result;
 }
 
 function pm_send_message($tuid, $subject, $content)
@@ -380,12 +419,30 @@ function pm_delete_message($mid)
     // in his Sent Items folder.
     // ------------------------------------------------------------
 
-    $sql = "SELECT PM.TYPE, PM.TO_UID FROM ". forum_table("PM"). " PM WHERE PM.MID = $mid";
+    $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, PAF.FILENAME, AT.AID ";
+    $sql.= "FROM ". forum_table("PM"). " PM ";
+    $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " AT ON (AT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN ". forum_table("POST_ATTACHMENT_FILES"). " PAF ON (PAF.AID = AT.AID) ";
+    $sql.= "WHERE PM.MID = $mid";
+
     $result = db_query($sql, $db_delete_pm);
     $db_delete_pm_row = db_fetch_array($result);
 
+    // ------------------------------------------------------------
+    // Add the Sent Item
+    // ------------------------------------------------------------
+
     if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
         pm_add_sentitem($mid);
+    }
+
+    // ------------------------------------------------------------
+    // If it is the author deleting his Sent Item then
+    // delete the attachment as well.
+    // ------------------------------------------------------------
+
+    if ($db_delete_pm_row['TYPE'] == PM_SENT) {
+        delete_attachment($db_delete_pm_row['FROM_UID'], $db_delete_pm_row['AID'], $db_delete_pm_row['FILENAME']);
     }
 
     $sql = "DELETE FROM ". forum_table('PM'). " WHERE MID = $mid";

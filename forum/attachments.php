@@ -240,7 +240,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
 </table>
-<h1><?php echo $lang['allattachmentsexcludingcurrent']; ?></h1>
+<h1><?php echo $lang['otherattachmentsincludingpm']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
     <td width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
@@ -281,7 +281,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
 
-      echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+      echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";

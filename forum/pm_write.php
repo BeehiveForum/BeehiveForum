@@ -51,6 +51,7 @@ require_once("./include/header.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
 require_once("./include/email.inc.php");
+require_once("./include/attachments.inc.php");
 
 // Get the Message ID (MID)
 
@@ -102,9 +103,19 @@ if (isset($HTTP_POST_VARS['t_post_html'])) {
     $t_post_html = "Y";
 }
 
+// Fetch the TO_UID value
+
+if (isset($HTTP_POST_VARS['t_to_uid'])) {
+    $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
+}elseif (isset($mid)) {
+    $t_to_uid = pm_get_user($mid);
+}else {
+    $t_to_uid = -1;
+}
+
 // 'Other' Button was used to specify a username
 
-if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
+if (substr($t_to_uid, 0, 2) == "U:") {
 
     $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
 
@@ -116,7 +127,6 @@ if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0,
     if (db_num_rows($result) > 0) {
 
         $touser = db_fetch_array($result);
-        $HTTP_POST_VARS['t_to_uid'] = $touser['UID'];
         $t_to_uid = $touser['UID'];
 
     }else{
@@ -126,14 +136,6 @@ if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0,
 
     }
 
-}
-
-// Fetch the TO_UID value
-
-if (isset($HTTP_POST_VARS['t_to_uid'])) {
-    $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
-}elseif (isset($mid)) {
-    $t_to_uid = pm_get_user($mid);
 }
 
 // User clicked the submit button - check the data that was submitted
@@ -150,7 +152,6 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
     if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
         $t_content = $HTTP_POST_VARS['t_content'];
     }else {
-        $t_content = "";
         $error_html = "<h2>{$lang['entercontentformessage']}</h2>";
         $valid = false;
     }
@@ -166,30 +167,25 @@ $t_post_html = isset($t_post_html) ? $t_post_html : "";
 
 if ($valid) {
 
-    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html == "Y")) {
+    if (isset($t_post_html) && $t_post_html == "Y") {
         $t_content = fix_html($t_content);
     }
 
 }else {
 
-    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html == "Y")) {
+    if (isset($t_post_html) && $t_post_html == "Y") {
         $t_content = _stripslashes($t_content);
     }
 }
 
-// User clicked the Convert button.
-
-if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
-
-   $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
-   $t_post_html = "Y";
-
-}
 
 // Send the PM
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
     if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+        if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
+            pm_save_attachment_id($new_mid, $HTTP_POST_VARS['aid']);
+        }
         email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
         if (isset($mid)){
             $uri = "./pm.php?mid=$mid";
@@ -205,6 +201,23 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
 html_draw_top_script();
 draw_header_pm();
+
+// Attachment Unique ID
+
+if (!isset($HTTP_POST_VARS['aid'])) {
+  $aid = md5(uniqid(rand()));
+}else{
+  $aid = $HTTP_POST_VARS['aid'];
+}
+
+// User clicked the Convert button.
+
+if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
+
+   $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
+   $t_post_html = "Y";
+
+}
 
 // preview message
 
@@ -230,11 +243,12 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     $pm_elements_array['SUBJECT'] = $t_subject;
     $pm_elements_array['CREATED'] = mktime();
+    $pm_elements_array['AID'] = $aid;
 
     if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
         $pm_elements_array['CONTENT'] = make_html($t_content);
     }else {
-        $pm_elements_array['CONTENT'] = _htmlentities($t_content);
+        $pm_elements_array['CONTENT'] = $t_content;
     }
 
     draw_pm_message($pm_elements_array);
@@ -249,13 +263,49 @@ if ($valid == false) {
     echo $error_html;
 }
 
-if (!isset($t_to_uid)) $t_to_uid = -1;
+if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
+    $t_content = isset($t_content) ? _stripslashes($t_content) : "";
+}
 
-draw_new_pm($t_subject, $t_content, $t_to_uid, $t_post_html);
+echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td>\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
+echo "          <td>", form_field("t_subject", isset($t_subject) ? stripslashes(_htmlentities($t_subject)) : "", 32), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td align=\"right\">{$lang['to']}: </td>\n";
+echo "          <td>", pm_draw_to_dropdown($t_to_uid), "&nbsp;", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "</td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "      <table border=\"0\" class=\"posthead\">\n";
+echo "        <tr>\n";
+echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td><span class=\"bhinputcheckbox\">", form_checkbox('t_post_html', 'Y', $lang['messagecontainsHTML'], ($t_post_html == 'Y')), "</td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
+echo form_submit('submit', $lang['cancel']);
+
+if ($attachments_enabled && $pm_allow_attachments) {
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo form_input_hidden("aid", $aid);
+}
+
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML']);
+echo "</form>\n";
+
 
 if (isset($mid)) {
 
-    $pm_elements_array = array();
     $pm_elements_array = pm_single_get($mid, 0, bh_session_get_value('TO_UID'));
     echo "<p>in reply to:</p>";
     draw_pm_message($pm_elements_array);

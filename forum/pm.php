@@ -200,6 +200,11 @@ if (sizeof($listmessages_array) == 0) {
 
         echo "      <td class=\"postbody\">";
         echo "<a href=\"pm.php?folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
+
+        if (isset($listmessages_array[$i]['AID'])) {
+            echo "&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
+        }
+
         echo "</td>\n";
 
         if ($folder == 1 || $folder == 2) {

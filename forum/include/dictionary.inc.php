@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.3 2004-11-22 22:44:51 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.4 2004-11-26 09:35:09 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
@@ -105,7 +105,7 @@ class dictionary {
         $uid = bh_session_get_value('UID');
 
         $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-        $sql.= "VALUES ('$word', SUBSTR(SOUNDEX('$word'), 1, 4), '$uid')";
+        $sql.= "VALUES ('$word', SUBSTRING(SOUNDEX('$word'), 1, 4), '$uid')";
 
         return db_query($sql, $db_dictionary_add_custom_word);
     }
@@ -169,7 +169,7 @@ class dictionary {
         // Soundex match
 
         $sql = "SELECT WORD FROM DICTIONARY WHERE ";
-        $sql.= "SUBSTR(SOUNDEX(WORD), 1, 4) = SUBSTR(SOUNDEX('$word'), 1, 4) ";
+        $sql.= "SUBSTRING(SOUNDEX(WORD), 1, 4) = SUBSTRING(SOUNDEX('$word'), 1, 4) ";
         $sql.= "AND (UID = 0 OR UID = '$uid')";
 
         $result = db_query($sql, $db_dictionary_get_suggestions);
@@ -179,7 +179,15 @@ class dictionary {
             $this->suggestions_array[] = $row['WORD'];
         }
 
-        return $this->suggestions_array;
+        if (sizeof($this->suggestions_array) > 0) return $this->suggestions_array;
+
+        return false;
+    }
+
+    function get_best_suggestion()
+    {
+        if (isset($this->suggestions_array[0])) return $this->suggestions_array[0];
+        return "";
     }
 
     function find_next_word()
@@ -193,18 +201,10 @@ class dictionary {
 
         }else {
 
-            while (!$this->word_is_valid() || $this->word_is_ignored()) {
+            if (!$this->word_is_valid() || $this->word_is_ignored() || !$this->get_suggestions()) {
 
-                $this->current_word++;
-
-                if ($this->current_word > (sizeof($this->content_array) - 1)) {
-
-                    $this->check_complete = true;
-                    return;
-                }
+                $this->find_next_word();
             }
-
-            if (!$this->get_suggestions()) $this->find_next_word();
         }
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.60 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.61 2004-11-26 09:35:09 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -108,23 +108,30 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
     $lang = load_language_file();
 
     $html = "<select name=\"$name\" id=\"$name\" class=\"bhselect\" ";
-    $html.= "dir=\"{$lang['_textdir']}\" ";
+    $html.= "dir=\"{$lang['_textdir']}\"";
 
     if ($custom_html) {
+
         $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+        $html.= " $custom_html";
     }
 
     $html.= ">";
 
-    for ($i = 0; $i < count($value); $i++) {
+    if (is_array($value)) {
 
-        $sel = (strtolower($value[$i]) == strtolower($default)) ? " selected=\"selected\"" : "";
+        foreach ($value as $key => $value_text) {
 
-        if (isset($label[$i])) {
-            $html.= "<option value=\"{$value[$i]}\"$sel>{$label[$i]}</option>";
-        }else {
-            $html.= "<option$sel>{$value[$i]}</option>";
+            $sel = (strtolower($value_text) == strtolower($default)) ? " selected=\"selected\"" : "";
+
+            if (isset($label[$key])) {
+
+                $html.= "<option value=\"{$value_text}\"$sel>{$label[$key]}</option>";
+
+            }else {
+
+                $html.= "<option$sel>{$value_text}</option>";
+            }
         }
     }
 

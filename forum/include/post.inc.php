@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.109 2005-03-07 22:39:53 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.110 2005-03-08 19:17:29 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -66,7 +66,7 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
         $new_pid = db_insert_id($db_post_create);
 
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT, INDEXED) ";
-        $sql.= "VALUES ('$tid', '$new_pid', '$post_content', 0)";
+        $sql.= "VALUES ('$tid', '$new_pid', '$post_content', 1)";
 
         $result = db_query($sql, $db_post_create);
 
@@ -76,6 +76,8 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
             $sql.= "WHERE TID = $tid";
 
             $result = db_query($sql, $db_post_create);
+
+            search_index_post($tid, $new_pid, $post_content);
 
         }else {
 

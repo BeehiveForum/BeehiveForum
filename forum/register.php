@@ -109,7 +109,7 @@ if($valid){
 }
 
 if($valid){
-    $new_uid = user_create($login,$password,$nickname,$email);
+    $new_uid = user_create($logon,$password,$nickname,$email);
     if($new_uid > -1){
         bh_session_init($new_uid);
     } else {

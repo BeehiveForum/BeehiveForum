@@ -263,7 +263,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if($in_list && $limit_text != false){
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
-            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP)) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
                
                 echo "<img src=\"".style_image('star.png')."\" border=\"0\" />";
                 echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";

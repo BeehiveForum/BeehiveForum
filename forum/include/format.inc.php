@@ -43,32 +43,32 @@ function format_url2link($html)
     return $fhtml;
 }
 
-function format_time($time)
+function format_time($time, $verbose = 0)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
     include_once("./include/constants.inc.php");
     global $HTTP_COOKIE_VARS;
-    
-    // Calculate time in local timezone (the cookie bh_sess_tz = hours difference from GMT, West = negative)
+
+    // Calculate $time in local timezone and current local time (the cookie bh_sess_tz = hours difference from GMT, West = negative)
     $local_time = $time + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
+    $local_time_now = time() + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
 
-    // Amend $local_time for daylight saving if necessary (using critera for British Summer Time)
+    // Amend times for daylight saving if necessary (using critera for British Summer Time)
     if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time = timestamp_amend_bst($local_time);
+    if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time_now = timestamp_amend_bst($local_time_now);
 
-    if ((gmdate("Y", $local_time) != gmdate("Y")) || (gmdate("n", $local_time) != gmdate("n")) || (gmdate("j", $local_time) != gmdate("j"))) {
-        $fmt = gmdate("j M", $local_time); // time not today, display day and date
+    if ((gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) || (gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
+        // time not today
+        if ($verbose) {
+            $fmt = gmdate("j M H:i", $local_time); // display day, date, hours, and minutes
+        } else {
+            $fmt = gmdate("j M", $local_time); // display day and date only
+        }
     } else {
         $fmt = gmdate("H:i", $local_time); // time is today, display hours and minutes
     }
-
-    /*// Test to see if the time in question is less than 24 hours ago
-    if ((time() - $time) < DAY_IN_SECONDS) {
-        $fmt = gmdate("H:i", $local_time); // time < 24h ago, display hours and minutes
-    } else {
-        $fmt = gmdate("j M", $local_time); // time >= 24h ago, display day and date
-    }*/
-
+    
     return $fmt;
 }
 

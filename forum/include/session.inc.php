@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.139 2004-10-22 14:06:23 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.140 2004-10-28 19:31:34 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -89,7 +89,7 @@ function bh_session_check($add_guest_sess = true)
 
         if (db_num_rows($result) > 0) {
 
-            $user_sess = db_fetch_array($result, MYSQL_ASSOC);
+            $user_sess = db_fetch_array($result);
 
             // Add preference settings
 

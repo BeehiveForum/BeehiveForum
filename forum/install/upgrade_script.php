@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.28 2004-10-24 13:25:58 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.29 2004-10-28 19:31:35 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -1124,7 +1124,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
-    while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    while ($row = mysql_fetch_array($result)) {
 
         $new_status = 0;
 
@@ -1193,7 +1193,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
-    while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    while ($row = mysql_fetch_array($result)) {
 
         $sql = "SELECT GID FROM {$forum_webtag}_GROUP_USERS WHERE UID = '{$row['UID']}'";
 
@@ -1203,7 +1203,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (mysql_num_rows($result_gid) > 0) {
 
-            list($gid) = mysql_fetch_array($result_gid, MYSQL_NUM);
+            list($gid) = mysql_fetch_array($result_gid);
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
             $sql.= "VALUES ('$gid', '{$row['FID']}', '6396')";

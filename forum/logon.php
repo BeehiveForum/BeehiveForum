@@ -54,13 +54,18 @@ if (isset($HTTP_POST_VARS['submit'])) {
   
     $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
     
-    if($luid > -1){
+    if ($luid > -1) {
     
-      bh_session_init($luid);
+      // Reset Thread Mode      
+      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, '/');
+    
+      if ($HTTP_POST_VARS['submit'] == 'Guest') {
       
-      setcookie('bh_thread_mode', 0);
-      
-      if ($luid != 0) { // Don't store a cookie for the guest logon.
+        bh_session_init(0); // Use UID 0 for guest account.
+        
+      }else {
+    
+        bh_session_init($luid);
         
         if(@$HTTP_POST_VARS['remember_user'] == "Y") {
         
@@ -71,14 +76,19 @@ if (isset($HTTP_POST_VARS['submit'])) {
         
           setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
           setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
-        }
+          
+        }         
         
       }
 
-      if(substr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'],0,13) != "Microsoft-IIS"){ // Not IIS
-          header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
-      } else { // IIS bug prevents redirect at same time as setting cookies.
+      if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
+      
+          header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST']. $final_uri);
+          
+      }else { // IIS bug prevents redirect at same time as setting cookies.
+      
           html_draw_top();
+          
           // Try a Javascript redirect
           echo "<script language=\"javascript\" type=\"text/javascript\">\n";
           echo "<!--\n";
@@ -89,14 +99,18 @@ if (isset($HTTP_POST_VARS['submit'])) {
           // If they're still here, Javascript's not working. Give up, give a link.
           echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
           echo "<p>You logged in successfully.</p>";
-          //echo "<p><a href=\"http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri."\">Continue</a></p>";
+
           html_draw_bottom();
           exit;
+          
       }
-    } else if($luid == -2){ // User is banned - everybody hide
+      
+    }else if($luid == -2){ // User is banned - everybody hide
+    
         header("HTTP/1.0 500 Internal Server Error");
         exit;
-    } else {
+        
+    }else {
 
       $error_html = "<h2>Invalid login</h2>";
 

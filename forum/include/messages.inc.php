@@ -271,12 +271,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;&nbsp;<img src=\"".style_image('folder.png')."\" border=\"0\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
                 
-                if (!$is_poll) {
+                if (!$is_poll || $message['PID'] > 1) {
                 
                   echo "&nbsp;&nbsp;<img src=\"".style_image('poll.png')."\" border=\"0\" />";
                   echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
                   
                 }
+                
+                  
             }
             if(perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('subscribe.png')."\" border=\"0\" />";

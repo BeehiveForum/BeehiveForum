@@ -27,7 +27,10 @@ require_once("./include/html.inc.php");
 
 if (isset($HTTP_GET_VARS['owneruid']) && isset($HTTP_GET_VARS['filename'])) {
 
-  download_attachment($HTTP_GET_VARS['owneruid'], $HTTP_GET_VARS['filename']);
+  $userinfo = user_get($HTTP_GET_VARS['owneruid']);
+  $attachments_dir = "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). '/attachments/'. $userinfo['LOGON'];
+  header_redirect($attachments_dir. '/'. $HTTP_GET_VARS['filename']);
+  exit;
   
 }else {
 

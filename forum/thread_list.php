@@ -346,9 +346,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "</td>\n";
     echo "</tr>\n";
 
-    //if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
-
-    if (is_array($thread_info) && sizeof($thread_info) > 0) {
+    if (is_array($thread_info) && ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number))) {
 
         echo "<tr>\n";
         echo "<td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">";

@@ -246,7 +246,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 
 }
 
-function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by interest (default High Interest)
+function threads_get_by_interest($uid, $interest = 1) // get messages for $uid by interest (default High Interest)
 {
 
     $folders = threads_get_available_folders();
@@ -265,12 +265,15 @@ function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
     $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
+    $sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
@@ -300,6 +303,8 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
     $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
+    $sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -307,6 +312,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND USER_THREAD.last_read < THREAD.length ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
@@ -336,6 +342,8 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
     $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
+    $sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -343,6 +351,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";

@@ -481,3 +481,58 @@
 .e_crying span {
 	display: none;
 }
+
+.e_eek { /* 8-O */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/eek.png");
+    background-repeat: no-repeat;
+}
+.e_eek span {
+	display: none;
+}
+
+.e_bounce { /* (bounce) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/bounce.gif");
+    background-repeat: no-repeat;
+}
+.e_bounce span {
+	display: none;
+}
+
+.e_woot { /* (woot) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/woot.gif");
+    background-repeat: no-repeat;
+}
+.e_woot span {
+	display: none;
+}
+
+.e_dance { /* (dance) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/dance.gif");
+    background-repeat: no-repeat;
+}
+.e_dance span {
+	display: none;
+}
+
+.e_horror { /* :& */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/horror.png");
+    background-repeat: no-repeat;
+}
+.e_horror span {
+	display: none;
+}

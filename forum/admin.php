@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.69 2005-03-24 00:22:39 decoyduck Exp $ */
+/* $Id: admin.php,v 1.70 2005-03-26 18:16:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -77,7 +77,7 @@ if (!perm_has_admin_access() && !perm_has_forumtools_access()) {
     exit;
 }
 
-$stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : forum_get_setting('default_style')). "/style.css";
+$stylesheet = html_get_style_sheet();
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
@@ -88,7 +88,7 @@ echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" d
 echo "<head>\n";
 echo "<title>$forum_name</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
-echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\" />\n";
 echo "</head>\n";

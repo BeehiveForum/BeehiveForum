@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.109 2005-03-22 21:47:45 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.110 2005-03-26 18:16:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -730,7 +730,7 @@ echo form_submit('submit', $lang['post'], "tabindex=\"2\" onclick=\"return autoC
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if (forum_get_setting('attachments_enabled', 'Y', false) && forum_get_setting('pm_allow_attachments', 'Y', false)) {
+if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);

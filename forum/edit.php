@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.163 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: edit.php,v 1.164 2005-03-26 18:16:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -458,7 +458,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
+    if (((forum_get_setting('allow_post_editing', 'N')) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
 
         echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
         echo "<br />\n";
@@ -498,7 +498,7 @@ if (isset($_POST['preview'])) {
 
             post_add_edit_text($tid, $pid);
 
-            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
 
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
@@ -589,7 +589,7 @@ if (isset($_POST['preview'])) {
 
         if ($editmessage['CONTENT'] = message_get_content($tid, $pid)) {
 
-            if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
+            if (((forum_get_setting('allow_post_editing', 'N')) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
 
                 echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
                 echo "<br />\n";
@@ -855,7 +855,7 @@ echo form_submit('submit',$lang['apply'], "tabindex=\"2\" onclick=\"return autoC
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
-if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+if (forum_get_setting('attachments_enabled', 'Y') && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$from_uid', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);

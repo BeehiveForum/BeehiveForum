@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.71 2005-03-14 13:27:19 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.72 2005-03-26 18:16:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -306,7 +306,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['style'])) {
         $user_prefs['STYLE'] = trim(_stripslashes($_POST['style']));
     }else {
-        $user_prefs['STYLE'] = forum_get_setting('default_style');
+        $user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
 
     if (isset($_POST['style_global'])) {
@@ -318,7 +318,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['emoticons'])) {
         $user_prefs['EMOTICONS'] = trim(_stripslashes($_POST['emoticons']));
     }else {
-        $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons');
+        $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
     }
 
     if (isset($_POST['emoticons_global'])) {
@@ -585,12 +585,12 @@ echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['forumstyle']}:</td>\n";
-echo "                  <td>", form_dropdown_array("style", array_keys($available_styles), array_values($available_styles), (_in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style')), "</td>\n";
+echo "                  <td>", form_dropdown_array("style", array_keys($available_styles), array_values($available_styles), (_in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default')), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("style_global", "Y", $lang['setforallforums'], $user_prefs['STYLE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['forumemoticons']} [<a href=\"javascript:void(0);\" onclick=\"openEmoticons('', '$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
-echo "                  <td>", form_dropdown_array("emoticons", array_keys($available_emoticons), array_values($available_emoticons), (_in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons')), "</td>\n";
+echo "                  <td>", form_dropdown_array("emoticons", array_keys($available_emoticons), array_values($available_emoticons), (_in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default')), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("emoticons_global", "Y", $lang['setforallforums'], $user_prefs['EMOTICONS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

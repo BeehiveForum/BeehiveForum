@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.10 2005-03-14 13:11:19 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.11 2005-03-26 18:16:41 decoyduck Exp $ */
 
 $include_files_dir   = "forum/include";
 $include_files_array = array("\$lang" => "lang.inc.php");
@@ -104,7 +104,7 @@ foreach($source_files_dir_array as $source_files_dir) {
     }
 }
 
-foreach($file_include_array as $filename => $include_array) {
+foreach ($file_include_array as $filename => $include_array) {
 
     if (is_array($include_array) && sizeof($include_array) > 0) {
 
@@ -114,7 +114,7 @@ foreach($file_include_array as $filename => $include_array) {
 
         foreach ($include_array as $include_file) {
 
-            $include_file_preg = preg_quote("include_once(\"./include/$include_file\")", "/");
+            $include_file_preg = preg_quote("include_once(BH_INCLUDE_PATH. \"$include_file\")", "/");
 
             if (preg_match("/$include_file_preg/", $file_contents[$filename]) < 1) {
 

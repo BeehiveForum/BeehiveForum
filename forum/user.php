@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.38 2005-03-24 00:23:10 decoyduck Exp $ */
+/* $Id: user.php,v 1.39 2005-03-26 18:16:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -83,7 +83,7 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-$stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : forum_get_setting('default_style')). "/style.css";
+$stylesheet = html_get_style_sheet();
 
 // Forum Name
 

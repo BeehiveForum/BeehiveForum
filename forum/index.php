@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.108 2005-03-24 00:22:46 decoyduck Exp $ */
+/* $Id: index.php,v 1.109 2005-03-26 18:16:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -57,7 +57,7 @@ $user_sess = bh_session_check(false);
 
 // Does the forum allow auto logon of guests?
 
-$auto_logon = forum_get_setting('auto_logon', 'Y', false);
+$auto_logon = forum_get_setting('auto_logon', 'Y');
 
 // Top frame and style sheet
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.40 2005-03-20 21:47:00 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.41 2005-03-26 18:16:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -190,7 +190,7 @@ if (isset($_POST['interest']) && is_numeric($_POST['interest']) && $_POST['inter
 
 // Admin Options
 
-if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
+if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)))) {
 
     if (isset($_POST['rename'])&& strlen(trim(_stripslashes($_POST['rename']))) > 0) {
 
@@ -370,7 +370,7 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
-if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
+if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)))) {
 
     echo "        <br />\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

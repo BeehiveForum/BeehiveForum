@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.7 2005-03-24 19:17:57 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.8 2005-03-26 18:16:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -78,7 +78,7 @@ if (!forum_check_access_level()) {
 
 // Check to see if attachments are actually enabled
 
-if (forum_get_setting('attachments_enabled', 'N', false)) {
+if (forum_get_setting('attachments_enabled', 'N')) {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();

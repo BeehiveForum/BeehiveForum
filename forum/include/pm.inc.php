@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.117 2005-03-25 21:37:54 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.118 2005-03-26 18:16:46 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -993,7 +993,7 @@ function pm_system_prune_folders()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $pm_prune_length = intval(forum_get_setting('pm_auto_prune'));
+    $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
 
     if ($pm_prune_length > 0) {
 
@@ -1022,7 +1022,7 @@ function pm_auto_prune_enabled()
 
     if (isset($user_prefs['PM_AUTO_PRUNE']) && intval($user_prefs['PM_AUTO_PRUNE']) > 0) return true;
 
-    $pm_prune_length = intval(forum_get_setting('pm_auto_prune'));
+    $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
 
     return ($pm_prune_length > 0);
 }

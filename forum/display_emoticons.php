@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.34 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.35 2005-03-26 18:16:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,7 +111,7 @@ echo "          <td valign=\"top\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
 
-$emot_forum = forum_get_setting('default_emoticons');
+$emot_forum = forum_get_setting('default_emoticons', false, 'default');
 
 $emot_sets = emoticons_get_available();
 

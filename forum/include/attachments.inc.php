@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.92 2005-03-21 15:36:05 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.93 2005-03-26 18:16:45 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");
@@ -355,6 +355,8 @@ function get_free_attachment_space($uid)
 
     $forum_settings = forum_get_settings();
 
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return 0;
+
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 
     $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
@@ -362,9 +364,9 @@ function get_free_attachment_space($uid)
 
     while($row = db_fetch_array($result)) {
 
-        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+        if (@file_exists("$attachment_dir/{$row['HASH']}")) {
 
-            $used_attachment_space += filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']);
+            $used_attachment_space += filesize("$attachment_dir/{$row['HASH']}");
         }
     }
 
@@ -534,7 +536,7 @@ function attachment_inc_dload_count($hash)
 
 function attachment_embed_check($content)
 {
-    if (forum_get_setting('attachments_allow_embed', 'Y', false)) return false;
+    if (forum_get_setting('attachments_allow_embed', 'Y')) return false;
 
     $content_check = preg_replace('/\&amp;\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
 
@@ -577,7 +579,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     $attachment_path.= md5($attachment['aid']);
     $attachment_path.= rawurldecode($attachment['filename']);
 
-    if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+    if (forum_get_setting('attachment_use_old_method', 'Y')) {
 
         $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
 

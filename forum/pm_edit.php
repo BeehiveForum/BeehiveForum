@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.66 2005-03-22 21:47:45 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.67 2005-03-26 18:16:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -264,7 +264,7 @@ if ($valid && isset($_POST['preview'])) {
 
         $t_subject = _htmlentities($t_subject);
 
-        if (forum_get_setting('attachments_enabled', 'Y', false)) {
+        if (forum_get_setting('attachments_enabled', 'Y')) {
 
             if (get_num_attachments($aid) > 0) pm_save_attachment_id($mid, $aid);
         }
@@ -517,7 +517,7 @@ echo form_submit('submit', $lang['apply'], "tabindex=\"2\" onclick=\"return auto
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if (forum_get_setting('attachments_enabled', 'Y', false)) {
+if (forum_get_setting('attachments_enabled', 'Y')) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$uid', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.72 2005-03-14 13:27:20 decoyduck Exp $ */
+/* $Id: links.php,v 1.73 2005-03-26 18:16:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -81,7 +81,7 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (forum_get_setting('show_links', 'N', false)) {
+if (forum_get_setting('show_links', 'N')) {
 
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";

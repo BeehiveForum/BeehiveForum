@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.135 2004-10-16 13:04:15 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.136 2004-10-16 13:52:32 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -113,71 +113,38 @@ function bh_session_check($add_guest_sess = true)
                 exit;
             }
 
-            if (isset($fid) && is_numeric($fid)) {
+            // If the user is not logged into the current forum, we should
+            // do that now for them.
 
-                // If the user is not logged into the current forum, we should
-                // do that now for them.
+            if ((isset($fid) && is_numeric($fid)) && ($user_sess['FID'] != $fid)) {
 
-                if ($user_sess['FID'] != $fid) {
+                $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$fid' ";
+                $sql.= "WHERE HASH = '$user_hash'";
 
-                    $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE HASH = '$user_hash' ";
-                    $sql.= "AND FID = '$fid'";
+                $result = db_query($sql, $db_bh_session_check);
 
-                    $result = db_query($sql, $db_bh_session_check);
+                bh_update_visitor_log($user_sess['UID']);
+            }
 
-                    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-                    $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '$fid', ";
-                    $sql.= "'$ipaddress', NOW())";
+            // Everything checks out OK. If the user's session is older
+            // then 5 minutes we should update it.
 
-                    $result = db_query($sql, $db_bh_session_check);
+            if (($current_time - $user_sess['TIME']) > 300) {
 
-                    bh_update_visitor_log($user_sess['UID']);
+                // Update the session for the current forum
+
+                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW() ";
+                $sql.= "WHERE HASH = '$user_hash'";
+
+                $result = db_query($sql, $db_bh_session_check);
+
+                if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
+                    update_stats();
                 }
 
-                // Everything checks out OK. If the user's session is older
-                // then 5 minutes we should update it.
+                // Perform system-wide PM Prune
 
-                if (($current_time - $user_sess['TIME']) > 300) {
-
-                    // Update the session for the current forum
-
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
-                    $sql.= "TIME = NOW() WHERE HASH = '$user_hash' ";
-                    $sql.= "AND FID = '$fid'";
-
-                    $result = db_query($sql, $db_bh_session_check);
-
-                    if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
-                        update_stats();
-                    }
-
-                    // Perform system-wide PM Prune
-
-                    pm_system_prune_folders();
-                }
-
-            }else {
-
-                // Everything checks out OK. If the user's session is older
-                // then 5 minutes we should update it.
-
-                if (($current_time - $user_sess['TIME']) > 300) {
-
-                    // Update the main user session
-
-                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
-                    $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
-
-                    $result = db_query($sql, $db_bh_session_check);
-
-                    if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
-                        update_stats();
-                    }
-
-                    // Perform system-wide PM Prune
-
-                    pm_system_prune_folders();
-                }
+                pm_system_prune_folders();
             }
 
             // Delete expired sessions
@@ -188,7 +155,6 @@ function bh_session_check($add_guest_sess = true)
 
         }else {
 
-            //bh_session_end();
             return false;
         }
     }
@@ -220,7 +186,8 @@ function bh_session_check($add_guest_sess = true)
             if (($current_time - $user_sess['TIME']) > 300) {
 
                 $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), ";
-                $sql.= "FID = '$fid' WHERE UID = 0 AND IPADDRESS = '$ipaddress'";
+                $sql.= "FID = '$fid' WHERE UID = 0 ";
+                $sql.= "AND IPADDRESS = '$ipaddress'";
 
                 $result = db_query($sql, $db_bh_session_check);
             }
@@ -377,18 +344,6 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
-    $db_bh_session_end = db_connect();
-
-    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
-
-        $user_hash = $_COOKIE['bh_sess_hash'];
-
-        // Delete the session for the current MD5 hash
-
-        $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
-        $result = db_query($sql, $db_bh_session_end);
-    }
-
     // Session cookie
 
     bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);

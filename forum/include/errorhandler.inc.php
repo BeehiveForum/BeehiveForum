@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.47 2004-04-19 20:06:01 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.48 2004-07-17 10:43:12 hodcroftcj Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -215,7 +215,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 }
 	    }
 
-	    echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), "</p>\n";
+	    echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), " MySQL/", db_fetch_mysql_version(), "</p>\n";
             echo "          </td>\n";
             echo "        </tr>\n";
             echo "      </table>\n";

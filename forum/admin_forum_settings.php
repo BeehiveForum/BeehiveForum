@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.52 2005-01-21 21:25:50 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.53 2005-01-25 12:51:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -179,6 +179,18 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['maximum_post_length'] = $_POST['maximum_post_length'];
     }else {
         $new_forum_settings['maximum_post_length'] = 6226;
+    }
+
+    if (isset($_POST['enable_wiki_integration']) && $_POST['enable_wiki_integration'] == "Y") {
+        $new_forum_settings['enable_wiki_integration'] = "Y";
+    }else {
+        $new_forum_settings['enable_wiki_integration'] = "N";
+    }
+
+    if (isset($_POST['wiki_integration_uri']) && strlen(trim(_stripslashes($_POST['wiki_integration_uri']))) > 0) {
+        $new_forum_settings['wiki_integration_uri'] = trim(_stripslashes($_POST['wiki_integration_uri']));
+    }else {
+        $new_forum_settings['wiki_integration_uri'] = "";
     }
 
     if (isset($_POST['allow_polls']) && $_POST['allow_polls'] == "Y") {
@@ -343,8 +355,8 @@ echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td>\n";
 echo "                          <fieldset>\n";
-echo "                            <legend>", form_checkbox("allow_post_editing", "Y", $lang['allowpostoptions'], forum_get_setting('allow_post_editing', 'Y', false)), "</legend>\n";
-echo "                            &nbsp;{$lang['postedittimeout']}: ", form_input_text("post_edit_time", forum_get_setting('post_edit_time', false, '0'), 20, 32), "\n";
+echo "                            <legend>", form_checkbox("allow_post_editing", "Y", $lang['allowpostoptions'], forum_get_setting('allow_post_editing', 'Y', false)), "</legend><br />\n";
+echo "                            &nbsp;{$lang['postedittimeout']}: ", form_input_text("post_edit_time", forum_get_setting('post_edit_time', false, '0'), 20, 32), "<br /><br />\n";
 echo "                          </fieldset>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
@@ -371,6 +383,49 @@ echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_10']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_11']}</p>\n";
+echo "                  </td>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['wikiintegration']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"3\">\n";
+echo "                          <fieldset>\n";
+echo "                            <legend>", form_checkbox("enable_wiki_integration", "Y", $lang['enablewikiintegration'], forum_get_setting('enable_wiki_integration', 'Y', false)), "</legend><br />\n";
+echo "                            &nbsp;{$lang['wikiintegrationuri']}: ", form_input_text("wiki_integration_uri", forum_get_setting('wiki_integration_uri', false, 'http://en.wikipedia.org/wiki/[WikiWord]'), 45, 255), "<br /><br />\n";
+echo "                          </fieldset>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                  <td class=\"smalltext\">\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_30']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.67 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.68 2004-05-10 13:56:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,8 +162,8 @@ $total_attachment_size = 0;
 
 // Make sure the attachments directory exists
 if (!is_dir('attachments')) {
-  mkdir('attachments', 0755);
-  chmod('attachments', 0777);
+    mkdir('attachments', 0755);
+    chmod('attachments', 0777);
 }
 
 if (isset($_POST['del'])) {
@@ -189,91 +189,89 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
     $popup = false;
 }
 
-?>
-<h1><?php echo $lang['attachments']; ?></h1>
-<table border="0" cellpadding="0" cellspacing="0" width="600">
-  <tr>
-    <td class="postbody">&nbsp;</td>
-    <td class="postbody">&nbsp;</td>
-    <td class="postbody">&nbsp;</td>
-    <td class="postbody">&nbsp;</td>
-    <td class="postbody">&nbsp;</td>
-  </tr>
-<?php
+echo "<h1>{$lang['attachments']}</h1>\n";
+echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "  </tr>\n";
 
-  if ($aid) {
-      $attachments = get_attachments($uid, $aid);
-  }else {
-      $attachments = get_users_attachments($uid);
-  }
+if ($aid) {
+    $attachments = get_attachments($uid, $aid);
+}else {
+    $attachments = get_users_attachments($uid);
+}
 
-  if (is_array($attachments)) {
+if (is_array($attachments)) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
-      if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
+        if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
 
-        echo "  <tr>\n";
-        echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
+            echo "  <tr>\n";
+            echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
 
-        if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-            echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";
-        }else {
-            echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
-        }
-
-        if (strlen($attachments[$i]['filename']) > 16) {
-          echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
-        }
-
-        if (@$imageinfo = getimagesize("$attachment_dir/". md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-          echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-        }
-
-        echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
-        echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
-
-        if ($attachments[$i]['downloads'] == 1) {
-          echo " {$lang['time']}";
-        }else {
-          echo " {$lang['times']}";
-        }
-
-        echo "\">";
-
-        if (strlen($attachments[$i]['filename']) > 16) {
-            echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
-        }else{
-            echo $attachments[$i]['filename']. "</a></td>\n";
-        }
-
-        if (!$aid) {
-            if (is_md5($attachments[$i]['aid']) && $message_link = get_message_link($attachments[$i]['aid'])) {
-                echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+            if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+                echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "    <td>&nbsp;</td>\n";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
             }
+
+            if (strlen($attachments[$i]['filename']) > 16) {
+                echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+            }
+
+            if (@$imageinfo = getimagesize("$attachment_dir/". md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+                echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+            }
+
+            echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+            echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+
+            if ($attachments[$i]['downloads'] == 1) {
+                echo " {$lang['time']}";
+            }else {
+                echo " {$lang['times']}";
+            }
+
+            echo "\">";
+
+            if (strlen($attachments[$i]['filename']) > 16) {
+                echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+            }else{
+                echo $attachments[$i]['filename']. "</a></td>\n";
+            }
+
+            if (!$aid) {
+                if (is_md5($attachments[$i]['aid']) && $message_link = get_message_link($attachments[$i]['aid'])) {
+                    echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                }else {
+                    echo "    <td>&nbsp;</td>\n";
+                }
+            }
+
+            echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";
+            echo "    <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
+            echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
+            echo "        ", form_input_hidden('webtag', $webtag), "\n";
+            echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
+            echo "        ", form_submit('del', $lang['del']), "\n";
+
+            if ($popup) echo "        ", form_input_hidden('popup', $popup), "\n";
+            if ($aid)   echo "        ". form_input_hidden('aid', $aid), "\n";
+
+            echo "      </form>\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+
+            $total_attachment_size += $attachments[$i]['filesize'];
         }
-
-        echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";
-        echo "    <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-        echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
-        echo "        ", form_input_hidden('webtag', $webtag), "\n";
-        echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
-        echo "        ", form_submit('del', $lang['del']), "\n";
-
-	if ($popup) echo "        ", form_input_hidden('popup', $popup), "\n";
-        if ($aid)   echo "        ". form_input_hidden('aid', $aid), "\n";
-
-        echo "      </form>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-
-        $total_attachment_size += $attachments[$i]['filesize'];
-      }
     }
 
-  }else {
+}else {
 
     echo "  <tr>\n";
     echo "    <td valign=\"top\" class=\"postbody\">({$lang['none']})</td>\n";
@@ -285,66 +283,65 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
     echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
     echo "    <td align=\"right\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
+}
 
-  }
+echo "  <tr>\n";
+echo "    <td colspan=\"5\"><hr width=\"600\" /></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
+echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td colspan=\"5\"><hr width=\"600\" /></td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
 
-  echo "  <tr>\n";
-  echo "    <td colspan=\"5\"><hr width=\"600\" /></td>\n";
-  echo "  </tr>\n";
-  echo "  <tr>\n";
-  echo "    <td valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
-  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-  echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
-  echo "    <td class=\"postbody\">&nbsp;</td>\n";
-  echo "  </tr>\n";
-  echo "  <tr>\n";
-  echo "    <td valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-  echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
-  echo "    <td class=\"postbody\">&nbsp;</td>\n";
-  echo "  </tr>\n";
-  echo "  <tr>\n";
-  echo "    <td colspan=\"5\"><hr width=\"600\" /></td>\n";
-  echo "  </tr>\n";
-  echo "</table>\n";
+if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-  if (forum_get_setting('attachments_enabled', 'Y', false)) {
+    if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
+        $aid = $_GET['aid'];
+    }elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+        $aid = $_POST['aid'];
+    }else {
+        $aid = md5(uniqid(rand()));
+    }
 
-      if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
-          $aid = $_GET['aid'];
-      }elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-          $aid = $_POST['aid'];
-      }else {
-          $aid = md5(uniqid(rand()));
-      }
+    echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
+    echo form_input_hidden('webtag', $webtag), "\n";
+    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <tr>\n";
+    echo "    <td><p align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "</p></td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</form>\n";
+}
 
-      echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
-      echo form_input_hidden('webtag', $webtag), "\n";
-      echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-      echo "  <tr>\n";
-      echo "    <td><p align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "</p></td>\n";
-      echo "  </tr>\n";
-      echo "</table>\n";
-      echo "</form>\n";
-  }
+if ($popup) {
 
-  if ($popup) {
+    echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
+    echo form_input_hidden('webtag', $webtag), "\n";
 
-      echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
-      echo form_input_hidden('webtag', $webtag), "\n";
+    if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
 
-      if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
+    echo form_input_hidden('uid', $uid), "\n";
+    echo form_input_hidden('popup', '1'), "\n";
+    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\" align=\"center\">", form_submit('close', $lang['close']), "</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</form>\n";
+}
 
-      echo form_input_hidden('uid', $uid), "\n";
-      echo form_input_hidden('popup', '1'), "\n";
-      echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-      echo "  <tr>\n";
-      echo "    <td class=\"postbody\" align=\"center\">", form_submit('close', $lang['close']), "</td>\n";
-      echo "  </tr>\n";
-      echo "</table>\n";
-      echo "</form>\n";
-  }
-
-  html_draw_bottom();
+html_draw_bottom();
 
 ?>

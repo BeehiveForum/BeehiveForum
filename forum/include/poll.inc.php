@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.83 2004-01-27 21:42:13 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.84 2004-01-27 21:50:29 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -89,6 +89,7 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
 
+    $edit_uid = bh_session_get_value('UID');
     $poll_question = addslashes($poll_question);
 
     // Rename the thread
@@ -132,14 +133,21 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
         $option_name  = addslashes($poll_options[$i]);
         $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
-        $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME, GROUP_ID) ";
-        $sql.= "values ('$tid', '$option_name', '$option_group')";
+        $sql = "INSERT INTO ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME, GROUP_ID) ";
+        $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
 
         $result = db_query($sql, $db_poll_edit);
 
       }
 
     }
+    
+    // Flag the edit in the POST table
+    
+    $sql = "UPDATE ". forum_table("POST"). " SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
+    $sql.= "WHERE TID = '$tid' AND PID = 1";
+
+    $result = db_query($sql, $db_poll_edit);
 }
 
 function poll_get($tid)
@@ -155,13 +163,15 @@ function poll_get($tid)
     $sql.= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
     $sql.= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP, ";
     $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, ";
-    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) as CLOSES ";
+    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) as CLOSES, ";
+    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON as EDIT_LOGON, POST.IPADDRESS ";
     $sql.= "from ". forum_table("POST"). " POST ";
     $sql.= "left join ". forum_table("USER"). " FUSER on (POST.FROM_UID = FUSER.UID) ";
     $sql.= "left join ". forum_table("USER"). " TUSER on (POST.TO_UID = TUSER.UID) ";
     $sql.= "left join ". forum_table("POLL"). " POLL on (POST.TID = POLL.TID) ";
-    $sql.= "left join ". forum_table("USER_PEER") . " USER_PEER ";
-    $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql.= "left join ". forum_table("USER"). " EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";    
+    $sql.= "left join ". forum_table("USER_PEER"). " USER_PEER ";
+    $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";   
     $sql.= "where POST.TID = '$tid' and POST.PID = 1";
 
     $result = db_query($sql, $db_poll_get);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.107 2004-03-16 23:46:28 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.108 2004-04-01 16:39:05 decoyduck Exp $ */
 
 function threads_get_available_folders()
 {
@@ -757,10 +757,10 @@ function threads_any_unread()
     
     $webtag = get_webtag();
 
-    $sql = "select * from {$webtag['PREFIX']}THREAD T left join {$webtag['PREFIX']}USER_THREAD UT ";
-    $sql.= "on (T.TID = UT.TID and UT.UID = '$uid') ";
-    $sql.= "where T.LENGTH > UT.LAST_READ ";
-    $sql.= "limit 0,1";
+    $sql = "SELECT * FROM {$webtag['PREFIX']}THREAD T LEFT JOIN {$webtag['PREFIX']}USER_THREAD UT ";
+    $sql.= "ON (T.TID = UT.TID AND UT.UID = '$uid') ";
+    $sql.= "WHERE T.LENGTH > UT.LAST_READ ";
+    $sql.= "LIMIT 0,1";
 
     $db_threads_any_unread = db_connect();
     $result = db_query($sql, $db_threads_any_unread);

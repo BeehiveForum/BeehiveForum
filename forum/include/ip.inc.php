@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.21 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.22 2004-04-01 16:39:05 decoyduck Exp $ */
 
 function ip_check()
 {
@@ -56,10 +56,15 @@ function ban_ip($ipaddress)
    
    $webtag = get_webtag();
 
-   $sql = "INSERT INTO {$webtag['PREFIX']}BANNED_IP (IP) VALUES ('$ipaddress')";
-   $result = db_query($sql, $db_ban_ip);
+   if (!ip_is_banned($ipaddress)) {
 
-   return $result;
+       $sql = "INSERT INTO {$webtag['PREFIX']}BANNED_IP (IP) VALUES ('$ipaddress')";
+       $result = db_query($sql, $db_ban_ip);
+
+       return $result;
+   }
+
+   return false;
 }
 
 function unban_ip($ipaddress)

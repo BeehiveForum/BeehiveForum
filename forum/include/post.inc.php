@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.63 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.64 2004-04-01 16:39:05 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -85,12 +85,17 @@ function post_save_attachment_id($tid, $pid, $aid)
     $db_post_save_attachment_id = db_connect();
     
     $webtag = get_webtag();
-    
-    $sql = "DELETE FROM {$webtag['PREFIX']}POST_ATTACHMENT_IDS WHERE TID = $tid AND PID = $pid";
-    $result = db_query($sql, $db_post_save_attachment_id);
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
-    $result = db_query($sql, $db_post_save_attachment_id);
+    $sql = "UPDATE {$webtag['PREFIX']}POST_ATTACHMENT_IDS SET AID = '$aid' ";
+    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+
+    $result = db_query($sql, db_post_save_attachment_id);
+
+    if (!db_affected_rows($db_post_save_attachment_id)) {
+    
+        $sql = "INSERT INTO {$webtag['PREFIX']}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
+        $result = db_query($sql, $db_post_save_attachment_id);
+    }
 
     return $result;
 }
@@ -207,7 +212,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     if (isset($default_uid) && $default_uid != 0) {
 
-        $top_sql = "select LOGON, NICKNAME from USER where UID = '$default_uid'";
+        $top_sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.99 2004-03-28 08:48:45 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.100 2004-04-01 16:39:05 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -152,21 +152,21 @@ function poll_get($tid)
     
     $webtag = get_webtag();
 
-    $sql = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-    $sql.= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
-    $sql.= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
-    $sql.= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP, ";
+    $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
+    $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.VIEWED, ";
+    $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER.RELATIONSHIP, ";
     $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, ";
-    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) as CLOSES, ";
-    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON as EDIT_LOGON, POST.IPADDRESS ";
-    $sql.= "from {$webtag['PREFIX']}POST POST ";
-    $sql.= "left join USER FUSER on (POST.FROM_UID = FUSER.UID) ";
-    $sql.= "left join USER TUSER on (POST.TO_UID = TUSER.UID) ";
-    $sql.= "left join {$webtag['PREFIX']}POLL POLL on (POST.TID = POLL.TID) ";
-    $sql.= "left join USER EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";    
-    $sql.= "left join {$webtag['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";   
-    $sql.= "where POST.TID = '$tid' and POST.PID = 1";
+    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, ";
+    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS ";
+    $sql.= "FROM {$webtag['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}POLL POLL ON (POST.TID = POLL.TID) ";
+    $sql.= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";    
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";   
+    $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
     $result = db_query($sql, $db_poll_get);
     $polldata = db_fetch_array($result);
@@ -304,8 +304,8 @@ function poll_get_user_vote($tid)
     
     $webtag = get_webtag();
 
-    $sql = "select OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from {$webtag['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "where PTUID = MD5($tid.$uid) ORDER BY ID";
+    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP FROM {$webtag['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "WHERE PTUID = MD5($tid.$uid) ORDER BY ID";
 
     $result = db_query($sql, $db_poll_get_user_vote);
 
@@ -1263,7 +1263,7 @@ function poll_close($tid)
     
     $webtag = get_webtag();
 
-    $sql = "select FROM_UID from {$webtag['PREFIX']}POST where TID = $tid and PID = 1";
+    $sql = "SELECT FROM_UID FROM {$webtag['PREFIX']}POST WHERE TID = $tid AND PID = 1";
     $result = db_query($sql, $db_poll_close);
 
     if (db_num_rows($result) > 0) {
@@ -1289,7 +1289,7 @@ function poll_is_closed($tid)
     
     $webtag = get_webtag();
 
-    $sql = "select CLOSES from {$webtag['PREFIX']}POLL where TID = $tid";
+    $sql = "SELECT CLOSES FROM {$webtag['PREFIX']}POLL WHERE TID = $tid";
     $result = db_query($sql, $db_poll_is_closed);
 
     if (db_num_rows($result)) {
@@ -1345,12 +1345,12 @@ function poll_delete_vote($tid)
     
     $webtag = get_webtag();
 
-    $sql = "select OPTION_ID from {$webtag['PREFIX']}USER_POLL_VOTES where PTUID = MD5($tid.$uid)";
+    $sql = "SELECT OPTION_ID FROM {$webtag['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_delete_vote);
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "delete from {$webtag['PREFIX']}USER_POLL_VOTES where PTUID = MD5($tid.$uid)";
+        $sql = "DELETE FROM {$webtag['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
         $result = db_query($sql, $db_poll_delete_vote);
 
     }
@@ -1364,7 +1364,7 @@ function thread_is_poll($tid)
     
     $webtag = get_webtag();
 
-    $sql = "select CLOSES from {$webtag['PREFIX']}POLL where TID = $tid";
+    $sql = "SELECT CLOSES FROM {$webtag['PREFIX']}POLL WHERE TID = $tid";
     $result = db_query($sql, $db_thread_is_poll);
 
     if (db_num_rows($result) > 0) {

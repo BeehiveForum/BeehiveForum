@@ -114,7 +114,7 @@ function bh_session_init($uid)
 function bh_session_end()
 {
     setcookie("bh_sess_data", "", time() - 3600);
-    setcookie("bh_sess_check", md5(uniqid(rand())));
+    setcookie("bh_sess_check", md5(uniqid(rand())), time() - 3600);
 
 }
 

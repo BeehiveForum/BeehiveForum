@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.13 2004-10-27 22:33:16 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.14 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,14 +127,14 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
+    if (isset($_POST['t_name']) && strlen(trim(_stripslashes($_POST['t_name']))) > 0) {
         $t_name = trim(_stripslashes($_POST['t_name']));
     }else {
         $error_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim($_POST['t_description'])) > 0) {
+    if (isset($_POST['t_description']) && strlen(trim(_stripslashes($_POST['t_description']))) > 0) {
         $t_description = trim(_stripslashes($_POST['t_description']));
     }else {
         $t_description = "";
@@ -166,7 +166,7 @@ if (isset($_POST['submit'])) {
         $new_fid = folder_create($t_name, $t_description, $t_allowed_types, $t_permissions);
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
 
-        $add_success = rawurlencode(_stripslashes($t_name));
+        $add_success = rawurlencode($t_name);
         header_redirect("./admin_folders.php?webtag=$webtag&add+success=$add_success");
     }
 }

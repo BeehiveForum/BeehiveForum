@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.65 2004-11-06 21:10:51 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.66 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,18 +122,18 @@ $success = false;
 
 if (isset($_POST['submit'])) {
 
-    if (isset($_POST['stylename']) && strlen(trim($_POST['stylename'])) > 0) {
+    if (isset($_POST['stylename']) && strlen(trim(_stripslashes($_POST['stylename']))) > 0) {
 
         // Get the style filename
 
-        $stylename = trim($_POST['stylename']);
+        $stylename = trim(_stripslashes($_POST['stylename']));
         $stylename = strtolower(str_replace(" ", "_", $stylename));
         $stylename = preg_replace("/[^a-z|0-9|'_']/", "", $stylename);
 
         // Get the style desc - if no description use the filename.
 
-        if (isset($_POST['styledesc']) && strlen(trim($_POST['styledesc'])) > 0) {
-            $styledesc = trim($_POST['styledesc']);
+        if (isset($_POST['styledesc']) && strlen(trim(_stripslashes($_POST['styledesc']))) > 0) {
+            $styledesc = trim(_stripslashes($_POST['styledesc']));
         }else {
             $styledesc = $stylename;
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.68 2004-11-05 18:50:01 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.69 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -220,25 +220,25 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         }
 
         if (isset($admin_log_entry['FOLDER_TITLE']) && !empty($admin_log_entry['FOLDER_TITLE'])) {
-            $folder_title = _stripslashes($admin_log_entry['FOLDER_TITLE']);
+            $folder_title = $admin_log_entry['FOLDER_TITLE'];
         }else {
             $folder_title = "{$lang['unknown']} (FID: {$admin_log_entry['FID']})";
         }
 
         if (isset($admin_log_entry['THREAD_TITLE']) && !empty($admin_log_entry['THREAD_TITLE'])) {
-            $thread_title = _stripslashes($admin_log_entry['THREAD_TITLE']);
+            $thread_title = $admin_log_entry['THREAD_TITLE'];
         }else {
             $thread_title = "{$lang['unknown']} (TID: {$admin_log_entry['TID']})";
         }
 
         if (isset($admin_log_entry['PS_NAME']) && !empty($admin_log_entry['PS_NAME'])) {
-            $ps_name = _stripslashes($admin_log_entry['PS_NAME']);
+            $ps_name = $admin_log_entry['PS_NAME'];
         }else {
             $ps_name = "{$lang['unknown']} (PSID: {$admin_log_entry['PSID']})";
         }
 
         if (isset($admin_log_entry['PI_NAME']) && !empty($admin_log_entry['PI_NAME'])) {
-            $pi_name = _stripslashes($admin_log_entry['PI_NAME']);
+            $pi_name = $admin_log_entry['PI_NAME'];
         }else {
             $pi_name = "{$lang['unknown']} (PIID: {$admin_log_entry['PIID']})";
         }

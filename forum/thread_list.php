@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.222 2004-11-08 18:35:22 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.223 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -330,8 +330,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                 unset($thread[$key]);
             }
 
-            $thread['title'] = _stripslashes($thread['title']);
-
             if (!isset($thread['relationship'])) $thread['relationship'] = 0;
 
             if ($thread['tid'] == $tid) {
@@ -430,7 +428,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
         echo "            <img src=\"".style_image('folder_ignored.png')."\" height=\"15\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
     }
 
-    echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", apply_wordfilter(_htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))), "\">", apply_wordfilter(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
+    echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", apply_wordfilter(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", apply_wordfilter(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
     echo "          </td>\n";
 
     if (bh_session_get_value('UID') > 0) {

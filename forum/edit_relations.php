@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.37 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.38 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -202,8 +202,8 @@ echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
 
-if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
-    echo "  ", form_input_hidden("usersearch", trim($_POST['usersearch'])), "\n";
+if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
+    echo "  ", form_input_hidden("usersearch", trim(_stripslashes($_POST['usersearch']))), "\n";
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
@@ -276,9 +276,9 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 
-if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
+if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
 
-    $usersearch = trim($_POST['usersearch']);
+    $usersearch = trim(_stripslashes($_POST['usersearch']));
 
     echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";

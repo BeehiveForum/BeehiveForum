@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.32 2004-10-29 21:10:01 decoyduck Exp $ */
+/* $Id: forums.php,v 1.33 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -109,7 +109,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-if (isset($_GET['webtag_search']) && strlen(trim($_GET['webtag_search'])) > 0) {
+if (isset($_GET['webtag_search']) && strlen(trim(_stripslashes($_GET['webtag_search']))) > 0) {
     $webtag_search = trim(_stripslashes($_GET['webtag_search']));
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.7 2004-11-10 17:57:29 decoyduck Exp $ */
+/* $Id: install.php,v 1.8 2004-11-14 16:11:32 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -38,10 +38,10 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
     $error_html = "";
 
-    if (isset($_POST['install_method']) && strlen(trim($_POST['forum_webtag'])) > 0) {
-        if (trim($_POST['install_method']) == 'install') {
+    if (isset($_POST['install_method']) && strlen(trim(_stripslashes($_POST['forum_webtag']))) > 0) {
+        if (trim(_stripslashes($_POST['install_method']) == 'install')) {
             $install_method = 0;
-        }else if (trim($_POST['install_method']) == 'upgrade') {
+        }else if (trim(_stripslashes($_POST['install_method']) == 'upgrade')) {
             $install_method = 1;
         }else {
             $error_html.= "<h2>You must choose an installation method.</h2>\n";
@@ -52,9 +52,9 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         $valid = false;
     }
 
-    if (isset($_POST['forum_webtag']) && strlen(trim($_POST['forum_webtag'])) > 0) {
+    if (isset($_POST['forum_webtag']) && strlen(trim(_stripslashes($_POST['forum_webtag']))) > 0) {
 
-        $forum_webtag = strtoupper(trim($_POST['forum_webtag']));
+        $forum_webtag = strtoupper(trim(_stripslashes($_POST['forum_webtag'])));
 
         if (!preg_match("/^[A-Z0-9_-]+$/", $forum_webtag)) {
 
@@ -67,64 +67,64 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         $forum_webtag = "";
     }
 
-    if (isset($_POST['db_server']) && strlen(trim($_POST['db_server'])) > 0) {
-        $db_server = trim($_POST['db_server']);
+    if (isset($_POST['db_server']) && strlen(trim(_stripslashes($_POST['db_server']))) > 0) {
+        $db_server = trim(_stripslashes($_POST['db_server']));
     }else {
         $error_html.= "<h2>You must supply the hostname of your MySQL database.</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['db_database']) && strlen(trim($_POST['db_database'])) > 0) {
-        $db_database = trim($_POST['db_database']);
+    if (isset($_POST['db_database']) && strlen(trim(_stripslashes($_POST['db_database']))) > 0) {
+        $db_database = trim(_stripslashes($_POST['db_database']));
     }else {
         $error_html.= "<h2>You must supply the name of your MySQL database.</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['db_username']) && strlen(trim($_POST['db_username'])) > 0) {
-        $db_username = trim($_POST['db_username']);
+    if (isset($_POST['db_username']) && strlen(trim(_stripslashes($_POST['db_username']))) > 0) {
+        $db_username = trim(_stripslashes($_POST['db_username']));
     }else {
         $error_html.= "<h2>You must enter your username for your MySQL database.</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['db_password']) && strlen(trim($_POST['db_password'])) > 0) {
-        $db_password = trim($_POST['db_password']);
+    if (isset($_POST['db_password']) && strlen(trim(_stripslashes($_POST['db_password']))) > 0) {
+        $db_password = trim(_stripslashes($_POST['db_password']));
     }else {
         $error_html.= "<h2>You must enter your password for your MySQL database.</h2>\n";
         $valid = false;
     }
 
-    if (isset($_POST['db_cpassword']) && strlen(trim($_POST['db_cpassword'])) > 0) {
-        $db_cpassword = trim($_POST['db_cpassword']);
+    if (isset($_POST['db_cpassword']) && strlen(trim(_stripslashes($_POST['db_cpassword']))) > 0) {
+        $db_cpassword = trim(_stripslashes($_POST['db_cpassword']));
     }else {
         $db_cpassword = "";
     }
 
     if ($install_method == 0) {
 
-        if (isset($_POST['admin_username']) && strlen(trim($_POST['admin_username'])) > 0) {
-            $admin_username = trim($_POST['admin_username']);
+        if (isset($_POST['admin_username']) && strlen(trim(_stripslashes($_POST['admin_username']))) > 0) {
+            $admin_username = trim(_stripslashes($_POST['admin_username']));
         }else {
             $error_html.= "<h2>You must supply a username for your administrator account.</h2>\n";
             $valid = false;
         }
 
-        if (isset($_POST['admin_password']) && strlen(trim($_POST['admin_password'])) > 0) {
-            $admin_password = trim($_POST['admin_password']);
+        if (isset($_POST['admin_password']) && strlen(trim(_stripslashes($_POST['admin_password']))) > 0) {
+            $admin_password = trim(_stripslashes($_POST['admin_password']));
         }else {
             $error_html.= "<h2>You must supply a password for your administrator account.</h2>\n";
             $valid = false;
         }
 
-        if (isset($_POST['admin_cpassword']) && strlen(trim($_POST['admin_cpassword'])) > 0) {
-            $admin_cpassword = trim($_POST['admin_cpassword']);
+        if (isset($_POST['admin_cpassword']) && strlen(trim(_stripslashes($_POST['admin_cpassword']))) > 0) {
+            $admin_cpassword = trim(_stripslashes($_POST['admin_cpassword']));
         }else {
             $admin_cpassword = "";
         }
 
-        if (isset($_POST['admin_email']) && strlen(trim($_POST['admin_email'])) > 0) {
-            $admin_email = trim($_POST['admin_email']);
+        if (isset($_POST['admin_email']) && strlen(trim(_stripslashes($_POST['admin_email']))) > 0) {
+            $admin_email = trim(_stripslashes($_POST['admin_email']));
         }else {
             $admin_email = "";
         }
@@ -310,20 +310,20 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
     $config_file = implode("", file("./install/config.inc.php"));
 
-    if (isset($_POST['db_server']) && strlen(trim($_POST['db_server'])) > 0) {
-        $db_server = trim($_POST['db_server']);
+    if (isset($_POST['db_server']) && strlen(trim(_stripslashes($_POST['db_server']))) > 0) {
+        $db_server = trim(_stripslashes($_POST['db_server']));
     }
 
-    if (isset($_POST['db_database']) && strlen(trim($_POST['db_database'])) > 0) {
-        $db_database = trim($_POST['db_database']);
+    if (isset($_POST['db_database']) && strlen(trim(_stripslashes($_POST['db_database']))) > 0) {
+        $db_database = trim(_stripslashes($_POST['db_database']));
     }
 
-    if (isset($_POST['db_username']) && strlen(trim($_POST['db_username'])) > 0) {
-        $db_username = trim($_POST['db_username']);
+    if (isset($_POST['db_username']) && strlen(trim(_stripslashes($_POST['db_username']))) > 0) {
+        $db_username = trim(_stripslashes($_POST['db_username']));
     }
 
-    if (isset($_POST['db_password']) && strlen(trim($_POST['db_password'])) > 0) {
-        $db_password = trim($_POST['db_password']);
+    if (isset($_POST['db_password']) && strlen(trim(_stripslashes($_POST['db_password']))) > 0) {
+        $db_password = trim(_stripslashes($_POST['db_password']));
     }
 
     if (isset($db_server) && isset($db_database) && isset($db_username) && isset($db_password)) {

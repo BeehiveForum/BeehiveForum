@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.54 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.55 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -129,7 +129,12 @@ echo "<p>{$lang['editstartpageexp']}</p>\n";
 
 if (isset($_POST['submit'])) {
 
-    $content = _stripslashes($_POST['content']);
+    if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
+        $content = trim(_stripslashes($_POST['content']));
+    }else {
+        $content = "";
+    }
+
     save_start_page($content);
 
     $status_text = "<p><b>{$lang['startpageupdated']}</b> ";

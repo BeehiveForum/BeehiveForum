@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.94 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: register.php,v 1.95 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -149,9 +149,9 @@ if (isset($_POST['submit'])) {
     $valid = true;
     $error_html = "";
 
-    if (isset($_POST['LOGON']) && strlen(trim($_POST['LOGON'])) > 0) {
+    if (isset($_POST['LOGON']) && strlen(trim(_stripslashes($_POST['LOGON']))) > 0) {
 
-        $new_user['LOGON'] = strtoupper(_stripslashes(trim($_POST['LOGON'])));
+        $new_user['LOGON'] = strtoupper(_stripslashes(trim(_stripslashes($_POST['LOGON']))));
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['LOGON'])) {
             $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
@@ -174,9 +174,9 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['PW']) && strlen(trim($_POST['PW'])) > 0) {
+    if (isset($_POST['PW']) && strlen(trim(_stripslashes($_POST['PW']))) > 0) {
 
-        $new_user['PW'] = _stripslashes(trim($_POST['PW']));
+        $new_user['PW'] = _stripslashes(trim(_stripslashes($_POST['PW'])));
 
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['PW'])) {
             $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
@@ -194,9 +194,9 @@ if (isset($_POST['submit'])) {
         $valid.= false;
     }
 
-    if (isset($_POST['CPW']) && strlen(trim($_POST['CPW'])) > 0) {
+    if (isset($_POST['CPW']) && strlen(trim(_stripslashes($_POST['CPW']))) > 0) {
 
-        $new_user['CPW'] = _stripslashes(trim($_POST['CPW']));
+        $new_user['CPW'] = _stripslashes(trim(_stripslashes($_POST['CPW'])));
 
         if (_htmlentities($new_user['CPW']) != $new_user['CPW']) {
             $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
@@ -209,9 +209,9 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['NICKNAME']) && strlen(trim($_POST['NICKNAME'])) > 0) {
+    if (isset($_POST['NICKNAME']) && strlen(trim(_stripslashes($_POST['NICKNAME']))) > 0) {
 
-        $new_user['NICKNAME'] = _stripslashes(trim($_POST['NICKNAME']));
+        $new_user['NICKNAME'] = _stripslashes(trim(_stripslashes($_POST['NICKNAME'])));
 
     }else {
 
@@ -219,9 +219,9 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['EMAIL']) && strlen(trim($_POST['EMAIL'])) > 0) {
+    if (isset($_POST['EMAIL']) && strlen(trim(_stripslashes($_POST['EMAIL']))) > 0) {
 
-        $new_user['EMAIL'] = _stripslashes(trim($_POST['EMAIL']));
+        $new_user['EMAIL'] = _stripslashes(trim(_stripslashes($_POST['EMAIL'])));
 
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $new_user['EMAIL'])) {
 
@@ -237,9 +237,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $new_user['DOB_DAY']   = _stripslashes(trim($_POST['dob_day']));
-        $new_user['DOB_MONTH'] = _stripslashes(trim($_POST['dob_month']));
-        $new_user['DOB_YEAR']  = _stripslashes(trim($_POST['dob_year']));
+        $new_user['DOB_DAY']   = _stripslashes(trim(_stripslashes($_POST['dob_day'])));
+        $new_user['DOB_MONTH'] = _stripslashes(trim(_stripslashes($_POST['dob_month'])));
+        $new_user['DOB_YEAR']  = _stripslashes(trim(_stripslashes($_POST['dob_year'])));
 
         $new_user['DOB'] = "{$new_user['DOB_YEAR']}-{$new_user['DOB_MONTH']}-{$new_user['DOB_DAY']}";
         $new_user['DOB_BLANK_FIELDS'] = ($new_user['DOB_YEAR'] == 0 || $new_user['DOB_MONTH'] == 0 || $new_user['DOB_DAY'] == 0) ? true : false;
@@ -250,20 +250,20 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['FIRSTNAME']) && strlen(trim($_POST['FIRSTNAME'])) > 0) {
-        $new_user['FIRSTNAME'] = _stripslashes(trim($_POST['FIRSTNAME']));
+    if (isset($_POST['FIRSTNAME']) && strlen(trim(_stripslashes($_POST['FIRSTNAME']))) > 0) {
+        $new_user['FIRSTNAME'] = _stripslashes(trim(_stripslashes($_POST['FIRSTNAME'])));
     }else {
         $new_user['FIRSTNAME'] = "";
     }
 
-    if (isset($_POST['LASTNAME']) && strlen(trim($_POST['LASTNAME'])) > 0) {
-        $new_user['LASTNAME'] = _stripslashes(trim($_POST['LASTNAME']));
+    if (isset($_POST['LASTNAME']) && strlen(trim(_stripslashes($_POST['LASTNAME']))) > 0) {
+        $new_user['LASTNAME'] = _stripslashes(trim(_stripslashes($_POST['LASTNAME'])));
     }else {
         $new_user['LASTNAME'] = "";
     }
 
-    if (isset($_POST['SIG_CONTENT']) && strlen(trim($_POST['SIG_CONTENT'])) > 0) {
-        $new_user['SIG_CONTENT'] = trim($_POST['SIG_CONTENT']);
+    if (isset($_POST['SIG_CONTENT']) && strlen(trim(_stripslashes($_POST['SIG_CONTENT']))) > 0) {
+        $new_user['SIG_CONTENT'] = trim(_stripslashes($_POST['SIG_CONTENT']));
     }else {
         $new_user['SIG_CONTENT'] = "";
     }

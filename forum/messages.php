@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.164 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: messages.php,v 1.165 2004-11-14 16:11:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -210,7 +210,7 @@ if (!$threaddata = thread_get($tid)) {
    exit;
 }
 
-html_draw_top("title="._stripslashes($threaddata['TITLE']), "openprofile.js", "basetarget=_blank");
+html_draw_top("title={$threaddata['TITLE']}", "openprofile.js", "basetarget=_blank");
 
 if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 
@@ -229,7 +229,7 @@ $msg_count = count($messages);
 
 $highlight_array = array();
 
-if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
+if (isset($_GET['search_string']) && strlen(trim(_stripslashes($_GET['search_string']))) > 0) {
     $highlight_array = explode(' ', rawurldecode($_GET['search_string']));
 }
 
@@ -262,7 +262,7 @@ if (sizeof($highlight_array) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
+echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
 
 if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 

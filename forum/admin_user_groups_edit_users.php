@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.8 2004-11-05 18:50:01 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.9 2004-11-14 16:11:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -267,9 +267,9 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 
-if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
+if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
 
-    $usersearch = trim($_POST['usersearch']);
+    $usersearch = trim(_stripslashes($_POST['usersearch']));
 
     echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";

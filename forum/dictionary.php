@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.16 2005-02-25 14:18:42 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.17 2005-02-25 14:40:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -344,9 +344,20 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"right\">", form_submit("add", $lang['add'], false, "dictionary_button"), "</td>\n";
 echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"right\">", form_submit("suggest", $lang['suggest'], false, "dictionary_button"), "</td>\n";
-echo "                      </tr>\n";
+
+if ($dictionary->get_word_suggestion_count() > 9) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"right\">", form_submit("suggest", $lang['suggest'],  false, "dictionary_button"), "</td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"right\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";

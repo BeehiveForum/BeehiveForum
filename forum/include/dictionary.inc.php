@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.15 2005-02-25 14:18:42 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.16 2005-02-25 14:40:47 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -40,6 +40,7 @@ class dictionary {
     var $check_complete;
 
     var $offset_match;
+    var $word_suggestion_count;
 
     function dictionary($content, $ignored_words, $current_word, $obj_id, $offset_match) {
 
@@ -55,8 +56,8 @@ class dictionary {
         $this->obj_id = $obj_id;
 
         $this->check_complete = false;
-
         $this->offset_match = $offset_match;
+        $this->word_suggestion_count = 0;
     }
 
     function get_obj_id()
@@ -99,6 +100,11 @@ class dictionary {
     function is_check_complete()
     {
         return $this->check_complete;
+    }
+
+    function get_word_suggestion_count()
+    {
+        return $this->word_suggestion_count;
     }
 
     function pretty_print_content()
@@ -225,6 +231,12 @@ class dictionary {
         if (db_num_rows($result) > 0) return false;
 
         // Metaphone match (English pronounciation match)
+
+        $sql = "SELECT COUNT(WORD) AS COUNT FROM DICTIONARY WHERE SOUND = '$metaphone' ";
+        $sql.= "AND (UID = 0 OR UID = '$uid')";
+
+        $result = db_query($sql, $db_dictionary_word_get_suggestions);
+        list($this->word_suggestion_count) = db_fetch_array($result, DB_RESULT_NUM);
 
         $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
         $sql.= "AND (UID = 0 OR UID = '$uid') ";

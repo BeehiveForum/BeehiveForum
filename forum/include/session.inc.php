@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.58 2003-11-20 22:37:50 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.59 2003-11-21 18:57:54 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -30,6 +30,10 @@ require_once("./include/user.inc.php");
 require_once("./include/ip.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/stats.inc.php");
+
+// Array to hold the session.
+
+$user_sess = array();
 
 // Checks the session
 
@@ -115,30 +119,27 @@ function bh_load_session()
 
 	$result = db_query($sql, $db_bh_session_get_value);
 
-	if (db_num_rows($result)) {
+	if (db_num_rows($result) > 0) {
 
 	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
-	    if (isset($user_sess['UID']) && (!is_numeric($user_sess['UID']) || $user_sess['UID'] == 0)) {
+	}else {
 
-                // If we're still here, then in all probability we're a guest
-
-                $user_sess = array('UID'            => 0,
-                                   'LOGON'          => 'GUEST',
-                                   'PASSWD'         => md5('GUEST'),
-                                   'STATUS'         => 0,
-                                   'POSTS_PER_PAGE' => 5,
-                                   'TIMEZONE'       => 0,
-                                   'DL_SAVING'      => 0,
-                                   'MARK_AS_OF_INT' => 0,
-                                   'FONT_SIZE'      => 10,
-                                   'STYLE'          => $default_style,
-                                   'VIEW_SIGS'      => 0,
-                                   'START_PAGE'     => 0,
-                                   'LANGUAGE'       => $default_language,
-                                   'PM_NOTIFY'      => 'N',
-                                   'SHOW_STATS'     => 1);
-	    }
+            $user_sess = array('UID'            => 0,
+                               'LOGON'          => 'GUEST',
+                               'PASSWD'         => md5('GUEST'),
+                               'STATUS'         => 0,
+                               'POSTS_PER_PAGE' => 5,
+                               'TIMEZONE'       => 0,
+                               'DL_SAVING'      => 0,
+                               'MARK_AS_OF_INT' => 0,
+                               'FONT_SIZE'      => 10,
+                               'STYLE'          => $default_style,
+                               'VIEW_SIGS'      => 0,
+                               'START_PAGE'     => 0,
+                               'LANGUAGE'       => $default_language,
+                               'PM_NOTIFY'      => 'N',
+                               'SHOW_STATS'     => 1);
 	}
     }
 }

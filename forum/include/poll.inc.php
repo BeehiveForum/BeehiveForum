@@ -42,7 +42,7 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
 
       foreach($poll_options as $option_name) {
 
-        if (!empty($option_name)) {
+        if (strlen(trim($option_name)) > 0) {
 
           $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
           $sql.= "values ('$tid', '". addslashes($option_name). "')";

@@ -186,7 +186,9 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
         $i++;
     }
 
+    echo "\n<p>&nbsp</p><div align=\"center\">";
     echo "<table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\" class=\"messagefoot\">" . $html . "</td></tr></table>";
+    echo "<p>&nbsp;</p></div>";
 }
 
 function mess_nav_range($from,$to)

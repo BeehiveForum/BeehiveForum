@@ -4,7 +4,8 @@ BODY		{
 		margin-bottom: 10px;
 		margin-left: 05px;
 		margin-right: 05px;
-		font-family: Verdana, Arial, Helvetica, sans-serif
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+                font-size: 10pt;
 		}
 
 P, H1, H2,  .form	{
@@ -15,7 +16,7 @@ P, H1, H2,  .form	{
 
 P	{
 		color: #000000;
-		font-size: 10px;
+		font-size: 10pt;
 		margin-top: 00px;
 		margin-bottom: 00px;
 		margin-left: 05px;
@@ -28,8 +29,8 @@ H1		{
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		text-decoration: none;
 		color: #000000;
-		font-size: 11px;
-		font-weight:lighter;
+		font-size: 12pt;
+		font-weight:bold;
 		margin-top: 00px;
 		margin-bottom: 00px;
 		margin-left: 05px;
@@ -41,8 +42,8 @@ H2		{
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		text-decoration: none;
 		color: #000000;
-		font-size: 10px;
-		font-weight:lighter;
+		font-size: 11pt;
+		font-weight:bold;
 		margin-top: 05px;
 		margin-bottom: 05px;
 		margin-left: 05px;
@@ -75,7 +76,7 @@ A		{
 		border-left-width:01px;
 		border-right-width:01px;
 		border-color:#999999;
-		font-size:10px;
+		font-size:10pt;
 		margin-left:05px;
 		margin-right:05px;
 }
@@ -151,8 +152,7 @@ A		{
           background-color: #CCD0E3;
           font-size: 10pt;
           border: solid;
-          'float: left;
-          border-width: 1px;
+          border-width: 0px;
           border-color: black #000000
 }
 
@@ -189,7 +189,7 @@ A		{
 
 .postresponse {
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: 12pt;
+          font-size: 10pt;
           font-style: normal;
           color: #000000;
           text-decoration: underline;
@@ -198,7 +198,7 @@ A		{
 
 .messagefoot {
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: 12pt;
+          font-size: 10pt;
           font-style: normal;
           background-color: #9C9FC4;
           border: #000000;

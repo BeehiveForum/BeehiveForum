@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.115 2004-02-03 13:59:43 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.116 2004-02-03 18:08:51 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -622,6 +622,11 @@ function user_get_aliases($uid)
 
     if (!is_numeric($uid)) return false;
     
+    // Initialise arrays
+    
+    $user_ip_address_array = array();
+    $user_get_aliases_array = array();    
+    
     // Get the user's last known logon IP
     
     $sql = "SELECT LOGON_FROM FROM ". forum_table("USER"). " WHERE UID = '$uid'";
@@ -630,46 +635,58 @@ function user_get_aliases($uid)
     $user_get_aliases_row = db_fetch_array($result);
     
     if (isset($user_get_aliases_row['LOGON_FROM']) && strlen($user_get_aliases_row['LOGON_FROM']) > 0) {
-       $user_ip_address_array = array();
        $user_ip_address_array[] = $user_get_aliases_row['LOGON_FROM'];
-    }    
+    }
+    
+    // Fetch the last 20 IP addresses from the POST table
 
-    $sql = "SELECT IPADDRESS  FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
+    $sql = "SELECT DISTINCT IPADDRESS FROM ". forum_table("POST"). " ";
+    $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 20";
+    
     $result = db_query($sql, $db_user_get_aliases);
     
     if (db_num_rows($result)) {
-        if (!is_array($user_ip_address_array)) $user_ip_address_array = array();
         while($user_get_aliases_row = db_fetch_array($result)) {
-            if (!in_array($user_get_aliases_row['IPADDRESS'], $user_ip_address_array)) {
+            if (!in_array($user_get_aliases_row['IPADDRESS'], $user_ip_address_array) && strlen($user_get_aliases_row['IPADDRESS']) > 0) {
                 $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
             }
         }
     }
+       
+    // Search the USER table for any matches - limit 10 matches
     
-    $user_ip_address_list = implode("', '", $user_ip_address_array);
+    $user_ip_address_list = implode("' OR LOGON_FROM = '", $user_ip_address_array);    
     
-    if (substr($user_ip_address_list, -4) == "', '") {
-        $user_ip_address_list = substr($user_ip_address_list, 0, -4);
+    $sql = "SELECT UID, LOGON, LOGON_FROM AS IPADDRESS FROM ". forum_table("USER"). " ";
+    $sql.= "WHERE (LOGON_FROM = '$user_ip_address_list') AND UID <> $uid ";
+    $sql.= "ORDER BY UID DESC LIMIT 0, 10";
+    
+    $result = db_query($sql, $db_user_get_aliases);
+    
+    if (db_num_rows($result)) {
+        while($user_get_aliases_row = db_fetch_array($result)) {
+            $user_get_aliases_array[] = $user_get_aliases_row;
+        }
     }
     
-    // Search the post table for any matches
+    // Search the POST table for any matches - limit 10 matches
     
-    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, POST.IPADDRESS FROM ". forum_table("USER"). " ";
-    $sql.= "LEFT JOIN ". forum_table("POST"). " POST ON (POST.FROM_UID = USER.UID) ";
-    $sql.= "WHERE (POST.IPADDRESS IN ('$user_ip_address_list') AND POST.FROM_UID <> '$uid') ";
-    $sql.= "OR (USER.LAST_LOGON IN ('$user_ip_address_list') AND USER.UID <> '$uid')";
+    $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);    
+    
+    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, POST.IPADDRESS FROM ". forum_table("POST"). " ";
+    $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
+    $sql.= "ORDER BY POST.TID DESC LIMIT 0, 10";
 
     $result = db_query($sql, $db_user_get_aliases);
     
     if (db_num_rows($result)) {
-        $user_get_aliases_array = array();
         while($user_get_aliases_row = db_fetch_array($result)) {
             $user_get_aliases_array[] = $user_get_aliases_row;
         }
-        return $user_get_aliases_array;
     }
     
-    return false;
+    return $user_get_aliases_array;
 }
 
 function users_get_recent()

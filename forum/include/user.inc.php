@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.155 2004-04-07 08:54:35 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.156 2004-04-10 16:35:01 decoyduck Exp $ */
 
 function user_count()
 {
@@ -155,7 +155,7 @@ function user_update_status($uid, $status)
 
     return $result;
 }
-
+   
 function user_update_folders($uid, $folders)
 {
     $db_user_update_folders = db_connect();
@@ -165,30 +165,48 @@ function user_update_folders($uid, $folders)
     if (!is_numeric($uid)) return false;
     if (!is_array($folders)) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = 0 ";
-    $sql.= "WHERE UID = '$uid'";
+    foreach ($folders as $folder) {
 
-    $result = db_query($sql, $db_user_update_folders);
+        if (is_numeric($folder['allowed']) && is_numeric($folder['fid'])) {
 
-    for ($i = 0; $i < sizeof($folders); $i++) {
+            $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = '{$folder['allowed']}' ";
+            $sql.= "WHERE UID = '$uid' AND FID = '{$folder['fid']}'";
 
-        $sql = "SELECT ALLOWED FROM {$table_data['PREFIX']}USER_FOLDER ";
-        $sql.= "WHERE UID = $uid AND FID = {$folders[$i]['fid']}";
+	    $result = db_query($sql, $db_user_update_folders);
 
-        $result = db_query($sql, $db_user_update_folders);
+	    if (db_affected_rows($db_user_update_folders) < 1) {
 
-        if (db_num_rows($result)) {
-
-            $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = {$folders[$i]['allowed']} ";
-            $sql.= "WHERE UID = $uid AND FID = {$folders[$i]['fid']}";
-
-        }else {
-
-            $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, ALLOWED) ";
-            $sql.= "VALUES ($uid, {$folders[$i]['fid']}, {$folders[$i]['allowed']})";
+                $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, ALLOWED) ";
+                $sql.= "VALUES ('$uid', '{$folder['fid']}', '{$folder['allowed']}')";
+	    }
         }
+    }
+}
 
-        $result = db_query($sql, $db_user_update_folders);
+function user_update_forums($uid, $forums)
+{
+    $db_user_update_forums = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_array($forums)) return false;
+
+    foreach ($forums as $forum) {
+
+        if (is_numeric($forum['allowed']) && is_numeric($forum['fid'])) {
+        
+            $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
+	    $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
+
+	    $result = db_query($sql, $db_user_update_forums);
+
+	    if (db_affected_rows($db_user_update_forums) < 1) {
+
+	        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+		$sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
+
+		$result = db_query($sql, $db_user_update_forums);
+	    }
+	}
     }
 }
 
@@ -893,6 +911,18 @@ function user_delete_word_filter($id)
     $sql.= "WHERE ID = '$id' AND UID = '$uid'";
     
     $result = db_query($sql, $db_user_delete_word_filter);
+}
+
+function user_is_active($uid)
+{
+    if (!is_numeric($uid)) return false;
+
+    $db_user_is_active = db_connect();
+
+    $sql = "SELECT SESSID FROM SESSIONS WHERE UID = '$uid'";
+    $result = db_query($sql, $db_user_is_active);
+
+    return (db_num_rows($result) > 0);
 }
     
 ?>

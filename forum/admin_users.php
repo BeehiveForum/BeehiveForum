@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.66 2004-04-08 16:47:13 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.67 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -282,7 +282,7 @@ if (sizeof($user_array) > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_LOGON'], 1), "</td>\n";
         }
         
-        if (isset($user['SESSID'])) {
+        if (user_is_active($user['UID'])) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<b>{$lang['yes']}</b></td>\n";
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", form_submit("t_kick[{$user['UID']}]", $lang['kick']), "</td>\n";
         }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.28 2004-04-08 16:47:15 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.29 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -35,17 +35,6 @@ include_once("./include/errorhandler.inc.php");
 // Multiple forum support
 include_once("./include/forum.inc.php");
 
-// Check we have a webtag
-
-if (!$webtag = get_webtag()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
-}
-
-// We got this far we should now read the forum settings
-
-$forum_settings = get_forum_settings();
-
 include_once("./include/beehive.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/form.inc.php");
@@ -57,12 +46,6 @@ include_once("./include/light.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if (isset($HTTP_GET_VARS['final_uri'])) {
-    $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
-}else {
-    $final_uri = "./lthread_list.php?webtag=$webtag";
-}
-
 if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
 
     light_html_draw_top();
@@ -71,6 +54,22 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
     light_html_draw_bottom();
     exit;
 
+}
+
+// Check we have a webtag
+
+$webtag = get_webtag();
+
+// We got this far we should now read the forum settings
+
+$forum_settings = get_forum_settings();
+
+// Get the final_uri from the URL
+
+if (isset($HTTP_GET_VARS['final_uri'])) {
+    $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
+}else {
+    $final_uri = "./lthread_list.php?webtag=$webtag";
 }
 
 if (isset($HTTP_POST_VARS['submit'])) {
@@ -120,7 +119,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         if (!strstr(php_sapi_name(), 'cgi')) {
             header("HTTP/1.0 500 Internal Server Error");
         }else {
-            echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
+            echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
         }
 
         exit;

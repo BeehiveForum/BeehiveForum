@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.26 2004-04-10 12:20:57 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.27 2004-04-10 16:35:01 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -165,17 +165,26 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
     
-    if (!$table_data = get_table_prefix()) return false;
+    if ($table_data = get_table_prefix()) {
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "ORDER BY $sort_by $sort_dir ";
-    $sql.= "LIMIT $offset, 20";
+        $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+        $sql.= "USER_STATUS.STATUS FROM USER USER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
+        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+        $sql.= "ORDER BY $sort_by $sort_dir ";
+        $sql.= "LIMIT $offset, 20";
+
+    }else {
+
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
+        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+        $sql.= "ORDER BY $sort_by $sort_dir ";
+        $sql.= "LIMIT $offset, 20";
+    }
 
     $result = db_query($sql, $db_user_search);
 

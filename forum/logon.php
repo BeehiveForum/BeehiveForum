@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.128 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: logon.php,v 1.129 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,10 +31,6 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Fetch the forum webtag and settings
-$webtag = get_webtag();
-$forum_settings = get_forum_settings();
 
 include_once("./include/beehive.inc.php");
 include_once("./include/config.inc.php");
@@ -48,6 +44,29 @@ include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
+
+if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
+
+    html_draw_top();
+    echo "<div align=\"center\">\n";
+    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
+
+    if (isset($final_uri)) {
+        form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
+    }else {
+        form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+    }
+
+    echo "</div>\n";
+    html_draw_bottom();
+    exit;
+}
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Retrieve the final_uri request
 
 if (isset($HTTP_GET_VARS['final_uri'])) {
 
@@ -66,26 +85,10 @@ if (isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = "./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid'];
 }
 
+// If the final_uri contains logout.php then unset it.
+
 if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
     unset($final_uri);
-}
-
-if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
-
-    html_draw_top();
-    echo "<div align=\"center\">\n";
-    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-
-    if (isset($final_uri)) {
-        form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
-    }else {
-        form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-    }
-
-    echo "</div>\n";
-    html_draw_bottom();
-    exit;
-
 }
 
 // Retrieve existing cookie data if any

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.70 2004-04-05 20:54:33 decoyduck Exp $ */
+/* $Id: index.php,v 1.71 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,10 +31,6 @@ include_once("./include/errorhandler.inc.php");
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
-
-// Fetch the forum settings
-$webtag = get_webtag();
-$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/header.inc.php");
@@ -75,6 +71,11 @@ if (isset($HTTP_GET_VARS['autologon']) && $HTTP_GET_VARS['autologon'] == 0) {
 if ($user_sess = bh_session_check()) {
 
     // User is actually logged in. Show them the relevant frameset.
+
+    // Fetch the forum settings
+    
+    $webtag = get_webtag();
+    $forum_settings = get_forum_settings();
 
     // Calculate how tall the nav frameset should be based on the user's fontsize.
     
@@ -163,6 +164,11 @@ if ($user_sess = bh_session_check()) {
     if (!isset($HTTP_COOKIE_VARS['bh_logon']) && user_guest_enabled() && $auto_logon) {
 
         bh_session_init(0); // auto login as guest
+
+        // Fetch the forum settings
+    
+        $webtag = get_webtag();
+        $forum_settings = get_forum_settings();
 
         echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
         echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";

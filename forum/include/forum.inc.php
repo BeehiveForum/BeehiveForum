@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.38 2004-04-10 12:20:57 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.39 2004-04-10 16:35:01 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -87,44 +87,37 @@ function get_webtag()
 
         // Check #1: See if the webtag specified in GET/POST
         // actually exists.
+
+	$uid = bh_session_get_value('UID');
     
-        $sql = "SELECT * FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+        $sql = "SELECT FORUMS.*, USER_FORUM.* FROM FORUMS FORUMS ";
+	$sql.= "LEFT JOIN USER_FORUM USER_FORUM ";
+	$sql.= "ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
+	$sql.= "WHERE WEBTAG = '$webtag' AND USER_FORUM.ALLOWED = 1";
+
         $result = db_query($sql, $db_get_webtag);
         
         if (db_num_rows($result) > 0) {
 
             $webtag_data = db_fetch_array($result);
-
-	    // If the forum is closed and we're not the Queen
-	    // we need to return false so that the users can't
-	    // access the forum.
-	    
-	    if ($webtag_data['ACCESS_LEVEL'] == 0) {
-	        return $webtag_data['WEBTAG'];
-	    }
-
-            return false;
+	    return $webtag_data['WEBTAG'];
         }
 
         // Check #2: Try and select a default webtag from
         // the databse
 
-        $sql = "SELECT * FROM FORUMS WHERE DEFAULT_FORUM = 1 LIMIT 0, 1";
+        $sql = "SELECT FORUMS.*, USER_FORUM.* FROM FORUMS FORUMS ";
+	$sql.= "LEFT JOIN USER_FORUM USER_FORUM ";
+	$sql.= "ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
+	$sql.= "WHERE DEFAULT_FORUM = 1 AND USER_FORUM.ALLOWED = 1 ";
+	$sql.= "LIMIT 0, 1";
+
         $result = db_query($sql, $db_get_webtag);
     
         if (db_num_rows($result) > 0) {
 
             $webtag_data = db_fetch_array($result);
-
-	    // If the forum is closed and we're not the Queen
-	    // we need to return false so that the users can't
-	    // access the forum.
-	    
-	    if ($webtag_data['ACCESS_LEVEL'] == 0) {
-	        return $webtag_data['WEBTAG'];
-	    }
-
-            return false;
+            return $webtag_data['WEBTAG'];
         }
         
         return false;
@@ -811,6 +804,65 @@ function forum_update_access($fid, $access)
 	}
 
 	return $result;
+    }
+
+    return false;
+}
+
+function forum_get($fid)
+{
+    if (!is_numeric($fid)) return false;
+
+    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+
+        $db_forum_get = db_connect();
+
+	$sql = "SELECT * FROM FORUMS WHERE FID = '$fid'";
+	$result = db_query($sql, $db_forum_get);
+
+	if (db_num_rows($result) > 0) {
+
+	    $forum_get_array = db_fetch_array($result);
+	    $forum_get_array['FORUM_SETTINGS'] = array();
+
+	    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$fid'";
+	    $result = db_query($sql, $db_forum_get);
+
+	    while ($row = db_fetch_array($result)) {
+	        $forum_get_array['FORUM_SETTINGS'][$row['SNAME']] = $row['SVALUE'];
+	    }
+
+	    return $forum_get_array;
+	}
+    }
+
+    return false;
+}
+
+function forum_get_permissions($fid)
+{
+    if (!is_numeric($fid)) return false;
+
+    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+
+        $db_forum_get_permissions = db_connect();
+
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID) ";
+        $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1";
+
+	$result = db_query($sql, $db_forum_get_permissions);
+
+        if (db_num_rows($result)) {
+            
+            $forum_get_permissions_array = array();
+            
+            while($row = db_fetch_array($result)) {
+	        $forum_get_permissions_array[] = $row;
+            }
+        
+            return $forum_get_permissions_array;
+        }
     }
 
     return false;

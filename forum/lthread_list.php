@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.40 2004-04-08 16:47:15 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.41 2004-04-10 16:35:00 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -35,17 +35,6 @@ include_once("./include/errorhandler.inc.php");
 // Multiple forum support
 include_once("./include/forum.inc.php");
 
-// Check we have a webtag
-
-if (!$webtag = get_webtag()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?final_uri=$request_uri");
-}
-
-// We got this far we should now read the forum settings
-
-$forum_settings = get_forum_settings();
-
 include_once("./include/constants.inc.php");
 include_once("./include/folder.inc.php");
 include_once("./include/format.inc.php");
@@ -58,9 +47,19 @@ include_once("./include/threads.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?webtag=$webtag&final_uri=". rawurlencode(get_request_uri());
+    $uri = "./llogon.php?final_uri=". rawurlencode(get_request_uri());
     header_redirect($uri);
 }
+
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    header_redirect("./lforums.php");
+}
+
+// We got this far we should now read the forum settings
+
+$forum_settings = get_forum_settings();
 
 // Load the wordfilter for the current user
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.107 2005-02-06 13:58:51 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.108 2005-02-07 17:04:49 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -1185,19 +1185,29 @@ function forum_search($search_string)
 
             while ($forum_data = db_fetch_array($result)) {
 
-                $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
-                $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
+                $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
+                $forum_data['DESCRIPTION'] = "";
 
-                $result_forum_name = db_query($sql, $db_forum_search);
+                $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS ";
+                $sql.= "WHERE FID = '{$forum_data['FID']}' ";
+                $sql.= "AND (SNAME = 'forum_name' OR ";
+                $sql.= "SNAME = 'forum_desc')";
 
-                if (db_num_rows($result_forum_name) > 0) {
+                $result_forum_settings = db_query($sql, $db_forum_search);
 
-                    $row = db_fetch_array($result_forum_name);
-                    $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
+                if (db_num_rows($result_forum_settings) > 0) {
 
-                }else {
+                    while ($row = db_fetch_array($result_forum_settings)) {
 
-                    $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
+                        if ($row['SNAME'] == 'forum_name') {
+
+                            $forum_data['FORUM_NAME'] = $row['SVALUE'];
+
+                        }elseif ($row['SNAME'] == 'forum_desc') {
+
+                            $forum_data['DESCRIPTION'] = $row['SVALUE'];
+                        }
+                    }
                 }
 
                 // Make sure the Forum Interest Level is set.
@@ -1210,38 +1220,27 @@ function forum_search($search_string)
 
                 $folders = folder_get_available();
 
-                $sql = "SELECT COUNT(POST.PID) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_POST POST ";
-                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON ";
-                $sql.= "(THREAD.TID = POST.TID) ";
-                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
-                $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ";
-                $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+                $sql = "SELECT SUM(THREAD.LENGTH - USER_THREAD.LAST_READ) AS UNREAD_MESSAGES FROM ";
+                $sql.= "{$forum_data['WEBTAG']}_THREAD THREAD ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
+                $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ON ";
+                $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
                 $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
                 $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-                $sql.= "AND ((USER_THREAD.LAST_READ < THREAD.LENGTH AND USER_THREAD.LAST_READ < POST.PID) ";
-                $sql.= "OR USER_THREAD.LAST_READ IS NULL) ";
+                $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
 
                 $result_post_count = db_query($sql, $db_forum_search);
 
                 $row = db_fetch_array($result_post_count);
-                $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
+                $forum_data['UNREAD_MESSAGES'] = is_null($row['UNREAD_MESSAGES']) ? 0 : $row['UNREAD_MESSAGES'];
 
                 // Get unread to me message count
 
-                $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
-                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
-                $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_POST POST ";
-                $sql.= "ON (POST.TID = THREAD.TID) ";
-                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ";
-                $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-                $sql.= "WHERE THREAD.FID IN ($folders) ";
-                $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-                $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-                $sql.= "AND (POST.PID > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
-                $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL";
+                $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM ";
+                $sql.= "{$forum_data['WEBTAG']}_POST POST ";
+                $sql.= "WHERE POST.TO_UID = '$uid' AND POST.VIEWED IS NULL";
 
                 $result_unread_to_me = db_query($sql, $db_forum_search);
 
@@ -1265,24 +1264,6 @@ function forum_search($search_string)
                 }else{
 
                     $forum_data['LAST_LOGON'] = 0;
-                }
-
-                // Get Forum Description
-
-                $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
-                $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
-                $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
-
-                $result_description = db_query($sql, $db_forum_search);
-
-                if (db_num_rows($result_description) > 0) {
-
-                    $row = db_fetch_array($result_description);
-                    $forum_data['DESCRIPTION'] = $row['SVALUE'];
-
-                }else{
-
-                    $forum_data['DESCRIPTION'] = "";
                 }
 
                 $forum_search_array[$forum_data['FID']] = $forum_data;

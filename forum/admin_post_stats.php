@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.4 2005-01-24 23:00:39 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.5 2005-02-07 17:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -85,9 +85,12 @@ if (isset($_GET['doreport'])) {
 
     html_draw_top("robots=noindex,nofollow");
 
+    $month_start = date('d/m/Y', mktime(0, 0, 0, date('n'), 1, date('Y')));
+    $month_end = date('d/m/Y',  mktime(23, 59, 59, date('n'), date('t'), date('Y')));
+
     echo "  <h1>{$lang['admin']}: {$lang['postingstats']}</h1>\n";
     echo "  <br />\n";
-    echo "  <h2>{$lang['top10postersforthismonth']}</h2>\n";
+    echo "  <h2>{$lang['top10postersin']} ", $lang['month'][date('n')], "</h2>\n";
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -138,7 +141,14 @@ if (isset($_GET['doreport'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <h2>{$lang['top10postersforthisweek']}</h2>\n";
+
+    $timestamp = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
+    $dayofweek = date('w', $timestamp);
+
+    $week_start = date('d/m/Y', mktime(0, 0, 0, date('n'), date('j') - $dayofweek, date('Y')));
+    $week_end = date('d/m/Y', mktime(23, 59, 59, date('n'), date('j') + (6 - $dayofweek), date('Y')));
+
+    echo "  <h2>{$lang['top10postersforthisweek']}: ({$week_start} - {$week_end})</h2>\n";
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -189,6 +199,10 @@ if (isset($_GET['doreport'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
+
+    $day_start = date('d/m/Y', mktime(0, 0, 0, date('n'), date('j'), date('Y')));
+    $day_end = date('d/m/Y', mktime(23, 59, 59, date('n'), date('j'), date('Y')));
+
     echo "  <h2>{$lang['top10postersfortoday']}</h2>\n";
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -240,7 +254,7 @@ if (isset($_GET['doreport'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <h2>Top 10 posters for this hour</h2>\n";
+    echo "  <h2>{$lang['top10postersforthishour']}</h2>\n";
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

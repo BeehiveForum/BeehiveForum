@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.44 2005-02-01 23:15:57 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.45 2005-02-07 17:04:49 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -346,7 +346,7 @@ function get_week_post_tallys()
     $dayofweek = date('w', $timestamp);
 
     $start_stamp = mktime(0, 0, 0, date('n'), date('j') - $dayofweek, date('Y'));
-    $end_stamp = mktime(23, 59, 59, date('n'), date('t') + (7 - $dayofweek), date('Y'));
+    $end_stamp = mktime(23, 59, 59, date('n'), date('j') + (6 - $dayofweek), date('Y'));
 
     $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp)";

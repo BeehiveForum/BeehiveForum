@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.96 2005-03-08 19:17:30 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.97 2005-03-09 09:15:10 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -70,9 +70,11 @@ function search_execute($argarray, &$urlquery, &$error)
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
     $search_sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (THREAD.TID = POST.TID) ";
+    $search_sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ";
+    $search_sql.= "ON (SEARCH_MATCH.TID = POST.TID AND SEARCH_MATCH.PID = POST.PID) ";
     $search_sql.= "LEFT JOIN SEARCH_KEYWORDS SEARCH_KEYWORDS ";
-    $search_sql.= "ON (SEARCH_KEYWORDS.TID = POST.TID AND SEARCH_KEYWORDS.PID = POST.PID) ";
-    $search_sql.= "WHERE SEARCH_KEYWORDS.FID IN ({$argarray['forums']}) ";
+    $search_sql.= "ON (SEARCH_KEYWORDS.WID = SEARCH_MATCH.WID) ";
+    $search_sql.= "WHERE SEARCH_MATCH.FID IN ({$argarray['forums']}) ";
     $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
@@ -138,14 +140,14 @@ function search_execute($argarray, &$urlquery, &$error)
 
             if ($argarray['method'] == 1) { // AND
 
-                $search_sql.= "AND (SEARCH_KEYWORDS.KEYWORD LIKE '%";
-                $search_sql.= implode("%' AND SEARCH_KEYWORDS.KEYWORD LIKE '%", $keywords_array);
+                $search_sql.= "AND (SEARCH_KEYWORDS.WORD LIKE '%";
+                $search_sql.= implode("%' AND SEARCH_KEYWORDS.WORD LIKE '%", $keywords_array);
                 $search_sql.= "%') ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
-                $search_sql.= "AND (SEARCH_KEYWORDS.KEYWORD LIKE '%";
-                $search_sql.= implode("%' OR SEARCH_KEYWORDS.KEYWORD LIKE '%", $keywords_array);
+                $search_sql.= "AND (SEARCH_KEYWORDS.WORD LIKE '%";
+                $search_sql.= implode("%' OR SEARCH_KEYWORDS.WORD LIKE '%", $keywords_array);
                 $search_sql.= "%') ";
             }
 
@@ -552,22 +554,29 @@ function search_index_post($tid, $pid, $content)
         $keyword_add = trim(strtolower($keyword_add));
         $keyword_sql = addslashes(trim(strtolower($keyword_add)));
 
-        if (strlen($keyword_add) > ($search_min_word_length - 1) && strlen($keyword_add) < 65 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
+        if (strlen($keyword_add) > ($search_min_word_length - 1) && strlen($keyword_add) < 50 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
 
             if (!_in_array($keyword_add, $keyword_array)) {
 
                 $keyword_array[] = $keyword_add;
-                $keyword_query[] = "('$forum_fid', '$tid', '$pid', '$keyword_sql')";
+                $keyword_query[] = "('$keyword_sql')";
             }
         }
     }
 
     if (sizeof($keyword_query) > 0) {
 
-        $sql_values = implode(",\n", $keyword_query);
+        $sql_values = implode(", ", $keyword_query);
+        $keyword_list = implode("', '", $keyword_array);
 
-        $sql = "INSERT INTO SEARCH_KEYWORDS ";
-        $sql.= "(FID, TID, PID, KEYWORD) VALUES $sql_values ";
+        $sql = "INSERT IGNORE INTO SEARCH_KEYWORDS ";
+        $sql.= "(WORD) VALUES $sql_values ";
+
+        $result = db_query($sql, $db_search_index_post);
+
+        $sql = "INSERT IGNORE INTO SEARCH_MATCH (FID, TID, PID, WID) ";
+        $sql.= "SELECT $forum_fid, $tid, $pid, WID FROM ";
+        $sql.= "SEARCH_KEYWORDS WHERE WORD IN ('$keyword_list')";
 
         return db_query($sql, $db_search_index_post);
     }

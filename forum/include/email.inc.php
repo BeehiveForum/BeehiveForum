@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.82 2005-02-07 21:04:14 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.83 2005-02-23 15:26:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -298,6 +298,57 @@ function email_send_pw_reminder($logon)
 
             if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
         }
+    }
+
+    return false;
+}
+
+function email_send_new_pw_notification($tuid, $fuid, $new_password)
+{
+    if (!check_mail_variables()) return false;
+
+    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($fuid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_settings = get_forum_settings();
+    $webtag = get_webtag($webtag_search);
+
+    if ($to_user = user_get($tuid)) {
+
+        $from_user = user_get($fuid);
+
+        // Validate the email address before we continue.
+
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+
+        // get the right language for the email
+        $lang = email_get_language($to_user['UID']);
+
+        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+
+        $subject = "{$lang['passwdchangenotification']} $forum_name";
+
+        $message = "{$lang['pwchangeemail_1']} $forum_name {$lang['pwchangeemail_2']}\n\n";
+        $message.= "{$lang['pwchangeemail_3']} $new_password {$lang['pwchangeemail_4']} {$from_user['LOGON']}\n\n";
+        $message.= "{$lang['pwchangeemail_5']}\n";
+        $message.= "{$lang['pwchangeemail_6']} $forum_name\n";
+        $message.= "{$lang['pwchangeemail_7']}";
+
+        $header = "From: \"$forum_name\" <$forum_email>\n";
+        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+        $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+        $header.= "X-Mailer: PHP/". phpversion();
+
+        // SF.net Bug #1040563:
+        // -------------------
+        // RFC2822 compliancy requires that the RCPT TO portion of the
+        // email headers only contain the email address in < >
+        // i.e. <someuser@abeehiveforum.net>
+
+        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
     }
 
     return false;

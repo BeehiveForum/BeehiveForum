@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.231 2005-02-22 14:21:02 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.232 2005-02-23 15:27:01 decoyduck Exp $ */
 
 // International English language file
 
@@ -307,6 +307,7 @@ $lang['wormdesc'] = "<b>Worms</b> can read messages and post as normal, but thei
 $lang['waspdesc'] = "<b>Wasps</b> can read messages, but cannot reply or post new messages.";
 $lang['splatdesc'] = "<b>Splats</b> cannot access the forum. Use this to ban persistent idiots.";
 $lang['aliasdesc'] = "This is a list of other posters who match this user's last 20 known IP addresses.";
+$lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['manageusersexp_3'] = "To see the last few users to logon, sort the list by LAST_LOGON.";
@@ -634,6 +635,9 @@ $lang['invalidaccess'] = "Invalid Access";
 $lang['requiredinformationnotfound'] = "Required information not found";
 $lang['forgotpasswd'] = "Forgot password";
 $lang['enternewpasswdforuser'] = "Enter a new password for user";
+$lang['resetpassword'] = "Reset Password";
+$lang['resetpasswordto'] = "Reset password to";
+
 
 // Deleting messages (delete.php) --------------------------------------
 
@@ -703,6 +707,16 @@ $lang['pmnotification_4']  = "Note: If you do not wish to receive email notifica
 $lang['pmnotification_5']  = "messages posted to you, go to:";
 $lang['pmnotification_6']  = "click My Controls then Email and Privacy, unselect the PM";
 $lang['pmnotification_7']  = "Notification checkbox and press Submit.";
+
+$lang['passwdchangenotification'] = "Password change notification from";
+
+$lang['pwchangeemail_1'] = "This a notifcation email to inform you that your password on";
+$lang['pwchangeemail_2'] = "has been changed.";
+$lang['pwchangeemail_3'] = "It has been changed to:";
+$lang['pwchangeemail_4'] = "And was changed by:";
+$lang['pwchangeemail_5'] = "If you have received this email in error or were not expecting";
+$lang['pwchangeemail_6'] = "a change to your password please contact an administrator on";
+$lang['pwchangeemail_7'] = "immediatly to correct it.";
 
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
 $lang['hasinvalidemailaddress'] = "has an invalid email address";

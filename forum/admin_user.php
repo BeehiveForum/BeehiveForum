@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.128 2005-02-14 21:00:56 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.129 2005-02-23 15:26:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -46,6 +46,7 @@ include_once("./include/attachments.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
 include_once("./include/edit.inc.php");
+include_once("./include/email.inc.php");
 include_once("./include/folder.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
@@ -237,6 +238,27 @@ if (isset($_POST['del'])) {
                     perm_add_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
                 }
             }
+        }
+
+        // Password reset
+
+        if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
+            $t_reset_password = true;
+        }else {
+            $t_reset_password = false;
+        }
+
+        if (isset($_POST['t_new_password']) && strlen(trim(_stripslashes($_POST['t_new_password']))) > 0) {
+            $t_new_password = trim(_stripslashes($_POST['t_new_password']));
+        }else {
+            $t_new_password = false;
+        }
+
+        if ($t_reset_password === true && strlen($t_new_password) > 0) {
+
+            $fuid = bh_session_get_value('UID');
+            user_change_pass($uid, $t_new_password, false);
+            email_send_new_pw_notification($uid, $fuid, $t_new_password);
         }
 
         // IP Addresses to be banned
@@ -737,6 +759,50 @@ if (isset($_POST['t_delete_posts'])) {
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("t_delete_posts", "Y", $lang['deleteallusersposts'], false), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['resetpassword']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table width=\"90%\" class=\"posthead\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td>{$lang['forgottenpassworddesc']}</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"90%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"150\">{$lang['resetpassword']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("t_reset_password", "Y", $lang['yes'], false), "&nbsp;", form_radio("t_reset_password", "N", $lang['no'], true), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"150\">{$lang['resetpasswordto']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("t_new_password", "", 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

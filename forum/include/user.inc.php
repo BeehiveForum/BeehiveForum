@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.227 2005-02-17 23:15:02 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.228 2005-02-23 15:26:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -103,7 +103,7 @@ function user_change_pass($uid, $password, $hash)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($hash) {
+    if (!is_bool($hash)) {
 
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid' AND PASSWD = '$hash'";

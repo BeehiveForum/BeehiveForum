@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.13 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: start.php,v 1.14 2003-09-21 13:36:35 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -44,16 +44,26 @@ if(!bh_session_check()){
 
 require_once("./include/config.inc.php");
 
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="<?php echo $lang['_textdir']; ?>">
-<head>
-<title><?php echo $forum_name ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $lang['_charset']; ?>">
-<link rel="stylesheet" href="./styles/style.css" type="text/css">
-</head>
-<frameset cols="250,*" border="1">
-<frame src="./start_left.php" name="left" border="1">
-<frame src="./start_main.php" name="right" border="1">
-</frameset>
-</html>
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"DTD/xhtml1-frameset.dtd\">\n";
+echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
+echo "<head>\n";
+echo "<title>$forum_name</title>\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
+echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\">\n";
+echo "</head>\n";
+echo "<frameset cols=\"250,*\" border=\"1\">\n";
+echo "<frame src=\"./start_left.php\" name=\"left\" border=\"1\">\n";
+
+if (isset($HTTP_GET_VARS['show'])) {
+
+    if ($HTTP_GET_VARS['show'] == 'visitors') {
+        echo "<frame src=\"./visitor_log.php\" name=\"right\" border=\"1\">\n";
+    }
+
+}else {
+
+    echo "<frame src=\"./start_main.php\" name=\"right\" border=\"1\">\n";
+}
+
+echo "</frameset>\n";
+echo "</html>\n";

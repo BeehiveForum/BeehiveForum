@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.172 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.173 2003-09-21 13:36:36 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -927,64 +927,73 @@ function messages_forum_stats()
     echo "  <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
     echo "    <tr>\n";
     echo "      <td class=\"subhead\">&nbsp;Forum stats:</td>\n";
-    echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><img src=\"", style_image('stats_hide.png'), "\"></td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>&nbsp;</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td>&nbsp;</td>\n";
-    echo "            <td><b>{$stats['GUESTS']}</b> guest", ($stats['GUESTS'] != 1) ? "s" : "", ", <b>{$stats['NUSERS']}</b> member", ($stats['NUSERS'] != 1) ? "s" : "", ", <b>{$stats['AUSERS']}</b> anonymous member", ($stats['AUSERS'] != 1) ? "s" : "", " [ <a href=\"start.php?show=visitors\" target=\"discussion\">View Complete List</a> ]</td>\n";
-    echo "          </tr>\n";
 
-    if (sizeof($stats['USERS']) > 0) {
+    if (bh_session_get_value('SHOW_STATS') == 1) {
 
+        echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./<img src=\"", style_image('stats_hide.png'), "\"></td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>&nbsp;</td>\n";
+        echo "          </tr>\n";
         echo "          <tr>\n";
         echo "            <td>&nbsp;</td>\n";
-        echo "            <td>";
+        echo "            <td><b>{$stats['GUESTS']}</b> guest", ($stats['GUESTS'] != 1) ? "s" : "", ", <b>{$stats['NUSERS']}</b> member", ($stats['NUSERS'] != 1) ? "s" : "", ", <b>{$stats['AUSERS']}</b> anonymous member", ($stats['AUSERS'] != 1) ? "s" : "", " [ <a href=\"start.php?show=visitors\" target=\"main\">View Complete List</a> ]</td>\n";
+        echo "          </tr>\n";
 
-        for ($i = 0; $i < sizeof($stats['USERS']); $i++) {
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$stats['USERS'][$i]['UID']})\" target=\"_self\">", format_user_name($stats['USERS'][$i]['LOGON'], $stats['USERS'][$i]['NICKNAME']), "</a>";
-            if ($i < (sizeof($stats['USERS']) - 1)) echo ", ";
+        if (sizeof($stats['USERS']) > 0) {
+
+            echo "          <tr>\n";
+            echo "            <td>&nbsp;</td>\n";
+            echo "            <td>";
+
+            for ($i = 0; $i < sizeof($stats['USERS']); $i++) {
+                echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$stats['USERS'][$i]['UID']})\" target=\"_self\">", format_user_name($stats['USERS'][$i]['LOGON'], $stats['USERS'][$i]['NICKNAME']), "</a>";
+                if ($i < (sizeof($stats['USERS']) - 1)) echo ", ";
+            }
         }
+
+        echo "</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>&nbsp;</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>Our members have made a total of {$stats['TCOUNT']} thread", ($stats['TCOUNT'] != 1) ? "s" : "", " and {$stats['PCOUNT']} post", ($stats['PCOUNT'] != 1) ? "s" : "", "</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>Longest thread is '<a href=\"./?msg={$stats['LTID']}.1\">{$stats['LTITLE']}</a>' with {$stats['LLENGTH']} posts.</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>&nbsp;</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>We have $usercount registered member", ($usercount > 1) ? "s" : "", ". The newest member is <a href=\"javascript:void(0);\" onclick=\"openProfile({$stats['NEWUSER']['UID']})\" target=\"_self\">", format_user_name($stats['NEWUSER']['LOGON'], $stats['NEWUSER']['NICNAME']), "</a>.</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>Most users ever online was {$stats['MOST_USERS_COUNT']} on ", date("M jS Y, g:i A", $stats['MOST_USERS_DATE']), "</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td>&nbsp;</td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+
+    }else {
+
+        echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"./<img src=\"", style_image('stats_show.png'), "\"></td>\n";
     }
 
-    echo "</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>&nbsp;</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>Our members have made a total of {$stats['TCOUNT']} thread", ($stats['TCOUNT'] != 1) ? "s" : "", " and {$stats['PCOUNT']} post", ($stats['PCOUNT'] != 1) ? "s" : "", "</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>Longest thread is '<a href=\"./?msg={$stats['LTID']}.1\">{$stats['LTITLE']}</a>' with {$stats['LLENGTH']} posts.</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>&nbsp;</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>We have $usercount registered member", ($usercount > 1) ? "s" : "", ". The newest member is <a href=\"javascript:void(0);\" onclick=\"openProfile({$stats['NEWUSER']['UID']})\" target=\"_self\">", format_user_name($stats['NEWUSER']['LOGON'], $stats['NEWUSER']['NICNAME']), "</a>.</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>Most users ever online was {$stats['MOST_USERS_COUNT']} on ", date("M jS Y, g:i A", $stats['MOST_USERS_DATE']), "</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td width=\"30\">&nbsp;</td>\n";
-    echo "            <td>&nbsp;</td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

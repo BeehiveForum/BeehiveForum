@@ -81,7 +81,8 @@ function user_update($uid, $nickname, $email)
 function user_change_pw($uid, $password)
 {
 
-    $sql = "UPDATE ". forum_table("USER"). " set PASSWD = '". md5($password). "'";
+    $password = md5($password);
+    $sql = "UPDATE ". forum_table("USER"). " set PASSWD = '$password' WHERE UID = $uid";
 
     $db_user_change_pw = db_connect();
     $result = db_query($sql, $db_user_change_pw);

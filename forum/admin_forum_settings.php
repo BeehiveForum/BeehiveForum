@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.51 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.52 2005-01-21 21:25:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,11 +127,13 @@ if (isset($_POST['submit'])) {
         }
 
     }else {
+
         $error_html = "<h2>{$lang['mustchoosedefaultstyle']}</h2>\n";
         $valid = false;
     }
 
     if (isset($_POST['default_emoticons']) && strlen(trim(_stripslashes($_POST['default_emoticons']))) > 0) {
+
         $new_forum_settings['default_emoticons'] = trim(_stripslashes($_POST['default_emoticons']));
 
         if (!emoticons_set_exists($new_forum_settings['default_emoticons'])) {
@@ -140,11 +142,13 @@ if (isset($_POST['submit'])) {
         }
 
     }else {
+
         $error_html = "<h2>{$lang['mustchoosedefaultemoticons']}</h2>\n";
         $valid = false;
     }
 
     if (isset($_POST['default_language']) && strlen(trim(_stripslashes($_POST['default_language']))) > 0) {
+
         $new_forum_settings['default_language'] = trim(_stripslashes($_POST['default_language']));
 
         if (!_in_array($new_forum_settings['default_language'], $available_langs)) {
@@ -154,6 +158,7 @@ if (isset($_POST['submit'])) {
         }
 
     }else {
+
         $error_html = "<h2>{$lang['mustchoosedefaultlang']}</h2>\n";
         $valid = false;
     }
@@ -182,33 +187,16 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['allow_polls'] = "N";
     }
 
-    if (isset($_POST['search_min_word_length']) && is_numeric($_POST['search_min_word_length'])) {
-        $new_forum_settings['search_min_word_length'] = $_POST['search_min_word_length'];
-    }else {
-        $new_forum_settings['search_min_word_length'] = 3;
-    }
-
-    if (isset($_POST['session_cutoff']) && is_numeric($_POST['session_cutoff'])) {
-        $new_forum_settings['session_cutoff'] = $_POST['session_cutoff'];
-    }else {
-        $new_forum_settings['session_cutoff'] = 86400;
-    }
-
-    if (isset($_POST['active_sess_cutoff']) && is_numeric($_POST['active_sess_cutoff'])) {
-        if ($_POST['active_sess_cutoff'] < $_POST['session_cutoff']) {
-            $new_forum_settings['active_sess_cutoff'] = $_POST['active_sess_cutoff'];
-        }else {
-            $error_html = "<h2>{$lang['activesessiongreaterthansession']}</h2>\n";
-            $valid = false;
-        }
-    }else {
-        $new_forum_settings['active_sess_cutoff'] = 900;
-    }
-
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $new_forum_settings['show_stats'] = "Y";
     }else {
         $new_forum_settings['show_stats'] = "N";
+    }
+
+    if (isset($_POST['allow_search_spidering']) && $_POST['allow_search_spidering'] == "Y") {
+        $new_forum_settings['allow_search_spidering'] = "Y";
+    }else {
+        $new_forum_settings['allow_search_spidering'] = "N";
     }
 
     if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {
@@ -221,12 +209,6 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['auto_logon'] = "Y";
     }else {
         $new_forum_settings['auto_logon'] = "N";
-    }
-
-    if (isset($_POST['allow_search_spidering']) && $_POST['allow_search_spidering'] == "Y") {
-        $new_forum_settings['allow_search_spidering'] = "Y";
-    }else {
-        $new_forum_settings['allow_search_spidering'] = "N";
     }
 
     if ($valid) {
@@ -269,7 +251,10 @@ html_draw_top("emoticons.js");
 if ($webtag) {
     echo "<h1>{$lang['forumsettings']} : ", forum_get_setting('forum_name', false, 'Unknown Forum'), "</h1>\n";
 }else {
-    echo "<h1>{$lang['forumsettings']} : {$lang['defaultforumsettings']}</h1>\n";
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    html_draw_bottom();
+    exit;
 }
 
 // Any error messages to display?
@@ -417,93 +402,6 @@ echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_12']}</p>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['searchoptions']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"200\">{$lang['minsearchwordlength']}:</td>\n";
-echo "                        <td>", form_input_text("search_min_word_length", forum_get_setting('search_min_word_length', false, '3'), 20, 32), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_13']}</p>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['sessions']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"300\">{$lang['sessioncutoffseconds']}:</td>\n";
-echo "                        <td>", form_input_text("session_cutoff", forum_get_setting('session_cutoff', false, '86400'), 30, 32), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"300\">{$lang['activesessioncutoffseconds']}:</td>\n";
-echo "                        <td>", form_input_text("active_sess_cutoff", forum_get_setting('active_sess_cutoff', false, '900'), 30, 32), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_14']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_15']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.62 2005-01-19 22:44:14 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.63 2005-01-21 21:25:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -133,7 +133,7 @@ if (perm_has_forumtools_access()) {
     echo "    <td class=\"postbody\"><a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\"><a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['defaultforumsettings']}</a></td>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['globalforumsettings']}</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }

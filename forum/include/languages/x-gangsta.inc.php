@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.65 2005-01-21 01:19:47 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.66 2005-01-21 21:25:52 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -192,6 +192,7 @@ $lang['adminexp_11'] = "<b>Forum links</b> lets you manage the links dropdown in
 $lang['adminexp_12'] = "<b>View log</b> lists recent actions by the forum moderators.";
 $lang['adminexp_13'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
 $lang['adminexp_14'] = "<b>Default Forum Settings</b> allows you to modify settings which affect all forums.";$lang['newstyle'] = "New punk-ass stizyle";
+$lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['successfullycreated'] = "Thizat shit be fly.";
 $lang['stylesdirnotwritable'] = "tha stizyles dirizectizory ain't writin' on yo ass. If yo a geek-ass fucka, then CHMOD tha stizyles dirizectizory and try that mofucker agizain.";
@@ -764,7 +765,7 @@ $lang['addtofavourites'] = "Add To Favourites";
 $lang['availableforums'] = "Available Forums";
 $lang['noforumsavailable'] = "There are no forums available.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
-$lang['defaultforumsettings'] = "Default Forum Settings";
+$lang['globalforumsettings'] = "Global Forum Settings";
 $lang['unnamedforum'] = "Unnamed Forum";
 $lang['enterpasswd'] = "Enter Password";
 $lang['passwdprotectedforum'] = "Password Protected Forum";

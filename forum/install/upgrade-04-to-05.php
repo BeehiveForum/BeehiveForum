@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.16 2005-01-01 16:49:47 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.17 2005-01-21 21:26:01 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1098,9 +1098,6 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                                              'post_edit_time'         => '0',
                                              'maximum_post_length'    => '6226',
                                              'allow_polls'            => 'Y',
-                                             'search_min_word_length' => '3',
-                                             'session_cutoff'         => '86400',
-                                             'active_sess_cutoff'     => '900',
                                              'show_stats'             => 'Y',
                                              'guest_account_enabled'  => 'Y',
                                              'auto_logon'             => 'Y',
@@ -1111,6 +1108,9 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                                              'pm_auto_prune'              => 'N',
                                              'pm_auto_prune_length'       => '60',
                                              'pm_allow_attachments'       => 'Y',
+                                             'search_min_word_length'     => '3',
+                                             'session_cutoff'             => '86400',
+                                             'active_sess_cutoff'         => '900',
                                              'attachment_dir'             => 'attachments',
                                              'attachments_enabled'        => 'Y',
                                              'attachments_max_user_space' => '1048576',

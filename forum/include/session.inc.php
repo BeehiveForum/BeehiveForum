@@ -21,12 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.149 2005-01-19 21:49:31 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.150 2005-01-21 21:25:51 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
 include_once("./include/forum.inc.php");
 include_once("./include/ip.inc.php");
+include_once("./include/logon.inc.php");
 include_once("./include/pm.inc.php");
 include_once("./include/stats.inc.php");
 include_once("./include/user.inc.php");
@@ -194,7 +195,7 @@ function bh_session_check()
         }
     }
 
-    if (user_guest_enabled()) {
+    if (user_guest_enabled() && !user_cookies_set()) {
 
         // Guest user sessions are handled a bit differently.
         // Rather than the cookie which holds their HASH we

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.8 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.9 2005-01-21 21:25:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -94,101 +94,6 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
-        $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
-    }else {
-        $error_html = "<h2>{$lang['mustsupplyforumname']}</h2>\n";
-        $valid = false;
-    }
-
-    if (isset($_POST['forum_email']) && strlen(trim(_stripslashes($_POST['forum_email']))) > 0) {
-        $new_forum_settings['forum_email'] = trim(_stripslashes($_POST['forum_email']));
-    }else {
-        $error_html = "<h2>{$lang['mustsupplyforumemail']}</h2>\n";
-        $valid = false;
-    }
-
-    if (isset($_POST['forum_desc']) && strlen(trim(_stripslashes($_POST['forum_desc']))) > 0) {
-        $new_forum_settings['forum_desc'] = trim(_stripslashes($_POST['forum_desc']));
-    }else {
-        $new_forum_settings['forum_desc'] = "";
-    }
-
-    if (isset($_POST['forum_keywords']) && strlen(trim(_stripslashes($_POST['forum_keywords']))) > 0) {
-        $new_forum_settings['forum_keywords'] = trim(_stripslashes($_POST['forum_keywords']));
-    }else {
-        $new_forum_settings['forum_keywords'] = "";
-    }
-
-    if (isset($_POST['default_style']) && strlen(trim(_stripslashes($_POST['default_style']))) > 0) {
-
-        $new_forum_settings['default_style'] = trim(_stripslashes($_POST['default_style']));
-
-        if (!style_exists($new_forum_settings['default_style'])) {
-
-            $error_html = "<h2>{$lang['unknownstylename']}</h2>\n";
-            $valid = false;
-        }
-
-    }else {
-
-        $error_html = "<h2>{$lang['mustchoosedefaultstyle']}</h2>\n";
-        $valid = false;
-    }
-
-    if (isset($_POST['default_emoticons']) && strlen(trim(_stripslashes($_POST['default_emoticons']))) > 0) {
-
-        $new_forum_settings['default_emoticons'] = trim(_stripslashes($_POST['default_emoticons']));
-
-        if (!emoticons_set_exists($new_forum_settings['default_emoticons'])) {
-            $error_html = "<h2>{$lang['unknownemoticonsname']}</h2>\n";
-            $valid = false;
-        }
-
-    }else {
-        $error_html = "<h2>{$lang['mustchoosedefaultemoticons']}</h2>\n";
-        $valid = false;
-    }
-
-    if (isset($_POST['default_language']) && strlen(trim(_stripslashes($_POST['default_language']))) > 0) {
-
-        $new_forum_settings['default_language'] = trim(_stripslashes($_POST['default_language']));
-
-        if (!_in_array($new_forum_settings['default_language'], $available_langs)) {
-
-            $error_html = "<h2>{$lang['unknownlanguage']}</h2>\n";
-            $valid = false;
-        }
-
-    }else {
-        $error_html = "<h2>{$lang['mustchoosedefaultlang']}</h2>\n";
-        $valid = false;
-    }
-
-    if (isset($_POST['allow_post_editing']) && $_POST['allow_post_editing'] == "Y") {
-        $new_forum_settings['allow_post_editing'] = "Y";
-    }else {
-        $new_forum_settings['allow_post_editing'] = "N";
-    }
-
-    if (isset($_POST['post_edit_time']) && is_numeric($_POST['post_edit_time'])) {
-        $new_forum_settings['post_edit_time'] = $_POST['post_edit_time'];
-    }else {
-        $new_forum_settings['post_edit_time'] = 0;
-    }
-
-    if (isset($_POST['maximum_post_length']) && is_numeric($_POST['maximum_post_length'])) {
-        $new_forum_settings['maximum_post_length'] = $_POST['maximum_post_length'];
-    }else {
-        $new_forum_settings['maximum_post_length'] = 6226;
-    }
-
-    if (isset($_POST['allow_polls']) && $_POST['allow_polls'] == "Y") {
-        $new_forum_settings['allow_polls'] = "Y";
-    }else {
-        $new_forum_settings['allow_polls'] = "N";
-    }
-
     if (isset($_POST['search_min_word_length']) && is_numeric($_POST['search_min_word_length'])) {
         $new_forum_settings['search_min_word_length'] = $_POST['search_min_word_length'];
     }else {
@@ -202,20 +107,20 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['active_sess_cutoff']) && is_numeric($_POST['active_sess_cutoff'])) {
+
         if ($_POST['active_sess_cutoff'] < $_POST['session_cutoff']) {
+
             $new_forum_settings['active_sess_cutoff'] = $_POST['active_sess_cutoff'];
+
         }else {
+
             $error_html = "<h2>{$lang['activesessiongreaterthansession']}</h2>\n";
             $valid = false;
         }
-    }else {
-        $new_forum_settings['active_sess_cutoff'] = 900;
-    }
 
-    if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
-        $new_forum_settings['show_stats'] = "Y";
     }else {
-        $new_forum_settings['show_stats'] = "N";
+
+        $new_forum_settings['active_sess_cutoff'] = 900;
     }
 
     if (isset($_POST['show_pms']) && $_POST['show_pms'] == "Y") {
@@ -246,6 +151,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['pm_allow_attachments'] = "Y";
     }else {
         $new_forum_settings['pm_allow_attachments'] = "N";
+    }
+
+    if (isset($_POST['allow_search_spidering']) && $_POST['allow_search_spidering'] == "Y") {
+        $new_forum_settings['allow_search_spidering'] = "Y";
+    }else {
+        $new_forum_settings['allow_search_spidering'] = "N";
     }
 
     if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {
@@ -288,6 +199,7 @@ if (isset($_POST['submit'])) {
         }
 
     }elseif (strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
+
         $error_html = "<h2>{$lang['attachmentdirblank']}</h2>\n";
         $valid = false;
     }
@@ -308,12 +220,6 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['attachment_use_old_method'] = "Y";
     }else {
         $new_forum_settings['attachment_use_old_method'] = "N";
-    }
-
-    if (isset($_POST['allow_search_spidering']) && $_POST['allow_search_spidering'] == "Y") {
-        $new_forum_settings['allow_search_spidering'] = "Y";
-    }else {
-        $new_forum_settings['allow_search_spidering'] = "N";
     }
 
     if ($valid) {
@@ -353,7 +259,7 @@ if (isset($_POST['submit'])) {
 
 html_draw_top("emoticons.js");
 
-echo "<h1>{$lang['defaultforumsettings']}</h1>\n";
+echo "<h1>{$lang['globalforumsettings']}</h1>\n";
 
 // Any error messages to display?
 
@@ -366,154 +272,6 @@ if (!empty($error_html)) {
 echo "<br />\n";
 echo "<form name=\"prefs\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['mainsettings']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['forumname']}:</td>\n";
-echo "                  <td>", form_input_text("forum_name", (isset($default_forum_settings['forum_name'])) ? $default_forum_settings['forum_name'] : "", 45, 32), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['forumemail']}:</td>\n";
-echo "                  <td>", form_input_text("forum_email", (isset($default_forum_settings['forum_email'])) ? $default_forum_settings['forum_email'] : "", 45, 80), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['forumdesc']}:</td>\n";
-echo "                  <td>", form_input_text("forum_desc", (isset($default_forum_settings['forum_desc'])) ? $default_forum_settings['forum_desc'] : "", 45, 80), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['forumkeywords']}:</td>\n";
-echo "                  <td>", form_input_text("forum_keywords", (isset($default_forum_settings['forum_keywords'])) ? $default_forum_settings['forum_keywords'] : "", 45, 80), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['defaultstyle']}:</td>\n";
-
-$styles = style_get_styles();
-
-echo "                  <td>", form_dropdown_array("default_style", array_keys($styles), array_values($styles), (isset($default_forum_settings['default_style'])) ? $default_forum_settings['default_style'] : ""), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['defaultemoticons']} ";
-echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
-
-$emot_sets = emoticons_get_sets();
-
-echo "                  <td>", form_dropdown_array("default_emoticons", array_keys($emot_sets), array_values($emot_sets), (isset($default_forum_settings['default_emoticons'])) ? $default_forum_settings['default_emoticons'] : ""), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['defaultlanguage']}:</td>\n";
-echo "                  <td>", form_dropdown_array("default_language", $available_langs, $available_langs, (isset($default_forum_settings['default_language'])) ? $default_forum_settings['default_language'] : ""), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['postoptions']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td>\n";
-echo "                          <fieldset>\n";
-echo "                            <legend>", form_checkbox("allow_post_editing", "Y", $lang['allowpostoptions'], (isset($default_forum_settings['allow_post_editing'])) ? $default_forum_settings['allow_post_editing'] : ""), "</legend>\n";
-echo "                            &nbsp;{$lang['postedittimeout']}: ", form_input_text("post_edit_time", (isset($default_forum_settings['post_edit_time'])) ? $default_forum_settings['post_edit_time'] : "", 20, 32), "\n";
-echo "                          </fieldset>\n";
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td>\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td>{$lang['maximumpostlength']}:</td>\n";
-echo "                        <td>", form_input_text("maximum_post_length", (isset($default_forum_settings['maximum_post_length'])) ? $default_forum_settings['maximum_post_length'] : "", 45, 32), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_10']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_11']}</p>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['polls']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">", form_checkbox("allow_polls", "Y", $lang['allowcreationofpolls'], (isset($default_forum_settings['allow_polls'])) ? $default_forum_settings['allow_polls'] : ""), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_12']}</p>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -609,43 +367,6 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['stats']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("show_stats", "Y", $lang['enablestatsdisplay'], (isset($default_forum_settings['show_stats'])) ? $default_forum_settings['show_stats'] : ""), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                  <td class=\"smalltext\">\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_16']}</p>\n";
-echo "                  </td>\n";
-echo "                  <td width=\"20\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['personalmessages']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -654,18 +375,18 @@ echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td>\n";
 echo "                          <fieldset>\n";
-echo "                            <legend>", form_checkbox("show_pms", "Y", $lang['enablepersonalmessages'], (isset($default_forum_settings['show_pms'])) ? $default_forum_settings['show_pms'] : ""), "</legend>\n";
+echo "                            <legend>", form_checkbox("show_pms", "Y", $lang['enablepersonalmessages'], (isset($default_forum_settings['show_pms'])) ? ($default_forum_settings['show_pms'] == 'Y') : false), "</legend>\n";
 echo "                            <table class=\"posthead\" width=\"100%\">\n";
 echo "                              <tr>\n";
 echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['pmusermessages']}:</td>\n";
 echo "                                <td>", form_input_text("pm_max_user_messages", (isset($default_forum_settings['pm_max_user_messages'])) ? $default_forum_settings['pm_max_user_messages'] : "", 10, 32), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td>", form_checkbox("pm_auto_prune", "Y", $lang['autopruneuserspmfoldersevery'], (isset($default_forum_settings['pm_auto_prune'])) ? $default_forum_settings['pm_auto_prune'] : ""), "&nbsp;</td>\n";
+echo "                                <td>", form_checkbox("pm_auto_prune", "Y", $lang['autopruneuserspmfoldersevery'], (isset($default_forum_settings['pm_auto_prune'])) ? ($default_forum_settings['pm_auto_prune'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                                <td>", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), (isset($default_forum_settings['pm_auto_prune_length'])) ? $default_forum_settings['pm_auto_prune_length'] : ""), " <span class=\"admin_settings_text\">{$lang['days']}</span>&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td colspan=\"2\">", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], (isset($default_forum_settings['pm_allow_attachments'])) ? $default_forum_settings['pm_allow_attachments'] : ""), "&nbsp;</td>\n";
+echo "                                <td colspan=\"2\">", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], (isset($default_forum_settings['pm_allow_attachments'])) ? ($default_forum_settings['pm_allow_attachments'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                            </table>\n";
 echo "                          </fieldset>\n";
@@ -708,7 +429,7 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("allow_search_spidering", "Y", $lang['allowsearchenginespidering'], forum_get_setting('allow_search_spidering', 'Y', false)), "&nbsp;</td>\n";
+echo "                        <td>", form_checkbox("allow_search_spidering", "Y", $lang['allowsearchenginespidering'], (isset($default_forum_settings['allowsearchenginespidering'])) ? ($default_forum_settings['allowsearchenginespidering'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -745,7 +466,7 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("guest_account_enabled", "Y", $lang['enableguestaccount'], (isset($default_forum_settings['guest_account_enabled'])) ? $default_forum_settings['guest_account_enabled'] : ""), "&nbsp;</td>\n";
+echo "                        <td>", form_checkbox("guest_account_enabled", "Y", $lang['enableguestaccount'], (isset($default_forum_settings['guest_account_enabled'])) ? ($default_forum_settings['guest_account_enabled'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -754,7 +475,7 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("auto_logon", "Y", $lang['autologinguests'], (isset($default_forum_settings['auto_logon'])) ? $default_forum_settings['auto_logon'] : ""), "&nbsp;</td>\n";
+echo "                        <td>", form_checkbox("auto_logon", "Y", $lang['autologinguests'], (isset($default_forum_settings['auto_logon'])) ? ($default_forum_settings['auto_logon'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -794,7 +515,7 @@ echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td>\n";
 echo "                          <fieldset>\n";
-echo "                            <legend>", form_checkbox("attachments_enabled", "Y", $lang['enableattachments'], (isset($default_forum_settings['attachments_enabled'])) ? $default_forum_settings['attachments_enabled'] : ""), "</legend>\n";
+echo "                            <legend>", form_checkbox("attachments_enabled", "Y", $lang['enableattachments'], (isset($default_forum_settings['attachments_enabled'])) ? ($default_forum_settings['attachments_enabled'] == 'Y') : false), "</legend>\n";
 echo "                            <table class=\"posthead\" width=\"100%\">\n";
 echo "                              <tr>\n";
 echo "                                <td class=\"admin_settings_text\">&nbsp;{$lang['attachmentdir']}:</td>\n";
@@ -805,10 +526,10 @@ echo "                                <td class=\"admin_settings_text\">&nbsp;{$
 echo "                                <td>", form_input_text("attachments_max_user_space", (isset($default_forum_settings['attachments_max_user_space'])) ? ($default_forum_settings['attachments_max_user_space'] / 1024) / 1024 : "", 10, 32), "&nbsp;(MB)&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td colspan=\"2\">", form_checkbox("attachments_allow_embed", "Y", $lang['allowembeddingofattachments'], (isset($default_forum_settings['attachments_allow_embed'])) ? $default_forum_settings['attachments_allow_embed'] : ""), "&nbsp;</td>\n";
+echo "                                <td colspan=\"2\">", form_checkbox("attachments_allow_embed", "Y", $lang['allowembeddingofattachments'], (isset($default_forum_settings['attachments_allow_embed'])) ? ($default_forum_settings['attachments_allow_embed'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
-echo "                                <td colspan=\"2\">", form_checkbox("attachment_use_old_method", "Y", $lang['usealtattachmentmethod'], (isset($default_forum_settings['attachments_use_old_method'])) ? $default_forum_settings['attachments_use_old_method'] : ""), "&nbsp;</td>\n";
+echo "                                <td colspan=\"2\">", form_checkbox("attachment_use_old_method", "Y", $lang['usealtattachmentmethod'], (isset($default_forum_settings['attachments_use_old_method'])) ? ($default_forum_settings['attachments_use_old_method'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                            </table>\n";
 echo "                          </fieldset>\n";
@@ -836,6 +557,12 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td><p>{$lang['settingsaffectallforumswarning']}</p></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

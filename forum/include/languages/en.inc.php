@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.83 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.84 2004-03-19 13:53:08 decoyduck Exp $ */
 
 // International English language file
 
@@ -327,6 +327,7 @@ $lang['mustsupplyforumname'] = "You must supply a forum name";
 $lang['mustsupplyforumemail'] = "You must supply a forum email address";
 $lang['mustchoosedefaultstyle'] = "You must choose a default forum style";
 $lang['unknownstylename'] = "Unknown style name";
+$lang['unknownlanguage'] = "Unknown language";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
 $lang['attachmentdirnotwritable'] = "Choosen attachment directory and it's parent directory must be writable by PHP";
@@ -363,10 +364,41 @@ $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['autologinguests'] = "Automatically Login Guests";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
+$lang['userattachmentspace'] = "Attachment space per user";
 $lang['showdeletedattachments'] = "Show Deleted Attachments in messages";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments in messages / signatures";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
+
+// Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
+
+$lang['forum_settings_help_1'] = "Beehive can make use of it's own error handler to show more friendly error messages than the default PHP ones. However, this setting can cause problems with some versions of PHP so if you encounter any problems with blank pages with this option switched on you should switch it off.";
+$lang['forum_settings_help_2'] = "This setting enables the built in GZIP compression in Beehive. Compressing the output of the scripts can save you considerable amounts of bandwidth, but it can also increase the CPU load on the server and slow things down.";
+$lang['forum_settings_help_3'] = "If your server is running PHP 4.2.0 or higher you can also change the maximum level of compression that should be used. The higher the level used the higher the server load.";
+$lang['forum_settings_help_4'] = "<b>WARNING:</b> If you are using mod_gzip or any other gzipping module to handle the compression of PHP scripts on your web server, do <b>NOT</b> enable the built in GZIP compression in Beehive, otherwise your forum may become inaccessible.";
+$lang['forum_settings_help_5'] = "This setting specifies the domain name that the cookies set by Beehive should use. This is useful for situations where there is more than one access point for your forum.";
+$lang['forum_settings_help_6'] = "For example supposed the following URLs are both valid access points for the same forum:";
+$lang['forum_settings_help_7'] = "http://forum.mybeehiveforum.net/<br />http://www.mybeehiveforum.net/forum/";
+$lang['forum_settings_help_8'] = "To prevent users from having to login in twice at each access point, you could set the above value to &quot;mybeehiveforum.net&quot; and the cookies for both the logon page and the main session cookies will work for both URLs.";
+$lang['forum_settings_help_9'] = "<b>WARNING:</b> Do not change this if you do not understand what it does. Setting it to an invalid or incorrect value will make your forum inaccessible.";
+$lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in hours after posting that a user can edit their post. If set to 0 there is no limit.";
+$lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a seperate page.";
+$lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
+$lang['forum_settings_help_13'] = "This settings defines the mimumum word length that is allowed to to be searched for in AND and OR based searches. Words smaller than the value specified will be removed from the query automatically. Exact phrase searches are not effected by this setting";
+$lang['forum_settings_help_14'] = "<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
+$lang['forum_settings_help_15'] = "<b>Active session cut off</b> is the maximum time before a user's is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
+$lang['forum_settings_help_16'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
+$lang['forum_settings_help_17'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don't want your users to be able to send each other PMs you can disable this option.";
+$lang['forum_settings_help_18'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";
+$lang['forum_settings_help_19'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and it not in addition to. ";
+$lang['forum_settings_help_20'] = "The guest account allows visitors to your forum to read posts without having to sign up for an account.";
+$lang['forum_settings_help_21'] = "If you prefer you can also setup your BeehiveForum so that guests are automatically logged in. Once a user registers they will always be shown the login screen as long as their cookies remain intact.";
+$lang['forum_settings_help_22'] = "Beehive allows attachments to be uploaed to messages when posted. If you have limited webspace you may which to disable attachments by unticking the box above.";
+$lang['forum_settings_help_23'] = "<b>Attachment Dir</b> is the location Beehive should store it's attachments in. This directory must exist on your webspace and must be writable by the webserver / PHP process otherwise uploads will fail.";
+$lang['forum_settings_help_24'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
+$lang['forum_settings_help_25'] = "<b>Show Deleted Attachments in messages</b> forces Beehive to keep filenames of previously deleted attachments visible in the posts they were attached to. This can help accountability of who upload what and where. If you don't want or need this functionality you can disable it.";
+$lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
+$lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 

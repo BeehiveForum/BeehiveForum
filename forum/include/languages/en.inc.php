@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.239 2005-03-13 22:17:21 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.240 2005-03-13 22:42:42 decoyduck Exp $ */
 
 // International English language file
 
@@ -371,6 +371,7 @@ $lang['wordfilterexp_2'] = "Perl-compatible regular expressions can also be used
 $lang['wordfilterexp_3'] = "Use this page to edit your personal Word Filter. Place each word to be filtered on a new line.";
 $lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
 $lang['allow'] = "Allow";
+$lang['access'] = "Access";
 $lang['normalthreadsonly'] = "Normal threads only";
 $lang['pollthreadsonly'] = "Poll threads only";
 $lang['both'] = "Both thread types";

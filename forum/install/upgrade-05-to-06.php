@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.12 2005-02-04 19:35:38 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.13 2005-02-06 00:20:49 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -136,7 +136,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
     $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
     $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (IP)";
+    $sql.= "  PRIMARY KEY  (ID)";
     $sql.= ") TYPE=MyISAM";
 
     if (!$result = db_query($sql, $db_install)) {
@@ -150,36 +150,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "INSERT INTO {$forum_webtag}_BANNED (IPADDRESS) ";
     $sql.= "SELECT IP FROM {$forum_webtag}_BANNED_IP";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-        $valid = false;
-        return;
-    }
-
-    // Post approval by moderator. We're just going to auto approve
-    // the existing posts
-
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD APPROVED DATETIME AFTER STATUS";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL AFTER APPROVED";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-        $valid = false;
-        return;
-    }
-
-    $sql = "UPDATE {$forum_webtag}_POST SET APPROVED = NOW(), APPROVED_BY = 0 WHERE 1";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -311,6 +281,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "VIEWED DATETIME DEFAULT NULL,";
     $sql.= "CREATED DATETIME DEFAULT NULL,";
     $sql.= "STATUS TINYINT(4) DEFAULT '0',";
+    $sql.= "APPROVED DATETIME DEFAULT NULL,";
+    $sql.= "APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "EDITED DATETIME DEFAULT NULL,";
     $sql.= "EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
@@ -329,12 +301,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Transport the data from the old table into the new one.
     // This takes a long time. Upwards of 1 minute on a forum
-    // with 300,000 messages.
+    // with 300,000 messages. While we're here we're also going
+    // to add the columns for the post approval and populate them
+    // so the existing posts are pre-approved by the original author
 
-    $sql = "INSERT INTO {$forum_webtag}_POST_NEW (TID, PID, REPLY_TO_PID, FROM_UID, ";
-    $sql.= "TO_UID, VIEWED, CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS) ";
-    $sql.= "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, ";
-    $sql.= "CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS FROM {$forum_webtag}_POST";
+    $sql = "INSERT INTO {$forum_webtag}_POST_NEW (TID, PID, REPLY_TO_PID, ";
+    $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, ";
+    $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) SELECT TID, PID, ";
+    $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, ";
+    $sql.= "NOW(), FROM_UID, EDITED, EDITED_BY, IPADDRESS FROM {$forum_webtag}_POST";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -497,38 +472,63 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if ($result = db_query($sql, $db_install)) {
 
-        list($pm_auto_prune_length) = db_fetch_array($result);
+        if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length ";
-        $sql.= "WHERE SVALUE = 'Y' AND SNAME = 'pm_auto_prune' ";
-        $sql.= "AND FID = $forum_fid";
+            list($pm_auto_prune_length) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if (!$result = db_query($sql, $db_install)) {
+            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length ";
+            $sql.= "WHERE SVALUE = 'Y' AND SNAME = 'pm_auto_prune' ";
+            $sql.= "AND FID = $forum_fid";
 
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
+            if (!$result = db_query($sql, $db_install)) {
 
-        $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length * -1 ";
-        $sql.= "WHERE SVALUE = 'N' AND SNAME = 'pm_auto_prune' ";
-        $sql.= "AND FID = $forum_fid";
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
 
-        if (!$result = db_query($sql, $db_install)) {
+            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = $pm_auto_prune_length * -1 ";
+            $sql.= "WHERE SVALUE = 'N' AND SNAME = 'pm_auto_prune' ";
+            $sql.= "AND FID = $forum_fid";
 
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
-        }
+            if (!$result = db_query($sql, $db_install)) {
 
-        $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = 'pm_auto_prune_length' ";
-        $sql.= "AND FID = $forum_fid";
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
 
-        if (!$result = db_query($sql, $db_install)) {
+            $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = 'pm_auto_prune_length' ";
+            $sql.= "AND FID = $forum_fid";
 
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
+            if (!$result = db_query($sql, $db_install)) {
+
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
+
+        }else {
+
+            $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = $forum_fid ";
+            $sql.= "AND SVALUE LIKE 'pm_auto_prune%'";
+
+            if (!$result = db_query($sql, $db_install)) {
+
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
+
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ($forum_fid, 'pm_auto_prune', -60)";
+
+            if (!$result = db_query($sql, $db_install)) {
+
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
         }
     }
 
@@ -577,7 +577,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "UPDATE {$forum_webtag}_ANON_LOGON SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
+    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -586,7 +586,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "UPDATE {$forum_webtag}_ANON_LOGON SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
+    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -595,7 +595,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "UPDATE ANON_LOGON SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
+    $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -604,7 +604,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "UPDATE ANON_LOGON SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
+    $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
 
     if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.38 2004-04-28 14:28:53 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.39 2004-04-28 17:04:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -262,11 +262,7 @@ if (!empty($error_html)) {
 
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 
-    $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : forum_get_setting('default_style')) . "/top.html";
-
-    if (!file_exists($top_html)) {
-        $top_html = "./top.html";
-    }
+    $top_html = html_get_top_page();
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";

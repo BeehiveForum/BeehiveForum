@@ -8,11 +8,17 @@ BODY		{
                 font-size: 10pt;
 		}
 
-
 frameset        {
                 border-style: none;
-                margin:0;
-                padding:0;
+		border-width: 0px;
+                }
+
+frame           {
+                border-style: none;
+		border-width: 0px;
+		border-color: #000000;
+                margin: 0px 0px 0px 0px;
+                padding: 0px 0px 0px 0px;
                 }
 
 .navpage        {
@@ -21,6 +27,11 @@ frameset        {
                 margin: 4px 1px 1px 4px;
                 text-decoration: none;
                 }
+
+.navpage A	{
+		color: #000000;
+		text-decoration: none;
+		}
 
 P, H1, H2,  .form	{
 		background-color: transparent;
@@ -174,6 +185,19 @@ A		{
           padding: 0px;
 }
 
+.pmheadl {
+          background-color: #C8D7E6;
+          font-size: 10pt;
+          border: none;
+          padding: 0px;
+}
+
+.pmheadr {
+          background-color: #C8D7E6;
+          font-size: 10pt;
+          border: none;
+          padding: 0px;
+}
 .postbody {
           font-size: 10pt;
           padding-top: 2px;
@@ -209,8 +233,10 @@ A		{
           font-size: 10pt;
           font-style: normal;
           color: #000000;
-          background-color: #EAEFF4;
+          border-top: 1px #C8D7E6 solid;
           text-align: center;
+          padding-top: 1px;
+          padding-bottom: 1px;
 }
 
 .messagefoot {
@@ -275,7 +301,6 @@ A		{
 .subhead {
           font-family: Verdana, Arial, Helvetica, sans-serif;
           font-size: 10pt;
-          'font-weight: bold;'
           color: #FFFFFF;
           background-color: #A6BED7;
           border-top-width: 0px;
@@ -323,7 +348,8 @@ A		{
 }
 
 .highlight {
-          background-color: #C8D7E6
+          background-color: #C8D7E6;
+          font-size: 10pt;
 }
 
 .quotetext {

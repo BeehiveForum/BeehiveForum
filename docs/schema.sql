@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.70 2004-04-13 14:04:03 decoyduck Exp $
+# $Id: schema.sql,v 1.71 2004-04-19 02:02:10 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -111,8 +111,6 @@ INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'forum_email', 'admin
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'default_style', 'default');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'default_emoticons', 'default');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'default_language', 'en');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'show_friendly_errors', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'cookie_domain', '');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'show_stats', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'show_links', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'auto_logon', 'Y');
@@ -130,16 +128,12 @@ INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'attachments_use_old_
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'guest_account_active', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'session_cutoff', '86400');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'active_session_cutoff', '900');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'gzip_compress_output', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'gzip_compress_level', '1');
 
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_name', 'A Beehive Forum');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_email', 'admin@abeehiveforum.net');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_style', 'default');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_emoticons', 'default');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_language', 'en');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_friendly_errors', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'cookie_domain', '');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_stats', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_links', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'auto_logon', 'Y');
@@ -157,8 +151,6 @@ INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_use_old_
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'guest_account_active', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'session_cutoff', '86400');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'active_session_cutoff', '900');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'gzip_compress_output', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'gzip_compress_level', '1');
 
 # --------------------------------------------------------
 

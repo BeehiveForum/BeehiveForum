@@ -21,18 +21,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.30 2004-04-19 01:42:55 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.31 2004-04-19 02:02:11 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
 function bh_check_gzip()
 {
-    global $default_settings;
+    global $gzip_compress_output;
 
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.
 
     if (headers_sent()) {
+        return false;
+    }
+
+    if (isset($gzip_compress_output) && !$gzip_compress_output) {
         return false;
     }
 
@@ -60,21 +64,16 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $default_settings;
+    global $gzip_compress_level;
 
-    // check / set the compression level variable
+    // check the compression level variable is set
 
-    if (isset($default_settings['gzip_compress_level'])) {
+    if (!isset($gzip_compress_level)) $gzip_compress_level = 1;
 
-        $gzip_compress_level = $default_settings['gzip_compress_level'];
+    // check to make sure it is in range;
 
-        if ($gzip_compress_level > 9) $gzip_compress_level = 9;
-        if ($gzip_compress_level < 1) $gzip_compress_level = 1;
-
-    }else {
-
-        $gzip_compress_level = 1;
-    }
+    if ($gzip_compress_level > 9) $gzip_compress_level = 9;
+    if ($gzip_compress_level < 1) $gzip_compress_level = 1;
 
     // check that the encoding is possible.
     // and fetch the client's encoding method.
@@ -86,31 +85,37 @@ function bh_gzhandler($contents)
         if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
             // generate the error checking bits
+
             $size  = strlen($contents);
             $crc32 = crc32($contents);
 
             // construct the gzip output with header
             // and error checking bits
+
             $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
             $ret.= substr($gz_contents, 0, strlen($gz_contents) - 4);
             $ret.= pack('V', $crc32);
             $ret.= pack('V', $size);
 
             // get the length of the compressed page
+
             $length = strlen($ret);
 
             // sends the headers to the client while making
             // sure they are only sent once.
+
             header("Content-Encoding: $encoding", true);
             header("Vary: Accept-Encoding", true);
             header("Content-Length: $length", true);
 
             // return the compressed text to PHP.
+
             return $ret;
 
         }else {
 
             // compression failed so return uncompressed string
+
             return $contents;
         }
 
@@ -119,6 +124,7 @@ function bh_gzhandler($contents)
         // return the text uncompressed as the client
         // doesn't support it or it has been disabled
         // in config.inc.php.
+
         return $contents;
     }
 }

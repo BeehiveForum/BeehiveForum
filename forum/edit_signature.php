@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.53 2005-04-05 21:55:28 rowan_hill Exp $ */
+/* $Id: edit_signature.php,v 1.54 2005-04-06 22:14:30 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -45,7 +45,6 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "edit_sig.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
@@ -244,66 +243,78 @@ if (!empty($error_html)) {
 
 
 if (isset($t_sig_html)) {
-        $sig_html = ($t_sig_html == "Y");
+    $sig_html = ($t_sig_html == "Y");
 } else {
-        $sig_html = ($user_sig['SIG_HTML'] == "Y");
+    $sig_html = ($user_sig['SIG_HTML'] == "Y");
 }
 
 if (isset($t_sig_content)) {
-        $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($t_sig_content, false) : $t_sig_content);
+    $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($t_sig_content, false) : $t_sig_content);
 } else {
-        $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
+    $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
 }
 
-  $tools = new TextAreaHTML("prefs");
-  
-  echo "<br />\n";
-  echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
-  echo "  ", form_input_hidden('webtag', $webtag), "\n";
-  echo "  ", form_input_hidden('siguid', $siguid), "\n";
-  echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-  echo "    <tr>\n";
-  echo "      <td>\n";
-  echo "        <table class=\"box\">\n";
-  echo "          <tr>\n";
-  echo "            <td class=\"posthead\">\n";
-  echo "              <table class=\"posthead\" width=\"100%\">\n";
-  echo "                <tr>\n";
-  echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
-  echo "                </tr>\n";
-  echo "                <tr>\n";
-  echo "                  <td>\n";
-  
-  echo $tools->toolbar();
-  
-  echo $tools->textarea("sig_content", $sig_code, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
+$tools = new TextAreaHTML("prefs");
 
-  echo $tools->js();
+echo "<br />\n";
+echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('siguid', $siguid), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>\n";
+
+$page_prefs = bh_session_get_post_page_prefs();
+
+if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+    echo $tools->toolbar();
+} else {
+    $tools->setTinyMCE(false);
+}
+
+echo $tools->textarea("sig_content", $sig_code, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
+
+echo $tools->js();
+
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"right\">\n";
   
-  echo "                </tr>\n";
-  echo "                <tr>\n";
-  echo "                  <td align=\"right\">\n";
+if ($tools->getTinyMCE()) {
+
+    echo form_input_hidden("sig_html", "Y");
+} else {
+
+    echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
+}
   
-  echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
-  
-  echo $tools->assign_checkbox("sig_html");
-  
-  echo "                                  </td>\n";
-  echo "                </tr>\n";
-  echo "              </table>\n";
-  echo "            </td>\n";
-  echo "          </tr>\n";
-  echo "        </table>\n";
-  echo "      </td>\n";
-  echo "    </tr>\n";
-  echo "    <tr>\n";
-  echo "      <td>&nbsp;</td>\n";
-  echo "    </tr>\n";
-  echo "    <tr>\n";
-  echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
-  echo "    </tr>\n";
-  echo "  </table>\n";
-  echo "</form>\n";
+echo $tools->assign_checkbox("sig_html");
+
+echo "                                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
 
 html_draw_bottom();

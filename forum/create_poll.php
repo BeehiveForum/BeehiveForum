@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.152 2005-04-03 22:28:20 rowan_hill Exp $ */
+/* $Id: create_poll.php,v 1.153 2005-04-06 22:14:21 tribalonline Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -938,10 +938,12 @@ if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo "          <tr>\n";
         echo "            <td>", $tools->toolbar(), "</td>\n";
         echo "          </tr>\n";
+} else {
+    $tools->setTinyMCE(false);
 }
 
 echo "          <tr>\n";
-echo "            <td>", $tools->textarea('t_message_text', $t_message_text, 15, 75), "</td>\n";
+echo "            <td>", $tools->textarea('t_message_text', $t_message_text, 20, 75), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>\n";
@@ -951,6 +953,13 @@ if ($post->isDiff() && $fix_html) {
 }
 
 if ($allow_html == true) {
+
+    if ($tools->getTinyMCE()) {
+
+        echo form_input_hidden("t_post_html", "enabled");
+
+    } else {
+
         echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
         $tph_radio = $post->getHTML();
@@ -962,10 +971,13 @@ if ($allow_html == true) {
         if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
                 echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
         }
-        echo "<br /><br />\n";
+        echo "<br />";
+    }
 } else {
         echo form_input_hidden("t_message_html", "disabled");
 }
+
+echo "<br />\n";
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 

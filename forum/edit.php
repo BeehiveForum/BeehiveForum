@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.167 2005-04-04 17:29:04 decoyduck Exp $ */
+/* $Id: edit.php,v 1.168 2005-04-06 22:14:23 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -831,6 +831,9 @@ $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent())
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
 
     echo $tools->toolbar(false, form_submit("submit", $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+
+} else {
+    $tools->setTinyMCE(false);
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\"", "post_content"), "\n";
@@ -838,22 +841,34 @@ echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\
 if ($post->isDiff() && $fix_html) {
 
     echo $tools->compare_original("t_content", $post->getOriginalContent());
-    echo "<br /><br />\n";
+
+    if ($tools->getTinyMCE()) {
+        echo "<br />\n";
+    } else {
+        echo "<br /><br />\n";
+    }
 }
 
 if ($allow_html == true) {
 
-    echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+    if ($tools->getTinyMCE()) {
 
-    $tph_radio = $post->getHTML();
+        echo form_input_hidden("t_post_html", "enabled");
 
-    echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-    echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-    echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+    } else {
 
-    if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-        echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        $tph_radio = $post->getHTML();
+
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+
+        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+
+            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        }
     }
 
 }else {
@@ -861,7 +876,11 @@ if ($allow_html == true) {
     echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<br /><br />\n";
+if ($tools->getTinyMCE()) {
+    echo "<br />\n";
+} else {
+    echo "<br /><br />\n";
+}
 echo form_submit('submit',$lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");

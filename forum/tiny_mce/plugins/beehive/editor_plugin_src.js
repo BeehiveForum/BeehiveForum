@@ -20,14 +20,19 @@ function TinyMCE_beehive_execCommand(editor_id, element, command, user_interface
     switch (command) {
 		case "bhcode":
 			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[code language=""]{$selection}[/code]');
+			return true;
 		case "bhquote":
 			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[quote source="" url=""]{$selection}[/quote]');
+			return true;
 		case "bhspoiler": 
 			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[spoiler]{$selection}[/spoiler]');
+			return true;
 		case "bhnoemots":
 			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[noemots]{$selection}[/noemots]');
+			return true;
 		case "bhspellcheck":
 			window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + tinyMCE.instances[editor_id].formTargetElementId, 'spellcheck','width=450, height=550, scrollbars=1');
+			return true;
 
 		return true;
 	}

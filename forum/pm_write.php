@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.112 2005-03-28 19:43:33 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.113 2005-04-06 22:14:30 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -683,7 +683,9 @@ $tools = new TextAreaHTML("f_post");
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-        echo $tools->toolbar(false, form_submit('submit', $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+    echo $tools->toolbar(false, form_submit('submit', $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+} else {
+    $tools->setTinyMCE(false);
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\"", "post_content"), "\n";
@@ -705,6 +707,12 @@ echo "          <td>\n";
 
 if ($allow_html == true) {
 
+    if ($tools->getTinyMCE()) {
+
+        echo form_input_hidden("t_post_html", "enabled");
+
+    } else {
+
         echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
         $tph_radio = $post->getHTML();
@@ -717,12 +725,15 @@ if ($allow_html == true) {
                 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
         }
 
-                echo "<br /><br />\n";
+        echo "<br />";
+    }
 
 } else {
 
         echo form_input_hidden("t_post_html", "disabled");
 }
+
+echo "<br />\n";
 
 echo form_submit('submit', $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');

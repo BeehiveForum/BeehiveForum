@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.67 2005-03-26 18:16:44 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.68 2005-04-06 22:14:30 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -46,6 +46,7 @@ $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
+include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
@@ -122,7 +123,8 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
-}else if (!$aid = get_attachment_id($tid, $pid)) {
+// was getting a $tid is undefined error so added the isset() - what's $tid?
+}else if (!isset($tid) || !$aid = get_attachment_id($tid, $pid)) {
 
     $aid = md5(uniqid(rand()));
 }
@@ -470,8 +472,10 @@ $tools = new TextAreaHTML("f_post");
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-
     echo $tools->toolbar(false, form_submit('submit', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+
+} else {
+    $tools->setTinyMCE(false);
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\"", "signature_content"), "\n";
@@ -493,25 +497,34 @@ echo "          <td>\n";
 
 if ($allow_html == true) {
 
-    echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+    if ($tools->getTinyMCE()) {
 
-    $tph_radio = $post->getHTML();
+        echo form_input_hidden("t_post_html", "enabled");
 
-    echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-    echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-    echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+    } else {
 
-    if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-        echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        $tph_radio = $post->getHTML();
+
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+
+        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+
+            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        }
+
+        echo "<br />";
     }
-
-    echo "<br /><br />\n";
 
 }else {
 
     echo form_input_hidden("t_post_html", "disabled");
 }
+
+echo "<br />\n";
 
 echo form_submit('submit', $lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');

@@ -48,14 +48,17 @@ function TinyMCE() {
     $str.= "    directionality : \"{$lang['_textdir']}\",\n";
 
 //  $str.= "    content_css : \"style.css\",\n";
-//  $str.= "    autofocus : \"t_content\",\n";
+
+//  $str.= "    auto_focus : \"mce_editor_0\",\n";
+
+    $str.= "    oninit : \"mceOnInit()\",\n";
 
     $str.= "    plugins : \"beehive,searchreplace,table\",\n";
 
 	$str.= "    theme : \"advanced\",\n";
     $str.= "    theme_advanced_toolbar_location : \"top\",\n";
     $str.= "    theme_advanced_toolbar_align : \"left\",\n";
-//    $str.= "    theme_advanced_path_location : \"bottom\",\n";
+    $str.= "    theme_advanced_path_location : \"bottom\",\n";
 
 	// separator,rowseparator,spacer
     $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";
@@ -84,15 +87,16 @@ function TinyMCE() {
 	$str.= "        }else {\n";
 	$str.= "            return true;\n";
 	$str.= "        }\n\n";
-	$str.= "        if (tinyMCE.getContent('t_content').length == 0) return true;\n\n";
+	$str.= "        if (tinyMCE.getContent('mce_editor_0').length == 0) return true;\n\n";
 	$str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
 	$str.= "            auto_check_spell_started = true;\n";
-	$str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=t_content', 'spellcheck','width=450, height=550, scrollbars=1');\n";
+	$str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=mce_editor_0', 'spellcheck','width=450, height=550, scrollbars=1');\n";
 	$str.= "    		return false;\n";
 	$str.= "        }\n";
     $str.= "    }\n\n";
 
     $str.= "    function add_text(text) {\n";
+    $str.= "        tinyMCE.execCommand('mceFocus',false,'mce_editor_0');\n";
     $str.= "        tinyMCE.execCommand('mceInsertContent',false,unescape(text));\n";
     $str.= "    }\n";
 
@@ -129,9 +133,8 @@ class TextAreaHTML {
     var $form;                      // name of the form the textareas will belong to
     var $tas = array();             // array of all the html-enabled textarea's names
     var $tbs = 0;                   // count of all the generated toolbars
-    var $tac = 0;                   // count of all the generated textareas
     var $tinymce = false;           // marker if the TinyMCE editor is being used
-    var $tinymce_allow = 1;         // number of allowed TinyMCE toolbars, default 1
+    var $allowed_toolbars = 1;      // number of allowed TinyMCE toolbars, default 1
 
     function TextAreaHTML ($form) {
         $this->form = $form;
@@ -149,12 +152,20 @@ class TextAreaHTML {
     }
 
     // ----------------------------------------------------
-    // Sets the number of allowed TinyMCE toolbars per page
+    // Enables/disables the TinyMCE toolbar
     // ----------------------------------------------------
 
-    function setTinyMCEAllow ($num) {
+    function setTinyMCE ($bool) {
+        $this->tinymce = ($bool == true) ? true : false;
+    }
+
+    // ----------------------------------------------------
+    // Sets the number of allowed HTML toolbars per page
+    // ----------------------------------------------------
+
+    function setAllowedToolbars ($num) {
         if (is_numeric($num)) {
-            $this->tinymce_allow = $num > 0 ? $num : 0;
+            $this->allowed_toolbars = $num > 0 ? $num : 0;
         }
     }
 
@@ -252,20 +263,30 @@ class TextAreaHTML {
 
     function textarea ($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = "", $class = "bhinputtext") {
 
-        $this->tac++;
-
-        if ($this->tinymce) {
-            if ($this->tac <= $this->tinymce_allow) {
-                $custom_html .= " mce_editable=\"true\"";
-            }
-            return form_textarea($name, $value, $rows, $cols, $wrap, $custom_html, $class);
-        }
-
         $this->tas[] = $name;
 
-        $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
+        $str = '';
 
-        $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
+        if ($this->tbs < $this->allowed_toolbars) {
+
+            if ($this->tinymce) {
+
+                $this->tbs++;
+
+                if ($rows < 7) {
+                    $rows += 7;
+                }
+                $custom_html.= ' mce_editable="true"';
+
+            } else {
+
+                $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
+
+                $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
+            }
+
+        }
+
         $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html, $class);
 
         return $str;
@@ -306,30 +327,40 @@ class TextAreaHTML {
 
     function js ($focus = true) {
 
-        if ($this->tinymce) return;
-
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
 
-        $str.= "    function clearFocus() {\n";
+        if ($this->tinymce) {
+            $str.= "    function mceOnInit() {\n";
+            if ($focus) {
+                $str.= "        tinyMCE.execCommand('mceFocus',false,'mce_editor_0');\n";
+            }
+            $str.= "        return;\n";
+            $str.= "    }\n";
+            
+        } else {
 
-        for ($i=0; $i<count($this->tas); $i++) {
-            $str.= "        document.{$this->form}.{$this->tas[$i]}.caretPos = \"\";\n";
+            $str.= "    function clearFocus() {\n";
+
+            for ($i=0; $i<count($this->tas); $i++) {
+                $str.= "        document.{$this->form}.{$this->tas[$i]}.caretPos = \"\";\n";
+            }
+
+            $str.= "    }\n";
+            $str.= "    function activate_tools() {\n";
+            $str.= "      for (var i=1; i<={$this->tbs}; i++) {\n";
+            $str.= "          show_hide('_tb' + i, 'block');\n";
+            $str.= "      }\n";
+
+            if ($focus != false) {
+                $str.= "      document.{$this->form}.". ($focus == true ? $this->tas[0] : $focus). ".focus();\n";
+            }
+
+            $str.= "        active_text(document.{$this->form}.{$this->tas[0]});\n";
+            $str.= "    }\n";
+            $str.= "    activate_tools();\n";
         }
 
-        $str.= "    }\n";
-        $str.= "    function activate_tools() {\n";
-        $str.= "      for (var i=1; i<={$this->tbs}; i++) {\n";
-        $str.= "          show_hide('_tb' + i, 'block');\n";
-        $str.= "      }\n";
-
-        if ($focus != false) {
-            $str.= "      document.{$this->form}.". ($focus == true ? $this->tas[0] : $focus). ".focus();\n";
-        }
-
-        $str.= "        active_text(document.{$this->form}.{$this->tas[0]});\n";
-        $str.= "    }\n";
-        $str.= "    activate_tools();\n";
         $str.= "  //-->\n";
         $str.= "</script>\n";
 

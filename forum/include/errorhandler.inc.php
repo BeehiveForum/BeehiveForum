@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.41 2004-03-17 23:41:47 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.42 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/lang.inc.php");
@@ -51,7 +51,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
-            echo "<title>{$forum_settings['forum_name']} - Error Handler</title>\n";
+            echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), " - Error Handler</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
             echo "</head>\n";
             echo "<body>\n";
@@ -113,7 +113,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
-            echo "<title>{$forum_settings['forum_name']} - Error Handler</title>\n";
+            echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), " - Error Handler</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
             echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
             echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
@@ -235,7 +235,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
     }
 }
 
-if (strtoupper($forum_settings['show_friendly_errors']) == "Y") {
+if (forum_get_setting('show_friendly_errors', 'Y', false)) {
     set_error_handler("bh_error_handler");
 }
 

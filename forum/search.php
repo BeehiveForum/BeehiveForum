@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.63 2004-03-17 22:21:36 decoyduck Exp $ */
+/* $Id: search.php,v 1.64 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,7 +92,7 @@ if (isset($HTTP_POST_VARS['search_string'])) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td>&nbsp;</td>\n";
-    echo "    <td class=\"postbody\">{$lang['wordsshorterthan_1']} {$forum_settings['search_min_word_length']} {$lang['wordsshorterthan_2']}", ".</td>\n";
+    echo "    <td class=\"postbody\">{$lang['wordsshorterthan_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['wordsshorterthan_2']}", ".</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -270,7 +270,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 	    echo "<h2>{$lang['usernamenotfound']}</h2>\n";
 	    break;
 	case SEARCH_NO_KEYWORDS:
-	    echo "<h2>{$lang['notexttosearchfor_1']} {$forum_settings['search_min_word_length']} {$lang['notexttosearchfor_2']}.</h2>\n";
+	    echo "<h2>{$lang['notexttosearchfor_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['notexttosearchfor_2']}.</h2>\n";
 	    break;
 	case SEARCH_NO_MATCHES:
 	    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";

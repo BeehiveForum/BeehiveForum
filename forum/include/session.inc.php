@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.85 2004-03-16 23:55:33 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.86 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -79,10 +79,10 @@ function bh_session_check()
                                          'DL_SAVING'        => 0,
                                          'MARK_AS_OF_INT'   => 0,
                                          'FONT_SIZE'        => 10,
-                                         'STYLE'            => $forum_settings['default_style'],
+                                         'STYLE'            => forum_get_setting('default_style'),
                                          'VIEW_SIGS'        => 0,
                                          'START_PAGE'       => 0,
-                                         'LANGUAGE'         => $forum_settings['default_language'],
+                                         'LANGUAGE'         => forum_get_setting('default_language'),
                                          'PM_NOTIFY'        => 'N',
                                          'SHOW_STATS'       => 1,
                                          'IMAGES_TO_LINKS'  => 'N',
@@ -137,14 +137,14 @@ function bh_session_check()
 
   			// Delete expires sessions 			
 
-                        $session_stamp = time() - intval($forum_settings['session_cutoff']);  			
+                        $session_stamp = time() - intval(forum_get_setting('session_cutoff'));  			
 
                         $sql = "DELETE FROM SESSIONS WHERE ";
                         $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
                         db_query($sql, $db_bh_session_check);
 
-                        if (strtoupper($forum_settings['show_stats']) == "N") {
+                        if (forum_get_setting('show_stats', 'Y', false)) {
                             update_stats();
                         }
 		    }
@@ -180,7 +180,7 @@ function bh_session_init($uid)
     
     $webtag = get_webtag();
     
-    $session_stamp = time() - intval($forum_settings['session_cutoff']);
+    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
     // Delete expires sessions
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.65 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: index.php,v 1.66 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,8 +48,10 @@ if (!isset($HTTP_COOKIE_VARS['bh_remember_username'])) {
     bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 }
 
-$top_html   = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $forum_settings['default_style']). "/top.html";
-$stylesheet = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $forum_settings['default_style']). "/style.css";
+$auto_logon = forum_get_setting('auto_logon', 'Y', false);
+
+$top_html   = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : forum_get_setting('default_style')). "/top.html";
+$stylesheet = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : forum_get_setting('default_style')). "/style.css";
 
 if (!file_exists($top_html)) {
     $top_html = "./top.html";
@@ -58,7 +60,7 @@ if (!file_exists($top_html)) {
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
 echo "<head>\n";
-echo "<title>{$forum_settings['forum_name']}</title>\n";
+echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
 echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
@@ -66,7 +68,7 @@ echo "</head>\n";
 
 if (isset($HTTP_GET_VARS['autologon']) && $HTTP_GET_VARS['autologon'] == 0) {
     bh_session_end();
-    $forum_settings['auto_logon'] = "N";
+    $auto_logon = false;
 }
 
 if (bh_session_check()) {
@@ -118,7 +120,7 @@ if (bh_session_check()) {
 
     // Check to see if the user has visited before and logged in.
 
-    if (!isset($HTTP_COOKIE_VARS['bh_logon']) && user_guest_enabled() && (strtoupper($forum_settings['auto_logon']) == "N")) {
+    if (!isset($HTTP_COOKIE_VARS['bh_logon']) && user_guest_enabled() && $auto_logon) {
 
         bh_session_init(0); // auto login as guest
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.249 2004-03-17 23:41:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.250 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -204,8 +204,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
-    if ((strlen($message['CONTENT']) > intval($forum_settings['maximum_post_length'])) && $limit_text) {
-        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval($forum_settings['maximum_post_length'])));
+    if ((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text) {
+        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag={$webtag['WEBTAG']}&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
@@ -382,7 +382,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 for ($i = 0; $i < sizeof($attachments); $i++) {
                     if (isset($attachments[$i]['deleted']) && !$attachments[$i]['deleted']) {
                         $visible_attachments[] = $attachments[$i];
-                    }elseif (strtoupper($forum_settings['attachments_show_deleted']) == "Y") {
+                    }elseif (forum_get_setting('attachments_show_deleted', 'Y', false)) {
                         $visible_attachments[] = $attachments[$i];
                     }
                 }
@@ -410,7 +410,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                            
                         }else {
                             
-                            if (strtoupper($forum_settings['attachment_use_old_method']) == "Y") {
+                            if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                                 echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $visible_attachments[$i]['hash'], "\"";
                             }else {
                                 echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
@@ -424,7 +424,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                             echo " title=\"";
 
-                            if ($imageinfo = @getimagesize($forum_settings['attachment_dir']. '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
+                            if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
                                 echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                             }
  
@@ -466,7 +466,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag={$webtag['WEBTAG']}&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
 
-                if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($forum_settings['post_edit_time'] * HOUR_IN_SECONDS)) || $forum_settings['post_edit_time'] == 0) && (strtoupper($forum_settings['allow_post_editing']) == "Y"))) {
+                if (perm_is_moderator() || ((((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS)) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) {
                     if ($is_poll && $message['PID'] == 1) {
                         if (!poll_is_closed($tid) || perm_is_moderator()) {
 
@@ -891,7 +891,7 @@ function messages_forum_stats($tid, $pid)
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
     
-    if (strtoupper($forum_settings['show_stats']) == "Y") {
+    if (forum_get_setting('show_stats', 'Y', false)) {
 
         echo "<div align=\"center\">\n";
         echo "  <br />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.27 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.28 2004-03-18 23:22:51 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
@@ -285,7 +285,7 @@ function links_folder_delete($fid)
     $result_id = db_query($sql, $db_links_folder_delete);
 
     $link_array = db_fetch_array($result_id);
-    if ($link_array['FID'] == $fid) return false;
+    if (isset($link_array['FID']) && $link_array['FID'] == $fid) return false;
 
     $sql = "UPDATE {$webtag['PREFIX']}LINKS SET FID = '{$folders[$fid]['PARENT_FID']}' WHERE FID = '$fid'";
     $result_id = db_query($sql, $db_links_folder_delete);

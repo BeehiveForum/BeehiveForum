@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.41 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.42 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -77,7 +77,7 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
     
     }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID') && $threaddata['ADMIN_LOCK'] == 0) {
 
-        if (((strtoupper($forum_settings['allow_post_editing']) == "Y") && intval($forum_settings['post_edit_time']) == 0) || ((time() - $threaddata['CREATED']) < (intval($forum_settings['post_edit_time']) * HOUR_IN_SECONDS))) {
+        if (((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS))) {
         
             thread_change_title($tid, $name);
             post_add_edit_text($tid, 1);
@@ -99,7 +99,7 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
 
     }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID') && $threaddata['ADMIN_LOCK'] == 0) {
     
-        if (((strtoupper($forum_settings['allow_post_editing']) == "Y") && intval($forum_settings['post_edit_time']) == 0) || ((time() - $threaddata['CREATED']) < (intval($forum_settings['post_edit_time']) * HOUR_IN_SECONDS))) {
+        if (((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS))) {
         
             thread_change_folder($tid, $fid);
             admin_addlog(0, $fid, $tid, 0, 0, 0, 18);

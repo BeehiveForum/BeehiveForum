@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.96 2004-03-17 23:41:47 decoyduck Exp $ */
+/* $Id: edit.php,v 1.97 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -81,49 +81,49 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
 }else {
 
-	html_draw_top();
+    html_draw_top();
 
-	echo "<h1 style=\"width: 99%\">{$lang['editmessage']}</h1>\n";
-	echo "<br />\n";
+    echo "<h1 style=\"width: 99%\">{$lang['editmessage']}</h1>\n";
+    echo "<br />\n";
 
-	echo "<table class=\"posthead\" width=\"720\">\n";
-	echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
-	echo "<tr><td>\n";
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+    echo "<tr><td>\n";
 
-	echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
-	echo "</td></tr>\n";
+    echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
+    echo "</td></tr>\n";
 
-	echo "<tr><td align=\"center\">\n";
-	echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back']);
-	echo "</td></tr>\n";
-	echo "</table>\n";
+    echo "<tr><td align=\"center\">\n";
+    echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back']);
+    echo "</td></tr>\n";
+    echo "</table>\n";
 
-	html_draw_bottom();
-	exit;
+    html_draw_bottom();
+    exit;
 
 }
 
 if (!is_numeric($tid) || !is_numeric($pid)) {
 
-	html_draw_top();
+    html_draw_top();
 
-	echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-	echo "<br />\n";
+    echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+    echo "<br />\n";
 
-	echo "<table class=\"posthead\" width=\"720\">\n";
-	echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
-	echo "<tr><td>\n";
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+    echo "<tr><td>\n";
 
-	echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
-	echo "</td></tr>\n";
+    echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
+    echo "</td></tr>\n";
 
-	echo "<tr><td align=\"center\">\n";
-	echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
-	echo "</td></tr>\n";
-	echo "</table>\n";
+    echo "<tr><td align=\"center\">\n";
+    echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
+    echo "</td></tr>\n";
+    echo "</table>\n";
 
-	html_draw_bottom();
-	exit;
+    html_draw_bottom();
+    exit;
 
 }
 
@@ -167,27 +167,27 @@ $content_html_changes = false;
 $sig_html_changes = false;
 
 if (isset($HTTP_POST_VARS['edit_type'])) {
-	$edit_type = $HTTP_POST_VARS['edit_type'];
+    $edit_type = $HTTP_POST_VARS['edit_type'];
 }
 if (isset($HTTP_POST_VARS['b_edit_html'])) {
-	$edit_type = "html";
+    $edit_type = "html";
 } else if (isset($HTTP_POST_VARS['b_edit_text'])) {
-	$edit_type = "text";
+    $edit_type = "text";
 }
 if ($edit_type == "html") {
-	$t_post_html = true;
-	if (isset($HTTP_POST_VARS['t_post_html'])) {
-		$t_post_html = $HTTP_POST_VARS['t_post_html'];
-		if ($t_post_html == "enabled_auto") {
-			$t_post_html = true;
-			$auto_linebreaks = true;
-		} else if ($t_post_html == "enabled") {
-			$t_post_html = true;
-			$auto_linebreaks = false;
-		} else {
-			$t_post_html = false;
-		}
-	}
+    $t_post_html = true;
+    if (isset($HTTP_POST_VARS['t_post_html'])) {
+        $t_post_html = $HTTP_POST_VARS['t_post_html'];
+        if ($t_post_html == "enabled_auto") {
+            $t_post_html = true;
+            $auto_linebreaks = true;
+        } else if ($t_post_html == "enabled") {
+            $t_post_html = true;
+            $auto_linebreaks = false;
+        } else {
+            $t_post_html = false;
+        }
+    }
 }
 
 if (isset($HTTP_POST_VARS['preview'])) {
@@ -242,18 +242,18 @@ if (isset($HTTP_POST_VARS['preview'])) {
     if ($valid) {
 
         if ($t_post_html == true && $edit_type == "html") {
-			$old_t_content = $t_content;
-			$t_content = fix_html($t_content);
+            $old_t_content = $t_content;
+            $t_content = fix_html($t_content);
 
-			if ($old_t_content != tidy_html($t_content)) {
-				$content_html_changes = true;
-			}
+            if ($old_t_content != tidy_html($t_content)) {
+                $content_html_changes = true;
+            }
 
-			if ($auto_linebreaks == true) {
-				$t_content = add_paragraphs($t_content);
-			}
-			$preview_message['CONTENT'] = $t_content;
-//			$t_content = str_replace("&", "&amp;", $t_content);
+            if ($auto_linebreaks == true) {
+                $t_content = add_paragraphs($t_content);
+            }
+            $preview_message['CONTENT'] = $t_content;
+//            $t_content = str_replace("&", "&amp;", $t_content);
 
 /*            $t_content = fix_html($t_content);
             $preview_message['CONTENT'] = $t_content;
@@ -336,23 +336,24 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $t_sig = "";
     }
 
-    if (((strtoupper($forum_settings['allow_post_editing']) == "N") || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval($forum_settings['post_edit_time']) * HOUR_IN_SECONDS)) && intval($forum_settings['post_edit_time']) != 0)) && !perm_is_moderator()) {
-		echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-		echo "<br />\n";
+    if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
+    
+        echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+        echo "<br />\n";
 
-		echo "<table class=\"posthead\" width=\"720\">\n";
-		echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
-		echo "<tr><td>\n";
+        echo "<table class=\"posthead\" width=\"720\">\n";
+        echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+        echo "<tr><td>\n";
 
-		echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
-		echo "</td></tr>\n";
+        echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
+        echo "</td></tr>\n";
 
-		echo "<tr><td align=\"center\">\n";
-		echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
-		echo "</td></tr>\n";
-		echo "</table>\n";
+        echo "<tr><td align=\"center\">\n";
+        echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
+        echo "</td></tr>\n";
+        echo "</table>\n";
 
-		html_draw_bottom();
+        html_draw_bottom();
         exit;
     }
     
@@ -361,16 +362,16 @@ if (isset($HTTP_POST_VARS['preview'])) {
     if ($valid) {
 
         if ($t_post_html == true) {
-			$old_t_content = _stripslashes($t_content);
-			$t_content = fix_html($t_content);
+            $old_t_content = _stripslashes($t_content);
+            $t_content = fix_html($t_content);
 
-			if ($old_t_content != tidy_html($t_content)) {
-				$content_html_changes = true;
-			}
+            if ($old_t_content != tidy_html($t_content)) {
+                $content_html_changes = true;
+            }
 
-			if ($auto_linebreaks == true) {
-				$t_content = add_paragraphs($t_content);
-			}
+            if ($auto_linebreaks == true) {
+                $t_content = add_paragraphs($t_content);
+            }
         }else{
             $t_content = make_html($t_content);
         }
@@ -381,7 +382,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $t_content.= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". date("d/m/y H:i T");
         $t_content.= " {$lang['by']} ". user_get_logon(bh_session_get_value('UID'));
         $t_content.= "</p>";
-	*/
+    */
 
         $updated = post_update($tid, $pid, $t_content);
 
@@ -389,7 +390,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         
             post_add_edit_text($tid, $pid);
             
-            if (isset($HTTP_POST_VARS['aid']) && (strtoupper($forum_settings['attachments_enabled']) == "Y")) {
+            if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
                 if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
             }
 
@@ -397,23 +398,23 @@ if (isset($HTTP_POST_VARS['preview'])) {
                 admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
             }
 
-			echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-			echo "<br />\n";
+            echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+            echo "<br />\n";
 
-			echo "<table class=\"posthead\" width=\"720\">\n";
-			echo "<tr><td class=\"subhead\">".$lang['editmessage']."</td></tr>\n";
-			echo "<tr><td>\n";
+            echo "<table class=\"posthead\" width=\"720\">\n";
+            echo "<tr><td class=\"subhead\">".$lang['editmessage']."</td></tr>\n";
+            echo "<tr><td>\n";
 
-			echo "<h2>".$lang['editappliedtomessage']."</h2>\n";
-			echo "</td></tr>\n";
+            echo "<h2>".$lang['editappliedtomessage']."</h2>\n";
+            echo "</td></tr>\n";
 
-			echo "<tr><td align=\"center\">\n";
-			echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "msg", "$tid.$pid");
-			echo "</td></tr>\n";
-			echo "</table>\n";
+            echo "<tr><td align=\"center\">\n";
+            echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "msg", "$tid.$pid");
+            echo "</td></tr>\n";
+            echo "</table>\n";
 
-			html_draw_bottom();
-			exit;
+            html_draw_bottom();
+            exit;
 
         }else{
             $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
@@ -428,24 +429,25 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
-        if (((strtoupper($forum_settings['allow_post_editing']) == "N") || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval($forum_settings['post_edit_time']) * HOUR_IN_SECONDS)) && intval($forum_settings['post_edit_time']) != 0)) && !perm_is_moderator()) {
-			echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-			echo "<br />\n";
+        if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
+        
+            echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+            echo "<br />\n";
 
-			echo "<table class=\"posthead\" width=\"720\">\n";
-			echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
-			echo "<tr><td>\n";
+            echo "<table class=\"posthead\" width=\"720\">\n";
+            echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+            echo "<tr><td>\n";
 
-			echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
-			echo "</td></tr>\n";
+            echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
+            echo "</td></tr>\n";
 
-			echo "<tr><td align=\"center\">\n";
-			echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
-			echo "</td></tr>\n";
-			echo "</table>\n";
+            echo "<tr><td align=\"center\">\n";
+            echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
+            echo "</td></tr>\n";
+            echo "</table>\n";
 
-			html_draw_bottom();
-			exit;
+            html_draw_bottom();
+            exit;
         }
 
         $preview_message = $editmessage;
@@ -487,7 +489,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         if (!isset($HTTP_POST_VARS['b_edit_html'])) {
 
-//			$t_content = trim($t_content);
+//            $t_content = trim($t_content);
 //            $t_content = str_replace("<p>", "\n\n<p>", $t_content);
 //            $t_content = str_replace("</p>", "</p>\n", $t_content);
 //            $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
@@ -577,50 +579,50 @@ echo "<tr><td>\n";
 echo "<h2>". $lang['message'] .":</h2>\n";
 
 if ($edit_type == "html") {
-	tools_html(form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+    tools_html(form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
 
-	$t_content = tidy_html($t_content, isset($auto_linebreaks) ? $auto_linebreaks : false);
-	$t_content = _htmlentities($t_content);
+    $t_content = tidy_html($t_content, isset($auto_linebreaks) ? $auto_linebreaks : false);
+    $t_content = _htmlentities($t_content);
 
-	echo tools_junk()."\n";
-	echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
-	echo tools_junk()."\n";
+    echo tools_junk()."\n";
+    echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
+    echo tools_junk()."\n";
 
-	echo "\n\n<script language=\"Javascript\">\n";
-	echo "  <!--\n";
-	echo "    activate_tools();\n";
-	echo "  //-->\n";
-	echo "</script>\n\n";
+    echo "\n\n<script language=\"Javascript\">\n";
+    echo "  <!--\n";
+    echo "    activate_tools();\n";
+    echo "  //-->\n";
+    echo "</script>\n\n";
 
-	if ($content_html_changes == true) {
+    if ($content_html_changes == true) {
 
-		echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
-		echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
-		echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
+        echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
+        echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
+        echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
 
-		echo form_input_hidden("old_t_content", _stripslashes(htmlentities($old_t_content)));
-		echo form_input_hidden("current_t_content", "correct");
+        echo form_input_hidden("old_t_content", _stripslashes(htmlentities($old_t_content)));
+        echo form_input_hidden("current_t_content", "correct");
 
-		echo "<br /><br />\n";
-	}
+        echo "<br /><br />\n";
+    }
 
-	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+    echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-	$tph_radio = 1;
-	if ($t_post_html) {
-		$tph_radio = 3;
-		if (isset($auto_linebreaks) && $auto_linebreaks == true) {
-			$tph_radio = 2;
-		}
-	}
+    $tph_radio = 1;
+    if ($t_post_html) {
+        $tph_radio = 3;
+        if (isset($auto_linebreaks) && $auto_linebreaks == true) {
+            $tph_radio = 2;
+        }
+    }
 
-	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
-	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
-	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
-	echo "<br /><br />\n";
+    echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
+    echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
+    echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
+    echo "<br /><br />\n";
 
 } else {
-	echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+    echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 }
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";

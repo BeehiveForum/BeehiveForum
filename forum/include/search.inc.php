@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.47 2004-03-16 23:46:28 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.48 2004-03-18 23:22:51 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
@@ -96,14 +96,14 @@ function search_execute($argarray, &$urlquery, &$error)
 
             $threadtitle = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
+                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
                     $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' AND ";
                 }
             }
 
             $postcontent = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
+                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
                     $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' AND ";
                 }
             }
@@ -148,14 +148,14 @@ function search_execute($argarray, &$urlquery, &$error)
 
             $threadtitle = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
+                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
                     $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' OR ";
                 }
             }
 
             $postcontent = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
+                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
                     $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' OR ";
                 }
             }

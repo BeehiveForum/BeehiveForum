@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.82 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.83 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -65,7 +65,7 @@ if (bh_session_get_value('UID') == 0) {
 
 // Check to see if the forum owner has allowed the creation of polls
 
-if (strtoupper($forum_settings['allow_polls']) == "N") {
+if (forum_get_setting('allow_polls', 'N', false)) {
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -259,7 +259,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     poll_create($t_tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
 
-    if (isset($HTTP_POST_VARS['aid']) && (strtoupper($forum_settings['attachments_enabled']) == "Y")) {
+    if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
         if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $t_pid, $HTTP_POST_VARS['aid']);
     }
 
@@ -656,7 +656,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
     echo form_submit("submit", $lang['post']). "&nbsp;</bdo>". form_submit("preview", $lang['preview']). "&nbsp;</bdo>". form_submit("cancel", $lang['cancel']);
 
-    if (strtoupper($forum_settings['attachments_enabled']) == "Y") {
+    if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
       echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('attachments.php?webtag={$webtag['WEBTAG']}&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
       echo form_input_hidden("aid", $aid);

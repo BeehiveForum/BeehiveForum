@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.59 2004-03-17 23:41:47 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.60 2004-03-18 23:22:51 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -52,16 +52,14 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (!isset($forum_settings['attachment_dir'])) $forum_settings['attachment_dir'] = "attachments";
-
-if (strtoupper($forum_settings['attachments_enabled']) == "N") {
+if (forum_get_setting('attachments_enabled', 'N', false)) {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();
     exit;
 }
 
-if (strtoupper($forum_settings['attachment_use_old_method']) == "Y") {
+if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
     if (isset($HTTP_GET_VARS['hash'])) {
         $hash = $HTTP_GET_VARS['hash'];
     }
@@ -86,7 +84,7 @@ if (isset($hash) && is_md5($hash)) {
 
         // Use these quite a few times, so assign them to variables to save some time.
 
-        $filepath = $forum_settings['attachment_dir']. '/'. $attachmentdetails['HASH'];
+        $filepath = forum_get_setting('attachment_dir'). '/'. $attachmentdetails['HASH'];
         $filename = rawurldecode(basename($attachmentdetails['FILENAME']));
 
         if (file_exists($filepath)) {

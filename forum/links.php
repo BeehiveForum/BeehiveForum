@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.39 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: links.php,v 1.40 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -56,7 +56,7 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (strtoupper($forum_settings['show_links']) == "N") {
+if (forum_get_setting('show_links', 'N', false)) {
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";
     html_draw_bottom();
@@ -105,13 +105,14 @@ if (isset($HTTP_GET_VARS['viewmode']) && is_numeric($HTTP_GET_VARS['viewmode']) 
     $viewmode = 0;
 }
 
-if (isset($HTTP_GET_VARS['offset']) && $viewmode == 1) {
-    $offset = ($HTTP_GET_VARS['offset'] < 0) ? 0 : $HTTP_GET_VARS['offset'];
+if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page']) && viewmode == 1) {
+    $start = $HTTP_GET_VARS['page'] * 20;
 }else {
-    $offset = 0;
+    $start = 0;
 }
 
 html_draw_top();
+
 echo "<h1>{$lang['links']}</h1>\n";
 echo "<div align=\"right\">{$lang['viewmode']}: ";
 
@@ -200,7 +201,7 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
 if ($viewmode == 0) {
     $links = links_get_in_folder($fid, perm_is_moderator(), $sort_by, $sort_dir);
 }else {
-    $links = links_get_all(perm_is_moderator(), $sort_by, $sort_dir, $offset);
+    $links = links_get_all(perm_is_moderator(), $sort_by, $sort_dir, $start);
 }
 
 echo "<table width=\"95%\" align=\"center\">\n";
@@ -208,33 +209,33 @@ echo "  <tr>\n";
 
 echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>";
 } else {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>";
 }
 echo "&nbsp;</td>\n";
 
 echo "    <td class=\"posthead\" width=\"250\">&nbsp;";
 if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>";
 } else {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>";
 }
 echo "&nbsp;</td>\n";
 
 echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>";
 } else {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>";
 }
 echo "&nbsp;</td>\n";
 
 echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>";
 } else {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>";
 }
 echo "&nbsp;</td>\n";
 echo "    <td class=\"posthead\">{$lang['commentsslashvote']}</td>\n";
@@ -269,29 +270,27 @@ if (bh_session_get_value('UID')) {
 
     }else {
 
-        if ($offset > 0) {
+        echo "  <tr>\n";
+        echo "    <td class=\"postbody\">&nbsp;</td>\n";
+        echo "  </tr>\n";    
+        echo "  <tr>\n";
 
-	    $next_offset = $offset + 20;
-	    $prev_offset = $offset - 20;
-
-	    if ($prev_offset < 0) $prev_offset = 0;
-
-            echo "  <tr>\n";
-            echo "    <td class=\"postbody\">&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=1&amp;viewmode=1&amp;offset=$prev_offset\"><b>{$lang['prev']}</b></a> | <a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=1&amp;viewmode=1&amp;offset=$next_offset\"><b>{$lang['next']}</b></a></td>\n";
-            echo "  </tr>\n";
-
-	}else {
-
-            echo "  <tr>\n";
-            echo "    <td class=\"postbody\">&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links.php?webtag={$webtag['WEBTAG']}&fid=1&amp;viewmode=1&amp;offset=", ($offset + 20), "\"><b>{$lang['next']}</b></a></td>\n";
-            echo "  </tr>\n";
-	}
+        if (sizeof($links) == 20) {
+            if ($start < 20) {
+                echo "    <td class=\"postbody\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "&amp;fid=$fid&amp;viewmode=$viewmode\" target=\"_self\">{$lang['more']}</a></td>\n";
+            }elseif ($start >= 20) {
+                echo "    <td class=\"postbody\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "&amp;fid=$fid&amp;viewmode=$viewmode\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+                echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "&amp;fid=$fid&amp;viewmode=$viewmode\" target=\"_self\">{$lang['more']}</a></td>\n";
+            }
+        }else {
+            if ($start >= 20) {
+                echo "    <td class=\"postbody\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "&amp;fid=$fid&amp;viewmode=$viewmode target=\"_self\">{$lang['back']}</a></td>\n";
+            }else {
+                echo "    <td class=\"postbody\">&nbsp;</td>";
+            }
+        }
+        
+        echo "  </tr>\n";        
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.27 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.28 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -32,7 +32,7 @@ function bh_check_gzip()
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.
 
-    if (headers_sent() || strtoupper($forum_settings['gzip_compress_output']) == "N") {
+    if (headers_sent() || forum_get_setting('gzip_compress_output', 'N', true)) {
         return false;
     }
 
@@ -63,7 +63,7 @@ function bh_gzhandler($contents)
     if ($encoding = bh_check_gzip()) {
 
         // do the compression
-        if ($gz_contents = gzcompress($contents, intval($forum_settings['gzip_compress_level']))) {
+        if ($gz_contents = gzcompress($contents, intval(forum_get_setting('gzip_compress_level')))) {
             
             // generate the error checking bits
             $size  = strlen($contents);

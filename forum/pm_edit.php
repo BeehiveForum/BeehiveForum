@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.25 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.26 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -141,7 +141,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
             $t_content = make_html($t_content);
         }
                 
-        if (isset($HTTP_POST_VARS['aid']) && (strtoupper($forum_settings['attachments_enabled']) == "Y")) {
+        if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
             if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) pm_save_attachment_id($mid, $HTTP_POST_VARS['aid']);
         }         
 

@@ -25,7 +25,7 @@ USA
 require_once("./include/errorhandler.inc.php");
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+//require_once("./include/gzipenc.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/links.inc.php");
 require_once("./include/session.inc.php");

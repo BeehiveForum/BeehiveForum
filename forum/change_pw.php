@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.44 2004-12-26 12:21:29 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.45 2005-01-19 14:41:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -115,7 +115,7 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        if (user_change_pw($uid, $pw, $key)) {
+        if (user_change_pass($uid, $pw, $key)) {
 
             html_draw_top();
 

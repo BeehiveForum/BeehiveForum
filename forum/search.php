@@ -147,7 +147,9 @@ if (isset($searchsql)) {
     echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">Prev 50</a>\n";
   }
 
-  echo "<br /><br />\n";
+  //echo "<br /><br />\n";
+
+  echo "<ol start=\"", $sstart + 1, "\">\n";
 
   for ($i = $sstart; $i < $sstart + 50; $i++) {
 
@@ -184,13 +186,17 @@ if (isset($searchsql)) {
 
       }
 
-      echo ($i + 1). ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
-      echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span><br /><br />\n";
+      echo "<li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
+      echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
+
+      //echo ($i + 1). ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
+      //echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span><br /><br />\n";
 
     }
 
   }
 
+  echo "</ol>\n";
 
   if (($numRows > 50) && (($sstart + 50) < $numRows)) {
     if ($numRows - ($sstart + 50) > 50) {

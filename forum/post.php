@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.222 2004-09-08 01:50:01 tribalonline Exp $ */
+/* $Id: post.php,v 1.223 2004-09-13 12:06:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -192,7 +192,7 @@ if (isset($_POST['to_radio'])) {
     }
 }
 
-if (isset($_POST['t_newthread'])) {
+if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['preview']))) {
 
     $newthread = true;
 
@@ -334,6 +334,16 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 }
 
 if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
+	if (isset($_POST['t_newthread'])) {
+		if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
+			$t_threadtitle = trim($_POST['t_threadtitle']);
+		}
+
+		if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+			$t_fid = $_POST['t_fid'];
+		}
+	}
+
 	if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 		$t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
 	}

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.53 2004-09-08 01:50:01 tribalonline Exp $ */
+/* $Id: pm_edit.php,v 1.54 2004-09-13 12:06:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -297,6 +297,8 @@ if ($valid && isset($_POST['preview'])) {
 
 	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 
+	$pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX);
+
 	$fix_html = false;
 
 } else {
@@ -396,6 +398,16 @@ echo "        <tr>\n";
 echo "          <td><a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])), "</a></td>\n";
 echo "        </tr>\n";
 
+echo "        <tr>\n";
+echo "          <td>&nbsp;</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td><h2>". $lang['messageoptions'] .":</h2>\n";
+echo "            ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo "            ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."\n";
+echo "          </td>\n";
+echo "        </tr>\n";
+
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
@@ -429,7 +441,7 @@ if ($emot_prev != "") {
 
 echo "      </table>\n";
 echo "    </td>\n";
-echo "    <td width=\"500\">\n";
+echo "    <td width=\"500\" valign=\"top\">\n";
 echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "        <tr>\n";
 echo "          <td>";
@@ -474,17 +486,13 @@ if ($allow_html == true) {
 		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
 	}
 
+	echo "<br /><br />\n";
+
 } else {
 
 	echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
-
-echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
-
-echo "<br />\n";
 echo form_submit('submit', $lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');

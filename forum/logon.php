@@ -146,7 +146,10 @@ if (isset($HTTP_POST_VARS['submit'])) {
         
     }else {
 
-      $error_html = "<h2>Invalid login</h2>";
+      html_draw_top();
+      echo "<h2>Invalid login. <a href=\"index.php\"> Go Back</a>.</h2>";
+      html_draw_bottom();
+      exit;
 
     }
     

@@ -173,13 +173,17 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
     $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
     $result = db_query($sql,$db);
     
-    if(db_num_rows($result)>0) {
-        db_query($sql,$db);
+    if(db_num_rows($result) > 0) {
+    
+        db_query($sql, $db);
         list($ddkey) = db_fetch_array($result);
         $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
+        
     }else{
+    
         $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
         $ddkey = $HTTP_POST_VARS['t_dedupe'];
+        
     }
     
     db_query($sql,$db);
@@ -188,24 +192,26 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
     if($ddkey != $HTTP_POST_VARS['t_dedupe']) {
     
         if($newthread) {
+        
             $t_tid = post_create_thread($t_fid, $t_threadtitle);
             $t_rpid = 0;
+            
         }else{
+        
             $t_tid = $HTTP_POST_VARS['t_tid'];
             $t_rpid = $HTTP_POST_VARS['t_rpid'];
+            
         }
 
         if($t_tid > 0) {
         
-            if($t_post_html != "Y") {
-                $t_content = make_html($t_content);
-            }
+            if($t_post_html != "Y") $t_content = make_html($t_content);
 
             if($t_sig) {
-                if($t_sig_html != "Y") {
-                    $t_sig = make_html($t_sig);
-                }
+            
+                if($t_sig_html != "Y") $t_sig = make_html($t_sig);
                 $t_content .= "\n<div class=\"sig\">". $t_sig. "</div>";
+                
             }
             
             $new_pid = post_create($t_tid, $t_rpid, $HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['t_to_uid'], $t_content);
@@ -221,52 +227,47 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
         $new_pid = 0;
         
         if($newthread) {
+        
+            $t_tid = 0;
             $t_rpid = 0;
+            
         }else{
+        
             $t_tid = $HTTP_POST_VARS['t_tid'];
             $t_rpid = $HTTP_POST_VARS['t_rpid'];
+            
         }
     }
 
     if($new_pid > -1) {
 
-        //html_draw_top();
+        if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $new_pid, $aid);
+
+        if ($t_tid > 0 && $t_rpid > 0) {
         
-        // Check to see if any attachments were uploaded.
-        if (get_num_attachments($aid) > 0) { 
-            post_save_attachment_id($t_tid, $new_pid, $aid);
+          $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+          $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+          $uri.= "/discussion.php?msg=$t_tid.$t_rpid&newthread=true";
+          
+        }else {
+        
+          $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+          $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+          $uri.= "/discussion.php";
+          
         }
-
-        if($newthread){
-            $t_rpid = 1;
-        }
-
-        $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-        $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-        $uri.= "/discussion.php?msg=$t_tid.$t_rpid";
+        
         header_redirect($uri);
-        
-        /*echo "<p>&nbsp;</p>";
-        echo "<p>&nbsp;</p>";
-        echo "<div align=\"center\"><p>\n";
-        echo "Message posted successfully\n";
-        
-        if ($newthread) {
-            echo "<br /><a href=\"discussion.php?msg=$t_tid.1\">Return to messages</a>\n";
-        }else{
-            echo "<br /><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a>\n";
-        }
-        
-        echo "</p></div>\n";
-        html_draw_bottom();
-        exit;*/
+        exit;
 
     }else{
+    
         $error_html = "<h2>Error creating post</h2>";
+        
     }
+    
 }
 
-//html_draw_top_script();
 html_draw_top_post_script();
 
 if (!isset($HTTP_POST_VARS['aid'])) {

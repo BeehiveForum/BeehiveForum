@@ -42,7 +42,7 @@ function get_selection_start () {
 	if (!document.all) {
 		return active_field.selectionStart;
 	} else {
-		var s = active_field.caretPos;
+		var s = active_field.caretPos.duplicate();
 		var t = active_field.value;
 		var u = s.text;
 		var i = 0;
@@ -53,31 +53,21 @@ function get_selection_start () {
 				break;
 			}
 		}
-		s.moveStart("character", 1);
-		return (s.text.length - u.length);
+		// Remove 'junk' characters before the textfield
+		var re = new RegExp("^" + String.fromCharCode(8706) + "*\r?\n?");
+		var u2 = s.text.replace(re, "");
+
+		return (u2.length - u.length);
 	}
 }
 function get_selection_end () {
 	if (!document.all) {
 		return active_field.selectionEnd;
 	} else {
-		var s = active_field.caretPos;
-		var t = active_field.value;
+		var s = active_field.caretPos.duplicate();
 		var u = s.text;
-		var i = 0;
 
-		while(t.indexOf(s.text) > -1) {
-			s.moveEnd("character", 1);
-			if (++i > t.length * 2) { // something's gone wrong
-				break;
-			}
-		}
-
-		s.moveEnd("character", -1);
-		if (s.text.length == 0) {
-			return 0;
-		}
-		return(t.length - s.text.length + u.length);
+		return (get_selection_start() + u.length);
 	}
 }
 // -------------------------------------------
@@ -111,7 +101,7 @@ function add_tag (tag, a, v, enclose) {
 	var str_enclose = str;
 
 	var ss = get_selection_start();
-	var se = get_selection_end();
+	var se = ss + str.length; // get_selection_end();
 
 	if (ss != se && str.length == 0) {
 		ss = se;
@@ -166,7 +156,7 @@ function add_tag (tag, a, v, enclose) {
 	str_enclose = extra_left + str_enclose;
 	var str_enclose_extra_left = extra_left.length;
 	var str_enclose_left = left_bound;
-//alert(str_enclose);
+
 	valid = null;
 	for (var i=left_bound.length-1; i>=0 && valid != false; i--) {
 		if (left_bound.charAt(i) != ">") {
@@ -233,7 +223,6 @@ function add_tag (tag, a, v, enclose) {
 			mark = true;
 		}
 	}
-//	str_enclose = str;
 
 	str_enclose += extra_right;
 	var str_enclose_extra_right = extra_right.length;
@@ -300,11 +289,9 @@ function add_tag (tag, a, v, enclose) {
 				break;
 			}
 		}
-//		text_end += text_start;
-//		alert (str.length + " - " + text_start + " : " + text_end);
 
 		active_field.value = active_field.value.substr(0, ss-extra_left.length) + str + active_field.value.substr(se+extra_right.length);
-//		alert (str_enclose_left + " -- " + str_enclose + " -- " + str_enclose_right);
+
 		ss = ss - extra_left.length + text_start;
 		se = ss + text_end - text_start;
 

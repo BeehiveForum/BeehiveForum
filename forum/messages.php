@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.87 2003-08-31 17:01:29 hodcroftcj Exp $ */
+/* $Id: messages.php,v 1.88 2003-09-03 16:18:16 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -187,7 +187,10 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
   if ($userpollvote = poll_get_user_vote($tid)) {
     if ($userpollvote ^ POLL_MULTIVOTE) {
-      echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoption']} #", $userpollvote['OPTION_ID'], "</td>\n";
+      for ($i = 0; $i < sizeof($userpollvote); $i++) {
+        $userpollvotes_array[] = "Option {$userpollvote[$i]['OPTION_ID']}";
+      }
+      echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedfor']}: ", implode(" & ", $userpollvotes_array), "</td>\n";
     }
   }else {
     echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youhavenotvoted']}</td>\n";

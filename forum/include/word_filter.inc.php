@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.15 2004-04-24 18:42:47 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.16 2004-05-09 20:58:31 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -56,7 +56,9 @@ function load_wordfilter()
 
     // Get the user's own filter.
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = '$uid' LIMIT 0, 20";
+
     $result = db_query($sql, $db_load_wordfilter);
 
     while ($row = db_fetch_array($result)) {

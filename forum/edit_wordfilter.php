@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.38 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.39 2004-05-09 20:58:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -110,19 +110,24 @@ if (isset($_POST['submit'])) {
 
     user_clear_word_filter();
 
+    $filter_count = 0;
+
     if (isset($_POST['match']) && is_array($_POST['match'])) {
         foreach ($_POST['match'] as $key => $value) {
-            $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
-            if (isset($_POST['replace'][$key]) && trim(strlen($_POST['replace'][$key])) > 0) {
-                user_add_word_filter($_POST['match'][$key], $_POST['replace'][$key], $filter_option);
-            }else {
-                user_add_word_filter($_POST['match'][$key], "", $filter_option);
+            if ($filter_count < 20) {
+                $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
+                if (isset($_POST['replace'][$key]) && trim(strlen($_POST['replace'][$key])) > 0) {
+                    user_add_word_filter($_POST['match'][$key], $_POST['replace'][$key], $filter_option);
+                }else {
+                    user_add_word_filter($_POST['match'][$key], "", $filter_option);
+                }
             }
+            $filter_count++;
         }
     }
 
-    if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0) {
-        $filter_option = (isset($_POST['new_filter_option'])) ? $_POST['new_filter_option'][$key] : 0;
+    if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0 && $filter_count < 20) {
+        $filter_option = (isset($_POST['new_filter_option'])) ? $_POST['new_filter_option'] : 0;
         if (isset($_POST['new_replace']) && strlen(trim($_POST['new_replace'])) > 0) {
             user_add_word_filter($_POST['new_match'], $_POST['new_replace'], $filter_option);
         }else {
@@ -180,7 +185,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">&nbsp;</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['matchedtext']}&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['replacementtext']}&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['all']}&nbsp;</td>\n";
@@ -217,14 +222,28 @@ foreach ($word_filter_array as $key => $word_filter) {
     echo "                </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td>{$lang['newcaps']}</td>\n";
-echo "                  <td>", form_input_text("new_match", "", 30), "</td>\n";
-echo "                  <td>", form_input_text("new_replace", "", 30), "</td>\n";
-echo "                  <td align=\"center\">", form_radio("new_filter_option", "0", "", true), "</td>\n";
-echo "                  <td align=\"center\">", form_radio("new_filter_option", "1", "", false), "</td>\n";
-echo "                  <td align=\"center\">", form_radio("new_filter_option", "2", "", false), "</td>\n";
-echo "                </tr>\n";
+if (sizeof($word_filter_array) < 20) {
+
+    echo "                <tr>\n";
+    echo "                  <td>{$lang['newcaps']}</td>\n";
+    echo "                  <td>", form_input_text("new_match", "", 30), "</td>\n";
+    echo "                  <td>", form_input_text("new_replace", "", 30), "</td>\n";
+    echo "                  <td align=\"center\">", form_radio("new_filter_option", "0", "", true), "</td>\n";
+    echo "                  <td align=\"center\">", form_radio("new_filter_option", "1", "", false), "</td>\n";
+    echo "                  <td align=\"center\">", form_radio("new_filter_option", "2", "", false), "</td>\n";
+    echo "                </tr>\n";
+
+}else {
+
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"6\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td valign=\"top\">&nbsp;</td>\n";
+    echo "                  <td colspan=\"6\">{$lang['wordfilterisfull']}</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";

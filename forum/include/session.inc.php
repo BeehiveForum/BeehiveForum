@@ -31,7 +31,7 @@ require_once("./include/format.inc.php");
 
 function bh_session_check()
 {
-    //ip_check();
+    ip_check();
 
     global $HTTP_COOKIE_VARS;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.php,v 1.25 2003-10-23 19:21:18 uid81631 Exp $ */
+/* $Id: profile.php,v 1.26 2003-12-21 14:59:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -42,12 +42,6 @@ if (!bh_session_check()) {
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
-
-if(bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
-}
-
 require_once("./include/forum.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
@@ -59,13 +53,16 @@ require_once("./include/profile.inc.php");
 
 html_draw_top();
 
-echo "<h1>{$lang['editprofile']}</h1>\n";
-
 $uid = bh_session_get_value('UID');
 
 // Do updates
 
 if (isset($HTTP_POST_VARS['submit'])) {
+
+    if (bh_session_get_value('UID') == 0) {
+        html_guest_error();
+        exit;
+    }
 
     for ($i = 0; $i < sizeof($HTTP_POST_VARS['t_piid']); $i++) {
 
@@ -73,10 +70,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
         user_profile_update($uid, $HTTP_POST_VARS['t_piid'][$i], $entry);
     }
 
+    echo "<h1>{$lang['editprofile']}</h1>\n";
     echo "<p>{$lang['profileupdated']}</p>";
 
 }else {
 
+    echo "<h1>{$lang['editprofile']}</h1>\n";
     echo "<br />\n";
 }
 

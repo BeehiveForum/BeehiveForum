@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.66 2004-04-26 11:21:10 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.67 2004-04-27 23:07:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -160,6 +160,20 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
+    if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
+        $to_radio = $_POST['to_radio'];
+    }else {
+        $to_radio = 0;
+    }
+
+    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+        $t_to_uid = $_POST['t_to_uid'];
+    }elseif ($to_radio == 0) {
+        $t_to_uid = 0;
+        $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+        $valid = false;
+    }
+
     if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
 
         if ($valid) {
@@ -182,16 +196,19 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
                         $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                     }
 
-                    if (!user_allow_pm($to_user['UID'])) {
+                    if ($to_radio == 1) {
 
-		        $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
-			$valid = false;
-		    }
+                        if (!user_allow_pm($to_user['UID'])) {
 
-		    if (pm_get_free_space($to_user['UID']) < (strlen(trim($t_subject)) + strlen(trim($t_content)))) {
+		            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
+			    $valid = false;
+		        }
 
-		        $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
-			$valid = false;
+		        if (pm_get_free_space($to_user['UID']) < (strlen(trim($t_subject)) + strlen(trim($t_content)))) {
+
+		            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
+			    $valid = false;
+		        }
 		    }
 
                 }elseif ($valid) {
@@ -208,39 +225,46 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
             $t_recipient_list = $_POST['t_recipient_list'];
         }
 
-        if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
-            $error_html.= "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
-            $valid = false;
+        if ($to_radio == 1) {
+
+            if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
+                $error_html.= "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
+                $valid = false;
+            }
+
+            if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
+                $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+                $valid = false;
+            }
         }
 
-        if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
-            $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
-            $valid = false;
-        }
-
-    }elseif ($valid) {
+    }elseif ($valid && $to_radio == 1) {
         $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
     }
 }
 
 $post_html = 0;
+
 if (isset($_POST['t_post_html'])) {
+
     $t_post_html = $_POST['t_post_html'];
+
     if ($t_post_html == "enabled_auto") {
-		$post_html = 1;
-    } else if ($t_post_html == "enabled") {
-		$post_html = 2;
+        $post_html = 1;
+    }else if ($t_post_html == "enabled") {
+        $post_html = 2;
     }
 }
 
 // Process the data based on what we know.
 $post = new MessageText($post_html, $t_content);
+
 $t_content = $post->getContent();
 
 if (strlen($t_content) >= 65535) {
-	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-	$valid = false;
+    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+    $valid = false;
 }
 
 // Send the PM
@@ -249,26 +273,39 @@ if ($valid && isset($_POST['submit'])) {
 
     if (check_ddkey($_POST['t_dedupe'])) {
 
-        foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
+        if (isset($to_radio) && $to_radio == 0) {
+
             if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
-                if (isset($_POST['aid']) && get_num_attachments($_POST['aid']) > 0) {
-                    pm_save_attachment_id($new_mid, $_POST['aid']);
-                }
-                email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+                pm_save_attachment_id($new_mid, $_POST['aid']);
             }else {
                 $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                 $valid = false;
             }
+
+        }else {
+
+            foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
+
+                if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+                    pm_save_attachment_id($new_mid, $_POST['aid']);
+                }else {
+                    $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
+                    $valid = false;
+                }
+            }
         }
     }
 
-    if (isset($mid)) {
-        $uri = "./pm.php?webtag=$webtag&mid=$mid";
-    }else {
-        $uri = "./pm.php?webtag=$webtag";
-    }
+    if ($valid) {
 
-    header_redirect($uri);
+        if (isset($mid)) {
+            $uri = "./pm.php?webtag=$webtag&mid=$mid";
+        }else {
+            $uri = "./pm.php?webtag=$webtag";
+        }
+
+        header_redirect($uri);
+    }
 }
 
 html_draw_top("openprofile.js", "post.js", "htmltools.js", "basetarget=_blank");
@@ -289,9 +326,20 @@ if ($valid && isset($_POST['preview'])) {
     echo "<h1>{$lang['privatemessages']}: {$lang['messagepreview']}</h1>\n";
     echo "<br />\n";
 
-    $pm_preview_array['TLOGON'] = $t_new_recipient_array['LOGON'];
-    $pm_preview_array['TNICK']  = $t_new_recipient_array['NICK'];
-    $pm_preview_array['TO_UID'] = $t_new_recipient_array['TO_UID'];
+    if (isset($to_radio) && $to_radio == 0) {
+
+        $preview_tuser = user_get($t_to_uid);
+
+        $pm_preview_array['TLOGON'] = $preview_tuser['LOGON'];
+        $pm_preview_array['TNICK']  = $preview_tuser['NICKNAME'];
+        $pm_preview_array['TO_UID'] = $preview_tuser['UID'];
+
+    }else {
+
+        $pm_preview_array['TLOGON'] = $t_new_recipient_array['LOGON'];
+        $pm_preview_array['TNICK']  = $t_new_recipient_array['NICK'];
+        $pm_preview_array['TO_UID'] = $t_new_recipient_array['TO_UID'];
+    }
 
     $preview_fuser = user_get(bh_session_get_value('UID'));
 
@@ -309,7 +357,6 @@ if ($valid && isset($_POST['preview'])) {
 
     draw_pm_message($pm_preview_array);
     echo "<br />\n";
-
 }
 
 // PM link from profile
@@ -323,69 +370,108 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write_new.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 
 if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
-    echo $error_html;
-    echo "<br />\n";
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>";
+    echo "<tr><td>\n";
+    echo $error_html . "\n";
+    echo "</td></tr>\n";
+    echo "</table>\n";
 }
+
+echo "<form name=\"f_post\" action=\"pm_write_new.php\" method=\"post\" target=\"_self\">\n";
+echo form_input_hidden('webtag', $webtag), "\n";
+echo "<table width=\"720\" class=\"posthead\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"subhead\" colspan=\"2\">{$lang['writepm']}</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td valign=\"top\" width=\"210\">\n";
+echo "      <table class=\"posthead\" width=\"210\">\n";
+echo "        <tr>\n";
+echo "          <td><h2>{$lang['subject']}:</h2></td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _stripslashes($t_subject) : "", 42, false, "style=\"width: 190px\""), "</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td><h2>{$lang['to']}:</h2></td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td>\n";
+echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
+echo "            ", pm_draw_to_dropdown_friends(isset($t_to_uid) ? $t_to_uid : 0), "<br />\n";
+echo "            ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
+echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" style=\"width: 190px\" onclick=\"checkToRadio(1)\""), "\n";
+echo "          </td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"checkToRadio(1); addRecipient()\""), "&nbsp;&nbsp;</td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "    <td width=\"500\">\n";
+echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td>";
+echo "           <h2>{$lang['message']}:</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
-echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', $webtag), "\n";
-echo "<table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td align=\"right\">{$lang['to']}: </td>\n";
-echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 42, false, "title=\"{$lang['recipienttiptext']}\""), "&nbsp;", form_button("add", $lang['addrecipient'], "onclick=\"javascript:addRecipient()\""), "</td>\n";
+echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+
+echo $tools->textarea("t_content", $post->getTidyContent(), 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+
+echo "          <td>\n";
 echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _stripslashes($t_subject) : "", 42), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td>".$tools->toolbar();
-echo $tools->textarea("t_content", $post->getTidyContent(), 15, 72). "</td>\n";
-echo "        </tr>\n";
+
 if ($post->isDiff()) {
-	echo "        <tr>\n";
-	echo "          <td>\n";
-	echo "            ".$tools->compare_original("t_content", $post->getOriginalContent());
-	echo "          </td>\n";
-	echo "        </tr>\n";
+
+    echo "        <tr>\n";
+    echo "          <td>\n";
+    echo "            ".$tools->compare_original("t_content", $post->getOriginalContent());
+    echo "          </td>\n";
+    echo "        </tr>\n";
 }
+
 echo "        <tr>\n";
 echo "          <td>\n";
 echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+
 $tph_radio = $post->getHTML();
 
-echo "            ".form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-echo "            ".form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-echo "            ".form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+echo "            ", form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\""), " \n";
+echo "            ", form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1), " \n";
+echo "            ", form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2), " \n";
 
 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
+echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
+
+echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
+echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+
+if (forum_get_setting('attachments_enabled', 'Y', false) && forum_get_setting('pm_allow_attachments', 'Y', false)) {
+
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo form_input_hidden("aid", $aid);
+}
+
 echo "          </td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td colspan=\"2\">&nbsp;</td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
-
-echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
-echo form_submit('cancel', $lang['cancel']);
-
-if (forum_get_setting('attachments_enabled', 'Y', false) && forum_get_setting('pm_allow_attachments', 'Y', false)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", $aid);
-}
 
 echo $tools->js();
 

@@ -5,6 +5,9 @@
 # Schema generated using phpMyAdmin
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
+#
+# $Id: schema.sql,v 1.41 2003-08-08 23:25:16 decoyduck Exp $
+#
 # --------------------------------------------------------
 
 #

@@ -22,10 +22,11 @@ USA
 ======================================================================*/
 
 require_once("./include/forum.inc.php");
+require_once("./include/db.inc.php");
 
-function folder_draw_dropdown($default_fid)
+function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 {
-    $html = "<select name=\"t_fid\">";
+    $html = "<select name=\"${field_name}${suffix}\">";
     $db = db_connect();
 
     $sql = "select FID, TITLE from " . forum_table("FOLDER");
@@ -60,6 +61,39 @@ function folder_get_title($fid)
    }
    db_disconnect($db);
    return $foldertitle;
+}
+
+function folder_create($title,$access)
+{
+    $db = db_connect();
+    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL) ";
+    $sql.= "values (\"$title\",$access)";
+    $result = db_query($sql,$db);
+    db_disconnect($db);
+    return $result;
+}
+
+function folder_update($fid,$title,$access)
+{
+    $db = db_connect();
+    $sql = "update " . forum_table("FOLDER") . " ";
+    $sql.= "set TITLE = \"$title\", ";
+    $sql.= "ACCESS_LEVEL = $access ";
+    $sql.= "where FID = $fid";
+    $result = db_query($sql,$db);
+    db_disconnect($db);
+    return $result;
+}
+
+function folder_move_threads($from,$to)
+{
+    $db = db_connect();
+    $sql = "update " . forum_table("THREAD") . " ";
+    $sql.= "set FID = $to ";
+    $sql.= "where FID = $from";
+    $result = db_query($sql,$db);
+    db_disconnect($db);
+    return $result;
 }
 
 ?>

@@ -77,6 +77,21 @@ function user_update($uid,$password,$nickname,$email)
     return $result;
 }
 
+function user_update_status($uid,$status)
+{
+    $sql = "update " . forum_table("USER") . " set STATUS = $status ";
+    $sql .= "WHERE UID = $uid";
+
+    //echo $sql;
+
+    $db = db_connect();
+    $result = db_query($sql,$db);
+
+    db_disconnect($db);
+
+    return $result;
+}
+
 function user_logon($logon,$password)
 {
     $md5pass = md5($password);

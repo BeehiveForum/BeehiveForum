@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.6 2004-03-19 13:53:08 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.7 2004-03-20 19:21:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -36,6 +36,7 @@ include_once("./include/forum.inc.php");
 $webtag = get_webtag();
 $forum_settings = get_forum_settings();
 
+include_once("./include/admin.inc.php");
 include_once("./include/config.inc.php");
 include_once("./include/fixhtml.inc.php");
 include_once("./include/form.inc.php");
@@ -305,6 +306,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
     if ($valid) {
     
         save_forum_settings($new_forum_settings);
+        
+        $uid = bh_session_get_value('UID');        
+        admin_addlog($uid, 0, 0, 0, 0, 0, 29);
         
         if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.40 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.41 2004-03-20 19:21:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -262,11 +262,20 @@ if ($admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir)) {
             case 24:
                 $action_text = "{$lang['editedwordfilter']}";
                 break;
-            case 25;
+            case 25:
                 $action_text = "{$lang['madethreadsticky']}: '$thread_title'";
                 break;
-            case 26;
+            case 26:
                 $action_text = "{$lang['madethreadnonsticky']}: '$thread_title'";
+                break;
+            case 27:
+                $action_text = "{$lang['endedsessionforuser']}: '$user'";
+                break;
+            case 28:
+                $action_text = "{$lang['editedwordfilter']}";
+                break;
+            case 29:
+                $action_text = "{$lang['editedforumsettings']}";
                 break;
             default:
                 $action_text = "{$lang['unknown']}";

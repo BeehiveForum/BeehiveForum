@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.21 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.22 2004-03-20 19:21:30 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -113,14 +113,16 @@ function save_forum_settings($forum_settings_array)
     $db_save_forum_settings = db_connect();
     
     $webtag = get_webtag();
-    
-    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '{$webtag['FID']}'";
-    $result = db_query($sql, $db_save_forum_settings);
-    
+       
     foreach ($forum_settings_array as $sname => $svalue) {
     
         $sname = addslashes($sname);
         $svalue = addslashes($svalue);
+        
+        $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = '$sname' AND ";
+        $sql.= "FID = '{$webtag['FID']}'";
+        
+        $result = db_query($sql, $db_save_forum_settings);        
         
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES ('{$webtag['FID']}', '$sname', '$svalue')";

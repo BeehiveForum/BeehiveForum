@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.32 2004-03-19 15:38:31 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.33 2004-03-20 19:21:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -66,7 +66,7 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['save'])) {
+if (isset($HTTP_POST_VARS['submit'])) {
 
     admin_clear_word_filter();
     
@@ -89,8 +89,42 @@ if (isset($HTTP_POST_VARS['save'])) {
             admin_add_word_filter($HTTP_POST_VARS['new_match'], "", $new_filter_option);
         }
     }
+    
+    if (isset($HTTP_POST_VARS['admin_force_word_filter']) && $HTTP_POST_VARS['admin_force_word_filter'] == "Y") {
+        $new_forum_settings['admin_force_word_filter'] = "Y";
+    }else {
+        $new_forum_settings['admin_force_word_filter'] = "N";
+    }
+    
+    save_forum_settings($new_forum_settings);
+    
+    $uid = bh_session_get_value('UID');        
+    admin_addlog($uid, 0, 0, 0, 0, 0, 28);
+    
+    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-    $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
+        header_redirect("./admin_wordfilter.php?webtag={$webtag['WEBTAG']}&updated=true");
+
+    }else {
+
+        html_draw_top();
+
+        // Try a Javascript redirect
+        echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n";
+        echo "document.location.href = './admin_wordfilter.php?webtag={$webtag['WEBTAG']}&updated=true';\n";
+        echo "//-->\n";
+        echo "</script>";
+
+        // If they're still here, Javascript's not working. Give up, give a link.
+        echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+        echo "<p>{$lang['forumsettingsupdated']}</p>";
+
+        form_quick_button("./admin_wordfilter.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+
+        html_draw_bottom();
+        exit;
+    }    
 
 }elseif (isset($HTTP_POST_VARS['delete'])) {
 
@@ -102,7 +136,9 @@ $word_filter_array = admin_get_word_filter();
 
 echo "<h1>{$lang['admin']} : {$lang['editwordfilter']}</h1>\n";
 
-if (isset($status_text)) echo $status_text;
+if (isset($HTTP_GET_VARS['updated'])) {
+    echo "<h2>{$lang['wordfilterupdated']}</h2>\n";
+}
 
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
@@ -153,8 +189,38 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\"><p>", form_submit("save", $lang['save']), "</p></td>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("admin_force_word_filter", "Y", $lang['forceadminwordfilter'], forum_get_setting("admin_force_word_filter", "Y", false)), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <p>{$lang['word_filter_help_1']}</p>\n";

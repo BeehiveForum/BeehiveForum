@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.7 2004-11-26 09:50:15 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.8 2004-11-27 01:33:45 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -359,7 +359,7 @@ echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"270\">\n";
-echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions_array(), false, $dictionary->get_best_suggestion(), "size=\"10\" style=\"width: 100%; height: 90px\" onchange=\"changeword()\""), "\n";
+echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions_array(), false, $dictionary->get_best_suggestion(), "size=\"10\" style=\"width: 100%; height: 90px\" onchange=\"changeword(this)\""), "\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

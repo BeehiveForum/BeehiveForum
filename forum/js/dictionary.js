@@ -19,10 +19,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-function changeword() {
+function changeword(obj) {
 
-    var i = document.dictionary.suggestion.selectedIndex;
-    document.dictionary.change_to.value = document.dictionary.suggestion.options[i].value;
+    var i = obj.options[obj.selectedIndex].value;
+	// IE doesn't like .value when <object>value</value> is used instead
+	// of <object value="value">value</object> so we use innerText
+    if (i.length == 0) i = obj.options[obj.selectedIndex].innerText;
+
+    document.dictionary.change_to.value = i;
+
 }
 
 function openSpellCheck(webtag, obj_id) {

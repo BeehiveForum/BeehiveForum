@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.60 2004-04-13 00:57:20 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.61 2004-04-13 14:04:04 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -455,6 +455,7 @@ $lang['totalsize'] = "Total Sizize";
 $lang['freespace'] = "Free Spizace";
 $lang['attachmentproblem'] = "There was a prizoblem dizownloading this piece of shit. Please try again later.";
 $lang['attachmentshavebeendisabled'] = "Tha man has dizisabled fuckin' attachments, cracka.";
+$lang['removefile'] = "Remove File";
 
 // Changing passwords (change_pw.php) ----------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.111 2004-04-13 00:57:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.112 2004-04-13 14:04:04 decoyduck Exp $ */
 
 // International English language file
 
@@ -458,6 +458,7 @@ $lang['totalsize'] = "Total Size";
 $lang['freespace'] = "Free Space";
 $lang['attachmentproblem'] = "There was a problem downloading this attachment. Please try again later.";
 $lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
+$lang['removefile'] = "Remove File";
 
 // Changing passwords (change_pw.php) ----------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.78 2004-04-13 00:45:25 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.79 2004-04-13 14:04:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -499,33 +499,31 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "                  <td align=\"left\">\n";
     echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
-    $total_attachment_size = 0;
-
-    if ($attachments = get_users_attachments($uid)) {
-
-        for ($i = 0; $i < sizeof($attachments); $i++) {
+    if ($attachments_array = admin_get_users_attachments($uid, true)) {
+        
+        foreach($attachments_array as $attachment) {
 
             echo "                      <tr>\n";
             echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
             
-            if ($attachment_use_old_method) {
-                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
+            if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
+                echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\" title=\"";
             }           
-
-            if (strlen($attachments[$i]['filename']) > 16) {
-                echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
+	 
+            if (strlen($attachment['filename']) > 16) {
+                echo "{$lang['filename']}: ". $attachment['filename']. ", ";
             }
 
-            if (@$imageinfo = getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+            if (@$imageinfo = getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
                 echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
             }
 
-            echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
-            echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
+            echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
+            echo "{$lang['downloaded']}: ". $attachment['downloads'];
 
-            if ($attachments[$i]['downloads'] == 1) {
+            if ($attachment['downloads'] == 1) {
                 echo " {$lang['time']}";
             }else {
                 echo " {$lang['times']}";
@@ -533,46 +531,43 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
             echo "\">";
 
-            if (strlen($attachments[$i]['filename']) > 16) {
-                echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+            if (strlen($attachment['filename']) > 16) {
+                echo substr($attachment['filename'], 0, 16). "...</a></td>\n";
             }else{
-                echo $attachments[$i]['filename']. "</a></td>\n";
+                echo $attachment['filename']. "</a></td>\n";
             }
 
-            if ($messagelink = get_message_link($attachments[$i]['aid'])) {
+            if ($messagelink = get_message_link($attachment['aid']) && $attachment['deleted'] == 0) {
                 if (strstr($messagelink, 'messages.php')) {
-                    echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", $messagelink, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\"><a href=\"", $messagelink, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
                 }else {
                     echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
                 }
+            }elseif ($attachment['deleted'] == 1) {
+                echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">{$lang['deleted']}</td>\n";
             }else {
                 echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-            }
+	    }
 
-            echo "                        <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
+            echo "                        <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
             echo "                        <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
-            echo "                          ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
-            echo "                          ", form_submit('del', $lang['del']), "\n";
+            echo "                          ", form_input_hidden('hash', $attachment['hash']), "\n";
+
+	    if ($attachment['deleted'] == 1) {
+                echo "                          ", form_submit('del', $lang['removefile']), "\n";
+	    }else {
+                echo "                          ", form_submit('del', $lang['del']), "\n";
+	    }
+
             echo "                        </td>\n";
             echo "                      </tr>\n";
-
-            $total_attachment_size += $attachments[$i]['filesize'];
-
         }
 
     }else {
 
         echo "                      <tr>\n";
-        echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\">{$lang['noattachmentsforuser']}</td>\n";
-        echo "                        <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                        <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+        echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\" colspan=\"3\">{$lang['noattachmentsforuser']}</td>\n";
         echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                        <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                        <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-
     }
 
     echo "                    </table>\n";

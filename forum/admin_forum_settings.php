@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.24 2004-04-12 13:56:38 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.25 2004-04-13 14:04:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -318,12 +318,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $new_forum_settings['attachments_max_user_space'] = ($HTTP_POST_VARS['attachments_max_user_space'] * 1024) * 1024;
     }else {
         $new_forum_settings['attachments_max_user_space'] = 1048576; // 1MB in bytes
-    }
-
-    if (isset($HTTP_POST_VARS['attachments_show_deleted']) && $HTTP_POST_VARS['attachments_show_deleted'] == "Y") {
-        $new_forum_settings['attachments_show_deleted'] = "Y";
-    }else {
-        $new_forum_settings['attachments_show_deleted'] = "N";
     }
     
     if (isset($HTTP_POST_VARS['attachments_allow_embed']) && $HTTP_POST_VARS['attachments_allow_embed'] == "Y") {
@@ -913,9 +907,6 @@ echo "                              </tr>\n";
 echo "                              <tr>\n";
 echo "                                <td>&nbsp;{$lang['userattachmentspace']}:</td>\n";
 echo "                                <td>", form_input_text("attachments_max_user_space", (forum_get_setting('attachments_max_user_space', false, 1048576) / 1024) / 1024, 10, 32), "&nbsp;(MB)&nbsp;</td>\n";
-echo "                              </tr>\n";
-echo "                              <tr>\n";
-echo "                                <td colspan=\"2\">", form_checkbox("attachments_show_deleted", "Y", $lang['showdeletedattachments'], forum_get_setting('attachments_show_deleted', 'Y', false)), "&nbsp;</td>\n";
 echo "                              </tr>\n";
 echo "                              <tr>\n";
 echo "                                <td colspan=\"2\">", form_checkbox("attachments_allow_embed", "Y", $lang['allowembeddingofattachments'], forum_get_setting('attachments_allow_embed', 'Y', false)), "&nbsp;</td>\n";

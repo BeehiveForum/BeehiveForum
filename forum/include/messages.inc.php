@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.266 2004-04-13 00:45:26 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.267 2004-04-13 14:04:03 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -366,46 +366,37 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<b>{$lang['attachments']}:</b><br />\n";                
                 
                 foreach($attachments_array as $attachment) {
-                    
-                    echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";                    
 
-                    // If the attachment has been deleted then we don't include a link to it.
-                        
-                    if (isset($attachment['deleted']) && $attachment['deleted']) {
-                        
-                        echo "{$attachment['filename']} - <b>{$lang['deleted']}</b><br />";
-                           
-                    }else {
+                    echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
                             
-                        if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                            echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
-                        }else {
-                            echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
-                        }
-
-                        if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
-                            echo " target=\"_blank\"";
-                        }else {
-                            echo " target=\"_self\"";
-                        }
-
-                        echo " title=\"";
-
-                        if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
-                            echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-                        }
- 
-                        echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
-                        echo "{$lang['downloaded']}: ". $attachment['downloads'];
-
-                        if ($attachment['downloads'] == 1) {
-                            echo " {$lang['time']}";
-                        }else {
-                            echo " {$lang['times']}";
-                        }
-
-                        echo "\">{$attachment['filename']}</a><br />";
+                    if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+                        echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
+                    }else {
+                        echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                     }
+
+                    if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                        echo " target=\"_blank\"";
+                    }else {
+                        echo " target=\"_self\"";
+                    }
+
+                    echo " title=\"";
+
+                    if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
+                        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                    }
+ 
+                    echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
+                    echo "{$lang['downloaded']}: ". $attachment['downloads'];
+
+                    if ($attachment['downloads'] == 1) {
+                        echo " {$lang['time']}";
+                    }else {
+                        echo " {$lang['times']}";
+                    }
+
+                    echo "\">{$attachment['filename']}</a><br />";
                 }
                 echo "</td></tr>\n";
             }

@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.69 2004-04-12 18:32:24 decoyduck Exp $
+# $Id: schema.sql,v 1.70 2004-04-13 14:04:03 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -125,7 +125,6 @@ INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'allow_polls', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'search_min_word_length', '3');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'attachments_enabled', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'attachments_dir', 'attachments');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'attachments_show_deleted', 'N');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'attachments_allow_embed', 'N');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'attachments_use_old_method', 'N');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (0, 'guest_account_active', 'Y');
@@ -153,7 +152,6 @@ INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'allow_polls', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'search_min_word_length', '3');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_enabled', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_dir', 'attachments');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_show_deleted', 'N');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_allow_embed', 'N');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_use_old_method', 'N');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'guest_account_active', 'Y');
@@ -369,6 +367,7 @@ CREATE TABLE DEFAULT_POST_ATTACHMENT_FILES (
   MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',
   HASH VARCHAR(32) NOT NULL DEFAULT '',
   DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  DOWNLOADS TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (ID),
   KEY AID (AID),
   KEY HASH (HASH)

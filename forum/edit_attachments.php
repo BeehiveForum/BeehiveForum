@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.54 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.55 2004-04-13 14:04:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -135,6 +135,8 @@ if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
     $aid = $HTTP_GET_VARS['aid'];
 }elseif (isset($HTTP_POST_VARS['aid']) && is_md5($HTTP_POST_VARS['aid'])) {
     $aid = $HTTP_POST_VARS['aid'];
+}else {
+    $aid = false;
 }
 
 // Check that the UID we have belongs to the current user
@@ -192,7 +194,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
   </tr>
 <?php
 
-  if (isset($aid)) {
+  if ($aid) {
       $attachments = get_attachments($uid, $aid);
   }else {
       $attachments = get_users_attachments($uid);
@@ -238,7 +240,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
             echo $attachments[$i]['filename']. "</a></td>\n";
         }
 
-        if (!isset($aid)) {
+        if (!$aid) {
             if (is_md5($attachments[$i]['aid']) && $message_link = get_message_link($attachments[$i]['aid'])) {
                 echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
             }else {
@@ -251,9 +253,9 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         echo "      <form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
         echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
         echo "        ", form_submit('del', $lang['del']), "\n";
-        echo "        ", form_input_hidden('popup', $popup), "\n";
-
-        if (isset($aid)) echo "        ". form_input_hidden('aid', $aid), "\n";
+        
+	if ($popup) echo "        ", form_input_hidden('popup', $popup), "\n";
+        if ($aid)   echo "        ". form_input_hidden('aid', $aid), "\n";
  
         echo "      </form>\n";
         echo "    </td>\n";

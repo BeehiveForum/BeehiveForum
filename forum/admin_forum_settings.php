@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.45 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.46 2004-12-09 17:55:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -236,36 +236,6 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['show_stats'] = "Y";
     }else {
         $new_forum_settings['show_stats'] = "N";
-    }
-
-    if (isset($_POST['show_pms']) && $_POST['show_pms'] == "Y") {
-        $new_forum_settings['show_pms'] = "Y";
-    }else {
-        $new_forum_settings['show_pms'] = "N";
-    }
-
-    if (isset($_POST['pm_max_user_messages']) && is_numeric($_POST['pm_max_user_messages'])) {
-        $new_forum_settings['pm_max_user_messages'] = $_POST['pm_max_user_messages'];
-    }else {
-        $new_forum_settings['pm_max_user_messages'] = 100;
-    }
-
-    if (isset($_POST['pm_auto_prune']) && $_POST['pm_auto_prune'] == "Y") {
-        $new_forum_settings['pm_auto_prune'] = "Y";
-    }else {
-        $new_forum_settings['pm_auto_prune'] = "N";
-    }
-
-    if (isset($_POST['pm_auto_prune_length']) && is_numeric($_POST['pm_auto_prune_length'])) {
-        $new_forum_settings['pm_auto_prune_length'] = $_POST['pm_auto_prune_length'];
-    }else {
-        $new_forum_settings['pm_auto_prune_length'] = 60;
-    }
-
-    if (isset($_POST['pm_allow_attachments']) && $_POST['pm_allow_attachments'] == "Y") {
-        $new_forum_settings['pm_allow_attachments'] = "Y";
-    }else {
-        $new_forum_settings['pm_allow_attachments'] = "N";
     }
 
     if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.31 2004-10-29 20:26:28 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.32 2004-10-30 19:23:11 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -296,12 +296,6 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD CHANGE TID TID MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL AUTO_INCREMENT";
-
-    if (!$result = db_query($sql, $db_install)) {
-        $valid = false;
-    }
-
-    $sql = "REPAIR TABLE {$forum_webtag}_THREAD";
 
     if (!$result = db_query($sql, $db_install)) {
         $valid = false;

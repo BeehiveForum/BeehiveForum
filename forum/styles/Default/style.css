@@ -473,6 +473,14 @@ A		{
 		background-color: #C8D7E6;
 }
 
+.pagenum_text {
+                font-size: 8pt;
+}
+
+.pagenum_text a {
+                text-decoration: none;
+}
+
 .admin_folder_perms {
 		overflow: auto;
 		padding: 2px;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.34 2004-09-13 14:43:21 tribalonline Exp $ */
+/* $Id: edit_relations.php,v 1.35 2004-09-13 15:59:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -262,7 +262,7 @@ if (sizeof($user_peers['user_array']) > 0) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start_main, $user_peers['user_count'], 20, "main_page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_main, $user_peers['user_count'], 20, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
@@ -345,7 +345,7 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
         echo "      <td>&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>&nbsp;</td>\n";

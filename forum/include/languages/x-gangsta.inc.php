@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.41 2004-09-13 14:43:23 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.42 2004-09-13 15:59:21 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -156,6 +156,7 @@ $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
 $lang['top'] = "Top";
+$lang['free'] = "Free";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -499,6 +500,7 @@ $lang['endedsessionforuser'] = "Ended session for user";
 
 $lang['aidnotspecified'] = "muthafuckin' AID not spizecified.";
 $lang['upload'] = "Uplizoad";
+$lang['failedtoupload'] = "Da' shit failed to uplizoad:";
 $lang['uploadnewattachment'] = "Uplizoad New Attachment";
 $lang['waitdotdot'] = "Aight, hold up muthafucka...";
 $lang['attachmentnospace'] = "Fuck that shit, homes. Yo ass needs mo' space fo' fiziles";
@@ -853,6 +855,7 @@ $lang['newermessages'] = "Newer Messages";
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
+$lang['includepminreply'] = "Include message body when replying to PM";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -1086,7 +1089,7 @@ $lang['userrelationships'] = "Lots-a-vibes";
 $lang['friends'] = "In wit'da possie";
 $lang['ignoredusers'] = "Rivals";
 $lang['ignoredsignatures'] = "Mofos got no art skillz";
-
+$lang['ignoredcompletely'] = "Mofo got no skillz";
 $lang['relationship'] = "Vibes";
 $lang['friend_exp'] = "Homie's pizosts mizarked with a &quot;Homie&quot; iizcon.";
 $lang['normal_exp'] = "Homie's pizosts appizear as nizormizal.";

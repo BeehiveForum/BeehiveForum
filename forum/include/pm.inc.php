@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.86 2004-09-08 01:50:01 tribalonline Exp $ */
+/* $Id: pm.inc.php,v 1.87 2004-09-13 15:59:21 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -812,7 +812,7 @@ function pm_delete_message($mid)
 
         pm_markasread($mid);
 
-        $user_prefs = user_get_prefs($db_pm_list_get_row['FROM_UID']);
+        $user_prefs = user_get_prefs($db_delete_pm_row['FROM_UID']);
 
         if (!isset($user_prefs['PM_SAVE_SENT_ITEM']) || $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
             pm_add_sentitem($mid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.6 2004-08-08 12:03:37 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.7 2004-09-13 15:59:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -253,7 +253,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start_main, $group_users_array['user_count'], 20), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_main, $group_users_array['user_count'], 20), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
@@ -322,7 +322,7 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
         echo "      <td>&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>&nbsp;</td>\n";

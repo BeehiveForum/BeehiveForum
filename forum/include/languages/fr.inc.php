@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.112 2004-09-13 14:43:23 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.113 2004-09-13 15:59:21 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -156,6 +156,7 @@ $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
 $lang['top'] = "Top";
+$lang['free'] = "Free";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -497,6 +498,7 @@ $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forc
 
 $lang['aidnotspecified'] = "AID pas spécifié.";
 $lang['upload'] = "Télécharger";
+$lang['failedtoupload'] = "Failed to upload:";
 $lang['uploadnewattachment'] = "Nouvel Attachement De Téléchargement";
 $lang['waitdotdot'] = "attente..";
 $lang['attachmentnospace'] = "Désolé, vous n'avez pas l'espace assez d'attachement libre. S'il vous plaît libérer quelque espace et essaie encore.";
@@ -847,6 +849,7 @@ $lang['newermessages'] = "Newer Messages";
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
+$lang['includepminreply'] = "Include message body when replying to PM";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

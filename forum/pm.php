@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.66 2004-09-13 12:22:01 tribalonline Exp $ */
+/* $Id: pm.php,v 1.67 2004-09-13 15:59:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -326,61 +326,66 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         echo "    </tr>\n";
     }
 
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-
-    // Fetch the free PM space and calculate it as a percentage.
-
-    $pm_free_space = pm_get_free_space();
-    $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
-
-    $pm_free_percent = ceil((100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space));
-
-    echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
-    echo "      <td class=\"postbody\" colspan=\"4\" align=\"center\">\n";
-    echo "        <table width=\"100%\" border=\"0\">\n";
-    echo "          <tr>\n";
-    echo "            <td colspan=\"2\" width=\"25%\">\n";
-    echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">Free PM Space:</td>\n";
-    echo "                  <td width=\"65%\">\n";
-    echo "                    <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td title=\"{$pm_free_percent}% Used\">\n";
-    echo "                          <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar\" style=\"width: {$pm_free_percent}%\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td></td>\n";
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>";
-    echo "            <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $pm_messages_array['message_count'], 10), "</td>\n";
-    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-
 }else {
 
-    echo "      <td class=\"posthead\">&nbsp;</td>\n";
+    echo "      <td class=\"posthead\" width=\"20\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td class=\"postbody\"></td><td class=\"postbody\">{$lang['nomessages']}</td>\n";
     echo "    </tr>\n";
 }
 
+echo "    <tr>\n";
+echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+echo "    </tr>\n";
+
+// Fetch the free PM space and calculate it as a percentage.
+
+$pm_free_space = pm_get_free_space();
+$pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
+
+$pm_free_percent = (100 / $pm_max_user_messages) * $pm_free_space;
+
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "      <td class=\"postbody\" colspan=\"5\" align=\"center\">\n";
+echo "        <table width=\"100%\" border=\"0\">\n";
+echo "          <tr>\n";
+echo "            <td colspan=\"2\" width=\"25%\">\n";
+echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">Free PM Space:</td>\n";
+echo "                  <td width=\"65%\">\n";
+echo "                    <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";
+echo "                      <tr>\n";
+echo "                        <td title=\"{$pm_free_percent}% {$lang['free']}\">\n";
+echo "                          <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar\" style=\"width: {$pm_free_percent}%\">\n";
+echo "                            <tr>\n";
+echo "                              <td></td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>";
+echo "            <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start, $pm_messages_array['message_count'], 10), "</td>\n";
+
+if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
+    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+}else {
+    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">&nbsp;</td>\n";
+}
+
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
 echo "    </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.123 2004-08-18 00:27:58 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.124 2004-09-13 15:59:21 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -390,7 +390,7 @@ function html_draw_bottom ()
 
 function style_image($img)
 {
-	$webtag = get_webtag($webtag_search);
+        $webtag = get_webtag($webtag_search);
 
     $forum_settings = get_forum_settings();
 
@@ -405,7 +405,7 @@ function style_image($img)
         }
     }
 
-	return "./images/$img";
+        return "./images/$img";
 }
 
 function bh_setcookie($name, $value, $expires = 0)
@@ -442,19 +442,23 @@ function bh_setcookie($name, $value, $expires = 0)
 
 function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "page")
 {
+    $lang = load_language_file();
+
     $page_count   = ceil($total_rows / $rows_per_page);
     $current_page = floor($offset / $rows_per_page) + 1;
+
+    echo "<span class=\"pagenum_text\">{$lang['pages']}: ";
 
     if ($page_count > 1) {
 
         if ($current_page == 1) {
 
-            $end_page = (($current_page + 4) <= $page_count) ? ($current_page + 4) : $page_count;
+            $end_page = (($current_page + 2) <= $page_count) ? ($current_page + 2) : $page_count;
             $start_page = $current_page;
 
         }elseif ($current_page == $page_count) {
 
-            $start_page = (($current_page - 4) > 0) ? ($current_page - 4) : 1;
+            $start_page = (($current_page - 2) > 0) ? ($current_page - 2) : 1;
             $end_page = $page_count;
 
         }else {
@@ -462,34 +466,28 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             $start_page = (($current_page - 2) > 0) ? ($current_page - 2) : 1;
             $end_page   = (($current_page + 2) <= $page_count) ? ($current_page + 2) : $page_count;
 
-            if (($end_page - $start_page) < 4) {
+            if (($end_page - $start_page) < 2) {
 
-                if (($start_page - 4) < 1) {
+                if (($start_page - 2) < 1) {
 
-                    $end_page = (($start_page + 4) <= $page_count) ? ($start_page + 4) : $page_count;
+                    $end_page = (($start_page + 2) <= $page_count) ? ($start_page + 2) : $page_count;
 
-                }elseif (($end_page + 3) > $page_count) {
+                }elseif (($end_page + 1) > $page_count) {
 
                     $start_page = (($end_page - 4) > 0) ? ($end_page - 4) : 1;
                 }
             }
         }
 
-        if ($current_page > 1) {
-
-            $prev_page = (($current_page - 1) > 0) ? ($current_page - 1) : 1;
-            echo "<a href=\"{$uri}&amp;page={$prev_page}\" target=\"_self\">&lt;&lt;</a> ";
-        }
-
         if ($start_page > 1) {
 
-            echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">1</a> ... ";
+            echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">&laquo; First</a> ... ";
         }
 
         for ($page = $start_page; $page <= $end_page; $page++) {
 
             if ($page == $current_page) {
-                echo "<b>$page</b> ";
+                echo "<b>[$page]</b> ";
             }else {
                 echo "<a href=\"{$uri}&amp;{$page_var}={$page}\" target=\"_self\">{$page}</a> ";
             }
@@ -497,19 +495,15 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
         if ($end_page < $page_count) {
 
-            echo "... <a href=\"{$uri}&amp;page={$page_count}\" target=\"_self\">{$page_count}</a> ";
-        }
-
-        if ($current_page < $page_count) {
-
-            $next_page = (($current_page + 1) <= $page_count) ? ($current_page + 1) : $page_count;
-            echo "<a href=\"{$uri}&amp;{$page_var}={$next_page}\" target=\"_self\">&gt;&gt;</a> ";
+            echo " ... <a href=\"{$uri}&amp;page={$page_count}\" target=\"_self\">Last &raquo;</a> ";
         }
 
     }else {
 
         echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">1</a> ";
     }
+
+    echo "</span>\n";
 }
 
 ?>

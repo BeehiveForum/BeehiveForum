@@ -269,7 +269,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit', 'Apply', 'onclick="attachwin.close();"'). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel",  "Cancel");
+echo form_submit('submit', 'Apply', 'onclick="if (typeof attachwin != \'undefined\') attachwin.close();"'). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel",  "Cancel");
 
 if ($edit_html) {
     echo "&nbsp;".form_submit("b_edit_text", "Edit text");
@@ -290,8 +290,7 @@ $threaddata = thread_get($tid);
 
 if ($valid) {
     echo "<h2>Message Preview:</h2>";
-    //message_display(0, $preview_message, 0, 0, false, false, false);
-    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true);
+    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true, true);
 }
 
 html_draw_bottom();

@@ -38,6 +38,17 @@ require_once('./include/html.inc.php');
 
 html_draw_top();
 
+if ($HTTP_POST_VARS['submit'] == 'Close') {
+
+  echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+  echo "  window.close();\n";
+  echo "</script>\n";
+
+  html_draw_bottom();
+  exit;
+
+}
+
 if (isset($HTTP_GET_VARS['tid'])) {
 
   $tid = $HTTP_GET_VARS['tid'];
@@ -54,18 +65,7 @@ if (isset($HTTP_GET_VARS['tid'])) {
   html_draw_bottom();
   exit;
   
-}  
-
-if ($HTTP_POST_VARS['submit'] == 'Close') {
-
-  echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-  echo "  window.close();\n";
-  echo "</script>\n";
-
-  html_draw_bottom();
-  exit;
-
-}
+} 
 
 $polldata     = poll_get($tid);
 $pollresults  = poll_get_votes($tid);

@@ -152,10 +152,10 @@ function poll_user_has_voted($tid)
 
     $db_poll_get_votes = db_connect();
 
-    $sql = "SELECT POLL_VOTES.OPTION_NAME FROM ". forum_table('POLL_VOTES'). " POLL_VOTES ";
+    $sql = "SELECT POLL_VOTES.OPTION_ID FROM ". forum_table('POLL_VOTES'). " POLL_VOTES ";
     $sql.= "LEFT JOIN ". forum_table('USER_POLL_VOTES'). " USER_POLL_VOTES ON ";
-    $sql.= "(POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID) ";
-    $sql.= "WHERE POLL_VOTES.TID = $tid AND USER_POLL_VOTES.UID = $uid"; 
+    $sql.= "(POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID AND POLL_VOTES.TID = USER_POLL_VOTES.TID) ";
+    $sql.= "WHERE POLL_VOTES.VOTES > 0 AND POLL_VOTES.TID = $tid AND USER_POLL_VOTES.UID = $uid"; 
     
     $result = db_query($sql, $db_poll_get_votes);
     
@@ -195,7 +195,7 @@ function poll_sort($a, $b) {
 
 }
 
-function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true)
+function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false)
 {
 
     global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
@@ -447,7 +447,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     // Work out what relationship the user has to the user who posted the poll
     $polldata['FROM_RELATIONSHIP'] = user_rel_get($HTTP_COOKIE_VARS['bh_sess_uid'], $polldata['FROM_UID']);
     
-    message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs);
+    message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs, $is_preview);
 
 }
 

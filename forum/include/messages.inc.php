@@ -158,7 +158,7 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false)
 {
 
     global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir;
@@ -270,15 +270,28 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
         if($in_list && $msg_count > 0) {
-            echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
+
+	    if ($is_preview) {
+	        echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
+	    }else {
+	        echo "<a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.". $message['PID']. "\" target=\"_self\">$tid.". $message['PID']. "</a>";
+	    }
+
             if($message['PID'] > 1) {
+
                 echo " in reply to ";
+
                 if(intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
                     echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
                     echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                 }else {
-                    echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_top\">";
-                    echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+		    if ($is_preview) {
+                        echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_blank\">";
+                        echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+		    }else {
+                        echo "<a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
+                        echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
+		    }
                 }
             }
         }

@@ -19,7 +19,7 @@
 :: USA
 :: ======================================================================
 ::
-:: $Id: check_files.cmd,v 1.3 2004-02-22 15:57:11 decoyduck Exp $
+:: $Id: check_files.cmd,v 1.4 2004-02-22 20:59:47 decoyduck Exp $
 :: 
 :: Checks each of the files includes with Beehive by parsing the file
 :: using the CLI version of php.exe. 
@@ -33,8 +33,5 @@ echo Checking Files for errors. Please wait...
 if exist error_log.txt del error_log.txt
 echo BeehiveForum Parse Log - %date% %time% > error_log.txt
 echo. >> error_log.txt
-for %%a in (*.php) do php.exe -l %%a >> error_log.txt
-for %%a in (forum\*.php) do php.exe -l %%a >> error_log.txt
-for %%a in (forum\include\*.php) do php.exe -l %%a >> error_log.txt
-for %%a in (forum\include\languages\*.php) do php.exe -l %%a >> error_log.txt
+for /r %%a in (*.php) do php.exe -l %%a >> error_log.txt
 start error_log.txt

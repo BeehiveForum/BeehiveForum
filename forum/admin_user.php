@@ -119,10 +119,15 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
       for($i = 0; $i < $HTTP_POST_VARS['t_fcount']; $i++){
 
-        if (isset($HTTP_POST_VARS['t_fallow_'.$i])) {
+        $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
 
-          $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
+        if (isset($HTTP_POST_VARS['t_fallow_'. $i])) {
+
           $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
+
+	}else {
+
+	  $uf[$i]['allowed'] = 0;
 
 	}
 

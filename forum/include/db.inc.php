@@ -39,7 +39,8 @@ function db_connection_error()
 {
 
     global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS;
-
+    
+    $getvars = "";
     foreach ($HTTP_GET_VARS as $key => $value) {
       $getvars.= $key. '='. $value. '&';
     }

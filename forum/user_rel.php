@@ -29,7 +29,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/html.inc.php");
@@ -51,7 +51,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
 	$rel = $HTTP_POST_VARS['rel'] + $HTTP_POST_VARS['sig'];
 	$sig_global = $HTTP_POST_VARS['sig_global'];
-	
+
 	user_rel_update($my_uid, $HTTP_POST_VARS['uid'], $rel);
 
 	user_update_global_sig($my_uid, $sig_global);
@@ -71,6 +71,7 @@ if (isset($HTTP_GET_VARS['uid'])) {
 	$user = user_get($uid);
 	$uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
 }
+
 if (isset($HTTP_GET_VARS['ret'])) {
 	$ret = $HTTP_GET_VARS['ret'];
 } else {
@@ -89,40 +90,40 @@ echo "<h1>User Relationship: $uname</h1>\n";
 <?php echo form_input_hidden("uid", $uid)."\n".form_input_hidden("ret",$ret); ?>
 	<table class="posthead" width="500">
 <?php if (isset($uid)) { ?>
-      <tr> 
+      <tr>
         <td class="subhead" colspan="2">Relationship</td>
       </tr>
-      <tr> 
+      <tr>
         <td width="130"><?php echo form_radio("rel", "1", "Friend", $rel & USER_FRIEND ? true : false); ?></td>
         <td width="370">: User's posts marked with a &quot;Friend&quot; icon.</td>
       </tr>
-      <tr> 
+      <tr>
         <td width="130"><?php echo form_radio("rel", "0", "Normal", $rel ^ USER_IGNORED && $rel ^ USER_FRIEND ? true : false); ?></td>
         <td width="370">: User's posts appear as normal.</td>
       </tr>
-      <tr> 
+      <tr>
         <td width="130"><?php echo form_radio("rel", "2", "Ignored", $rel & USER_IGNORED ? true : false); ?></td>
         <td width="370">: User's posts are hidden.</td>
       </tr>
 <?php } ?>
-      <tr> 
+      <tr>
         <td class="subhead" colspan="2">Signature</td>
       </tr>
 <?php if (isset($uid)) { ?>
-      <tr> 
+      <tr>
         <td width="130"><?php echo form_radio("sig", "0", "Display", $rel ^ USER_IGNORED_SIG ? true : false); ?></td>
         <td width="370">: User's signature is displayed on their posts.</td>
       </tr>
-      <tr> 
+      <tr>
         <td width="130"><?php echo form_radio("sig", "4", "Ignore", $rel & USER_IGNORED_SIG ? true : false); ?></td>
         <td width="370">: User's signature is hidden on their posts.</td>
       </tr>
 <?php } ?>
-      <tr> 
+      <tr>
         <td width="130"><?php echo form_checkbox("sig_global", "Y", "Globally ignored", user_get_global_sig($HTTP_COOKIE_VARS['bh_sess_uid']) == "Y"); ?></td>
         <td width="370">: No signatures are displayed.</td>
       </tr>
-      <tr> 
+      <tr>
     </table>
     <p><?php echo form_submit("submit", "Submit")."&nbsp;".form_submit("cancel", "Cancel"); ?></p>
   </form>

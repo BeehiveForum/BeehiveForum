@@ -31,7 +31,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/perm.inc.php");
@@ -41,6 +41,16 @@ require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
+
+if(isset($HTTP_POST_VARS['cancel'])){
+	header_redirect($HTTP_POST_VARS['ret']);
+}
+
+if (isset($HTTP_GET_VARS['ret'])) {
+  $ret = $HTTP_GET_VARS['ret'];
+}else {
+  $ret = "admin_users.php";
+}
 
 html_draw_top();
 
@@ -81,13 +91,13 @@ if(isset($HTTP_POST_VARS['submit'])){
         $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
         $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
     }
-    
+
     // Add lower ranks automatically
     if($new_status & USER_PERM_QUEEN) $new_status |= USER_PERM_SOLDIER;
     if($new_status & USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
     user_update_status($uid,$new_status);
     $user['STATUS'] = $new_status;
-    
+
     // Private folder permissions
     for($i=0; $i<$HTTP_POST_VARS['t_fcount']; $i++){
         $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
@@ -137,8 +147,9 @@ if($i==0){
 echo "</table>\n";
 echo form_input_hidden("t_fcount",$i);
 echo form_input_hidden("uid", $uid);
+echo form_input_hidden("ret",$ret);
 echo "</td></tr></table>\n";
-echo form_submit();
+echo "<p>", form_submit("submit", "Submit"), "&nbsp;", form_submit("cancel", "Cancel"), "</p>\n";
 echo "</form>\n";
 echo "<p>&nbsp;</p>";
 echo "<table width=\"50%\" border=\"0\"><tr><td>";

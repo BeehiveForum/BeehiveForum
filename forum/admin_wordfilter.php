@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.16 2004-03-01 22:58:02 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.17 2004-03-02 23:25:24 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -64,10 +64,12 @@ if (isset($HTTP_POST_VARS['save'])) {
     
     if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
         for ($i = 0; $i < sizeof($HTTP_POST_VARS['match']); $i++) {
-            if (isset($HTTP_POST_VARS['replace'][$i])) {
-                admin_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i]);
-            }else {
-                admin_add_word_filter($HTTP_POST_VARS['match'][$i], "");
+            if (isset($HTTP_POST_VARS['match'][$i]) && trim(strlen($HTTP_POST_VARS['match'][$i])) > 0) {
+                if (isset($HTTP_POST_VARS['replace'][$i])) {
+                    user_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i]);
+                }else {
+                    user_add_word_filter($HTTP_POST_VARS['match'][$i], "");
+                }
             }
         }
     }
@@ -90,7 +92,6 @@ echo "<h1>{$lang['editwordfilter']}</h1>\n";
 if (isset($status_text)) echo $status_text;
 
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
-echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 echo "<div class=\"postbody\">\n";
 echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
@@ -109,8 +110,8 @@ echo "                  </tr>\n";
 foreach ($word_filter_array as $word_filter) {
     echo "                  <tr>\n";
     echo "                    <td>&nbsp;</td>\n";
-    echo "                    <td>", form_input_text("match[]", $word_filter['MATCH_TEXT'], 30), "</td>\n";
-    echo "                    <td>", form_input_text("replace[]", $word_filter['REPLACE_TEXT'], 30), "</td>\n";
+    echo "                    <td>", form_input_text("match[]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
+    echo "                    <td>", form_input_text("replace[]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
     echo "                  </tr>\n";    
 }
 

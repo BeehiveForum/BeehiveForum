@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.104 2004-02-29 18:59:24 decoyduck Exp $ */
+/* $Id: logon.php,v 1.105 2004-03-02 23:25:25 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -389,7 +389,17 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td align=\"right\">{$lang['passwd']}:</td>\n";
-    echo "            <td>", form_input_password("password", $password_array[0]), form_input_hidden("passhash", $passhash_array[0]), "</td>\n";
+    
+    if (isset($password_array[$i]) && strlen($password_array[$i]) > 0) {
+        if (isset($passhash_array[$i]) && is_md5($passhash_array[$i])) {
+            echo "            <td>", form_input_password("password", $password_array[0]), form_input_hidden("passhash", $passhash_array[0]), "</td>\n";
+        }else {
+            echo "            <td>", form_input_password("password", ""), form_input_hidden("passhash", ""), "</td>\n";
+        }
+    }else {
+        echo "            <td>", form_input_password("password", ""), form_input_hidden("passhash", ""), "</td>\n";    
+    }
+    
     echo "          </tr>\n";
 
 }else {

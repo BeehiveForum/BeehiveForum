@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.124 2004-03-02 00:27:04 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.125 2004-03-02 23:25:25 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -337,19 +337,19 @@ function user_get_prefs($uid)
 
     $sql = "SELECT * FROM ". forum_table("USER_PREFS"). " WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_prefs);
+    
+    $prefs_array = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
+                         'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
+                         'MARK_AS_OF_INT' => '', 'POSTS_PER_PAGE' => '', 'FONT_SIZE' => '',
+                         'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
+                         'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '', 'ANON_LOGON' => '',
+                         'SHOW_STATS' => '',  'IMAGES_TO_LINKS' => '', 'USE_ADMIN_FILTER' => '');    
 
-    if (!db_num_rows($result)) {
-        $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
-                    'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
-                    'MARK_AS_OF_INT' => '', 'POSTS_PER_PAGE' => '', 'FONT_SIZE' => '',
-                    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
-                    'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '', 'ANON_LOGON' => '',
-                    'SHOW_STATS' => '',  'IMAGES_TO_LINKS' => '', 'USE_ADMIN_FILTER' => '');
-    }else {
-        $fa = db_fetch_array($result);
+    if (db_num_rows($result) > 0) {
+        $prefs_array = array_merge($prefs_array, db_fetch_array($result, MYSQL_ASSOC));
     }
 
-    return $fa;
+    return $prefs_array;
 }
 
 function user_update_prefs($uid, $prefs_array)
@@ -840,7 +840,7 @@ function user_add_word_filter($match, $replace)
     $replace = addslashes($replace);
 
     $db_user_save_word_filter = db_connect();
-    $uid = bh_session_get_value('UID');    
+    $uid = bh_session_get_value('UID');
 
     $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (UID, MATCH_TEXT, REPLACE_TEXT) ";
     $sql.= "VALUES ('$uid', '$match', '$replace')";

@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.53 2004-12-05 20:34:59 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.54 2004-12-06 23:56:00 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
-    static $user_status = false;
     static $folder_fid = false;
+    static $perm_cache = false;
 
-    if (!$folder_fid || !$user_status || $folder_fid != $fid) {
+    if (!$folder_fid || !$perm_cache || $folder_fid != $fid) {
 
         $db_perm_is_moderator = db_connect();
 
@@ -46,12 +46,12 @@ function perm_is_moderator($fid = 0)
         $row = db_fetch_array($result);
 
         $folder_fid = $fid;
-        $user_status = $row['STATUS'];
+        $perm_cache = $row['STATUS'];
     }
 
-    if (($user_status & USER_PERM_FOLDER_MODERATE) > 0) return true;
-    if (($user_status & USER_PERM_ADMIN_TOOLS) > 0)     return true;
-    if (($user_status & USER_PERM_FORUM_TOOLS) > 0)     return true;
+    if (($perm_cache & USER_PERM_FOLDER_MODERATE) > 0) return true;
+    if (($perm_cache & USER_PERM_ADMIN_TOOLS) > 0)     return true;
+    if (($perm_cache & USER_PERM_FORUM_TOOLS) > 0)     return true;
 
     return false;
 }
@@ -116,10 +116,10 @@ function perm_has_forumtools_access()
 
 function perm_check_folder_permissions($fid, $access_level)
 {
-    static $user_status = false;
     static $folder_fid = false;
+    static $perm_cache = false;
 
-    if (!$folder_fid || !$user_status || $folder_fid != $fid) {
+    if (!$folder_fid || !$perm_cache || $folder_fid != $fid) {
 
         $db_perm_check_folder_permissions = db_connect();
 
@@ -130,36 +130,29 @@ function perm_check_folder_permissions($fid, $access_level)
 
         $uid = bh_session_get_value('UID');
 
-        $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-        $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-        $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-        $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql = "SELECT COUNT(PERM) AS USER_PERM_COUNT, ";
+        $sql.= "BIT_OR(PERM) AS USER_STATUS ";
+        $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-        $sql.= "ON (GROUP_USERS.UID = '$uid') ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-        $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
-        $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
-        $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID ";
+        $sql.= "ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_PERMS.FID = $fid AND GROUP_USERS.UID = $uid";
 
         $result = db_query($sql, $db_perm_check_folder_permissions);
+        list($perm_count, $user_perms) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $row = db_fetch_array($result);
-
-        if ($row['USER_PERM_COUNT'] > 0) {
-
-            $folder_fid = $fid;
-            $user_status = $row['USER_STATUS'];
-
-        }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+        if ($perm_count > 0) {
 
             $folder_fid = $fid;
-            $user_status = $row['FOLDER_PERMS'];
+            $perm_cache = $user_perms;
+
+        }elseif ($folder_perms = perm_get_folder_perms($fid)) {
+
+            $folder_fid = $fid;
+            $perm_cache = $folder_perms;
         }
     }
 
-    return ($user_status & $access_level) == $access_level;
+    return ($perm_cache & $access_level) > 0;
 }
 
 function perm_get_user_groups()
@@ -373,7 +366,9 @@ function perm_get_group_permissions($gid)
 
     if (perm_is_group($gid)) {
 
-        $sql = "SELECT PERM FROM {$table_data['PREFIX']}GROUP_PERMS WHERE GID = $gid AND FID = 0";
+        $sql = "SELECT PERM FROM {$table_data['PREFIX']}GROUP_PERMS ";
+        $sql.= "WHERE GID = $gid AND FID = 0";
+
         $result = db_query($sql, $db_perm_get_group_permissions);
 
         if (db_num_rows($result) > 0) {
@@ -388,6 +383,33 @@ function perm_get_group_permissions($gid)
     return false;
 }
 
+function perm_get_folder_perms($fid)
+{
+    static $folder_fid = false;
+    static $perm_cache = false;
+
+    if (!$folder_fid || !$perm_cache || $folder_fid != $fid) {
+
+        if (!is_numeric($fid)) return false;
+
+        $db_perm_get_folder_perms = db_connect();
+
+        if (!$table_data = get_table_prefix()) return false;
+
+        $sql = "SELECT COUNT(PERM) AS FOLDER_PERM_COUNT, ";
+        $sql.= "BIT_OR(PERM) AS FOLDER_PERMS ";
+        $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS ";
+        $sql.= "WHERE FID = '$fid' AND GID = 0";
+
+        $result = db_query($sql, $db_perm_get_folder_perms);
+        list($perm_count, $folder_perms) = db_fetch_array($result, DB_RESULT_NUM);
+
+        if ($perm_count > 0) $perm_cache = $folder_perms;
+    }
+
+    return $perm_cache;
+}
+
 function perm_get_group_folder_perms($gid, $fid)
 {
     $db_perm_get_group_folder_perms = db_connect();
@@ -395,31 +417,25 @@ function perm_get_group_folder_perms($gid, $fid)
     if (!is_numeric($gid)) return false;
     if (!is_numeric($fid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     if (perm_is_group($gid)) {
 
-        $sql = "SELECT GROUP_PERMS.GID, BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS, ";
-        $sql.= "COUNT(GROUP_PERMS.PERM) AS GROUP_PERM_COUNT, ";
-        $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-        $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+        if (!$table_data = get_table_prefix()) return false;
+
+        $sql = "SELECT COUNT(PERM) AS GROUP_PERM_COUNT, ";
+        $sql.= "BIT_OR(PERM) AS GROUP_PERMS ";
         $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
-        $sql.= "ON (FOLDER_PERMS.GID = '$gid' AND FOLDER_PERMS.FID = '$fid') ";
         $sql.= "WHERE GROUP_PERMS.GID = '$gid' AND GROUP_PERMS.FID = '$fid' ";
-        $sql.= "GROUP BY GROUP_PERMS.GID ";
 
         $result = db_query($sql, $db_perm_get_group_folder_perms);
+        list($perm_count, $group_perms) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $row = db_fetch_array($result);
+        if ($perm_count > 0) {
 
-        if ($row['GROUP_PERM_COUNT'] > 0) {
+            return array('STATUS' => $group_perms);
 
-            return array('STATUS' => $row['GROUP_PERMS']);
+        }elseif ($folder_perms = perm_get_folder_perms($fid)) {
 
-        }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
-
-            return array('STATUS' => $row['FOLDER_PERMS']);
+            return array('STATUS' => $folder_perms);
         }
     }
 
@@ -517,42 +533,39 @@ function perm_get_user_gid($uid)
 
 function perm_get_user_folder_perms($uid, $fid)
 {
-    $db_perm_get_user_folder_perms = db_connect();
+    static $folder_fid = false;
+    static $perm_cache = false;
 
-    if (!is_numeric($uid)) return 0;
-    if (!is_numeric($fid)) return 0;
+    if (!$folder_fid || !$perm_cache || $folder_fid != $fid) {
 
-    if (!$table_data = get_table_prefix()) return 0;
+        $db_perm_get_user_folder_perms = db_connect();
 
-    $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
-    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
-    $sql.= "WHERE FOLDER.FID = '$fid' ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
+        if (!is_numeric($uid)) return false;
+        if (!is_numeric($fid)) return false;
 
-    $result = db_query($sql, $db_perm_get_user_folder_perms);
+        if (!$table_data = get_table_prefix()) return false;
 
-    $row = db_fetch_array($result);
+        $sql = "SELECT COUNT(PERM) AS USER_PERM_COUNT, ";
+        $sql.= "BIT_OR(PERM) AS USER_STATUS ";
+        $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+        $sql.= "ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_PERMS.FID = $fid AND GROUP_USERS.UID = $uid";
 
-    if ($row['USER_PERM_COUNT'] > 0) {
+        $result = db_query($sql, $db_perm_get_user_folder_perms);
+        list($perm_count, $user_perms) = db_fetch_array($result, DB_RESULT_NUM);
 
-        return array('STATUS' => $row['USER_STATUS']);
+        if ($perm_count > 0) {
 
-    }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+            $perm_cache = $user_perms;
 
-        return array('STATUS' => $row['FOLDER_PERMS']);
+        }elseif ($folder_perms = perm_get_folder_perms($fid)) {
+
+            $perm_cache = $folder_perms;
+        }
     }
 
-    return false;
+    return array('STATUS' => $perm_cache);
 }
 
 function perm_add_user_folder_perms($uid, $gid, $fid, $perm)
@@ -691,27 +704,6 @@ function perm_update_user_permissions($uid, $gid, $perm)
         $sql.= "SET PERM = '$perm' WHERE GID = '$gid' AND FID = '0'";
 
         return db_query($sql, $db_perm_update_user_permissions);
-    }
-
-    return false;
-}
-
-function perm_folder_get_permissions($fid)
-{
-    $db_perm_folder_get_permissions = db_connect();
-
-    if (!is_numeric($fid)) return 0;
-
-    if (!$table_data = get_table_prefix()) return 0;
-
-    $sql = "SELECT PERM AS STATUS FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-    $result = db_query($sql, $db_perm_folder_get_permissions);
-
-    if (db_num_rows($result) > 0) {
-
-        $row = db_fetch_array($result);
-
-        if (!is_null($row['STATUS'])) return $row['STATUS'];
     }
 
     return false;

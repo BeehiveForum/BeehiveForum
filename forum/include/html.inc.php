@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.125 2004-09-13 19:37:18 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.126 2004-09-13 20:45:32 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -485,7 +485,14 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
     $uri = href_remove_query_keys($uri, 'page');
 
-    echo "<span class=\"pagenum_text\">{$lang['pages']}: ";
+    if ($page_count > 0) {
+
+        echo "<span class=\"pagenum_text\">{$lang['pages']} (", ($page_count + 1), "): ";
+
+    }else {
+
+        echo "<span class=\"pagenum_text\">{$lang['pages']}: ";
+    }
 
     if ($page_count > 1) {
 
@@ -522,6 +529,12 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">&laquo; First</a> ... ";
         }
 
+        if ($current_page > 1) {
+
+            $prev_page = (($current_page - 1) > 0) ? ($current_page - 1) : 1;
+            echo "<a href=\"{$uri}&amp;page={$prev_page}\" target=\"_self\">&laquo;</a> ";
+        }
+
         for ($page = $start_page; $page <= $end_page; $page++) {
 
             if ($page == $current_page) {
@@ -531,6 +544,12 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             }
         }
 
+        if ($current_page < $page_count) {
+
+            $next_page = (($current_page + 1) <= $page_count) ? ($current_page + 1) : $page_count;
+            echo "<a href=\"{$uri}&amp;{$page_var}={$next_page}\" target=\"_self\">&raquo;</a> ";
+        }
+
         if ($end_page < $page_count) {
 
             echo " ... <a href=\"{$uri}&amp;page={$page_count}\" target=\"_self\">Last &raquo;</a> ";
@@ -538,7 +557,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
     }else {
 
-        echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">1</a> ";
+        echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\"><b>[1]</b></a> ";
     }
 
     echo "</span>\n";

@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.31 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.32 2004-03-24 20:46:01 decoyduck Exp $ */
 
 function light_html_draw_top ($title = false)
 {
     global $lang, $forum_settings;
 
     if (!isset($title) || !$title) {
-        $title = $forum_name;
+        $title = forum_get_setting('forum_name');
     }
 
     echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
@@ -430,9 +430,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} ".$message['PID'] . " {$lang['of']} " . $msg_count."</i></p>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-	    
+
 	    if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
-		
+
 		$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
 
 		$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split) - 1]);
@@ -446,7 +446,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 		    if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
 		    $message['CONTENT'].= $msg_split[$i];
 		}
-		
+
 		$message['CONTENT'].= "</div>";
 	    }
         }
@@ -472,7 +472,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 function light_message_display_deleted($tid,$pid)
 {
     global $lang;
-    
+
     echo "<p>{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}</p>\n";
     echo "<hr />";
 }

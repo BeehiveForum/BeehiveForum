@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.127 2005-02-09 21:56:52 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.128 2005-02-14 21:00:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -302,16 +302,19 @@ if (isset($_POST['t_delete_posts'])) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['userstatus']}</td>\n";
+    echo "                  <td class=\"subhead\">{$lang['warning_caps']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td><h2>{$lang['warning_caps']}</h2></td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"90%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td>{$lang['userdeleteallpostswarning']}</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>{$lang['userdeleteallpostswarning']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>", form_checkbox("t_confirm_delete_posts", "Y", $lang['confirm'], false), "</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -323,7 +326,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("t_confirm_delete_posts", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";
@@ -341,7 +344,16 @@ if (isset($_POST['t_delete_posts'])) {
     echo "                  <td class=\"subhead\">{$lang['userstatus']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>{$lang['postssuccessfullydeleted']}</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"90%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td>{$lang['postssuccessfullydeleted']}</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -353,7 +365,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";
@@ -611,6 +623,97 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                </tr>\n";
     }
 
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}</td>\n";
+    echo "                </tr>\n";
+
+    if ($user_alias_array = user_get_aliases($user['UID'])) {
+
+        if (sizeof($user_alias_array) > 0) {
+
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table width=\"90%\" class=\"posthead\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td>&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td>{$lang['aliasdesc']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td>&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"box\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td>\n";
+            echo "                          <table class=\"posthead\" width=\"100%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['logon']}</td>\n";
+            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['nickname']}</td>\n";
+            echo "                            </tr>\n";
+
+            foreach ($user_alias_array as $user_alias) {
+
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+                echo "                              <td align=\"left\">&nbsp;{$user_alias['NICKNAME']}</td>\n";
+                echo "                            </tr>\n";
+            }
+
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+        }
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>{$lang['aliasdesc']}</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>{$lang['nomatches']}</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+    }
+
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";

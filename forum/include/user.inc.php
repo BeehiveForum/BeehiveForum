@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.225 2005-01-30 18:56:26 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.226 2005-02-14 21:01:14 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -788,6 +788,59 @@ function user_search($usersearch, $offset = 0)
 
     return array('user_count' => $user_search_count,
                  'user_array' => $user_search_array);
+}
+
+function user_get_aliases($uid)
+{
+    $db_user_get_aliases = db_connect();
+
+    if (!$table_data = get_table_prefix()) return array();
+
+    if (!is_numeric($uid)) return false;
+
+    // Initialise arrays
+
+    $user_ip_address_array = array();
+    $user_get_aliases_array = array();
+
+    // Fetch the last 20 IP addresses from the POST table
+
+    $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}POST ";
+    $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 20";
+
+    $result = db_query($sql, $db_user_get_aliases);
+
+    if (db_num_rows($result) > 0) {
+
+        while($user_get_aliases_row = db_fetch_array($result)) {
+
+            if (!in_array($user_get_aliases_row['IPADDRESS'], $user_ip_address_array) && strlen($user_get_aliases_row['IPADDRESS']) > 0) {
+
+                $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
+            }
+        }
+    }
+
+    // Search the POST table for any matches - limit 10 matches
+
+    $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
+    $sql.= "GROUP BY USER.UID ORDER BY POST.TID DESC LIMIT 0, 10";
+
+    $result = db_query($sql, $db_user_get_aliases);
+
+    if (db_num_rows($result) > 0) {
+
+        while($user_get_aliases_row = db_fetch_array($result)) {
+
+            $user_get_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
+        }
+    }
+
+    return $user_get_aliases_array;
 }
 
 function user_get_ip_addresses($uid)

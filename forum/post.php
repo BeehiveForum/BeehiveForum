@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.166 2004-03-23 02:41:59 tribalonline Exp $ */
+/* $Id: post.php,v 1.167 2004-03-23 03:49:57 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -473,7 +473,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
 }
 
-html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js");
+html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js");
 
 if (!isset($HTTP_POST_VARS['aid'])) {
     $aid = md5(uniqid(rand()));
@@ -669,7 +669,7 @@ echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : (
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
 echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br />\n";
 
-echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openWindow('display_emoticons?webtag={$webtag['WEBTAG']}&pack=user', 'emoticons', '500', '400')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
+echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openEmoticons('user','{$webtag['WEBTAG']}')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
 
 if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
 

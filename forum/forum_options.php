@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.20 2004-03-23 02:41:59 tribalonline Exp $ */
+/* $Id: forum_options.php,v 1.21 2004-03-23 03:49:57 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -263,7 +263,7 @@ $user_prefs = array_merge(user_get_prefs(bh_session_get_value('UID')), $user_pre
 
 // Start output here
 
-html_draw_top();
+html_draw_top("emoticons.js");
 
 echo "<h1>{$lang['forumoptions']}</h1>\n";
 
@@ -455,7 +455,7 @@ if (isset($key)) {
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['forumemoticons']} ";
-echo "[<a href=\"javascript:void(0);\" onclick=\"openWindow('display_emoticons?webtag={$webtag['WEBTAG']}', 'emoticons', '500', '400')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
+echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','{$webtag['WEBTAG']}')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
 
 if (_in_array($user_prefs['EMOTICONS'], $available_emots)) {
     $selected_emot = $user_prefs['EMOTICONS'];

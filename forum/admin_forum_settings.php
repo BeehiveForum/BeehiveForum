@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.10 2004-03-23 02:41:57 tribalonline Exp $ */
+/* $Id: admin_forum_settings.php,v 1.11 2004-03-23 03:49:51 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -379,7 +379,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 // Start Output Here
 
-html_draw_top();
+html_draw_top("emoticons.js");
 
 echo "<h1>Forum Settings</h1>\n";
 
@@ -427,7 +427,7 @@ echo "                  <td>", form_dropdown_array("default_style", $available_s
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['defaultemoticons']} ";
-echo "[<a href=\"javascript:void(0);\" onclick=\"openWindow('display_emoticons?webtag={$webtag['WEBTAG']}', 'emoticons', '500', '400')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
+echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','{$webtag['WEBTAG']}')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
       
 foreach ($available_emots as $key => $emots) {
     if (strtolower($emots) == strtolower(forum_get_setting('default_emoticons'))) {

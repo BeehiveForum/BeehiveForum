@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.32 2003-08-01 23:52:54 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.33 2003-08-02 01:32:53 decoyduck Exp $ */
 
 // PROVIDES BASIC DATABASE FUNCTIONALITY
 // This is desgined to be be referenced in an include() or require() statement
@@ -83,10 +83,10 @@ function db_num_rows ($resource_id)
     return $num_rows;
 }
 
-// Returns the number of rows affected by a query when passed the resource ID
-function db_affected_rows ($resource_id)
+// Returns the number of rows affected by a query when passed the connection ID
+function db_affected_rows($onnection_id)
 {
-    $results = mysql_affected_rows($resource_id);
+    $results = mysql_affected_rows($onnection_id);
     return $results;
 }
 

@@ -47,12 +47,12 @@ function user_create($logon,$password,$nickname,$email)
     global $HTTP_SERVER_VARS;
 
     $md5pass = md5($password);
-    
+
     if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
       $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
     }else {
       $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
-    }    
+    }
 
     $sql = "INSERT INTO " . forum_table("USER") . " (LOGON, PASSWD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$ipaddress')";
@@ -369,24 +369,24 @@ function user_get_post_count($uid)
         $db_user_get_count = db_connect();
 
         $sql = "select COUNT(FROM_UID) AS COUNT FROM " . forum_table("POST") . " where FROM_UID = $uid";
-        
+
         $result = db_query($sql, $db_user_get_count);
-        
+
         $post_count = db_fetch_array($result);
-        
+
         return $post_count['COUNT'];
 }
 
 function user_get_last_logon_time($uid)
 {
          $db_user_get_last_logon_time = db_connect();
-         
+
          $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM " . forum_table("USER") . " WHERE UID = $uid";
-         
+
          $result = db_query($sql, $db_user_get_last_logon_time);
-         
+
          $last_logon = db_fetch_array($result);
-         
+
          return $last_logon['LAST_LOGON'];
 }
 
@@ -394,13 +394,20 @@ function user_guest_enabled()
 {
 
          $db_user_guest_account = db_connect();
-         
-         $sql = "SELECT UID FROM ". forum_table("USER"). " WHERE LOGON = 'GUEST' AND PASSWD = MD5('GUEST')";
-         $result = db_query($sql, $db_user_guest_account);
-        
-         $guest_account = db_fetch_array($result);
 
-         return isset($guest_account['UID']);
+         $sql = "SELECT UID, STATUS FROM ". forum_table("USER"). " WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
+         $result = db_query($sql, $db_user_guest_account);
+
+	 if (db_num_rows($result)) {
+	   $fa = db_fetch_array($result);
+           if ($fa['STATUS'] & USER_PERM_SPLAT) {
+	     return false;
+	   }else {
+	     return true;
+	   }
+	 }
+
+	 return false;
 
 }
 

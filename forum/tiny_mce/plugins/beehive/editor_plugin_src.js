@@ -19,14 +19,17 @@ function TinyMCE_beehive_getControlHTML(control_name) {
 function TinyMCE_beehive_execCommand(editor_id, element, command, user_interface, value) {
     switch (command) {
 		case "bhcode":
-			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '&lt;<em>code</em> language=""&gt;{$selection}&lt;<em>/code</em>&gt;');
+			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[code language=""]{$selection}[/code]');
 		case "bhquote":
-			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '&lt;<em>quote</em> source="" url=""&gt;{$selection}&lt;<em>/quote</em>&gt;');
+			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[quote source="" url=""]{$selection}[/quote]');
 		case "bhspoiler": 
-			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '&lt;<em>spoiler</em>&gt;{$selection}<em>&lt;/spoiler</em>&gt;');
+			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[spoiler]{$selection}[/spoiler]');
 		case "bhnoemots":
-			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '&lt;<em>noemots</em>&gt;{$selection}<em>&lt;/noemots</em>&gt;');
-       return true;
-   }
-   return false;
+			tinyMCE.execInstanceCommand(editor_id, 'mceReplaceContent', false, '[noemots]{$selection}[/noemots]');
+		case "bhspellcheck":
+			window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + tinyMCE.instances[editor_id].formTargetElementId, 'spellcheck','width=450, height=550, scrollbars=1');
+
+		return true;
+	}
+	return false;
 }

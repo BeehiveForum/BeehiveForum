@@ -64,16 +64,22 @@ function changeword(obj) {
 
 function readContent(obj_id) {
 
+	if (self.tinyMCE) {
+		return tinyMCE.getContent(obj_id);
+	}
     var form_obj = getFormObj(obj_id);
     return form_obj.value;
 }
 
 function updateContent(obj_id, content) {
 
-    var form_obj = getFormObj(obj_id);
-    
     content = unescape(content);
 
+	if (self.tinyMCE) {
+		return tinyMCE.setContent(content);
+	}
+
+    var form_obj = getFormObj(obj_id);
     form_obj.value = content;
 }
 

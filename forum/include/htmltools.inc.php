@@ -30,6 +30,7 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 function TinyMCE() {
 
     $lang = load_language_file();
+    $webtag = get_webtag($webtag_search);
 
     $str = "<!-- tinyMCE -->\n";
     $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"./tiny_mce/tiny_mce.js\"></script>\n";
@@ -57,7 +58,7 @@ function TinyMCE() {
 //    $str.= "    theme_advanced_path_location : \"bottom\",\n";
 
 	// separator,rowseparator,spacer
-    $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontselect,fontsizeselect\",\n";
+    $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";
     $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols,separator,search,replace,bhspellcheck\",\n";
     $str.= "    theme_advanced_buttons3 : \"removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,hr,separator,bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
 
@@ -65,7 +66,36 @@ function TinyMCE() {
 
     $str.= "    invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\"\n";
 
-	$str.= "   });\n";
+	$str.= "   });\n\n";
+
+    $str.= "    var webtag = \"$webtag\";\n";
+    $str.= "    var auto_check_spell_started = false;\n\n";
+
+    $str.= "    function clearFocus(){return;};\n\n";
+
+    $str.= "    function autoCheckSpell() {\n";
+    $str.= "        var form_obj;\n\n";
+	$str.= "        if (document.getElementsByName) {\n";
+	$str.= "            form_obj = document.getElementsByName('t_check_spelling')[0];\n";
+	$str.= "        }else if (document.all) {\n";
+	$str.= "            form_obj = document.all.t_check_spelling;\n";
+	$str.= "        }else if (document.layer) {\n";
+	$str.= "            form_obj = document.t_check_spelling;\n";
+	$str.= "        }else {\n";
+	$str.= "            return true;\n";
+	$str.= "        }\n\n";
+	$str.= "        if (tinyMCE.getContent('t_content').length == 0) return true;\n\n";
+	$str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
+	$str.= "            auto_check_spell_started = true;\n";
+	$str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=t_content', 'spellcheck','width=450, height=550, scrollbars=1');\n";
+	$str.= "    		return false;\n";
+	$str.= "        }\n";
+    $str.= "    }\n\n";
+
+    $str.= "    function add_text(text) {\n";
+    $str.= "        tinyMCE.execCommand('mceInsertContent',false,unescape(text));\n";
+    $str.= "    }\n";
+
 	$str.= "</script>\n";
 	$str.= "<!-- /tinyMCE -->\n";
 

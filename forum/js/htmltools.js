@@ -630,23 +630,25 @@ function add_image () {
 
 // Spell-check gubbins
 
+var auto_check_spell_started = false;
+
 function autoCheckSpell(webtag) {
 
     var form_obj;
 
-    if (document.getElementById) {
-        form_obj = eval("document.getElementById('t_check_spelling')");
+    if (document.getElementsByName) {
+        form_obj = document.getElementsByName('t_check_spelling')[0];
     }else if (document.all) {
-        form_obj = eval("document.all.t_check_spelling");
+        form_obj = document.all.t_check_spelling;
     }else if (document.layer) {
-        form_obj = eval("document.t_check_spelling");
+        form_obj = document.t_check_spelling;
     }else {
         return true;
     }
 
     if (active_field.value.length == 0) return true;
-    
-    if (form_obj && form_obj.checked == true && !auto_check_spell_started) {
+alert(form_obj);
+    if (form_obj.checked == true && !auto_check_spell_started) {
 
         auto_check_spell_started = true;
         openSpellCheck(webtag);

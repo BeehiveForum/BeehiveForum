@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.106 2004-04-08 13:17:21 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.107 2004-04-08 20:38:51 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -249,18 +249,22 @@ function poll_get_total_votes($tid)
     $db_poll_get_total_votes = db_connect();
 
     if (!is_numeric($tid)) return 0;
-
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT COUNT(ID) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE TID = '$tid' GROUP BY UID";
+    $ptuid_array = array();
 
-    $result_get_total_votes = db_query($sql, $db_poll_get_total_votes);
-    $total_votes = db_fetch_array($result_get_total_votes);
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "WHERE TID = '$tid'";
 
-    if (isset($total_votes['VOTES'])) return $total_votes['VOTES'];
+    $result = db_query($sql, $db_poll_get_total_votes);
 
-    return 0;
+    while ($row = db_fetch_array($result)) {
+        if (!in_array($row['PTUID'], $ptuid_array)) {
+	    $ptuid_array[] = $row['PTUID'];
+	}
+    }
+
+    return sizeof($ptuid_array);
 }
 
 function poll_get_user_votes($tid, $viewstyle)
@@ -1087,7 +1091,7 @@ function poll_public_ballot($tid, $viewstyle)
 {
     global $lang;
 
-    $table_data = get_table_prefix();
+    $webtag = get_webtag();
 
     $totalvotes = array();
     $max_value  = array();

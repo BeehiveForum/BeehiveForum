@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.42 2005-03-29 10:47:33 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.43 2005-04-04 17:29:22 decoyduck Exp $ */
 
 function bh_check_gzip()
 {
@@ -79,73 +79,63 @@ function bh_gzhandler($contents)
 
     if ($encoding = bh_check_gzip()) {
 
-        // do the compression
+        // Check that the gzcomprss function exists. The function
+        // will not exist if PHP hasn't been compiled with ZLIB
+        // support (configure --with-zlib)
 
-        if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
+        if (function_exists('gzcompress')) {
 
-            // generate the error checking bits
+            // Attempt compression of the content. If it fails we'll fall
+            // back to sending the content uncompressed.
 
-            $size  = strlen($contents);
-            $crc32 = crc32($contents);
+            if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
-            // construct the gzip output with header
-            // and error checking bits
+                // Generate the error checking bits
 
-            $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
-            $ret.= substr($gz_contents, 0, strlen($gz_contents) - 4);
-            $ret.= pack('V', $crc32);
-            $ret.= pack('V', $size);
+                $size  = strlen($contents);
+                $crc32 = crc32($contents);
 
-            // get the length of the compressed page
+                // Construct the gzip output with header and error checking bits
 
-            $length = strlen($ret);
+                $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+                $ret.= substr($gz_contents, 0, strlen($gz_contents) - 4);
+                $ret.= pack('V', $crc32);
+                $ret.= pack('V', $size);
 
-            // sends the headers to the client while making
-            // sure they are only sent once.
+                // Get the length of the compressed page
 
-            header("Content-Encoding: $encoding", true);
-            header("Vary: Accept-Encoding", true);
-            header("Content-Length: $length", true);
+                $length = strlen($ret);
 
-            // return the compressed text to PHP.
+                // Sends the headers to the client while making sure they
+                // are only sent once.
 
-            return $ret;
+                header("Content-Encoding: $encoding", true);
+                header("Vary: Accept-Encoding", true);
+                header("Content-Length: $length", true);
 
-        }else {
+                // Return the compressed text to PHP.
 
-            // get the length of the un-compressed page
-
-            $length = strlen($contents);
-
-            // sends the headers to the client while making
-            // sure they are only sent once.
-
-            header("Content-Length: $length", true);
-
-            // return the un-compressed text to PHP.
-
-            return $contents;
+                return $ret;
+            }
         }
-
-    }else {
-
-        // return the text uncompressed as the client
-        // doesn't support it or it has been disabled
-        // in config.inc.php.
-
-        // get the length of the un-compressed page
-
-        $length = strlen($contents);
-
-        // sends the headers to the client while making
-        // sure they are only sent once.
-
-        header("Content-Length: $length", true);
-
-        // return the un-compressed text to PHP.
-
-        return $contents;
     }
+
+    // Return the text uncompressed as the client doesn't support
+    // it or it has been disabled in config.inc.php or PHP hasn't
+    // been compiled with ZLIB support.
+
+    // get the length of the un-compressed page
+
+    $length = strlen($contents);
+
+    // Sends the headers to the client while making sure they
+    // are only sent once.
+
+    header("Content-Length: $length", true);
+
+    // Return the un-compressed text to PHP.
+
+    return $contents;
 }
 
 // Enabled the gzip handler

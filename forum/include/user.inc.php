@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.237 2005-03-29 18:25:56 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.238 2005-04-04 17:29:27 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -636,7 +636,7 @@ function user_check_pref($name, $value)
         } elseif ($name ==  "DOB") {
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
         } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {
-            return preg_match("/^(http:\/\/[a-z0-9\/.-_]+|)$/i", $value);
+            return preg_match("/^(http:\/\/[a-z0-9\/.-_~]+|)$/i", $value);
         } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "ANON_LOGON" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS") {
             return ($value == "Y" || $value == "N") ? true : false;
         } elseif ($name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE") {
@@ -864,21 +864,23 @@ function users_get_recent($offset, $limit)
     $users_get_recent_array = array();
     $users_get_recent_count = 0;
 
+    $lang = load_language_file();
+
     $db_users_get_recent = db_connect();
 
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
                                                         'user_array' => array());
 
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0";
 
     $result = db_query($sql, $db_users_get_recent);
     list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, $limit";
@@ -887,12 +889,15 @@ function users_get_recent($offset, $limit)
 
     if (db_num_rows($result) > 0) {
 
-        while ($row = db_fetch_array($result)) {
+        while ($visitor_array = db_fetch_array($result)) {
 
-            if (!isset($users_get_recent_array[$row['UID']])) {
+            if ($visitor_array['UID'] == 0) {
 
-                $users_get_recent_array[$row['UID']] = $row;
+                $visitor_array['LOGON']    = $lang['guest'];
+                $visitor_array['NICKNAME'] = $lang['guest'];
             }
+
+            $users_get_recent_array[] = $visitor_array;
         }
     }
 

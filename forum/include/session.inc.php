@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.168 2005-03-31 19:35:05 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.169 2005-04-04 17:29:23 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -262,6 +262,8 @@ function bh_session_check($show_session_fail = true)
             $result = db_query($sql, $db_bh_session_check);
         }
 
+        bh_update_visitor_log(0);
+
         search_index_old_post();
 
         bh_remove_stale_sessions();
@@ -331,35 +333,49 @@ function bh_update_visitor_log($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $db_bh_update_visitor_log = db_connect();
 
-    $user_prefs = user_get_prefs($uid);
+    if ($uid > 0) {
 
-    if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") {
+        $user_prefs = user_get_prefs($uid);
 
-        $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
-        $sql.= "SET LAST_LOGON = NULL WHERE UID = '$uid'";
-
-    }else {
-
-        $sql = "SELECT LAST_LOGON FROM {$table_data['PREFIX']}";
-        $sql.= "VISITOR_LOG WHERE UID = '$uid'";
-
-        $result = db_query($sql, $db_bh_update_visitor_log);
-
-        if (db_num_rows($result) > 0) {
+        if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") {
 
             $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
-            $sql.= "SET LAST_LOGON = NOW() WHERE UID = '$uid'";
+            $sql.= "SET LAST_LOGON = NULL WHERE UID = $uid";
 
         }else {
 
-            $sql = "INSERT INTO {$table_data['PREFIX']}VISITOR_LOG ";
-            $sql.= "(UID, LAST_LOGON) VALUES ('$uid', NOW())";
-        }
-    }
+            $sql = "SELECT LAST_LOGON FROM {$table_data['PREFIX']}";
+            $sql.= "VISITOR_LOG WHERE UID = $uid";
 
-    return db_query($sql, $db_bh_update_visitor_log);
+            $result = db_query($sql, $db_bh_update_visitor_log);
+
+            if (db_num_rows($result) > 0) {
+
+                $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
+                $sql.= "SET LAST_LOGON = NOW() WHERE UID = $uid";
+
+                $result = db_query($sql, $db_bh_update_visitor_log);
+
+            }else {
+
+                $sql = "INSERT INTO {$table_data['PREFIX']}VISITOR_LOG ";
+                $sql.= "(FORUM, UID, LAST_LOGON) VALUES ($forum_fid, $uid, NOW())";
+
+                $result = db_query($sql, $db_bh_update_visitor_log);
+            }
+        }
+
+    }else {
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}VISITOR_LOG ";
+        $sql.= "(FORUM, UID, LAST_LOGON) VALUES ($forum_fid, 0, NOW())";
+
+        $result = db_query($sql, $db_bh_update_visitor_log);
+    }
 }
 
 // Initialises the session

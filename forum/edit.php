@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.166 2005-03-29 21:48:34 decoyduck Exp $ */
+/* $Id: edit.php,v 1.167 2005-04-04 17:29:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -889,7 +889,7 @@ if ($allow_sig == true) {
 
         echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-        if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+        if ($sig->isDiff() && $fix_html) {
 
             echo $tools->compare_original("t_sig", $sig->getOriginalContent());
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.50 2005-04-03 22:28:23 rowan_hill Exp $ */
+/* $Id: new-install.php,v 1.51 2005-04-04 17:29:31 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1049,10 +1049,12 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
+$sql = "CREATE TABLE VISITOR_LOG (";
+$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
-$sql.= "  PRIMARY KEY (UID)";
+$sql.= "  PRIMARY KEY (VID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

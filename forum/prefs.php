@@ -105,9 +105,19 @@ if(isset($HTTP_POST_VARS['submit'])){
             $HTTP_POST_VARS['sig_content'] = _stripslashes($HTTP_POST_VARS['sig_content']);
         }
 
-        $user_dob = str_pad(trim($HTTP_POST_VARS['dob_year']),  4, '0', STR_PAD_LEFT). '-';
-        $user_dob.= str_pad(trim($HTTP_POST_VARS['dob_month']), 2, '0', STR_PAD_LEFT). '-';
-        $user_dob.= str_pad(trim($HTTP_POST_VARS['dob_day']),   2, '0', STR_PAD_LEFT);
+        $dob_day   = isset($HTTP_POST_VARS['dob_day'])   ? trim($HTTP_POST_VARS['dob_day'])   : 0;
+        $dob_month = isset($HTTP_POST_VARS['dob_month']) ? trim($HTTP_POST_VARS['dob_month']) : 0;
+        $dob_year  = isset($HTTP_POST_VARS['dob_year'])  ? trim($HTTP_POST_VARS['dob_year'])  : 0;
+
+        if ($dob_day > 0 && $dob_month > 0 && $dob_year > 0) {
+          $user_dob = date('Y-m-d', mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
+        }else {
+          $user_dob = '0000-00-00';
+        }
+
+        //$user_dob = str_pad(trim($HTTP_POST_VARS['dob_year']),  4, '0', STR_PAD_LEFT). '-';
+        //$user_dob.= str_pad(trim($HTTP_POST_VARS['dob_month']), 2, '0', STR_PAD_LEFT). '-';
+        //$user_dob.= str_pad(trim($HTTP_POST_VARS['dob_day']),   2, '0', STR_PAD_LEFT);
 
         // Update basic settings in USER table
 
@@ -147,6 +157,10 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         header_redirect("./prefs.php?updated=true");
 
+        echo "<pre>\n";
+        print_r($HTTP_POST_VARS);
+        echo "</pre>\n";
+
     }
 
 }
@@ -159,7 +173,7 @@ user_get_sig(bh_session_get_value('UID'), $user_sig['CONTENT'], $user_sig['HTML'
 
 $birthday_days   = array(' ', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
 $birthday_months = array(' ', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-$birthday_years  = array_merge(array(' '), range(1900 + (date('Y', mktime()) - 2000), date('Y', mktime())));
+$birthday_years  = array_merge(array(' '), range(1900, date('Y', mktime())));
 
 // Split the DOB into usable variables.
 

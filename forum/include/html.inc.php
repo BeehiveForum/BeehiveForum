@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.68 2003-10-31 19:48:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.69 2003-11-02 10:29:05 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -187,7 +187,7 @@ function html_draw_top()
         echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";
     }
 
-    if (basename($HTTP_SERVER_VARS['PHP_SELF']) != 'pm.php') {
+    if ((basename($HTTP_SERVER_VARS['PHP_SELF']) != 'pm.php') && (basename($HTTP_SERVER_VARS['PHP_SELF']) != 'nav.php')) {
         if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/pm_notification.js\"></script>\n";
             if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
@@ -233,16 +233,18 @@ function bh_setcookie($name, $value = "", $expires = 0)
 {
     global $HTTP_SERVER_VARS, $cookie_domain;
 
-    if (isset($cookie_domain) && !empty($cookie_domain) && strstr($HTTP_SERVER_VARS['HTTP_HOST'], $cookie_domain)) {
-        if (substr($cookie_domain, 0, 1) != ".") {
-            $hostname = ".$cookie_domain";
-        }else {
-            $hostname = $cookie_domain;
+    $hostname = "";
+
+    if (isset($cookie_domain) && !empty($cookie_domain) && isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
+        if (strstr($HTTP_SERVER_VARS['HTTP_HOST'], $cookie_domain)) {
+	    if (substr($cookie_domain, 0, 1) != ".") {
+                $hostname = ".$cookie_domain";
+            }else {
+                $hostname = $cookie_domain;
+            }
+	}else {
+            $hostname = str_replace("www", "", $HTTP_SERVER_VARS['HTTP_HOST']);
         }
-    }elseif (isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
-        $hostname = str_replace("www", "", $HTTP_SERVER_VARS['HTTP_HOST']);
-    }else {
-        $hostname = "";
     }
 
     setcookie($name, $value, $expires, '/', $hostname, 0);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.62 2003-09-02 19:40:42 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.63 2003-09-02 22:11:45 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -205,7 +205,8 @@ function poll_get_user_votes($tid)
     $poll_get_user_votes = array();
 
     while($row = db_fetch_array($result)) {
-      $poll_get_user_votes[$row['PTUID']] = $row['OPTION_ID'];
+      $poll_get_user_votes[] = array('PTUID' => $row['PTUID'],
+                                     'OPTION_ID' => $row['OPTION_ID']);
     }
 
     return $poll_get_user_votes;
@@ -399,7 +400,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       }
 
       $poll_group_count = sizeof($group_array);
-      $totalvotes = floor($totalvotes / $poll_group_count);
+      $totalvotes = ceil($totalvotes / $poll_group_count);
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
@@ -798,9 +799,8 @@ function poll_horizontal_graph($tid)
 {
     global $lang;
 
-    $totalvotes  = 0;
-    $max_value   = 0;
-    $optioncount = 0;
+    $totalvotes  = array();
+    $max_values  = array();
 
     $bar_color = 1;
     $poll_group_count = 1;
@@ -808,15 +808,18 @@ function poll_horizontal_graph($tid)
     $pollresults = poll_get_votes($tid);
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
-      if ($pollresults['VOTES'][$i] > $max_value) $max_value = $pollresults['VOTES'][$i];
-      $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
-      $optioncount++;
-    }
 
-    if ($max_value > 0) {
-      $bar_width = round(300 / $max_value, 2);
-    }else {
-      $bar_width = 0;
+      if (!isset($max_values[$pollresults['GROUP_ID'][$i]])) {
+        $max_values[$pollresults['GROUP_ID'][$i]] = $pollresults['VOTES'][$i];
+      }else {
+        $max_values[$pollresults['GROUP_ID'][$i]]+= $pollresults['VOTES'][$i];
+      }
+
+      if (!isset($totalvotes[$pollresults['GROUP_ID'][$i]])) {
+        $totalvotes[$pollresults['GROUP_ID'][$i]] = $pollresults['VOTES'][$i];
+      }else {
+        $totalvotes[$pollresults['GROUP_ID'][$i]]+= $pollresults['VOTES'][$i];
+      }
     }
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
@@ -840,7 +843,7 @@ function poll_horizontal_graph($tid)
         if ($pollresults['VOTES'][$i] > 0) {
 
           $polldisplay.= "                <td width=\"300\">\n";
-          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". floor($bar_width * $pollresults['VOTES'][$i]). "px\">\n";
+          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". floor(round(300 / $max_values[$pollresults['GROUP_ID'][$i]], 2) * $pollresults['VOTES'][$i]). "px\">\n";
           $polldisplay.= "                    <tr>\n";
           $polldisplay.= "                      <td class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
           $polldisplay.= "                    </tr>\n";
@@ -853,10 +856,10 @@ function poll_horizontal_graph($tid)
 
         }
 
-        $totalsvotes = $totalvotes / $poll_group_count;
+        //$totalsvotes = $totalvotes / $poll_group_count;
 
-        if ($totalvotes > 0) {
-            $vote_percent = round((100 / $totalvotes) * $pollresults['VOTES'][$i], 2);
+        if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
+            $vote_percent = round((100 / $totalvotes[$pollresults['GROUP_ID'][$i]]) * $pollresults['VOTES'][$i], 2);
         }else {
             $vote_percent = 0;
         }
@@ -886,8 +889,9 @@ function poll_vertical_graph($tid)
 {
     global $lang;
 
-    $totalvotes  = 0;
-    $max_value   = 0;
+    $totalvotes  = array();
+    $max_values  = array();
+
     $optioncount = 0;
 
     $bar_color = 1;
@@ -896,21 +900,20 @@ function poll_vertical_graph($tid)
     $pollresults = poll_get_votes($tid);
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
-      if ($pollresults['VOTES'][$i] > $max_value) $max_value = $pollresults['VOTES'][$i];
-      $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
+
+      if (!isset($max_values[$pollresults['GROUP_ID'][$i]])) {
+        $max_values[$pollresults['GROUP_ID'][$i]] = $pollresults['VOTES'][$i];
+      }else {
+        $max_values[$pollresults['GROUP_ID'][$i]]+= $pollresults['VOTES'][$i];
+      }
+
+      if (!isset($totalvotes[$pollresults['GROUP_ID'][$i]])) {
+        $totalvotes[$pollresults['GROUP_ID'][$i]] = $pollresults['VOTES'][$i];
+      }else {
+        $totalvotes[$pollresults['GROUP_ID'][$i]]+= $pollresults['VOTES'][$i];
+      }
+
       $optioncount++;
-    }
-
-    if ($max_value > 0) {
-
-      $bar_height  = round(200 / $max_value, 2);
-      $bar_width   = round(400 / $optioncount, 2);
-
-    }else {
-
-      $bar_height  = 0;
-      $bar_width   = round(400 / $optioncount, 2);
-
     }
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
@@ -932,7 +935,7 @@ function poll_vertical_graph($tid)
           }
 
           $polldisplay.= "                <td align=\"center\" valign=\"bottom\">\n";
-          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". $bar_height * $pollresults['VOTES'][$i]. "px; width: ". $bar_width. "px\">\n";
+          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". floor(round(200 / $max_values[$pollresults['GROUP_ID'][$i]], 2) * $pollresults['VOTES'][$i]). "px; width: ". round(400 / $optioncount, 2). "px\">\n";
           $polldisplay.= "                    <tr>\n";
           $polldisplay.= "                      <td class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
           $polldisplay.= "                    </tr>\n";
@@ -941,7 +944,7 @@ function poll_vertical_graph($tid)
 
         }else {
 
-          $polldisplay.= "                <td align=\"center\" valign=\"bottom\" class=\"postbody\" style=\"width: ". $bar_width. "px\">&nbsp;</td>\n";
+          $polldisplay.= "                <td align=\"center\" valign=\"bottom\" class=\"postbody\" style=\"width: ". round(400 / $optioncount, 2). "px\">&nbsp;</td>\n";
 
         }
 
@@ -957,7 +960,7 @@ function poll_vertical_graph($tid)
     $polldisplay.= "              </tr>\n";
     $polldisplay.= "              <tr>\n";
 
-    $totalsvotes = $totalvotes / $poll_group_count;
+    //$totalsvotes = $totalvotes / $poll_group_count;
 
     unset($poll_previous_group);
 
@@ -972,8 +975,8 @@ function poll_vertical_graph($tid)
             $poll_group_count++;
         }
 
-        if ($totalvotes > 0) {
-            $vote_percent = round((100 / $totalvotes) * $pollresults['VOTES'][$i], 2);
+        if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
+            $vote_percent = round((100 / $totalvotes[$pollresults['GROUP_ID'][$i]]) * $pollresults['VOTES'][$i], 2);
         }else {
             $vote_percent = 0;
         }
@@ -1050,19 +1053,17 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
           $polldisplay.= "                <td class=\"postbody\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
           $polldisplay.= "              </tr>\n";
 
-          reset($user_votes);
+          for($j = 0; $j < sizeof($user_votes); $j++) {
 
-          foreach($user_votes as $ptuid => $option_id) {
+            for ($k = 1; $k <= $user_count; $k++) {
 
-            for ($j = 1; $j <= $user_count; $j++) {
+              if ((md5("$tid.$k") == $user_votes[$j]['PTUID']) && ($user_votes[$j]['OPTION_ID'] == $pollresults['OPTION_ID'][$i])) {
 
-              if ((md5("$tid.$j") == $ptuid) && ($option_id == $pollresults['OPTION_ID'][$i])) {
-
-                $user = user_get($j);
+                $user = user_get($k);
 
                 $polldisplay.= "              <tr>\n";
                 $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"postbody\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$j})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"postbody\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$k})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
                 $polldisplay.= "              </tr>\n";
 
               }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.24 2003-09-02 19:40:38 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.25 2003-09-02 22:11:44 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -82,12 +82,12 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
 
-  if ($valid && strlen($HTTP_POST_VARS['answers'][1]) == 0) {
+  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][0])) == 0) {
     $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }
 
-  if ($valid && strlen($HTTP_POST_VARS['answers'][2]) == 0) {
+  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][1])) == 0) {
     $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }

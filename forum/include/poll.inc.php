@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.72 2003-09-29 09:28:10 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.73 2003-10-28 15:53:13 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -195,7 +195,7 @@ function poll_get_votes($tid)
 
 }
 
-function poll_get_user_votes($tid)
+function poll_get_user_votes($tid, $viewstyle)
 {
     $db_poll_get_user_vote_hashes = db_connect();
 
@@ -208,7 +208,11 @@ function poll_get_user_votes($tid)
     $poll_get_user_votes = array();
 
     while($row = db_fetch_array($result)) {
-      $poll_get_user_votes[$row['OPTION_ID']][] = $row['UID'];
+      if ($viewstyle == 0) {
+        $poll_get_user_votes[$row['OPTION_ID']][] = $row['UID'];
+      }else {
+        $poll_get_user_votes[$row['UID']][] = $row['OPTION_ID'];
+      }
     }
 
     return $poll_get_user_votes;
@@ -983,7 +987,7 @@ function poll_vertical_graph($tid)
 
 }
 
-function poll_public_ballot($tid)
+function poll_public_ballot($tid, $viewstyle)
 {
     global $lang;
 
@@ -1010,73 +1014,103 @@ function poll_public_ballot($tid)
     $row_class   = (sizeof($max_values) > 1) ? "highlight" : "postbody";
     $table_class = (sizeof($max_values) > 1) ? "box" : "";
 
-    array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
+    $user_poll_votes = poll_get_user_votes($tid, $viewstyle);
 
-    $user_poll_votes = poll_get_user_votes($tid);
+    if ($viewstyle == 0) {
 
-    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
-    $polldisplay.= "              <tr>\n";
+      array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
-    for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
+      $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
+      $polldisplay.= "              <tr>\n";
 
-      if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
+      for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-      if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
+        if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
 
-        if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-          $polldisplay.= "            </table><br />\n";
-          $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
-        }
+        if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
-        $polldisplay.= "              <tr>\n";
-        $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\"><h2>". $pollresults['OPTION_NAME'][$i]. "</h2></td>\n";
-
-        if ($pollresults['VOTES'][$i] > 0) {
-
-          if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
-              $vote_percent = round((100 / $totalvotes[$pollresults['GROUP_ID'][$i]]) * $pollresults['VOTES'][$i], 2);
-          }else {
-              $vote_percent = 0;
+          if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+            $polldisplay.= "            </table><br />\n";
+            $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
           }
 
-          $polldisplay.= "                <td  class=\"$row_class\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
-          $polldisplay.= "              </tr>\n";
+          $polldisplay.= "              <tr>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\"><h2>". $pollresults['OPTION_NAME'][$i]. "</h2></td>\n";
 
-          if (isset($user_poll_votes[$pollresults['OPTION_ID'][$i]]) && is_array($user_poll_votes[$pollresults['OPTION_ID'][$i]])) {
+          if ($pollresults['VOTES'][$i] > 0) {
 
-            for ($j = 0; $j < sizeof($user_poll_votes[$pollresults['OPTION_ID'][$i]]); $j++) {
+            if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
+              $vote_percent = round((100 / $totalvotes[$pollresults['GROUP_ID'][$i]]) * $pollresults['VOTES'][$i], 2);
+            }else {
+              $vote_percent = 0;
+            }
 
-              if ($user = user_get($user_poll_votes[$pollresults['OPTION_ID'][$i]][$j])) {
+            $polldisplay.= "                <td  class=\"$row_class\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
+            $polldisplay.= "              </tr>\n";
 
-                $polldisplay.= "              <tr>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']})\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
-                $polldisplay.= "              </tr>\n";
+            if (isset($user_poll_votes[$pollresults['OPTION_ID'][$i]]) && is_array($user_poll_votes[$pollresults['OPTION_ID'][$i]])) {
+
+              for ($j = 0; $j < sizeof($user_poll_votes[$pollresults['OPTION_ID'][$i]]); $j++) {
+
+                if ($user = user_get($user_poll_votes[$pollresults['OPTION_ID'][$i]][$j])) {
+
+                  $polldisplay.= "              <tr>\n";
+                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']})\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                  $polldisplay.= "              </tr>\n";
+                }
               }
             }
+
+            $polldisplay.= "              <tr>\n";
+            $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+            $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+            $polldisplay.= "              </tr>\n";
+
+          }else {
+
+            $polldisplay.= "                <td  class=\"$row_class\" style=\"border-bottom: 1px solid\">0 {$lang['votes']} (0%)</td>\n";
+            $polldisplay.= "              </tr>\n";
+            $polldisplay.= "              <tr>\n";
+            $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+            $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+            $polldisplay.= "              </tr>\n";
+
+          }
+        }
+
+        $poll_previous_group = $pollresults['GROUP_ID'][$i];
+      }
+
+      $polldisplay.= "            </table><br />\n";
+
+    }else {
+
+      $polldisplay = "";
+
+      foreach ($user_poll_votes as $uid => $optionid_array) {
+
+        if ($user = user_get($uid)) {
+
+          $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
+          $polldisplay.= "              <tr>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']})\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
+          $polldisplay.= "              </tr>\n";
+
+          for ($i = 0; $i < sizeof($optionid_array); $i++) {
+
+            $polldisplay.= "              <tr>\n";
+            $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
+            $polldisplay.= "                <td width=\"150\" class=\"$row_class\">". $pollresults['OPTION_NAME'][$optionid_array[$i] - 1]. "</td>\n";
+            $polldisplay.= "              </tr>\n";
+
           }
 
-          $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-          $polldisplay.= "              </tr>\n";
-
-        }else {
-
-          $polldisplay.= "                <td  class=\"$row_class\" style=\"border-bottom: 1px solid\">0 {$lang['votes']} (0%)</td>\n";
-          $polldisplay.= "              </tr>\n";
-          $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-          $polldisplay.= "              </tr>\n";
+          $polldisplay.= "            </table><br />\n";
 
         }
       }
-
-      $poll_previous_group = $pollresults['GROUP_ID'][$i];
     }
-
-    $polldisplay.= "            </table><br />\n";
 
     return $polldisplay;
 }

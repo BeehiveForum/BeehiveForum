@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.29 2003-09-24 13:45:01 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.30 2003-10-28 15:53:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -76,43 +76,31 @@ if (isset($HTTP_GET_VARS['tid'])) {
 
 }
 
-$polldata     = poll_get($tid);
-$pollresults  = poll_get_votes($tid);
+$polldata = poll_get($tid);
 
-$totalvotes   = 0;
-$max_value    = 0;
-$optioncount  = 0;
-
-for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
-    $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
-}
-
-for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
-
-  if (strlen($pollresults['OPTION_NAME'][$i]) > 0) {
-
-    if ($pollresults['VOTES'][$i] > $max_value) $max_value = $pollresults['VOTES'][$i];
-    $optioncount++;
-
-  }
-
-}
-
-if ($max_value > 0) {
-
-  $horizontal_bar_width = round(300 / $max_value, 2);
-  $vertical_bar_height = round(200 / $max_value, 2);
-  $vertical_bar_width = round(400 / $optioncount, 2);
-
+if (isset($HTTP_GET_VARS['viewstyle']) && is_numeric($HTTP_GET_VARS['viewstyle'])) {
+    $viewstyle = $HTTP_GET_VARS['viewstyle'];
+    if ($viewstyle < 0 || $viewstyle > 1) $viewstyle = 0;
 }else {
-
-  $horizontal_bar_width = 0;
-  $vertical_bar_height = 0;
-  $vertical_bar_width = round(400 / $optioncount, 2);
-
+    $viewstyle = 0;
 }
 
 echo "<br />\n";
+
+if ($polldata['VOTETYPE'] == 1) {
+
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"center\" class=\"postbody\">\n";
+    echo "      <form name=\"f_mode\" method=\"get\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\">\n";
+    echo "        ", form_input_hidden("tid", $tid), "\n";
+    echo "        View Style: ", form_dropdown_array("viewstyle", range(0, 1), array('By option', 'By user'), $viewstyle, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+}
+
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
@@ -127,7 +115,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
 
     echo "        <tr>\n";
     echo "          <td colspan=\"2\">\n";
-    echo poll_public_ballot($tid, $horizontal_bar_width, $totalvotes);
+    echo poll_public_ballot($tid, $viewstyle);
     echo "          </td>\n";
     echo "        </tr>\n";
 
@@ -137,7 +125,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
 
       echo "        <tr>\n";
       echo "          <td>\n";
-      echo poll_horizontal_graph($tid, $horizontal_bar_width, $totalvotes);
+      echo poll_horizontal_graph($tid);
       echo "          </td>\n";
       echo "        </tr>\n";
 
@@ -145,7 +133,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
 
       echo "        <tr>\n";
       echo "          <td>\n";
-      echo poll_vertical_graph($tid, $vertical_bar_height, $vertical_bar_width, $totalvotes);
+      echo poll_vertical_graph($tid);
       echo "          </td>\n";
       echo "        </tr>\n";
 

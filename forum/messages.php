@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.96 2003-09-29 15:08:20 decoyduck Exp $ */
+/* $Id: messages.php,v 1.97 2003-10-28 15:53:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -189,9 +189,9 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
   if ($userpollvote = poll_get_user_vote($tid)) {
     if ($userpollvote ^ POLL_MULTIVOTE) {
       for ($i = 0; $i < sizeof($userpollvote); $i++) {
-        $userpollvotes_array[] = "Option {$userpollvote[$i]['OPTION_ID']}";
+        $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
       }
-      echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedfor']}: ", implode(" & ", $userpollvotes_array), "</td>\n";
+      echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
     }
   }else {
     echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youhavenotvoted']}</td>\n";
@@ -247,7 +247,11 @@ if($msg_count > 0) {
 
 unset($messages, $message);
 
-if($last_pid < $threaddata['LENGTH']){
+if($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0){
+    messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
+}
+
+if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
     echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
     echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "{$lang['keepreading']} >>", "msg", "$tid.$npid");
@@ -277,9 +281,5 @@ draw_beehive_bar();
 messages_end_panel();
 messages_forum_stats($tid, $pid);
 html_draw_bottom();
-
-if($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0){
-    messages_update_read($tid,$last_pid,bh_session_get_value('UID'));
-}
 
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.138 2003-11-28 19:49:14 decoyduck Exp $ */
+/* $Id: post.php,v 1.139 2003-11-28 20:31:59 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -339,6 +339,29 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
             $t_tid = $HTTP_POST_VARS['t_tid'];
             $t_rpid = $HTTP_POST_VARS['t_rpid'];
+            
+            if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER))) {
+
+                html_draw_top();
+                
+                echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+                echo "<table class=\"posthead\" width=\"720\">\n";
+                echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
+                echo "<tr><td>\n";
+                echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
+                echo "</td></tr>\n";
+
+                echo "<tr><td align=\"center\">\n";
+		echo form_input_hidden('t_tid', $t_tid);
+		echo form_input_hidden('t_rpid', $t_rpid);
+                echo form_submit('cancel', $lang['cancel']);
+                echo "</td></tr>\n";
+                echo "</table></form>\n";
+
+                html_draw_bottom();
+                exit;
+            }
+
             if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
 
                 if (isset($HTTP_POST_VARS['t_closed'])) $t_closed = $HTTP_POST_VARS['t_closed'];

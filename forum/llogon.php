@@ -21,7 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.14 2003-12-03 20:17:16 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.15 2004-03-06 13:45:50 decoyduck Exp $ */
+
+// Light Mode Detection
+define("BEEHIVEMODE_LIGHT", true);
+
+// Compress the output
+require_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -71,6 +77,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         bh_session_init($luid);
 
+      }
+      
+      if (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == 'Y') {
+      
+          bh_setcookie("bh_light_remember_username", $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS);
+	  bh_setcookie("bh_light_remember_password", $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS);
       }
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
@@ -124,15 +136,16 @@ echo "<p>{$lang['welcometolight']}</p>\n";
 echo "  <form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"POST\">\n";
 
 echo "<p>{$lang['username']}: ";
-echo light_form_input_text("logon"). "</p>\n";
+echo light_form_input_text("logon", (isset($HTTP_COOKIE_VARS['bh_light_remember_username']) ? $HTTP_COOKIE_VARS['bh_light_remember_username'] : "")). "</p>\n";
 
 echo "<p>{$lang['passwd']}: ";
-echo light_form_input_password("password"). "</p>\n";
+echo light_form_input_password("password", (isset($HTTP_COOKIE_VARS['bh_light_remember_password']) ? $HTTP_COOKIE_VARS['bh_light_remember_password'] : "")). "</p>\n";
 
-echo "<p>".form_submit('submit', $lang['logon'])."</p>\n";
+echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($HTTP_COOKIE_VARS['bh_light_remember_username']) && isset($HTTP_COOKIE_VARS['bh_light_remember_password']) ? true : false)), "</p>\n";
+
+echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
 
 echo "  </form>\n";
-
 
 light_html_draw_bottom();
 

@@ -21,11 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.23 2004-02-22 15:24:39 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.24 2004-03-06 13:45:49 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
-
-define("BEEHIVEMODE_LIGHT", true);
 
 require_once("./include/lang.inc.php");
 
@@ -35,7 +33,7 @@ function light_html_draw_top ($title = false)
     
     if (!isset($forum_name)) $forum_name = "A Beehive Forum";
 
-    if (!isset($title)) {
+    if (!isset($title) || !$title) {
         $title = $forum_name;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.38 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.39 2003-09-03 22:32:39 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -233,18 +233,28 @@ function folder_is_accessible($fid)
 
 function user_set_folder_interest($fid, $interest)
 {
-    $uid = bh_session_get_value('UID');
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+
     $db_user_set_folder_interest = db_connect();
 
-    $sql = "delete from ". forum_table("USER_FOLDER"). " where UID = '$uid' and FID = '$fid'";
+    $sql = "SELECT FID FROM ". forum_table("USER_FOLDER"). " WHERE UID = '$uid' AND FID = '$fid'";
     $result = db_query($sql, $db_user_set_folder_interest);
 
-    if ($interest == -1) {
-        $sql = "insert into ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
-        $sql.= "values ($uid, $fid, $interest)";
+    if (db_num_rows($result)) {
+
+        $sql = "UPDATE ". forum_table("USER_FOLDER"). " SET INTEREST = '$interest' ";
+        $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+
+        $result = db_query($sql, $db_user_set_folder_interest);
+
+    }else {
+
+        $sql = "INSERT INTO ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
+        $sql.= "VALUES ('$uid', '$fid', '$interest')";
+
         $result = db_query($sql, $db_user_set_folder_interest);
     }
-
 }
 
 function user_get_restricted_folders($uid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.42 2004-09-13 21:23:14 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.43 2004-11-01 23:58:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -452,6 +452,7 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['postoptions']}</td>\n";
 echo "                </tr>\n";
+echo "                <tr>\n";
 echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
@@ -464,7 +465,6 @@ echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                </tr>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">&nbsp;</td>\n";
@@ -665,7 +665,6 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['personalmessages']}</td>\n";
 echo "                </tr>\n";
-echo "                <tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";

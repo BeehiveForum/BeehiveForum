@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.160 2004-09-09 10:21:29 decoyduck Exp $ */
+/* $Id: messages.php,v 1.161 2004-11-01 23:58:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -380,7 +380,8 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
-echo "</table></div>\n";
+echo "</table>\n";
+echo "</div>\n";
 
 messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);

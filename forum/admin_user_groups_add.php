@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.11 2004-10-27 22:33:16 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.12 2004-11-01 23:58:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -382,7 +382,6 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
 echo "    </tr>\n";
-echo "  </table>\n";
 echo "  </table>\n";
 echo "</form>\n";
 echo "</div>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.301 2004-10-29 20:42:48 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.302 2004-11-01 23:58:43 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -154,7 +154,7 @@ function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky =
 
 function messages_bottom()
 {
-    echo "<p align=\"right\">BeehiveForum 2002</p>";
+    echo "<p align=\"right\">BeehiveForum 2002</p>\n";
 }
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
@@ -205,7 +205,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if($in_list && isset($message['PID'])){
-        echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>";
+        echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>\n";
     }
 
     // Check for search words to highlight -------------------------------------
@@ -262,13 +262,19 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 
-    echo "<br /><div align=\"center\">\n";
-    echo "<table width=\"100%\" cellspacing=\"0\"cellpadding=\"0\"><tr><td width=\"2%\" valign=\"top\">$up_arrow<br />$down_arrow</td>\n";
-    echo "<td>\n";
-    echo "<table width=\"98%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
-    echo "<table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\"><tr>\n";
-    echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-    echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<table width=\"100%\" cellspacing=\"0\"cellpadding=\"0\">\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"2%\" valign=\"top\">$up_arrow<br />$down_arrow</td>\n";
+    echo "    <td>\n";
+    echo "      <table width=\"98%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "        <tr>\n";
+    echo "          <td>\n";
+    echo "            <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    echo "              <tr>\n";
+    echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+    echo "                <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if ($message['FROM_UID'] > -1) {
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
@@ -291,7 +297,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
     }
 
-    echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
+    echo "</td>\n";
+    echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && bh_session_get_value('UID') != 0) {
         echo "<b>{$lang['ignoredmsg']}</b>";
@@ -305,11 +312,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     echo "&nbsp;</span></td>\n";
-    echo "</tr><tr>\n";
-    echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-    echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+    echo "              </tr>\n";
+    echo "              <tr>\n";
+    echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+    echo "                <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
+
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
@@ -332,7 +341,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     echo "</td>\n";
-    echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
+    echo "                <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
         echo "<a href=\"set_relation.php?webtag=$webtag&amp;uid=".$message['FROM_UID']."&amp;rel=0&amp;exists=1&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
@@ -344,12 +353,19 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo $message['PID'] . " {$lang['of']} " . $msg_count;
     }
 
-    echo "&nbsp;</span></td></tr>\n";
-    echo "</table></td></tr>\n";
+    echo "&nbsp;</span></td>\n";
+    echo "              </tr>\n";
+    echo "            </table>\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
 
     if(!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
 
-        echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
+        echo "        <tr>\n";
+        echo "          <td>\n";
+        echo "            <table width=\"100%\">\n";
+        echo "              <tr align=\"right\">\n";
+        echo "                <td colspan=\"3\"><span class=\"postnumber\">";
 
         if($in_list && $msg_count > 0) {
 
@@ -377,31 +393,39 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 }
             }
         }
-        echo "&nbsp;</span></td></tr>\n";
+
+        echo "&nbsp;</span></td>\n";
+        echo "              </tr>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-                        if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
-                                $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
-                                $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
-                                $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
-                                $message['CONTENT'] = "";
-                                for ($i=0; $i<count($msg_split); $i++) {
-                                        if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-                                        $message['CONTENT'] .= $msg_split[$i];
-                                }
-                                $message['CONTENT'] .= "</div>";
-                        }
+
+            if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
+
+                $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
+                $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
+                $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
+                $message['CONTENT'] = "";
+
+                for ($i=0; $i<count($msg_split); $i++) {
+
+                    if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
+
+                    $message['CONTENT'] .= $msg_split[$i];
+                }
+
+                $message['CONTENT'] .= "</div>";
+            }
         }
 
-        echo "<tr><td class=\"postbody\" align=\"left\">{$message['CONTENT']}</td></tr>\n";
+        echo "              <tr>\n";
+        echo "                <td class=\"postbody\" align=\"left\">{$message['CONTENT']}</td>\n";
+        echo "              </tr>\n";
 
         if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
-            echo "<tr><td class=\"postbody\" align=\"left\">\n";
-            echo "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ";
-            echo format_time($message['EDITED'], 1, "d/m/y H:i");
-            echo " {$lang['by']} {$message['EDIT_LOGON']}</p>";
-            echo "</td></tr>\n";
+            echo "              <tr>\n";
+            echo "                <td class=\"postbody\" align=\"left\"><p style=\"font-size: 10px\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
+            echo "              </tr>\n";
         }
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
@@ -413,13 +437,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                 // Draw the attachment header at the bottom of the post
 
-                echo "<tr><td>&nbsp;</td></tr>\n";
-                echo "<tr><td class=\"postbody\" align=\"left\">\n";
-                echo "<b>{$lang['attachments']}:</b><br />\n";
+                echo "              <tr>\n";
+                echo "                <td>&nbsp;</td>\n";
+                echo "              </tr>\n";
+                echo "              <tr>\n";
+                echo "                <td class=\"postbody\" align=\"left\">\n";
+                echo "                  <b>{$lang['attachments']}:</b><br />\n";
 
                 foreach($attachments_array as $attachment) {
 
-                    echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
+                    echo "                  <img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
 
                     if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                         echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
@@ -448,20 +475,22 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                         echo " {$lang['times']}";
                     }
 
-                    echo "\">{$attachment['filename']}</a><br />";
+                    echo "\">{$attachment['filename']}</a><br />\n";
                 }
-                echo "</td></tr>\n";
+
+                echo "                </td>\n";
+                echo "              </tr>\n";
             }
         }
 
-        echo "</table>\n";
-        echo "<table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+        echo "            </table>\n";
 
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
 
-            echo "<tr>\n";
-            echo "  <td width=\"25%\">&nbsp;</td>\n";
-            echo "  <td width=\"50%\" nowrap=\"nowrap\">";
+            echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+            echo "              <tr>\n";
+            echo "                <td width=\"25%\">&nbsp;</td>\n";
+            echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
             if ((!$closed && perm_check_folder_permissions($message['FID'], USER_PERM_POST_CREATE)) || perm_is_moderator($message['FID'])) {
 
@@ -494,7 +523,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
             echo "</td>\n";
-            echo "<td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
+            echo "            <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
             echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
@@ -521,12 +550,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
             echo "</td>\n";
-            echo "</tr>";
+            echo "              </tr>";
+            echo "            </table>\n";
         }
-        echo "</table>\n";
     }
 
-    echo "</td></tr></table></td></tr></table></div>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</div>\n";
 }
 
 function message_display_deleted($tid,$pid)

@@ -31,7 +31,7 @@ include_once("./include/lang.inc.php");
 
 /* Example of usage:
 
-html_draw_top("onUnload=clearFocus()", "htmltools.js");
+html_draw_top("onunload=clearFocus()", "htmltools.js");
 
 $tools = new TextAreaHTML("myFormName");
 
@@ -98,8 +98,8 @@ class TextAreaHTML {
         }
 
         $str.= "    <br />\n";
-        $str.= "    <select class=\"bhselect\" onChange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
-        $str.= "        <option value=\"\" selected>{$lang['fontface']}</option>\n";
+        $str.= "    <select class=\"bhselect\" onchange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
+        $str.= "        <option value=\"\" selected=\"selected\">{$lang['fontface']}</option>\n";
         $str.= "        <option value=\"Arial\">Arial</option>\n";
         $str.= "        <option value=\"Times New Roman\">Times New Roman</option>\n";
         $str.= "        <option value=\"Verdana\">Verdana</option>\n";
@@ -108,8 +108,8 @@ class TextAreaHTML {
         $str.= "        <option value=\"Trebuchet MS\">Trebuchet MS</option>\n";
         $str.= "        <option value=\"Microsoft Sans Serif\">Microsoft Sans Serif</option>\n";
         $str.= "    </select>\n";
-        $str.= "    <select class=\"bhselect\" onChange=\"add_tag('font', 'size', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_size\">\n";
-        $str.= "        <option value=\"\" selected>{$lang['size']}</option>\n";
+        $str.= "    <select class=\"bhselect\" onchange=\"add_tag('font', 'size', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_size\">\n";
+        $str.= "        <option value=\"\" selected=\"selected\">{$lang['size']}</option>\n";
         $str.= "        <option value=\"1\">1</option>\n";
         $str.= "        <option value=\"2\">2</option>\n";
         $str.= "        <option value=\"3\">3</option>\n";
@@ -118,8 +118,8 @@ class TextAreaHTML {
         $str.= "        <option value=\"6\">6</option>\n";
         $str.= "        <option value=\"7\">7</option>\n";
         $str.= "    </select>\n";
-        $str.= "    <select class=\"bhselect\" onChange=\"add_tag('font', 'color', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_colour\">\n";
-        $str.= "        <option value=\"\" selected>{$lang['colour']}</option>\n";
+        $str.= "    <select class=\"bhselect\" onchange=\"add_tag('font', 'color', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_colour\">\n";
+        $str.= "        <option value=\"\" selected=\"selected\">{$lang['colour']}</option>\n";
         $str.= "        <option value=\"#FF0000\" style=\"color: #FF0000;\">{$lang['red']}</option>\n";
         $str.= "        <option value=\"#FFA500\" style=\"color: #FFA500;\">{$lang['orange']}</option>\n";
         $str.= "        <option value=\"#FFFF00\" style=\"color: #FFFF00;\">{$lang['yellow']}</option>\n";
@@ -152,7 +152,7 @@ class TextAreaHTML {
 
         $this->tas[] = $name;
 
-        $custom_html.= " onKeyPress=\"active_text(this);\" onKeyDown=\"active_text(this);\" onKeyUp=\"active_text(this);\" onClick=\"active_text(this);\" onChange=\"active_text(this);\" onSelect=\"active_text(this);\" onDblClick=\"active_text(this, true);\"";
+        $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
 
         $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
         $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html);
@@ -170,7 +170,7 @@ class TextAreaHTML {
 
     function preload () {
 
-        $str = "<script language=\"Javascript\">\n";
+        $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
                 $str.= "    _tb_image_main = new Image();\n";
                 $str.= "    _tb_image_main.src = \"./images/html_toolbar.png\";\n";
@@ -193,7 +193,7 @@ class TextAreaHTML {
 
     function js ($focus = true) {
 
-        $str = "<script language=\"Javascript\">\n";
+        $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
 
         $str.= "    function clearFocus() {\n";
@@ -234,8 +234,8 @@ class TextAreaHTML {
 
         $lang = load_language_file();
 
-        $str = form_radio("co_{$ta}_rb", "correct", $lang['correctedcode'], true, "onClick=\"co_{$ta}_show('correct');\"")."\n";
-        $str.= form_radio("co_{$ta}_rb", "submit", $lang['submittedcode'], false, "onClick=\"co_{$ta}_show('submit');\"")."\n";
+        $str = form_radio("co_{$ta}_rb", "correct", $lang['correctedcode'], true, "onclick=\"co_{$ta}_show('correct');\"")."\n";
+        $str.= form_radio("co_{$ta}_rb", "submit", $lang['submittedcode'], false, "onclick=\"co_{$ta}_show('submit');\"")."\n";
         $str.= "&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['fixhtmlexplanation']}');\">?</a>]\n";
 
         $str.= form_input_hidden("co_{$ta}_old", _htmlentities($text))."\n";
@@ -302,7 +302,7 @@ class TextAreaHTML {
     // ----------------------------------------------------
 
     function _tb_img ($title, $on_click, $image_name = "blank.png") {
-        return "<img src=\"". style_image($image_name). "\" onClick=\"{$on_click}\" title=\"{$title}\" class=\"tools_up\" onMouseOver=\"m_ov(this);\" onMouseOut=\"m_ou(this);\" onMouseDown=\"m_d(this);\" onMouseUp=\"m_u(this);\" />";
+        return "<img src=\"". style_image($image_name). "\" alt=\"{$title}\" onclick=\"{$on_click}\" title=\"{$title}\" class=\"tools_up\" onmouseover=\"m_ov(this);\" onmouseout=\"m_ou(this);\" onmousedown=\"m_d(this);\" onmouseup=\"m_u(this);\" />";
     }
 
     // ----------------------------------------------------

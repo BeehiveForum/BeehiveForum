@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.61 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: admin_prof_sect.php,v 1.62 2004-11-01 23:58:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -178,7 +178,7 @@ if ($profile_sections = profile_sections_get()) {
         echo "                <tr>\n";
         echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_sections[$i]['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_sections[$i]['PSID']}]", $i), form_input_hidden("t_psid[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['PSID']), "</td>\n";
         echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME'] ,64, 64), form_input_hidden("t_old_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_sections[$i]['PSID']}'\""), "</a></td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_sections[$i]['PSID']}'\""), "</td>\n";
 
         if (!profile_items_get($profile_sections[$i]['PSID'])) {
             echo "                  <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";

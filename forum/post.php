@@ -351,14 +351,15 @@ if(isset($error_html)) {
     echo $error_html . "\n";
 }
 
-echo "<script language=\"Javascript\">\n";
-echo "function launchOthers() {\n";
-echo "newUser = prompt(\"Please enter a MemberName.\",document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].text);\n";
-echo "if (newUser != null) {\n";
-echo "if (newUser != document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].text) {\n";
-echo "document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].value = \"U:\" + newUser;\n";
-echo "document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].text = newUser;\n";
-echo "}\n}\n}\n";
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n";
+echo "function launchOthers() {\n\n";
+echo "  newUser = prompt(\"Please enter a MemberName.\",document.f_post.t_to_uid.options[0].text);\n";
+echo "  if (newUser != null) {\n";
+echo "    if (newUser != document.f_post.t_to_uid.options[0].text) {\n";
+echo "      document.f_post.t_to_uid.options[0] = new Option(newUser, \"U:\" + newUser, true, true);\n";
+echo "    }\n  }\n}\n";
+echo "//-->\n";
 echo "</script>\n";
 echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.226 2004-12-05 19:31:47 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.227 2004-12-06 19:09:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -424,12 +424,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
         echo "        <tr>\n";
         echo "          <td class=\"foldername\">\n";
 
-        if (isset($folder_info[$folder_number]['INTEREST']) && $folder_info[$folder_number]['INTEREST'] == 0) {
-
+        if ($folder_info[$folder_number]['INTEREST'] == 0) {
             echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />\n";
-
         }else {
-
             echo "            <img src=\"".style_image('folder_ignored.png')."\" height=\"15\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
         }
 
@@ -438,12 +435,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
         if (bh_session_get_value('UID') > 0) {
 
-            if (isset($folder_info[$folder_number]['INTEREST']) && $folder_info[$folder_number]['INTEREST'] == 0) {
-
+            if ($folder_info[$folder_number]['INTEREST'] == 0) {
                 echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\" onclick=\"return confirmFolderIgnore();\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
-
             }else {
-
                 echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\" onclick=\"return confirmFolderUnignore();\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['stopignoringthisfolder']}\" title=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
             }
         }
@@ -453,14 +447,13 @@ while (list($key1, $folder_number) = each($folder_order)) {
         echo "    </td>\n";
         echo "  </tr>\n";
 
-        if ((bh_session_get_value('UID') == 0) || (isset($folder_info[$folder_number]['INTEREST']) && $folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
+        if ((bh_session_get_value('UID') == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
             if (is_array($thread_info)) {
 
                 $visible_threads = false;
 
                 foreach (array_keys($thread_info) as $thread_info_key) {
-
                     if ($thread_info[$thread_info_key]['fid'] == $folder_number) $visible_threads = true;
                 }
 
@@ -468,11 +461,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "    <td class=\"threads\" style=\"", ($visible_threads ? "border-bottom: 0px; " : ""), ($lang['_textdir'] == "ltr") ? "border-right: 0px" : "border-left: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\" style=\"", ($lang['_textdir'] == "ltr") ? "text-align: left; float: left" : "text-align: right; float: right", "\">";
 
                 if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
-
                     echo $folder_msgs[$folder_number];
-
                 }else {
-
                     echo "0";
                 }
 
@@ -494,7 +484,6 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "  </tr>\n";
 
                 if ($start_from != 0 && isset($folder) && $folder_number == $folder) {
-
                     echo "  <tr>\n";
                     echo "    <td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from - 50)."\" class=\"folderinfo\">{$lang['prev50threads']}</a></td>\n";
                     echo "  </tr>\n";
@@ -520,23 +509,17 @@ while (list($key1, $folder_number) = each($folder_order)) {
                             if ($thread['last_read'] == 0) {
 
                                 if ($thread['length'] > 0) {
-
                                     $number = "[{$thread['length']}&nbsp;{$lang['new']}]";
-
                                 }else {
-
                                     $number = "[1&nbsp;{$lang['new']}]";
                                 }
 
                                 $latest_post = 1;
 
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
                                     $first_thread = $thread['tid'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
-
                                 }else {
-
                                     echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
@@ -547,38 +530,28 @@ while (list($key1, $folder_number) = each($folder_order)) {
                                 $latest_post = $thread['last_read'] + 1;
 
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
                                     $first_thread = $thread['tid'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
-
                                 }else {
-
                                     echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
                             }else {
 
                                 if ($thread['length'] > 0) {
-
                                     $number = "[{$thread['length']}]";
-
                                 }else {
-
                                     $number = "[1]";
                                 }
 
                                 $latest_post = 1;
 
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
                                     $first_thread = $thread['tid'];
                                     echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
-
                                 } else {
-
                                     echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
-
                             }
 
                             echo "</a>";
@@ -608,17 +581,15 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                     if (isset($folder) && $folder_number == $folder) {
 
-                        $more_threads = $folder_msgs[$folder] - $start_from - 50;
+                         $more_threads = $folder_msgs[$folder] - $start_from - 50;
 
                         if ($more_threads > 0 && $more_threads <= 50) {
-
                             echo "        <tr>\n";
                             echo "          <td colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next']} $more_threads {$lang['threads']}</a></td>\n";
                             echo "        </tr>\n";
                         }
 
                         if ($more_threads > 50) {
-
                             echo "        <tr>\n";
                             echo "          <td colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next50threads']}</a></td>\n";
                             echo "        </tr>\n";
@@ -640,11 +611,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-right: 1px" : "border-left: 1px", "\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number."\" class=\"folderinfo\">";
 
                 if (isset($folder_msgs[$folder_number])) {
-
                     echo $folder_msgs[$folder_number];
-
                 }else {
-
                     echo "0";
                 }
 

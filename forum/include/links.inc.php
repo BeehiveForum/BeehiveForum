@@ -113,14 +113,16 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     $tree_fid = $fid;
     $tree     = '';
 
-    while ($tree_fid != 1) {
+    list($key) = array_keys($folders);
+
+    while ($tree_fid != $key) {
           $tree[] = $tree_fid;
           $tree_fid = $folders[$tree_fid]['PARENT_FID'];
     }
 
     $link_base = $link_base ? $link_base : $HTTP_SERVER_VARS['PHP_SELF'];
 
-    list($key) = array_keys($folders);
+    
     $html = $links ? "<a href=\"$link_base?fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
 
     if (is_array($tree)) {

@@ -21,76 +21,117 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.35 2003-09-04 15:53:43 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.36 2003-09-06 01:28:03 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
 require_once("./include/db.inc.php");
 require_once("./include/lang.inc.php");
 
-// create a <input type="text"> field
-function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text", $custom_html = "")
+// Create a form field
+
+function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false)
 {
     global $lang;
 
-    $html = trim("<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" $custom_html");
-    $html.= " value=\"$value\"";
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
 
-    if ($width) $html.= " size=\"$width\"";
-    if ($maxchars) $html.= " maxlength=\"$maxchars\"";
+    $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" value=\"$value\" ";
 
-    $html.= " dir=\"". $lang['_textdir']. "\"";
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
 
-    return $html. " autocomplete=\"off\" />";
+    if ($width) {
+        $width = (int)trim($width);
+        $html.= "size=\"$width\" ";
+    }
+
+    if ($maxchars) {
+        $maxchars = (int)trim($maxchars);
+        $html.= "maxlength=\"$maxchars\" ";
+    }
+
+    $html.= "dir=\"{$lang['_textdir']}\" />";
+    return $html;
 }
 
-function form_input_text($name, $value = "", $width = 0, $maxchars = 0, $custom_html = "")
+// Creates a text input field
+
+function form_input_text($name, $value = false, $width = false, $maxchars = false, $custom_html = false)
 {
     return form_field($name, $value, $width, $maxchars, "text", $custom_html);
 }
 
-function form_input_password($name, $value = "", $width = 0, $maxchars = 0, $custom_html = "")
+// Creates a password input field
+
+function form_input_password($name, $value = false, $width = false, $maxchars = false, $custom_html = false)
 {
     return form_field($name, $value, $width, $maxchars, "password", $custom_html);
 }
 
-// create a <input type="hidden"> field
-function form_input_hidden($name, $value = "", $custom_html = "")
+// Creates a hidden form field
+
+function form_input_hidden($name, $value = false, $custom_html = false)
 {
     return form_field($name, $value, 0, 0, "hidden", $custom_html);
 }
 
-// create a <textarea> field
-function form_textarea($name, $value = "", $rows = 0, $cols = 0, $wrap = "virtual", $custom_html = "")
-{
+// Create a textarea input field
 
+function form_textarea($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = false)
+{
     global $lang;
 
-    //wrap attribute removed for XHTML 1.0 compliance.
-    //$html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"$wrap\" $custom_html";
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
+    $wrap  = htmlentities(trim($wrap));
 
-    $html = trim("<textarea name=\"$name\" class=\"bhtextarea\" autocomplete=\"off\" $custom_html");
+    $html = "<textarea name=\"$name\" class=\"bhtextarea\" autocomplete=\"off\" ";
 
-    if($rows) $html.= " rows=\"$rows\"";
-    if($cols) $html.= " cols=\"$cols\"";
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
 
-    $html.= " dir=\"". $lang['_textdir']. "\"";
-    $html.= ">$value</textarea>";
+    if ($rows) {
+        $rows = (int)trim($rows);
+        $html.= "rows=\"$rows\" ";
+    }
 
+    if ($cols) {
+        $cols = (int)trim($cols);
+        $html.= "cols=\"$cols\" ";
+    }
+
+    $html.= "dir=\"{$lang['_textdir']}\" autocomplete=\"off\">$value</textarea>";
     return $html;
 }
 
-// create a <select> dropdown with values from database
-function form_dropdown_sql($name, $sql, $default, $custom_html = "")
+// Creates a dropdown with values from database
+
+function form_dropdown_sql($name, $sql, $default, $custom_html = false)
 {
     global $lang;
 
-    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" dir=\"". $lang['_textdir']. "\" ". $custom_html .">";
+    $name = htmlentities(trim($name));
+
+    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
+    $html.= "dir=\"{$lang['_textdir']}\" ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= ">";
 
     $db_form_dropdown_sql = db_connect();
     $result = db_query($sql, $db_form_dropdown_sql);
 
-    while($row = db_fetch_array($result)){
+    while ($row = db_fetch_array($result)) {
         $sel = ($row[0] == $default) ? " selected=\"selected\"" : "";
         if ($row[1]) {
             $html.= "<option value=\"". _stripslashes($row[0]). "\"$sel>". _stripslashes($row[1]). "</option>";
@@ -99,15 +140,29 @@ function form_dropdown_sql($name, $sql, $default, $custom_html = "")
         }
     }
 
-    return $html."</select>";
+    $html.= "</select>";
+    return $html;
 }
 
-// create a <select> dropdown with values from array(s)
-function form_dropdown_array($name, $value, $label, $default = "", $custom_html = "")
+// Creates a dropdown with values from array(s)
+
+function form_dropdown_array($name, $value, $label, $default = false, $custom_html = false)
 {
     global $lang;
 
-    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" $custom_html dir=\"". $lang['_textdir']. "\">";
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
+    $label = htmlentities(trim($label));
+
+    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
+    $html.= "dir=\"{$lang['_textdir']}\" ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= ">";
 
     for ($i = 0; $i < count($value); $i++) {
         $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
@@ -117,82 +172,177 @@ function form_dropdown_array($name, $value, $label, $default = "", $custom_html 
             $html.= "<option$sel>".$value[$i]."</option>";
         }
     }
-    return $html."</select>";
-}
 
-// create a <input type="checkbox">
-function form_checkbox($name, $value, $text, $checked = false, $custom_html = "")
-{
-    $html = "<span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked=\"checked\"";
-    return $html . " $custom_html />$text</span>";
-}
-
-// create a <input type="radio">
-function form_radio($name, $value, $text, $checked = false, $custom_html= "")
-{
-    $html = "<span class=\"bhinputradio\"><input type=\"radio\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked=\"checked\"";
-    return $html . " $custom_html />$text</span>";
-}
-
-// create a <input type="radio"> set with values from array(s)
-function form_radio_array($name, $value, $text, $checked = -1)
-{
-    for($i=0;$i<count($value);$i++){
-        if(isset($html)) {
-          $html .= form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]));
-        } else {
-          $html = form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]));
-        }
-    }
+    $html.= "</select>";
     return $html;
 }
 
-// create a <input type="submit"> button
-function form_submit($name = "submit", $value = "Submit", $customhtml = "", $class = "button")
+// Creates a checkbox field
+
+function form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" $customhtml />";
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
+    $text  = htmlentities(trim($text));
+
+    $checked = ($checked) ? "checked=\"checked\"" : "";
+
+    $html = "<span class=\"bhinputcheckbox\">";
+    $html.= "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
+    $html.= "autocomplete=\"off\" $checked ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= "/>$text</span>";
+    return $html;
 }
 
-// create a form reset button
-function form_reset($name = "reset", $value = "Reset", $customhtml = "", $class = "button")
+// Create a radio field
+
+function form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
-    return "<input type=\"reset\" name=\"$name\" value=\"$value\" class=\"$class\" $customhtml />";
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
+    $text  = htmlentities(trim($text));
+
+    $checked = ($checked) ? "checked=\"checked\"" : "";
+
+    $html = "<span class=\"bhinputradio\">";
+    $html.= "<input type=\"radio\" name=\"$name\" value=\"$value\"";
+    $html.= "autocomplete=\"off\" $checked ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= "/>$text</span>";
+    return $html;
 }
 
-// create a button with custom HTML, for onclick methods, etc.
-function form_button($name, $value, $customhtml, $class="button")
-{
-    return "<input type=\"button\" name=\"$name\" value=\"$value\" class=\"$class\" $customhtml />";
-}
+// Create an array of radio fields.
 
-// create a form just to be a link button
-function form_quick_button($href,$label,$var = 0,$value = 0,$target = "_self")
+function form_radio_array($name, $value, $text, $checked = false, $custom_html = false)
 {
-    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" target=\"$target\">";
-
-    if($var){
-        if(is_array($var)){
-            for($i=0;$i<count($var);$i++){
-                echo form_input_hidden($var[$i],$value[$i]);
-            }
-        } else {
-            echo form_input_hidden($var,$value);
+    for ($i = 0; $i < count($value); $i++) {
+        if (isset($html)) {
+            $html.= form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]), $custom_html);
+        }else {
+            $html = form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]), $custom_html);
         }
     }
 
-    echo form_submit("submit",$label)."</form>";
+    return $html;
 }
 
-// create the date of birth dropdowns for prefs. $show_blank controls whether to show a blank option in each box for backwards
-// compatibility with 0.3 and below, where the DOB was not required information
+// Creates a form submit button
+
+function form_submit($name = "submit", $value = "Submit", $custom_html = false, $class = "button")
+{
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
+    $class = htmlentities(trim($class));
+
+    $custom_html = trim($custom_html);
+
+    $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" ";
+    $html.= "autocomplete=\"off\" class=\"$class\" ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= "/>";
+    return $html;
+}
+
+// Creates a form reset button
+
+function form_reset($name = "reset", $value = "Reset", $custom_html = false, $class = "button")
+{
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
+    $class = htmlentities(trim($class));
+
+    $html = "<input type=\"reset\" name=\"$name\" value=\"$value\" ";
+    $html.= "autocomplete=\"off\" class=\"$class\" ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= "/>";
+    return $html;
+}
+
+// Creates a button with custom HTML, for onclick methods, etc.
+
+function form_button($name, $value, $custom_html, $class="button")
+{
+    $name  = htmlentities(trim($name));
+    $value = htmlentities(trim($value));
+    $class = htmlentities(trim($class));
+
+    $html = "<input type=\"button\" name=\"$name\" value=\"$value\" ";
+    $html.= "autocomplete=\"off\" class=\"$class\" ";
+
+    if ($custom_html) {
+        $custom_html = trim($custom_html);
+        $html.= "$custom_html ";
+    }
+
+    $html.= "/>";
+    return $html;
+}
+
+// create a form just to be a link button
+// $var and $value can optionally be single-dimensional arrays
+// containing names and values to be used for hidden form
+// fields. Multi-dimensional arrays will be ignored.
+
+function form_quick_button($href, $label, $var = false, $value = false, $target = "_self")
+{
+    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" ";
+    echo "target=\"$target\" autocomplete=\"off\">";
+
+    if ($var) {
+        if (is_array($var)) {
+            for ($i = 0; $i < count($var); $i++) {
+                if (!is_array($var[$i])) {
+                    echo form_input_hidden($var[$i], $value[$i]);
+                }
+            }
+        }else {
+            echo form_input_hidden($var, $value);
+        }
+    }
+
+    echo form_submit("submit", $label);
+    echo "</form>";
+}
+
+// create the date of birth dropdowns for prefs. $show_blank controls whether to show
+// a blank option in each box for backwards compatibility with 0.3 and below,
+// where the DOB was not required information
+
 function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 {
     global $lang;
 
-    $birthday_days   = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
-    $birthday_months = array($lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
+    $birthday_days = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
+                           '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+                           '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
+                           '31');
+
+    $birthday_months = array($lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'],
+                             $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'],
+                             $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
+
     $birthday_years = range(1900, date('Y', mktime()));
 
     if ($show_blank) {
@@ -202,50 +352,68 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
         $birthday_months = array_merge(' ', $birthday_months);
         $birthday_years_values = array_merge(0, $birthday_years);
         $birthday_years = array_merge(' ', $birthday_years);
-    } else {
+    }else {
         $birthday_days_values = range(1, 31);
         $birthday_months_values = range(1, 12);
         $birthday_years_values = $birthday_years;
     }
 
-    $output  = form_dropdown_array("dob_day", $birthday_days_values, $birthday_days, $dob_day);
-    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    $output .= form_dropdown_array("dob_month", $birthday_months_values, $birthday_months, $dob_month);
-    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    $output .= form_dropdown_array("dob_year", $birthday_years_values, $birthday_years, $dob_year);
+    $output = form_dropdown_array("dob_day", $birthday_days_values, $birthday_days, $dob_day);
+    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= form_dropdown_array("dob_month", $birthday_months_values, $birthday_months, $dob_month);
+    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= form_dropdown_array("dob_year", $birthday_years_values, $birthday_years, $dob_year);
 
     return $output;
 }
 
+// Creates an array of hidden form fields.
+// Is multi-dimensional array safe.
+
 function form_input_hidden_array($name, $value)
 {
-    if (!isset($return)) $return = "";
-
     if (is_array($value)) {
         foreach ($value as $array_key => $array_value) {
-            $return.= form_input_hidden_array("{$name}[{$array_key}]", $array_value);
+            if (isset($return)) {
+                $return.= form_input_hidden_array("{$name}[{$array_key}]", $array_value);
+            }else {
+                $return = form_input_hidden_array("{$name}[{$array_key}]", $array_value);
+            }
         }
     }else {
-        $return.= form_input_hidden($name, _stripslashes($value));
+        if (isset($return)) {
+            $return.= form_input_hidden($name, _stripslashes($value));
+        }else {
+            $return = form_input_hidden($name, _stripslashes($value));
+        }
     }
 
     return $return;
 }
 
-function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = "")
+// Creates a dropdown selectors for dates
+// including seperate fields for day, month and year.
+
+function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
 {
     global $lang;
 
     $days   = array_merge(" ", range(1,31));
-    $months = array(" ", $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
-    $years = array_merge(" ", range(date('Y'), 2037)); // the end of 2037 is more or less the maximum time that can be represented as a UNIX timestamp currently
+    $months = array(" ", $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'],
+                    $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'],
+                    $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
+
+    // the end of 2037 is more or less the maximum time that
+    // can be represented as a UNIX timestamp currently
+
+    $years  = array_merge(" ", range(date('Y'), 2037));
     $years_values = array_merge(0, range(date('Y'), 2037));
 
-    $output  = form_dropdown_array($prefix."day", range(0,31), $days, $day);
-    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    $output .= form_dropdown_array($prefix."month", range(0, 12), $months, $month);
-    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    $output .= form_dropdown_array($prefix."year", $years_values, $years, $year);
+    $output = form_dropdown_array("{$prefix}day", range(0,31), $days, $day);
+    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= form_dropdown_array("{$prefix}month", range(0, 12), $months, $month);
+    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= form_dropdown_array("{$prefix}year", $years_values, $years, $year);
 
     return $output;
 }

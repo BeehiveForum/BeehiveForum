@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.25 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.26 2003-08-31 19:02:32 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -302,7 +302,7 @@ function attachment_inc_dload_count($hash)
 
     $result = db_query($sql, $db_attachment_inc_dload_count);
 
-    return (db_affected_rows($db) > 0);
+    return (db_affected_rows($db_attachment_inc_dload_count) > 0);
 }
 
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.107 2003-08-01 23:52:52 decoyduck Exp $ */
+/* $Id: post.php,v 1.108 2003-08-03 10:10:37 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -196,6 +196,9 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
             if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
                 $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
                 $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
+            } else {
+                $t_closed = false;
+                $t_sticky = "N";
             }
 
             $t_tid = post_create_thread($t_fid, _stripslashes($t_threadtitle), "N", $t_sticky, $t_closed);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.41 2003-08-02 13:46:35 hodcroftcj Exp $ */
+/* $Id: create_poll.php,v 1.42 2003-08-03 10:10:37 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -163,9 +163,9 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     $HTTP_POST_VARS['question'] = trim($HTTP_POST_VARS['question']);
 
-    // Create the poll thread with the poll_flag set to Y
+    // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
-    $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y');
+    $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y', 'N');
     $pid = post_create($tid, 0, bh_session_get_value('UID'), 0, '');
 
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);

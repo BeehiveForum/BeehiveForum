@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.49 2004-03-10 12:39:59 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.50 2004-03-10 12:52:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -56,11 +56,13 @@ if ($attachment_use_old_method) {
     }
 }else {
     if (strstr($HTTP_SERVER_VARS['PHP_SELF'], 'getattachment.php')) {
-        preg_match("/\/getattachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
-        $hash = $attachment_data[1];
+        if (preg_match("/\/getattachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data)) {
+            $hash = $attachment_data[1];
+        }
     }else {
-        preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
-        $hash = $attachment_data[1];        
+        if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data)) {
+            $hash = $attachment_data[1];
+        }
     }
 }
 

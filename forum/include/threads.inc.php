@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.160 2005-02-05 19:44:25 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.161 2005-02-06 21:35:26 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -875,14 +875,57 @@ function threads_mark_read($tidarray)
     }
 }
 
-function threads_draw_discussions_dropdown($mode)
+function thread_list_draw_top($mode)
 {
     $lang = load_language_file();
+
+    $webtag = get_webtag($webtag_search);
+
+    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+    echo "<!--\n\n";
+    echo "function change_current_thread (thread_id) {\n";
+    echo "    if (current_thread > 0) {\n";
+    echo "        document[\"t\" + current_thread].src = \"", style_image('bullet.png'), "\";\n";
+    echo "    }\n";
+    echo "    document[\"t\" + thread_id].src = \"", style_image('current_thread.png'), "\";\n";
+    echo "    current_thread = thread_id;\n";
+    echo "    return true;\n";
+    echo "}\n\n";
+    echo "// -->\n";
+    echo "</script>\n\n";
+    echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+    echo "  </tr>\n";
+
+    if ($pm_new_count = pm_get_unread_count()) {
+
+        echo "  <tr>\n";
+        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
+        echo "  </tr>\n";
+
+    }else {
+
+        echo "  <tr>\n";
+        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
+        echo "  </tr>\n";
+    }
+
+    echo "  <tr>\n";
+    echo "    <td colspan=\"2\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td colspan=\"2\">\n";
+    echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "        ", form_input_hidden("webtag", $webtag), "\n";
 
     if (bh_session_get_value('UID') == 0) {
 
         $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
-        return form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\"");
+        echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\"");
 
     }else {
 
@@ -891,9 +934,14 @@ function threads_draw_discussions_dropdown($mode)
                         $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
                         $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
 
-        return form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\"");
+        echo form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\"");
 
     }
+
+    echo "        ", form_submit("go",$lang['goexcmark']), "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
 }
 
 function thread_has_attachments($tid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.108 2005-02-04 00:21:56 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.109 2005-02-06 21:35:25 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -895,12 +895,11 @@ function pm_new_check()
     // Check to see if the user has any new PMs
     // ------------------------------------------------------------
 
-    $sql = "SELECT MID FROM PM ";
+    $sql = "SELECT COUNT(MID) FROM PM ";
     $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
-
-    $num_rows = db_num_rows($result);
+    list($pm_new_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     // ------------------------------------------------------------
     // We only want to notify the user once per every new
@@ -913,7 +912,7 @@ function pm_new_check()
 
     $result = db_query($sql, $db_pm_new_check);
 
-    return ($num_rows > 0);
+    return ($pm_new_count > 0) ? $pm_new_count : false;
 }
 
 function pm_get_unread_count()
@@ -923,15 +922,21 @@ function pm_get_unread_count()
 
     if (!$table_data = get_table_prefix()) return false;
 
+    // Guests don't do PMs.
+
+    if ($uid == 0) return false;
+
     // ------------------------------------------------------------
     // Check to see if the user has any new PMs
     // ------------------------------------------------------------
 
-    $sql = "SELECT MID FROM PM ";
+    $sql = "SELECT COUNT(MID) FROM PM ";
     $sql.= "WHERE TYPE = ". PM_UNREAD. " AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_get_unread_count);
-    return db_num_rows($result);
+    list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $pm_unread_count;
 }
 
 // Function to prune the current user's PM Folders

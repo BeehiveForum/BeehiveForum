@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.233 2005-02-04 19:35:37 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.234 2005-02-06 21:35:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -150,48 +150,8 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 // Output XHTML header
 html_draw_top();
 
-echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "function change_current_thread (thread_id) {\n";
-echo "    if (current_thread > 0) {\n";
-echo "        document[\"t\" + current_thread].src = \"", style_image('bullet.png'), "\";\n";
-echo "    }\n";
-echo "    document[\"t\" + thread_id].src = \"", style_image('current_thread.png'), "\";\n";
-echo "    current_thread = thread_id;\n";
-echo "    return true;\n";
-echo "}\n\n";
-echo "// -->\n";
-echo "</script>\n\n";
-echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
-echo "  </tr>\n";
-
-if ($pm_new_count = pm_get_unread_count() && bh_session_get_value('UID') != 0) {
-    echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
-    echo "  </tr>\n";
-}else {
-    echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
-    echo "  </tr>\n";
-}
-
-echo "  <tr>\n";
-echo "    <td colspan=\"2\">&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td colspan=\"2\">\n";
-echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
-echo "        ", form_input_hidden("webtag", $webtag), "\n";
-echo "        ", threads_draw_discussions_dropdown($mode), "\n";
-echo "        ", form_submit("go",$lang['goexcmark']), "\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
+// Draw discussion dropdown
+thread_list_draw_top($mode);
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.219 2005-02-06 14:28:05 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.220 2005-02-06 21:35:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -692,12 +692,10 @@ $lang['forgotpwemail_2'] = "because you have forgotten your password.";
 $lang['forgotpwemail_3'] = "Click the link below (or copy and paste it into your browser) to reset your password";
 $lang['passwdresetrequest'] = "Your password reset request";
 $lang['passwdresetemailsent'] = "Password reset e-mail sent";
-$lang['passwdresetexp_1'] = "You should receive an e-mail containing";
-$lang['passwdresetexp_2'] = "a link to reset your password shortly.";
+$lang['passwdresetexp'] = "You should receive an e-mail containing instructions for resetting your password shortly.";
 $lang['validusernamerequired'] = "A valid username is required";
 $lang['forgotpasswd'] = "Forgot password";
-$lang['forgotpasswdexp_1'] = "Enter your logon name above and an email containing a link allowing";
-$lang['forgotpasswdexp_2'] = "you to change your password will be sent to your registered email address";
+$lang['forgotpasswdexp'] = "If you have forgotten your password, you can request to have it reset by entering your logon name below. Instructions on how to reset your password will be sent to your registered email address.";
 $lang['couldnotsendpasswordreminder'] = "Could not send password reminder. Please contact the forum owner.";
 $lang['request'] = "Request";
 
@@ -932,7 +930,8 @@ $lang['cannoteditpm'] = "Cannot edit this PM. It has already been viewed by the 
 $lang['cannotviewpm'] = "Cannot view PM. Message does not exist or it is inaccessible by you";
 $lang['nomessagespecifiedforreply'] = "No message specified for reply to";
 $lang['nouserspecified'] = "No user specified.";
-$lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your Inbox now?";
+$lang['pmnotificationpopup_1'] = "You have";
+$lang['pmnotificationpopup_2'] = "a new PM. Would you like to go to your Inbox now?";
 $lang['oldermessages'] = "Older Messages";
 $lang['newermessages'] = "Newer Messages";
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";

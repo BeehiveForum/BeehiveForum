@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.47 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: links.php,v 1.48 2004-04-14 20:39:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -142,8 +142,8 @@ if (isset($HTTP_GET_VARS['viewmode']) && is_numeric($HTTP_GET_VARS['viewmode']) 
     $viewmode = 0;
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page']) && $viewmode == 1) {
-    $start = $HTTP_GET_VARS['page'] * 20;
+if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
+    $start = floor($HTTP_GET_VARS['page'] - 1) * 20;
 }else {
     $start = 0;
 }
@@ -236,7 +236,7 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
 }
 
 if ($viewmode == 0) {
-    $links = links_get_in_folder($fid, perm_is_moderator(), $sort_by, $sort_dir);
+    $links = links_get_in_folder($fid, perm_is_moderator(), $sort_by, $sort_dir, $start);
 }else {
     $links = links_get_all(perm_is_moderator(), $sort_by, $sort_dir, $start);
 }
@@ -278,59 +278,55 @@ echo "&nbsp;</td>\n";
 echo "    <td class=\"posthead\">{$lang['commentsslashvote']}</td>\n";
 echo "  </tr>\n";
 
-if (sizeof($links) > 0 ) {
-    while (list($key, $link) = each($links)) {
+if (sizeof($links['links_array']) > 0 ) {
+
+    foreach ($links['links_array'] as $key => $link) {
+
         echo "  <tr" ; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">\n";
         echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links.php?webtag=$webtag&lid=$key&amp;action=go\" target=\"_blank\""; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">". _stripslashes($link['TITLE']) . "</a></td>\n";
         echo "    <td class=\"postbody\" width=\"50%\" valign=\"top\">", _stripslashes($link['DESCRIPTION']), "</td>\n";
         echo "    <td class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
-        echo "    <td class=\"postbody\" valign=\"top\">";
-        if (isset($link['RATING']) && $link['RATING'] != "") echo round($link['RATING'], 1);
-        echo "</td>\n";
+
+	if (isset($link['RATING']) && $link['RATING'] != "") {
+            echo "    <td class=\"postbody\" valign=\"top\">", round($link['RATING'], 1), "</td>\n";
+	}else {
+	    echo "    <td class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
+	}
+
         echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&lid=$key\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
         echo "  </tr>\n";
     }
-} else {
-    echo "  <tr>\n    <td colspan=\"5\" class=\"postbody\">{$lang['nolinksinfolder']}</td>\n  </tr>\n";
+
+}else {
+    echo "  <tr>\n";
+    echo "    <td colspan=\"5\" class=\"postbody\">{$lang['nolinksinfolder']}</td>\n";
+    echo "  </tr>\n";
 }
 
-if (bh_session_get_value('UID')) {
+echo "  <tr>\n";
+echo "    <td class=\"postbody\">&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?webtag=$webtag&mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"center\" colspan=\"5\">Pages: ";
 
-    if ($viewmode == 0) {
+$page_count = ceil($links['links_count'] / 20);
+    
+if ($page_count > 1) {
 
-        echo "  <tr>\n";
-        echo "    <td class=\"postbody\">&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?webtag=$webtag&mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
-        echo "  </tr>\n";
-
-    }else {
-
-        echo "  <tr>\n";
-        echo "    <td class=\"postbody\">&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-
-        if (sizeof($links) == 20) {
-            if ($start < 20) {
-                echo "    <td class=\"postbody\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;fid=$fid&amp;viewmode=$viewmode\" target=\"_self\">{$lang['more']}</a></td>\n";
-            }elseif ($start >= 20) {
-                echo "    <td class=\"postbody\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;fid=$fid&amp;viewmode=$viewmode\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-                echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;fid=$fid&amp;viewmode=$viewmode\" target=\"_self\">{$lang['more']}</a></td>\n";
-            }
-        }else {
-            if ($start >= 20) {
-                echo "    <td class=\"postbody\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"links.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;fid=$fid&amp;viewmode=$viewmode target=\"_self\">{$lang['back']}</a></td>\n";
-            }else {
-                echo "    <td class=\"postbody\">&nbsp;</td>";
-            }
-        }
-
-        echo "  </tr>\n";
+    for ($page = 1; $page <= $page_count; $page++) {
+        echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;page=$page\" target=\"_self\">$page</a> ";
     }
+
+}else {
+
+    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;page=1\" target=\"_self\">1</a> ";
 }
 
+echo "</td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 
 html_draw_bottom();

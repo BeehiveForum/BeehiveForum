@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_global_user_perms.php,v 1.1 2005-03-06 23:36:41 decoyduck Exp $ */
+/* $Id: admin_global_user_perms.php,v 1.2 2005-03-07 00:04:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -129,12 +129,32 @@ if (isset($_POST['update'])) {
 
     if (isset($_POST['t_admin_tools']) && is_array($_POST['t_admin_tools'])) {
 
+        $valid = true;
+
+        $forum_tools_perm_count = perm_get_admin_tools_perm_count();
+        $admin_tools_perm_count = perm_get_forum_tools_perm_count();
+
         foreach($_POST['t_admin_tools'] as $uid => $t_admin_tools) {
 
-           $t_forum_tools = (isset($_POST['t_forum_tools'][$uid])) ? $_POST['t_forum_tools'][$uid] : 0;
-           $new_user_perms = ((double) $t_admin_tools | (double) $t_forum_tools);
+            $t_forum_tools = (isset($_POST['t_forum_tools'][$uid])) ? $_POST['t_forum_tools'][$uid] : 0;
+            $new_user_perms = ((double) $t_admin_tools | (double) $t_forum_tools);
 
-           perm_update_global_perms($uid, $new_user_perms);
+            if (($new_user_perms ^ USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 2) {
+
+                $valid = false;
+                $error_html = "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+            }
+
+            if (($new_user_perms ^ USER_PERM_FORUM_TOOLS) && $forum_tools_perm_count < 2) {
+
+                $valid = false;
+                $error_html = "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+            }
+
+            if ($valid) {
+
+                echo "perm_update_global_perms($uid, $new_user_perms)<br />\n";
+            }
         }
     }
 }
@@ -143,9 +163,18 @@ if (isset($_POST['remove'])) {
 
     if (isset($_POST['remove_user']) && is_array($_POST['remove_user'])) {
 
-        foreach($_POST['remove_user'] as $uid) {
+        $global_perm_count = perm_get_global_permissions_count();
+        $global_perm_count-= sizeof($_POST['remove_user']);
 
-            perm_remove_global_perms($uid);
+        if ($global_perm_count > 0) {
+
+            foreach($_POST['remove_user'] as $uid) {
+                perm_remove_global_perms($uid);
+            }
+
+        }else {
+
+            $error_html = "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
         }
     }
 }
@@ -167,6 +196,9 @@ if (isset($_POST['add'])) {
 }
 
 echo "<h1>{$lang['admin']} : {$lang['globaluserpermissions']}</h1>\n";
+
+if (isset($error_html)) echo $error_html;
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_global_user_perms.php\" method=\"post\">\n";

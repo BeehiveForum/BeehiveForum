@@ -338,7 +338,7 @@ function search_draw_user_dropdown($name)
     $db_search_draw_user_dropdown = db_connect();
     
     $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
-    $sql.= "from ".forum_table("USER")." U WHERE U.UID <> ". $HTTP_COOKIE_VARS['bh_sess_uid']. " ";
+    $sql.= "from ".forum_table("USER")." U WHERE U.UID > 0 AND U.UID <> ". $HTTP_COOKIE_VARS['bh_sess_uid']. " ";
     $sql.= "order by U.LAST_LOGON desc ";
     $sql.= "limit 0, 20";
     

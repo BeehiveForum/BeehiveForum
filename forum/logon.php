@@ -42,7 +42,7 @@ if(bh_session_check()) {
 
     html_draw_top();
     echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>";
-    echo "<p><a href=\"". $final_uri. "\" target=\"_top\">Continue</a></p>";
+    echo "<p><a href=\"". $final_uri. "\">Continue</a></p>";
     html_draw_bottom();
     exit;
     

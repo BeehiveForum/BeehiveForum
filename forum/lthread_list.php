@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.22 2003-11-17 22:02:11 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.23 2003-12-16 21:12:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -52,28 +52,27 @@ $user = bh_session_get_value('UID');
 
 if (isset($HTTP_GET_VARS['markread'])) {
 
-  if ($HTTP_GET_VARS['markread'] == 2) {
-    threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
-  }elseif ($HTTP_GET_VARS['markread'] == 0) {
-    threads_mark_all_read();
-  }elseif ($HTTP_GET_VARS['markread'] == 1) {
-    threads_mark_50_read();
-  }
-
+    if ($HTTP_GET_VARS['markread'] == 2 && isset($HTTP_GET_VARS['tids']) && is_array($HTTP_GET_VARS['tids'])) {
+        threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
+    }elseif ($HTTP_GET_VARS['markread'] == 0) {
+        threads_mark_all_read();
+    }elseif ($HTTP_GET_VARS['markread'] == 1) {
+        threads_mark_50_read();
+    }
 }
 
 if (!isset($HTTP_GET_VARS['mode'])) {
     if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
         if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
             $mode = 1;
-        } else {
+        }else {
             $mode = 0;
         }
     }else {
         $mode = (is_numeric($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
     }
-} else {
-    $mode = (is_numeric($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
+}else {
+    $mode = (is_numeric($HTTP_GET_VARS['mode'])) ? $HTTP_GET_VARS['mode'] : 0;
 }
 
 if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {

@@ -35,28 +35,39 @@ require_once("./include/config.inc.php");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title><?= $forum_name ?></title>
+		<title><?php echo $forum_name; ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="styles.php?<?php echo md5(uniqid(rand())); ?>" type="text/css">
 	</head>
 	<frameset rows="60,*" border="0">
 	  <frame src="./top.html" name="top" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
-<?
-if($logged_in){
+<?php
+
+if(bh_session_check()){
+
     if(isset($HTTP_GET_VARS['msg'])){
         echo "          <frame src=\"./discussion.php?msg=".$HTTP_GET_VARS['msg'];
     } else {
         echo "          <frame src=\"./start.php";
     }
+    
     echo "\" name=\"main\" border=\"1\">";
+    
 } else {
+
     echo "<frame src=\"./logon.php?final_uri=";
+    
     if(isset($HTTP_GET_VARS['msg'])){
-        echo urlencode(dirname($HTTP_SERVER_VARS['PHP_SELF'])."/discussion.php?msg=".$HTTP_GET_VARS['msg']);
+        $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']). "/discussion.php?msg=". $HTTP_GET_VARS['msg'];
     } else {
-        echo urlencode(dirname($HTTP_SERVER_VARS['PHP_SELF'])."/start.php");
+        $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']). "/start.php";
     }
+    
+    $final_uri = str_replace("\\", "", $final_uri);
+    
+    echo urlencode($final_uri);
     echo "\" name=\"main\" border=\"1\">\n";
+    
 }
 ?>
 	</frameset>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.45 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.46 2004-04-25 13:55:44 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -86,6 +86,8 @@ function post_delete($tid, $pid)
 
 function edit_refuse($tid, $pid)
 {
+    $lang = load_language_file();
+
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['nopermissiontoedit']}</p>";

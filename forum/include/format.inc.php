@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.70 2004-04-24 18:42:30 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.71 2004-04-25 13:55:45 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 include_once("./include/word_filter.inc.php");
@@ -162,8 +162,6 @@ function timestamp_amend_bst($timestamp)
 
 function _htmlentities($text)
 {
-    $lang = load_language_file();
-
     return htmlspecialchars($text);
 
     // This bit below doesn't appear to work with
@@ -172,7 +170,9 @@ function _htmlentities($text)
     // characters including the euro and pound (£)
     // sign.
 
-    /*if (phpversion() >= "4.1.0") {
+    /*$lang = load_language_file();
+
+    if (phpversion() >= "4.1.0") {
         return htmlentities($text, ENT_COMPAT, strtoupper($lang['_charset']));
     }else {
         return htmlentities($text, ENT_COMPAT);

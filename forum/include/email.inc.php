@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.62 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.63 2004-04-25 13:55:45 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -333,21 +333,21 @@ function email_get_language($to_uid)
 {
     $forum_settings = get_forum_settings();
 
-    $prefs = user_get_prefs($to_uid);
-
      // if the user has expressed a preference for language, use it
      // if available otherwise use the default language.
 
-    if (isset($prefs['LANGUAGE']) && trim($prefs['LANGUAGE']) != "") {
-        if (file_exists("./include/languages/{$prefs['LANGUAGE']}.inc.php")) {
-             require("./include/languages/{$prefs['LANGUAGE']}.inc.php");
+    $default_language = forum_get_setting('default_language', false, 'en');
+
+    if ($pref_language = bh_session_get_value("LANGUAGE")) {
+        if (file_exists("./include/languages/{$pref_language}.inc.php")) {
+             require("./include/languages/{$pref_language}.inc.php");
              return $lang;
         }else {
-             require("./include/languages/". forum_get_setting('default_language', false, 'en'). ".inc.php");
+             require("./include/languages/{$default_language}.inc.php");
              return $lang;
         }
     }else {
-         require("./include/languages/". forum_get_setting('default_language', false, 'en'). ".inc.php");
+         require("./include/languages/{$default_language}.inc.php");
          return $lang;
     }
 }

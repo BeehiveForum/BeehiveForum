@@ -76,8 +76,14 @@ function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show
 
     // Update the Poll settings
 
+    if ($closes) {
+      $closes = "from_unixtime($closes)";
+    }else {
+      $closes = 'NULL';
+    }
+
     $sql = "update ". forum_table("POLL"). " set CHANGEVOTE = '$change_vote', POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results' ";
-    if ($closes) $sql.= ", CLOSES = '$closes' ";
+    if ($closes) $sql.= ", CLOSES = $closes ";
     $sql.= "where TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
 
@@ -90,7 +96,7 @@ function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show
 
     foreach($poll_options as $option_name) {
 
-      if (isset($option_name) && strlen($option_name) > 0) {
+      if (strlen(trim($option_name)) > 0) {
 
         $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
         $sql.= "values ('$tid', '". addslashes($option_name). "')";

@@ -20,6 +20,10 @@ Version 0.1 / 8th December 2002
    4.2 I hate frames. Why did you use them?
 5. Improving Beehive
    5.1 Beehive doesn't do x. Can you make it do that?
+6. Trouble Shooting
+   6.1 Database connectivity problems or permission denied errors
+   6.2 Unknown or missing table errors
+   6.3 Blank page errors
 
 1. About Beehive
 ================
@@ -145,3 +149,33 @@ bear in mind that we do this in our spare time.
 
 Of course, since Beehive is open source, you could always implement whatever 
 feature you want yourself. We'd love you to submit patches.
+
+
+6. Troubleshooting
+==================
+
+6.1 Database connectivity problems or permission denied errors
+==============================================================
+
+If you are experiencing connectivity problems or permission denied errors, check
+that you have edited the config.inc.php so that the database details match those
+provided by your hosting provider. Be sure to double check the username and
+password. If they are incorrect your Beehive Forum will fail to function.
+
+6.2 Unknown or missing table errors
+===================================
+
+In the case of unknown or missing table errors, be sure that you have correctly
+and successfully imported the schema.sql file in the docs folder of the Beehive
+Forum Distribution. If you experience errors during the import, check that your
+version of MySQL is recent enough (see readme.txt for requirements)
+
+6.3 Blank page errors
+=====================
+
+Blank pages can be caused by enabling the gzip compression support in your
+Beehive Forum's config.inc.php. Problems arise when the server already has gzip
+compression for PHP scripts enabled or a 3rd party compression library such as
+mod_gzip is installed. Before reporting this as a bug, try disabling the gzip
+compression in config.inc.php of your Beehive Forum by changing the
+$gzip_compress_output variable to False.

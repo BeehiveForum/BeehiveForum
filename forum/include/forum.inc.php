@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.54 2004-04-17 20:06:59 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.55 2004-04-17 20:17:47 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -313,6 +313,30 @@ function forum_create($webtag, $forum_name, $access)
                 
         if (db_num_rows($result) > 0) {
             return false;
+        }
+        
+	// Beehive Table Names
+	
+	$table_array = array('ADMIN_LOG', 'BANNED_IP', 'DEDUPE',
+	                     'FILTER_LIST', 'FOLDER', 'LINKS',
+	                     'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
+	                     'PM', 'PM_ATTACHMENT_IDS', 'PM_CONTENT',
+	                     'POLL', 'POLL_VOTES', 'POST',
+	                     'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
+	                     'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
+                             'STATS', 'THREAD', 'USER_FOLDER',
+                             'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
+                             'USER_PROFILE', 'USER_SIG', 'USER_THREAD');
+        
+        // Check to see if any of the Beehive tables already exist.
+        // If they do then something is wrong and we should error out.
+
+        foreach ($table_array as $table_name) {
+        
+            $sql = "SHOW TABLES LIKE '{$webtag}_{$table_name}'";
+            $result = db_query($sql, $db_forum_create);
+            
+            if (db_num_rows($result) > 0) return false;
         }
 
         // Create ADMIN_LOG table

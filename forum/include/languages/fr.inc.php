@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.65 2004-04-15 18:31:59 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.66 2004-04-17 20:17:47 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -341,6 +341,8 @@ $lang['warningnoforums'] = "WARNING: You have no forums set up.";
 $lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
 $lang['deleteforum'] = "Delete Forum";
 $lang['defaultforum'] = "Default Forum";
+$lang['successfullycreatedforum'] = "Successfully created forum $new_webtag";
+$lang['failedtocreateforum'] = "Failed to create forum $new_webtag. Please check to make sure the webtag and table names aren't already in use.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

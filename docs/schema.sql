@@ -235,6 +235,7 @@ CREATE TABLE USER (
 # Dumping data for table `USER`
 #
 
+INSERT INTO USER VALUES (0, 'GUEST', '084e0343a0486ff05530df6c705c8bb4', 'Guest', 'guest@email.com', 1, NOW());
 INSERT INTO USER VALUES (1, 'ADMIN', 'b60eb83bf533eecf1bde65940925a981', 'Administrator', 'your@email.com', 56, NOW());
 # --------------------------------------------------------
 

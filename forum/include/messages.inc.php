@@ -246,16 +246,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
         }
-
-        if (isset($message['VIEWED'])) {
-        
-          if ($message['VIEWED'] > 0) {
-              echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
-          }else {
-              echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
-          }
-
-	}
+      
+        if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
+            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
+        }else {
+            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
+        }
 
     }else {
         echo "ALL</span>";

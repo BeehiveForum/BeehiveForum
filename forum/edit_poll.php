@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.80 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.81 2004-08-08 20:24:09 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -213,6 +213,12 @@ if (isset($_POST['preview']) || isset($_POST['submit'])) {
 
 html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
 
+$allow_html = true;
+
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+	$allow_html = false;
+}
+
 if ($valid && isset($_POST['preview'])) {
 
     $polldata['TLOGON'] = "ALL";
@@ -248,7 +254,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $ans_h = 0;
 
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+    if ($allow_html == true && isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
         $ans_h = 2;
     }
 
@@ -348,7 +354,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $ans_h = 0;
 
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+    if ($allow_html == true && isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
         $ans_h = 2;
     }
 
@@ -619,10 +625,13 @@ for ($i = 0; $i < $answercount; $i++) {
     echo "</tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], $t_post_html), "</td>\n";
-echo "                </tr>\n";
+if ($allow_html == true) {
+	echo "                <tr>\n";
+	echo "                  <td>&nbsp;</td>\n";
+	echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], $t_post_html), "</td>\n";
+	echo "                </tr>\n";
+}
+
 echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";

@@ -34,13 +34,13 @@ a            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11
   </tr>
   <tr>
     <td valign="top" class="bodytext">
-      <p>Hello and welcome to the the Project Beehive test forum.</p>
+      <p>Hello and welcome to the Project Beehive test forum.</p>
       <p>Guidelines:</p>
       <ol>
-        <li><p>First and foremost this is a test forum and it should be kept that way. By all means post messages, test it out, but please don't invite all your mates over here and adpot it as your permenant residence.</p></li>
-        <li><p>We don't mind a little mild swearing, but try not to over do it, and we're not very tolerant about spam, homophobia, rascism and general bigotry... same as most other places!</p></li>
+        <li><p>First and foremost this is a test forum and it should be kept that way. By all means post messages, test it out, but please don't invite all your mates over here and adopt it as your permanent residence.</p></li>
+        <li><p>We don't mind a little mild swearing, but try not to over do it, and we're not very tolerant about spam, homophobia, racism and general bigotry... same as most other places!</p></li>
       </ol>
-      <p>As unlikely as it sounds, this forum is highlighy likely to contain bugs. I know, I know how could it possibly contain bugs with such mind numbingly brilliant developers aboard? Enough of the <del>sarcasm</del>  Ego inflating I think. In all seriousness if you find a bug please leave a post detailing what it is that happened, what you expected to happen and what it is you were doing when it happended. All of this information will help considerably in locating the problem and getting it sorted. Even better if you know how and why it happended, right down to the line number in the source code, please tell us, as it will make things even easier.</p>
+      <p>As unlikely as it sounds, this forum is highly likely to contain bugs. I know, I know how could it possibly contain bugs with such mind numbingly brilliant developers aboard? Enough of the <del>sarcasm</del>  Ego inflating I think. In all seriousness if you find a bug please leave a post detailing what it is that happened, what you expected to happen and what it is you were doing when it happened. All of this information will help considerably in locating the problem and getting it sorted. Even better if you know how and why it appended, right down to the line number in the source code, please tell us, as it will make things even easier.</p>
       <p>Enough gibberish for now, come on in!</p>
     </td>
   </tr>

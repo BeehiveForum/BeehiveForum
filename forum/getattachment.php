@@ -75,6 +75,8 @@ if (isset($HTTP_GET_VARS['hash'])) {
         header("Content-Transfer-Encoding: binary");
 
         readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
+
+	header("Connection: close");
         exit;
 
       }else {
@@ -90,6 +92,8 @@ if (isset($HTTP_GET_VARS['hash'])) {
         }
 
         readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
+
+	header("Connection: close");
         exit;
 
       }

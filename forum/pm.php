@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.40 2004-04-10 16:35:00 decoyduck Exp $ */
+/* $Id: pm.php,v 1.41 2004-04-10 23:52:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -161,6 +161,12 @@ if (isset($HTTP_GET_VARS['folder'])) {
     }
 }
 
+if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
+    $start = $HTTP_GET_VARS['page'] * 10;
+}else {
+    $start = 0;
+}
+
 html_draw_top("basetarget=_blank", "openprofile.js");
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
@@ -206,7 +212,7 @@ if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
 }
 
 // get message list
-$listmessages_array = pm_list_get($folder_bitwise);
+$listmessages_array = pm_list_get($folder_bitwise, $start);
 
 echo "<form name=\"pm\" action=\"pm.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
@@ -309,7 +315,38 @@ if (sizeof($listmessages_array) == 0) {
     }
 
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" colspan=\"5\" align=\"right\">", (($folder_bitwise <> PM_FOLDER_SAVED) && ($folder_bitwise <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+    echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" colspan=\"5\">\n";
+    echo "        <table width=\"100%\" align=\"center\" border=\"0\">\n";
+    echo "          <tr>\n";
+    echo "            <td colspan=\"2\" width=\"25%\">\n";
+    echo "            <td align=\"center\">\n";
+
+    $pagenext = ($start / 10) + 1;
+    $pageprev = ($start / 10) - 1;
+
+    if (sizeof($listmessages_array) == 10) {
+        if ($start < 10) {
+            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pagenext\" target=\"_self\">{$lang['oldermessages']}</a>\n";
+        }elseif ($start >= 10) {
+            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pageprev\" target=\"_self\">{$lang['newermessages']}</a>&nbsp;&nbsp;\n";
+            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pagenext\" target=\"_self\">{$lang['oldermessages']}</a>\n";
+        }
+    }else {
+        if ($start >= 10) {
+            echo "              <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag&page=$pageprev\" target=\"_self\">{$lang['newermessages']}</a>\n";
+        }else {
+            echo "              &nbsp;\n";
+        }
+    }
+
+    echo "            </td>\n";
+    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder_bitwise <> PM_FOLDER_SAVED) && ($folder_bitwise <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
     echo "    </tr>\n";
 
 }

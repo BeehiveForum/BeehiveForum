@@ -20,15 +20,16 @@ along with Beehive; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
 USA
 ======================================================================*/
-
-require_once("./include/db.inc.php");
+require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
 function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 {
+
     $db_post_create = db_connect();
-    $content = mysql_escape_string($content);
-    $sql = "insert into " . forum_table("POST");
+    $content = addslashes($content);
+    
+    $sql = "insert into " . forum_table("POST");
     $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED) ";
     $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW())";
     $result = db_query($sql,$db_post_create);
@@ -36,7 +37,7 @@ require_once("./include/forum.inc.php");
         $new_pid = db_insert_id($db_post_create);
         $sql = "insert into  " . forum_table("POST_CONTENT");
         $sql .= " (TID,PID,CONTENT) ";
-        $sql .= "values ($tid,$new_pid,\"$content\")";
+        $sql .= "values ($tid, $new_pid, '$content')";
         $result = db_query($sql, $db_post_create);
         
         $sql = "update " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
@@ -91,7 +92,7 @@ function make_html($text)
 
 function post_draw_to_dropdown($default_uid)
 {
-    $html = "<select name=\"t_to_uid\">";
+    $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
 	$top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
@@ -99,10 +100,10 @@ function post_draw_to_dropdown($default_uid)
 	if(db_num_rows($result)>0){
 		$top_user = db_fetch_array($result);
 		$fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-		$html .= "<option value=\"$default_uid\" selected>$fmt_username</option>";
+		$html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
 	}
 
-    $html .= "<option value=\"0\">ALL</option>";
+    $html .= "<option value=\"0\">ALL</option>\n";
 
 	$sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
 	$sql.= "from ".forum_table("USER")." U ";
@@ -127,9 +128,9 @@ function post_draw_to_dropdown($default_uid)
         $fmt_username = format_user_name($logon,$nickname);
 
         if($fmt_uid != $default_uid){
-            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>";
+            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
         }
-        $html .= ">$fmt_username</option>";
+        //$html .= ">$fmt_username</option>";
     }
 
     $html .= "</select>";

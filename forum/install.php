@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.21 2005-01-21 01:19:38 decoyduck Exp $ */
+/* $Id: install.php,v 1.22 2005-02-06 00:20:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -550,7 +550,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                  <td width=\"250\">&nbsp;</td>\n";
     echo "                  <td width=\"250\" valign=\"top\">\n";
     echo "                    <p>For new installs or upgrades from 0.4 to 0.5 please enter the WEBTAG you want to use for the default forum.</p>\n";
-    echo "                    <p>For upgrades from 0.5PR1 to 0.5 the Default Forum Webtag is ignored and all forums are upgraded.</p>\n";
+    echo "                    <p>For upgrades from 0.5 and above the Default Forum Webtag is ignored and all forums are upgraded.</p>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";

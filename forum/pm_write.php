@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.103 2005-02-16 23:39:35 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.104 2005-02-22 12:33:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -95,7 +95,6 @@ $page_prefs = bh_session_get_post_page_prefs();
 // Prune old messages for the current user
 
 pm_user_prune_folders();
-
 
 // Get the Message ID (MID) if any.
 
@@ -356,13 +355,16 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 }
 
 if (isset($_POST['t_post_emots'])) {
-        if ($_POST['t_post_emots'] == "disabled") {
-                $emots_enabled = false;
-        } else {
-                $emots_enabled = true;
-        }
-} else {
-                $emots_enabled = true;
+
+    if ($_POST['t_post_emots'] == "disabled") {
+        $emots_enabled = false;
+    }else {
+        $emots_enabled = true;
+    }
+
+}else {
+
+    $emots_enabled = true;
 }
 
 if (isset($_POST['t_post_links'])) {
@@ -379,13 +381,16 @@ if (isset($_POST['t_post_links'])) {
 }
 
 if (isset($_POST['t_check_spelling'])) {
-        if ($_POST['t_check_spelling'] == "enabled") {
-                $spelling_enabled = true;
-        } else {
-                $spelling_enabled = false;
-        }
-} else {
-        $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
+
+    if ($_POST['t_check_spelling'] == "enabled") {
+        $spelling_enabled = true;
+    } else {
+        $spelling_enabled = false;
+    }
+
+}else {
+
+    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
 
 if (!isset($post_html)) $post_html = 0;
@@ -402,16 +407,16 @@ if (isset($_POST['t_post_html'])) {
 
 } else {
 
-        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-                $post_html = 1;
-        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-                $post_html = 2;
-        } else {
-                $post_html = 0;
-        }
+    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+        $post_html = 1;
+    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+        $post_html = 2;
+    }else {
+        $post_html = 0;
+    }
 
-        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-        $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+    $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+    $links_enabled = ($page_prefs & POST_AUTO_LINKS);
 }
 
 if (!isset($t_content)) $t_content = "";
@@ -443,9 +448,12 @@ if ($valid && isset($_POST['submit'])) {
         if (isset($to_radio) && $to_radio == 0) {
 
             if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+
                 if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
                 email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+
             }else {
+
                 $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                 $valid = false;
             }
@@ -455,9 +463,12 @@ if ($valid && isset($_POST['submit'])) {
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
                 if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+
                     if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
                     email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+
                 }else {
+
                     $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                     $valid = false;
                 }

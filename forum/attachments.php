@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.104 2005-02-04 00:21:50 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.105 2005-02-22 12:33:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -388,7 +388,7 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
 echo "                </tr>\n";
 
-if ($attachments_array = get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
+if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
 
     if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.110 2005-02-17 17:44:38 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.111 2005-02-22 12:33:54 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -596,9 +596,8 @@ function draw_pm_message($pm_elements_array)
     if (isset($pm_elements_array['AID'])) {
 
         $aid = $pm_elements_array['AID'];
-        $attachments_array = get_attachments($pm_elements_array['FROM_UID'], $aid);
 
-        if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+        if (get_attachments($pm_elements_array['FROM_UID'], $aid, $attachments_array['attachments'], $attachments_array['image_attachments'])) {
 
             // Draw the attachment header at the bottom of the post
 

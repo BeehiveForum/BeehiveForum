@@ -21,6 +21,10 @@ define("PERM_CHECK_SOLDIER",USER_PERM_SOLDIER|USER_PERM_QUEEN);
 
 define("MAX_ATTACHMENT_SIZE", 5242880);
 
+// Constants for error handler
+
+define("BH_DB_CONNECT_ERROR", 32767);
+
 // Constants for Search Dialog Errors
 
 define("SEARCH_USER_NOT_FOUND", 1);

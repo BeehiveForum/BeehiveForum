@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.39 2003-09-16 14:45:02 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.40 2003-11-02 12:47:36 decoyduck Exp $ */
 
 // PROVIDES BASIC DATABASE FUNCTIONALITY
 // This is desgined to be be referenced in an include() or require() statement
@@ -30,17 +30,24 @@ USA
 
 // Connects to the database and returns the connection ID
 
-$bh_query_array = array();
+require_once("./include/lang.inc.php");
+require_once("./include/constants.inc.php");
 
 function db_connect ()
 {
+    global $lang;
     static $connection_id = false;
 
     if (!$connection_id) {
-        require ("./include/config.inc.php"); // requires database information
-        $connection_id = @mysql_connect($db_server, $db_username, $db_password) or trigger_error("An error has occured while connecting to the database.", FATAL);
 
-        mysql_select_db($db_database, $connection_id) or die(mysql_error());
+        require ("./include/config.inc.php"); // requires database information
+
+        if ($connection_id = @mysql_connect($db_server, $db_username, $db_password)) {
+            mysql_select_db($db_database, $connection_id) or trigger_error(BH_DB_CONNECT_ERROR, FATAL);
+	    return $connection_id;
+	}else {
+            trigger_error(BH_DB_CONNECT_ERROR, FATAL);
+	}        
     }
 
     return $connection_id;
@@ -48,6 +55,7 @@ function db_connect ()
 
 // Disconnects from the database (PHP does this anyway when a script termintates,
 // but it's nice to be tidy). Pass the connection ID to the function
+
 function db_disconnect ($connection_id)
 {
     //if ($connection_id) mysql_close($connection_id);
@@ -55,27 +63,36 @@ function db_disconnect ($connection_id)
 }
 
 // Executes a query on the database and returns a resource ID
+
 function db_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS, $bh_query_array;
+    global $HTTP_SERVER_VARS;
 
-    $resource_id = mysql_query($sql, $connection_id) or trigger_error("Invalid query:$sql<br />\nMySQL Said: ". mysql_error(), FATAL);
-    $bh_query_array[] = $sql;
-    return $resource_id;
+    if ($resource_id = mysql_query($sql, $connection_id)) {
+        return $resource_id;
+    }else {
+        $mysql_error = mysql_error($connection_id);
+        trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", FATAL);
+    }
 }
 
 // Executes a query on the database and returns a resource ID
+
 function db_unbuffered_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS, $bh_query_array;
+    global $HTTP_SERVER_VARS;
 
     if (function_exists("mysql_unbuffered_query")) {
-        $resource_id = mysql_unbuffered_query($sql, $connection_id) or trigger_error("Invalid query:$sql<br />\nMySQL Said: ". mysql_error(), FATAL);
+        if ($resource_id = mysql_unbuffered_query($sql, $connection_id)) {
+            return $resource_id;
+        }else {
+            $mysql_error = mysql_error($connection_id);
+            trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", FATAL);
+	}
     }else {
-        $resource_id = mysql_query($sql, $connection_id) or trigger_error("Invalid query:$sql<br />\nMySQL Said: ". mysql_error(), FATAL);
+        db_query($sql, $connection_id);
     }
 
-    $bh_query_array[] = $sql;
     return $resource_id;
 }
 
@@ -87,9 +104,9 @@ function db_num_rows ($resource_id)
 }
 
 // Returns the number of rows affected by a query when passed the connection ID
-function db_affected_rows($onnection_id)
+function db_affected_rows($connection_id)
 {
-    $results = mysql_affected_rows($onnection_id);
+    $results = mysql_affected_rows($connection_id);
     return $results;
 }
 

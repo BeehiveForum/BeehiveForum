@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.26 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.27 2003-11-02 12:47:36 decoyduck Exp $ */
 
 // Error Handler
 
@@ -193,7 +193,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             switch ($errno) {
 
                 case FATAL:
-                    echo "            <p><b>FATAL</b> [$errno] $errstr</p>\n";
+                    echo "            <p><b>FATAL</b> [$errno] ", ($errstr == BH_DB_CONNECT_ERROR) ? $lang['db_connect_error'] : $errstr, "</p>\n";
                     echo "            <p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
                     break;
                 case ERROR:

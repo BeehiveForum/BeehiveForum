@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.1 2003-11-02 11:11:48 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.2 2003-11-02 12:49:21 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -131,6 +131,10 @@ $lang['polls'] = "Pizolls";
 $lang['user'] = "Homie";
 $lang['enabled'] = "Enizabled";
 $lang['disabled'] = "Dizisabled";
+
+// Error handling messages (error_handler.inc.php) ---------------------
+
+$lang['db_connect_error'] = "<p>An error has occured while connecting to the database.</p>\n<p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p><pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre><p>They should be set to the database details given to you by your hosting provider.</p>\n";
 
 // Admin interface (admin*.php) ----------------------------------------
 

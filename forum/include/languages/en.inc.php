@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.98 2004-04-10 21:27:44 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.99 2004-04-10 21:33:24 decoyduck Exp $ */
 
 // International English language file
 
@@ -638,6 +638,8 @@ $lang['addtofavourites'] = "Add To Favourites";
 $lang['availableforums'] = "Available Forums";
 $lang['noforumsavailable'] = "There are no forums available.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
+$lang['defaultforumsettings'] = "Default Forum Settings";
+$lang['unnamedforum'] = "Unnamed Forum";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.42 2004-04-10 21:27:43 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.43 2004-04-10 21:33:24 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -210,6 +210,7 @@ function draw_start_page()
         html_draw_top();
         echo "<h1>{$lang['editstartpage_help']}</h1>\n";
         html_draw_bottom();
+	return;
     }
     
     $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";

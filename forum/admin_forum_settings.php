@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.21 2004-04-10 21:27:43 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.22 2004-04-10 21:33:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -371,7 +371,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 html_draw_top("emoticons.js");
 
-echo "<h1>Forum Settings</h1>\n";
+if ($webtag) {
+    echo "<h1>{$lang['forumsettings']} : ", forum_get_setting('forum_name', false, 'Unknown Forum'), "</h1>\n";
+}else {
+    echo "<h1>{$lang['forumsettings']} : {$lang['defaultforumsettings']}</h1>\n";
+}
 
 // Any error messages to display?
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.32 2004-03-06 14:01:01 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.33 2004-03-13 00:20:39 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -143,6 +143,7 @@ $lang['user'] = "Homie";
 $lang['enabled'] = "Enizabled";
 $lang['disabled'] = "Dizisabled";
 $lang['with'] = "wit";
+$lang['options'] = "Options";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
@@ -703,6 +704,7 @@ $lang['showonlyage'] = "Show ma age only, yo";
 $lang['showageanddob'] = "Shizow to othizers";
 $lang['browseanonymously'] = "Keep yo head dizown";
 $lang['showforumstats'] = "Shizow fizorm stats an shit";
+$lang['usewordfilter'] = "Enable word filter.";
 $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";

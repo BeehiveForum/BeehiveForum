@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.34 2004-03-06 14:01:01 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.35 2004-03-13 00:20:39 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -143,6 +143,7 @@ $lang['polls'] = "Sondages";
 $lang['user'] = "Utilisateur";
 $lang['enabled'] = "Rendu capable";
 $lang['disabled'] = "Rendu infirme";
+$lang['options'] = "Options";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -690,6 +691,7 @@ $lang['showonlyage'] = "afficher uniquement l'âge aux autres";
 $lang['showageanddob'] = "afficher aux autres";
 $lang['browseanonymously'] = "Naviguer le forum anonymement";
 $lang['showforumstats'] = "Afficher les statistiques du forum en bas du volet de messagerie.";
+$lang['usewordfilter'] = "Enable word filter.";
 $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";

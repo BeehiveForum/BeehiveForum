@@ -76,12 +76,14 @@ db_disconnect($db);
 if(isset($HTTP_POST_VARS['submit'])){
     $new_status = $HTTP_POST_VARS['t_worker'] | $HTTP_POST_VARS['t_worm'] | $HTTP_POST_VARS['t_wasp'] | $HTTP_POST_VARS['t_splat'];
     if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
-        echo "This";
         $new_status = $new_status | $HTTP_POST_VARS['t_soldier'];
     } else {
         $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
-        echo "That";
+        $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
     }
+    // Add lower ranks automatically
+    if($new_status & USER_PERM_QUEEN) $new_status |= USER_PERM_SOLDIER;
+    if($new_status & USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
     user_update_status($uid,$new_status);
     $user['STATUS'] = $new_status;
 }

@@ -55,7 +55,7 @@ if(isset($HTTP_POST_VARS['submit'])){
         if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i]
         || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i]){
             $new_title = (trim($HTTP_POST_VARS['t_title_'.$i]) != "") ? $HTTP_POST_VARS['t_title_'.$i] : $HTTP_POST_VARS['t_old_title_'.$i];
-            folder_update($HTTP_POST_VARS['t_fid'],$new_title,$HTTP_POST_VARS['t_access_'.$i]);
+            folder_update($HTTP_POST_VARS['t_fid_'.$i],$new_title,$HTTP_POST_VARS['t_access_'.$i]);
         }
         if($HTTP_POST_VARS['t_fid_'.$i] != $HTTP_POST_VARS['t_move_'.$i]){
             folder_move_threads($HTTP_POST_VARS['t_fid_'.$i], $HTTP_POST_VARS['t_move_'.$i]);
@@ -96,6 +96,9 @@ $result_count = db_num_rows($result);
 for($i=0;$i<$result_count;$i++){
 
     $row = db_fetch_array($result);
+    
+    // If the thread count is 1, then it's probably 0.
+    if($row['THREAD_COUNT'] == 1) $row['THREAD_COUNT'] = 0;
 
     // Use this array to select the relevant ACCESS_LEVEL in the dropdown
     $sel = array("","","");
@@ -114,12 +117,8 @@ for($i=0;$i<$result_count;$i++){
     echo "<input type=\"hidden\" name=\"t_old_access_$i\" value=\"".$row['ACCESS_LEVEL']."\"></td>\n";
 
     echo "<td>".$row['THREAD_COUNT']."</td>\n";
-    echo "<td>";
-    folder_draw_dropdown($row['FID'],"t_move","_$i");
-    echo "</td></tr>\n";
+    echo "<td>" . folder_draw_dropdown($row['FID'],"t_move","_$i") . "</td></tr>\n";
 }
-
-db_disconnect($db);
 
 // Draw a row for a new folder to be created
 echo "<td>NEW</td>\n";
@@ -132,12 +131,13 @@ echo "<option value=\"0\" selected>Open</option>\n";
 echo "<option value=\"1\">Restricted</option>\n";
 echo "</select>\n";
 
-echo "<td>0</td>\n";
+echo "<td>-</td>\n";
 echo "<td>&nbsp;</td></tr>\n";
-
-echo "</table>\n";
+echo "<tr><td colspan=\"5\">&nbsp;</td></tr>\n";
+echo "<tr><td colspan=\"5\" align=\"right\">\n";
 echo "<input type=\"hidden\" name=\"t_count\" value=\"$result_count\">\n";
-echo "<input type=\"submit\" name=\"submit\" value=\"Submit\">\n";
+echo "<input type=\"submit\" name=\"submit\" value=\"Submit\" class=\"button\">\n";
+echo "</td></tr></table>\n";
 echo "</form>\n";
 echo "</td></tr></table>\n";
 echo "</div>\n";

@@ -534,3 +534,5 @@ function thread_is_poll($tid)
     }
     
 }
+
+?>

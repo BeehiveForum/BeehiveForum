@@ -461,9 +461,13 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
         // Update if already existing
         $fa = db_fetch_array($result);
         if($pid > $fa['LAST_READ']){
-            $sql = "update low_priority " . forum_table("USER_THREAD") . " set LAST_READ = $pid, LAST_READ_AT = NOW() ";
-            $sql .= "where UID = $uid and TID = $tid";
-            //echo "<p>$sql</p>";
+        
+            // Possibly fix the time travelling bug?
+
+            $sql = "update low_priority " . forum_table("USER_THREAD");
+            $sql.= " set LAST_READ = $pid, LAST_READ_AT = FROM_UNIXTIME(". gmmktime(). ")";
+            $sql.= "where UID = $uid and TID = $tid";
+            
             db_query($sql, $db_message_update_read);
         }
     } else {

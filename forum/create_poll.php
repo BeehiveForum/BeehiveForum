@@ -87,13 +87,13 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
   // Work out when the poll will close.
     
   if ($HTTP_POST_VARS['closepoll'] == 0) {
-    $poll_closes = mktime() + DAY_IN_SECONDS;
+    $poll_closes = gmmktime() + DAY_IN_SECONDS;
   }elseif ($HTTP_POST_VARS['closepoll'] == 1) {
-    $poll_closes = mktime() + (DAY_IN_SECONDS * 3);
+    $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
   }elseif ($HTTP_POST_VARS['closepoll'] == 2) {        
-    $poll_closes = mktime() + (DAY_IN_SECONDS * 7);
+    $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
   }elseif ($HTTP_POST_VARS['closepoll'] == 3) {        
-    $poll_closes = mktime() + (DAY_IN_SECONDS * 30);
+    $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
   }elseif ($HTTP_POST_VARS['closepoll'] == 4) {        
     $poll_closes = 0;
   }

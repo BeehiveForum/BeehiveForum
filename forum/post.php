@@ -189,7 +189,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
     }else{
     
         $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
-        $ddkey = $HTTP_POST_VARS['t_dedupe'];
+        $ddkey = "";
         
     }
     

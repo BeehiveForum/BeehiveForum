@@ -55,6 +55,7 @@ require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/poll.inc.php");
+require_once("./include/constants.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
@@ -423,17 +424,27 @@ if($newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
+    if ((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
 
       echo "<h2>Message has been deleted.</h2>\n";
       html_draw_bottom();
       exit;
 
-    }else{
+    }else {
 
-      echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
-      echo form_input_hidden("t_tid",$reply_to_tid);
-      echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
+      if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
+
+        echo "<h2>Message has been deleted.</h2>\n";
+        html_draw_bottom();
+        exit;
+
+      }else{
+
+        echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
+        echo form_input_hidden("t_tid",$reply_to_tid);
+        echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
+
+      }
 
     }
 

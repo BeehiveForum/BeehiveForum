@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.67 2004-12-21 22:49:44 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.68 2005-01-07 00:48:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -98,7 +98,7 @@ $lang = load_language_file();
 
 if (!$webtag = get_webtag($webtag_search)) {
     $request_uri = rawurlencode(get_request_uri(true));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
 }
 
 // Check that we have access to this forum
@@ -156,11 +156,33 @@ if (isset($_POST['submit'])) {
         if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
 
             // Create the directory structure we need
+            // Beehive defaults to setting permissions to 0777
+            // so that the folders are writable via FTP / SSH
+            // if the user later requires them to be.
 
-            if (!is_dir("forums")) mkdir("forums", 0755);
-            if (!is_dir("forums/$webtag")) mkdir("forums/$webtag", 0755);
-            if (!is_dir("forums/$webtag/styles")) mkdir("forums/$webtag/styles", 0755);
-            if (!is_dir("forums/$webtag/styles/$stylename")) mkdir("forums/$webtag/styles/$stylename", 0755);
+            if (!is_dir("forums")) {
+
+                @mkdir("forums", 0755);
+                @chmod("forums", 0777);
+            }
+
+            if (!is_dir("forums/$webtag")) {
+
+                @mkdir("forums/$webtag", 0755);
+                @chmod("forums/$webtag", 0777);
+            }
+
+            if (!is_dir("forums/$webtag/styles")) {
+
+                @mkdir("forums/$webtag/styles", 0755);
+                @chmod("forums/$webtag/styles", 0777);
+            }
+
+            if (!is_dir("forums/$webtag/styles/$stylename")) {
+
+                @mkdir("forums/$webtag/styles/$stylename", 0755);
+                @chmod("forums/$webtag/styles/$stylename", 0777);
+            }
 
             // Save the style desc.txt file
 

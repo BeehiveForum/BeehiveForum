@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.5 2004-12-12 12:40:07 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.6 2005-01-07 00:48:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -97,7 +97,10 @@ $lang = load_language_file();
 
 // Check we have a webtag
 
-$webtag = get_webtag($webtag_search);
+if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri(true));
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+}
 
 if (!perm_has_forumtools_access()) {
     html_draw_top();
@@ -297,11 +300,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['attachment_dir'] = trim(_stripslashes($_POST['attachment_dir']));
 
         if (!(@is_dir($new_forum_settings['attachment_dir']))) {
+
             @mkdir($new_forum_settings['attachment_dir'], 0755);
             @chmod($new_forum_settings['attachment_dir'], 0777);
         }
 
-        if ($fp = @fopen("{$new_forum_settings['attachment_dir']}/bh_attach_test", "w")) {
+        if (@$fp = fopen("{$new_forum_settings['attachment_dir']}/bh_attach_test", "w")) {
 
            fclose($fp);
            unlink("{$new_forum_settings['attachment_dir']}/bh_attach_test");

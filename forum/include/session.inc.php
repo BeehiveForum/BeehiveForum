@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.146 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.147 2005-01-07 00:49:01 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -113,6 +113,14 @@ function bh_session_check($add_guest_sess = true)
                     echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
                     exit;
                 }
+            }
+
+            // If the user isn't currently in the same forum
+            // we should make it look like they've visited it.
+
+            if ($user_sess['FID'] != $fid) {
+
+                bh_update_visitor_log($user_sess['UID']);
             }
 
             // Everything checks out OK. If the user's session is older

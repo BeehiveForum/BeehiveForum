@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.34 2004-12-05 17:58:04 decoyduck Exp $ */
+/* $Id: forums.php,v 1.35 2005-01-07 00:49:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -406,18 +406,27 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td width=\"20\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
-            echo "                  <td width=\"25%\">\n";
 
             if (isset($_GET['final_uri'])) {
-                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
+                echo "                  <td width=\"25%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a></td>\n";
             }else {
-                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+                echo "                  <td width=\"25%\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
             }
 
-            echo "                </td>\n";
             echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
-            echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} {$lang['messages']}</a></td>\n";
-            echo "                  <td width=\"20%\">&nbsp;</td>\n";
+
+            if ($forum['UNREAD_TO_ME'] > 0) {
+                echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
+            }else {
+                echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
+            }
+
+            if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
+            }else {
+                echo "                  <td width=\"20%\">{$lang['never']}</td>\n";
+            }
+
             echo "                </tr>\n";
         }
 

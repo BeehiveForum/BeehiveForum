@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.24 2004-09-26 19:35:33 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.25 2004-10-06 20:21:55 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -804,16 +804,13 @@ if(!$result = mysql_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SESSIONS (";
-$sql.= "  SESSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (SESSID),";
-$sql.= "  KEY HASH (HASH),";
-$sql.= "  KEY FID (FID),";
-$sql.= "  KEY UID (UID)";
+$sql.= "  PRIMARY KEY  (UID),";
+$sql.= "  KEY SESSION_HASH_UID_IP (HASH, UID, IPADDRESS)";
 $sql.= ")";
 
 if(!$result = mysql_query($sql, $db_install)) {

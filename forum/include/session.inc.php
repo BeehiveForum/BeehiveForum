@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.127 2004-09-29 19:47:58 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.128 2004-10-06 20:21:53 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -61,10 +61,12 @@ function bh_session_check($add_guest_sess = true)
 
         if ($table_data = get_table_prefix()) {
 
+            $fid = $table_data['FID'];
+
             $sql = "SELECT USER.LOGON, USER.PASSWD, ";
             $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
             $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-            $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
             $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
@@ -77,7 +79,7 @@ function bh_session_check($add_guest_sess = true)
         }else {
 
             $sql = "SELECT USER.LOGON, USER.PASSWD, SESSIONS.UID, ";
-            $sql.= "SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
             $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
             $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
@@ -109,40 +111,40 @@ function bh_session_check($add_guest_sess = true)
                 exit;
             }
 
-            if (is_numeric($table_data['FID'])) {
+            if (isset($fid) && is_numeric($fid)) {
 
                 // If the user is not logged into the current forum, we should
                 // do that now for them.
 
-                if ($user_sess['FID'] != $table_data['FID']) {
+                if ($user_sess['FID'] != $fid) {
 
                     $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash' ";
-                    $sql.= "AND FID = '{$table_data['FID']}'";
+                    $sql.= "AND FID = '$fid'";
 
                     $result = db_query($sql, $db_bh_session_check);
 
                     $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-                    $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
+                    $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '$fid', ";
                     $sql.= "'$ipaddress', NOW())";
 
                     $result = db_query($sql, $db_bh_session_check);
 
                     $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
-                    $sql.= "WHERE UID = {$user_sess['UID']} AND FID = {$table_data['FID']}";
+                    $sql.= "WHERE UID = {$user_sess['UID']} AND FID = '$fid'";
 
                     $result = db_query($sql, $db_bh_session_check);
 
                     if (db_num_rows($result) > 0) {
 
                         $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-                        $sql.= "WHERE UID = {$user_sess['UID']} AND FID = {$table_data['FID']}";
+                        $sql.= "WHERE UID = {$user_sess['UID']} AND FID = '$fid'";
 
                         $result = db_query($sql, $db_bh_session_check);
 
                     }else {
 
                         $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                        $sql.= "VALUES ({$user_sess['UID']}, {$table_data['FID']}, NOW())";
+                        $sql.= "VALUES ({$user_sess['UID']}, '$fid', NOW())";
 
                         $result = db_query($sql, $db_bh_session_check);
                     }
@@ -155,9 +157,9 @@ function bh_session_check($add_guest_sess = true)
 
                     // Update the session for the current forum
 
-                    $sql = "UPDATE SESSIONS ";
-                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$table_data['FID']}' ";
-                    $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
+                    $sql = "UPDATE SESSIONS SET IPADDRESS = '$ipaddress', ";
+                    $sql.= "TIME = NOW() WHERE HASH = '$user_hash' ";
+                    $sql.= "AND FID = '$fid'";
 
                     $result = db_query($sql, $db_bh_session_check);
                 }
@@ -171,9 +173,8 @@ function bh_session_check($add_guest_sess = true)
 
                     // Update the main user session
 
-                    $sql = "UPDATE SESSIONS ";
-                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
-                    $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
+                    $sql = "UPDATE SESSIONS SET IPADDRESS = '$ipaddress', ";
+                    $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
 
                     $result = db_query($sql, $db_bh_session_check);
                 }
@@ -208,13 +209,27 @@ function bh_session_check($add_guest_sess = true)
     if ($add_guest_sess) {
 
         // Guest user sessions are handled a bit differently.
+        // Rather than the cookie which holds their HASH we
+        // keep track of guest sessions based on the user's IP
+        // address. Of course this means that the guest counter
+        // will be out if there is more than one guest coming
+        // from a single IP address.
 
-        if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
+        if ($table_data = get_table_prefix()) {
 
-        $sql = "SELECT SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-        $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
-        $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress' ";
-        $sql.= "AND SESSIONS.FID = '{$table_data['FID']}'";
+            $fid = $table_data['FID'];
+
+            $sql = "SELECT UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
+            $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress' ";
+            $sql.= "AND SESSIONS.FID = '$fid'";
+
+        }else {
+
+            $sql = "SELECT UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
+            $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress'";
+        }
 
         $result = db_query($sql, $db_bh_session_check);
 
@@ -224,8 +239,17 @@ function bh_session_check($add_guest_sess = true)
 
             if ($current_time - $user_sess['TIME'] > 300) {
 
-                $sql = "UPDATE SESSIONS SET TIME = NOW(), FID = '{$table_data['FID']}' ";
-                $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
+                if (isset($fid) && is_numeric($fid)) {
+
+                    $sql = "UPDATE SESSIONS SET TIME = NOW() ";
+                    $sql.= "WHERE IPADDRESS = '$ipaddress' ";
+                    $sql.= "AND FID = '$fid'";
+
+                }else {
+
+                    $sql = "UPDATE SESSIONS SET TIME = NOW() ";
+                    $sql.= "WHERE IPADDRESS = '$ipaddress'";
+                }
 
                 $result = db_query($sql, $db_bh_session_check);
             }
@@ -233,7 +257,7 @@ function bh_session_check($add_guest_sess = true)
         }else {
 
             $sql = "INSERT INTO SESSIONS (UID, FID, IPADDRESS, TIME) ";
-            $sql.= "VALUES (0, '{$table_data['FID']}', '$ipaddress', NOW())";
+            $sql.= "VALUES (0, '$fid', '$ipaddress', NOW())";
 
             $result = db_query($sql, $db_bh_session_check);
         }
@@ -257,7 +281,7 @@ function bh_session_check($add_guest_sess = true)
                  'IMAGES_TO_LINKS'  => 'N',
                  'USE_WORD_FILTER'  => 'Y',
                  'USE_ADMIN_FILTER' => 'Y',
-                 'POST_PAGE'            => 0);
+                 'POST_PAGE'        => 0);
 }
 
 // Fetches a value from the session
@@ -279,7 +303,11 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
 
-    if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
+    if ($table_data = get_table_prefix()) {
+        $fid = $table_data['FID'];
+    }else {
+        $fid = 0;
+    }
 
     $forum_settings = get_forum_settings();
 
@@ -298,27 +326,27 @@ function bh_session_init($uid)
     $user_hash = md5(uniqid($ipaddress));
 
     $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-    $sql.= "VALUES ('$user_hash', '$uid', '{$table_data['FID']}', ";
+    $sql.= "VALUES ('$user_hash', '$uid', '$fid', ";
     $sql.= "'$ipaddress', NOW())";
 
     $result = db_query($sql, $db_bh_session_init);
 
     $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
-    $sql.= "WHERE UID = $uid AND FID = {$table_data['FID']}";
+    $sql.= "WHERE UID = $uid AND FID = '$fid'";
 
     $result = db_query($sql, $db_bh_session_init);
 
     if (db_num_rows($result) > 0) {
 
         $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-        $sql.= "WHERE UID = $uid AND FID = {$table_data['FID']}";
+        $sql.= "WHERE UID = $uid AND FID = '$fid'";
 
         $result = db_query($sql, $db_bh_session_init);
 
     }else {
 
         $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-        $sql.= "VALUES ($uid, {$table_data['FID']}, NOW())";
+        $sql.= "VALUES ($uid, '$fid', NOW())";
 
         $result = db_query($sql, $db_bh_session_init);
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.198 2004-09-14 12:14:59 tribalonline Exp $ */
+/* $Id: user.inc.php,v 1.199 2004-10-06 20:21:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -1138,7 +1138,9 @@ function user_is_active($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT SESSID FROM SESSIONS WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
+    $sql = "SELECT * FROM SESSIONS WHERE UID = '$uid' ";
+    $sql.= "AND FID = '{$table_data['FID']}'";
+
     $result = db_query($sql, $db_user_is_active);
 
     return (db_num_rows($result) > 0);

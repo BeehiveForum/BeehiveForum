@@ -217,7 +217,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         $user_prefs = user_get_prefs($luid);
 
-        if (isset($final_uri) && !strstr($final_uri, 'discussion.php') && !isset($msg)) {
+        if ((!isset($final_uri) && !isset($msg)) || (isset($final_uri) && !strstr($final_uri, 'discussion.php'))) {
           if ($user_prefs['START_PAGE'] == 1) {
             $final_uri = "./discussion.php";
           }else {
@@ -400,14 +400,12 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
       echo form_input_password('password', $password_array[0]);
       echo form_input_hidden('savepass', true);
-      $savepass = true;
 
     }
 
   }else {
 
     echo form_input_password('password', '');
-    $savepass = false;
 
   }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.40 2004-09-13 12:34:12 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.41 2004-09-13 14:43:23 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -1091,11 +1091,12 @@ $lang['relationship'] = "Vibes";
 $lang['friend_exp'] = "Homie's pizosts mizarked with a &quot;Homie&quot; iizcon.";
 $lang['normal_exp'] = "Homie's pizosts appizear as nizormizal.";
 $lang['ignore_exp'] = "Cracker's pizosts are hizidden frizom yo eyes, G.";
+$lang['ignore_completely_exp'] = "Yo ain't gonna be seein nizothin from this mofo. He be taken care of.";
 $lang['display'] = "Displizay";
 $lang['displaysig_exp'] = "Homie's sizig is shown in thizeir pizosts.";
 $lang['hidesig_exp'] = "Homie's wack-ass sizig is hizidden from yo eyes.";
 $lang['globallyignored'] = "Hide all tha punk ass sizigs";
-$lang['globallyignoredsig_exp'] = "Yo ain't be seein' shit with this motherfucker";
+$lang['globallyignoredsig_exp'] = "Yo see any sigs trippin' this side o' the hood, you pop a cap in it's bitch-ass.";
 
 // Search (search.php) -------------------------------------------------
 

@@ -62,7 +62,9 @@ if(isset($HTTP_POST_VARS['t_newthread'])){
     } else {
         $error_html = "<h2>You must enter some content for the post</h2>";
         $valid = false;
-    }    
+    }
+    $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
+    $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
 } else {
     if(isset($HTTP_POST_VARS['t_tid'])){
         if(isset($HTTP_POST_VARS['t_content'])){
@@ -71,6 +73,8 @@ if(isset($HTTP_POST_VARS['t_newthread'])){
             $error_html = "<h2>You must enter some content for the post</h2>";
             $valid = false;
         }
+        $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
+        $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
     } else {
         $valid = false;
     }
@@ -183,9 +187,12 @@ if(!$newthread){
     }
 }
 
-$sig_content = "";
-$sig_html = "N";
-$has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$sig_content,$sig_html);
+if(!$t_sig){
+    $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$t_sig,$t_sig_html);
+} else {
+    $has_sig = true;
+}
+
 if($newthread){
     echo "<h2>Create new thread</h2>\n";
 } else {
@@ -225,8 +232,8 @@ if(isset($t_content)){
     }
 }
 echo "</textarea></td></tr>\n";
-echo "<tr><td><textarea name=\"t_sig\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">$sig_content</textarea>\n";
-echo "<input type=\"hidden\" name=\"t_sig_html\" value=\"$sig_html\"></td></tr>\n";
+echo "<tr><td><textarea name=\"t_sig\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">$t_sig</textarea>\n";
+echo "<input type=\"hidden\" name=\"t_sig_html\" value=\"$t_sig_html\"></td></tr>\n";
 echo "<tr><td class=\"smalltext\"><input type=\"checkbox\" name=\"t_post_html\" value=\"Y\"";
 if($t_post_html == "Y"){
     echo " checked";

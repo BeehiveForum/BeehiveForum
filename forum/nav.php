@@ -39,6 +39,7 @@ header_no_cache();
         <a href="#">Start</a>&nbsp;
         <a href="discussion.php" target="main">Messages</a>&nbsp;
         <a href="prefs.php" target="main">Preferences</a>&nbsp;
+        <a href="edit_profile.php" target="main">Profile</a>&nbsp;
 <?
 if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER){
 ?>

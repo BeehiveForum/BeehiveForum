@@ -228,12 +228,12 @@ if(!empty($error_html)) {
         <td>: <?php echo form_field("cpw", "", 37, 0, "password"); ?></td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
         <td align="center"><span style="font-size: 10px">(<?php echo $lang['leaveblanktoretaincurrentpasswd']; ?>)</span></td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
       </tr>
       <tr>
         <td><?php echo $lang['nickname']; ?></td>
@@ -244,8 +244,8 @@ if(!empty($error_html)) {
         <td>: <?php echo form_field("email", $user['EMAIL'], 37, 80); ?></td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
       </tr>
       <tr>
         <td><?php echo $lang['firstname']; ?></td>
@@ -257,7 +257,7 @@ if(!empty($error_html)) {
       </tr>
       <tr>
         <td><?php echo $lang['dateofbirth']; ?></td>
-        <td>: <?php echo form_dropdown_array("dob_day", range (0, 31), $birthday_days, $dob_day); ?>&nbsp;<?php echo form_dropdown_array("dob_month", range (0, 12), $birthday_months, $dob_month); ?>&nbsp;<?php echo form_dropdown_array("dob_year", $birthday_years, $birthday_years, $dob_year); ?></td>
+        <td>: <?php echo form_dropdown_array("dob_day", range (0, 31), $birthday_days, $dob_day); ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><?php echo form_dropdown_array("dob_month", range (0, 12), $birthday_months, $dob_month); ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><?php echo form_dropdown_array("dob_year", $birthday_years, $birthday_years, $dob_year); ?></td>
       </tr>
       <tr>
         <td><?php echo $lang['homepageURL']; ?></td>
@@ -268,8 +268,8 @@ if(!empty($error_html)) {
         <td>: <?php echo form_field("pic_url", $user_prefs['PIC_URL'], 37, 255); ?></td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
       </tr>
     </table>
     <table class="posthead" width="400">
@@ -289,7 +289,7 @@ if(!empty($error_html)) {
         <td><?php echo form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], ($user_prefs['VIEW_SIGS'] == "Y")); ?></td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
       </tr>
     </table>
     <table class="posthead" width="400">
@@ -359,8 +359,8 @@ if(!empty($error_html)) {
         <td><?php echo form_dropdown_array("start_page", array(0, 1), array($lang['start'], $lang['messages']), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
       </tr>
     </table>
     <table class="posthead" width="400">
@@ -371,7 +371,7 @@ if(!empty($error_html)) {
         <td colspan="2"><?php echo form_textarea("sig_content", _htmlentities(_stripslashes($user_sig['CONTENT'])), 4, 60); ?></td>
       </tr>
       <tr>
-        <td>&nbsp;</td>
+        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
         <td align="right"><?php echo form_checkbox("sig_html", "Y", $lang['containsHTML'], ($user_sig['HTML'] == "Y")); ?></td>
       </tr>
     </table>

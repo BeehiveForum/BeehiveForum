@@ -43,7 +43,7 @@ a            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11
     </td>
   </tr>
   <tr>
-    <td height="1" class="title">&nbsp;</td>
+    <td height="1" class="title"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
     <td align="right"><a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=50772&type=5" width="210" height="62" border="0" /></a></td>

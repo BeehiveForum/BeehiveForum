@@ -80,7 +80,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 // Draw the form
 echo "<h1>{$lang['managefolders']}</h1>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\"><tr><td class=\"posthead\">";
 
@@ -119,10 +119,10 @@ echo "  <td align=\"left\">NEW</td>\n";
 echo "  <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 32, 32). "</td>\n";
 echo "  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
 echo "  <td align=\"left\">-</td>\n";
-echo "  <td align=\"left\">&nbsp;</td>\n";
+echo "  <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "</tr>\n";
 
-echo "<tr><td colspan=\"5\">&nbsp;</td></tr>\n";
+echo "<tr><td colspan=\"5\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
 echo "<tr><td colspan=\"5\" align=\"right\">\n";
 echo form_input_hidden("t_count", sizeof($folder_array));
 echo form_submit();

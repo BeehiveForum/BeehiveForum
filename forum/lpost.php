@@ -445,11 +445,11 @@ echo "<p>".light_form_textarea("t_content", isset($t_content) ? _htmlentities($t
 echo "<p>{$lang['signature']}:<br />".light_form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
 echo "<p>".light_form_checkbox("t_post_html", "Y", $lang['messagecontainsHTML'], (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
 echo "<p>".light_form_submit("submit",$lang['post']);
-echo "&nbsp;".light_form_submit("preview",$lang['preview']);
-echo "&nbsp;".light_form_submit("cancel", $lang['cancel']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".light_form_submit("preview",$lang['preview']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".light_form_submit("cancel", $lang['cancel']);
 echo "</p>";
 
-echo "&nbsp;".light_form_submit("convert_html", $lang['converttoHTML']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".light_form_submit("convert_html", $lang['converttoHTML']);
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);

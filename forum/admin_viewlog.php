@@ -308,19 +308,19 @@ echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
   }
 }
 
 echo "</div>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 
 if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && db_num_rows($result)) {
     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";

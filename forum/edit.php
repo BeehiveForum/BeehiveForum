@@ -158,7 +158,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
 } elseif (isset($HTTP_POST_VARS['submit']) && is_numeric($tid) && is_numeric($pid)) {
-    
+
     $editmessage = messages_get($tid, $pid, 1);
     if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
         edit_refuse($tid, $pid);
@@ -187,7 +187,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
             if (perm_is_moderator() && ($HTTP_POST_VARS['t_from_uid'] != bh_session_get_value('UID'))) {
                 admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
-	    }
+            }
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['editappliedtomessage']} $tid.$pid</p>";
@@ -305,20 +305,20 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo form_submit('submit', $lang['apply'], 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
-echo "&nbsp;". form_submit("preview", $lang['preview']);
-echo "&nbsp;". form_submit("cancel",  $lang['cancel']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("preview", $lang['preview']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("cancel",  $lang['cancel']);
 
 if ($edit_html) {
-    echo "&nbsp;".form_submit("b_edit_text", $lang['edittext']);
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_text", $lang['edittext']);
     echo form_input_hidden("t_post_html", "Y");
 
 } else {
-    echo "&nbsp;".form_submit("b_edit_html", $lang['editHTML']);
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_html", $lang['editHTML']);
     echo form_input_hidden("t_post_html", "N");
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
 }
 
 echo "</form>";

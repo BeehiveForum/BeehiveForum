@@ -35,7 +35,7 @@ require_once("./include/html.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/lang.inc.php");
-
+require_once("./include/pm.inc.php");
 header_no_cache();
 
 html_draw_top('Nav', 'navpage');
@@ -47,7 +47,13 @@ if ($show_links) {
     echo "<a href=\"links.php\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
 }
 
+
 if (bh_session_get_value('UID') > 0) {
+
+    if ($show_pms) {
+        echo "<a href=\"pm.php\" target=\"main\">PM's</a>&nbsp;|&nbsp;\n";
+    }
+
     echo "<a href=\"prefs.php\" target=\"main\">{$lang['preferences']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"profile.php\" target=\"main\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
 }

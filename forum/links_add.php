@@ -130,7 +130,7 @@ if ($mode == "link") {
     echo "<tr><td align=\"right\">{$lang['addressurluri']}:</td><td>" . form_input_text("uri", $uri, 60, 255) . "</td></tr>\n";
     echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", $name, 60, 64) . "</td></tr>\n";
     echo "<tr><td align=\"right\">{$lang['description']}:</td><td>" . form_input_text("description", $description, 60) . "</td></tr>\n";
-    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
+    echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td><td>" . form_submit() . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table>\n";
     echo "</form>\n";
@@ -150,7 +150,7 @@ if ($mode == "folder") {
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
     echo "<table class=\"posthead\" cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", isset($name) ? $name : '', 60, 64) . "</td></tr>\n";
-    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
+    echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td><td>" . form_submit() . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table>\n";
     echo "</form>\n";

@@ -442,7 +442,7 @@ if ($newthread) {
     echo "<tr><td>".form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 30, 64);
     echo "\n";
     echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
-    echo "<tr><td>&nbsp;</td></tr>\n";
+    echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
     echo "</table>\n";
 
 }else{
@@ -489,7 +489,7 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td>{$lang['to']}: ". post_draw_to_dropdown($t_to_uid). "&nbsp;", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "&nbsp;", form_submit("submit",$lang['post']) ."</td>\n";
+echo "          <td>{$lang['to']}: ". post_draw_to_dropdown($t_to_uid). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("submit",$lang['post']) ."</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\">\n";
@@ -507,17 +507,17 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo form_submit('submit',$lang['post'], 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
-echo "&nbsp;".form_submit('preview', $lang['preview']);
-echo "&nbsp;".form_submit('cancel', $lang['cancel']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit('preview', $lang['preview']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit('cancel', $lang['cancel']);
 
 if ($attachments_enabled) {
 
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
     echo form_input_hidden("aid", $aid);
 
 }
 
-echo "&nbsp;".form_submit("convert_html", $lang['converttoHTML']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML']);
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
@@ -541,7 +541,7 @@ if (!$newthread) {
 
     }
 
-    echo "<p><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></p>\n";
+    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 
 }
 

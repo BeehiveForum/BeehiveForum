@@ -182,7 +182,7 @@ if (db_num_rows($result)) {
             echo " (", $row['STATUS'], ")</td>\n";
 
         }else {
-          echo "&nbsp;</td>\n";
+          echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
         }
 
         echo "          <td class=\"posthead\" align=\"left\">", format_time($row['LAST_LOGON'], 1), "</td>\n";
@@ -212,7 +212,7 @@ if (db_num_rows($result)) {
 }
 
 echo "        <tr>\n";
-echo "          <td colspan=\"6\">&nbsp;</td>\n";
+echo "          <td colspan=\"6\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
@@ -221,16 +221,16 @@ echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}<s</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}<s</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
   }else {
-    echo "<p>&nbsp;</p>\n";
+    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
   }
 }
 

@@ -91,17 +91,17 @@ echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
+echo "            <td><h2><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>" . format_user_name($user['LOGON'], $user['NICKNAME']);
 
-if ($relationship & USER_FRIEND) echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-if ($relationship & USER_IGNORED) echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+if ($relationship & USER_FRIEND) echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+if ($relationship & USER_IGNORED) echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
 
 echo "</h2></td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: " . user_get_post_count($uid). "&nbsp;</td>\n";
+echo "            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: " . user_get_post_count($uid). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
@@ -134,7 +134,7 @@ for ($i = 0; $i < $row_count; $i++) {
 }
 
 for(;$i % 4; $i++){
-    echo "            <td width=\"25%\">&nbsp;</td>\n";
+    echo "            <td width=\"25%\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 }
 
 echo "          </tr>\n";
@@ -167,7 +167,7 @@ echo "            </td>\n";
 echo "            <td valign=\"top\">\n";
 echo "              <table width=\"100%\" class=\"subhead\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\">", (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) ? "<img src=\"". $row['PIC_URL']. "\" width=\"110\" height=\"110\" />" : "&nbsp;", "</td>\n";
+echo "                  <td align=\"center\">", (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) ? "<img src=\"". $row['PIC_URL']. "\" width=\"110\" height=\"110\" />" : "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td><a href=\"email.php?uid=$uid\">{$lang['sendemail']}</a></td>\n";

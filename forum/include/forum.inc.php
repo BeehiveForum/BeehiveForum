@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.88 2004-10-24 13:25:57 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.89 2004-10-28 21:34:43 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -1052,58 +1052,58 @@ function forum_delete($fid)
 
 function forum_update_access($fid, $access, $passwd = false)
 {
-        if (!is_numeric($fid)) return false;
-        if (!is_numeric($access)) return false;
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($access)) return false;
 
-        // Only the queen can change a forums status!!
+    // Only the queen can change a forums status!!
 
-        if (perm_has_forumtools_access()) {
+    if (perm_has_forumtools_access()) {
 
-                $uid = bh_session_get_value('UID');
+        $uid = bh_session_get_value('UID');
 
-                $db_forum_update_access = db_connect();
+        $db_forum_update_access = db_connect();
 
-                $sql = "SELECT COUNT(*) FROM FORUMS WHERE FID = '$fid'";
+        $sql = "SELECT COUNT(*) FROM FORUMS WHERE FID = '$fid'";
+        $result = db_query($sql, $db_forum_update_access);
+
+        if (db_num_rows($result) > 0) {
+
+            if ($passwd) {
+
+                $passwd = md5($passwd);
+
+                $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access', ";
+                $sql.= "FORUM_PASSWD = '$passwd' WHERE FID = '$fid'";
+
+            }else {
+
+                $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' ";
+                $sql.= "WHERE FID = '$fid'";
+            }
+
+            $result = db_query($sql, $db_forum_update_access);
+
+            $sql = "SELECT * FROM USER_FORUM WHERE FID = '$fid' AND UID = '$uid'";
+            $result = db_query($sql, $db_forum_update_access);
+
+            if (db_num_rows($result) > 0) {
+
+                $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
                 $result = db_query($sql, $db_forum_update_access);
 
-                if (db_num_rows($result) > 0) {
+            }else {
 
-                        if ($passwd) {
+                $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+                $sql.= "VALUES ('$uid', '$fid', '1')";
 
-                                $passwd = md5($passwd);
-
-                                $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access', ";
-                                $sql.= "FORUM_PASSWD = '$passwd' WHERE FID = '$fid'";
-
-                        }else {
-
-                                $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' ";
-                                $sql.= "WHERE FID = '$fid'";
-                        }
-
-                        $result = db_query($sql, $db_forum_update_access);
-
-                        $sql = "SELECT * FROM USER_FORUM WHERE FID = '$fid' AND UID = '$uid'";
-                        $result = db_query($sql, $db_forum_update_access);
-
-                        if (db_num_rows($result) > 0) {
-
-                                $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
-                                $result = db_query($sql, $db_forum_update_access);
-
-                        }else {
-
-                                $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-                                $sql.= "VALUES ('$uid', '$fid', '1')";
-
-                                $result = db_query($sql, $db_forum_update_access);
-                        }
-                }
-
-                return $result;
+                $result = db_query($sql, $db_forum_update_access);
+            }
         }
 
-        return false;
+        return $result;
+    }
+
+    return false;
 }
 
 function forum_get($fid)
@@ -1188,6 +1188,24 @@ function forum_update_default($fid)
     return false;
 }
 
+function forum_get_post_count($webtag)
+{
+    $db_forum_get_post_count = db_connect();
+
+    if (!preg_match("/[^a-z|0-9|'_']/", $webtag)) return 0;
+
+    $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$webtag}_POST POST ";
+    $result_post_count = db_query($sql, $db_forum_get_post_count);
+
+    if (db_num_rows($result_post_count)) {
+
+        $row = db_fetch_array($result_post_count);
+        return $row['POST_COUNT'];
+    }
+
+    return 0;
+}
+
 function forum_search($search_string)
 {
     $uid = bh_session_get_value('UID');
@@ -1203,80 +1221,48 @@ function forum_search($search_string)
         $db_forum_search = db_connect();
         $forum_search_array = array();
 
-        $forum_webtag_sql = "FORUMS.WEBTAG LIKE '%";
-        $forum_webtag_sql.= implode("%' OR FORUMS.WEBTAG LIKE '%", $keywords_array);
-        $forum_webtag_sql.= "%'";
-
-        $forum_settings_sql = "FORUM_SETTINGS.SVALUE LIKE '%";
-        $forum_settings_sql.= implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $keywords_array);
-        $forum_settings_sql.= "%'";
-
-        $sql = "SELECT DISTINCT FORUMS.FID, FORUMS.WEBTAG FROM FORUM_SETTINGS ";
-        $sql.= "LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
+        $sql = "SELECT FORUMS.FID FROM FORUMS ";
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
         $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
         $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
         $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1)) ";
-        $sql.= "AND $forum_webtag_sql OR (FORUM_SETTINGS.SNAME = 'forum_keywords' ";
-        $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_desc' ";
-        $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_name' ";
-        $sql.= "AND ($forum_settings_sql))";
+        $sql.= "AND FORUMS.WEBTAG LIKE '%";
+        $sql.= implode("%' OR FORUMS.WEBTAG LIKE '%", $keywords_array);
+        $sql.= "%'";
 
         $result = db_query($sql, $db_forum_search);
 
         if (db_num_rows($result) > 0) {
 
-            while ($forum_data = db_fetch_array($result)) {
+            while($row = db_fetch_array($result)) {
 
-                if (isset($forum_data['FID']) && isset($forum_data['WEBTAG'])) {
-
-                    $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
-                    $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
-
-                    $result_forum_name = db_query($sql, $db_forum_search);
-
-                    if (db_num_rows($result_forum_name)) {
-
-                        $row = db_fetch_array($result_forum_name);
-                        $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
-
-                    }else {
-
-                        $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
-                    }
-
-                    $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
-                    $result_post_count = db_query($sql, $db_forum_search);
-
-                    if (db_num_rows($result_post_count)) {
-
-                        $row = db_fetch_array($result_post_count);
-                        $forum_data['MESSAGES'] = $row['POST_COUNT'];
-
-                    }else {
-
-                        $forum_data['MESSAGES'] = 0;
-                    }
-
-                    $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
-                    $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
-                    $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
-
-                    $result_description = db_query($sql, $db_forum_search);
-
-                    if (db_num_rows($result_description)) {
-
-                        $row = db_fetch_array($result_description);
-                        $forum_data['DESCRIPTION'] = $row['SVALUE'];
-
-                    }else{
-
-                       $forum_data['DESCRIPTION'] = "";
-                    }
-
-                    $forum_search_array[$forum_data['FID']] = $forum_data;
-                }
+                $fid_array[] = $row['FID'];
             }
+        }
+
+        $sql = "SELECT FS.FID FROM FORUM_SETTINGS FS ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
+        $sql.= "(USER_FORUM.FID = FS.FID AND USER_FORUM.UID = '$uid') ";
+        $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
+        $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1)) ";
+        $sql.= "AND FS. SVALUE LIKE '%";
+        $sql.= implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $keywords_array);
+        $sql.= "%'";
+
+        $result = db_query($sql, $db_forum_search);
+
+        if (db_num_rows($result) > 0) {
+
+            while($row = db_fetch_array($result)) {
+
+                $fid_array[] = $row['FID'];
+            }
+        }
+
+        foreach ($fid_array as $fid) {
+
+            $forum_search_array[$fid] = $forum_get($fid);
+            $forum_search_array[$fid]['MESSAGES'] = forum_get_post_count($fid);
         }
 
         return $forum_search_array;

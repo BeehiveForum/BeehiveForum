@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.4 2004-11-26 09:35:09 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.5 2004-11-26 09:50:15 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
@@ -77,6 +77,12 @@ class dictionary {
     {
         if (!isset($this->content_array[$this->current_word])) return "";
         return $this->content_array[$this->current_word];
+    }
+
+    function get_suggestions_array()
+    {
+        if (sizeof($this->suggestions_array) < 1) word_get_suggestions();
+        return $this->suggestions_array;
     }
 
     function is_check_complete()
@@ -147,9 +153,9 @@ class dictionary {
         return _in_array($this->content_array[$this->current_word], $this->ignored_words_array);
     }
 
-    function get_suggestions()
+    function word_get_suggestions()
     {
-        $db_dictionary_get_suggestions = db_connect();
+        $db_dictionary_word_get_suggestions = db_connect();
 
         if (!isset($this->content_array[$this->current_word])) return false;
 
@@ -162,7 +168,7 @@ class dictionary {
         $sql = "SELECT * FROM DICTIONARY WHERE WORD LIKE '$word' ";
         $sql.= "AND (UID = 0 OR UID = '$uid')";
 
-        $result = db_query($sql, $db_dictionary_get_suggestions);
+        $result = db_query($sql, $db_dictionary_word_get_suggestions);
 
         if (db_num_rows($result) > 0) return false;
 
@@ -172,7 +178,7 @@ class dictionary {
         $sql.= "SUBSTRING(SOUNDEX(WORD), 1, 4) = SUBSTRING(SOUNDEX('$word'), 1, 4) ";
         $sql.= "AND (UID = 0 OR UID = '$uid')";
 
-        $result = db_query($sql, $db_dictionary_get_suggestions);
+        $result = db_query($sql, $db_dictionary_word_get_suggestions);
 
         while($row = db_fetch_array($result)) {
 
@@ -201,7 +207,7 @@ class dictionary {
 
         }else {
 
-            if (!$this->word_is_valid() || $this->word_is_ignored() || !$this->get_suggestions()) {
+            if (!$this->word_is_valid() || $this->word_is_ignored() || !$this->word_get_suggestions()) {
 
                 $this->find_next_word();
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.26 2005-02-20 22:07:33 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.27 2005-02-22 12:55:46 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -448,6 +448,7 @@ $sql.= "  EDITED DATETIME DEFAULT NULL,";
 $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (PID, TID),";
+$sql.= "  KEY TID (TID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS),";
 $sql.= "  KEY CREATED (CREATED),";

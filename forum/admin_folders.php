@@ -55,8 +55,8 @@ if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
 }
 
 // Do updates
-if(isset($HTTP_POST_VARS['submit'])){
-    for($i=0;$i<$HTTP_POST_VARS['t_count'];$i++){
+if (isset($HTTP_POST_VARS['submit'])) {
+    for($i = 0; $i < $HTTP_POST_VARS['t_count']; $i++) {
         if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i]) {
             $new_title = (trim($HTTP_POST_VARS['t_title_'.$i]) != "") ? $HTTP_POST_VARS['t_title_'.$i] : $HTTP_POST_VARS['t_old_title_'.$i];
             folder_update($HTTP_POST_VARS['t_fid_'.$i],$new_title,$HTTP_POST_VARS['t_access_'.$i]);
@@ -87,35 +87,36 @@ echo "</tr>\n";
 
 $folder_array = folder_get_all();
 
-foreach ($folder_array as $folder) {
+foreach ($folder_array as $key => $folder) {
+
     // If the thread count is 1, then it's probably 0.
     if($folder['THREAD_COUNT'] == 1) $folder['THREAD_COUNT'] = 0;
 
-    echo "<tr>";
-    echo "  <td>".$folder['FID'].form_input_hidden("t_fid_$i",$folder['FID'])."</td>\n";
-    echo "  <td>". form_field("t_title_$i", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$i", $folder['TITLE']). "</td>\n";
+    echo "<tr>\n";
+    echo "  <td>". $folder['FID']. form_input_hidden("t_fid_$key", $folder['FID']). "</td>\n";
+    echo "  <td>". form_field("t_title_$key", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$key", $folder['TITLE']). "</td>\n";
 
     // Draw the ACCESS_LEVEL dropdown
-    echo "  <td>".form_dropdown_array("t_access_$i", array(-1,0,1), array("Closed", "Open", "Restricted"), $folder['ACCESS_LEVEL']);
-    echo form_input_hidden("t_old_access_$i", $folder['ACCESS_LEVEL']). "</td>\n";
+    echo "  <td>".form_dropdown_array("t_access_$key", array(-1, 0, 1), array("Closed", "Open", "Restricted"), $folder['ACCESS_LEVEL']);
+    echo form_input_hidden("t_old_access_$key", $folder['ACCESS_LEVEL']). "</td>\n";
 
     echo "  <td>". $folder['THREAD_COUNT']. "</td>\n";
-    echo "  <td>". folder_draw_dropdown($folder['FID'], "t_move", "_$i"). "</td>\n";
+    echo "  <td>". folder_draw_dropdown($folder['FID'], "t_move", "_$key"). "</td>\n";
     echo "</tr>\n";
 }
 
 // Draw a row for a new folder to be created
-echo "<tr><td>NEW</td>\n";
-echo "<td>".form_field("t_title_new","New Folder",32,32)."</td>";
+echo "<tr>\n";
+echo "  <td>NEW</td>\n";
+echo "  <td>". form_field("t_title_new", "New Folder", 32, 32). "</td>\n";
+echo "  <td>". form_dropdown_array("t_access_new", array(-1,0,1), array("Closed", "Open", "Restricted")). "</td>\n";
+echo "  <td>-</td>\n";
+echo "  <td>&nbsp;</td>\n";
+echo "</tr>\n";
 
-// Draw the ACCESS_LEVEL dropdown
-echo "<td>".form_dropdown_array("t_access_new",array(-1,0,1),array("Closed","Open","Restricted"));
-
-echo "<td>-</td>\n";
-echo "<td>&nbsp;</td></tr>\n";
 echo "<tr><td colspan=\"5\">&nbsp;</td></tr>\n";
 echo "<tr><td colspan=\"5\" align=\"right\">\n";
-echo form_input_hidden("t_count",$result_count);
+echo form_input_hidden("t_count", sizeof($folder_array));
 echo form_submit();
 echo "</td></tr></table>\n";
 echo "</form>";

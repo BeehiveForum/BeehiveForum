@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.39 2004-04-29 21:01:27 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.40 2004-04-30 15:50:35 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -118,7 +118,9 @@ light_html_draw_top();
 
 if (bh_session_get_value('POSTS_PER_PAGE')) {
     $ppp = bh_session_get_value('POSTS_PER_PAGE');
-} else {
+    if ($ppp < 10) $ppp = 10;
+    if ($ppp > 30) $ppp = 30;
+}else {
     $ppp = 20;
 }
 

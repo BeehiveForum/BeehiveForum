@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.92 2004-04-04 21:03:40 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.93 2004-04-07 17:33:57 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -230,7 +230,7 @@ function html_draw_top()
 	    echo "<!--\n\n";
             echo "function pm_notification() {\n";
             echo "    if (window.confirm('{$lang['pmnotificationpopup']}')) {\n";
-            echo "        top.frames['main'].location.replace('pm.php');\n";
+            echo "        top.frames['main'].location.replace('pm.php?webtag={$webtag['WEBTAG']}');\n";
             echo "    }\n";
             echo "    return true;\n";
             echo "}\n\n";

@@ -21,15 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.55 2004-04-05 20:54:46 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.56 2004-04-07 17:33:57 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
+    global $HTTP_SERVER_VARS, $forum_settings, $webtag;
+
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
-
-    global $HTTP_SERVER_VARS, $forum_settings;
 
     $db_email_sendnotification = db_connect();
     
@@ -74,7 +74,7 @@ function email_sendnotification($tuid, $msg, $fuid)
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/?webtag=$webtag&msg=$msg\n\n";
+            $message.= "/?webtag={$webtag['WEBTAG']}&msg=$msg\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['msgnotificationemail_4']}\n";
             $message.= "{$lang['msgnotificationemail_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['msgnotificationemail_6']}\n";
@@ -99,12 +99,12 @@ function email_sendnotification($tuid, $msg, $fuid)
 }
 
 function email_sendsubscription($tuid, $msg, $fuid)
-{
+{    
+    global $HTTP_SERVER_VARS, $forum_settings, $webtag;
+
     if (!check_mail_variables()) return false;
     
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
-    
-    global $HTTP_SERVER_VARS, $forum_settings;
 
     $db_email_sendsubscription = db_connect();
 
@@ -151,7 +151,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
           $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
         }
 
-        $message.= "/?webtag=$webtag&msg=$msg\n\n";
+        $message.= "/?webtag={$webtag['WEBTAG']}&msg=$msg\n\n";
         $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $message.= "{$lang['subnotification_5']}\n";
         $message.= "{$lang['subnotification_6']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";
@@ -176,11 +176,11 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
 function email_send_pm_notification($tuid, $mid, $fuid)
 {
+    global $HTTP_SERVER_VARS, $forum_settings, $webtag;
+
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
-
-    global $HTTP_SERVER_VARS, $forum_settings;
     
     $db_email_sendnotification = db_connect();
     
@@ -222,7 +222,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/?webtag=$webtag&pmid=$mid\n\n";
+            $message.= "/?webtag={$webtag['WEBTAG']}&pmid=$mid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['pmnotification_4']}\n";
             $message.= "{$lang['pmnotification_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['pmnotification_6']}\n";
@@ -250,9 +250,9 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
 function email_send_pw_reminder($logon)
 {
-    if (!check_mail_variables()) return false;
-
     global $HTTP_SERVER_VARS, $forum_settings;
+
+    if (!check_mail_variables()) return false;
     
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
@@ -308,7 +308,7 @@ function email_send_pw_reminder($logon)
 
 function email_get_language($to_uid)
 {
-    global $forum_settings;
+    global $forum_settings, $webtag;
     
     $prefs = user_get_prefs($to_uid);
 

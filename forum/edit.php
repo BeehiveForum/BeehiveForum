@@ -32,7 +32,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/html.inc.php");
@@ -57,17 +57,17 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
   $edit_msg = $HTTP_GET_VARS['msg'];
   list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
-  
+
 }elseif (isset($HTTP_POST_VARS['t_msg'])) {
 
   $edit_msg = $HTTP_POST_VARS['t_msg'];
   list($tid, $pid) = explode('.', $HTTP_POST_VARS['t_msg']);
-  
+
 }else {
 
   $valid = false;
   $error_html = "<h2>No message specified for editing</h2>";
-  
+
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
@@ -85,7 +85,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
         $uri.= "?msg=". $HTTP_POST_VARS['t_msg'];
     }
 
-    header_redirect($uri);      
+    header_redirect($uri);
 }
 
 $valid = true;
@@ -98,12 +98,12 @@ if (isset($HTTP_POST_VARS['preview'])) {
     $from_uid = $HTTP_POST_VARS['t_from_uid'];
 
     $edit_msg = $HTTP_POST_VARS['t_msg'];
-    $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");   
+    $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
 
     $preview_message = messages_get($tid, $pid, 1);
 
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
-    
+
         $t_content = $HTTP_POST_VARS['t_content'];
 
         if ($HTTP_POST_VARS['t_post_html'] == "Y") {
@@ -116,7 +116,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
             $t_content = strip_tags($t_content);
             $t_content = ereg_replace("\n+", "\n", $t_content);
         }
-        
+
         $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
 
         $preview_message['CONTENT'] .= "<div class=\"sig\">".$t_sig."</div>";
@@ -139,7 +139,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $preview_message['FLOGON'] = $preview_tuser['LOGON'];
         $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['FROM_UID'] = $from_uid;
-        
+
     }else{
         $error_html = "<h2>You must enter some content for the post</h2>";
         $valid = false;
@@ -148,7 +148,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 } elseif (isset($HTTP_POST_VARS['submit'])) {
 
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
-    
+
         $t_content = $HTTP_POST_VARS['t_content'];
 
         if ($HTTP_POST_VARS['t_post_html'] == "Y") {
@@ -162,15 +162,15 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $t_content.= "<p><font size=\"1\">EDITED: ". date("d/m/y H:i T");
         $t_content.= " by ". user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']);
         $t_content.= "</font></p>";
-        
+
         $updated = post_update($tid, $pid, $t_content);
-        
+
         if ($updated) {
             echo "<div align=\"center\">";
             echo "<p>Edit Applied to Message $tid.$pid</p>";
             echo form_quick_button("discussion.php", "Continue", "msg", "$tid.$pid");
             echo "</div>";
-            
+
             html_draw_bottom();
             exit;
 
@@ -183,13 +183,13 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
 }else{
-    
+
     if ($tid && $pid) {
-    
+
         $editmessage = messages_get($tid, $pid, 1);
 
         if (count($editmessage) > 0) {
-        
+
             $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
             if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $editmessage['FROM_UID'] && !perm_is_moderator()) {
@@ -198,7 +198,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
             }
 
             $preview_message = $editmessage;
-           
+
             $to_uid = $editmessage['TO_UID'];
             $from_uid = $editmessage['FROM_UID'];
 
@@ -230,7 +230,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
             }
 
             $preview_message['CONTENT'] = $t_content."<div class=\"sig\">".$t_sig."</div>";
-            
+
             if (!isset($HTTP_POST_VARS['b_edit_html'])) {
                 $t_content = str_replace("\n", "", $t_content);
                 $t_content = str_replace("\r", "", $t_content);
@@ -249,7 +249,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         }
         unset($editmessage);
     }
-    
+
     $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
 }
 
@@ -281,7 +281,9 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit', 'Apply', 'onclick="if (attachwin != null) attachwin.close();"'). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel",  "Cancel");
+echo form_submit('submit', 'Apply', 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
+echo "&nbsp;". form_submit("preview", "Preview");
+echo "&nbsp;". form_submit("cancel",  "Cancel");
 
 if ($edit_html) {
     echo "&nbsp;".form_submit("b_edit_text", "Edit text");
@@ -293,7 +295,7 @@ if ($edit_html) {
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");    
+    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
 }
 
 echo "</form>";

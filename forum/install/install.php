@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.6 2004-05-11 20:01:21 decoyduck Exp $ */
+/* $Id: install.php,v 1.7 2004-05-24 19:33:07 decoyduck Exp $ */
 
 if (@file_exists("../include/config.inc.php")) {
     include_once("../include/config.inc.php");
@@ -145,149 +145,17 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
             if (mysql_select_db($db_database, $db_install)) {
 
-                if (($install_method == 1) && (@file_exists('upgrade.sql'))) {
+                if (($install_method == 1) && (@file_exists('./upgrade_script.php'))) {
 
-                    $schema_file_data = implode("", file('upgrade.sql'));
-                    $forum_webtag_array = array();
+                    include_once("./upgrade_script.php");
 
-                    $sql = "SHOW TABLES LIKE 'FORUMS'";
-                    $result = mysql_query($sql, $db_install);
+                }elseif (($install_method == 0) && (@file_exists('./install_script.php'))) {
 
-                    if (mysql_num_rows($result) > 0) {
-
-                        $sql = "SELECT WEBTAG FROM FORUMS";
-                        $result = mysql_query($sql, $db_install);
-
-                        while ($row = mysql_fetch_array($result)) {
-                            $forum_webtag_array[] = $row['WEBTAG'];
-                        }
-                    }
-
-                    if (sizeof($forum_webtag_array) > 0) {
-
-                        foreach ($forum_webtag_array as $forum_webtag) {
-
-                            // Replace the variables in the file
-
-                            $schema_file_data = str_replace('{forum_webtag}',   $forum_webtag,   $schema_file_data);
-
-                            // Split it into an array
-
-                            $schema_data_array = explode("\n", $schema_file_data);
-
-                            // Strip the comments out
-
-                            foreach ($schema_data_array as $key => $schema_entry) {
-                                if (substr($schema_entry, 0, 1) == "#") {
-                                    unset($schema_data_array[$key]);
-                                }
-                            }
-
-                            // Split the individual queries into an array
-                            // (each query should end with a semi-colon)
-
-                            $schema_data_array = explode(";", implode("", $schema_data_array));
-
-                            // Run the queries, stopping if we experience
-                            // any errors.
-
-                            foreach ($schema_data_array as $key => $schema_entry) {
-
-                                if ($valid) {
-
-                                    if (strlen(trim($schema_entry)) > 0) {
-
-                                        if (!mysql_query(trim($schema_entry), $db_install)) {
-
-                                            $valid = false;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }else {
-
-                        // Replace the variables in the file
-
-                        $schema_file_data = str_replace('{forum_webtag}',   $forum_webtag,   $schema_file_data);
-
-                        // Split it into an array
-
-                        $schema_data_array = explode("\n", $schema_file_data);
-
-                        // Strip the comments out
-
-                        foreach ($schema_data_array as $key => $schema_entry) {
-                            if (substr($schema_entry, 0, 1) == "#") {
-                                unset($schema_data_array[$key]);
-                            }
-                        }
-
-                        // Split the individual queries into an array
-                        // (each query should end with a semi-colon)
-
-                        $schema_data_array = explode(";", implode("", $schema_data_array));
-
-                        // Run the queries, stopping if we experience
-                        // any errors.
-
-                        foreach ($schema_data_array as $key => $schema_entry) {
-                            if ($valid) {
-                                if (strlen(trim($schema_entry)) > 0) {
-                                    if (!mysql_query(trim($schema_entry), $db_install)) {
-                                        $valid = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }elseif (($install_method == 0) && (@file_exists('install.sql'))) {
-
-                    $schema_file_data = implode("", file('install.sql'));
-
-                    // Replace the variables in the file
-
-                    $schema_file_data = str_replace('{forum_webtag}',   $forum_webtag,   $schema_file_data);
-                    $schema_file_data = str_replace('{admin_username}', $admin_username, $schema_file_data);
-                    $schema_file_data = str_replace('{admin_password}', $admin_password, $schema_file_data);
-                    $schema_file_data = str_replace('{admin_email}',    $admin_email,    $schema_file_data);
-
-                    // Split it into an array
-
-                    $schema_data_array = explode("\n", $schema_file_data);
-
-                    // Strip the comments out
-
-                    foreach ($schema_data_array as $key => $schema_entry) {
-                        if (substr($schema_entry, 0, 1) == "#") {
-                            unset($schema_data_array[$key]);
-                        }
-                    }
-
-                    // Split the individual queries into an array
-                    // (each query should end with a semi-colon)
-
-                    $schema_data_array = explode(";", implode("", $schema_data_array));
-
-                    // Run the queries, stopping if we experience
-                    // any errors.
-
-                    foreach ($schema_data_array as $key => $schema_entry) {
-
-                        if ($valid) {
-                            if (strlen(trim($schema_entry)) > 0) {
-                                if (!mysql_query(trim($schema_entry), $db_install)) {
-                                    $valid = false;
-                                }
-                            }
-                        }
-                    }
+                    include_once("./install_script.php");
 
                 }else {
 
-                    $error_html.= "<h2>Could not find the required schema file.</h2>\n";
+                    $error_html.= "<h2>Could not find the required script.</h2>\n";
                     $valid = false;
                 }
 

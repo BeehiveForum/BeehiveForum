@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.28 2004-01-26 19:40:29 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.29 2004-01-31 21:53:12 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -62,7 +62,7 @@ require_once("./include/attachments.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/lang.inc.php");
 
-html_draw_top();
+html_draw_top("post.js");
 
 // Get any UID from the GET or POST request
 // or default to the current user if not specified.
@@ -246,6 +246,18 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
       echo "  </tr>\n";
       echo "</table>\n";
       echo "</form>\n";
+
+  }elseif ($attachments_enabled) {
+
+      $aid = md5(uniqid(rand()));
+      
+      echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
+      echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+      echo "  <tr>\n";
+      echo "    <td><p align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}')\""), "</p></td>\n";
+      echo "  </tr>\n";
+      echo "</table>\n";
+      echo "</form>\n";    
   }
 
   html_draw_bottom();

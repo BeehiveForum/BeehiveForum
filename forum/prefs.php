@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.84 2003-12-29 20:07:26 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.85 2004-01-04 15:28:37 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -125,23 +125,23 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 
     if (isset($HTTP_POST_VARS['nickname']) && trim($HTTP_POST_VARS['nickname']) != "") {
-        $t_nickname = $HTTP_POST_VARS['nickname'];
+        $t_nickname = _stripslashes(trim($HTTP_POST_VARS['nickname']));       
     }else {
         $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['email']) && trim($HTTP_POST_VARS['email']) != "") {
-        $t_email = $HTTP_POST_VARS['email'];
+        $t_email = _stripslashes(trim($HTTP_POST_VARS['email']));      
     }else {
         $error_html.= "<h2>{$lang['emailaddressrequired']}</h2>";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['dob_year']) && isset($HTTP_POST_VARS['dob_month']) && isset($HTTP_POST_VARS['dob_day']) && checkdate($HTTP_POST_VARS['dob_month'], $HTTP_POST_VARS['dob_day'], $HTTP_POST_VARS['dob_year'])) {
-        $t_dob_day   = trim($HTTP_POST_VARS['dob_day']);
-        $t_dob_month = trim($HTTP_POST_VARS['dob_month']);
-        $t_dob_year  = trim($HTTP_POST_VARS['dob_year']);
+        $t_dob_day   = _stripslashes(trim($HTTP_POST_VARS['dob_day']));
+        $t_dob_month = _stripslashes(trim($HTTP_POST_VARS['dob_month']));
+        $t_dob_year  = _stripslashes(trim($HTTP_POST_VARS['dob_year']));
         $t_user_dob  = "$t_dob_year-$t_dob_month-$t_dob_day";
         $t_dob_blank_fields = ($t_dob_year == 0 || $t_dob_month == 0 || $t_dob_day == 0) ? true : false;
     }else {
@@ -152,61 +152,61 @@ if (isset($HTTP_POST_VARS['submit'])) {
     // Optional fields
 
     if (isset($HTTP_POST_VARS['firstname']) && trim($HTTP_POST_VARS['firstname']) != "") {
-        $t_firstname = $HTTP_POST_VARS['firstname'];
+        $t_firstname = _stripslashes(trim($HTTP_POST_VARS['firstname']));       
     }else {
         $t_firstname = "";
     }
 
     if (isset($HTTP_POST_VARS['lastname']) && trim($HTTP_POST_VARS['lastname']) != "") {
-        $t_lastname = $HTTP_POST_VARS['lastname'];
+        $t_lastname = _stripslashes(trim($HTTP_POST_VARS['lastname']));
     }else {
         $t_lastname = "";
     }
 
     if (isset($HTTP_POST_VARS['homepage_url']) && trim($HTTP_POST_VARS['homepage_url']) != "") {
-        $t_homepage_url = $HTTP_POST_VARS['homepage_url'];
+        $t_homepage_url = _stripslashes(trim($HTTP_POST_VARS['homepage_url']));
     }else {
         $t_homepage_url = "";
     }
 
     if (isset($HTTP_POST_VARS['pic_url']) && trim($HTTP_POST_VARS['pic_url']) != "") {
-        $t_pic_url = $HTTP_POST_VARS['pic_url'];
+        $t_pic_url = _stripslashes(trim($HTTP_POST_VARS['pic_url']));
     }else {
         $t_pic_url = "";
     }
 
     if (isset($HTTP_POST_VARS['email_notify']) && $HTTP_POST_VARS['email_notify'] == "Y") {
-        $t_email_notify = $HTTP_POST_VARS['email_notify'];
+        $t_email_notify = _stripslashes(trim($HTTP_POST_VARS['email_notify']));
     }else {
         $t_email_notify = "";
     }
 
     if (isset($HTTP_POST_VARS['pm_notify']) && $HTTP_POST_VARS['pm_notify'] == "Y") {
-        $t_pm_notify = $HTTP_POST_VARS['pm_notify'];
+        $t_pm_notify = _stripslashes(trim($HTTP_POST_VARS['pm_notify']));
     }else {
         $t_pm_notify = "";
     }
 
     if (isset($HTTP_POST_VARS['pm_notify_email']) && $HTTP_POST_VARS['pm_notify_email'] == "Y") {
-        $t_pm_notify_email = $HTTP_POST_VARS['pm_notify_email'];
+        $t_pm_notify_email = _stripslashes(trim($HTTP_POST_VARS['pm_notify_email']));
     }else {
         $t_pm_notify_email = "";
     }
 
     if (isset($HTTP_POST_VARS['dl_saving']) && $HTTP_POST_VARS['dl_saving'] == "Y") {
-        $t_dl_saving = $HTTP_POST_VARS['dl_saving'];
+        $t_dl_saving = _stripslashes(trim($HTTP_POST_VARS['dl_saving']));
     }else {
         $t_dl_saving = "";
     }
 
     if (isset($HTTP_POST_VARS['mark_as_of_int']) && $HTTP_POST_VARS['mark_as_of_int'] == "Y") {
-        $t_mark_as_of_int = $HTTP_POST_VARS['mark_as_of_int'];
+        $t_mark_as_of_int = _stripslashes(trim($HTTP_POST_VARS['mark_as_of_int']));
     }else {
         $t_mark_as_of_int = "";
     }
 
     if (isset($HTTP_POST_VARS['view_sigs']) && $HTTP_POST_VARS['view_sigs'] == "Y") {
-        $t_view_sigs = $HTTP_POST_VARS['view_sigs'];
+        $t_view_sigs = _stripslashes(trim($HTTP_POST_VARS['view_sigs']));
     }else {
         $t_view_sigs = "";
     }
@@ -224,49 +224,49 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 
     if (isset($HTTP_POST_VARS['timezone'])) {
-        $t_timezone = $HTTP_POST_VARS['timezone'];
+        $t_timezone = _stripslashes(trim($HTTP_POST_VARS['timezone']));
     }else {
         $t_timezone = 0;
     }
 
     if (isset($HTTP_POST_VARS['posts_per_page'])) {
-        $t_posts_per_page = $HTTP_POST_VARS['posts_per_page'];
+        $t_posts_per_page = _stripslashes(trim($HTTP_POST_VARS['posts_per_page']));
     }else {
         $t_posts_per_page = 10;
     }
 
     if (isset($HTTP_POST_VARS['font_size'])) {
-        $t_font_size = $HTTP_POST_VARS['font_size'];
+        $t_font_size = _stripslashes(trim($HTTP_POST_VARS['font_size']));
     }else {
         $t_font_size = 10;
     }
 
     if (isset($HTTP_POST_VARS['style'])) {
-        $t_style = $HTTP_POST_VARS['style'];
+        $t_style = _stripslashes(trim($HTTP_POST_VARS['style']));
     }else {
         $t_style = $default_style;
     }
 
     if (isset($HTTP_POST_VARS['language'])) {
-        $t_language = $HTTP_POST_VARS['language'];
+        $t_language = _stripslashes(trim($HTTP_POST_VARS['language']));
     }else {
         $t_language = "";
     }
 
     if (isset($HTTP_POST_VARS['start_page'])) {
-        $t_start_page = $HTTP_POST_VARS['start_page'];
+        $t_start_page = _stripslashes(trim($HTTP_POST_VARS['start_page']));
     }else {
         $t_start_page = 0;
     }
 
     if (isset($HTTP_POST_VARS['dob_display'])) {
-        $t_dob_display = $HTTP_POST_VARS['dob_display'];
+        $t_dob_display = _stripslashes(trim($HTTP_POST_VARS['dob_display']));
     }else {
         $t_dob_display = 0;
     }
 
     if (isset($HTTP_POST_VARS['sig_content']) && trim($HTTP_POST_VARS['sig_content']) != "") {
-        $t_sig_content = $HTTP_POST_VARS['sig_content'];
+        $t_sig_content = _stripslashes(trim($HTTP_POST_VARS['sig_content']));
     }else {
         $t_sig_content = "";
     }

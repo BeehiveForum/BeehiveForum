@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.56 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: register.php,v 1.57 2004-01-04 15:28:37 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -62,19 +62,25 @@ $error_html = "";
 if(isset($HTTP_POST_VARS['submit'])) {
 
   if (strlen(trim($HTTP_POST_VARS['logon'])) > 0) {
-      if (_htmlentities(trim($HTTP_POST_VARS['logon'])) != trim($HTTP_POST_VARS['logon'])) {
+
+      $t_logon = _stripslashes(trim($HTTP_POST_VARS['logon']));
+
+      if (_htmlentities($t_logon) != $t_logon) {
         $error_html.= "<h2>{$lang['usernamemustnotcontainHTML']}</h2>\n";
         $valid = false;
       }
-      if (!preg_match("/^[a-z0-9_-]+$/i", trim($HTTP_POST_VARS['logon']))) {
+      
+      if (!preg_match("/^[a-z0-9_-]+$/i", $t_logon)) {
         $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
         $valid = false;
       }
-      if (strlen(trim($HTTP_POST_VARS['logon'])) < 2) {
+      
+      if (strlen($t_logon) < 2) {
         $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
         $valid = false;
       }
-      if (strlen(trim($HTTP_POST_VARS['logon'])) > 15) {
+      
+      if (strlen($t_logon) > 15) {
         $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
         $valid = false;
       }
@@ -84,81 +90,100 @@ if(isset($HTTP_POST_VARS['submit'])) {
   }
 
   if (strlen(trim($HTTP_POST_VARS['pw'])) > 0) {
-      if (_htmlentities(trim($HTTP_POST_VARS['pw'])) != trim($HTTP_POST_VARS['pw'])) {
+
+      $t_pw = _stripslashes(trim($HTTP_POST_VARS['pw']));
+      
+      if (_htmlentities($t_pw) != $t_pw) {
         $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
         $valid = false;
       }
-      if (strlen(trim($HTTP_POST_VARS['pw'])) < 6) {
+      
+      if (strlen($t_pw) < 6) {
         $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
         $valid = false;
       }
+      
   }else {
       $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
       $valid.= false;
   }
 
   if (strlen(trim($HTTP_POST_VARS['cpw'])) > 0) {
-      if (_htmlentities($HTTP_POST_VARS['cpw']) != $HTTP_POST_VARS['cpw']) {
+
+      $t_cpw = _stripslashes(trim($HTTP_POST_VARS['cpw']));
+      
+      if (_htmlentities($t_cpw) != $t_cpw) {
         $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
         $valid = false;
       }
+      
   }else {
       $error_html.= "<h2>{$lang['confirmationpasswdrequired']}</h2>\n";
       $valid = false;
   }
 
   if (strlen(trim($HTTP_POST_VARS['nickname'])) > 0) {
-      if (_htmlentities($HTTP_POST_VARS['nickname']) != $HTTP_POST_VARS['nickname']) {
+      
+      $t_nickname = _stripslashes(trim($HTTP_POST_VARS['nickname']));
+      
+      if (_htmlentities($t_nickname) != $t_nickname) {
         $error_html.= "<h2>{$lang['nicknamemustnotcontainHTML']}</h2>\n";
         $valid = false;
       }
+      
   }else {
       $error_html.= "<h2>{$lang['nicknamerequired']}</h2>\n";
       $valid = false;
   }
 
   if (strlen(trim($HTTP_POST_VARS['email'])) > 0) {
-      if (_htmlentities($HTTP_POST_VARS['email']) != $HTTP_POST_VARS['email']) {
+      
+      $t_email = _stripslashes(trim($HTTP_POST_VARS['email']));
+      
+      if (_htmlentities($t_email) != $t_email) {
         $error_html.= "<h2>{$lang['emailmustnotcontainHTML']}</h2>\n";
         $valid = false;
       }
+      
   }else {
       $error_html.= "<h2>{$lang['emailrequired']}</h2>\n";
       $valid = false;
   }
 
   if (!isset($HTTP_POST_VARS['dob_year']) || !isset($HTTP_POST_VARS['dob_month']) || !isset($HTTP_POST_VARS['dob_day']) || !checkdate($HTTP_POST_VARS['dob_month'], $HTTP_POST_VARS['dob_day'], $HTTP_POST_VARS['dob_year'])) {
-          $error_html .= "<h2>{$lang['birthdayrequired']}</h2>\n";
-          $valid = false;
+      $error_html .= "<h2>{$lang['birthdayrequired']}</h2>\n";
+      $valid = false;
   }
 
   if ($valid) {
-      if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']) {
+  
+      if ($t_pw != $t_cpw) {
           $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
           $valid = false;
       }
-      if (trim($HTTP_POST_VARS['logon']) == trim($HTTP_POST_VARS['pw'])) {
+      
+      if (strtolower($t_logon) == strtolower($t_pw)) {
         $error_html.= "<h2>{$lang['usernamesameaspasswd']}</h2>\n";
         $valid = false;
       }
   }
 
   if ($valid) {
-      if(user_exists(strtoupper(trim($HTTP_POST_VARS['logon'])))) {
+      if (user_exists(strtoupper($t_logon))) {
           $error_html.= "<h2>{$lang['usernameexists']}</h2>\n";
           $valid = false;
       }
   }
 
-  if($valid) {
+  if ($valid) {
 
-      $new_uid = user_create(strtoupper(trim($HTTP_POST_VARS['logon'])), trim($HTTP_POST_VARS['pw']), trim($HTTP_POST_VARS['nickname']), trim($HTTP_POST_VARS['email']));
+      $new_uid = user_create(strtoupper($t_logon), $t_pw, $t_nickname, $t_email);
 
       // Profile section
-
-      $firstname   = (isset($HTTP_POST_VARS['firstname']) && trim($HTTP_POST_VARS['firstname']) != "") ? trim($HTTP_POST_VARS['firstname']) : "";
-      $lastname    = (isset($HTTP_POST_VARS['lastname']) && trim($HTTP_POST_VARS['lastname']) != "") ? trim($HTTP_POST_VARS['lastname']) : "";
-      $dob         = $HTTP_POST_VARS['dob_year']."-".$HTTP_POST_VARS['dob_month']."-".$HTTP_POST_VARS['dob_day'];
+      
+      $firstname   = (isset($HTTP_POST_VARS['firstname']) && trim($HTTP_POST_VARS['firstname']) != "") ? _stripslashes(trim($HTTP_POST_VARS['firstname'])) : "";
+      $lastname    = (isset($HTTP_POST_VARS['lastname']) && trim($HTTP_POST_VARS['lastname']) != "") ? _stripslashes(trim($HTTP_POST_VARS['lastname'])) : "";
+      $dob         = "{$HTTP_POST_VARS['dob_year']}-{$HTTP_POST_VARS['dob_month']}-{$HTTP_POST_VARS['dob_day']}";
       $sig_content = (isset($HTTP_POST_VARS['sig_content']) && trim($HTTP_POST_VARS['sig_content']) != "") ? trim($HTTP_POST_VARS['sig_content']) : "";
 
       if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y") {
@@ -180,7 +205,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $language           = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : $default_language;
       $forum_style        = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : $default_style;
 
-      if($new_uid > -1) {
+      if ($new_uid > -1) {
 
           user_update_prefs($new_uid, $firstname, $lastname, $dob, "", "", $email_notify, $timezone, $dl_saving, $mark_as_of_int, "", "", $forum_style, "", 0, $language, $notifyofnewpmemail, $notifyofnewpm, 0);
           user_update_sig($new_uid, $sig_content, $sig_html);

@@ -63,7 +63,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
     }
 } else {
     $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    if (isset($mark_all_read)) threads_mark_all_read();
+    if (isset($HTTP_GET_VARS['mark_all_read'])) threads_mark_all_read();
     if (!isset($HTTP_GET_VARS['mode'])) {
         if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
             if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
@@ -351,7 +351,7 @@ if ($mode == 0 && !isset($folder)) {
   if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
   if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
 }
-echo "<tr>\n<td colspan=\"2\">&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
+echo "<tr>\n<td colspan=\"2\">&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark discussions as read</a></td></tr>\n";
 echo "</table>\n";
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";

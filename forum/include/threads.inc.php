@@ -352,32 +352,47 @@ function threads_any_unread()
 
 function threads_mark_all_read()
 {
+
     global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-
-    $sql = "select T.TID, T.LENGTH, UT.LAST_READ ";
-    $sql.= "from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
-    $sql.= "on (UT.TID = T.TID and UT.UID = '$uid') ";
-    $sql.= "where T.LENGTH > UT.LAST_READ";
-
+    
     $db_threads_mark_all_read = db_connect();
-    $result = db_query($sql, $db_threads_mark_all_read);
-
-    for($i=0;$row[$i] = db_fetch_array($result);$i++);
-
-    for($j=0;$j<$i;$j++){
-        if(!$row[$j]['LAST_READ']){
-            $sql = "insert into ".forum_table("USER_THREAD")." (UID,TID,LAST_READ,LAST_READ_AT,INTEREST) ";
-            $sql.= "values ($uid, ".$row[$j]['TID'].", ".$row[$j]['LENGTH'].",NOW(),0)";
-        } else {
-            $sql = "update low_priority ".forum_table("USER_THREAD");
-            $sql.= " set LAST_READ = ".$row[$j]['LENGTH'].", ";
-            $sql.= "LAST_READ_AT = NOW() ";
-            $sql.= "where TID = ".$row[$j]['TID']." and UID = $uid";
-        }
-        db_query($sql, $db_threads_mark_all_read);
+    
+    $sql = "SELECT TID, LENGTH FROM ". forum_table("THREAD");
+    $result_threads = db_query($sql, $db_threads_mark_all_read);
+    
+    $sql = "SELECT TID, LAST_READ, INTEREST FROM ". forum_table("USER_THREAD");
+    $sql.= " WHERE UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $result_lastread = db_query($sql, $db_threads_mark_all_read);
+    
+    while($row = db_fetch_array($result_threads)) {
+      $threads[$row['TID']] = array('TID' => $row['TID'], 'LENGTH' => $row['LENGTH'], 'LAST_READ' => 0, 'INTEREST' => 0);
     }
-
+    
+    while($row = db_fetch_array($result_lastread)) {
+      $threads[$row['TID']]['LAST_READ'] = $row['LAST_READ'];
+      $threads[$row['TID']]['INTEREST'] = $row['INTEREST'];
+    }
+    
+    foreach($threads as $thread) {
+    
+      if ($thread['LAST_READ'] == 0) {
+      
+        $sql = "INSERT INTO ".forum_table("USER_THREAD")." (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql.= "VALUES (". $HTTP_COOKIE_VARS['bh_sess_uid']. ", ". $thread['TID']. ", ". $thread['LENGTH'] .", NOW(), ". $thread['INTEREST']. ")";
+        
+      }elseif ($thread['LENGTH'] > $thread['LAST_READ']) {
+      
+        $sql = "UPDATE LOW_PRIORITY ".forum_table("USER_THREAD");
+	$sql.= " SET LAST_READ = ". $thread['LENGTH']. ", ";
+	$sql.= "LAST_READ_AT = NOW() ";
+        $sql.= "WHERE TID = ". $thread['TID']." and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+        
+      }
+      
+      db_query($sql, $db_threads_mark_all_read);
+      
+    }
+        
 }
 
 ?>

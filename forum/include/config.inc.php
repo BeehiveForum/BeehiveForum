@@ -175,7 +175,7 @@ $session_cutoff = 3600;         // Time before a guest user becomes
 
 // To disable GZIP compression change the variable below to false
 
-$gzip_compress_output = false;
+$gzip_compress_output = true;
 $gzip_compress_level  = 1;
 
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.120 2003-09-01 21:31:51 tribalonline Exp $ */
+/* $Id: post.php,v 1.121 2003-09-01 22:29:16 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -628,7 +628,7 @@ if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
-tools_html();
+tools_html(form_submit('submit',$lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 
 echo tools_junk()."\n";
 echo form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 18, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";

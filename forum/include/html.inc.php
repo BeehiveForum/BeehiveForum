@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.74 2004-01-04 17:04:39 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.75 2004-01-15 00:17:21 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -125,6 +125,7 @@ function html_draw_top()
     $onload_array = array();
     $onunload_array = array();
     $arg_array = func_get_args();
+    $meta_refresh = false;
 
     foreach($arg_array as $key => $func_args) {
 
@@ -152,6 +153,11 @@ function html_draw_top()
             $onunload_array[] = substr($func_args, 9);
             unset($arg_array[$key]);
         }
+        
+        if (preg_match("/^refresh=/i", $func_args)) {
+            $meta_refresh = substr($func_args, 8);
+            unset($arg_array[$key]);
+        }
     }
 
     if (!isset($title)) $title = $forum_name;
@@ -164,6 +170,10 @@ function html_draw_top()
     echo "<head>\n";
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+    
+    if ($meta_refresh) {
+        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php\">\n";
+    }
 
     if (isset($default_style)) {
 

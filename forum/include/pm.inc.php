@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.22 2003-11-27 13:29:06 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.23 2004-01-15 00:17:21 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -578,7 +578,7 @@ function pm_archive_message($mid)
     $result = db_query($sql, $db_pm_archive_message);
 }
 
-function pm_new_check()
+function pm_new_check($markseen = true)
 {
     $db_pm_new_check = db_connect();
     $uid = bh_session_get_value('UID');
@@ -599,11 +599,14 @@ function pm_new_check()
     // messages that arrives and NOT every time they reload
     // the page, so set all NEW messages to UNREAD.
     // ------------------------------------------------------------
+    
+    if ($markseen) {
 
-    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_UNREAD. " ";
-    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
+        $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_UNREAD. " ";
+        $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
 
-    $result = db_query($sql, $db_pm_new_check);
+        $result = db_query($sql, $db_pm_new_check);
+    }
 
     return ($num_rows > 0);
 }

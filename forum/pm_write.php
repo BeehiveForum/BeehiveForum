@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.36 2004-01-13 16:41:40 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.37 2004-01-15 00:17:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -128,7 +128,7 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
                 if ($to_user = user_get_uid($to_logon)) {
                     if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
                         $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
-                        $t_new_recipient_array['LOGON'][]  = $to_user['LOGON']);
+                        $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
                         $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                     }
 

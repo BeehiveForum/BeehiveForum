@@ -111,13 +111,10 @@ if ($valid) {
         
         if (post_delete($tid, $pid)) {
         
-            echo "<p>&nbsp;</p>";
-            echo "<p>&nbsp;</p>";
             echo "<div align=\"center\">";
             echo "<p>Post deleted successfully</p>";
             echo form_quick_button("discussion.php", "Back", "msg", $HTTP_POST_VARS['t_back']);
             echo "</div>";
-            
             html_draw_bottom();
             exit;
             

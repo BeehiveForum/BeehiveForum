@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.3 2005-04-04 11:54:36 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.4 2005-04-06 21:03:31 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -58,7 +58,7 @@ class captcha {
     var $available_fonts = array();
     var $current_font;
 
-    var $error = "";
+    var $error = false;
     var $text_captcha_dir = "";
 
     // PUBLIC //
@@ -77,7 +77,7 @@ class captcha {
 
         $this->max_rotation = $max_rotation;
 
-        $this->key = md5(forum_get_setting('text_captcha_key', false, 'BeehiveForum06TextCaptchaKey'));
+        $this->key = md5(forum_get_setting('text_captcha_key', false, md5(uniqid(rand()))));
 
         $this->image_x = ($num_chars + 1) * (int)(($this->max_char_size + $this->min_char_size) / 1.5);
         $this->image_y = (int)(2.4 * $this->max_char_size);
@@ -237,6 +237,22 @@ class captcha {
         return false;
     }
 
+    function get_font_path()
+    {
+        $font_path = dirname($_SERVER['PHP_SELF']);
+        $font_path.= "/{$this->text_captcha_dir}/fonts";
+
+        return $font_path;
+    }
+
+    function get_images_path()
+    {
+        $images_path = dirname($_SERVER['PHP_SELF']);
+        $images_path.= "/{$this->text_captcha_dir}/images";
+
+        return $images_path;
+    }
+
     // PRIVATE //
 
     function check_working_dir()
@@ -246,19 +262,19 @@ class captcha {
             if (!@is_dir("$text_captcha_dir")) {
 
                 @mkdir("$text_captcha_dir", 0755);
-                @chdir("$text_captcha_dir", 0777);
+                @chmod("$text_captcha_dir", 0777);
             }
 
             if (!@is_dir("$text_captcha_dir/fonts")) {
 
                 @mkdir("$text_captcha_dir/fonts", 0755);
-                @chdir("$text_captcha_dir/fonts", 0777);
+                @chmod("$text_captcha_dir/fonts", 0777);
             }
 
             if (!@is_dir("$text_captcha_dir/images")) {
 
                 @mkdir("$text_captcha_dir/images", 0755);
-                @chdir("$text_captcha_dir/images", 0777);
+                @chmod("$text_captcha_dir/images", 0777);
             }
 
             if (@is_dir("$text_captcha_dir/fonts") && @is_dir("$text_captcha_dir/images")) {

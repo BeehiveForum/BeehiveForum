@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.61 2004-12-18 19:36:52 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.62 2004-12-21 23:15:17 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -56,21 +56,18 @@ function thread_get($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, ";
-    $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, ";
-    $sql.= "THREAD.ADMIN_LOCK, USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE ";
+    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
+    $sql.= "THREAD.STICKY, UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
+    $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
-    $sql.= "(UP.UID = '$uid' AND UP.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON ";
-    $sql.= "(FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.TID = $tid ";
-    $sql.= "GROUP BY THREAD.tid";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE THREAD.TID = $tid";
 
     $result = db_query($sql, $db_thread_get);
 

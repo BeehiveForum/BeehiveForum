@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.77 2004-12-19 17:22:21 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.78 2004-12-21 23:15:16 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -119,7 +119,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
     $webtag = get_webtag($webtag_search);
 
     $sql = "SELECT USER_THREAD.UID, USER.NICKNAME, USER.EMAIL ";
-    $sql.= "FROM DEFAULT_USER_THREAD USER_THREAD ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_THREAD.UID) ";
     $sql.= "WHERE USER_THREAD.TID = $tid AND USER_THREAD.INTEREST = 2 ";
     $sql.= "AND USER_THREAD.UID NOT IN ($fuid, $tuid)";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.35 2003-09-02 19:40:42 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.36 2003-09-03 15:21:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -586,6 +586,7 @@ $lang['editpm'] = "Edit Message";
 $lang['cannoteditpm'] = "Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you";
 $lang['cannotviewpm'] = "Cannot view PM. Message does not exist or it is inaccessible by you";
 $lang['nomessagespecifiedforreply'] = "No message specified for reply to";
+$lang['nouserspecified'] = "No user specified.";
 
 // Preferences (prefs.php) ---------------------------------------------
 $lang['newpasswd'] = "New Password";

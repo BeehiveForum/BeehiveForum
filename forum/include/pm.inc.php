@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.17 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.18 2003-09-03 15:21:37 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -179,45 +179,29 @@ function pm_get_user($mid)
 function pm_draw_to_dropdown($default_uid)
 {
     $html = "<select name=\"t_to_uid\">\n";
+    $html.= "<option value=\"0\">&lt;select recipient&gt;</option>\n";
 
     $db_post_draw_to_dropdown = db_connect();
 
-    if (isset($default_uid) && $default_uid != 0) {
-        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
-        $result = db_query($top_sql,$db_post_draw_to_dropdown);
-        if(db_num_rows($result)>0){
-            $top_user = db_fetch_array($result);
+    if ($default_uid != 0) {
+        if ($top_user = user_get($default_uid)) {
             $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
         }
     }
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM ".forum_table("USER")." U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
-    $sql.= "ORDER BY U.LAST_LOGON DESC ";
+    $sql.= "AND U.UID <> '$default_uid' ORDER BY U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
-    while($row = db_fetch_array($result)){
-        if(isset($row['LOGON'])){
-           $logon = $row['LOGON'];
-        } else {
-         $logon = "";
-        }
-        if(isset($row['NICKNAME'])){
-            $nickname = $row['NICKNAME'];
-        } else {
-            $nickname = "";
-        }
+    while ($row = db_fetch_array($result)) {
 
-        $fmt_uid = $row['UID'];
-        $fmt_username = format_user_name($logon,$nickname);
-
-        if($fmt_uid != $default_uid && $fmt_uid != 0 && $fmt_username != "Guest"){
-            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
-        }
-        //$html .= ">$fmt_username</option>\n";
+        $logon = (isset($row['LOGON'])) ? $row['LOGON'] : "";
+        $nickname =  (isset($row['NICKNAME'])) ? $row['NICKNAME'] : "";
+        $html.= "<option value=\"{$row['UID']}\">". format_user_name($logon, $nickname). "</option>\n";
     }
 
     $html .= "</select>\n";

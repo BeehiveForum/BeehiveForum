@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.227 2005-02-14 21:13:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.228 2005-02-14 23:34:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -533,6 +533,7 @@ $lang['allowpostoptions'] = "Allow Post Editing";
 $lang['postedittimeout'] = "Post Edit Timeout";
 $lang['wikiintegration'] = "Wiki Integration";
 $lang['enablewikiintegration'] = "Enable WikiWiki Integration";
+$lang['enablewikiquicklinks'] = "Enable WikiWiki Quick Links";
 $lang['wikiintegrationuri'] = "WikiWiki Location";
 $lang['maximumpostlength'] = "Maximum Post Length";
 $lang['enablelinkssection'] = "Enable Links section";
@@ -593,8 +594,9 @@ $lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages
 $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
 $lang['forum_settings_help_28'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
 $lang['forum_settings_help_29'] = "If you don't want any new user signups you can change this option. Doing so will make the registration form unavailable.";
-$lang['forum_settings_help_30'] = "Enable this option to provide WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your choosen Wiki.";
-$lang['forum_settings_help_31'] = "When entering your Wiki URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
+$lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your choosen Wiki.";
+$lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended Wiki links which create hyperlinks to the specified message / user profile of the specified user.";
+$lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify the URI of your WikiWiki. When entering the URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.34 2004-02-20 18:36:03 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.35 2004-02-22 14:27:22 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -351,6 +351,25 @@ function attachment_inc_dload_count($hash)
     $result = db_query($sql, $db_attachment_inc_dload_count);
 
     return (db_affected_rows($db_attachment_inc_dload_count) > 0);
+}
+
+// Checks to see if an attachment has been embedded in the content
+// True: attachment is embedded. False: no attachments embedded
+
+function attachment_embed_check($content)
+{
+    global $attachment_allow_embed;
+    
+    if (!isset($attachment_allow_embed)) $attachment_allow_embed = false;
+
+    if ($attachment_allow_embed) return false;
+    $content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
+    
+    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $content_check)) {
+        return true;
+    }
+    
+    return false;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.3 2004-01-26 20:11:11 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.4 2004-02-22 14:27:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -67,10 +67,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }else {
         $t_sig_html = "N";
     }
-    
-    $t_sig_content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_sig_content));
 
-    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig_content_check) && $t_sig_html != "N") {
+    if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
         $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
         $valid = false;
     }

@@ -148,6 +148,16 @@ $attachment_dir = 'attachments';
 
 $attachments_show_deleted = false;
 
+// Should you wish you can prevent users from embedding
+// attachments in their posts and signatures. This is
+// useful in a situation where Beehive cannot make use
+// of HTTP/304 caching methods to ease the amount of
+// bandwidth used by attachments on your forum.
+//
+// Default: false
+
+$attachment_allow_embed = false;
+
 // ---------------------------------------------------------------------
 
 // User Accounts -------------------------------------------------------

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.151 2004-02-09 03:48:33 tribalonline Exp $ */
+/* $Id: post.php,v 1.152 2004-02-22 14:27:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -158,9 +158,8 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
 
         $t_content = $HTTP_POST_VARS['t_content'];
-	$t_content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_content));
 
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content_check) && isset($t_post_html) && $t_post_html) {
+        if (attachment_embed_check($t_content) && isset($t_post_html) && $t_post_html) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
@@ -174,9 +173,7 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
     $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
 
-    $t_sig_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_sig));
-
-    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig_check) && isset($t_sig_html) && $t_sig_html != "N") {
+    if (attachment_embed_check($t_sig) && isset($t_sig_html) && $t_sig_html != "N") {
         $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
         $valid = false;
     }
@@ -188,9 +185,8 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
         if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
 
             $t_content = $HTTP_POST_VARS['t_content'];
-	    $t_content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_content));
 
-            if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content_check) && isset($t_post_html) && $t_post_html) {
+            if (attachment_embed_check($t_content) && isset($t_post_html) && $t_post_html) {
                 $error_html = "<h2>You are not allowed to embed attachments in your posts.</h2>\n";
                 $valid = false;
             }
@@ -203,9 +199,7 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
         $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
         $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
 
-	$t_sig_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_sig));
-
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig_check) && isset($t_sig_html) && $t_sig_html != "N") {
+        if (attachment_embed_check($t_sig) && isset($t_sig_html) && $t_sig_html != "N") {
             $error_html = "<h2>You are not allowed to embed attachments in your signature.</h2>\n";
             $valid = false;
         }

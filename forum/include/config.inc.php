@@ -101,6 +101,11 @@ $guest_account_enabled = true;  // Enable the use of forum guest account
 // amounts of bandwidth, but can also increase the CPU load on the
 // server
 
+// WARNING: If you are using mod_gzip or any other gzipping module
+//          to handle the compression of PHP scripts on your web
+//          server, do _NOT_ enable the built in GZIP compression
+//          in Beehive, otherwise your forum will be inaccessible.
+
 // To disable GZIP compression change the variable below to false
 
 $gzip_compress_output = false;

@@ -338,7 +338,7 @@ if (isset($error_html)) echo $error_html;
 echo "<form name=\"f_edit_poll\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
-//echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</p>\n";
+echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</p>\n";
 
 ?>
   <table class="box" cellpadding="0" cellspacing="0" width="500">
@@ -368,13 +368,13 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
                     if (sizeof($pollresults) <= 5) {
                       $answercount = 5;
                       $answerselection = 0;
-                    }elseif (sizeof($pollresults) >= 10 && sizeof($pollresults) < 15) {
+                    }elseif (sizeof($pollresults) > 5 && sizeof($pollresults) <= 10) {
                       $answercount = 10;
                       $answerselection = 1;
-                    }elseif (sizeof($pollresults) >= 15 && sizeof($pollresults) < 20) {
+                    }elseif (sizeof($pollresults) > 10 && sizeof($pollresults) <= 15) {
                       $answercount = 15;
                       $answerselection = 2;
-                    }else {
+                    }elseif (sizeof($pollresults) > 15) {
                       $answercount = 20;
                       $answerselection = 3;
                     }
@@ -386,7 +386,7 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
                   <td>No. Answers: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), $answerselection), " ", form_submit("changecount", "Change")  ?></td>
                 </tr>
                 <tr>
-                  <td>&nbsp;</td>
+                  <td><?php echo sizeof($pollresults); ?></td>
                   <td>&nbsp;</td>
                 </tr>
                 <?php
@@ -398,16 +398,12 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
                     echo "  <td>";
 
                     if (isset($HTTP_POST_VARS['answers'][$i])) {
-                      echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 64);
+                      echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 255);
                     }else {
                       if (isset($pollresults[$i]['OPTION_NAME'])) {
-                        if (strip_tags($pollresults[$i]['OPTION_NAME']) != $pollresults[$i]['OPTION_NAME']) {
-                          echo form_input_text("answers[$i]", htmlspecialchars($pollresults[$i]['OPTION_NAME']), 40, 64);
-                        }else {
-                          echo form_input_text("answers[$i]", $pollresults[$i]['OPTION_NAME'], 40, 64);
-                        }
+                        echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($pollresults[$i]['OPTION_NAME'])), 40, 255);
                       }else {
-                        echo form_input_text("answers[$i]", '', 40, 64);
+                        echo form_input_text("answers[$i]", '', 40, 255);
                       }
                     }
 
@@ -416,10 +412,24 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
 
                   }
 
+                  if (isset($HTTP_POST_VARS['t_post_html'])) {
+                    if ($HTTP_POST_VARS['t_post_html'] == "Y") {
+                      $t_post_html = true;
+                    }else {
+                      $t_post_html = false;
+                    }
+                  }else {
+                    if (strip_tags($pollresults[1]['OPTION_NAME']) != $pollresults[1]['OPTION_NAME']) {
+                      $t_post_html = true;
+                    }else {
+                      $t_post_html = false;
+                    }
+                  }
+
                 ?>
                 <tr>
                   <td>&nbsp;</td>
-                  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+                  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", $t_post_html); ?></td>
                 </tr>
               </table>
             </td>

@@ -79,43 +79,21 @@ if(isset($HTTP_POST_VARS['submit'])){
                     $HTTP_POST_VARS['nickname'],
                     $HTTP_POST_VARS['email']);
 
-        // Update or insert USER_PREFS
+        // Update USER_PREFS
 
-        if($HTTP_POST_VARS['prefs_exist'] == 'Y'){
-        
-            user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
-                              $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
-                              $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
-                              $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
-                              $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
-                              $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
+        user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
+                          $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
+                          $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
+                          $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
+                          $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
+                          $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
                         
-        } else {
+        // Update USER_SIG
         
-            user_insert_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
-                              $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
-                              $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
-                              $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
-                              $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
-                              $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
-        }
-
-        // Update or insert USER_SIG
-        
-        if($HTTP_POST_VARS['sig_exists'] == 'Y') {
-        
-            user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
-                            $HTTP_POST_VARS['sig_content'],
-                            $HTTP_POST_VARS['sig_html']);
+        user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
+                        $HTTP_POST_VARS['sig_content'],
+                        $HTTP_POST_VARS['sig_html']);
                         
-        } else {
-        
-            user_insert_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
-                            $HTTP_POST_VARS['sig_content'],
-                            $HTTP_POST_VARS['sig_html']);
-                            
-        }
-        
     }
     
 }
@@ -181,15 +159,6 @@ echo "<tr><td colspan=\"2\">".form_textarea("sig_content",$user_sig['CONTENT'],4
 echo "<tr><td>&nbsp;</td><td align=\"right\">";
 echo form_checkbox("sig_html","Y","Contains HTML", ($user_sig['HTML'] == "Y"));
 echo "</td></tr></table>\n";
-
-if(count($user_prefs) > 0){
-    echo form_field("prefs_exist", "Y", 0, 0, "hidden");
-}
-
-if(count($user_sig) > 0){
-    echo form_field("sig_exists", "Y", 0, 0, "hidden");
-}
-
 echo form_submit("submit", "Submit");
 echo "</form>";
 

@@ -21,13 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.2 2004-05-08 22:02:27 decoyduck Exp $ */
+/* $Id: install.php,v 1.1 2004-05-08 23:56:37 decoyduck Exp $ */
 
-include_once("./include/lang.inc.php");
-
-// Get List Of Available Languages
-
-$available_langs = lang_get_available();
+include_once("../include/constants.inc.php");
 
 if (isset($_POST['submit'])) {
 
@@ -143,9 +139,9 @@ if (isset($_POST['submit'])) {
             if (mysql_select_db($db_database, $db_install)) {
 
                 if ($install_method == 0) {
-                    $schema_file = "./install/install.sql";
+                    $schema_file = "install.sql";
                 }else {
-                    $schema_file = "./install/upgrade.sql";
+                    $schema_file = "upgrade.sql";
                 }
 
                 if (file_exists($schema_file)) {
@@ -253,13 +249,13 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
 echo "<head>\n";
-echo "<title>BeehiveForum Installation</title>\n";
+echo "<title>BeehiveForum", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
+echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
 echo "</head>\n";
 
-echo "<h1>BeehiveForum Installation (Doesn't work 100% yet!)</h2>\n";
+echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation (Doesn't work 100% yet!)</h2>\n";
 echo "<p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
 echo "<p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
 

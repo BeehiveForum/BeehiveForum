@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.161 2005-03-05 22:16:19 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.162 2005-03-07 21:32:44 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -32,6 +32,7 @@ include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/pm.inc.php");
 include_once("./include/stats.inc.php");
+include_once("./include/search.inc.php");
 include_once("./include/user.inc.php");
 
 // Checks the session and returns it as an array.
@@ -156,6 +157,8 @@ function bh_session_check($show_session_fail = true)
 
             // Delete expired sessions
 
+            search_index_post();
+
             bh_remove_stale_sessions();
 
             return $user_sess;
@@ -244,6 +247,8 @@ function bh_session_check($show_session_fail = true)
             $result = db_query($sql, $db_bh_session_check);
         }
 
+        search_index_post();
+
         bh_remove_stale_sessions();
 
         return array('UID'              => 0,
@@ -269,6 +274,8 @@ function bh_session_check($show_session_fail = true)
     }
 
     // Delete expired sessions
+
+    search_index_post();
 
     bh_remove_stale_sessions();
 

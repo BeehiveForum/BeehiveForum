@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.101 2005-02-22 14:21:32 decoyduck Exp $ */
+/* $Id: search.php,v 1.102 2005-03-07 21:32:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,7 +116,6 @@ if (isset($_POST['search_string'])) {
     echo "<form method=\"post\" action=\"search.php\" target=\"left\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden('sstart', '0'), "\n";
-
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -133,7 +132,7 @@ if (isset($_POST['search_string'])) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"40%\">&nbsp;</td>\n";
-    echo "                  <td>", form_dropdown_array("method", range(1, 3), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1), "&nbsp;</td>\n";
+    echo "                  <td>", form_dropdown_array("method", range(1, 2), array($lang['containingallwords'], $lang['containinganywords']), 1), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";

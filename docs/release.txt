@@ -63,6 +63,8 @@ What's new in 0.5 ("TBD", released 5th Never)
 	- Admin tools to delete all a user's posts in a thread, or throughout the
 	  whole forum.
 	- Admin option to delete an entire thread.
+	- 'Ignore Completely' option allows you to ignore all posts to/from a user
+	  as well as any threads they create.
 
 - Enhanced old features
         - HTML toolbar is now present for post creation; post editing; poll

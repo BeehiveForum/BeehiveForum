@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.64 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.65 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,7 +52,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -67,7 +67,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 }elseif (isset($HTTP_POST_VARS['ret'])) {
     $ret = $HTTP_POST_VARS['ret'];
 }else {
-    $ret = "admin_users.php?webtag=$webtag";
+    $ret = "admin_users.php?webtag={$webtag['WEBTAG']}";
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
@@ -221,7 +221,7 @@ if (isset($HTTP_POST_VARS['del'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
+echo "<form name=\"f_user\" action=\"admin_user.php?webtag={$webtag['WEBTAG']}\" method=\"post\">\n";
 echo "  ", form_input_hidden("uid", $uid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -258,7 +258,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";     
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag={$webtag['WEBTAG']}&uid=$uid"), "\n";
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
@@ -278,7 +278,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";     
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag={$webtag['WEBTAG']}&uid=$uid"), "\n";
 
 }else {
 
@@ -357,58 +357,60 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}:</td>\n";
     echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                </tr>\n";    
-    echo "                <tr>\n";
-    echo "                  <td>\n";
-    echo "                    <table class=\"box\" align=\"center\" width=\"80%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td>\n";
-    echo "                          <table class=\"posthead\" width=\"100%\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td class=\"subhead\">&nbsp;</td>\n";
-    echo "                              <td class=\"subhead\" width=\"150\">&nbsp;LOGON</td>\n";
-    echo "                              <td class=\"subhead\">&nbsp;IP Address</td>\n";
-    echo "                            </tr>\n";
 
     if ($user_alias_array = user_get_aliases($user['UID'])) {
-
-        foreach ($user_alias_array as $user_alias) {
+    
+        if (sizeof($user_alias_array) > 0) {
+        
+            echo "                <tr>\n";
+	    echo "                  <td>&nbsp;</td>\n";
+	    echo "                </tr>\n";    
+	    echo "                <tr>\n";
+            echo "                  <td>\n";
+            echo "                    <table class=\"box\" align=\"center\" width=\"80%\">\n";
+	    echo "                      <tr>\n";
+            echo "                        <td>\n";
+            echo "                          <table class=\"posthead\" width=\"100%\">\n";
             echo "                            <tr>\n";
-            echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
-            echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
-            echo "                              <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
-            
-            if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
+            echo "                              <td class=\"subhead\">&nbsp;</td>\n";
+            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;LOGON</td>\n";
+            echo "                              <td class=\"subhead\">&nbsp;IP Address</td>\n";
+            echo "                            </tr>\n";        
 
-            echo "</td>\n";            
-            echo "                            </tr>\n";
+            foreach ($user_alias_array as $user_alias) {
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
+                echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag={$webtag['WEBTAG']}&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+                echo "                              <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
+            
+                if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
+
+                echo "</td>\n";            
+                echo "                            </tr>\n";
+            }
+
+	    echo "                            </tr>\n";
+	    echo "                          </table>\n";    
+	    echo "                        </td>\n";    
+	    echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td class=\"smalltext\" align=\"left\">{$lang['tobananIPaddress']}</td>\n";
+            echo "                </tr>\n";                    
         }
 
+    }else {
+        
+        echo "                <tr>\n";
+        echo "                  <td>{$lang['nomatches']}</td>\n";
+        echo "                </tr>\n";
     }
     
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user['LOGON_FROM'], "", ip_is_banned($user['LOGON_FROM'])), "</td>\n";
-    echo "                              <td align=\"left\">&nbsp;{$user['LOGON']}</td>\n";
-    echo "                              <td align=\"left\">&nbsp;{$user['LOGON_FROM']}";
-            
-    if (ip_is_banned($user['LOGON_FROM'])) echo form_input_hidden("t_ip_banned[]", $user['LOGON_FROM']); 
-
-    echo "</td>\n";            
-    echo "                            </tr>\n";
-    echo "                          </table>\n";    
-    echo "                        </td>\n";    
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"smalltext\" align=\"left\">{$lang['tobananIPaddress']}</td>\n";
-    echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";    
@@ -468,7 +470,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
             echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
             
             if ($attachment_use_old_method) {
-                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
+                echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
                 echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
             }           

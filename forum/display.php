@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.30 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: display.php,v 1.31 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -115,7 +115,7 @@ if ($message) {
 
 messages_end_panel();
 echo "<table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";
-echo "<form name=\"display\" method=\"get\" action=\"messages.php?webtag=$webtag\" target=\"_self\">\n";
+echo "<form name=\"display\" method=\"get\" action=\"messages.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">\n";
 echo form_input_hidden("msg", "$tid.$pid");
 echo form_submit("submit", $lang['back']);
 echo "&nbsp;";

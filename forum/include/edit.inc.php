@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.35 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.36 2004-03-13 20:04:35 decoyduck Exp $ */
 
 function post_update($tid, $pid, $content)
 {
@@ -32,9 +32,9 @@ function post_update($tid, $pid, $content)
     $content  = addslashes($content);
     $edit_uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "UPDATE {$table_prefix}POST_CONTENT SET CONTENT = '$content' ";
+    $sql = "UPDATE {$webtag['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     $result = db_query($sql, $db_post_update);
@@ -49,9 +49,9 @@ function post_add_edit_text($tid, $pid)
     $db_post_add_edit_text = db_connect();
     $edit_uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
     
-    $sql = "UPDATE {$table_prefix}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
+    $sql = "UPDATE {$webtag['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     $result = db_query($sql, $db_post_add_edit_text);
@@ -66,16 +66,16 @@ function post_delete($tid, $pid)
     $db_post_delete = db_connect();
 
     if (thread_is_poll($tid) && $pid == 1) {
-        $sql = "UPDATE {$table_prefix}THREAD SET POLL_FLAG = 'N' WHERE TID = '$tid'";
+        $sql = "UPDATE {$webtag['PREFIX']}THREAD SET POLL_FLAG = 'N' WHERE TID = '$tid'";
         $result = db_query($sql, $db_post_delete);
     }
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "DELETE FROM {$table_prefix}THREAD WHERE TID = '$tid' AND LENGTH = 1";
+    $sql = "DELETE FROM {$webtag['PREFIX']}THREAD WHERE TID = '$tid' AND LENGTH = 1";
     $result = db_query($sql, $db_post_delete);
 
-    $sql = "UPDATE {$table_prefix}POST_CONTENT SET CONTENT = NULL ";
+    $sql = "UPDATE {$webtag['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     $result = db_query($sql, $db_post_delete);
@@ -90,7 +90,7 @@ function edit_refuse($tid, $pid)
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['nopermissiontoedit']}</p>";
-    echo form_quick_button("discussion.php?webtag=$webtag", $lang['back'], "msg", "$tid.$pid");
+    echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
     echo "</div>";
 }
 

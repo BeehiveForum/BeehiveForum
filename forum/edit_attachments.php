@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.39 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.40 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -44,7 +44,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -161,7 +161,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
         
         if ($attachment_use_old_method) {
-            echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
+            echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
         }else {
             echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
         }         
@@ -201,7 +201,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
 
         echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";
         echo "    <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-        echo "      <form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
+        echo "      <form method=\"post\" action=\"edit_attachments.php?webtag={$webtag['WEBTAG']}\">\n";
         echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
         echo "        ", form_submit('del', $lang['del']), "\n";
 
@@ -260,7 +260,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
           $aid = md5(uniqid(rand()));
       }
       
-      echo "<form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
+      echo "<form method=\"post\" action=\"edit_attachments.php?webtag={$webtag['WEBTAG']}\">\n";
       echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
       echo "  <tr>\n";
       echo "    <td><p align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}')\""), "</p></td>\n";
@@ -271,7 +271,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
   
   if ($popup) {
   
-      echo "<form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
+      echo "<form method=\"post\" action=\"edit_attachments.php?webtag={$webtag['WEBTAG']}\">\n";
 
       if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
 

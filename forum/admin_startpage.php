@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.26 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.27 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -78,7 +78,7 @@ if (isset($HTTP_POST_VARS['save'])) {
     fwrite($fp, $content);
     fclose($fp);
 
-    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
+    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"start_main.php?webtag={$webtag['WEBTAG']}\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
 
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
@@ -102,7 +102,7 @@ echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
 if (isset($status_text)) echo $status_text;
 
 echo "<p>{$lang['editstartpageexp']}</p>\n";
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag=$webtag\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag={$webtag['WEBTAG']}\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.22 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.23 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -79,7 +79,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                             echo "<div align=\"center\">\n";
                             echo "<p>{$lang['passedchangedexp']}</p>\n";
 
-                            form_quick_button("./index.php?webtag=$webtag", $lang['continue'], "", "", "_top");
+                            form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "", "", "_top");
 
                             echo "</div>\n";
 
@@ -149,7 +149,7 @@ if (isset($error_html)) {
 
 echo "<div align=\"center\">\n";
 echo "  <p class=\"smalltext\">{$lang['enternewpasswdforuser']} $logon</p>\n";
-echo "  <form name=\"forgot_pw\" action=\"change_pw.php?webtag=$webtag\" method=\"POST\">\n";
+echo "  <form name=\"forgot_pw\" action=\"change_pw.php?webtag={$webtag['WEBTAG']}\" method=\"POST\">\n";
 echo "  ", form_input_hidden("uid", $uid), form_input_hidden("key", $key), "\n";
 echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "      <tr>\n";

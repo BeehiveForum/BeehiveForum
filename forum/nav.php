@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.48 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: nav.php,v 1.49 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -42,7 +42,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -57,30 +57,30 @@ html_draw_top("class=navpage");
 if (!isset($show_links)) $show_links = true;
 if (!isset($show_pms)) $show_pms = true;
 
-echo "<a href=\"start.php?webtag=$webtag\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
-echo "<a href=\"discussion.php?webtag=$webtag\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"start.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"discussion.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
 
 if ($show_links) {
-    echo "<a href=\"links.php?webtag=$webtag\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
 }
 
 bh_session_check();
 
 if ($show_pms) {
-    echo "<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
 }
 
-echo "<a href=\"user.php?webtag=$webtag\" target=\"main\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"user.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
 //echo "<a href=\"profile.php\" target=\"main\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
 
 if (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
-    echo "<a href=\"admin.php?webtag=$webtag\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"admin.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (bh_session_get_value('UID') == 0) {
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"_top\">{$lang['login']}</a>\n";
+    echo "<a href=\"logout.php?webtag={$webtag['WEBTAG']}\" target=\"_top\">{$lang['login']}</a>\n";
 }else {
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"main\">{$lang['logout']}</a>\n";
+    echo "<a href=\"logout.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['logout']}</a>\n";
 }
 
 html_draw_bottom();

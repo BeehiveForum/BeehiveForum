@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.76 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.77 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -81,7 +81,7 @@ $valid = true;
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-  $uri = "./discussion.php?webtag=$webtag";
+  $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
   header_redirect($uri);
 
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
@@ -279,11 +279,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
   if (isset($t_tid) && $t_tid > 0) {
 
-    $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
+    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=$t_tid.1";
 
   }else {
 
-    $uri = "./discussion.php?webtag=$webtag";
+    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
   }
 
   header_redirect($uri);
@@ -431,7 +431,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 if (isset($error_html)) echo $error_html. "\n";
 
 ?>
-<form name="f_poll" action="create_poll.php?webtag=$webtag" method="post" target="_self">
+<form name="f_poll" action="create_poll.php?webtag={$webtag['WEBTAG']}" method="post" target="_self">
 <?php
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
@@ -655,7 +655,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
     if (isset($attachments_enabled) && $attachments_enabled) {
 
-      echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('attachments.php?webtag=$webtag&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+      echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('attachments.php?webtag={$webtag['WEBTAG']}&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
       echo form_input_hidden("aid", $aid);
 
     }

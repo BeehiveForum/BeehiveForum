@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.40 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.41 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -115,7 +115,7 @@ html_draw_top();
 echo "<h1>{$lang['admin']} : {$lang['manageprofileitems']}<br />{$lang['section']}: ". profile_section_get_name($psid). "</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_sections\" action=\"admin_prof_sect.php?webtag=$webtag\" method=\"post\">\n";
+echo "<form name=\"f_sections\" action=\"admin_prof_sect.php?webtag={$webtag['WEBTAG']}\" method=\"post\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.52 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.53 2004-03-13 20:04:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -44,7 +44,7 @@ include_once("./include/user_rel.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -147,7 +147,7 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
     echo "    <td width=\"25%\" align=\"center\">";
 
     if ($profile_sections[$i]['PSID'] != $psid) {
-        echo "<a href=\"user_profile.php?webtag=$webtag&uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
+        echo "<a href=\"user_profile.php?webtag={$webtag['WEBTAG']}&uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
         echo _stripslashes($profile_sections[$i]['NAME']) . "</a></td>\n";
     } else {
         echo "<b>" . _stripslashes($profile_sections[$i]['NAME']) . "</b></td>\n";
@@ -216,10 +216,10 @@ if ($uid == bh_session_get_value('UID')) {
 if (bh_session_get_value('UID') != 0) {
 
     echo "                <tr>\n";
-    echo "                  <td><a href=\"email.php?webtag=$webtag&uid=$uid\" target=\"_self\">{$lang['sendemail']}</a></td>\n";
+    echo "                  <td><a href=\"email.php?webtag={$webtag['WEBTAG']}&uid=$uid\" target=\"_self\">{$lang['sendemail']}</a></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td><a href=\"index.php?webtag=$webtag&final_uri=", rawurlencode("./pm_write.php?webtag=$webtag&uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
+    echo "                  <td><a href=\"index.php?webtag={$webtag['WEBTAG']}&final_uri=", rawurlencode("./pm_write.php?webtag={$webtag['WEBTAG']}&uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
     echo "                </tr>\n";
 
     if ($uid != bh_session_get_value('UID')) {
@@ -233,7 +233,7 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"user_profile.php?webtag=$webtag&uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
+        echo "                  <td><a href=\"user_profile.php?webtag={$webtag['WEBTAG']}&uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
 
         if ($relationship & USER_IGNORED) {
@@ -245,7 +245,7 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"user_profile.php?webtag=$webtag&uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
+        echo "                  <td><a href=\"user_profile.php?webtag={$webtag['WEBTAG']}&uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.66 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: register.php,v 1.67 2004-03-13 20:04:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -53,7 +53,7 @@ if (bh_session_get_value('UID')) {
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    echo form_quick_button("./index.php?webtag=$webtag". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
+    echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
     echo "</div>\n";
     html_draw_bottom();
     exit;
@@ -388,7 +388,7 @@ if (strlen($error_html) > 0) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<form name=\"register\" action=\"register.php?webtag=$webtag\" method=\"POST\">\n";
+echo "<form name=\"register\" action=\"register.php?webtag={$webtag['WEBTAG']}\" method=\"POST\">\n";
 echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

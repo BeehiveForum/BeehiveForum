@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.20 2004-03-13 00:03:33 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.21 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -49,14 +49,14 @@ include_once("./include/user.inc.php");
 if (isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }else {
-    $final_uri = "./lthread_list.php?webtag=$webtag";
+    $final_uri = "./lthread_list.php?webtag={$webtag['WEBTAG']}";
 }
 
 if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
 
     light_html_draw_top();
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    echo form_quick_button("./lthread_list.php?webtag=$webtag", $lang['continue'], 0, 0, "_top");
+    echo form_quick_button("./lthread_list.php?webtag={$webtag['WEBTAG']}", $lang['continue'], 0, 0, "_top");
     light_html_draw_bottom();
     exit;
 
@@ -90,14 +90,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
-          header_redirect("./lthread_list.php?webtag=$webtag");
+          header_redirect("./lthread_list.php?webtag={$webtag['WEBTAG']}");
 
       }else { // IIS bug prevents redirect at same time as setting cookies.
 
           light_html_draw_top();
 
           echo "<p>{$lang['loggedinsuccessfully']}</p>";
-          echo form_quick_button("./index.php?webtag=$webtag", $lang['continue'], "final_uri", urlencode($final_uri));
+          echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "final_uri", urlencode($final_uri));
 
           light_html_draw_bottom();
           exit;
@@ -118,7 +118,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       light_html_draw_top();
       echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-      echo form_quick_button("./index.php?webtag=$webtag", $lang['back'], 0, 0, "_top");
+      echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}", $lang['back'], 0, 0, "_top");
       light_html_draw_bottom();
       exit;
 

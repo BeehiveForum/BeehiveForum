@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.10 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.11 2004-03-13 20:04:36 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
@@ -35,21 +35,19 @@ function get_webtag($prefix = false)
     
     if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
         
-        $webtag = strtoupper(trim($HTTP_GET_VARS['webtag']));
+        $webtag = strtolower(trim($HTTP_GET_VARS['webtag']));
     
         // test to see if the POST table exists with our prefix.
         
-        $sql = "SHOW TABLES LIKE '{$webtag}_POST'"; 
+        $sql = "SELECT * FROM FORUMS WHERE WEBTAG = '$webtag'"; 
         $result = db_query($sql, $db_get_table_prefix);
         
         // if we found the post table return the webtag
     
         if (db_num_rows($result) > 0) {
-            if ($prefix) {
-                return "{$webtag}_";
-            }else {
-                return $webtag;
-            }
+            $row = db_fetch_array($result);
+            $row['PREFIX'] = "{$row['WEBTAG']}_";
+            return $row;
         }
         
         html_draw_top();

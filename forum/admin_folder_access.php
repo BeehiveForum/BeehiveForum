@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.21 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.22 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,7 +47,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -119,7 +119,7 @@ if (isset($HTTP_POST_VARS['add_recent_user'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_user\" action=\"admin_folder_access.php?webtag=$webtag\" method=\"post\">\n";
+echo "<form name=\"f_user\" action=\"admin_folder_access.php?webtag={$webtag['WEBTAG']}\" method=\"post\">\n";
 echo form_input_hidden('fid', $fid), "\n";
 echo "<table width=\"50%\">\n";
 echo "  <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.24 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.25 2004-03-13 20:04:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,7 +41,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -116,16 +116,16 @@ echo "</table>\n";
 
 if ((sizeof($user_search_array) == 20)) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
   }
 }
 
@@ -139,7 +139,7 @@ echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinl
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
-echo "            <form method=\"get\" action=\"visitor_log.php?webtag=$webtag\" target=\"_self\">\n";
+echo "            <form method=\"get\" action=\"visitor_log.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">\n";
 echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
 echo "            </form>\n";
 echo "          </td>\n";

@@ -59,4 +59,25 @@ function user_logon($logon,$password)
     return $uid;
 }
 
+function user_get_sig($uid,&$content,&$html)
+{
+    $db = db_connect();
 
+    $sql = "select content, html from USER_SIG where uid = $uid";
+
+    $result = db_query($sql,$db);
+
+    if(!db_num_rows($result)){
+        $ret = false;
+    } else {
+        $fa = db_fetch_array($result);
+        $content = $fa['content'];
+        $html = $fa['html'];
+        $ret = true;
+    }
+
+    db_disconnect($db);
+    
+    return $ret;
+
+}

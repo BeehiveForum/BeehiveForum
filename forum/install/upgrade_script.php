@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.30 2004-10-29 19:54:17 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.31 2004-10-29 20:26:28 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -249,7 +249,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
-    $sql = "CREATE TABLE DEFAULT_THREAD_NEW (";
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_NEW (";
     $sql.= "  TID mediumint(8) unsigned NOT NULL default '0',";
     $sql.= "  FID mediumint(8) unsigned default NULL,";
     $sql.= "  BY_UID mediumint(8) default NULL,";
@@ -271,31 +271,31 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
-    $sql = "INSERT INTO DEFAULT_THREAD_NEW (TID, FID, BY_UID, TITLE, LENGTH, ";
+    $sql = "INSERT INTO {$forum_webtag}_THREAD_NEW (TID, FID, BY_UID, TITLE, LENGTH, ";
     $sql.= "POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
     $sql.= "SELECT THREAD.TID, THREAD.FID, POST.FROM_UID, THREAD.TITLE, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.MODIFIED, THREAD.CLOSED, ";
     $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK ";
-    $sql.= "FROM DEFAULT_THREAD THREAD LEFT JOIN DEFAULT_POST POST ";
+    $sql.= "FROM {$forum_webtag}_THREAD THREAD LEFT JOIN {$forum_webtag}_POST POST ";
     $sql.= "ON (POST.TID = THREAD.TID AND POST.PID = 1)";
 
     if (!$result = db_query($sql, $db_install)) {
         $valid = false;
     }
 
-    $sql = "ALTER TABLE DEFAULT_THREAD RENAME DEFAULT_THREAD_OLD";
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD RENAME {$forum_webtag}_THREAD_OLD";
 
     if (!$result = db_query($sql, $db_install)) {
         $valid = false;
     }
 
-    $sql = "ALTER TABLE DEFAULT_THREAD_NEW RENAME DEFAULT_THREAD";
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
 
     if (!$result = db_query($sql, $db_install)) {
         $valid = false;
     }
 
-    $sql = "ALTER TABLE DEFAULT_THREAD CHANGE TID TID MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL AUTO_INCREMENT";
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD CHANGE TID TID MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL AUTO_INCREMENT";
 
     if (!$result = db_query($sql, $db_install)) {
         $valid = false;

@@ -125,16 +125,14 @@ function user_set_folder_interest($fid, $interest)
 
     $db_user_set_folder_interest = db_connect();
 
-    $sql = "select INTEREST from ".forum_table("USER_FOLDER")." where UID = '$uid' and FID = '$fid'";
+    $sql = "delete from ". forum_table("USER_FOLDER"). " where UID = '$uid' and FID = '$fid'";
     $result = db_query($sql, $db_user_set_folder_interest);
-    if (db_num_rows($result)) {
-	$sql = "update ". forum_table("USER_FOLDER"). " set INTEREST = $interest ";
-	$sql.= "where UID = $uid and FID = $fid";
-    }else {
-      $sql = "insert into ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
-      $sql.= "values ($uid, $fid, $interest)";
+
+    if ($interest == -1) {
+        $sql = "insert into ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
+        $sql.= "values ($uid, $fid, $interest)";
+	$result = db_query($sql, $db_user_set_folder_interest);
     }
-    $result = db_query($sql, $db_user_set_folder_interest);
 
 }
 

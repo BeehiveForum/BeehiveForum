@@ -258,88 +258,91 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
     echo "<h3><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE'] . "</a></h3>";
 
-    if (is_array($thread_info) && ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number))) {
+    if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
-        echo "<p>";
+        if (is_array($thread_info)) {
 
-        if (isset($folder_msgs[$folder_number])) {
-            echo $folder_msgs[$folder_number];
-        }else {
-            echo "0";
-        }
+            echo "<p>";
 
-        echo " threads - \n";
-        echo "<b><a href=\"lpost.php?fid=".$folder_number."\">Post New</a></b></p>\n";
-
-        if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\">Previous 50 threads</a></i></p>\n";
-
-        echo "<ul>\n";
-
-        while (list($key2, $thread) = each($thread_info)) {
-
-            if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
-            if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
-
-            if ($thread['fid'] == $folder_number) {
-
-                echo "<li>\n";
-
-                if ($thread['last_read'] == 0) {
-
-                    $number = "[".$thread['length']."&nbsp;new]";
-                    $latest_post = 1;
-
-
-                }elseif ($thread['last_read'] < $thread['length']) {
-
-                    $new_posts = $thread['length'] - $thread['last_read'];
-                    $number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
-                    $latest_post = $thread['last_read'] + 1;
-
-                } else {
-
-                    $number = "[".$thread['length']."]";
-                    $latest_post = 1;
-
-                }
-
-                // work out how long ago the thread was posted and format the time to display
-                $thread_time = format_time($thread['modified']);
-
-                echo "<a href=\"lmessages.php?msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " Started by ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
-                if ($thread['interest'] == 1) echo "(HI) ";
-                if ($thread['interest'] == 2) echo "(Sub) ";
-                if ($thread['poll_flag'] == 'Y') echo "(P) ";
-                if ($thread['relationship'] & USER_FRIEND) echo "(Fr) ";
-                echo $number." ";
-                echo $thread_time." ";
-                echo "</li>\n";
+            if (isset($folder_msgs[$folder_number])) {
+                echo $folder_msgs[$folder_number];
+            }else {
+                echo "0";
             }
+
+            echo " threads - \n";
+            echo "<b><a href=\"lpost.php?fid=".$folder_number."\">Post New</a></b></p>\n";
+
+            if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\">Previous 50 threads</a></i></p>\n";
+
+            echo "<ul>\n";
+
+            while (list($key2, $thread) = each($thread_info)) {
+
+                if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
+                if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
+
+                if ($thread['fid'] == $folder_number) {
+
+                    echo "<li>\n";
+
+                    if ($thread['last_read'] == 0) {
+
+                        $number = "[".$thread['length']."&nbsp;new]";
+                        $latest_post = 1;
+
+                    }elseif ($thread['last_read'] < $thread['length']) {
+
+                        $new_posts = $thread['length'] - $thread['last_read'];
+                        $number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
+                        $latest_post = $thread['last_read'] + 1;
+
+                    } else {
+
+                        $number = "[".$thread['length']."]";
+                        $latest_post = 1;
+
+                    }
+
+                    // work out how long ago the thread was posted and format the time to display
+                    $thread_time = format_time($thread['modified']);
+
+                    echo "<a href=\"lmessages.php?msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " Started by ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
+                    if ($thread['interest'] == 1) echo "(HI) ";
+                    if ($thread['interest'] == 2) echo "(Sub) ";
+                    if ($thread['poll_flag'] == 'Y') echo "(P) ";
+                    if ($thread['relationship'] & USER_FRIEND) echo "(Fr) ";
+                    echo $number." ";
+                    echo $thread_time." ";
+                    echo "</li>\n";
+                }
+            }
+
+            echo "</ul>\n";
+
+            if (isset($folder) && $folder_number == $folder) {
+
+                $more_threads = $folder_msgs[$folder] - $start_from - 50;
+
+                if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">Next $more_threads threads</a></i></p>\n";
+                if ($more_threads > 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">Next 50 threads</a></i></p>\n";
+
+            }
+
+        }elseif (isset($folder_info[$folder_number]['INTEREST']) && !$folder_info[$folder_number]['INTEREST']) {
+
+            echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\">";
+
+            if (isset($folder_msgs[$folder_number])) {
+                echo $folder_msgs[$folder_number];
+            }else {
+                echo "0";
+            }
+
+            echo " threads - </a>\n";
+            echo "<a href=\"post.php?fid=".$folder_number."\">Post New</a></p>\n";
         }
 
-        echo "</ul>\n";
-
-        if (isset($folder) && $folder_number == $folder) {
-
-            $more_threads = $folder_msgs[$folder] - $start_from - 50;
-
-            if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">Next $more_threads threads</a></i></p>\n";
-            if ($more_threads > 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">Next 50 threads</a></i></p>\n";
-
-        }
-
-    }elseif (isset($folder_info[$folder_number]['INTEREST']) && !$folder_info[$folder_number]['INTEREST']) {
-
-        echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\">";
-
-        if (isset($folder_msgs[$folder_number])) {
-            echo $folder_msgs[$folder_number];
-        }else {
-            echo "0";
-        }
-
-        echo " threads - </a>\n";
-        echo "<a href=\"post.php?fid=".$folder_number."\">Post New</a></p>\n";
     }
 
     if (is_array($thread_info)) reset($thread_info);

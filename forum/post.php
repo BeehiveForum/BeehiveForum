@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.110 2003-08-04 22:44:51 decoyduck Exp $ */
+/* $Id: post.php,v 1.111 2003-08-15 13:30:53 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -36,18 +36,16 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if (!bh_session_check()){
-
+if (!bh_session_check()) {
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
 require_once("./include/html.inc.php");
 
 if (bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/user.inc.php");
@@ -73,11 +71,9 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-
     $uri = "./discussion.php";
     if (isset($HTTP_POST_VARS['t_rpid'])) $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
     header_redirect($uri);
-
 }
 
 // Check if the user is viewing signatures.
@@ -93,20 +89,18 @@ if (isset($HTTP_POST_VARS['t_post_html'])) {
 
 if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
 
-  $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
+    $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
 
-  if ($touser = user_get_uid($u_login)) {
+    if ($touser = user_get_uid($u_login)) {
 
-    $HTTP_POST_VARS['t_to_uid'] = $touser;
-    $t_to_uid = $touser;
+        $HTTP_POST_VARS['t_to_uid'] = $touser;
+        $t_to_uid = $touser;
 
-  }else{
+    }else{
 
-    $error_html = "<h2>{$lang['invalidusername']}</h2>";
-    $valid = false;
-
-  }
-
+        $error_html = "<h2>{$lang['invalidusername']}</h2>";
+        $valid = false;
+    }
 }
 
 if (isset($HTTP_POST_VARS['t_newthread'])) {
@@ -184,6 +178,72 @@ if ($valid) {
     if (isset($t_sig)) {
         if ($t_sig_html == "Y") {
             $t_sig = _stripslashes($t_sig);
+        }
+    }
+}
+
+if (isset($HTTP_GET_VARS['replyto'])) {
+
+    $replyto = $HTTP_GET_VARS['replyto'];
+    list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
+    $newthread = false;
+
+}elseif (isset($HTTP_POST_VARS['t_tid'])) {
+
+    $reply_to_tid = $HTTP_POST_VARS['t_tid'];
+    $reply_to_pid = $HTTP_POST_VARS['t_rpid'];
+    $newthread = false;
+
+}else{
+
+    $newthread = true;
+
+    if (isset($HTTP_GET_VARS['fid'])) {
+
+        $t_fid = $HTTP_GET_VARS['fid'];
+
+    }elseif (isset($HTTP_POST_VARS['t_fid'])) {
+
+        $t_fid = $HTTP_POST_VARS['t_fid'];
+    }
+
+}
+
+if (!$newthread) {
+
+    $reply_message = messages_get($reply_to_tid, $reply_to_pid);
+    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
+    $threaddata = thread_get($reply_to_tid);
+
+    if ((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
+
+        html_draw_top();
+        echo "<h1>{$lang['postreply']}</h1>\n";
+        echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
+        html_draw_bottom();
+        exit;
+
+    }else {
+
+        if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+
+            if (!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
+                html_draw_top();
+                echo "<h1>{$lang['postreply']}</h1>\n";
+                echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
+                html_draw_bottom();
+                exit;
+            }
+
+        }
+
+        if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
+
+            html_draw_top();
+            echo "<h1>{$lang['postreply']}</h1>\n";
+            echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
+            html_draw_bottom();
+            exit;
         }
     }
 }
@@ -316,15 +376,15 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     if ($HTTP_POST_VARS['t_to_uid'] == 0) {
 
-      $preview_message['TLOGON'] = "ALL";
-      $preview_message['TNICK'] = "ALL";
+        $preview_message['TLOGON'] = "ALL";
+        $preview_message['TNICK'] = "ALL";
 
     }else{
 
-      $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
-      $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-      $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-      $preview_message['TO_UID'] = $preview_tuser['UID'];
+        $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
+        $preview_message['TLOGON'] = $preview_tuser['LOGON'];
+        $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
+        $preview_message['TO_UID'] = $preview_tuser['UID'];
 
     }
 
@@ -335,31 +395,31 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
 
-      $preview_message['CONTENT'] = make_html($t_content);
+        $preview_message['CONTENT'] = make_html($t_content);
 
     }else{
 
-      $preview_message['CONTENT'] = $t_content;
+        $preview_message['CONTENT'] = $t_content;
 
     }
 
     if (isset($t_sig)) {
 
-      if ($t_sig_html != "Y") {
+        if ($t_sig_html != "Y") {
 
-        $preview_sig = make_html($t_sig);
+            $preview_sig = make_html($t_sig);
 
-      }else{
+        }else{
 
-        $preview_sig = $t_sig;
+            $preview_sig = $t_sig;
 
-      }
+        }
 
-      $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $preview_sig. "</div>";
+        $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $preview_sig. "</div>";
 
     }else{
 
-      $t_sig = " ";
+        $t_sig = " ";
 
     }
 
@@ -368,41 +428,12 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     message_display(0, $preview_message, 0, 0, true, false, false, false, $show_sigs, true);
     echo "<br />\n";
-
 }
 
 if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
 
-   $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
-   $t_post_html = "Y";
-
-}
-
-if (isset($HTTP_GET_VARS['replyto'])) {
-
-    $replyto = $HTTP_GET_VARS['replyto'];
-    list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
-    $newthread = false;
-
-}elseif (isset($HTTP_POST_VARS['t_tid'])) {
-
-    $reply_to_tid = $HTTP_POST_VARS['t_tid'];
-    $reply_to_pid = $HTTP_POST_VARS['t_rpid'];
-    $newthread = false;
-
-}else{
-
-    $newthread = true;
-
-    if (isset($HTTP_GET_VARS['fid'])) {
-
-        $t_fid = $HTTP_GET_VARS['fid'];
-
-    }elseif (isset($HTTP_POST_VARS['t_fid'])) {
-
-        $t_fid = $HTTP_POST_VARS['t_fid'];
-    }
-
+    $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
+    $t_post_html = "Y";
 }
 
 if (!$newthread) {
@@ -462,46 +493,23 @@ if ($newthread) {
     echo "<tr><td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
     echo "</table>\n";
 
-}else{
+}else {
 
-    $reply_message = messages_get($reply_to_tid, $reply_to_pid);
-    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
-    $threaddata = thread_get($reply_to_tid);
+    if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
 
-    if ((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
-
-      echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-      html_draw_bottom();
-      exit;
-
-    } else {
-
-        if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
-            if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
-                echo "<h1>{$lang['moderatorthreadclosed']}</h1>\n";
-            } else {
-                echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
-                html_draw_bottom();
-                exit;
-            }
-
+        if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
+            echo "<h1>{$lang['moderatorthreadclosed']}</h1>\n";
+        } else {
+            echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
+            html_draw_bottom();
+            exit;
         }
-
-      if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
-
-        echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-        html_draw_bottom();
-        exit;
-
-      }else{
-
-        echo "<h2>{$lang['threadtitle']}: ". _stripslashes($threaddata['TITLE']). "</h2>\n";
-        echo form_input_hidden("t_tid",$reply_to_tid);
-        echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
-
-      }
-
     }
+
+    echo "<h2>{$lang['threadtitle']}: ". _stripslashes($threaddata['TITLE']). "</h2>\n";
+    echo form_input_hidden("t_tid", $reply_to_tid);
+    echo form_input_hidden("t_rpid", $reply_to_pid)."</td></tr>\n";
+
 
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.17 2003-09-15 18:34:45 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.18 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -559,4 +559,8 @@ reset($elements);
   </tr>
 </table>
 <p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
-<?php // html_draw_bottom(); ?>
+<?php
+
+// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+
+?>

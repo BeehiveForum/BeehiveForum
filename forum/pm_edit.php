@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.7 2003-09-15 18:34:47 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.8 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -65,7 +65,7 @@ if (isset($HTTP_GET_VARS['mid'])) {
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
-    // html_draw_bottom();
+    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
     exit;
 }
 
@@ -120,7 +120,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }else {
         html_draw_top();
         pm_edit_refuse();
-        // html_draw_bottom();
+        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
         exit;
     }
 
@@ -144,7 +144,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }else {
         html_draw_top();
         pm_edit_refuse();
-        // html_draw_bottom();
+        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
         exit;
     }
 
@@ -155,7 +155,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
         if ($pm_elements_array['TYPE'] <> PM_NEW) {
             html_draw_top();
             pm_edit_refuse();
-            // html_draw_bottom();
+            // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
             exit;
         }
 
@@ -178,7 +178,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }else {
         html_draw_top();
         pm_edit_refuse();
-        // html_draw_bottom();
+        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
         exit;
     }
 }
@@ -236,6 +236,6 @@ if ($valid) {
     draw_pm_message($pm_elements_array);
 }
 
-// html_draw_bottom ();
+// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 
 ?>

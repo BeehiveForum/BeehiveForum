@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.65 2003-09-15 18:34:46 decoyduck Exp $ */
+/* $Id: edit.php,v 1.66 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -91,7 +91,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 	echo "</td></tr>\n";
 	echo "</table>\n";
 
-	// html_draw_bottom();
+	// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 	exit;
 
 }
@@ -115,7 +115,7 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 	echo "</td></tr>\n";
 	echo "</table>\n";
 
-	// html_draw_bottom();
+	// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 	exit;
 
 }
@@ -334,7 +334,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 		echo "</td></tr>\n";
 		echo "</table>\n";
 
-		// html_draw_bottom();
+		// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
         exit;
     }
 
@@ -383,7 +383,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			echo "</td></tr>\n";
 			echo "</table>\n";
 
-			// html_draw_bottom();
+			// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 			exit;
 
         }else{
@@ -415,7 +415,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			echo "</td></tr>\n";
 			echo "</table>\n";
 
-			// html_draw_bottom();
+			// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 			exit;
         }
 
@@ -639,6 +639,6 @@ echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
 echo "</form>";
 
-// html_draw_bottom();
+// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 
 ?>

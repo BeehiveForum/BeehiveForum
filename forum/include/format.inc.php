@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.52 2003-08-31 16:21:07 hodcroftcj Exp $ */
+/* $Id: format.inc.php,v 1.53 2003-09-15 19:04:31 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -263,4 +263,5 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
 
     return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
 }
+
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.28 2003-09-15 18:34:45 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.29 2003-09-15 19:04:30 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -54,7 +54,7 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    // html_draw_bottom();
+    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
     exit;
 }
 
@@ -75,7 +75,7 @@ if (isset($HTTP_GET_VARS['psid'])) {
   html_draw_top();
   echo "<h1>{$lang['invalidop']}</h1>\n";
   echo "<p>{$lang['noprofilesectionspecified']}</p>\n";
-  // html_draw_bottom();
+  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
   exit;
 
 }
@@ -160,6 +160,6 @@ echo "  <p>{$lang['fieldtypeexample2']}</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 
-// html_draw_bottom();
+// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
 
 ?>

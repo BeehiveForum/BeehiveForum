@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.14 2005-02-17 22:58:10 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.15 2005-02-24 11:05:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -527,7 +527,7 @@ echo "                        <td>", form_radio("attachments_enabled", "Y", $lan
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['allowembeddingofattachments']}:</td>\n";
-echo "                        <td>", form_radio("attachments_allow_embed", "Y", $lang['yes'], (isset($default_forum_settings['attachments_allow_embed']) && $default_forum_settings['attachments_allow_embed'] == 'Y')), "&nbsp;", form_radio("attachments_allow_embed", "N", $lang['no'], (isset($default_forum_settings['attachments_allow_embed']) && $default_forum_settings['auto_logon'] == 'N') || !isset($default_forum_settings['attachments_allow_embed'])), "</td>\n";
+echo "                        <td>", form_radio("attachments_allow_embed", "Y", $lang['yes'], (isset($default_forum_settings['attachments_allow_embed']) && $default_forum_settings['attachments_allow_embed'] == 'Y')), "&nbsp;", form_radio("attachments_allow_embed", "N", $lang['no'], (isset($default_forum_settings['attachments_allow_embed']) && $default_forum_settings['attachments_allow_embed'] == 'N') || !isset($default_forum_settings['attachments_allow_embed'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['usealtattachmentmethod']}:</td>\n";

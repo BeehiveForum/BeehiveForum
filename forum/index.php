@@ -66,6 +66,10 @@ if (bh_session_check()) {
 
       echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
+    }else if (isset($HTTP_GET_VARS['folder'])) {
+
+      echo "<frame src=\"./discussion.php?folder=". $HTTP_GET_VARS['folder']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
     }else {
 
       echo "<frame src=\"./start.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";

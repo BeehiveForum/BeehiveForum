@@ -225,7 +225,7 @@ if (!is_array($folder_order)) $folder_order = array();
 
 // Sort the folders and threads correctly as per the URL query for the TID
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && strlen($HTTP_GET_VARS['msg']) > 0) {
 
     $threadvisible = false;
 

@@ -677,11 +677,15 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
 }
 
-function messages_get_most_recent($uid)
+function messages_get_most_recent($uid, $fid = false)
 {
     $return = "1.1";
 
-    $fidlist = folder_get_available();
+    if ($fid) {
+        $fidlist = $fid;
+    }else {    
+        $fidlist = folder_get_available();
+    }
 
     $db_messages_get_most_recent = db_connect();
 

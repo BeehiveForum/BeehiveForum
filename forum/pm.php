@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.41 2004-04-10 23:52:28 decoyduck Exp $ */
+/* $Id: pm.php,v 1.42 2004-04-11 00:00:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -260,9 +260,9 @@ if (sizeof($listmessages_array) == 0) {
             echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" height=\"15\" title=\"Current Message\" alt=\"\"/>";
         }else {
             if (($listmessages_array[$i]['TYPE'] == PM_UNREAD) || ($listmessages_array[$i]['TYPE'] == PM_NEW)) {
-                echo "<img src=\"".style_image('unread_thread.png')."\" align=\"middle\" height=\"15\" title=\"Unread Message\" alt=\"\" />";
+                echo "<img src=\"".style_image('pmunread.png')."\" align=\"middle\" height=\"15\" title=\"Unread Message\" alt=\"\" />";
             }else {
-                echo "<img src=\"".style_image('bullet.png')."\" align=\"middle\" height=\"15\" title=\"Read Message\" alt=\"\" />";
+                echo "<img src=\"".style_image('pmread.png')."\" align=\"middle\" height=\"15\" title=\"Read Message\" alt=\"\" />";
             }
         }
 

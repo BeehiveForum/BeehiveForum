@@ -31,7 +31,11 @@ require_once("./include/form.inc.php");
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }else {
-    $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/";
+    $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/discussion.php";
+}
+
+if (strstr($final_uri, 'logout.php')) {
+    $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/discussion.php";
 }
 
 if(bh_session_check()) {
@@ -135,7 +139,7 @@ echo form_submit();
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
 echo "</form>\n";
-echo "<form name=\"guest\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\">\n";
+echo "<form name=\"guest\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "?final_uri=%2Fforum%2Fstart.php&". md5(uniqid(rand())). "\" method=\"POST\">\n";
 echo "<p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
 echo "</form></div>\n";
 echo "<div align=\"center\">\n";

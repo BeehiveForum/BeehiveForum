@@ -324,7 +324,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 			if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
 				echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
-				echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Ignore User</a>";
+				echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Ignore User</a>";
 			}
             if(perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" />";

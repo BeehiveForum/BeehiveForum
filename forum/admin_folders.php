@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.80 2004-05-19 00:27:28 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.81 2004-05-19 21:12:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,7 +119,7 @@ if (isset($_POST['t_more'])) {
 }
 
 if (isset($_POST['addnew'])) {
-    header_redirect("./admin_folder_Add.php?webtag=$webtag");
+    header_redirect("./admin_folder_add.php?webtag=$webtag");
 }
 
 if (isset($_POST['t_permissions'])) {

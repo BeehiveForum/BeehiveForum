@@ -1,6 +1,6 @@
 Beehive Forum Readme
 
-Version 0.4 / 8th November 2003
+Version 0.4 / 10th December 2003
 
 A list of changes since previous Beehive versions can be found in release.txt.
 

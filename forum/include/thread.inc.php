@@ -30,7 +30,7 @@ require_once("./include/format.inc.php"); // Formatting functions
 function thread_get_title($tid)
 {
    $db_thread_get_title = db_connect();
-   $sql = "SELECT THREAD.title FROM " . forum_table("THREAD") . " WHERE tid = $tid";
+   $sql = "SELECT ", forum_table("THREAD"). ".title FROM " . forum_table("THREAD") . " WHERE tid = $tid";
    $resource_id = db_query($sql, $db_thread_get_title);
    if(!db_num_rows($resource_id)){
      $threadtitle = "The Unknown Thread";

@@ -8,9 +8,12 @@ What's new in 0.5 ("TBD", released 5th Never)
           forum on your web space using a single Beehive installation, under
 	  a 'My Forums' linking system.
 	- Forums can be open/closed/restricted/passworded.
+	- Install/upgrade script simplifies installation process.
 	- Comprehensive user permissions - users can be given/denied access
-	  to post/read/etc. in specific folders, as well as having HTML/sig
-	  privileges given/denied.
+	  to post/read/moderate etc. in specific folders, as well as having 
+	  HTML/sig privileges given/denied.
+	- As well as per-folder moderators, a user can be assigned as a 
+	  'Global moderator', who can moderate in all folders.
 	- User groups can be created to help moderation of large forums.
 	- New 'Forum Links' drop-down in the top frame allows for linking
 	  other Beehive forums and sites easily.
@@ -55,6 +58,11 @@ What's new in 0.5 ("TBD", released 5th Never)
 	  the left frame, and the forum start page in the right frame.
 	- New thread_rss.php allows recent Beehive threads to be loaded into an
 	  RSS reader.
+	- Previous/next post navigation arrows.
+	- 'Unread Today' threadlist filter option.
+	- Admin tools to delete all a user's posts in a thread, or throughout the
+	  whole forum.
+	- Admin option to delete an entire thread.
 
 - Enhanced old features
         - HTML toolbar is now present for post creation; post editing; poll
@@ -85,7 +93,8 @@ What's new in 0.5 ("TBD", released 5th Never)
         - Alternative attachment method which allows Beehive to make use of the 
           old 0.3 and older attachment retrieval method for servers that can't 
           handle the newer method.
-        - 
+        - The search page has been remade with a better design and better 
+	  functionality.
 
 - Fixes
         - Lots and lots!

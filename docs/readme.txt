@@ -1,5 +1,7 @@
 Beehive Forum Readme
 
+http://www.beehiveforum.net/
+
 Version 0.5 / 12th September 2004
 
 A list of changes since previous Beehive versions can be found in release.txt.
@@ -381,7 +383,7 @@ that you perform a database and file backup before you attempt this.
 1.4.1 Make a back up of your database
 ======================================
 
-You MUST make a back up of your database before you perform the upgrade. We 
+You REALLY SHOULD make a back up of your database before you perform the upgrade. We 
 can't stress how important this is. If you don't perform a backup and something
 goes wrong don't make us say we told you so.
 
@@ -482,7 +484,7 @@ upgrade-01-to-02.sql followed by..
 upgrade-02-to-03.sql followed by..
 upgrade-03-to-04.sql.
 
-This will bring the database up to date.
+This will bring the database up to 0.4, and from there you can use 0.5's upgrade script.
 
 
 2 Known Issues
@@ -520,14 +522,19 @@ about posting, although please keep Beehive-related enquires to the 'Beehive
 Development' folder. It should be noted that we prefer using this system
 over the SF bug reporting tool.
 
+We've also added a wiki to help us document Beehive. Check it out here:
+
+http://www.beehiveforum.net/wiki/
+
 
 3.3 BeehiveForums in foreign languages
 ======================================
 
 As of 0.4 BeehiveForums supports multiple languages, but because we're all very
 busy doing other things the number of languages that ship with Beehive are few
-and far between, i.e. English, English and nothing but English. Oh and a bit of
-X-Hacker, but that was created by cheating.
+and far between, i.e. English, English and nothing but English. There's also an
+incomplete French translation, as well as the 'comedy' English X-Gangsta and
+X-Hacker languages.
 
 
 3.3.1 Translating BeehiveForums into my native language

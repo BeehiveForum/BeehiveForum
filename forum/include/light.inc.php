@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.71 2005-03-05 21:09:55 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.72 2005-03-05 22:36:43 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -59,6 +59,26 @@ function light_html_draw_bottom ()
 
     echo "</body>\n";
     echo "</html>\n";
+}
+
+function light_draw_logon_form()
+{
+    echo "<p>{$lang['welcometolight']}</p>\n";
+    echo "<form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"post\">\n";
+
+    echo "<p>{$lang['username']}: ";
+    echo light_form_input_text("logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
+
+    echo "<p>{$lang['passwd']}: ";
+    echo light_form_input_password("password", (isset($_COOKIE['bh_light_remember_password']) ? $_COOKIE['bh_light_remember_password'] : "")). "</p>\n";
+
+    echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
+
+    echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
+
+    echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
+
+    echo "</form>\n";
 }
 
 // create a <select> dropdown with values from array(s)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.103 2005-02-28 00:24:39 decoyduck Exp $ */
+/* $Id: index.php,v 1.104 2005-03-05 22:36:43 decoyduck Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -45,6 +45,7 @@ $forum_settings = get_forum_settings();
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/light.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
@@ -217,10 +218,17 @@ echo "<body>\n";
 
 define('BEEHIVE_LIGHT_INCLUDE', true);
 
-if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
-    include("./lthread_list.php");
+if (!$user_sess) {
+
+    light_draw_logon_form();
+
 }else {
-    include("./llogon.php");
+
+    if (!$webtag = get_webtag($webtag_search)) {
+        include("./lforums.php");
+    }else {
+        include("./lthread_list.php");
+    }
 }
 
 echo "</noframes>\n";

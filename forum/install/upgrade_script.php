@@ -21,7 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.2 2004-05-24 19:48:13 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.3 2004-05-25 11:51:17 decoyduck Exp $ */
+
+if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
+
+    header("Request-URI: ./install.php");
+    header("Content-Location: ./install.php");
+    header("Location: ./install.php");
+    exit;
+}
 
 $sql = "SHOW TABLES LIKE 'FORUMS'";
 
@@ -37,6 +45,10 @@ if (mysql_num_rows($result) > 0) {
     while ($row = mysql_fetch_array($result)) {
         $forum_webtag_array[] = $row['WEBTAG'];
     }
+
+}else {
+
+    $forum_webtag_array[] = "DEFAULT";
 }
 
 foreach($forum_webtag_array as $forum_webtag) {
@@ -237,48 +249,6 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_BANNED_IP_NEW RENAME {$forum_webtag}_BANNED_IP";
-
-    if(!$result = mysql_query($sql, $db_install)) {
-        return mysql_error();
-    }
-
-    $sql = "CREATE TABLE {$forum_webtag}_FOLDER_NEW (";
-    $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
-    $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
-    $sql.= "  PERM MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (FID)";
-    $sql.= ") TYPE=MYISAM";
-
-    if(!$result = mysql_query($sql, $db_install)) {
-        return mysql_error();
-    }
-
-    $sql = "INSERT INTO {$forum_webtag}_FOLDER_NEW (TITLE, DESCRIPTION, ALLOWED_TYPES, PERM, POSITION)";
-    $sql.= "SELECT TITLE, DESCRIPTION, ALLOWED_TYPES, 252, POSITION";
-    $sql.= "FROM {$forum_webtag}_FOLDER WHERE ACCESS_LEVEL = 0 OR ACCESS_LEVEL = 1";
-
-    if(!$result = mysql_query($sql, $db_install)) {
-        return mysql_error();
-    }
-
-    $sql = "INSERT INTO {$forum_webtag}_FOLDER_NEW (TITLE, DESCRIPTION, ALLOWED_TYPES, PERM, POSITION)";
-    $sql.= "SELECT TITLE, DESCRIPTION, ALLOWED_TYPES, 0, POSITION";
-    $sql.= "FROM {$forum_webtag}_FOLDER WHERE ACCESS_LEVEL = -1";
-
-    if(!$result = mysql_query($sql, $db_install)) {
-        return mysql_error();
-    }
-
-    $sql = "DROP TABLE {$forum_webtag}_FOLDER";
-
-    if(!$result = mysql_query($sql, $db_install)) {
-        return mysql_error();
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_FOLDER_NEW RENAME {$forum_webtag}_FOLDER";
 
     if(!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -918,7 +888,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         die(mysql_error());
     }
 
-    // Permissions Upgrade
+    // User Permissions
 
     $sql = "SELECT UID, STATUS FROM USER WHERE STATUS IS NOT NULL AND STATUS > 0";
     $result = mysql_query($sql, $db_install) or die(mysql_error());
@@ -948,7 +918,19 @@ foreach($forum_webtag_array as $forum_webtag) {
         $result_perm = mysql_query($sql, $db_install);
     }
 
-    // Folder Permissions
+    // Default Folder Permissions
+
+    $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
+    $sql.= "SELECT 0, FID, 0 FROM {$forum_webtag}_FOLDER WHERE ";
+    $sql.= "ACCESS_LEVEL = 0";
+
+    $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
+    $sql.= "SELECT 0, FID, 252 FROM {$forum_webtag}_FOLDER WHERE ";
+    $sql.= "ACCESS_LEVEL = 1";
+
+    $sql = "ALTER TABLE {$forum_webtag}_FOLDER DROP ACCESS_LEVEL";
+
+    // User Folder Permissions
 
     $sql = "SELECT UID, FID FROM {$forum_webtag}_USER_FOLDER WHERE ALLOWED = 1";
     $result = mysql_query($sql, $db_install) or die(mysql_error());

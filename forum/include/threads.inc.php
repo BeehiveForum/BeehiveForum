@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.121 2004-05-23 15:20:27 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.122 2004-05-25 11:51:17 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -41,19 +41,16 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
     if (!is_numeric($access_allowed)) return false;
 
     $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, USER_FOLDER.INTEREST, FOLDER.PERM AS FOLDER_PERM, ";
-    $sql.= "GROUP_PERMS.PERM AS USER_PERM FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "FOLDER.ALLOWED_TYPES, USER_FOLDER.INTEREST, BIT_OR(GROUP_PERMS.PERM) AS STATUS ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 AND GROUP_PERMS.PERM IS NOT NULL) ";
-    $sql.= "OR (FOLDER.PERM & $access_allowed > 0 AND FOLDER.PERM IS NOT NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "OR (FOLDER.PERM IS NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "GROUP BY GROUP_PERMS.PERM, FOLDER.PERM, FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
+    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID IN (0, FOLDER.FID)) ";
+    $sql.= "WHERE ((GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_USERS.UID = '$uid') ";
+    $sql.= "OR GROUP_PERMS.GID = 0 OR GROUP_PERMS.GID IS NULL) ";
+    $sql.= "GROUP BY FOLDER.FID ";
 
     $result = db_query($sql, $db_threads_get_folders);
 
@@ -62,19 +59,6 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
         $folder_info = array();
 
         while($row = db_fetch_array($result, MYSQL_ASSOC)) {
-
-            if (!is_null($row['USER_PERM'])) {
-
-                $row['STATUS'] = $row['USER_PERM'];
-
-            }elseif (!is_null($row['FOLDER_PERM'])) {
-
-                $row['STATUS'] = $row['FOLDER_PERM'];
-
-            }else {
-
-                $row['STATUS'] = null;
-            }
 
             if (isset($row['INTEREST'])) {
 

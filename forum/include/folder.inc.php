@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.69 2004-05-23 13:39:35 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.70 2004-05-25 11:51:16 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -40,9 +40,16 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $folders['FIDS'] = array();
     $folders['TITLES'] = array();
 
-    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL ";
+    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID IN (0, FOLDER.FID)) ";
+    $sql.= "WHERE ((GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_USERS.UID = '$uid') ";
+    $sql.= "OR GROUP_PERMS.GID = 0 OR GROUP_PERMS.GID IS NULL) ";
+    $sql.= "AND (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
+    $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_folder_draw_dropdown);
@@ -51,7 +58,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
         while($row = db_fetch_array($result, MYSQL_ASSOC)) {
 
-            if (perm_check_folder_permissions($row['FID'], $access_allowed)) {
+            if (($row['STATUS'] & $access_allowed) > 0) {
 
                 $folders['FIDS'][] = $row['FID'];
                 $folders['TITLES'][] = $row['TITLE'];
@@ -105,8 +112,15 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
 
     list($new_pos) = db_fetch_array($result, MYSQL_NUM);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION, PERM) ";
-    $sql.= "VALUES ('$title', '$description', '$allowed_types', '$new_pos', '$permissions')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
+    $sql.= "VALUES ('$title', '$description', '$allowed_types', '$new_pos')";
+
+    $result = db_query($sql, $db_folder_create);
+
+    $new_fid = db_insert_id($db_folder_create);
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
+    $sql.= "VALUES ('0', '$new_fid', '$permissions')";
 
     return db_query($sql, $db_folder_create);
 }
@@ -149,7 +163,17 @@ function folder_update($fid, $folder_data)
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_data['TITLE']}', ";
     $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
-    $sql.= "POSITION = '{$folder_data['POSITION']}', PERM = '{$folder_data['PERM']}' WHERE FID = $fid";
+    $sql.= "POSITION = '{$folder_data['POSITION']}' WHERE FID = $fid";
+
+    $result = db_query($sql, $db_folder_update);
+
+    $sql = "DELETE FROM {$table_data['PREFIX']}GROUP_PERMS ";
+    $sql.= "WHERE FID = '$fid' AND GID = '0'";
+
+    $result = db_query($sql, $db_folder_update);
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
+    $sql.= "VALUES ('0', '$fid', '{$folder_data['PERM']}')";
 
     return db_query($sql, $db_folder_update);
 }
@@ -241,17 +265,21 @@ function folder_get($fid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.PERM, COUNT(THREAD.FID) AS THREAD_COUNT ";
+    $sql.= "FOLDER.ALLOWED_TYPES, GROUP_PERMS.PERM, ";
+    $sql.= "COUNT(THREAD.FID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.FID = FOLDER.FID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "ON (THREAD.FID = FOLDER.FID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = 0) ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
 
     $result = db_query($sql, $db_folder_get);
 
     if (db_num_rows($result)) {
-      return db_fetch_array($result);
+        return db_fetch_array($result);
     }else {
-      return false;
+        return false;
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.98 2004-12-27 16:19:57 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.99 2004-12-27 22:04:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,7 +151,33 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-html_draw_top('attachments.js');
+html_draw_top();
+
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "var upload_field_array = new Array();\n\n";
+echo "var upload_field_html = '<input type=\"file\" name=\"userfile[]\" id=\"userfile[]\" class=\"bhinputtext\" value=\"\" size=\"40\" dir=\"ltr\" />';\n\n";
+echo "function add_upload_field()\n";
+echo "{\n";
+echo "    var upload_fields_obj;\n\n";
+echo "    if (document.getElementById) {\n";
+echo "        upload_fields_obj = eval(\"document.getElementById('upload_fields')\");\n";
+echo "    }else if (document.all) {\n";
+echo "        upload_fields_obj = eval(\"document.all.upload_fields\");\n";
+echo "    }else if (document.layer) {\n";
+echo "        upload_fields_obj = eval(\"document.upload_fields\");\n";
+echo "    }else {\n";
+echo "        return false;\n";
+echo "    }\n\n";
+echo "    if (upload_field_array.length < 9) {\n\n";
+echo "        upload_field_array.push(upload_field_html);\n";
+echo "        upload_fields_obj.innerHTML = upload_field_array.join(\"<br />\");\n\n";
+echo "    }else {\n\n";
+echo "        alert('{$lang['canonlyuploadmaximum']}');\n";
+echo "    }\n";
+echo "}\n\n";
+echo "//-->\n";
+echo "</script>\n";
 
 $users_free_space = get_free_attachment_space(bh_session_get_value('UID'));
 $total_attachment_size = 0;
@@ -218,6 +244,7 @@ if (isset($_POST['upload'])) {
                     }else {
 
                         if (@file_exists($tempfile)) {
+
                             unlink($tempfile);
                         }
 
@@ -243,15 +270,9 @@ if (isset($_POST['upload'])) {
     exit;
 }
 
-if (isset($_POST['filecount']) && is_numeric($_POST['filecount'])) {
-    $filecount = $_POST['filecount'];
-}else {
-    $filecount = 1;
-}
-
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
-echo "<form name=\"f_attach\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
+echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ". form_input_hidden('aid', $aid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

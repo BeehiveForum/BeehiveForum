@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.184 2003-09-22 18:45:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.185 2003-09-22 20:18:18 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -845,13 +845,9 @@ function messages_forum_stats($tid, $pid)
                 echo "            <td width=\"30\">&nbsp;</td>\n";
                 echo "            <td>&nbsp;</td>\n";
                 echo "          </tr>\n";
-                echo "          <tr>\n";
-                echo "            <td>&nbsp;</td>\n";
-                echo "            <td>Currently Active:</td>\n";
-                echo "          </tr>\n";
                 echo "          <tr>";
                 echo "            <td>&nbsp;</td>\n";
-                echo "            <td>\n";
+                echo "            <td class=\"activeusers\">\n";
 
                 for ($i = 0; $i < sizeof($user_stats['USERS']); $i++) {
                     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']})\" target=\"_self\">", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME']), "</a>";

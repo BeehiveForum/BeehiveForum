@@ -402,8 +402,6 @@ A		{
 		float:left;
 }
 
-.info-text  {
-                color: #7F7F7F;
-                font-size: 9px;
-                text-align: center;
-            }
+.activeusers {
+                font-size: 8pt;
+}

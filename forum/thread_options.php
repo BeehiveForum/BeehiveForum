@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.37 2005-03-14 13:27:23 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.38 2005-03-19 17:53:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -270,7 +270,7 @@ if (perm_is_moderator($fid)) {
             $day = isset($_POST['sticky_day']) && is_numeric($_POST['sticky_day']) ? $_POST['sticky_day'] : 0;
             $month = isset($_POST['sticky_month']) && is_numeric($_POST['sticky_month']) ? $_POST['sticky_month'] : 0;
             $year = isset($_POST['sticky_year']) && is_numeric($_POST['sticky_year']) ? $_POST['sticky_year'] : 0;
-            $tmp_sticky_until = $day || $month || $year ? mktime(0, 0, 0, $month, $day, $year) : false;
+            $tmp_sticky_until = $day || $month || $year ? gmmktime(0, 0, 0, $month, $day, $year) : false;
 
             if (($_POST['sticky'] == $threaddata['STICKY'] && $tmp_sticky_until != $threaddata['STICKY_UNTIL']) || $_POST['sticky'] != $threaddata['STICKY']) {
 

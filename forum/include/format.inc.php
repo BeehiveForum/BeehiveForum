@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.80 2005-03-15 21:29:46 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.81 2005-03-19 17:53:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -126,23 +126,23 @@ function timestamp_to_date($timestamp)
 
 function timestamp_amend_bst($timestamp)
 {
-    $year = date("Y", mktime());
+    $year = date("Y", gmmktime());
 
-    $ldmarw = date("w", mktime(2, 0, 0, 4,  0, $year));
-    $ldoctw = date("w", mktime(2, 0, 0, 11, 0, $year));
-    $ldmard = date("d", mktime(2, 0, 0, 4,  0, $year));
-    $ldoctd = date("d", mktime(2, 0, 0, 11, 0, $year));
+    $ldmarw = date("w", gmmktime(2, 0, 0, 4,  0, $year));
+    $ldoctw = date("w", gmmktime(2, 0, 0, 11, 0, $year));
+    $ldmard = date("d", gmmktime(2, 0, 0, 4,  0, $year));
+    $ldoctd = date("d", gmmktime(2, 0, 0, 11, 0, $year));
 
     if ($ldmarw > 0) $ldmard = $ldmard - $ldmarw;
     if ($ldoctw > 0) $ldoctd = $ldoctd - $ldoctw;
 
-    $startofbst = mktime(2, 0, 0, 3,  $ldmard, $year);
-    $endofbst   = mktime(2, 0, 0, 10, $ldoctd, $year);
+    $startofbst = gmmktime(2, 0, 0, 3,  $ldmard, $year);
+    $endofbst   = gmmktime(2, 0, 0, 10, $ldoctd, $year);
 
     if (($timestamp > $startofbst) && ($timestamp < $endofbst)) {
-      return $timestamp + 3600;  // return adjusted timestamp
+        return $timestamp + 3600;  // return adjusted timestamp
     }else{
-      return $timestamp; // return unadjusted timestamp
+        return $timestamp; // return unadjusted timestamp
     }
 }
 
@@ -277,7 +277,7 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
         $year = date("Y", $local_time) + 1;
     }
 
-    return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
+    return date("j M", gmmktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
 }
 
 ?>

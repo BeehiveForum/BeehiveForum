@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.106 2005-03-14 13:27:21 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.107 2005-03-19 17:53:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -544,7 +544,7 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['FROM_UID'] = $preview_fuser['UID'];
 
     $pm_preview_array['SUBJECT'] = $t_subject;
-    $pm_preview_array['CREATED'] = mktime();
+    $pm_preview_array['CREATED'] = gmmktime();
     $pm_preview_array['AID'] = $aid;
 
     $pm_preview_array['FOLDER'] = PM_FOLDER_OUTBOX;

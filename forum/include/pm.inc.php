@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.114 2005-03-15 21:30:04 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.115 2005-03-19 17:53:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -960,7 +960,7 @@ function pm_user_prune_folders($uid = false)
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
         $sql.= "((TYPE = TYPE & ". PM_READ. " AND TO_UID = '$uid') ";
         $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid')) ";
-        $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";
+        $sql.= "AND CREATED < FROM_UNIXTIME($pm_prune_length)";
 
         $result = db_query($sql, $db_pm_prune_folders);
     }
@@ -984,7 +984,7 @@ function pm_system_prune_folders()
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
         $sql.= "((TYPE = TYPE & ". PM_READ. ") ";
         $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. ")) ";
-        $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";
+        $sql.= "AND CREATED < FROM_UNIXTIME($pm_prune_length)";
 
         $result = db_query($sql, $db_pm_prune_folders);
     }

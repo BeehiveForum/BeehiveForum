@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.147 2005-01-07 00:49:01 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.148 2005-01-19 18:52:00 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -33,7 +33,7 @@ include_once("./include/user.inc.php");
 
 // Checks the session and returns it as an array.
 
-function bh_session_check($add_guest_sess = true)
+function bh_session_check()
 {
     ip_check();
 
@@ -161,7 +161,7 @@ function bh_session_check($add_guest_sess = true)
         }
     }
 
-    if ($add_guest_sess) {
+    if (user_guest_enabled()) {
 
         // Guest user sessions are handled a bit differently.
         // Rather than the cookie which holds their HASH we
@@ -201,31 +201,35 @@ function bh_session_check($add_guest_sess = true)
 
             $result = db_query($sql, $db_bh_session_check);
         }
+
+        bh_remove_stale_sessions();
+
+        return array('UID'              => 0,
+                     'LOGON'            => 'GUEST',
+                     'PASSWD'           => md5('GUEST'),
+                     'STATUS'           => 0,
+                     'POSTS_PER_PAGE'   => 20,
+                     'TIMEZONE'         => 0,
+                     'DL_SAVING'        => 0,
+                     'MARK_AS_OF_INT'   => 0,
+                     'FONT_SIZE'        => 10,
+                     'STYLE'            => forum_get_setting('default_style'),
+                     'VIEW_SIGS'        => 'Y',
+                     'START_PAGE'       => 0,
+                     'LANGUAGE'         => forum_get_setting('default_language'),
+                     'PM_NOTIFY'        => 'N',
+                     'SHOW_STATS'       => 1,
+                     'IMAGES_TO_LINKS'  => 'N',
+                     'USE_WORD_FILTER'  => 'Y',
+                     'USE_ADMIN_FILTER' => 'Y',
+                     'POST_PAGE'        => 0);
     }
 
     // Delete expired sessions
 
     bh_remove_stale_sessions();
 
-    return array('UID'              => 0,
-                 'LOGON'            => 'GUEST',
-                 'PASSWD'           => md5('GUEST'),
-                 'STATUS'           => 0,
-                 'POSTS_PER_PAGE'   => 20,
-                 'TIMEZONE'         => 0,
-                 'DL_SAVING'        => 0,
-                 'MARK_AS_OF_INT'   => 0,
-                 'FONT_SIZE'        => 10,
-                 'STYLE'            => forum_get_setting('default_style'),
-                 'VIEW_SIGS'        => 'Y',
-                 'START_PAGE'       => 0,
-                 'LANGUAGE'         => forum_get_setting('default_language'),
-                 'PM_NOTIFY'        => 'N',
-                 'SHOW_STATS'       => 1,
-                 'IMAGES_TO_LINKS'  => 'N',
-                 'USE_WORD_FILTER'  => 'Y',
-                 'USE_ADMIN_FILTER' => 'Y',
-                 'POST_PAGE'        => 0);
+    return false;
 }
 
 // Fetches a value from the session

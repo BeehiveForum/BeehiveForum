@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.37 2004-04-10 10:39:28 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.38 2004-04-10 12:20:57 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -30,6 +30,7 @@ include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/session.inc.php");
 
 function get_table_prefix()
 {
@@ -87,22 +88,43 @@ function get_webtag()
         // Check #1: See if the webtag specified in GET/POST
         // actually exists.
     
-        $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+        $sql = "SELECT * FROM FORUMS WHERE WEBTAG = '$webtag'"; 
         $result = db_query($sql, $db_get_webtag);
         
         if (db_num_rows($result) > 0) {
-            return $webtag;
+
+            $webtag_data = db_fetch_array($result);
+
+	    // If the forum is closed and we're not the Queen
+	    // we need to return false so that the users can't
+	    // access the forum.
+	    
+	    if ($webtag_data['ACCESS_LEVEL'] == 0) {
+	        return $webtag_data['WEBTAG'];
+	    }
+
+            return false;
         }
 
         // Check #2: Try and select a default webtag from
         // the databse
 
-        $sql = "SELECT WEBTAG FROM FORUMS WHERE DEFAULT_FORUM = 1 LIMIT 0, 1";
+        $sql = "SELECT * FROM FORUMS WHERE DEFAULT_FORUM = 1 LIMIT 0, 1";
         $result = db_query($sql, $db_get_webtag);
     
         if (db_num_rows($result) > 0) {
+
             $webtag_data = db_fetch_array($result);
-            return $webtag_data['WEBTAG'];
+
+	    // If the forum is closed and we're not the Queen
+	    // we need to return false so that the users can't
+	    // access the forum.
+	    
+	    if ($webtag_data['ACCESS_LEVEL'] == 0) {
+	        return $webtag_data['WEBTAG'];
+	    }
+
+            return false;
         }
         
         return false;
@@ -762,6 +784,33 @@ function forum_delete($fid)
 	        $result = db_query($sql, $db_forum_delete);
 	    }
         }
+    }
+
+    return false;
+}
+
+function forum_update_access($fid, $access)
+{
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($access)) return false;
+
+    // Only the queen can change a forums status!!
+    
+    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+
+        $db_forum_update_access = db_connect();
+    
+        $sql = "SELECT COUNT(*) FROM FORUMS WHERE FID = '$fid'"; 
+        $result = db_query($sql, $db_forum_update_access);
+
+	if (db_num_rows($result) > 0) {
+
+	    $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' WHERE FID = '$fid'";
+	    $result = db_query($sql, $db_forum_update_access);
+
+	}
+
+	return $result;
     }
 
     return false;

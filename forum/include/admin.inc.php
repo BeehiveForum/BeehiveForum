@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.25 2004-04-05 20:54:33 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.26 2004-04-10 12:20:57 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -232,6 +232,63 @@ function admin_session_end($uid)
     $result = db_query($sql, $db_admin_session_end);
     
     return (db_affected_rows($db_admin_session_end) > 0);
+}
+
+function admin_get_forum_list()
+{
+    $db_get_forum_list = db_connect();
+    $get_forum_list_array = array();
+
+    $sql = "SELECT FORUMS.*, FORUM_SETTINGS.SVALUE AS FORUM_NAME ";
+    $sql.= "FROM FORUMS FORUMS LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON ";
+    $sql.= "(FORUMS.FID = FORUM_SETTINGS.FID AND FORUM_SETTINGS.SNAME = 'forum_name') ";
+
+    $result = db_query($sql, $db_get_forum_list); 
+
+    while ($forum_data = db_fetch_array($result)) {  
+        
+        if (isset($forum_data['WEBTAG']) && isset($forum_data['FID'])) {
+
+	    if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) == 0) {
+	        $forum_data['FORUM_NAME'] = "Unnamed Forum";
+	    }
+
+    	    // Get number of messages on forum
+
+            $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+            $result = db_query($sql, $db_get_forum_list);
+        
+            if (db_num_rows($result)) {
+        
+                $row = db_fetch_array($result);
+                $forum_data['MESSAGES'] = $row['POST_COUNT'];
+        
+            }else {
+        
+                $forum_data['MESSAGES'] = 0;
+            }
+        
+            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
+            $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
+            $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
+
+            $result = db_query($sql, $db_get_forum_list);
+
+            if (db_num_rows($result)) {
+            
+                $row = db_fetch_array($result);
+                $forum_data['DESCRIPTION'] = $row['SVALUE'];
+            
+            }else{
+            
+                $forum_data['DESCRIPTION'] = "";
+            }
+
+	    $get_forum_list_array[] = $forum_data;
+	}
+    }
+
+    return $get_forum_list_array;
 }
 
 ?>

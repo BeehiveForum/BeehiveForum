@@ -71,129 +71,136 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 if ($user_sess && bh_session_get_value('UID') <> 0) {
 
-    $forums_array = get_my_forums();
+    if ($forums_array = get_my_forums()) {
 
-    echo "<h1>My Forums</h1>\n";
-    echo "<br>\n";
-    echo "<div align=\"center\">\n";
-    echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+        echo "<h1>My Forums</h1>\n";
+        echo "<br>\n";
+        echo "<div align=\"center\">\n";
+        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
 
-    if (sizeof($forums_array['FAVOURITES']) > 0) {
+        if (sizeof($forums_array['FAVOURITES']) > 0) {
 
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;Favourite Forums:</td>\n";
-        echo "                  <td class=\"subhead\">&nbsp;Last Visited</td>\n";
-        echo "                </tr>\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+            echo "    <tr>\n";
+            echo "      <td>\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;Favourite Forums:</td>\n";
+            echo "                  <td class=\"subhead\">&nbsp;Last Visited</td>\n";
+            echo "                </tr>\n";
 
-        foreach ($forums_array['FAVOURITES'] as $forum) {
+            foreach ($forums_array['FAVOURITES'] as $forum) {
+
+                echo "                <tr>\n";
+                echo "                  <td width=\"20\">", form_checkbox("rem_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+                echo "                  <td width=\"25%\">\n";
+
+                if (isset($HTTP_GET_VARS['final_uri'])) {
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
+                }else {
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+                }
+
+                echo "                  </td>\n";
+                echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
+
+	        if ($forum['UNREAD_TO_ME'] > 0) {
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
+	        }else {
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages</a></td>\n";
+                }
+  
+                echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
+                echo "                </tr>\n";
+	    }
 
             echo "                <tr>\n";
-            echo "                  <td width=\"20\">", form_checkbox("rem_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
-            echo "                  <td width=\"25%\">\n";
-
-            if (isset($HTTP_GET_VARS['final_uri'])) {
-                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
-            }else {
-                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
-            }
-
-            echo "                  </td>\n";
-            echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
-
-	    if ($forum['UNREAD_TO_ME'] > 0) {
-                 echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
-	    }else {
-                 echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages</a></td>\n";
-            }
-  
-            echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
+            echo "                  <td colspan=\"5\">&nbsp;</td>\n";
             echo "                </tr>\n";
-	}
-
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"right\">", form_submit("submit", "Remove From Favourites"), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "  <br />\n";
-    }
-
-    if (sizeof($forums_array['FORUMS']) > 0) {
-
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;Available Forums:</td>\n";
-        echo "                  <td class=\"subhead\">&nbsp;Last Visited</td>\n";
-        echo "                </tr>\n";
-
-        foreach ($forums_array['FORUMS'] as $forum) {
-
-            echo "                <tr>\n";
-            echo "                  <td width=\"20\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
-            echo "                  <td width=\"25%\">\n";
-
-            if (isset($HTTP_GET_VARS['final_uri'])) {
-                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
-            }else {
-                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
-            }
-
-            echo "                  </td>\n";
-            echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
-
-            if ($forum['UNREAD_TO_ME'] > 0) {
-                echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
-            }else {
-                echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages</a></td>\n";	}
-  
-            echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
-            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"right\">", form_submit("submit", "Remove From Favourites"), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "  <br />\n";
         }
 
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"5\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"right\">", form_submit("submit", "Add To Favourites"), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-    }
+        if (sizeof($forums_array['FORUMS']) > 0) {
 
-    echo "</form>\n";
-    echo "</div>\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+            echo "    <tr>\n";
+            echo "      <td>\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;Available Forums:</td>\n";
+            echo "                  <td class=\"subhead\">&nbsp;Last Visited</td>\n";
+            echo "                </tr>\n";
+
+            foreach ($forums_array['FORUMS'] as $forum) {
+
+                echo "                <tr>\n";
+                echo "                  <td width=\"20\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+                echo "                  <td width=\"25%\">\n";
+
+                if (isset($HTTP_GET_VARS['final_uri'])) {
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
+                }else {
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+                }
+
+                echo "                  </td>\n";
+                echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
+
+                if ($forum['UNREAD_TO_ME'] > 0) {
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
+                }else {
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages</a></td>\n";	}
+  
+                echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
+                echo "                </tr>\n";
+            }
+
+            echo "                <tr>\n";
+            echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"right\">", form_submit("submit", "Add To Favourites"), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+        }
+
+        echo "</form>\n";
+        echo "</div>\n";
+
+    }else {
+
+        echo "<h1>My Forums</h1>\n";
+        echo "<br>\n";
+        echo "<h2>There are no forums available.</h2>\n";
+    }
 
 }else {
 

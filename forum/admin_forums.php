@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.1 2004-04-09 21:19:01 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.2 2004-04-10 12:20:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,7 +104,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     if (isset($HTTP_POST_VARS['t_access']) && is_array($HTTP_POST_VARS['t_access'])) {
 
         foreach($HTTP_POST_VARS['t_access'] as $fid => $new_access) {
-            echo "forum_update_access($fid, $new_access);\n";
+            forum_update_access($fid, $new_access);
         }
     }
 
@@ -137,6 +137,52 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }elseif (isset($HTTP_POST_VARS['t_delete'])) {
 
     list($fid) = array_keys($HTTP_POST_VARS['t_delete']);
+    
+    echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\"><h2>{$lang['warning_caps']}</h2></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>{$lang['forumdeletewarning']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("t_confirm_delete[$fid]", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";     
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+
+    html_draw_bottom();
+    exit;
+
+}elseif (isset($HTTP_POST_VARS['t_confirm_delete'])) {
+    
+    list($fid) = array_keys($HTTP_POST_VARS['t_confirm_delete']);
     forum_delete($fid);
 }
 
@@ -152,7 +198,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
 
-$forums_array = get_forum_list();
+$forums_array = admin_get_forum_list();
 
 if (sizeof($forums_array) > 0) {
 

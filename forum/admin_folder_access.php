@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.8 2003-09-21 12:57:57 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.9 2003-10-05 16:46:24 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -51,6 +51,7 @@ require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/post.inc.php");
+require_once("./include/admin.inc.php");
 
 html_draw_top();
 
@@ -154,7 +155,7 @@ if (strlen($usersearch) > 0) {
     echo "          <td class=\"subhead\" align=\"left\">{$lang['searchresults']}</td>\n";
     echo "        </tr>\n";
 
-    if ($user_search_array = user_search($usersearch)) {
+    if ($user_search_array = admin_user_search($usersearch)) {
 
         foreach ($user_search_array as $user_search) {
             echo "        <tr>\n";

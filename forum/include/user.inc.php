@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.101 2003-09-21 18:44:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.102 2003-10-05 16:46:24 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -496,8 +496,8 @@ function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM " . forum_table("USER") . " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "WHERE USER_PREFS.ANON_LOGON <> 1 AND ";
-    $sql.= "(LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
+    $sql.= "WHERE (LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
+    $sql.= "AND NOT (USER_PREFS.ANON_LOGON <=> 1) ";
     $sql.= "ORDER BY USER.$sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 20";
 
@@ -522,7 +522,7 @@ function user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "WHERE USER_PREFS.ANON_LOGON <> 1 ";
+    $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) ";
     $sql.= "ORDER BY USER.$sort_by $sort_dir LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_get_all);

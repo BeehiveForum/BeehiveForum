@@ -599,6 +599,10 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 		$html_p += 2;
 	}
 
+	echo"<pre>";
+	print_r($html_a);
+	echo"</pre>";
+
 	$return = "";
 
 	for ($i=0; $i<count($html_a); $i++) {

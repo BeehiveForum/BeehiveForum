@@ -39,6 +39,9 @@ function error_handler($errno, $errstr, $errfile, $errline)
       $getvars.= "&retryerror=yes";
     }
 
+    ob_end_clean();
+    ob_start();
+
     html_draw_top();
 
     echo "<div align=\"center\">\n";

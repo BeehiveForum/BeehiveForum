@@ -22,10 +22,12 @@ USA
 ======================================================================*/
 
 // Compresses the output of the PHP scripts to save bandwidth.
+// Due to problems with the gzip library in PHP 4.1.0 and lower,
+// we only support gzip compression in PHP version 4.2.0 and higher.
 
 require_once("./include/config.inc.php");
 
-if ($gzip_compress_output) {
+if ($gzip_compress_output && (phpversion() >= '4.2')) {
     if (isset($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING']) && strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
         ob_start("ob_gzhandler");
     }else{

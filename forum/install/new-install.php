@@ -21,18 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.24 2005-02-12 19:07:12 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.25 2005-02-13 16:46:43 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
+if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
+
+    echo "\nTo complete your Project BeehiveForum installation\n";
+    echo "please visit install.php in your browser\n";
+    exit;
+
+}elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
     header("Location: ../install.php");
-    exit;
-
-}else if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
-
-    echo "To install BeehiveForums 0.5 please visit install.php in your browser";
     exit;
 }
 
@@ -703,11 +704,12 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_POLL_VOTES (";
+$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-$sql.= "  PRIMARY KEY  (TID, UID, OPTION_ID)";
+$sql.= "  PRIMARY KEY  (ID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {

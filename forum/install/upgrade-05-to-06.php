@@ -21,23 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.18 2005-02-12 19:07:12 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.19 2005-02-13 16:46:43 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-06.php") {
+if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
+
+    echo "\nTo upgrade your Project BeehiveForum installation\n";
+    echo "please visit install.php in your browser\n";
+    exit;
+
+}elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-06.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
     header("Location: ../install.php");
     exit;
-
-}else if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
-
-    echo "To install BeehiveForums 0.5 please visit install.php in your browser";
-    exit;
 }
-
-include_once("./include/constants.inc.php");
-include_once("./include/db.inc.php");
 
 set_time_limit(0);
 
@@ -150,6 +148,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "INSERT INTO {$forum_webtag}_BANNED (IPADDRESS) ";
     $sql.= "SELECT IP FROM {$forum_webtag}_BANNED_IP";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_BANNED_IP";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -290,8 +297,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY TO_UID (TO_UID),";
     $sql.= "  KEY FROM_UID (FROM_UID),";
     $sql.= "  KEY IPADDRESS (IPADDRESS),";
-    $sql.= "  KEY CREATED (CREATED),";
-    $sql.= "  KEY FROM_UID (FROM_UID)";
+    $sql.= "  KEY CREATED (CREATED)";
     $sql.= ") TYPE = MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {

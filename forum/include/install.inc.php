@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.22 2005-03-03 22:35:46 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.23 2005-03-04 09:48:47 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -129,7 +129,7 @@ function rmdir_recursive($path)
        closedir($dir);
    }
 
-   rmdir($path);
+   @rmdir($path);
 }
 
 function install_incomplete()

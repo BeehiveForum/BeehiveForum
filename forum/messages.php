@@ -23,7 +23,7 @@ USA
 
 // Require functions
 require_once("./include/html.inc.php"); // HTML functions
-require_once("./include/threads.inc.php"); // Thread processing functions
+require_once("./include/thread.inc.php"); // Thread processing functions
 require_once("./include/messages.inc.php"); // Message processing functions
 require_once("./include/folder.inc.php"); // Folder processing functions
 require_once("./include/beehive.inc.php"); // Beehive stuff

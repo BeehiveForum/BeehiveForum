@@ -26,6 +26,7 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/format.inc.php"); // Formatting functions
+require_once("./include/thread.inc.php");
 
 function threads_get_available_folders()
 {
@@ -313,35 +314,6 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 	return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
 }
 
-function thread_get_title($tid)
-{
-   $db = db_connect();
-   $sql = "SELECT THREAD.title FROM " . forum_table("THREAD") . " WHERE tid = $tid";
-   $resource_id = db_query($sql,$db);
-   if(!db_num_rows($resource_id)){
-     $threadtitle = "The Unknown Thread";
-   } else {
-     $data = db_fetch_array($resource_id);
-     $threadtitle = stripslashes($data['title']);
-   }
-   db_disconnect($db);
-   return $threadtitle;
-}
-
-function thread_get($tid)
-{
-   $db = db_connect();
-   $sql = "SELECT * FROM " . forum_table("THREAD") . " WHERE tid = $tid";
-   $resource_id = db_query($sql,$db);
-   if(!db_num_rows($resource_id)){
-     $threaddata = false;
-   } else {
-     $threaddata = db_fetch_array($resource_id);
-   }
-   db_disconnect($db);
-   return $threaddata;
-}
-
 function threads_get_folder_msgs()
 {
 	$db = db_connect();
@@ -354,44 +326,6 @@ function threads_get_folder_msgs()
 	}
 	db_disconnect($db);
 	return $folder_msgs;
-}
-
-function thread_get_author($tid)
-{
-	$db = db_connect();
-	$sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
-	$sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
-	$resource_id = db_query($sql, $db);
-	$author = db_fetch_array($resource_id);
-	return format_user_name($author['LOGON'], $author['NICKNAME']);
-}
-
-function thread_get_interest($tid)
-{
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-	$db = db_connect();
-	$sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
-	$resource_id = db_query($sql, $db);
-	$fa = db_fetch_array($resource_id);
-	db_disconnect($db);
-	$return = isset($fa['INTEREST']) ? $fa['INTEREST'] : 0;
-	return $return;
-}
-
-function thread_set_interest($tid,$interest,$new = false)
-{
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    if($new){
-    	$sql = "insert into USER_THREAD (UID,TID,INTEREST) values ($uid,$tid,$interest)";
-    } else {
-        $sql = "update USER_THREAD set INTEREST = $interest where UID = $uid and TID = $tid";
-    }
-	$db = db_connect();
-	db_query($sql, $db);
-	db_disconnect($db);
-
 }
 
 function threads_any_unread()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.43 2004-04-23 22:10:33 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.44 2004-04-26 11:21:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,7 +96,7 @@ if (!$webtag = get_webtag()) {
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -149,7 +149,7 @@ if (isset($_POST['submit'])) {
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './admin_wordfilter.php?webtag=$webtag&updated=true';\n";
+        echo "document.location.href = './admin_wordfilter.php?webtag=$webtag&amp;updated=true';\n";
         echo "//-->\n";
         echo "</script>";
 
@@ -179,7 +179,8 @@ if (isset($_GET['updated'])) {
 
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php?webtag=$webtag\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

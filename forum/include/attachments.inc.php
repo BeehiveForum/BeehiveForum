@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.64 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.65 2004-04-26 11:21:11 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/forum.inc.php");
@@ -344,7 +344,7 @@ function get_message_link($aid)
     if (db_num_rows($result) > 0) {
 
         $tidpid = db_fetch_array($result);
-        return "./messages.php?webtag=$webtag&msg=". $tidpid['TID']. ".". $tidpid['PID'];
+        return "./messages.php?webtag=$webtag&amp;msg=". $tidpid['TID']. ".". $tidpid['PID'];
 
     }else{
 
@@ -354,7 +354,7 @@ function get_message_link($aid)
         if (db_num_rows($result) > 0) {
 
             $mid = db_fetch_array($result);
-            return "./pm.php?webtag=$webtag&mid=". $mid['MID'];
+            return "./pm.php?webtag=$webtag&amp;mid=". $mid['MID'];
         }
     }
 
@@ -413,7 +413,7 @@ function attachment_inc_dload_count($hash)
 function attachment_embed_check($content)
 {
     if (forum_get_setting('attachments_allow_embed', 'Y', false)) return false;
-    $content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
+    $content_check = preg_replace('/\&amp;\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
 
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $content_check)) {
         return true;

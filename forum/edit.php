@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.120 2004-04-25 12:38:26 tribalonline Exp $ */
+/* $Id: edit.php,v 1.121 2004-04-26 11:21:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -473,7 +473,8 @@ if (isset($_POST['preview'])) {
 }
 
 echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-echo "<br /><form name=\"f_edit\" action=\"edit.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
+echo form_input_hidden('webtag', $webtag), "\n";
 
 if (isset($error_html)) {
     echo "<table class=\"posthead\" width=\"720\">\n";

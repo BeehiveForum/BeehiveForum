@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.45 2004-04-23 22:11:57 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.46 2004-04-26 11:21:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -166,7 +166,8 @@ $rel = user_rel_get($my_uid, $uid);
 echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 echo "<br />\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"relationship\" action=\"user_rel.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
+echo "    ", form_input_hidden('webtag', $webtag), "\n";
 echo "    ", form_input_hidden("uid", $uid), "\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    ", form_input_hidden("edit_rel", $edit_rel), "\n";
@@ -184,15 +185,15 @@ if (isset($uid)) {
     echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['relationship']}</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("rel", "1", $lang['friend'], $rel & USER_FRIEND ? true : false), "</td>\n";
+    echo "                    <td width=\"130\">", form_radio("rel", "1", $lang['friend'], $rel&USER_FRIEND ? true : false), "</td>\n";
     echo "                    <td width=\"370\">: {$lang['friend_exp']}</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("rel", "0", $lang['normal'], !(($rel & USER_IGNORED) || ($rel & USER_FRIEND)) ? true : false), "</td>\n";
+    echo "                    <td width=\"130\">", form_radio("rel", "0", $lang['normal'], !(($rel&USER_IGNORED) || ($rel&USER_FRIEND)) ? true : false), "</td>\n";
     echo "                    <td width=\"370\">: {$lang['normal_exp']}</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false), "</td>\n";
+    echo "                    <td width=\"130\">", form_radio("rel", "2", $lang['ignored'], $rel&USER_IGNORED ? true : false), "</td>\n";
     echo "                    <td width=\"370\">: {$lang['ignore_exp']}</td>\n";
     echo "                  </tr>\n";
 }
@@ -208,7 +209,7 @@ if (isset($uid)) {
     echo "                    <td width=\"370\">: {$lang['displaysig_exp']}</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("sig", "4", $lang['ignore'], $rel & USER_IGNORED_SIG ? true : false), "</td>\n";
+    echo "                    <td width=\"130\">", form_radio("sig", "4", $lang['ignore'], $rel&USER_IGNORED_SIG ? true : false), "</td>\n";
     echo "                    <td width=\"370\">: {$lang['hidesig_exp']}</td>\n";
     echo "                  </tr>\n";
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.49 2004-04-23 22:26:34 decoyduck Exp $ */
+/* $Id: admin.php,v 1.50 2004-04-26 11:21:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -85,7 +85,7 @@ $lang = load_language_file();
 
 $webtag = get_webtag();
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.14 2004-04-23 22:10:10 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.15 2004-04-26 11:21:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -95,7 +95,7 @@ $webtag = get_webtag();
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_QUEEN)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -153,7 +153,8 @@ if (isset($_POST['submit'])) {
     echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form name=\"f_folders\" action=\"admin_forums.php?webtag=$webtag\" method=\"post\">\n";
+    echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -217,7 +218,8 @@ $forums_array = admin_get_forum_list();
 
 if (sizeof($forums_array) > 0) {
 
-    echo "  <form name=\"f_folders\" action=\"admin_forums.php?webtag=$webtag\" method=\"post\">\n";
+    echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -282,7 +284,8 @@ if (sizeof($forums_array) > 0) {
     echo "  <br />\n";
 }
 
-echo "  <form name=\"f_folders\" action=\"admin_forums.php?webtag=$webtag\" method=\"post\">\n";
+echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

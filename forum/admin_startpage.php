@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.44 2004-04-23 22:10:25 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.45 2004-04-26 11:21:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -95,7 +95,7 @@ if (!$webtag = get_webtag()) {
     header_redirect("./forums.php?final_uri=$request_uri");
 }
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
 
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
@@ -131,7 +131,8 @@ if (isset($status_text)) echo $status_text;
 
 $tools = new TextAreaHTML("startpage");
 
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag=$webtag\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

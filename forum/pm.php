@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.49 2004-04-23 22:11:29 decoyduck Exp $ */
+/* $Id: pm.php,v 1.50 2004-04-26 11:21:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -194,7 +194,7 @@ if ($folder == PM_FOLDER_INBOX) {
     echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pmsaveditems']}</b></td>\n";
 }
 
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
@@ -212,7 +212,8 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     }
 }
 
-echo "<form name=\"pm\" action=\"pm.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"pm\" action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
 echo "  <table width=\"95%\" align=\"center\" border=\"0\">\n";
 echo "    <tr>\n";
@@ -259,14 +260,14 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&amp;mid=".$message['MID']."\" target=\"_self\">", _stripslashes($message['SUBJECT']), "</a>";
+        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid=".$message['MID']."\" target=\"_self\">", _stripslashes($message['SUBJECT']), "</a>";
 
         if (isset($message['AID'])) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
         }
 
         if (($folder == PM_FOLDER_OUTBOX) && (($message['TYPE'] == PM_NEW) || ($message['TYPE'] == PM_UNREAD))) {
-            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&mid={$message['MID']}\">Edit</a>]</span>";
+            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&amp;mid={$message['MID']}\">Edit</a>]</span>";
         }
 
         echo "</td>\n";
@@ -350,12 +351,12 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
     if ($page_count > 1) {
 
         for ($page = 1; $page <= $page_count; $page++) {
-            echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&page=$page\" target=\"_self\">$page</a> ";
+            echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;page=$page\" target=\"_self\">$page</a> ";
         }
 
     }else {
 
-        echo "<a href=\"pm.php?webtag=$webtag&folder=$folder&page=1\" target=\"_self\">1</a> ";
+        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;page=1\" target=\"_self\">1</a> ";
     }
 
     echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";

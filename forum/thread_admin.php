@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.51 2004-04-23 22:11:52 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.52 2004-04-26 11:21:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -147,7 +147,7 @@ if (isset($_POST['rename']) && isset($_POST['t_tid']) && is_numeric($_POST['t_ti
 
     // Only Queens, Soldiers and Workers can perform any other moderating duties
 
-    if (!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
+    if (!(bh_session_get_value('STATUS')&PERM_CHECK_WORKER)) {
         html_draw_top();
         echo "<h1>{$lang['accessdenied']}</h1>\n";
         echo "<p>{$lang['accessdeniedexp']}</p>";

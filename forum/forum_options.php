@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.35 2004-04-24 18:42:16 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.36 2004-04-26 11:21:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -229,7 +229,7 @@ if (isset($_POST['submit'])) {
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './forum_options.php?webtag=$webtag&updated=true';\n";
+        echo "document.location.href = './forum_options.php?webtag=$webtag&amp;updated=true';\n";
         echo "//-->\n";
         echo "</script>";
 
@@ -291,7 +291,8 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<form name=\"prefs\" action=\"forum_options.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefs\" action=\"forum_options.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

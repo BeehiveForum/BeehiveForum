@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.47 2004-04-23 22:10:10 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.48 2004-04-26 11:21:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -93,7 +93,7 @@ if (!$webtag = get_webtag()) {
     header_redirect("./forums.php?final_uri=$request_uri");
 }
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
@@ -280,7 +280,7 @@ if (isset($_POST['submit'])) {
     foreach ($_POST['elements'] as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
         echo "                  </td>\n";
 
     }
@@ -291,7 +291,7 @@ if (isset($_POST['submit'])) {
     foreach ($elements as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $colour, "; color: #", contrastFont($colour), "\" align=\"center\">\n";
-        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&seed=", $colour, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
+        echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $colour, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($colour), "\">", strtoupper($colour), "</a>\n";
         echo "                  </td>\n";
 
         $elements[$key] = $colour;
@@ -335,9 +335,9 @@ echo "                  <td class=\"subhead\" align=\"left\">New</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&r=$r\">{$lang['standardstyle']}</a><br />\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&mode=med&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;r=$r\">{$lang['standardstyle']}</a><br />\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;mode=med&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -348,9 +348,9 @@ echo "                  <td class=\"subhead\" align=\"left\">This Colour</td>\n"
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&seed=$seed&amp;r=$r\">{$lang['standardstyle']}</a><br />\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&seed=$seed&amp;mode=medi&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
-echo "                    <a href=\"admin_make_style.php?webtag=$webtag&seed=$seed&amp;mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=$seed&amp;r=$r\">{$lang['standardstyle']}</a><br />\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=$seed&amp;mode=medi&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
+echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=$seed&amp;mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -376,7 +376,8 @@ echo "                  <td class=\"subhead\">{$lang['savestyle']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">\n";
-echo "                    <form action=\"admin_make_style.php?webtag=$webtag\" method=\"post\">\n";
+echo "                    <form action=\"admin_make_style.php\" method=\"post\">\n";
+echo "                      ", form_input_hidden('webtag', $webtag), "\n";
 
 foreach ($elements as $key => $value) {
     echo "                      ", form_input_hidden("elements[$key]", $value), "\n";

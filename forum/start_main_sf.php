@@ -46,7 +46,7 @@ a            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11
     <td height="1" class="title">&nbsp;</td>
   </tr>
   <tr>
-    <td align="right"><a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=50772&type=5" width="210" height="62" border="0" /></a></td>
+    <td align="right"><a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=50772&amp;type=5" width="210" height="62" border="0" /></a></td>
   </tr>
 </table>
 </body>

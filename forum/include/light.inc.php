@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.42 2004-04-25 14:15:33 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.43 2004-04-26 11:21:12 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -110,6 +110,7 @@ function light_poll_confirm_close($tid)
     light_poll_display($tid, $preview_message, 0, 0, false);
 
     echo "<p><form name=\"f_delete\" action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
+    echo form_input_hidden('webtag', $webtag), "\n";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
     echo light_form_submit("pollclose", $lang['endpoll']);
@@ -154,6 +155,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
     $poll_group_count = 1;
 
     $polldata['CONTENT'] = "<form method=\"post\" action=\"". $_SERVER['PHP_SELF']. "\" target=\"_self\">\n";
+    $polldata['CONTENT'].= form_input_hidden('webtag', $webtag). "\n";
     $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
 
@@ -382,7 +384,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
-        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list){
@@ -477,7 +479,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
                 foreach($attachments_array as $attachment) {
 
                     if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                        echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
+                        echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
                     }else {
                         echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                     }
@@ -516,7 +518,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
-                echo "<a href=\"lpost.php?webtag=$webtag&replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
+                echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
 
             }
         }
@@ -550,7 +552,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     // The first section, 1-x
     if($spid > 1){
         if($pid > 1){
-            $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
+            $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
         } else {
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
@@ -566,7 +568,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&msg=$tid.$spid\">" . mess_nav_range($spid==0 ? 1 : $spid,$spid+($ppp - 1)) . "</a>";
+            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$spid\">" . mess_nav_range($spid==0 ? 1 : $spid,$spid+($ppp - 1)) . "</a>";
         }
         $spid += $ppp;
         $i++;
@@ -578,7 +580,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&msg=$tid.$spid\">" . mess_nav_range($spid,$length) . "</a>";
+            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$spid\">" . mess_nav_range($spid,$length) . "</a>";
         }
     }
     $max = $i;
@@ -586,7 +588,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     $html = "{$lang['showmessages']}:";
 
     if($length <= $ppp){
-        $html .= " <a href=\"lmessages.php?webtag=$webtag&msg=$tid.1\">{$lang['all']}</a>\n";
+        $html .= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">{$lang['all']}</a>\n";
     }
 
     for($i=0;$i<=$max;$i++) {

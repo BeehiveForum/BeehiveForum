@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.74 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.75 2004-04-26 11:21:12 decoyduck Exp $ */
 
 include_once("./include/emoticons.inc.php");
 include_once("./include/html.inc.php");
@@ -55,7 +55,7 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 				// BH tag <code> replace
 				// <code><b>Text</b></code>
 				// with
-				// <pre>&lt;b&gt;Text&lt;b&gt;</pre>
+				// <pre>&amp;lt;b&gt;Text&amp;lt;b&gt;</pre>
 				$tag = explode(" ", $html_parts[$i]);
 				if (substr($tag[0], 0, 1) == "/") {
 					$close = true;
@@ -166,11 +166,11 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 						}
 					}
 				} else {
-					$html_parts[$i-1].= "&lt;".$html_parts[$i]."&gt;";
+					$html_parts[$i-1].= "&amp;lt;".$html_parts[$i]."&gt;";
 					$html_parts[$i] = "";
 				}
 			} else {
-				$html_parts[$i] = str_replace("<", "&lt;", $html_parts[$i]);
+				$html_parts[$i] = str_replace("<", "&amp;lt;", $html_parts[$i]);
 				$html_parts[$i] = str_replace(">", "&gt;", $html_parts[$i]);
 			}
 		}

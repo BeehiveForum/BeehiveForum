@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.21 2004-04-24 18:42:17 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.22 2004-04-26 11:21:09 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -85,7 +85,8 @@ if (isset($_POST['submit'])) {
 
 light_html_draw_top();
 
-echo "<form name=\"logon\" action=\"llogout.php?webtag=$webtag\" method=\"post\" target=\"_top\">\n";
+echo "<form name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"_top\">\n";
+echo form_input_hidden('webtag', $webtag), "\n";
 echo "<p>{$lang['currentlyloggedinas']} ", user_get_logon(bh_session_get_value('UID')), "</p>\n";
 echo "<p>", form_submit("submit", $lang['logout']), "</p>\n";
 

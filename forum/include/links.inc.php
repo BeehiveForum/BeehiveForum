@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.39 2004-04-24 18:42:30 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.40 2004-04-26 11:21:12 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -143,15 +143,15 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     $link_base = $link_base ? $link_base : "./links.php?webtag=$webtag";
 
     if (strstr($link_base, "?")) {
-        $html = $links ? "<a href=\"$link_base&fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
+        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
     }else {
-        $html = $links ? "<a href=\"$link_base&fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
+        $html = $links ? "<a href=\"$link_base&amp;fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
     }
 
     if (is_array($tree)) {
         while ($val = array_pop($tree)) {
             if (($val != $fid && $links) || $link_last_too) {
-                $html .= "&nbsp;>&nbsp;<a href=\"$link_base&fid=$val\">" . _stripslashes($folders[$val]['NAME']) . "</a>";
+                $html .= "&nbsp;>&nbsp;<a href=\"$link_base&amp;fid=$val\">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             } else {
                 $html .= "&nbsp;>&nbsp;". _stripslashes($folders[$val]['NAME']);
             }

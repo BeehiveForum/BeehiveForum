@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.2 2004-08-17 20:13:49 tribalonline Exp $ */
+/* $Id: forum_links.inc.php,v 1.3 2004-08-24 23:00:39 tribalonline Exp $ */
 
 include_once("./include/lang.inc.php");
 
@@ -49,7 +49,7 @@ function forum_links_draw_dropdown()
 	$html = "";
 	$links = forum_links_get_links();
 	if (count($links) > 1) {
-		$html = "<select name=\"forum_links\" onChange=\"openForumLink(this)\">\n";
+		$html = "<select name=\"forum_links\" onChange=\"openForumLink(this)\" class=\"forumlinks\">\n";
 		for ($i=0; $i<count($links); $i++) {
 			$html .= "<option value=\"".$links[$i]['URI']."\">".$links[$i]['TITLE']."</option>\n";
 		}

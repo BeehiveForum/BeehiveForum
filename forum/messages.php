@@ -34,6 +34,7 @@ require_once("./include/config.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/perm.inc.php");
+require_once("./include/poll.inc.php");
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -88,13 +89,24 @@ echo "</td></tr></table></div>\n";
 if($msg_count > 0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
+    
         if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
         } else {
             $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
         }
-        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true);
-        $last_pid = $message['PID'];
+        
+        if($threaddata['POLL_FLAG'] == 'Y' && $message['PID'] == 1) {
+        
+          poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true);
+          $last_pid = $message['PID'];
+          
+        }else {
+        
+          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true);
+          $last_pid = $message['PID'];
+          
+        }
     }
 }
 

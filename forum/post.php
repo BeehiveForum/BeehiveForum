@@ -57,6 +57,7 @@ require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/poll.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
@@ -422,8 +423,9 @@ if($newthread) {
 
     $reply_message = messages_get($reply_to_tid, $reply_to_pid);
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
+    $threaddata = thread_get($reply_to_tid);
 
-    if (!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") {
+    if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
     
       echo "<h2>Message has been deleted.</h2>\n";
       html_draw_bottom();
@@ -496,8 +498,18 @@ echo "</form>\n";
 if(!$newthread) {
 
     echo "<p>In reply to:</p>\n";
-    message_display(0,$reply_message,0,0,false,false,false);
-    echo "<p>&nbsp;&nbsp;</p>\n";
+
+    if ($threaddata['POLL_FLAG'] == 'Y') {
+    
+      poll_display($reply_to_tid, false, false);
+      
+    }else {
+
+      message_display(0,$reply_message,0,0,false,false,false);
+      
+    }
+    
+    echo "<p>&nbsp;&nbsp;</p>\n";    
     
 }
 

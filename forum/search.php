@@ -84,7 +84,7 @@ if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
 // Base Query - The same for all searches
   
 $basesql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
-$basesql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
+$basesql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST_CONTENT.CONTENT ";
 $basesql.= "FROM ". forum_table("THREAD"). " THREAD ";
 $basesql.= "LEFT JOIN ". forum_table("POST"). " ON (THREAD.TID = POST.TID) ";
 $basesql.= "LEFT JOIN ". forum_table("POST_CONTENT"). " ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
@@ -156,22 +156,15 @@ if (isset($searchsql)) {
       $row = db_fetch_array($result);
       
       $message = messages_get($row['TID'], $row['PID']);
-      $message['CONTENT'] = strip_tags(message_get_content($row['TID'], $row['PID']));
+      $message['CONTENT'] = message_get_content($row['TID'], $row['PID']);
+      $message['CONTENT'] = strip_tags($message['CONTENT']);
       
-      if (strlen($message['CONTENT']) > 100) {
+      if (strlen($message['CONTENT']) > 50) {
       
-        $message['CONTENT'] = substr(strip_tags($message['CONTENT']), 0, 100);
-        $cropto = strrpos($message['CONTENT'], ' ');
-        
-        if ($cropto > 0) {
-        
-          $message['CONTENT'] = substr($message['CONTENT'], 0, $cropto);
-          
-        }
+        $message['CONTENT'] = substr(strip_tags($message['CONTENT']), 0, 50);
+        $message['CONTENT'] = substr($message['CONTENT'], 0, strrpos($message['CONTENT'], ' '));
         
       }
-      
-      $message['CONTENT'] = chunk_split($message['CONTENT'], 25, '<br />');
       
       echo $i + 1, ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
       echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span><br /><br />\n";

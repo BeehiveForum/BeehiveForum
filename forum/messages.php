@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.162 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: messages.php,v 1.163 2004-11-06 12:39:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -194,9 +194,8 @@ if (bh_session_get_value('POSTS_PER_PAGE')) {
     $ppp = 20;
 }
 
-$messages = messages_get($tid, $pid, $ppp);
+if (!$messages = messages_get($tid, $pid, $ppp)) {
 
-if (!$messages) {
    html_draw_top();
    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
    html_draw_bottom();
@@ -204,6 +203,7 @@ if (!$messages) {
 }
 
 if (!$threaddata = thread_get($tid)) {
+
    html_draw_top();
    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
    html_draw_bottom();

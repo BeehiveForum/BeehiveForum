@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.141 2004-11-03 17:32:38 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.142 2004-11-06 12:39:52 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -137,7 +137,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_all);
@@ -178,7 +178,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
@@ -216,7 +216,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "AND POST2.tid = THREAD.tid ";
     $sql .= "AND POST2.pid = 1 ";
     $sql .= "AND POST.tid = THREAD.tid AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread_to_me);
@@ -227,7 +227,6 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 
 function threads_get_by_days($uid,$days = 1) // get threads from the last $days days
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_by_days = db_connect();
 
@@ -258,7 +257,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_by_days);
@@ -269,7 +268,6 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 
 function threads_get_by_interest($uid, $interest = 1) // get messages for $uid by interest (default High Interest)
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_by_interest = db_connect();
 
@@ -298,19 +296,16 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_by_interest);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_unread_by_interest($uid,$interest = 1) // get unread messages for $uid by interest (default High Interest)
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_unread_by_interest = db_connect();
 
@@ -340,18 +335,16 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "AND USER_THREAD.last_read < THREAD.length ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread_by_interest);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_recently_viewed = db_connect();
 
@@ -380,18 +373,16 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_recently_viewed);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0) // get threads started by people of a particular relationship (default friend)
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
 
@@ -420,18 +411,16 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "AND (UP.relationship & $relationship = $relationship)";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_all);
     list($threads, $folder_order) = threads_process_list($resource_id, $relationship == USER_IGNORED_COMPLETELY);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
 
@@ -462,18 +451,16 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_polls($uid, $start = 0)
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_polls = db_connect();
 
@@ -503,18 +490,16 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_polls);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_sticky($uid, $start = 0)
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
 
@@ -545,18 +530,16 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "AND THREAD.sticky = 'Y' ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_all);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_longest_unread($uid) // get unread messages for $uid
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
 
@@ -587,13 +570,12 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql .= "ORDER BY T_LENGTH DESC, THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY T_LENGTH DESC, THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_folder($uid, $fid, $start = 0)
@@ -624,13 +606,12 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_folder);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 function threads_get_most_recent()
@@ -667,7 +648,7 @@ function threads_get_most_recent()
     $sql.= "AND P.PID = 1 ";
     $sql.= "AND (UT.INTEREST IS NULL OR UT.INTEREST > -1) ";
     $sql.= "AND (UF.INTEREST IS NULL OR UF.INTEREST > -1) ";
-    $sql.= "ORDER BY T.MODIFIED desc ";
+    $sql.= "GROUP BY T.TID ORDER BY T.MODIFIED desc ";
     $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_threads_get_recent);
@@ -728,13 +709,12 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
-    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "GROUP BY THREAD.TID ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
-
 }
 
 // Arrange the results of a query into the right order for display

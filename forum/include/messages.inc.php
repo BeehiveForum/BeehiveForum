@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.305 2004-11-05 20:52:49 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.306 2004-11-06 12:39:51 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -62,76 +62,73 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     // Loop through the results and construct an array to return
 
-    if (db_num_rows($resource_id)) {
+    if ($limit > 1) {
 
-        if ($limit > 1) {
+        $messages = array();
 
-            $messages = array();
+        for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
 
-            for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
+            $messages[$i]['FID'] = $message['FID'];
+            $messages[$i]['PID'] = $message['PID'];
+            $messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
+            $messages[$i]['FROM_UID'] = $message['FROM_UID'];
+            $messages[$i]['TO_UID'] = $message['TO_UID'];
+            $messages[$i]['CREATED'] = $message['CREATED'];
+            $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
+            $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
+            $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
+            $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
+            $messages[$i]['CONTENT'] = '';
+            $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
+            $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
 
-                $messages[$i]['FID'] = $message['FID'];
-                $messages[$i]['PID'] = $message['PID'];
-                $messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
-                $messages[$i]['FROM_UID'] = $message['FROM_UID'];
-                $messages[$i]['TO_UID'] = $message['TO_UID'];
-                $messages[$i]['CREATED'] = $message['CREATED'];
-                $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
-                $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
-                $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
-                $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
-                $messages[$i]['CONTENT'] = '';
-                $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
-                $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
+            if (isset($message['FNICK'])) {
 
-                if (isset($message['FNICK'])) {
+                $messages[$i]['FNICK'] = $message['FNICK'];
+                $messages[$i]['FLOGON'] = $message['FLOGON'];
 
-                    $messages[$i]['FNICK'] = $message['FNICK'];
-                    $messages[$i]['FLOGON'] = $message['FLOGON'];
+            }else {
 
-                }else {
-
-                    $messages[$i]['FNICK'] = "Unknown User";
-                    $messages[$i]['FLOGON'] = "Unknown User";
-                    $messages[$i]['FROM_UID'] = -1;
-                }
-
-                if (isset($message['TNICK'])) {
-
-                    $messages[$i]['TNICK'] = $message['TNICK'];
-                    $messages[$i]['TLOGON'] = $message['TLOGON'];
-
-                }else {
-
-                    $messages[$i]['TNICK'] = "ALL";
-                    $messages[$i]['TLOGON'] = "ALL";
-                }
+                $messages[$i]['FNICK'] = "Unknown User";
+                $messages[$i]['FLOGON'] = "Unknown User";
+                $messages[$i]['FROM_UID'] = -1;
             }
 
-        }else {
+            if (isset($message['TNICK'])) {
 
-            $messages = db_fetch_array($resource_id);
+                $messages[$i]['TNICK'] = $message['TNICK'];
+                $messages[$i]['TLOGON'] = $message['TLOGON'];
 
-            if (!isset($messages['VIEWED'])) {
+            }else {
 
-                $messages['VIEWED'] = '';
+                $messages[$i]['TNICK'] = "ALL";
+                $messages[$i]['TLOGON'] = "ALL";
             }
+        }
 
-            if (!isset($messages['FROM_RELATIONSHIP'])) {
+    }else {
 
-                $messages['FROM_RELATIONSHIP'] = 0;
-            }
+        $messages = db_fetch_array($resource_id);
 
-            if (!isset($messages['TO_RELATIONSHIP'])){
+        if (!isset($messages['VIEWED'])) {
 
-                $messages['TO_RELATIONSHIP'] = 0;
-            }
+            $messages['VIEWED'] = '';
+        }
 
-            if(!isset($messages['TNICK'])){
+        if (!isset($messages['FROM_RELATIONSHIP'])) {
 
-                $messages['TNICK'] = 'ALL';
-                $messages['TLOGON'] = 'ALL';
-            }
+            $messages['FROM_RELATIONSHIP'] = 0;
+        }
+
+        if (!isset($messages['TO_RELATIONSHIP'])){
+
+            $messages['TO_RELATIONSHIP'] = 0;
+        }
+
+        if(!isset($messages['TNICK'])){
+
+            $messages['TNICK'] = 'ALL';
+            $messages['TLOGON'] = 'ALL';
         }
     }
 
@@ -557,9 +554,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=", $message['FROM_UID'], "&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['relationship']}\" /></a>&nbsp;";
             }
 
-            if (perm_is_moderator($message['FID'])){
+            if (perm_is_moderator($message['FID'])) {
 
-                echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" /></a>&nbsp;";
+                if (perm_has_admin_access()) {
+
+                    echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" /></a>&nbsp;";
+                }
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
                     echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";

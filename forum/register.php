@@ -139,63 +139,76 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           bh_session_init($new_uid);
 
-          if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
+  	  // Retrieve existing cookie data
 
-            if (is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
+          if (is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
 
-              $usernames = $HTTP_COOKIE_VARS['bh_remember_user'];
-              $passwords = $HTTP_COOKIE_VARS['bh_remember_password'];
-
-            }else {
-
-              $usernames = array(0 => $HTTP_COOKIE_VARS['bh_remember_user']);
-              $passwords = array(0 => $HTTP_COOKIE_VARS['bh_remember_password']);
-
-            }
+            $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
+            $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
+	    $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
 
           }else {
 
-            $usernames = array();
-            $passwords = array();
+            $username_array = array();
+            $password_array = array();
+	    $passhash_array = array();
 
           }
 
-  	  if (!is_array($usernames)) $usernames = array();
-	  if (!is_array($passwords)) $passwords = array();
+	  // Prepare Form Data
 
-          if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
+	  $logon = _stripslashes($HTTP_POST_VARS['logon']);
+	  $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['pw'])));
+	  $passh = md5(_stripslashes($HTTP_POST_VARS['pw']));
 
-            array_unshift($usernames, $HTTP_POST_VARS['logon']);
+	  // Check to see if Form Data already exists in cookie
 
-	    if(isset($HTTP_POST_VARS['remember_user'])) {
-	      array_unshift($passwords, $HTTP_POST_VARS['pw']);
-            }else {
-	      array_unshift($passwords, str_repeat(chr(255), 4));
-            }
+          if (!in_array($logon, $username_array)) {
+
+            array_unshift($username_array, $logon);
+
+	    if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+	      array_unshift($password_array, $passw);
+	      array_unshift($passhash_array, $passh);
+	    }else {
+	      array_unshift($password_array, str_repeat(chr(255), 4));
+	      array_unshift($passhash_array, str_repeat(chr(255), 4));
+	    }
 
           }else {
 
-            if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
+	    if (($key = array_search($logon, $username_array)) !== false) {
 
-	      array_splice($usernames, $key, 1);
-	      array_splice($passwords, $key, 1);
+	      $uncookie = array_splice($username_array, $key, 1);
+	      $pwcookie = array_splice($password_array, $key, 1);
+	      $phcookie = array_splice($passhash_array, $key, 1);
 
-              array_unshift($usernames, $HTTP_POST_VARS['logon']);
+              array_unshift($username_array, $uncookie[0]);
 
-              if(isset($HTTP_POST_VARS['remember_user'])) {
-	        array_unshift($passwords, $HTTP_POST_VARS['pw']);
+              if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+	        if ($pwcookie[0] == str_repeat(chr(255), 4)) {
+	          array_unshift($password_array, $passw);
+	          array_unshift($passhash_array, $passh);
+	        }else {
+  	          array_unshift($password_array, $pwcookie[0]);
+	          array_unshift($passhash_array, $phcookie[0]);
+	        }
 	      }else {
-	        array_unshift($passwords, str_repeat(chr(255), 4));
+	        array_unshift($password_array, str_repeat(chr(255), 4));
+	        array_unshift($passhash_array, str_repeat(chr(255), 4));
 	      }
 
-	    }
+  	    }
 
 	  }
 
-          for ($i = 0; $i < sizeof($usernames); $i++) {
+	  // Set the cookies
 
-            setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-            setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+          for ($i = 0; $i < sizeof($username_array); $i++) {
+
+            setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+	    setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
           }
 

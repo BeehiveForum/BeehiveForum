@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.115 2004-05-09 18:55:18 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.116 2004-05-12 23:51:00 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -705,6 +705,8 @@ function threads_process_list($resource_id)
         for($i = 0; $i < $max; $i++){
 
             $thread = db_fetch_array($resource_id);
+
+            if (!isset($thread['relationship'])) $thread['relationship'] = 0;
 
             // If this folder ID has not been encountered before,
             // make it the next folder in the order to be displayed

@@ -269,26 +269,32 @@ function threads_get_folder($uid, $fid, $start = 0)
 
 function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
 {
-    
-    if (db_num_rows($resource_id)) { // check that the set of threads returned is not empty
-    
+
+    $max = db_num_rows($resource_id);
+
+    if($max){ // check that the set of threads returned is not empty
+
         // If the user has clicked on a folder header, we want that folder to be first in the list
-        
-	global $HTTP_GET_VARS;
-	
-	if (isset($HTTP_GET_VARS['folder'])) $folder_order[] = $HTTP_GET_VARS['folder'];
 
-	// Loop through the results and construct an array to return
-	
-    	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
-    	
-	    $thread = db_fetch_array($resource_id);
+    	global $HTTP_GET_VARS;
 
-	    // If this folder ID has not been encountered before, make it the next folder in the order to be displayed
-	    if (!isset($folder_order)) {
+    	if(isset($HTTP_GET_VARS['folder'])){
+            $folder_order[] = $HTTP_GET_VARS['folder'];
+        }
+
+    	// Loop through the results and construct an array to return
+
+       	for($i = 0; $i < $max; $i++){
+
+    	    $thread = db_fetch_array($resource_id);
+
+    	    // If this folder ID has not been encountered before, make it the next folder in the order to be displayed
+    	    if(!isset($folder_order)){
                 $folder_order[] = $thread['fid'];
             }else{
-                if (!in_array($thread['fid'], $folder_order)) $folder_order[] = $thread['fid'];
+                if(!in_array($thread['fid'], $folder_order)){
+                    $folder_order[] = $thread['fid'];
+                }
             }
 
             $lst[$i]['tid'] = $thread['tid'];
@@ -306,24 +312,23 @@ function threads_process_list($resource_id) // Arrange the results of a query in
             $lst[$i]['modified'] = $thread['modified'];
 
         }
-        
+
     }else{ // special case - no threads returned, but we have to return something
         $lst = 0;
         $folder_order = 0;
     }
-    
+
     return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
-    
+
 }
 
 function threads_get_folder_msgs()
 {
 	$db_threads_get_folder_msgs = db_connect();
-    	$sql = "SELECT ".forum_table("FOLDER").".fid, COUNT(".forum_table("THREAD").".fid) AS total FROM ".forum_table("FOLDER")." LEFT JOIN ".forum_table("THREAD")." ON ".forum_table("FOLDER").".fid = ".forum_table("THREAD").".fid GROUP BY ".forum_table("FOLDER").".fid";
+	$sql = 'SELECT FID, COUNT(*) AS TOTAL FROM '.forum_table('THREAD').' GROUP BY FID';
 	$resource_id = db_query($sql, $db_threads_get_folder_msgs);
-	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
-		$folder = db_fetch_array($resource_id);
-		$folder_msgs[$folder['fid']] = $folder['total'];
+	while($folder = db_fetch_array($resource_id)){
+		$folder_msgs[$folder['FID']] = $folder['TOTAL'];
 	}
 	return $folder_msgs;
 }
@@ -332,16 +337,16 @@ function threads_any_unread()
 {
     global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    
+
     $sql = "select * from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
-    $sql.= "on (T.TID = UT.TID and UT.UID = $uid) ";
+    $sql.= "on (T.TID = UT.TID and UT.UID = '$uid') ";
     $sql.= "where T.LENGTH > UT.LAST_READ ";
     $sql.= "limit 0,1";
-    
+
     $db_threads_any_unread = db_connect();
     $result = db_query($sql, $db_threads_any_unread);
     $return = (db_num_rows($result) > 0);
-    
+
     return $return;
 }
 
@@ -352,7 +357,7 @@ function threads_mark_all_read()
 
     $sql = "select T.TID, T.LENGTH, UT.LAST_READ ";
     $sql.= "from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
-    $sql.= "on (UT.TID = T.TID and UT.UID = $uid) ";
+    $sql.= "on (UT.TID = T.TID and UT.UID = '$uid') ";
     $sql.= "where T.LENGTH > UT.LAST_READ";
 
     $db_threads_mark_all_read = db_connect();
@@ -372,7 +377,7 @@ function threads_mark_all_read()
         }
         db_query($sql, $db_threads_mark_all_read);
     }
-    
+
 }
 
 ?>

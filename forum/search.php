@@ -145,17 +145,18 @@ if (isset($searchsql)) {
       $row = db_fetch_array($result);
       
       $message = messages_get($row['TID'], $row['PID']);
-      $message[0]['CONTENT'] = strip_tags($message[0]['CONTENT']);
+      $message['CONTENT'] = message_get_content($row['TID'], $row['PID']);
+      $message['CONTENT'] = strip_tags($message['CONTENT']);
       
-      if (strlen($message[0]['CONTENT']) > 50) {
+      if (strlen($message['CONTENT']) > 50) {
       
-        $message[0]['CONTENT'] = substr(strip_tags($message[0]['CONTENT']), 0, 50);
-        $message[0]['CONTENT'] = substr($message[0]['CONTENT'], 0, strrpos($message[0]['CONTENT'], ' '));
+        $message['CONTENT'] = substr(strip_tags($message['CONTENT']), 0, 50);
+        $message['CONTENT'] = substr($message['CONTENT'], 0, strrpos($message['CONTENT'], ' '));
         
       }
       
-      echo $i + 1, ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message[0]['CONTENT'], "</a><br />\n";
-      echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message[0]['FLOGON'], $message[0]['FNICK']). ", ". format_time($message[0]['CREATED'], 1). "</span><br /><br />\n";
+      echo $i + 1, ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
+      echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span><br /><br />\n";
       
     }
     

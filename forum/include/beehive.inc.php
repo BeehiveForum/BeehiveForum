@@ -23,11 +23,13 @@ USA
 
 function draw_beehive_bar()
 {
-    echo "<div align=\"center\"><table width=\"96%\" class=\"posthead\"><tr>\n";
-    echo "<td width=\"75%\" class=\"smalltext\">Beehive Forum 0.1 | FAQ | Docs | Support</td>";
-    echo "<td width=\"25%\" align=\"right\" class=\"smalltext\">\n&copy;2002 ";
-    echo "<a href=\"http://beehiveforum.sourceforge.net/\" target=\"_blank\">";
-    echo "Project BeehiveForum</a></td></tr></table></div>";
+?>
+<div align="center"><table width="96%" class="posthead"><tr>
+<td width="60%" class="smalltext">Beehive Forum 0.1.2 | FAQ | Docs | Support</td>
+<td width="40%" align="right" class="smalltext">&copy;2002
+<a href="http://beehiveforum.sourceforge.net/" target="_blank">Project BeehiveForum</a>
+</td></tr></table></div>
+<?php
 }
 
 ?>

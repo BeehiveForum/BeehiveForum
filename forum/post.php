@@ -57,6 +57,12 @@ if(isset($HTTP_POST_VARS['t_newthread'])){
         $error_html = "<h2>Please select a folder</h2>";
         $valid = false;
     }
+    if(isset($HTTP_POST_VARS['t_content'])){
+        $t_content = $HTTP_POST_VARS['t_content'];
+    } else {
+        $error_html = "<h2>You must enter some content for the post</h2>";
+        $valid = false;
+    }    
 } else {
     if(isset($HTTP_POST_VARS['t_tid'])){
         if(isset($HTTP_POST_VARS['t_content'])){
@@ -194,7 +200,9 @@ if($newthread){
     echo "<tr><td>Select folder:</td></tr>";
     echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>";
     echo "<tr><td>Thread title:</td></tr>";
-    echo "<tr><td><input type=\"text\" name=\"t_threadtitle\" maxchars=\"64\" width=\"64\">";
+    echo "<tr><td><input type=\"text\" name=\"t_threadtitle\" maxchars=\"64\" width=\"64\" value=\"";
+    if (isset($t_threadtitle)) echo stripslashes(htmlentities($t_threadtitle));
+    echo "\">";
     echo "<input type=\"hidden\" name=\"t_newthread\" value=\"Y\"></td></tr>";
     echo "</table>";
 } else {
@@ -213,7 +221,7 @@ if(isset($t_content)){
     if($t_post_html == "Y"){
         echo stripslashes(htmlentities($t_content));
     } else {
-        echo $t_content;
+        echo stripslashes($t_content);
     }
 }
 echo "</textarea></td></tr>";
@@ -236,4 +244,3 @@ if(!$newthread){
 }
 html_draw_bottom();
 ?>
-

@@ -43,9 +43,9 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 $valid = true;
 
 if(isset($HTTP_POST_VARS['logon'])){
-    $login = $HTTP_POST_VARS['logon'];
+    $logon = $HTTP_POST_VARS['logon'];
 } else {
-    $login = "";
+    $logon = "";
     $valid = false;
 }
 
@@ -147,4 +147,3 @@ if($valid){
 
 html_draw_bottom();
 ?>
-

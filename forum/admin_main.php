@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.32 2004-04-10 16:34:59 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.33 2004-04-10 21:27:43 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -78,9 +78,7 @@ if (!$user_sess = bh_session_check()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag()) {
-    header_redirect("./admin_forums.php");
-}
+$webtag = get_webtag();
 
 // We got this far we should now read the forum settings
 
@@ -108,6 +106,8 @@ echo "<p>{$lang['adminexp_5']}</p>\n";
 echo "<p>{$lang['adminexp_6']}</p>\n";
 echo "<p>{$lang['adminexp_7']}</p>\n";
 echo "<p>{$lang['adminexp_8']}</p>\n";
+echo "<p>{$lang['adminexp_9']}</p>\n";
+echo "<p>{$lang['adminexp_10']}</p>\n";
 
 html_draw_bottom();
 

@@ -73,7 +73,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 
     if ($forums_array = get_my_forums()) {
 
-        echo "<h1>My Forums</h1>\n";
+        echo "<h1>{$lang['myforums']}</h1>\n";
         echo "<br>\n";
         echo "<div align=\"center\">\n";
         echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
@@ -88,8 +88,8 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "            <td class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;Favourite Forums:</td>\n";
-            echo "                  <td class=\"subhead\">&nbsp;Last Visited</td>\n";
+            echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;{$lang['favouriteforums']}:</td>\n";
+            echo "                  <td class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
             foreach ($forums_array['FAVOURITES'] as $forum) {
@@ -108,9 +108,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
 
 	        if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} {$lang['newmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
 	        }else {
-                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages</a></td>\n";
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} {$lang['newmessages']}</a></td>\n";
                 }
   
                 echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
@@ -130,7 +130,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "      <td>&nbsp;</td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
-            echo "      <td align=\"right\">", form_submit("submit", "Remove From Favourites"), "</td>\n";
+            echo "      <td align=\"right\">", form_submit("submit", $lang['removefromfavourites']), "</td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
             echo "  <br />\n";
@@ -146,8 +146,8 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "            <td class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;Available Forums:</td>\n";
-            echo "                  <td class=\"subhead\">&nbsp;Last Visited</td>\n";
+            echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;{$lang['availableforums']}:</td>\n";
+            echo "                  <td class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
             foreach ($forums_array['FORUMS'] as $forum) {
@@ -166,9 +166,10 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
 
                 if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} {$lang['newmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
                 }else {
-                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} New Messages</a></td>\n";	}
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['NEW_MESSAGES']} {$lang['newmessages']}</a></td>\n";
+                }
   
                 echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
                 echo "                </tr>\n";
@@ -187,7 +188,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "      <td>&nbsp;</td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
-            echo "      <td align=\"right\">", form_submit("submit", "Add To Favourites"), "</td>\n";
+            echo "      <td align=\"right\">", form_submit("submit", $lang['addtofavourites']), "</td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
         }
@@ -197,51 +198,58 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 
     }else {
 
-        echo "<h1>My Forums</h1>\n";
+        echo "<h1>{$lang['myforums']}</h1>\n";
         echo "<br>\n";
-        echo "<h2>There are no forums available.</h2>\n";
+        echo "<h2>{$lang['noforumsavailable']}.</h2>\n";
     }
 
 }else {
 
-    $forums_array = get_forum_list();
+    if ($forums_array = get_forum_list()) {
 
-    echo "<h1>Available Forums</h1>\n";
-    echo "<br>\n";
-    echo "<div align=\"center\">\n";
-    echo "<table width=\"90%\" border=\"1\" class=\"box\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"posthead\">\n";
-    echo "      <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" class=\"posthead\">\n";
-    echo "        <tr class=\"subhead\">\n";
-    echo "          <td colspan=\"3\">Available Forums:</td>\n";
-    echo "          <td>&nbsp;</td>\n";
-    echo "        </tr>\n";
+        echo "<h1>{$lang['availableforums']}</h1>\n";
+        echo "<br>\n";
+        echo "<div align=\"center\">\n";
+        echo "<table width=\"90%\" border=\"1\" class=\"box\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"posthead\">\n";
+        echo "      <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" class=\"posthead\">\n";
+        echo "        <tr class=\"subhead\">\n";
+        echo "          <td colspan=\"3\">{$lang['availableforums']}:</td>\n";
+        echo "          <td>&nbsp;</td>\n";
+        echo "        </tr>\n";
 
-    foreach ($forums_array as $forum) {
+        foreach ($forums_array as $forum) {
     
-        echo "        <tr>\n";
-        echo "          <td width=\"25%\">\n";
-        echo "            <a href=\"#\">[?]</a>&nbsp;";
+            echo "        <tr>\n";
+            echo "          <td width=\"25%\">\n";
+            echo "            <a href=\"#\">[?]</a>&nbsp;";
 
-        if (isset($HTTP_GET_VARS['final_uri'])) {
-            echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
-        }else {
-            echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+            if (isset($HTTP_GET_VARS['final_uri'])) {
+                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
+            }else {
+                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+            }
+
+            echo "          </td>\n";
+            echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
+            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} {$lang['messages']}</a></td>\n";
+            echo "          <td width=\"20%\">&nbsp;</td>\n";
+            echo "        </tr>\n";
         }
 
-        echo "          </td>\n";
-        echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
-        echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} Messages</a></td>\n";
-        echo "          <td width=\"20%\">&nbsp;</td>\n";
-        echo "        </tr>\n";
-    }
+        echo "      </table>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+        echo "</div>\n";
 
-    echo "      </table>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "</div>\n";
+    }else {
+
+        echo "<h1>{$lang['availableforums']}</h1>\n";
+        echo "<br>\n";
+        echo "<h2>{$lang['noforumsavailablelogin']}</h2>\n";
+    }
 }
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.41 2004-04-10 16:35:00 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.42 2004-04-10 21:27:43 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -117,16 +117,12 @@ if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_forums.php\" target=\"right\">{$lang['manageforums']}</a></td>\n";
     echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['forumsettings']}</a></td>\n";
+    echo "  </tr>\n";
 }
 
 if ($webtag) {
-
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
-
-        echo "  <tr>\n";
-        echo "    <td class=\"postbody\"><a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['forumsettings']}</a></td>\n";
-        echo "  </tr>\n";
-    }
 
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"right\">{$lang['profiles']}</a></td>\n";

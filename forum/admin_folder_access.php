@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.3 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: admin_folder_access.php,v 1.4 2003-07-30 19:53:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -54,7 +54,7 @@ require_once("./include/post.inc.php");
 
 html_draw_top();
 
-if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
+if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -81,13 +81,15 @@ if ($folder_array['ACCESS_LEVEL'] < 1) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['search'])) {
-    if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
-        $usersearch = $HTTP_POST_VARS['usersearch'];
-    }else {
-        $usersearch = '';
-    }
+if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
+    $usersearch = trim($HTTP_POST_VARS['usersearch']);
 }else {
+    $usersearch = '';
+}
+
+// Clear the search results?
+
+if (isset($HTTP_POST_VARS['clear'])) {
     $usersearch = '';
 }
 
@@ -134,7 +136,7 @@ if ($user_array = folder_get_permissions($fid)) {
     echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_submit('remove_user', $lang['remove']), "</td>\n";
+    echo "          <td align=\"center\">", form_submit('remove_user', $lang['remove']), "</td>\n";
     echo "        </tr>\n";
 }else {
         echo "        <tr>\n";
@@ -146,26 +148,20 @@ echo "        <tr>\n";
 echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "        </tr>\n";
 
-if (isset($HTTP_POST_VARS['search'])) {
+if (strlen($usersearch) > 0) {
 
     echo "        <tr>\n";
     echo "          <td class=\"subhead\" align=\"left\">{$lang['searchresults']}</td>\n";
     echo "        </tr>\n";
 
-    $db = db_connect();
+    if ($user_search_array = user_search($usersearch)) {
 
-    $sql = "SELECT UID, LOGON, NICKNAME, ";
-    $sql.= "LOGON_FROM FROM " . forum_table("USER") . " WHERE LOGON LIKE '%$usersearch%' ";
-    $sql.= "OR NICKNAME LIKE '%$usersearch%' LIMIT 0, 20";
-
-    $result = db_query($sql, $db);
-
-    if (db_num_rows($result)) {
-        while($user_search_array = db_fetch_array($result)) {
+        foreach ($user_search_array as $user_search) {
             echo "        <tr>\n";
-            echo "          <td align=\"left\">", form_checkbox("user_add[]", $user_array['UID'], ''), "&nbsp;", format_user_name($user_search_array['LOGON'], $user_search_array['NICKNAME']), "</td>\n";
+            echo "          <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</td>\n";
             echo "        </tr>\n";
         }
+
         echo "        <tr>\n";
         echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
         echo "        </tr>\n";
@@ -205,8 +201,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<p>&nbsp;</p>\n";
-echo form_button("back", "Back", "onclick=\"document.location.href='admin_folders.php'\""), "\n";
+echo "<p>", form_button("back", "Back", "onclick=\"document.location.href='admin_folders.php'\""), "</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 

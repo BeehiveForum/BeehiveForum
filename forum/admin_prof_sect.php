@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.22 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.23 2003-07-30 19:53:13 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -91,8 +91,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }elseif (isset($HTTP_POST_VARS['t_delete'])) {
 
     list($psid) = array_keys($HTTP_POST_VARS['t_delete']);
-    $sql = "delete from ". forum_table("PROFILE_SECTION"). " where PSID = $psid";
-    $result = db_query($sql, $db);
+    profile_section_delete($psid);
     admin_addlog(0, 0, 0, 0, 0, $psid, 15);
 
 }

@@ -82,12 +82,13 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
   $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
   $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : ""; 
-  $t_message_html = (isset($HTTP_POST_VARS['t_message_html'])) ? $HTTP_POST_VARS['t_message_html'] : "";
   $t_message_text = (isset($HTTP_POST_VARS['t_message_text'])) ? $HTTP_POST_VARS['t_message_text'] : "";
 
 }
 
-if($valid) {
+$t_message_html = (isset($HTTP_POST_VARS['t_message_html'])) ? $HTTP_POST_VARS['t_message_html'] : "";
+
+if ($valid) {
 
     if($t_message_html == "Y") {
         $t_message_text = fix_html($t_message_text);
@@ -154,7 +155,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     // Check HTML tick box, innit.
 
     for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
-      if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
+      if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
         $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
       }else {
         $HTTP_POST_VARS['answers'][$i] = make_html($HTTP_POST_VARS['answers'][$i]);
@@ -313,6 +314,14 @@ if(!isset($t_sig) || !$t_sig) {
 if($t_message_html != "Y") $t_message_text = isset($t_message_text) ? _stripslashes($t_message_text) : "";
 if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
 
+if (isset($HTTP_GET_VARS['fid'])) {
+    $t_fid = $HTTP_GET_VARS['fid'];
+}elseif(isset($HTTP_POST_VARS['t_fid'])) {
+    $t_fid = $HTTP_POST_VARS['t_fid'];
+}else {
+    $t_fid = 1;
+}
+
 ?>
   <table border="0" cellpadding="0" cellspacing="0" width="500">
     <tr>
@@ -325,7 +334,7 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
       <td><h2>Poll Question</h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])), 30, 64); ?></td>
+      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?></td>
     </tr>
     <tr>
       <td>&nbsp;</td>
@@ -369,7 +378,7 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
 
 		    echo "<tr>\n";
                     echo "  <td>", $i + 1, ". </td>\n";
-                    echo "  <td>", form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 64), "</td>\n";
+                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 64), "</td>\n";
 		    echo "</tr>\n";
 
 		  }
@@ -377,7 +386,7 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
 		?>
 		<tr>
                   <td>&nbsp;</td>
-		  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", ($HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+		  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
                 </tr>
 	      </table>
 	    </td>
@@ -464,7 +473,7 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
             <td>Signature:<br /><?php echo form_textarea("t_sig", htmlspecialchars($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>
           </tr>
           <tr>
-            <td><?php echo form_checkbox("t_message_html", "Y", "Message Contain HTML (not including signature)", ($HTTP_POST_VARS['t_message_html'] == "Y")); ?></td>
+            <td><?php echo form_checkbox("t_message_html", "Y", "Message Contain HTML (not including signature)", (isset($HTTP_POST_VARS['t_message_html']) && $HTTP_POST_VARS['t_message_html'] == "Y")); ?></td>
           </tr>
         </table>
       </td>

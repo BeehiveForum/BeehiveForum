@@ -490,7 +490,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit','Post', 'onclick="if (typeof attachwin != \'undefined\') attachwin.close();"');
+echo form_submit('submit','Post', 'onclick="if (attachwin != null) attachwin.close();"');
 echo "&nbsp;".form_submit('preview', 'Preview');
 echo "&nbsp;".form_submit('cancel', 'Cancel');
 

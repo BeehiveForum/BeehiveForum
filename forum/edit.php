@@ -281,7 +281,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit', 'Apply', 'onclick="if (typeof attachwin != \'undefined\') attachwin.close();"'). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel",  "Cancel");
+echo form_submit('submit', 'Apply', 'onclick="if (attachwin != null) attachwin.close();"'). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel",  "Cancel");
 
 if ($edit_html) {
     echo "&nbsp;".form_submit("b_edit_text", "Edit text");

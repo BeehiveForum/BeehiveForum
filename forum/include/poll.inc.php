@@ -137,6 +137,8 @@ function poll_get_votes($tid)
     $sql = "select OPTION_ID, OPTION_NAME, VOTES from ". forum_table('POLL_VOTES'). " where TID = $tid";
     $result = db_query($sql, $db_poll_get_votes);
 
+    $pollresults = array();
+
     while($row = db_fetch_array($result)) {
       $pollresults[$row['OPTION_ID']] = array('OPTION_ID'   => $row['OPTION_ID'],
                                               'OPTION_NAME' => $row['OPTION_NAME'],

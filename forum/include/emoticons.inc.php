@@ -76,9 +76,10 @@ function emoticons_convert ($content) {
 	if (!is_array($emoticon)) return $content;
 
 	foreach ($emoticon as $k => $v) {
-		$pattern_array[] = "/". preg_quote(_htmlentities($k), "/"). "/i";
+		$pattern_array[] = "/\B(". preg_quote(_htmlentities($k), "/"). ")\B/i";
 		$replace_array[] = "<span class=\"e_$v\" title=\"$v\"><span>$k</span></span>";
 	}
+
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
 		return $new_content;
 	}

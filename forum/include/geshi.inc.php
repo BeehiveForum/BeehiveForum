@@ -61,23 +61,23 @@ if (file_exists('./geshi/geshi.php')) {
         var $source = '';
 
         function fake_geshi() {
-
             return;
         }
 
         function set_source($source) {
-
             $this->source = $source;
         }
 
         function set_language($lang) {
-
             return;
         }
 
         function parse_code() {
-
             return _htmlentities($this->source);
+        }
+
+        function get_language_name_from_extension() {
+            return;
         }
     }
 

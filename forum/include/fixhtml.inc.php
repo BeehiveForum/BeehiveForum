@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.98 2005-04-03 01:27:14 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.99 2005-04-03 15:34:53 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "geshi.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
@@ -113,8 +113,14 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $html_parts[$j] = "/pre";
 
-                                        $code_highlighter->set_source($tmpcode);
-                                        $code_highlighter->set_language(strtolower($lang));
+                                        $code_highlighter->set_source(utf8_decode($tmpcode));
+
+                                        $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
+                                        if (strlen($lang_geshi) > 0) {
+                                            $code_highlighter->set_language($lang_geshi);
+                                        } else {
+                                            $code_highlighter->set_language(strtolower($lang));
+                                        }
 
                                         // preg_replace for the HTML geshi wraps it's output with by default
                                         $tmpcode = preg_replace("/(^<pre>)|(\s*(&nbsp;)?<\/pre>$)/", "", $code_highlighter->parse_code());
@@ -970,7 +976,9 @@ function tidy_html_callback($matches)
     $lang = "";
 
    // if (isset($matches[1])) $lang = substr($matches[1], 1);
-
+//echo "<xmp>";
+//print_r(get_html_translation_table (HTML_ENTITIES));
+//echo "</xmp>";
     return "<code language=\"{$matches[1]}\">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
 }
 

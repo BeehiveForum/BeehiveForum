@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.77 2004-08-14 15:11:44 hodcroftcj Exp $ */
+/* $Id: forum.inc.php,v 1.78 2004-08-15 16:23:07 hodcroftcj Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -785,7 +785,7 @@ function forum_create($webtag, $forum_name, $access)
 		$sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
 		$sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
 		$sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
-		$sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
+		$sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0',";
 		$sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 		$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 		$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";

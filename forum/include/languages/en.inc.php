@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.167 2004-09-02 21:16:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.168 2004-09-03 19:56:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -856,6 +856,7 @@ $lang['nouserspecified'] = "No user specified.";
 $lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your Inbox now?";
 $lang['oldermessages'] = "Older Messages";
 $lang['newermessages'] = "Newer Messages";
+$lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 

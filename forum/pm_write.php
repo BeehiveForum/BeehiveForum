@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.87 2004-08-15 01:10:35 tribalonline Exp $ */
+/* $Id: pm_write.php,v 1.88 2004-09-03 19:56:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -200,29 +200,34 @@ $valid = true;
 // User clicked the emoticon panel toggle button
 
 if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
+
     if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
         $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
     }
+
     if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
         $t_content = trim(_stripslashes($_POST['t_content']));
     }
+
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
         $to_radio = $_POST['to_radio'];
     }else {
         $to_radio = 1;
     }
+
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
         $t_to_uid = $_POST['t_to_uid'];
     }else {
         $t_to_uid = 0;
     }
+
     if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
-		$t_recipient_list = $_POST['t_recipient_list'];
-	}
+        $t_recipient_list = $_POST['t_recipient_list'];
+    }
 
-	$page_prefs ^= POST_EMOTICONS_DISPLAY;
+    $page_prefs ^= POST_EMOTICONS_DISPLAY;
 
-	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+    user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 }
 
 // User clicked the submit button - check the data that was submitted
@@ -292,7 +297,17 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
                             $valid = false;
                         }
 
-                        if (pm_get_free_space($to_user['UID']) < (strlen(trim($t_subject)) + strlen(trim($t_content)))) {
+                        $uid = bh_session_get_value('UID');
+
+                        $user_prefs = user_get_prefs($uid);
+
+                        if ((pm_get_free_space($uid) < 1) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+
+                            $error_html.= "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
+                            $valid = false;
+                        }
+
+                        if (pm_get_free_space($to_user['UID']) < 1) {
 
                             $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
                             $valid = false;
@@ -339,7 +354,7 @@ if (isset($_POST['t_post_emots'])) {
                 $emots_enabled = true;
         }
 } else {
-		$emots_enabled = true;
+                $emots_enabled = true;
 }
 if (isset($_POST['t_post_links'])) {
         if ($_POST['t_post_links'] == "enabled") {
@@ -348,7 +363,7 @@ if (isset($_POST['t_post_links'])) {
                 $links_enabled = false;
         }
 } else {
-		$links_enabled = false;
+                $links_enabled = false;
 }
 
 $post_html = 0;
@@ -365,16 +380,16 @@ if (isset($_POST['t_post_html'])) {
 
 } else {
 
-	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-		$post_html = 1;
-	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
+        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+                $post_html = 1;
+        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
 
-	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-	$links_enabled = ($page_prefs & POST_AUTO_LINKS);
+        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+        $links_enabled = ($page_prefs & POST_AUTO_LINKS);
 }
 
 if (!isset($t_content)) $t_content = "";
@@ -579,10 +594,10 @@ $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
-		echo "        <tr>\n";
-		echo "          <td>&nbsp;</td>\n";
-		echo "        </tr>\n";
-		echo "        <tr>\n";
+                echo "        <tr>\n";
+                echo "          <td>&nbsp;</td>\n";
+                echo "        </tr>\n";
+                echo "        <tr>\n";
         echo "          <td><table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "            <tr>\n";
         echo "              <td class=\"subhead\">\n";
@@ -603,7 +618,7 @@ if ($emot_prev != "") {
         echo "              </td>\n";
         echo "            </tr>\n";
         echo "          </table></td>\n";
-		echo "        </tr>\n";
+                echo "        </tr>\n";
 }
 
 echo "      </table>\n";

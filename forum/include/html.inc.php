@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.158 2005-03-29 10:47:33 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.159 2005-04-05 02:10:46 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
@@ -392,7 +393,11 @@ function html_draw_top()
 
     foreach($arg_array as $func_args) {
 
-        if (@is_dir("./js/") && file_exists("./js/$func_args")) {
+        if ($func_args == "htmltools.js" && @file_exists("./tiny_mce/tiny_mce.js")) {
+
+            echo TinyMCE();
+
+        } else if (@is_dir("./js/") && @file_exists("./js/$func_args")) {
 
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\"></script>\n";
         }

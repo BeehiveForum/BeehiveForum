@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.213 2004-01-07 20:11:43 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.214 2004-01-08 20:17:45 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -1039,33 +1039,6 @@ function messages_forum_stats($tid, $pid)
             echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
-
-            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "          <tr>\n";
-            echo "            <td width=\"35\">&nbsp;</td>\n";
-            echo "            <td>Queries used to display this page: <b>$bh_query_count</b></td>\n";
-            echo "            <td width=\"35\">&nbsp;</td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-            echo "          <tr>\n";
-            echo "            <td width=\"35\">&nbsp;</td>\n";
-            echo "            <td>GZIP Compression Status: <b>", ($gzip_compress_state) ? "Enabled" : "Disabled", "</b></td>\n";
-            echo "            <td width=\"35\">&nbsp;</td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-
-	    if ($gzip_compress_state) {
-
-                echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                echo "          <tr>\n";
-                echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>GZIP Compression Level: <b>$gzip_compress_level</b></td>\n";
-                echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
-	    }
-
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";

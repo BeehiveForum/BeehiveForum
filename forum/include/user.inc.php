@@ -60,7 +60,7 @@ function user_update($uid,$password,$nickname,$email)
         $bit = "PASSWD = \"" . md5($password) . "\", ";
     }
 
-    $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"$nickname\", EMAIL = \"$email\"";
+    $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"". htmlspecialchars($nickname). "\", EMAIL = \"". htmlspecialchars($email). "\"";
     $sql .= " WHERE UID = $uid";
     
     //echo $sql;
@@ -186,8 +186,9 @@ function user_insert_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
     $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE)";
-    $sql .= " values ($uid, \"$firstname\", \"$lastname\", \"$homepage_url\", \"$pic_url\",";
-    $sql .= " \"$email_notify\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page)";
+    $sql .= " values ($uid, \"". htmlspecialchars($firstname). "\", \"". htmlspecialchars($lastname). "\",";
+    $sql .= " \"". htmlspecialchars($homepage_url). "\", \"". htmlspecialchars($pic_url). "\",";
+    $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page)";
 
     $result = db_query($sql, $db_user_insert_prefs);
 
@@ -201,9 +202,9 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
     $db_user_update_prefs = db_connect();
 
     $sql = "update " . forum_table("USER_PREFS") . " set";
-    $sql .= " FIRSTNAME = \"$firstname\", LASTNAME = \"$lastname\",";
-    $sql .= " HOMEPAGE_URL = \"$homepage_url\", PIC_URL = \"$pic_url\",";
-    $sql .= " EMAIL_NOTIFY = \"$email_notify\", TIMEZONE = $timezone, DL_SAVING = \"$dl_saving\",";
+    $sql .= " FIRSTNAME = \"". htmlspecialchars($firstname). "\", LASTNAME = \"". htmlspecialchars($lastname). "\",";
+    $sql .= " HOMEPAGE_URL = \"". htmlspecialchars($homepage_url). "\", PIC_URL = \"". htmlspecialchars($pic_url). "\",";
+    $sql .= " EMAIL_NOTIFY = \"". htmlspecialchars($email_notify). "\", TIMEZONE = $timezone, DL_SAVING = \"$dl_saving\",";
     $sql .= " MARK_AS_OF_INT = \"$mark_as_of_int\", POSTS_PER_PAGE = $posts_per_page";
     $sql .= " where UID = $uid";
 

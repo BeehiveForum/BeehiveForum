@@ -24,12 +24,9 @@ function closeAttachWin () {
         attachwin.close();
     }
 }
-function launchAttachWin (aid, from_uid) {
-    if (aid != null) {
-        attachwin = window.open('edit_attachments.php?aid='+ aid+ '&uid='+ from_uid, 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
-    }else {
-        attachwin = window.open('edit_attachments.php?uid='+ from_uid, 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
-    }
+
+function launchAttachWin (aid) {
+    attachwin = window.open('edit_attachments.php?aid='+ aid, 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
 }
 
 function clearFocus() {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.19 2003-11-10 20:37:47 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.20 2003-11-10 21:10:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -65,16 +65,35 @@ require_once("./include/lang.inc.php");
 
 html_draw_top();
 
+// Get any UID from the GET or POST request
+// or default to the current user if not specified.
+
 if (isset($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
-} else if(isset($HTTP_POST_VARS['uid'])) {
+}elseif (isset($HTTP_POST_VARS['uid'])) {
     $uid = $HTTP_POST_VARS['uid'];
-} else {
+}else {
+    $uid = bh_session_get_value('UID');
+}
+
+// Get any AID from the GET or POST request
+
+if (isset($HTTP_GET_VARS['aid'])) {
+    $aid = $HTTP_GET_VARS['aid'];
+}elseif (isset($HTTP_POST_VARS['aid'])) {
+    $aid = $HTTP_POST_VARS['aid'];
+}
+
+/*else {
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<p>{$lang['nomessagespecifiedforedit']}</p>\n";
     html_draw_bottom();
     exit;
-}
+}*/
+
+// Check that the UID we have belongs to the current user
+// or that it is an admin if we're viewing another user's
+// attachments.
 
 if (($uid != bh_session_get_value('UID')) && !(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
@@ -121,8 +140,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
 <?php
 
-  if (isset($HTTP_GET_VARS['aid'])) {
-      $attachments = get_attachments($uid, $HTTP_GET_VARS['aid']);
+  if (isset($aid)) {
+      $attachments = get_attachments($uid, $aid);
   }else {
       $attachments = get_users_attachments($uid);
   }
@@ -161,7 +180,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
-      echo "      <form method=\"post\" action=\"edit_attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
+      echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
       echo "        ". form_input_hidden('uid', $uid);
@@ -206,7 +225,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
   echo "    <td width=\"500\" colspan=\"3\"><hr width=\"500\"/></td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
-  echo "<form method=\"post\" action=\"edit_attachments.php", (isset($HTTP_GET_VARS['aid']) ? "?aid={$HTTP_GET_VARS['aid']}" : ""), "&uid={$uid}\">\n";
+  echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
+
+  if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
+
+  echo form_input_hidden('uid', $uid), "\n";
   echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
   echo "  <tr>\n";
   echo "    <td class=\"postbody\" align=\"center\">", form_submit('submit', $lang['close']), "</td>\n";

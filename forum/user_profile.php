@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.73 2004-05-04 17:10:19 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.74 2004-05-05 22:07:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -105,8 +105,8 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
 if (!isset($uid)) {
     html_draw_top();
-    echo "<h1>{$lang['error']}:</h1>";
-    echo "<p>{$lang['nouserspecified']}</p>";
+    echo "<h1>{$lang['invalidop']}:</h1>";
+    echo "<h2>{$lang['nouserspecified']}</h2>";
     html_draw_bottom();
     exit;
 }
@@ -119,7 +119,7 @@ html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
 
 if (!$profile_sections = profile_sections_get()) {
     echo "<h1>{$lang['error']}:</h1>";
-    echo "<p>{$lang['profilesnotsetup']}</p>";
+    echo "<h2>{$lang['profilesnotsetup']}</h2>";
     html_draw_bottom();
     exit;
 }

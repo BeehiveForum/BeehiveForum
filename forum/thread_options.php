@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.19 2004-05-04 17:10:19 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.20 2004-05-05 22:07:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,6 +119,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
     html_draw_bottom();
+    exit;
 }
 
 $uid = bh_session_get_value('UID');

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.60 2004-05-05 20:04:30 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.61 2004-05-05 22:07:08 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -398,7 +398,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
     $sql = "SELECT DISTINCT F.FID FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
     $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL > 0 AND UF.ALLOWED <=> 1)) ";
     $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
 
     $result = db_query($sql, $db_folder_get_by_type_allowed);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.32 2004-04-28 14:28:53 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.33 2004-05-05 22:07:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,26 +96,35 @@ if (isset($error_html)) {
 echo "<div align=\"center\">\n";
 echo "  <form name=\"forgot_pw\" action=\"forgot_pw.php\" method=\"POST\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"250\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
-echo "          <table class=\"subhead\" width=\"100%\">\n";
+echo "          <table class=\"box\" width=\"100%\">\n";
 echo "            <tr>\n";
-echo "              <td>{$lang['forgotpasswd']}</td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "          <table class=\"posthead\" width=\"100%\">\n";
-echo "            <tr>\n";
-echo "              <td align=\"right\">{$lang['username']}:</td>\n";
-echo "              <td>", form_input_text("logon", (isset($logon) ? $logon : '')), "</td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "          <table class=\"posthead\" width=\"100%\">\n";
-echo "            <tr>\n";
-echo "              <td align=\"center\">", form_submit('submit', $lang['request']), "</td>\n";
+echo "              <td class=\"posthead\">\n";
+echo "                <table class=\"posthead\" width=\"100%\">\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['forgotpasswd']}</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td align=\"right\">{$lang['username']}:</td>\n";
+echo "                    <td>", form_input_text("logon", (isset($logon) ? $logon : '')), "</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>&nbsp;</td>\n";
+echo "                    <td>&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                </table>\n";
+echo "              </td>\n";
 echo "            </tr>\n";
 echo "          </table>\n";
 echo "        </td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "        <td>&nbsp;</td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "        <td align=\"center\">", form_submit('submit', $lang['request']), "</td>\n";
 echo "      </tr>\n";
 echo "    </table>\n";
 echo "  </form>\n";

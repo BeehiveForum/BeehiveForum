@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.12 2004-05-04 17:10:16 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.13 2004-05-05 22:07:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,7 +111,10 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
     $fid = $_POST['fid'];
 }else {
-    $fid = 1;
+    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h2>{$lang['noforumidspecified']}</h2>\n";
+    html_draw_bottom();
+    exit;
 }
 
 if ($forum_array = forum_get($fid)) {

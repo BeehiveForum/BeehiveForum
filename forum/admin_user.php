@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.91 2004-05-04 17:10:16 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.92 2004-05-05 22:07:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -130,7 +130,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $uid = $_POST['uid'];
 }else {
     echo "<h1>{$lang['invalidop']}</h1>\n";
-    echo "<p>{$lang['nouserspecified']}</p>\n";
+    echo "<h2>{$lang['nouserspecified']}</h2>\n";
     html_draw_bottom();
     exit;
 }

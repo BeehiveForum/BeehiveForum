@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.3 2004-05-05 20:04:30 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.4 2004-05-05 22:07:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,7 +116,7 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
     $fid = $_GET['fid'];
 }else {
     echo "<h1>{$lang['invalidop']}</h1>\n";
-    echo "<p>{$lang['nofolderidspecified']}</p>\n";
+    echo "<h2>{$lang['nofolderidspecified']}</h2>\n";
     html_draw_bottom();
     exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.76 2004-05-05 20:05:58 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.77 2004-05-05 22:07:14 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -351,9 +351,11 @@ $lang['movepoststofolder'] = "Move posts to folder";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
 $lang['mustenterfoldername'] = "You must enter a folder name";
 $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
+$lang['nofolderidspecified'] = "No Folder ID specified";
 $lang['successfullyaddedfolder'] = "Successfully Added Folder";
 $lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
-$lang['currentpasswd'] = "Current Password";
+$lang['forumisnotrestricted'] = "Forum is not restricted";
+$lang['noforumidspecified'] = "No Forum ID specified";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 
@@ -856,6 +858,7 @@ $lang['privacysettings'] = "Privacy Settings";
 $lang['includeadminfilter'] = "Include admin word filter in my list.";
 $lang['allowpersonalmessages'] = "Allow other users to send me personal messages";
 $lang['allowemails'] = "Allow other users to send me emails via my profile";
+$lang['currentpasswd'] = "Current Password";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

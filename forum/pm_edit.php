@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.47 2004-06-13 20:02:10 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.48 2004-06-13 20:30:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -261,74 +261,134 @@ echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['edi
 echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<br />\n";
 
-if ($valid == false) {
-    echo $error_html;
+echo "<form name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
+echo form_input_hidden('webtag', $webtag), "\n";
+echo form_input_hidden('mid', $mid), "\n";
+
+if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">{$lang['error']}</td>\n";
+    echo "  </tr>";
+    echo "  <tr>\n";
+    echo "    <td>$error_html</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
+
+if ($valid && isset($_POST['preview'])) {
+
+    $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
+
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">{$lang['messagepreview']}</td>\n";
+    echo "  </tr>";
+    echo "  <tr>\n";
+    echo "    <td><br />", draw_pm_message($pm_elements_array), "</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td colspan=\"2\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+}
+
+echo "<table width=\"720\" class=\"posthead\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"subhead\" colspan=\"2\">{$lang['editpm']}</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td valign=\"top\" width=\"210\">\n";
+echo "      <table class=\"posthead\" width=\"210\">\n";
+echo "        <tr>\n";
+echo "          <td><h2>{$lang['subject']}:</h2></td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, "style=\"width: 190px\""), "</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td><h2>{$lang['to']}:</h2></td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td><a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])), "</a></td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "    <td width=\"500\">\n";
+echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td>";
+echo "           <h2>{$lang['message']}:</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
-echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('mid', $mid), "\n";
-echo "<table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-echo "          <td>", form_field("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 32), "</td>\n";
+echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+
+echo $tools->textarea("t_content", $post->getTidyContent(), 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+
+echo "          <td>\n";
 echo "        </tr>\n";
-echo "      </table>\n";
-echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td>".$tools->toolbar();
-echo $tools->textarea("t_content", $post->getTidyContent(), 15, 72). "</td>\n";
-echo "        </tr>\n";
+
 if ($post->isDiff()) {
-	echo "        <tr>\n";
-	echo "          <td>\n";
-	echo "            ".$tools->compare_original("t_content", $post->getOriginalContent());
-	echo "          </td>\n";
-	echo "        </tr>\n";
+
+    echo "        <tr>\n";
+    echo "          <td>\n";
+    echo "            ".$tools->compare_original("t_content", $post->getOriginalContent());
+    echo "          </td>\n";
+    echo "        </tr>\n";
 }
+
 echo "        <tr>\n";
 echo "          <td>\n";
 echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+
 $tph_radio = $post->getHTML();
 
-echo "            ".form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-echo "            ".form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-echo "            ".form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+echo "            ", form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\""), " \n";
+echo "            ", form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1), " \n";
+echo "            ", form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2), " \n";
 
 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
+echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
+
+echo form_submit('submit', $lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
+echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+
+if (forum_get_setting('attachments_enabled', 'Y', false)) {
+
+    if ($aid = get_pm_attachment_id($mid)) {
+        echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
+        echo form_input_hidden('aid', $aid);
+    }else {
+        $aid = md5(uniqid(rand()));
+        echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
+        echo form_input_hidden('aid', $aid);
+    }
+}
+
 echo "          </td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td colspan=\"2\">&nbsp;</td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit', $lang['apply']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
-echo form_submit('cancel', $lang['cancel']);
-
-if ($aid = get_pm_attachment_id($mid)) {
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
-}else {
-    $aid = md5(uniqid(rand()));
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
-}
 
 echo $tools->js();
 
-echo "</form>\n";
-
-if ($valid) {
-    echo "<h2>{$lang['messagepreview']}:</h2><br />\n";
-    $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
-    draw_pm_message($pm_elements_array);
+if (isset($_POST['t_dedupe'])) {
+    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
+}else{
+    echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
+
+echo "</form>\n";
 
 html_draw_bottom();
 

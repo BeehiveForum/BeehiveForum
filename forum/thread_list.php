@@ -33,14 +33,18 @@ require_once("./include/format.inc.php"); // Formatting functions
 
 // Check that required variables are set
 // default to display all discussions if no other mode specified
-if (!isset($HTTP_GET_VARS['mode'])) { $mode = 0; } else { $mode = $HTTP_GET_VARS['mode']; }
+if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
+    $user = 0; // default to UID 0 if no other UID specified
+    if (!isset($HTTP_GET_VARS['mode'])) { $mode = 0; } else { $mode = $HTTP_GET_VARS['mode']; }
+} else {
+    $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    if (!isset($HTTP_GET_VARS['mode'])) { $mode = 1; } else { $mode = $HTTP_GET_VARS['mode']; }
+}
+
 if(isset($HTTP_GET_VARS['folder'])){
     $folder = $HTTP_GET_VARS['folder'];
     $mode = 0;
 }
-
-// default to UID 0 (nobody) if no other UID is specified
-if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) { $user = 0; } else { $user = $HTTP_COOKIE_VARS['bh_sess_uid']; }
 
 // Output XHTML header
 html_draw_top();

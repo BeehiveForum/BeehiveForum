@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.27 2004-02-29 20:29:51 decoyduck Exp $ */
+/* $Id: admin.php,v 1.28 2004-03-07 09:45:45 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -66,6 +66,7 @@ echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" d
 echo "<head>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
 echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"150,*\" border=\"1\">\n";
 echo "  <frame src=\"./admin_menu.php\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";

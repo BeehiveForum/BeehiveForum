@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.75 2004-08-08 12:18:50 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.76 2004-08-08 22:41:02 rowan_hill Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -928,7 +928,8 @@ function forum_delete($fid)
                                  'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
                                  'STATS', 'THREAD', 'USER_FOLDER',
                                  'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
-                                 'USER_PROFILE', 'USER_SIG', 'USER_THREAD');
+                                 'USER_PROFILE', 'USER_SIG', 'USER_THREAD',
+                                 'GROUP_PERMS', 'GROUP_USERS', 'GROUPS');
 
             foreach ($table_array as $table_name) {
 

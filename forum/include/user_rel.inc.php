@@ -21,8 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.23 2005-03-15 21:30:08 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.24 2005-04-01 13:17:12 rowan_hill Exp $ */
 
+/**
+* User relation functions
+*/
+
+/**
+*/
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 function user_rel_update($uid, $peer_uid, $value)
@@ -50,6 +56,21 @@ function user_rel_update($uid, $peer_uid, $value)
     return db_query($sql, $db_user_rel_update);
 }
 
+
+/**
+* Gets relationship between two users
+* 
+* Gets relationships set by $uid of $peer_uid. For example, 
+* if someone of UID 2 has set the admin (UID 1) as a friend 
+* (not the other way round), calling user_rel_get(2, 1) 
+* will return USER_FRIEND. Note: This has no bearing on
+* what user_rel_get(1, 2) will return.
+*
+* @return integer
+* @param integer $uid UID of user who set the relations
+* @param integer $peer_uid UID of user who is being related to
+* @see constants.inc.php
+*/
 function user_rel_get($uid, $peer_uid)
 {
     $db_user_rel_get = db_connect();

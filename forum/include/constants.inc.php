@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.59 2005-03-31 19:23:40 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.60 2005-04-01 13:17:12 rowan_hill Exp $ */
+
+/**
+* Constants used throughout Beehive. It may well be easier to view the actual file - the layout's better.
+*/
+
+/**
+*/
 
 // Beehive Version
 

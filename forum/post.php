@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.104 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: post.php,v 1.105 2003-08-01 19:58:42 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -447,15 +447,18 @@ if ($newthread) {
       html_draw_bottom();
       exit;
 
-    }else {
+    } else {
 
-      if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+        if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+            if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
+                echo "<h1>{$lang['moderatorthreadclosed']}</h1>\n";
+            } else {
+                echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
+                html_draw_bottom();
+                exit;
+            }
 
-        echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
-        html_draw_bottom();
-        exit;
-
-      }
+        }
 
       if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
 

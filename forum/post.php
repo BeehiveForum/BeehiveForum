@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.176 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: post.php,v 1.177 2004-04-13 09:31:55 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -697,7 +697,7 @@ echo "<h2>".$lang['to'].":</h2>\n";
 
 if (!$newthread) {
     echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true)."<br />\n";
-    echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid)."<br />\n";
+    echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false, 'onClick="checkToRadio(0)"')."<br />\n";
 }
 
 echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false)."<br />\n";

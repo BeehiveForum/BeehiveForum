@@ -284,7 +284,8 @@ echo "          <table class=\"posthead\" width=\"100%\">\n";
 echo "            <tr>\n";
 echo "              <td align=\"center\">";
 
-echo form_button('logon', 'Logon', "onclick=\"has_clicked = true; document.logonform.submit();\"");
+echo form_submit('submit', 'Logon', 'onclick="has_clicked = true"');
+//echo "<input type=\"submit\" name=\"submit\" value=\"Logon\" onclick=\"has_clicked = true\">\n";
 
 echo "</td>\n";
 echo "            </tr>\n";

@@ -57,7 +57,7 @@ function _html_draw_top1($title = false)
 	echo "\t<head>\n";
 	echo "\t\t<title>$title</title>\n";
 	echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
-	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?fontsize=$fontsize\" type=\"text/css\"/>\n";
+	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?fontsize=$fontsize&". md5(uniqid(rand())). "\" type=\"text/css\"/>\n";
 }
 
 function _html_draw_top2($body_class = false)

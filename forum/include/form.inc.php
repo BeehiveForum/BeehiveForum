@@ -133,9 +133,9 @@ function form_radio_array($name, $value, $text, $checked = -1)
 }
 
 // create a <input type="submit"> button
-function form_submit($name = "submit", $value = "Submit", $class = "button")
+function form_submit($name = "submit", $value = "Submit", $customhtml = "", $class = "button")
 {
-    return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" />";
+    return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" $customhtml />";
 }
 
 // create a button with custom HTML, for onclick methods, etc.

@@ -80,14 +80,17 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
     $sort_dir = "DESC";
 }
 
-if (isset($HTTP_GET_VARS['usersearch']) && isset($HTTP_GET_VARS['submit']) && $HTTP_GET_VARS['submit'] == 'Search') {
-    $usersearch = $HTTP_GET_VARS['usersearch'];
-}else {
-    $usersearch = '';
+$db = db_connect();
+
+if (isset($HTTP_POST_VARS['clear'])) {
+
+    $sql = "DELETE FROM ". forum_table("ADMIN_LOG");
+    $result = db_query($sql, $db);
+
 }
 
 // Draw the form
-echo "<h1>Manage Users</h1>\n";
+echo "<h1>Admin Access Log</h1>\n";
 echo "<p>This list shows the last 20 actions sanctioned by users with Admin privileges.</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -97,15 +100,15 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"50\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_ID&amp;sort_dir=DESC\">ID</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"100\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=DESC\">Date/Time</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" width=\"50\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_ID&amp;sort_dir=ASC\">ID</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"100\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=ASC\">Date/Time</a></td>\n";
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"100\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"200\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">Logon</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" width=\"100\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"200\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">Logon</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
@@ -115,8 +118,6 @@ if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
 }
 
 echo "        </tr>\n";
-
-$db = db_connect();
 
 $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
 $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
@@ -138,14 +139,14 @@ if (db_num_rows($result)) {
     while ($row = db_fetch_array($result)) {
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\">", $row['LOG_ID'], "</td>\n";
+        echo "          <td class=\"posthead\">", format_time($row['LOG_TIME']), "</td>\n";
         echo "          <td class=\"posthead\"><a href=\"./admin_user.php?uid=", $row['ADMIN_UID'], "\">", format_user_name($row['ALOGON'], $row['ANICKNAME']), "</a></td>\n";
 
         if (!empty($row['LOGON']) && !empty($row['NICKNAME'])) {
             $user = "<a href=\"./admin_user.php?uid=". $row['UID']. "\">";
             $user.= format_user_name($row['LOGON'], $row['NICKNAME']). "</a>";
         }else {
-            $user = "Unknown User";
+            $user = "Unknown User (UID: ". $row['UID']. ")";
         }
 
         if (isset($row['FID']) && $row['FID'] > 0) {
@@ -165,25 +166,25 @@ if (db_num_rows($result)) {
         if (isset($row['FOLDER_TITLE']) && !empty($row['FOLDER_TITLE'])) {
             $folder_title = $row['FOLDER_TITLE'];
         }else {
-            $folder_title = $row['FID'];
+            $folder_title = "Unknown (FID: ". $row['FID']. ")";
         }
 
         if (isset($row['THREAD_TITLE']) && !empty($row['THREAD_TITLE'])) {
             $thread_title = $row['THREAD_TITLE'];
         }else {
-            $thread_title = $row['TID'];
+            $thread_title = "Unknown (TID: ". $row['TID']. ")";
         }
 
         if (isset($row['PS_NAME']) && !empty($row['PS_NAME'])) {
             $ps_name = $row['PS_NAME'];
         }else {
-            $ps_name = $row['PSID'];
+            $ps_name = "Unknown (PSID: ". $row['PSID']. ")";
         }
 
         if (isset($row['PI_NAME']) && !empty($row['PI_NAME'])) {
             $pi_name = $row['PI_NAME'];
         }else {
-            $pi_name = $row['PIID'];
+            $pi_name = "Unknown (PIID: ". $row['PIID']. ")";
         }
 
         switch ($row['ACTION']) {
@@ -274,14 +275,17 @@ if (db_num_rows($result)) {
 
 }
 
-echo "        <tr>\n";
-echo "          <td colspan=\"6\">&nbsp;</td>\n";
-echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
+
+if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN && db_num_rows($result)) {
+    echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+    echo form_submit('clear', 'Clear Log');
+    echo "</form>\n";
+}
 
 html_draw_bottom();
 

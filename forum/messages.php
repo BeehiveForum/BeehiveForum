@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.156 2004-08-18 00:03:18 tribalonline Exp $ */
+/* $Id: messages.php,v 1.157 2004-08-26 19:52:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -230,19 +230,32 @@ $msg_count = count($messages);
 $highlight = array();
 
 if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
-    $highlight = explode(' ', rawurldecode($_GET['search_string']));
+    $highlight_array = explode(' ', rawurldecode($_GET['search_string']));
 }
 
-if (sizeof($highlight) > 0) {
+// Check for search words to highlight -------------------------------------
+
+if (sizeof($highlight_array) > 0) {
+
+    $highlight_pattern = array();
+    $highlight_replace = array();
+
+    foreach ($highlight_array as $key => $word) {
+
+        $highlight_word = preg_quote($word, "/");
+
+        $highlight_pattern[$key] = "/($highlight_word)/i";
+        $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
+    }
+
     $thread_parts = preg_split('/([<|>])/', $threaddata['TITLE'], -1, PREG_SPLIT_DELIM_CAPTURE);
-    foreach ($highlight as $word) {
-        $word = preg_quote($word, '/');
-        for ($i = 0; $i < sizeof($thread_parts); $i++) {
-            if (!($i % 4)) {
-                $thread_parts[$i] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $thread_parts[$i]);
-            }
+
+    for ($i = 0; $i < sizeof($thread_parts); $i++) {
+        if (!($i % 4)) {
+            $thread_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $thread_parts[$i], 1);
         }
     }
+
     $threaddata['TITLE'] = implode('', $thread_parts);
 }
 

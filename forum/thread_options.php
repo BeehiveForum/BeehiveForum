@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.27 2004-08-14 23:16:01 rowan_hill Exp $ */
+/* $Id: thread_options.php,v 1.28 2004-08-26 19:52:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -202,7 +202,7 @@ if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest']) && $_POST[
     $threaddata['INTEREST'] = $_POST['setinterest'];
     thread_set_interest($tid, $threaddata['INTEREST']);
     $update = true;
-    
+
     $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&setinterest=1";
     header_redirect($uri);
     exit;
@@ -222,8 +222,9 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
         if ($_POST['rename'] != $threaddata['TITLE'] && trim($_POST['rename']) != "") {
 
-            $threaddata['TITLE'] = $_POST['rename'];
-            thread_change_title($tid, $threaddata['TITLE']);
+            $threaddata['TITLE'] = _htmlentities($_POST['rename']);
+            thread_change_title($tid, $_POST['rename']);
+
             post_add_edit_text($tid, 1);
 
             if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {

@@ -128,7 +128,7 @@ if ($valid) {
         }
     }
 
-    echo "<h2>Delete this message:</h2>";
+    echo "<h1>Delete this message</h1>";
     echo "<h2>" . thread_get_title($tid) . "</h2>";
     
     if($to_uid == 0) {
@@ -150,11 +150,11 @@ if ($valid) {
     
     if (thread_is_poll($tid) && $pid == 1) {
     
-      poll_display($tid, $preview_message, 0, 0, false);
+      poll_display($tid, $threaddata['LENGTH'], $pid, false, false, false, true, true);
       
     }else {
-    
-      message_display(0, $preview_message, 0, 0, false);
+
+      message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true);
       
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.57 2004-02-22 15:24:32 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.58 2004-03-03 23:15:17 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -96,7 +96,7 @@ if (!isset($user['STATUS'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['manageuser']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['manageuser']}</h1>\n";
 
 // Do updates
 

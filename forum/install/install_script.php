@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.20 2004-08-22 10:30:10 rowan_hill Exp $ */
+/* $Id: install_script.php,v 1.21 2004-09-05 17:16:23 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -557,6 +557,7 @@ $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
 $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
 $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
@@ -869,6 +870,7 @@ $sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0',";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
 $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
 $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";

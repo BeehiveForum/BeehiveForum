@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.194 2004-09-02 21:16:46 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.195 2004-09-05 17:16:23 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -403,19 +403,20 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 {
     /* Attempt at explaining the new prefs system:
 
-           $prefs_array contains the preference settings to be altered. Its keys are the names of the preference
-           settings (same as the names of the corresponding database fields). $prefs_global_setting_array
-           also has keys which are the names of the preference settings to be changed but contain Boolean values
-           that when true set the appropriate preference globally and when false only set it for the current forum.
-           The default behaviour is to set a preference globally if it is not specified otherwise.
+    $prefs_array contains the preference settings to be altered. Its keys are the names of the preference
+    settings (same as the names of the corresponding database fields). $prefs_global_setting_array
+    also has keys which are the names of the preference settings to be changed but contain Boolean values
+    that when true set the appropriate preference globally and when false only set it for the current forum.
+    The default behaviour is to set a preference globally if it is not specified otherwise.
 
-           e.g.    $prefs_array                  $prefs_global_setting_array      Result
-                   'STYLE' => 'default'          'STYLE' => true                  Sets STYLE to 'default' globally
-                   'VIEW_SIGS' => 'N'            'VIEW_SIGS' => false             Sets VIEW_SIGS to 'N' for current forum only
-                   'FONT_SIZE' => 11             'FONT_SIZE' not set              Sets FONT_SIZE to 11 globally
+    e.g.    $prefs_array                  $prefs_global_setting_array      Result
+            'STYLE' => 'default'          'STYLE' => true                  Sets STYLE to 'default' globally
+            'VIEW_SIGS' => 'N'            'VIEW_SIGS' => false             Sets VIEW_SIGS to 'N' for current forum only
+            'FONT_SIZE' => 11             'FONT_SIZE' not set              Sets FONT_SIZE to 11 globally
 
-       FIRSTNAME, LASTNAME, DOB, TIMEZONE, DL_SAVING and POST_PAGE can only be set globally - there's no sense
-       in changing them on a per-forum basis.
+    FIRSTNAME, LASTNAME, DOB, TIMEZONE, DL_SAVING and POST_PAGE can only be set globally - there's no sense
+    in changing them on a per-forum basis.
+
     */
 
     if (!is_numeric($uid)) return false;
@@ -424,118 +425,173 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     if (!is_array($prefs_global_setting_array)) return false;
 
     // names of preferences that can be set globally
+
     $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
-                                   'PIC_URL', 'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
-                                   'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
-                                   'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
-                                   'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
-                                   'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
-                                   'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
-                                   'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM', 'POST_PAGE');
+                               'PIC_URL', 'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
+                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
+                               'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
+                               'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
+                               'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
+                               'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
+                               'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM', 'POST_PAGE');
 
     // names of preferences that can be set on a per-forum basis
+
     $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'EMAIL_NOTIFY',
-                                   'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
-                                   'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
-                                   'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
-                                   'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
-                                   'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
-                                   'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM');
+                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
+                               'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
+                               'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
+                               'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
+                               'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
+                               'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM');
 
     foreach ($prefs_array as $pref_name => $pref_setting) {
+
         if (user_check_pref($pref_name, $pref_setting)) {
+
             if (!isset($prefs_global_setting_array[$pref_name]) || $prefs_global_setting_array[$pref_name] == true) {
-                // preference is to be set globally
-                if(in_array($pref_name, $global_pref_names)) $global_prefs[$pref_name] = $pref_setting; // check this pref name is allowed to be set globally
-            } else {
+
+                // preference is to be set globally.
+                // check this pref name is allowed to be set globally
+
+                if (in_array($pref_name, $global_pref_names)) $global_prefs[$pref_name] = $pref_setting;
+
+            }else {
+
                 // preference is to be set for current forum only
-                if(in_array($pref_name, $forum_pref_names)) $forum_prefs[$pref_name] = $pref_setting; // check this pref name is allowed to be set on a per-forum basis
+                // check this pref name is allowed to be set on a per-forum basis
+
+                if (in_array($pref_name, $forum_pref_names)) $forum_prefs[$pref_name] = $pref_setting;
             }
         }
     }
 
     $db_user_update_prefs = db_connect();
 
-        if (isset($global_prefs)) {
-                // Is there an entry in USER_PREFS already for this user?
-                $sql = "SELECT * FROM USER_PREFS WHERE UID = $uid";
-                $result = db_query($sql, $db_user_update_prefs);
+    if (isset($global_prefs)) {
 
-                if (db_num_rows($result) == 0) {
-                        // no previous entry, construct an INSERT query
-                        $sql  = "INSERT INTO USER_PREFS (UID,";
-                        $sql .= implode(",",$global_pref_names);
-                        $sql .= ") VALUES ('$uid'";
-                        foreach ($global_pref_names as $pref_name) {
-                            if (isset($global_prefs[$pref_name])) {
-                                $sql .= ", '{$global_prefs[$pref_name]}'";
-                            } else {
-                                $sql .= ", ''";
-                            }
-                        }
-                        $sql .= ")";
-                } else {
-            // previous entry which we will UPDATE
-                        $values = array();
-                        foreach($global_prefs as $pref_name => $pref_setting) {
-                                $values[] = "$pref_name = '$pref_setting'";
-                        }
-                        $sql  = "UPDATE USER_PREFS SET ";
-                        $sql .= implode(",",$values);
-                        $sql .= " WHERE UID = $uid";
+        // Is there an entry in USER_PREFS already for this user?
+
+        $sql = "SELECT * FROM USER_PREFS WHERE UID = $uid";
+        $result = db_query($sql, $db_user_update_prefs);
+
+        if (db_num_rows($result) == 0) {
+
+            // no previous entry, construct an INSERT query
+
+            $sql  = "INSERT INTO USER_PREFS (UID,";
+            $sql .= implode(",",$global_pref_names);
+            $sql .= ") VALUES ('$uid'";
+
+            foreach ($global_pref_names as $pref_name) {
+
+                if (isset($global_prefs[$pref_name])) {
+
+                     $sql .= ", '{$global_prefs[$pref_name]}'";
+
+                }else {
+
+                     $sql .= ", ''";
                 }
-                $result_global = db_query($sql, $db_user_update_prefs);
+            }
+
+            $sql .= ")";
+
+        }else {
+
+            // previous entry which we will UPDATE
+
+            $values = array();
+
+            foreach($global_prefs as $pref_name => $pref_setting) {
+                 $values[] = "$pref_name = '$pref_setting'";
+            }
+
+            $sql = "UPDATE USER_PREFS SET ";
+            $sql.= implode(",", $values);
+            $sql.= " WHERE UID = $uid";
+        }
+
+        $result_global = db_query($sql, $db_user_update_prefs);
 
         // If a pref is set globally, we need to remove it from all the [webtag]_USER_PREFS tables too.
         // MySQL doesn't mind if a record for this user doesn't exist in a particular table.
+
         $values = array();
-                foreach($global_prefs as $pref_name => $pref_setting) {
-                        if (in_array($pref_name, $forum_pref_names)) {
-                                $values[] = "$pref_name = ''";
-                        }
-                }
-                if (count($values) > 0) {
-                        $values = implode(",",$values);
-                        $webtags = forum_get_all_webtags();
-                        foreach($webtags as $webtag) {
-                            $sql = "UPDATE {$webtag}_USER_PREFS SET $values WHERE UID = $uid";
-                            $result = db_query($sql, $db_user_update_prefs);
-                        }
-                }
-        } else {
-            $result_global = true;
+
+        foreach($global_prefs as $pref_name => $pref_setting) {
+
+            if (in_array($pref_name, $forum_pref_names)) {
+
+                $values[] = "$pref_name = ''";
+            }
         }
 
-        if (isset($forum_prefs) && $table_data = get_table_prefix()) {
-                $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+        if (count($values) > 0) {
+
+            $values = implode(",",$values);
+            $webtags = forum_get_all_webtags();
+
+            foreach($webtags as $webtag) {
+
+                $sql = "UPDATE {$webtag}_USER_PREFS SET $values WHERE UID = $uid";
                 $result = db_query($sql, $db_user_update_prefs);
-
-                if (db_num_rows($result) == 0) {
-                        // no previous entry, construct an INSERT query
-                        $sql  = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID,";
-                        $sql .= implode(",", $forum_pref_names);
-                        $sql .= ") VALUES ('$uid'";
-                        foreach ($forum_pref_names as $pref_name) {
-                            if (isset($forum_prefs[$pref_name])) {
-                                $sql .= ", '{$forum_prefs[$pref_name]}'";
-                            } else {
-                                $sql .= ", ''";
-                            }
-                        }
-                        $sql .= ")";
-                 } else {
-            // previous entry which we will UPDATE
-                        $values = array();
-                        foreach($forum_prefs as $pref_name => $pref_setting) {
-                                $values[] = "$pref_name = '$pref_setting'";
-                        }
-                        $values = implode(",", $values);
-                        $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
-                 }
-                $result_forum = db_query($sql, $db_user_update_prefs);
-        } else {
-            $result_forum = true;
+            }
         }
+
+    }else {
+
+        $result_global = true;
+    }
+
+    if (isset($forum_prefs) && $table_data = get_table_prefix()) {
+
+        $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+        $result = db_query($sql, $db_user_update_prefs);
+
+        if (db_num_rows($result) == 0) {
+
+            // no previous entry, construct an INSERT query
+
+            $sql  = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID,";
+            $sql .= implode(",", $forum_pref_names);
+            $sql .= ") VALUES ('$uid'";
+
+            foreach ($forum_pref_names as $pref_name) {
+
+                if (isset($forum_prefs[$pref_name])) {
+
+                    $sql .= ", '{$forum_prefs[$pref_name]}'";
+
+                }else {
+
+                    $sql .= ", ''";
+                }
+            }
+
+            $sql .= ")";
+
+        }else {
+
+            // previous entry which we will UPDATE
+
+            $values = array();
+
+            foreach($forum_prefs as $pref_name => $pref_setting) {
+
+                $values[] = "$pref_name = '$pref_setting'";
+            }
+
+            $values = implode(",", $values);
+            $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
+        }
+
+        $result_forum = db_query($sql, $db_user_update_prefs);
+
+    }else {
+
+        $result_forum = true;
+    }
 
     return ($result_global && $result_forum);
 }
@@ -598,56 +654,6 @@ function user_get_global_sig($uid)
 {
     $prefs = user_get_prefs($uid);
     return $prefs['VIEW_SIGS'];
-}
-
-function user_get_post_count($uid)
-{
-    if (!is_numeric($uid)) return 0;
-
-    $db_user_get_count = db_connect();
-
-    if (!$table_data = get_table_prefix()) return 0;
-
-    $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
-    $sql.= "ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
-    $sql.= "WHERE POST.FROM_UID = '$uid' AND POST_CONTENT.CONTENT IS NOT NULL";
-
-    $result = db_query($sql, $db_user_get_count);
-
-    $post_count = db_fetch_array($result);
-
-    return $post_count['COUNT'];
-}
-
-function user_get_last_logon_time($uid, $verbose = true)
-{
-    $lang = load_language_file();
-
-    if (!is_numeric($uid)) return false;
-
-    $db_user_get_last_logon_time = db_connect();
-
-    if (!$table_data = get_table_prefix()) return $lang['unknown'];
-
-    $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE USER.UID = $uid AND VISITOR_LOG.LAST_LOGON IS NOT NULL";
-
-    $result = db_query($sql, $db_user_get_last_logon_time);
-
-    $last_logon = db_fetch_array($result);
-
-    if (isset($last_logon['ANON_LOGON']) && $last_logon['ANON_LOGON'] <> 0) {
-
-        return $lang['unknown'];
-
-    }else {
-
-        return format_time($last_logon['LAST_LOGON'], $verbose);
-    }
 }
 
 function user_guest_enabled()
@@ -732,7 +738,7 @@ function user_search($usersearch, $offset = 0)
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 0)";
+    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N')";
 
     $result = db_query($sql, $db_user_search);
     $user_search_count = db_num_rows($result);
@@ -743,7 +749,7 @@ function user_search($usersearch, $offset = 0)
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 0) ";
+    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_search);
@@ -774,10 +780,12 @@ function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $o
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 0) ";
+    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 20";
@@ -850,30 +858,34 @@ function users_get_recent($offset, $limit)
     $db_users_get_recent = db_connect();
 
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
-                                                        'user_array' => array());
+                                                       'user_array' => array());
 
     $sql = "SELECT USER.UID FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
-    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 0) ";
+    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
 
     $result = db_query($sql, $db_users_get_recent);
     $users_get_recent_count = db_num_rows($result);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
-    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 0) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
+    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, $limit";
 
     $result = db_query($sql, $db_users_get_recent);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         while ($row = db_fetch_array($result)) {
+
             if (!isset($users_get_recent_array[$row['UID']])) {
+
                 $users_get_recent_array[$row['UID']] = $row;
             }
         }
@@ -900,26 +912,30 @@ function users_search_recent($usersearch, $offset)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 0) ";
+    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
 
     $result = db_query($sql, $db_users_search_recent);
     $user_search_count = db_num_rows($result);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = 0) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "AND (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
+    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_users_search_recent);
 
     if (db_num_rows($result)) {
+
         while ($row = db_fetch_array($result)) {
+
             if (!isset($user_search_array[$row['UID']])) {
+
                 $user_search_array[$row['UID']] = $row;
             }
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.86 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.87 2004-09-05 17:16:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -213,7 +213,7 @@ echo "  </tr>\n";
 
 $users_array = users_get_recent(0, 10);
 
-if (sizeof($users_array['user_array']) > 0) {
+if ($users_array['user_count'] > 0) {
 
     echo "  <tr>\n";
     echo "    <td align=\"center\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.19 2004-08-22 10:30:10 rowan_hill Exp $ */
+/* $Id: upgrade_script.php,v 1.20 2004-09-05 17:16:23 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -420,37 +420,38 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
-$sql = "CREATE TABLE USER_PREFS_NEW (";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FIRSTNAME VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  LASTNAME VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  DOB DATE NOT NULL DEFAULT '0000-00-00',";
-$sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  TIMEZONE DECIMAL(2,1) NOT NULL DEFAULT 0,";
-$sql.= "  DL_SAVING CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
-$sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
-$sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0',";
-$sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
-$sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  POST_PAGE CHAR(3) NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY (UID)";
-$sql.= "  ) TYPE=MYISAM;";
+    $sql = "CREATE TABLE USER_PREFS_NEW (";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  FIRSTNAME VARCHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  LASTNAME VARCHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  DOB DATE NOT NULL DEFAULT '0000-00-00',";
+    $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  TIMEZONE DECIMAL(2,1) NOT NULL DEFAULT 0,";
+    $sql.= "  DL_SAVING CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
+    $sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
+    $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0',";
+    $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
+    $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+    $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+    $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  POST_PAGE CHAR(3) NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY (UID)";
+    $sql.= "  ) TYPE=MYISAM;";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
@@ -467,13 +468,13 @@ $sql.= "  ) TYPE=MYISAM;";
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET EMAIL_NOTIFY = 'N' WHERE EMAIL_NOTIFY != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET MARK_AS_OF_INT = 'N' WHERE MARK_AS_OF_INT != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
@@ -485,43 +486,49 @@ $sql.= "  ) TYPE=MYISAM;";
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET PM_NOTIFY = 'N' WHERE PM_NOTIFY != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET PM_NOTIFY_EMAIL = 'N' WHERE PM_NOTIFY_EMAIL != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
+    $sql = "UPDATE USER_PREFS_NEW SET PM_SAVE_SENT_ITEM = 'Y' WHERE 1";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
+    }
+
     $sql = "UPDATE USER_PREFS_NEW SET IMAGES_TO_LINKS = 'N' WHERE IMAGES_TO_LINKS != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET USE_WORD_FILTER = 'N' WHERE USE_WORD_FILTER != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET USE_ADMIN_FILTER = 'N' WHERE USE_ADMIN_FILTER != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET ALLOW_EMAIL = 'N' WHERE ALLOW_EMAIL != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
-    
+
     $sql = "UPDATE USER_PREFS_NEW SET ALLOW_PM = 'N' WHERE ALLOW_PM != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
@@ -539,32 +546,34 @@ $sql.= "  ) TYPE=MYISAM;";
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;
     }
-    
-	$sql = "CREATE TABLE {$forum_webtag}_USER_PREFS (";
-	$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-	$sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
-	$sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
-	$sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-	$sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
-	$sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
-	$sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
-	$sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
-	$sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
-	$sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
-	$sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
-	$sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
-	$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-	$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-	$sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-	$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-	$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
-	$sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
-	$sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
-	$sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
-	$sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-	$sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
-	$sql.= "  PRIMARY KEY  (UID)";
-	$sql.= ")";
+
+    $sql = "CREATE TABLE {$forum_webtag}_USER_PREFS (";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
+    $sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
+    $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
+    $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
+    $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+    $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+    $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  PRIMARY KEY  (UID)";
+    $sql.= ")";
+
     if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
@@ -942,38 +951,38 @@ $sql.= "  ) TYPE=MYISAM;";
         $valid = false;
     }
 
-	$sql = "CREATE TABLE {$forum_webtag}_FORUM_LINKS (";
-	$sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-	$sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-	$sql.= "  URI VARCHAR(255) DEFAULT NULL,";
-	$sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
-	$sql.= "  PRIMARY KEY  (LID)";
-	$sql.= ")";
+        $sql = "CREATE TABLE {$forum_webtag}_FORUM_LINKS (";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  URI VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (LID)";
+        $sql.= ")";
 
-	if(!$result = mysql_query($sql, $db_install)) {
-		$valid = false;
-	}
+        if(!$result = mysql_query($sql, $db_install)) {
+                $valid = false;
+        }
 
-	$sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
-	$sql.= "VALUES (1, 'Forum Links:', NULL)";
+        $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+        $sql.= "VALUES (1, 'Forum Links:', NULL)";
 
-	if(!$result = mysql_query($sql, $db_install)) {
-		$valid = false;
-	}
+        if(!$result = mysql_query($sql, $db_install)) {
+                $valid = false;
+        }
 
-	$sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
-	$sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
+        $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+        $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
-	if(!$result = mysql_query($sql, $db_install)) {
-		$valid = false;
-	}
+        if(!$result = mysql_query($sql, $db_install)) {
+                $valid = false;
+        }
 
-	$sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
-	$sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
+        $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
+        $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
 
-	if(!$result = mysql_query($sql, $db_install)) {
-		$valid = false;
-	}
+        if(!$result = mysql_query($sql, $db_install)) {
+                $valid = false;
+        }
 
     $sql = "CREATE TABLE USER_FORUM (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";

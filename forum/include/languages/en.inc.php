@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.23 2003-08-01 19:58:42 hodcroftcj Exp $ */
+/* $Id: en.inc.php,v 1.24 2003-08-01 20:37:08 decoyduck Exp $ */
 
 // International English language file
 
@@ -376,10 +376,10 @@ $lang['passwdresetexp_1'] = "You should receive an e-mail containing";
 $lang['passwdresetexp_2'] = "a link to reset your password shortly.";
 $lang['validusernamerequired'] = "A valid username is required";
 $lang['forgotpasswd'] = "Forgot password";
-$lang['forgotpasswdexp_1'] = "Enter your logon name below and an e-mail";
-$lang['forgotpasswdexp_2'] = "will be sent to the registered address for";
-$lang['forgotpasswdexp_3'] = "that account containing a link allowing you";
-$lang['forgotpasswdexp_4'] = "to change your password.";
+$lang['forgotpasswdexp_1'] = "Enter your logon name above and an email containing a link allowing";
+$lang['forgotpasswdexp_2'] = "you to change your password will be sent to your registered email address";
+$lang['couldnotsendpasswordreminder'] = "Could not send password reminder. Please contact the forum owner.";
+$lang['request'] = "Request";
 
 // Frameset things (index.php) -----------------------------------------
 

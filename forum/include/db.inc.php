@@ -63,4 +63,11 @@ function db_fetch_array ($resource_id)
 	return $results;
 }
 
+// Returns the AUTO_INCREMENT ID from the last insert statement
+function db_insert_id($resource_id)
+{
+    $insert_id = mysql_insert_id($resource_id);
+    return $insert_id;
+}
+
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.106 2003-08-01 22:09:47 hodcroftcj Exp $ */
+/* $Id: post.php,v 1.107 2003-08-01 23:52:52 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -197,7 +197,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
                 $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
             }
-               
+
             $t_tid = post_create_thread($t_fid, _stripslashes($t_threadtitle), "N", $t_sticky, $t_closed);
             $t_rpid = 0;
 
@@ -206,12 +206,12 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
             $t_tid = $HTTP_POST_VARS['t_tid'];
             $t_rpid = $HTTP_POST_VARS['t_rpid'];
             if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
-                
+
                 if (isset($HTTP_POST_VARS['t_closed'])) $t_closed = $HTTP_POST_VARS['t_closed'];
                 if (isset($HTTP_POST_VARS['old_t_closed'])) $old_t_closed = $HTTP_POST_VARS['old_t_closed'];
                 if (isset($HTTP_POST_VARS['t_sticky'])) $t_sticky = $HTTP_POST_VARS['t_sticky'];
                 if (isset($HTTP_POST_VARS['old_t_sticky'])) $old_t_sticky = $HTTP_POST_VARS['old_t_sticky'];
-                
+
                 if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
                     thread_set_closed($t_tid, true);
                 } elseif ((!isset($t_closed) || (isset($t_closed) && $t_closed != "Y")) && $old_t_closed == "Y") {
@@ -555,7 +555,7 @@ echo "</form>\n";
 
 if (!$newthread) {
 
-    echo "<p>{$lang['inreplyto']}:</p>\n";
+    echo "<h1>{$lang['inreplyto']}:</h1>\n";
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 

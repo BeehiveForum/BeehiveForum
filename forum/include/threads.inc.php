@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.82 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: threads.inc.php,v 1.83 2003-08-01 23:52:54 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -420,7 +420,6 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
 
 function threads_get_folder($uid, $fid, $start = 0)
 {
-
     $db_threads_get_folder = db_connect();
 
     // Formulate query
@@ -449,12 +448,47 @@ function threads_get_folder($uid, $fid, $start = 0)
 
 }
 
+function threads_get_most_recent()
+{
+    $db_threads_get_recent = db_connect();
+    $fidlist = folder_get_available();
+    $uid = bh_session_get_value('UID');
+
+    $sql  = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
+    $sql.= "FROM ". forum_table("THREAD"). " T ";
+    $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " UT ";
+    $sql.= "ON (T.TID = UT.TID and UT.UID = $uid) ";
+    $sql.= "JOIN ". forum_table("USER"). " U ";
+    $sql.= "JOIN ". forum_table("POST"). " P ";
+    $sql.= "LEFT JOIN ". forum_table("USER_FOLDER"). " UF ON ";
+    $sql.= "(UF.FID = T.FID AND UF.UID = $uid) ";
+    $sql.= "WHERE T.FID IN ($fidlist) ";
+    $sql.= "AND U.UID = P.FROM_UID ";
+    $sql.= "AND P.TID = T.TID ";
+    $sql.= "AND P.PID = 1 ";
+    $sql.= "AND NOT (UT.INTEREST <=> -1) ";
+    $sql.= "AND NOT (UF.INTEREST <=> -1) ";
+    $sql.= "ORDER BY T.MODIFIED desc ";
+    $sql.= "LIMIT 0, 10";
+
+    $result = db_query($sql, $db_threads_get_recent);
+
+    if (db_num_rows($result)) {
+        $threads_get_array = array();
+	while ($row = db_fetch_array($result)) {
+	    $threads_get_array[] = $row;
+	}
+	return $threads_get_array;
+    }else {
+        return false;
+    }
+}
+
 function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
 {
-
     $max = db_num_rows($resource_id);
 
-    if($max){ // check that the set of threads returned is not empty
+    if ($max) { // check that the set of threads returned is not empty
 
         // If the user has clicked on a folder header, we want that folder to be first in the list
 

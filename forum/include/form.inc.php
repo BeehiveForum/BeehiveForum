@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.26 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: form.inc.php,v 1.27 2003-08-01 23:52:54 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -42,12 +42,12 @@ function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text
 
     $html.= " dir=\"". $lang['_textdir']. "\"";
 
-    return $html. " />";
+    return $html. " autocomplete=\"off\" />";
 }
 
 function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
 {
-    return form_field($name,$value,$width,$maxchars,"text");
+    return form_field($name, $value, $width, $maxchars, "text");
 }
 
 function form_input_password($name, $value = "", $width = 0, $maxchars = 0)
@@ -70,7 +70,7 @@ function form_textarea($name, $value = "", $rows = 0, $cols = 0, $wrap = "virtua
     //wrap attribute removed for XHTML 1.0 compliance.
     //$html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"$wrap\" $custom_html";
 
-    $html = trim("<textarea name=\"$name\" class=\"bhtextarea\" $custom_html");
+    $html = trim("<textarea name=\"$name\" class=\"bhtextarea\" autocomplete=\"off\" $custom_html");
 
     if($rows) $html.= " rows=\"$rows\"";
     if($cols) $html.= " cols=\"$cols\"";
@@ -86,7 +86,7 @@ function form_dropdown_sql($name, $sql, $default)
 {
     global $lang;
 
-    $html = "<select name=\"$name\" class=\"bhselect\" dir=\"". $lang['_textdir']. "\">";
+    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" dir=\"". $lang['_textdir']. "\">";
 
     $db_form_dropdown_sql = db_connect();
 
@@ -109,7 +109,7 @@ function form_dropdown_array($name, $value, $label, $default = "", $custom_html 
 {
     global $lang;
 
-    $html = "<select name=\"$name\" class=\"bhselect\" $custom_html dir=\"". $lang['_textdir']. "\">";
+    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" $custom_html dir=\"". $lang['_textdir']. "\">";
 
     for ($i = 0; $i < count($value); $i++) {
         $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";

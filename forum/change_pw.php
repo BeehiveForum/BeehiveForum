@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.8 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: change_pw.php,v 1.9 2003-08-01 23:52:52 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -39,92 +39,104 @@ require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-    if(isset($HTTP_POST_VARS['uid']) && isset($HTTP_POST_VARS['pw']) && isset($HTTP_POST_VARS['cpw']) && isset($HTTP_POST_VARS['key'])) {
+    if (isset($HTTP_POST_VARS['uid']) && isset($HTTP_POST_VARS['pw']) && isset($HTTP_POST_VARS['cpw']) && isset($HTTP_POST_VARS['key'])) {
 
-        if($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']){
+        if ($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']) {
 
-            $newpass = md5($HTTP_POST_VARS['pw']);
+	    if (user_change_pw($HTTP_POST_VARS['uid'], $HTTP_POST_VARS['pw'], $HTTP_POST_VARS['key'])) {
 
-            $db = db_connect();
-            $sql = "update ". forum_table("USER") ." set PASSWD = \"$newpass\" ";
-            $sql.= "where UID = '{$HTTP_POST_VARS['uid']}' and PASSWD = \"{$HTTP_POST_VARS['key']}\"";
-            $result = db_query($sql, $db);
-            $success = db_affected_rows($db);
-
-            if ($success) {
                 html_draw_top();
 
                 echo "<h1>{$lang['passwdchanged']}</h1>";
-                echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
-                echo "<p>{$lang['passwdchangedexp']}</p>\n";
-                echo "<p><a href=\"logon.php\">{$lang['gotologin']}</a></p></div>";
+		echo "<br />\n";
+                echo "<div align=\"center\">\n";
+                echo "<p>{$lang['passedchangedexp']}</p>\n";
+
+		form_quick_button("./index.php", $lang['continue'], "", "", "_top");
+
+		echo "</div>\n";
 
                 html_draw_bottom();
                 exit;
-            } else {
+
+            }else {
                 $error_html = "<h2>{$lang['updatefailed']}.</h2>";
             }
-            $uid = $HTTP_POST_VARS['uid'];
-            $key = $HTTP_POST_VARS['key'];
-        } else {
+
+        }else {
             $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
         }
-    } else {
+
+    }else {
         $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
     }
+}
 
-} else if(!isset($HTTP_GET_VARS['u']) || !isset($HTTP_GET_VARS['h'])){
-    html_draw_top();
-    echo "<h1>{$lang['invalidaccess']}</h1>\n";
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
-    echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
-    html_draw_bottom();
-    exit;
-} else {
+if (isset($HTTP_GET_VARS['u']) && isset($HTTP_GET_VARS['h'])) {
     $uid = $HTTP_GET_VARS['u'];
     $key = $HTTP_GET_VARS['h'];
-}
-
-$conn = db_connect();
-$sql = "select LOGON from ". forum_table("USER") ." where UID = '$uid' and PASSWD = \"$key\"";
-$result = db_query($sql,$conn);
-if(!$fa = db_fetch_array($result)){
+}elseif (isset($HTTP_POST_VARS['uid']) && isset($HTTP_POST_VARS['key'])) {
+    $uid = $HTTP_POST_VARS['uid'];
+    $key = $HTTP_POST_VARS['key'];
+}else {
     html_draw_top();
-    echo "<h1>{$lang['invalidaccess']}</h1>\n";
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
-    echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['requiredinformationnotfound']}</h2>\n";
     html_draw_bottom();
     exit;
 }
 
-$logon = strtoupper($fa['LOGON']);
+if ($user = user_get($uid, $key)) {
+    $logon = strtoupper($user['LOGON']);
+}else {
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
+    html_draw_bottom();
+    exit;
+}
 
 html_draw_top();
 
 echo "<h1>{$lang['forgotpasswd']}</h1>";
 
-if (isset($error_html)) echo $error_html;
+if (isset($error_html)) {
+    echo $error_html;
+}else {
+    echo "<br />\n";
+}
 
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
-echo "<p class=\"smalltext\">{$lang['enternewpasswdforuser']} $logon</p>\n";
-echo "<form name=\"forgot_pw\" action=\"". $HTTP_SERVER_VARS['PHP_SELF'] ."\" method=\"POST\">\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
-echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>{$lang['forgotpasswd']}</td>\n";
-echo "</tr>\n</table>\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr>\n<td align=\"right\">{$lang['newpasswd']}:</td>\n";
-echo "<td>".form_input_text("pw","")."</td></tr>\n";
-echo "<tr>\n<td align=\"right\">{$lang['confirmpasswd']}:</td>\n";
-echo "<td>".form_input_text("cpw","")."</td></tr>\n";
-echo "</table>\n";
-echo form_input_hidden("uid",$uid);
-echo form_input_hidden("key",$key);
-echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr><td align=\"center\">";
-echo form_submit();
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
-echo "</form>\n";
+echo "<div align=\"center\">\n";
+echo "  <p class=\"smalltext\">{$lang['enternewpasswdforuser']} $logon</p>\n";
+echo "  <form name=\"forgot_pw\" action=\"". $HTTP_SERVER_VARS['PHP_SELF'] ."\" method=\"POST\">\n";
+echo "  ", form_input_hidden("uid", $uid), form_input_hidden("key", $key), "\n";
+echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table class=\"subhead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td>{$lang['forgotpasswd']}</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "          <table class=\"posthead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td align=\"right\">{$lang['newpasswd']}:</td>\n";
+echo "              <td>", form_input_password("pw", ""), "</td>\n";
+echo "            </tr>\n";
+echo "            <tr>\n";
+echo "              <td align=\"right\">{$lang['confirmpasswd']}:</td>\n";
+echo "              <td>", form_input_password("cpw", ""), "</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "          <table class=\"posthead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td align=\"center\">", form_submit(), "</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

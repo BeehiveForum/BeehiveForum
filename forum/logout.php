@@ -42,8 +42,14 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
+        $uri = "./index.php";
+
+        if (isset($HTTP_GET_VARS['final_uri'])) {
+          $uri.= "?final_uri=". $HTTP_GET_VARS['final_uri'];
+        }
+
 	bh_session_end();
-	header_redirect("./logon.php");
+	header_redirect($uri);
   
 }
 
@@ -81,7 +87,7 @@ if($logged_off){
 } else {
     echo "<tr><td>You are currently logged in as ". user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']). "</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
-    echo "<tr><td align=\"center\">".form_submit("submit","Log out");
+    echo "<tr><td align=\"center\">".form_submit("submit", "Log out");
 }
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";

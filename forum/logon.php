@@ -115,7 +115,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       }
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
-      
+     
           header_redirect("./index.php?final_uri=". urlencode($final_uri));
           
       }else { // IIS bug prevents redirect at same time as setting cookies.

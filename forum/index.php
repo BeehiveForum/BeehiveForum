@@ -70,16 +70,20 @@ if(bh_session_check()) {
 
     echo "<frameset rows=\"60,*\" border=\"0\">\n";
     echo "<frame src=\"". $top_html. "\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
-    echo "<frame src=\"./logon.php?final_uri=";
     
-    if(isset($HTTP_GET_VARS['msg'])) {
-        $final_uri = "./discussion.php?msg=". $HTTP_GET_VARS['msg'];
-    } else {
-        $final_uri = "./start.php";
+    if (isset($HTTP_GET_VARS['final_uri'])) {
+    
+        echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" border=\"1\">\n";
+        
+    }elseif(isset($HTTP_GET_VARS['msg'])) {
+    
+        echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" border=\"1\">\n";
+        
+    }else {
+    
+        echo "<frame src=\"./logon.php?final_uri=". urlencode("./start.php"). "\" name=\"main\" border=\"1\">\n";
+        
     }
-    
-    echo urlencode($final_uri);
-    echo "\" name=\"main\" border=\"1\">\n";
     
 }
 

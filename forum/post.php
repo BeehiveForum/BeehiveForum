@@ -38,10 +38,10 @@ if(!bh_session_check()){
 require_once("./include/html.inc.php");
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+
     $uri = "./logout.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-//    html_guest_error();
-//    exit;
+    
 }
 
 require_once("./include/user.inc.php");

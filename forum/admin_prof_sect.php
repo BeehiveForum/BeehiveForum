@@ -99,10 +99,10 @@ if(isset($HTTP_POST_VARS['submit'])){
 echo "<h1>{$lang['manageprofilesections']}</h1>\n";
 echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 echo "<div align=\"center\">\n";
-echo "<table width=\"96%\" class=\"box\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"posthead\">\n";
-echo "      <form name=\"f_sections\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
+echo "<form name=\"f_sections\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
+echo "  <table width=\"96%\" class=\"box\">\n";
+echo "    <tr>\n";
+echo "      <td class=\"posthead\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
@@ -126,7 +126,7 @@ for($i = 0; $i < $result_count; $i++){
     echo "          <tr>\n";
     echo "            <td valign=\"top\" align=\"left\">", $row['PSID'], form_input_hidden("t_psid_$i",$row['PSID']), "</td>\n";
     echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i",$row['NAME']), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\"><a href=\"./admin_prof_items.php?psid=".$row['PSID']."\">{$lang['items']}...</a></td>\n";
+    echo "            <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?psid={$row['PSID']}'\""), "</a></td>\n";
     echo "            <td>";
 
     $psid_sql = "select * from ". forum_table("PROFILE_ITEM"). " where PSID = ". $row['PSID'];
@@ -155,14 +155,12 @@ echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td colspan=\"4\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td colspan=\"4\" align=\"right\">", form_input_hidden("t_count",$result_count), form_submit(), "</td>\n";
-echo "          </tr>\n";
 echo "        </table>\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "<p>", form_input_hidden("t_count", $result_count), form_submit('submit', 'Save'), "</p>\n";
+echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

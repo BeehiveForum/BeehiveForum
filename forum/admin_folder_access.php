@@ -203,6 +203,8 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+echo "<p>&nbsp;</p>\n";
+echo form_button("back", "Back", "onclick=\"document.location.href='admin_folders.php'\""), "\n";
 echo "</form>\n";
 echo "</div>\n";
 

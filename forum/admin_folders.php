@@ -83,19 +83,21 @@ if (isset($HTTP_POST_VARS['submit'])) {
 echo "<h1>{$lang['managefolders']}</h1>\n";
 echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 echo "<div align=\"center\">\n";
-echo "<table width=\"96%\" class=\"box\"><tr><td class=\"posthead\">";
-
 echo "<form name=\"f_folders\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
-echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['foldername']}</td>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['description']}</td>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['accesslevel']}</td>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['threads']}</td>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['move']}</td>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['allow']}</td>\n";
-echo "<td class=\"subhead\" align=\"left\">{$lang['folderaccess']}</td>\n";
-echo "</tr>\n";
+echo "  <table width=\"96%\" class=\"box\">\n";
+echo "    <tr>\n";
+echo "      <td class=\"posthead\">\n";
+echo "        <table class=\"posthead\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['foldername']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['description']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['accesslevel']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['threads']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['move']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['allow']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+echo "          </tr>\n";
 
 $folder_array = folder_get_all();
 
@@ -109,47 +111,48 @@ foreach ($folder_array as $key => $folder) {
     // If the thread count is 1, then it's probably 0.
     if($folder['THREAD_COUNT'] == 1) $folder['THREAD_COUNT'] = 0;
 
-    echo "<tr>\n";
-    echo "  <td align=\"left\">". $folder['FID']. form_input_hidden("t_fid_$key", $folder['FID']). "</td>\n";
-    echo "  <td align=\"left\">". form_field("t_title_$key", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$key", $folder['TITLE']). "</td>\n";
-    echo "  <td align=\"left\">". form_field("t_desc_$key", _stripslashes($folder['DESCRIPTION']), 32, 255). form_input_hidden("t_old_desc_$key", _stripslashes($folder['DESCRIPTION'])). "</td>\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\">". $folder['FID']. form_input_hidden("t_fid_$key", $folder['FID']). "</td>\n";
+    echo "            <td align=\"left\">". form_field("t_title_$key", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$key", $folder['TITLE']). "</td>\n";
+    echo "            <td align=\"left\">". form_field("t_desc_$key", _stripslashes($folder['DESCRIPTION']), 32, 255). form_input_hidden("t_old_desc_$key", _stripslashes($folder['DESCRIPTION'])). "</td>\n";
 
     // Draw the ACCESS_LEVEL dropdown
-    echo "  <td align=\"left\">".form_dropdown_array("t_access_$key", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder['ACCESS_LEVEL']);
+    echo "            <td align=\"left\">".form_dropdown_array("t_access_$key", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder['ACCESS_LEVEL']);
     echo form_input_hidden("t_old_access_$key", $folder['ACCESS_LEVEL']). "</td>\n";
 
-    echo "  <td align=\"left\">". $folder['THREAD_COUNT']. "</td>\n";
-    echo "  <td align=\"left\">". folder_draw_dropdown($folder['FID'], "t_move", "_$key"). "</td>\n";
-    echo "  <td align=\"left\">". form_dropdown_array("t_allow_$key", $allow_values, $allow_labels, $folder['ALLOWED_TYPES'] ? $folder['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow_$key", $folder['ALLOWED_TYPES'])."</td>\n";
+    echo "            <td align=\"left\">". $folder['THREAD_COUNT']. "</td>\n";
+    echo "            <td align=\"left\">". folder_draw_dropdown($folder['FID'], "t_move", "_$key"). "</td>\n";
+    echo "            <td align=\"left\">". form_dropdown_array("t_allow_$key", $allow_values, $allow_labels, $folder['ALLOWED_TYPES'] ? $folder['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow_$key", $folder['ALLOWED_TYPES'])."</td>\n";
 
     if ($folder['ACCESS_LEVEL'] > 0) {
-        echo "  <td align=\"left\"><a href=\"./admin_folder_access.php?fid=", $folder['FID'], "\">{$lang['permissions']}...</a></td>";
+        echo "            <td align=\"left\">", form_button("permissions", $lang['permissions'], "onclick=\"document.location.href='admin_folder_access.php?fid={$folder['FID']}'\""), "</td>\n";
     }else {
-        echo "  <td align=\"left\">-</td>";
+        echo "            <td align=\"left\">&nbsp;</td>";
     }
 
     echo "</tr>\n";
 }
 
 // Draw a row for a new folder to be created
-echo "<tr>\n";
-echo "  <td align=\"left\">NEW</td>\n";
-echo "  <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 32, 32). "</td>\n";
-echo "  <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
-echo "  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
-echo "  <td align=\"left\">-</td>\n";
-echo "  <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-echo "  <td align=\"left\">".form_dropdown_array("t_allow_new", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD)."</td>\n";
-echo "  <td align=\"left\">-</td>\n";
-echo "</tr>\n";
-
-echo "<tr><td colspan=\"8\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
-echo "<tr><td colspan=\"8\" align=\"right\">\n";
-echo form_input_hidden("t_count", sizeof($folder_array));
-echo form_submit();
-echo "</td></tr></table>\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\">NEW</td>\n";
+echo "            <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 32, 32). "</td>\n";
+echo "            <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
+echo "            <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
+echo "            <td align=\"left\">&nbsp;</td>\n";
+echo "            <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td align=\"left\">".form_dropdown_array("t_allow_new", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD)."</td>\n";
+echo "            <td align=\"left\">&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td colspan=\"8\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <p>", form_input_hidden("t_count", sizeof($folder_array)), form_submit('submit', 'Save'), "</p>\n";
 echo "</form>";
-echo "</td></tr></table>\n";
 echo "</div>\n";
 
 html_draw_bottom();

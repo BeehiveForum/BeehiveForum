@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.57 2004-04-23 22:11:31 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.58 2004-04-26 11:21:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,7 +111,8 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
   echo "<div align=\"center\">";
   echo "<p>{$lang['mustspecifypolltoview']}</p>";
-  echo "<form method=\"post\" action=\"pollresults.php?webtag=$webtag\">\n";
+  echo "<form method=\"post\" action=\"pollresults.php\">\n";
+  echo "  ", form_input_hidden('webtag', $webtag), "\n";
   echo "  ". form_submit('submit', $lang['close']). "\n";
   echo "</form>\n";
   echo "</div>";
@@ -210,7 +211,8 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "  <form method=\"post\" action=\"pollresults.php?webtag=$webtag\" target=\"_self\">\n";
+echo "  <form method=\"post\" action=\"pollresults.php\" target=\"_self\">\n";
+echo "    ", form_input_hidden('webtag', $webtag), "\n";
 echo "    ". form_submit('submit', $lang['close']). "\n";
 echo "  </form>\n";
 echo "</div>\n";

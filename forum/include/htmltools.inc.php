@@ -138,7 +138,7 @@ class TextAreaHTML {
 
         $custom_html.= " onKeyPress=\"active_text(this);\" onKeyDown=\"active_text(this);\" onKeyUp=\"active_text(this);\" onClick=\"active_text(this);\" onChange=\"active_text(this);\" onSelect=\"active_text(this);\"";
 
-        $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
+        $str = "<div style=\"display: none\">&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;</div>";
         $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html);
 
         return $str;

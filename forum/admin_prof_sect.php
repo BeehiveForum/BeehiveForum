@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.50 2004-04-23 22:10:14 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.51 2004-04-26 11:21:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,7 +96,7 @@ if (!$webtag = get_webtag()) {
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -140,7 +140,8 @@ if (isset($_POST['submit'])) {
 echo "<h1>{$lang['admin']} : {$lang['manageprofilesections']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_sections\" action=\"admin_prof_sect.php?webtag=$webtag\" method=\"post\">\n";
+echo "<form name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -162,7 +163,7 @@ if ($profile_sections = profile_sections_get()) {
         echo "                <tr>\n";
         echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_sections[$i]['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_sections[$i]['PSID']}]", $i), form_input_hidden("t_psid[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['PSID']), "</td>\n";
         echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME'] ,64, 64), form_input_hidden("t_old_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&psid={$profile_sections[$i]['PSID']}'\""), "</a></td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_sections[$i]['PSID']}'\""), "</a></td>\n";
 
         if (!profile_items_get($profile_sections[$i]['PSID'])) {
             echo "                  <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";

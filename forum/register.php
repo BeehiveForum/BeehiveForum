@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.86 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: register.php,v 1.87 2004-04-26 11:21:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -460,7 +460,8 @@ if (isset($error_html) && strlen($error_html) > 0) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<form name=\"register\" action=\"register.php?webtag=$webtag\" method=\"POST\">\n";
+echo "<form name=\"register\" action=\"register.php\" method=\"POST\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

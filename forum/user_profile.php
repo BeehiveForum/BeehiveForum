@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.67 2004-04-23 22:11:56 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.68 2004-04-26 11:21:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -129,7 +129,7 @@ if ($uid != bh_session_get_value('UID')) $relationship = user_rel_get(bh_session
 // user has chosen to modify their relationship
 
 if (isset($_GET['setrel']) && ($uid != bh_session_get_value('UID')) && bh_session_get_value('UID') > 0) {
-    $relationship = ($relationship & (~ (USER_FRIEND | USER_IGNORED)) | $_GET['setrel']);
+    $relationship = ($relationship&(~ (USER_FRIEND | USER_IGNORED)) | $_GET['setrel']);
     user_rel_update(bh_session_get_value('UID'),$uid,$relationship);
 }
 
@@ -142,8 +142,8 @@ echo "          <tr>\n";
 echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
 
 if (bh_session_get_value('UID') > 0) {
-    if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-    if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+    if ($relationship&USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+    if ($relationship&USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
 }
 
 echo "</h2></td>\n";
@@ -188,7 +188,7 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
     echo "    <td width=\"25%\" align=\"center\">";
 
     if ($profile_sections[$i]['PSID'] != $psid) {
-        echo "<a href=\"user_profile.php?webtag=$webtag&uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
         echo _stripslashes($profile_sections[$i]['NAME']) . "</a></td>\n";
     } else {
         echo "<b>" . _stripslashes($profile_sections[$i]['NAME']) . "</b></td>\n";
@@ -257,15 +257,15 @@ if ($uid == bh_session_get_value('UID')) {
 if (bh_session_get_value('UID') != 0) {
 
     echo "                <tr>\n";
-    echo "                  <td><a href=\"email.php?webtag=$webtag&uid=$uid\" target=\"_self\">{$lang['sendemail']}</a></td>\n";
+    echo "                  <td><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_self\">{$lang['sendemail']}</a></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td><a href=\"index.php?webtag=$webtag&final_uri=", rawurlencode("./pm_write.php?webtag=$webtag&uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
+    echo "                  <td><a href=\"index.php?webtag=$webtag&amp;final_uri=", rawurlencode("./pm_write.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
     echo "                </tr>\n";
 
     if ($uid != bh_session_get_value('UID')) {
 
-        if ($relationship & USER_FRIEND) {
+        if ($relationship&USER_FRIEND) {
             $setrel = 0;
             $text = $lang['removefromfriends'];
         }else {
@@ -274,10 +274,10 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"user_profile.php?webtag=$webtag&uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
+        echo "                  <td><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
 
-        if ($relationship & USER_IGNORED) {
+        if ($relationship&USER_IGNORED) {
             $setrel = 0;
             $text = $lang['stopignoringuser'];
         }else {
@@ -286,7 +286,7 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"user_profile.php?webtag=$webtag&uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
+        echo "                  <td><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
     }
 }

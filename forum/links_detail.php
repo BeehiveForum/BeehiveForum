@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.48 2004-04-24 18:42:17 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.49 2004-04-26 11:21:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -164,12 +164,12 @@ $link['TITLE'] = _stripslashes($link['TITLE']);
 $folders = links_folders_get(perm_is_moderator());
 
 html_draw_top();
-echo "<h1>{$lang['links']}: ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;:&nbsp;<a href=\"links.php?webtag=$webtag&lid=$lid&action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
+echo "<h1>{$lang['links']}: ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;:&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
 if (isset($_POST['type']) && $_POST['type'] == "vote" && bh_session_get_value('UID') != 0 && isset($_POST['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
 $error = $error ? $error : "&nbsp;";
 echo "<p>$error</p>\n";
 echo "<table class=\"box\" cellpadding=\"5\" cellspacing=\"2\" align=\"center\">\n";
-echo "<tr><td class=\"subhead\" align=\"right\">{$lang['address']}:</td><td class=\"posthead\"><a href=\"links.php?webtag=$webtag&lid=$lid&action=go\" target=\"_blank\">{$link['URI']}</td></tr>\n";
+echo "<tr><td class=\"subhead\" align=\"right\">{$lang['address']}:</td><td class=\"posthead\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['URI']}</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">{$lang['submittedby']}:</td><td class=\"posthead\">", (isset($link['LOGON']) ? format_user_name($link['LOGON'], $link['NICKNAME']) : "Unknown User"), "</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">{$lang['description']}:</td><td class=\"posthead\">" . _stripslashes($link['DESCRIPTION']) . "</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">{$lang['date']}:</td><td class=\"posthead\">" . format_time($link['CREATED']) . "</td></tr>\n";
@@ -192,7 +192,8 @@ if (bh_session_get_value('UID') != 0) {
     $vote = links_get_vote($lid, bh_session_get_value('UID'));
     $vote = $vote ? $vote : -1;
     echo "<p>&nbsp;</p>\n";
-    echo "<form name=\"link_vote\" action=\"links_detail.php?webtag=$webtag\" method=\"POST\">\n";
+    echo "<form name=\"link_vote\" action=\"links_detail.php\" method=\"POST\">\n";
+    echo form_input_hidden('webtag', $webtag), "\n";
     echo form_input_hidden("type", "vote") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";
     echo "<table class=\"box\" cellspacing=\"1\" align=\"center\"><tr><td>\n";
@@ -215,7 +216,7 @@ if ($comments) {
     echo "<table width=\"90%\" align=\"center\">\n";
     while (list($key, $val) = each($comments)) {
         echo "<tr class=\"subhead\"><td>{$lang['commentby']} ", (isset($val['LOGON']) ? format_user_name($val['LOGON'], $val['NICKNAME']) : $lang['unknownuser']), " [" . format_time($val['CREATED'], true) . "]";
-        if (perm_is_moderator() || $val['UID'] == bh_session_get_value('UID')) echo " <a href=\"links_detail.php?webtag=$webtag&action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a>";
+        if (perm_is_moderator() || $val['UID'] == bh_session_get_value('UID')) echo " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$val['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a>";
         echo "</td></tr>\n";
         echo "<tr class=\"posthead\"><td>" . _stripslashes($val['COMMENT']) . "</td></tr>\n";
     }
@@ -226,7 +227,8 @@ if ($comments) {
 
 if (bh_session_get_value('UID') != 0) {
     echo "<p>&nbsp;</p>\n";
-    echo "<form name=\"link_comment\" action=\"links_detail.php?webtag=$webtag\" method=\"POST\">\n";
+    echo "<form name=\"link_comment\" action=\"links_detail.php\" method=\"POST\">\n";
+    echo form_input_hidden('webtag', $webtag), "\n";
     echo form_input_hidden("type", "comment") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";
     echo "<table class=\"box\" align=\"center\"><tr class=\"subhead\"><td>\n";
@@ -241,7 +243,8 @@ if (bh_session_get_value('UID') != 0) {
 
 if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
     echo "<p>&nbsp;</p>\n";
-    echo "<form name=\"link_moderation\" action=\"links_detail.php?webtag=$webtag\" method=\"POST\">\n";
+    echo "<form name=\"link_moderation\" action=\"links_detail.php\" method=\"POST\">\n";
+    echo form_input_hidden('webtag', $webtag), "\n";
     echo "<table align=\"center\" class=\"box\"><tr><td>\n";
     echo form_input_hidden("type", "moderation") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";

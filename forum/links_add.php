@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.48 2004-04-24 18:42:17 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.49 2004-04-26 11:21:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -183,7 +183,8 @@ if ($mode == "link") {
     echo "<h1>{$lang['links']}: {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
     if ($error) echo "<h2>$error</h2>\n";
-    echo "<form name=\"linkadd\" action=\"links_add.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
+    echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"POST\" target=\"_self\">\n";
+    echo form_input_hidden('webtag', $webtag), "\n";
     echo form_input_hidden("fid", $fid) . "\n";
     echo form_input_hidden("mode", "link") . "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
@@ -205,7 +206,8 @@ if ($mode == "folder") {
     echo "<h1>{$lang['links']}: {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
     if ($error) echo "<h2>$error</h2>\n";
-    echo "<form name=\"folderadd\" action=\"links_add.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
+    echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"POST\" target=\"_self\">\n";
+    echo form_input_hidden('webtag', $webtag), "\n";
     echo form_input_hidden("fid", $fid) . "\n";
     echo form_input_hidden("mode", "folder") . "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.30 2004-04-23 22:10:55 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.31 2004-04-26 11:21:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -163,7 +163,8 @@ echo "<p>{$lang['wordfilterexp_3']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 
 
-echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php?webtag=$webtag\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

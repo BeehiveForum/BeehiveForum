@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.44 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.45 2004-04-26 11:21:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -106,9 +106,9 @@ if (isset($_GET['uid']) && isset($_GET['rel']) && is_numeric($_GET['uid']) && is
     $relationship = user_rel_get($uid, $puid);
 
     if ($rel == -1) {
-        $relationship = ($relationship & USER_IGNORED_SIG) ? USER_IGNORED_SIG + USER_IGNORED : USER_IGNORED;
+        $relationship = ($relationship&USER_IGNORED_SIG) ? USER_IGNORED_SIG + USER_IGNORED : USER_IGNORED;
     }else {
-        $relationship = ($relationship & USER_IGNORED_SIG) ? USER_IGNORED_SIG : 0;
+        $relationship = ($relationship&USER_IGNORED_SIG) ? USER_IGNORED_SIG : 0;
     }
 
     user_rel_update($uid, $puid, $relationship);

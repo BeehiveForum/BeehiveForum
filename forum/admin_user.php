@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.85 2004-04-23 22:10:25 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.86 2004-04-26 11:21:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -115,7 +115,7 @@ if (isset($_POST['cancel'])) {
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -176,17 +176,17 @@ if (isset($_POST['del'])) {
 
         $new_status = $t_worker | $t_worm | $t_wasp | $t_splat;
 
-        if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+        if (bh_session_get_value('STATUS')&USER_PERM_QUEEN) {
             $new_status = $new_status | $t_soldier;
-            $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
+            $new_status = $new_status | ($user['STATUS']&USER_PERM_QUEEN);
         }else {
-            $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
-            $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
+            $new_status = $new_status | ($user['STATUS']&USER_PERM_SOLDIER);
+            $new_status = $new_status | ($user['STATUS']&USER_PERM_QUEEN);
         }
 
         // Add lower ranks automatically
-        if ($new_status & USER_PERM_QUEEN) $new_status |= USER_PERM_SOLDIER;
-        if ($new_status & USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
+        if ($new_status&USER_PERM_QUEEN) $new_status |= USER_PERM_SOLDIER;
+        if ($new_status&USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
 
         user_update_status($uid, $new_status);
         $user['STATUS'] = $new_status;
@@ -246,7 +246,7 @@ if (isset($_POST['del'])) {
 
             foreach($t_ban_ipaddress as $ban_ip_address) {
                 if (!ip_is_banned($ban_ip_address)) {
-                    if (($t_ban_ipaddress != $ipaddress) && !($user['STATUS'] & PERM_CHECK_SOLDIER)) {
+                    if (($t_ban_ipaddress != $ipaddress) && !($user['STATUS']&PERM_CHECK_SOLDIER)) {
                         ban_ip($ban_ip_address);
                         admin_addlog($uid, 0, 0, 0, 0, 0, 4);
                     }
@@ -260,7 +260,8 @@ if (isset($_POST['del'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
+echo "<form name=\"f_user\" action=\"admin_user.php\" method=\"post\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("uid", $uid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -297,7 +298,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";
 
 }else if (isset($_POST['t_confirm_delete_posts'])) {
 
@@ -317,27 +318,27 @@ if (isset($_POST['t_delete_posts'])) {
     echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";
 
 }else {
 
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+    if (bh_session_get_value('STATUS')&USER_PERM_QUEEN) {
         echo "                <tr>\n";
-        echo "                  <td align=\"left\">", form_checkbox("t_soldier", USER_PERM_SOLDIER, $lang['soldier'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False), "</td>\n";
+        echo "                  <td align=\"left\">", form_checkbox("t_soldier", USER_PERM_SOLDIER, $lang['soldier'], isset($user['STATUS']) ? ($user['STATUS']&USER_PERM_SOLDIER) : False), "</td>\n";
         echo "                </tr>\n";
     }
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">", form_checkbox("t_worker", USER_PERM_WORKER, $lang['worker'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False), "</td>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_worker", USER_PERM_WORKER, $lang['worker'], isset($user['STATUS']) ? ($user['STATUS']&USER_PERM_WORKER) : False), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">", form_checkbox("t_worm", USER_PERM_WORM, $lang['worm'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False), "</td>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_worm", USER_PERM_WORM, $lang['worm'], isset($user['STATUS']) ? ($user['STATUS']&USER_PERM_WORM) : False), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">", form_checkbox("t_wasp", USER_PERM_WASP, $lang['wasp'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False), "</td>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_wasp", USER_PERM_WASP, $lang['wasp'], isset($user['STATUS']) ? ($user['STATUS']&USER_PERM_WASP) : False), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">", form_checkbox("t_splat", USER_PERM_SPLAT, $lang['splat'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE), "</td>\n";
+    echo "                  <td align=\"left\">", form_checkbox("t_splat", USER_PERM_SPLAT, $lang['splat'], isset($user['STATUS']) ? ($user['STATUS']&USER_PERM_SPLAT) : FALSE), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
@@ -419,7 +420,7 @@ if (isset($_POST['t_delete_posts'])) {
             foreach ($user_alias_array as $user_alias) {
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
-                echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+                echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
                 echo "                              <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
 
                 if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
@@ -507,7 +508,7 @@ if (isset($_POST['t_delete_posts'])) {
             echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\" title=\"";
+                echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\" title=\"";
             }else {
                 echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\" title=\"";
             }

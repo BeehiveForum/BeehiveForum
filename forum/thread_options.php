@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.13 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.14 2004-04-26 11:21:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -277,7 +277,7 @@ if (perm_is_moderator()) {
 
 html_draw_top("basetarget=_blank");
 
-echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
+echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
 echo "<br />\n";
 
 if ($update) {
@@ -340,7 +340,7 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
     echo "                  <td width=\"250\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
 
     if (thread_is_poll($tid)) {
-        echo "                  <td><a href=\"edit_poll.php?webtag=$webtag&msg=$tid.1\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
+        echo "                  <td><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
     }else {
         echo "                  <td>".form_input_text("rename", _stripslashes($threaddata['TITLE']), 30, 64)."</td>\n";
     }

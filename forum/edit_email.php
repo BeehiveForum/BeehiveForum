@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.26 2004-04-23 22:10:53 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.27 2004-04-26 11:21:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -160,7 +160,7 @@ if (isset($_POST['submit'])) {
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './edit_email.php?webtag=$webtag&updated=true';\n";
+        echo "document.location.href = './edit_email.php?webtag=$webtag&amp;updated=true';\n";
         echo "//-->\n";
         echo "</script>";
 
@@ -196,7 +196,8 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<form name=\"prefs\" action=\"edit_email.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefs\" action=\"edit_email.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

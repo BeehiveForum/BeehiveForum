@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.31 2004-04-24 17:00:13 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.32 2004-04-26 11:21:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -91,7 +91,7 @@ $lang = load_language_file();
 
 $webtag = get_webtag();
 
-if (!(bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
+if (!(bh_session_get_value('STATUS')&USER_PERM_QUEEN)) {
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
@@ -321,7 +321,7 @@ if (isset($_POST['submit'])) {
             // Try a Javascript redirect
             echo "<script language=\"javascript\" type=\"text/javascript\">\n";
             echo "<!--\n";
-            echo "document.location.href = './admin_forum_settings.php?webtag=$webtag&updated=true';\n";
+            echo "document.location.href = './admin_forum_settings.php?webtag=$webtag&amp;updated=true';\n";
             echo "//-->\n";
             echo "</script>";
 
@@ -356,7 +356,8 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<form name=\"prefs\" action=\"admin_forum_settings.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefs\" action=\"admin_forum_settings.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

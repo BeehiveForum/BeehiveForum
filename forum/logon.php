@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.134 2004-04-24 18:42:17 decoyduck Exp $ */
+/* $Id: logon.php,v 1.135 2004-04-26 11:21:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -80,15 +80,15 @@ if (isset($_GET['final_uri'])) {
 
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $final_uri = "./discussion.php?webtag=$webtag&msg=". $_GET['msg'];
+    $final_uri = "./discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
 
 }elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $final_uri = "./discussion.php?webtag=$webtag&folder=". $_GET['folder'];
+    $final_uri = "./discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
 
 }elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-    $final_uri = "./pm.php?webtag=$webtag&mid=". $_GET['pmid'];
+    $final_uri = "./pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
 }
 
 // If the final_uri contains logout.php then unset it.
@@ -155,7 +155,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
         if (isset($final_uri)) {
             $final_uri = rawurlencode($final_uri);
-            echo "document.location.href = './index.php?webtag=$webtag&final_uri=$final_uri';\n";
+            echo "document.location.href = './index.php?webtag=$webtag&amp;final_uri=$final_uri';\n";
         }else {
             echo "document.location.href = './index.php?webtag=$webtag';\n";
         }
@@ -202,7 +202,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
             if (isset($final_uri)) {
                 $final_uri = rawurlencode($final_uri);
-                echo "document.location.href = './index.php?webtag=$webtag&final_uri=$final_uri';\n";
+                echo "document.location.href = './index.php?webtag=$webtag&amp;final_uri=$final_uri';\n";
             }else {
                 echo "document.location.href = './index.php?webtag=$webtag';\n";
             }

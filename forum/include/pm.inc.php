@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.70 2004-04-24 18:42:45 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.71 2004-04-26 11:21:13 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -364,7 +364,7 @@ function pm_get_user($mid)
 function pm_draw_to_dropdown($default_uid)
 {
     $html = "<select name=\"t_to_uid\">\n";
-    $html.= "<option value=\"0\">&lt;select recipient&gt;</option>\n";
+    $html.= "<option value=\"0\">&amp;lt;select recipient&gt;</option>\n";
 
     $db_post_draw_to_dropdown = db_connect();
 
@@ -532,7 +532,7 @@ function draw_pm_message($pm_elements_array)
                 echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
 
                 if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                    echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
+                    echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
                 }else {
                     echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                 }
@@ -568,7 +568,7 @@ function draw_pm_message($pm_elements_array)
         echo "          </table>\n";
         echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
         echo "            <tr>\n";
-        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
         echo "            </tr>\n";
     }
 

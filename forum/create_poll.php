@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.98 2004-04-24 18:42:16 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.99 2004-04-26 11:21:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -244,7 +244,8 @@ if ($valid && isset($_POST['submit'])) {
 
        html_draw_top();
 
-       echo "<form name=\"f_post\" action=\"./create_poll.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+       echo "<form name=\"f_post\" action=\"./create_poll.php\" method=\"post\" target=\"_self\">\n";
+       echo form_input_hidden('webtag', $webtag), "\n";
        echo "<table class=\"posthead\" width=\"720\">\n";
        echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
        echo "<tr><td>\n";
@@ -311,12 +312,9 @@ if ($valid && isset($_POST['submit'])) {
   }
 
   if (isset($t_tid) && $t_tid > 0) {
-
-    $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
-
+      $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
   }else {
-
-    $uri = "./discussion.php?webtag=$webtag";
+      $uri = "./discussion.php?webtag=$webtag";
   }
 
   header_redirect($uri);
@@ -449,7 +447,8 @@ if ($valid && isset($_POST['preview'])) {
 
 if (isset($error_html)) echo $error_html. "\n";
 
-echo "<form name=\"f_poll\" action=\"create_poll.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
+echo form_input_hidden('webtag', $webtag), "\n";
 
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);

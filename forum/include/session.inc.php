@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.103 2004-04-24 18:42:46 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.104 2004-04-26 11:21:13 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -262,7 +262,7 @@ function get_request_uri()
     }else {
         $request_uri = "{$_SERVER['PHP_SELF']}?";
         foreach ($_GET as $key => $value) {
-            $request_uri.= "{$key}=". rawurlencode($value). "&";
+            $request_uri.= "{$key}=". rawurlencode($value). "&amp;";
         }
     }
 

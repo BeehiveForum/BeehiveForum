@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.24 2004-04-23 22:10:53 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.25 2004-04-26 11:21:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -209,7 +209,7 @@ if (isset($_POST['submit'])) {
             // Try a Javascript redirect
             echo "<script language=\"javascript\" type=\"text/javascript\">\n";
             echo "<!--\n";
-            echo "document.location.href = './edit_password.php?webtag=$webtag&updated=true';\n";
+            echo "document.location.href = './edit_password.php?webtag=$webtag&amp;updated=true';\n";
             echo "//-->\n";
             echo "</script>";
 
@@ -240,7 +240,8 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<form name=\"prefs\" action=\"edit_password.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefs\" action=\"edit_password.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

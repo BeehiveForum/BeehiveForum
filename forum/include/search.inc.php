@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.57 2004-04-25 16:47:25 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.58 2004-04-26 11:21:13 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -204,10 +204,10 @@ function search_execute($argarray, &$urlquery, &$error)
 
         $result = db_query($search_sql, $db_search_execute);
 
-        $urlquery = "&fid=". $argarray['fid']. "&date_from=". $argarray['date_from']. "&date_to=". $argarray['date_to'];
-        $urlquery.= "&search_string=". rawurlencode(trim($argarray['search_string'])). "&method=". $argarray['method']. "&me_only=". $argarray['me_only'];
-        $urlquery.= "&to_other=". $argarray['to_other']. "&to_uid=". $argarray['to_uid']. "&from_other=". $argarray['from_other'];
-        $urlquery.= "&from_uid=". $argarray['from_uid']. "&order_by=". $argarray['order_by'];
+        $urlquery = "&amp;fid=". $argarray['fid']. "&amp;date_from=". $argarray['date_from']. "&amp;date_to=". $argarray['date_to'];
+        $urlquery.= "&amp;search_string=". rawurlencode(trim($argarray['search_string'])). "&amp;method=". $argarray['method']. "&amp;me_only=". $argarray['me_only'];
+        $urlquery.= "&amp;to_other=". $argarray['to_other']. "&amp;to_uid=". $argarray['to_uid']. "&amp;from_other=". $argarray['from_other'];
+        $urlquery.= "&amp;from_uid=". $argarray['from_uid']. "&amp;order_by=". $argarray['order_by'];
 
         if (db_num_rows($result)) {
             $search_results_array = array();

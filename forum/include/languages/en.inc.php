@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.151 2004-07-31 20:22:35 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.152 2004-08-01 16:04:12 rowan_hill Exp $ */
 
 // International English language file
 
@@ -804,6 +804,7 @@ $lang['stickyuntil'] = "Sticky until";
 $lang['start'] = "Start";
 $lang['messages'] = "Messages";
 $lang['pminbox'] = "PM Inbox";
+$lang['startwiththreadlist'] = "Start page with thread list";
 $lang['pmsentitems'] = "Sent Items";
 $lang['pmoutbox'] = "Outbox";
 $lang['pmsaveditems'] = "Saved Items";

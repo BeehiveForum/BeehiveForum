@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.45 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: start.php,v 1.46 2004-08-01 16:04:12 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,7 +104,15 @@ echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\">\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
-echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
+
+if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
+
+    echo "<frame src=\"./thread_list.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
+
+}else {
+
+    echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
+}
 
 if (isset($_GET['show']) && $_GET['show'] == "visitors") {
 

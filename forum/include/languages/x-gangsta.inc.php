@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.25 2004-07-31 20:22:35 rowan_hill Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.26 2004-08-01 16:04:12 rowan_hill Exp $ */
 
 // Gangsta language file
 
@@ -802,6 +802,7 @@ $lang['stickyuntil'] = "Sticky untizil";
 $lang['start'] = "Tha Stizart";
 $lang['messages'] = "Mizessages";
 $lang['pminbox'] = "P to tha M inbizox";
+$lang['startwiththreadlist'] = "Tha stizart page with tha thrizead lizist";
 $lang['pmsentitems'] = "Sizent Items";
 $lang['pmoutbox'] = "Izoutbox";
 $lang['pmsaveditems'] = "Sizaved Items";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.42 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.43 2004-11-28 22:57:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -192,7 +192,7 @@ user_get_sig(bh_session_get_value('UID'), $user_sig['SIG_CONTENT'], $user_sig['S
 
 // Start Output Here
 
-html_draw_top("onUnload=clearFocus()", "htmltools.js");
+html_draw_top("onUnload=clearFocus()", "dictionary.js". "htmltools.js");
 
 if (isset($_POST['preview'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.42 2004-11-14 17:20:58 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.43 2004-11-28 22:57:04 decoyduck Exp $ */
 
 // Beehive Version
 
@@ -87,6 +87,7 @@ define("POST_HTML_DEFAULT", 16);
 define("POST_EMOTICONS_DISABLED", 32);
 define("POST_AUTO_LINKS", 64);
 define("POST_SIGNATURE_DISPLAY", 128);
+define("POST_CHECK_SPELLING", 256);
 
 // Poll Constants
 

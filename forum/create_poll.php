@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.133 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.134 2004-11-28 22:57:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -166,6 +166,16 @@ if (isset($_POST['t_post_links'])) {
     }
 }else {
     $links_enabled = false;
+}
+
+if (isset($_POST['t_check_spelling'])) {
+    if ($_POST['t_check_spelling'] == "enabled") {
+        $spelling_enabled = true;
+    }else {
+        $spelling_enabled = false;
+    }
+}else {
+    $spelling_enabled = false;
 }
 
 if (isset($_POST['t_post_interest'])) {
@@ -545,7 +555,7 @@ if ($valid && isset($_POST['submit'])) {
     header_redirect($uri);
 }
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "openprofile.js", "post.js", "htmltools.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "openprofile.js", "post.js", "dictionary.js", "htmltools.js");
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
 
@@ -922,11 +932,12 @@ if ($allow_html == true) {
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
 echo form_checkbox("t_post_interest", "high", $lang['setthreadtohighinterest'], $high_interest)."<br />\n";
 
 echo "<br />\n";
-echo form_submit("submit", $lang['post']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
+echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y', false)) {
 

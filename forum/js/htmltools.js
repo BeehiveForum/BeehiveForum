@@ -5,6 +5,8 @@
 var selected_text = "";
 var active_field = "";
 
+var auto_check_spell_started = false;
+
 function set_focus() {
 	active_field.focus();
 }
@@ -617,6 +619,7 @@ function add_link () {
 	}
 	return;
 }
+
 function add_image () {
 	var url = prompt("Image URL:", "http://");
 	if (url != null) {
@@ -625,9 +628,38 @@ function add_image () {
 	return;
 }
 
-// Spell-check popup
+// Spell-check gubbins
+
+function autoCheckSpell(webtag) {
+
+    var form_obj;
+
+    if (document.getElementById) {
+        form_obj = eval("document.getElementById('t_check_spelling')");
+    }else if (document.all) {
+        form_obj = eval("document.all.t_check_spelling");
+    }else if (document.layer) {
+        form_obj = eval("document.t_check_spelling");
+    }else {
+        return true;
+    }
+
+    if (active_field.value.length == 0) return true;
+    
+    if (form_obj.checked && !auto_check_spell_started) {
+
+         auto_check_spell_started = true;
+         openSpellCheck(webtag);
+	 return false;
+    }
+}
+
 function openSpellCheck(webtag) {
-    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + active_field.id + '&content=' + _escape(active_field.value), 'spellcheck','width=450, height=550, scrollbars=1');
+    
+    if (active_field.value.length > 0) {
+    
+        window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + active_field.id + '&content=' + _escape(active_field.value), 'spellcheck','width=450, height=550, scrollbars=1');
+    }
 }
 
 // Emoticon preview popup

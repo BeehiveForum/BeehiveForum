@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.97 2004-11-05 20:52:50 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.98 2004-11-28 22:57:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -398,14 +398,28 @@ if (isset($_POST['t_post_emots'])) {
 } else {
                 $emots_enabled = true;
 }
+
 if (isset($_POST['t_post_links'])) {
-        if ($_POST['t_post_links'] == "enabled") {
-                $links_enabled = true;
+
+   if ($_POST['t_post_links'] == "enabled") {
+        $links_enabled = true;
+   } else {
+        $links_enabled = false;
+   }
+
+}else {
+
+   $links_enabled = false;
+}
+
+if (isset($_POST['t_check_spelling'])) {
+        if ($_POST['t_check_spelling'] == "enabled") {
+                $spelling_enabled = true;
         } else {
-                $links_enabled = false;
+                $spelling_enabled = false;
         }
 } else {
-                $links_enabled = false;
+        $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
 
 if (!isset($post_html)) $post_html = 0;
@@ -497,7 +511,7 @@ if ($valid && isset($_POST['submit'])) {
     }
 }
 
-html_draw_top("onUnload=clearFocus()", "openprofile.js", "post.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("onUnload=clearFocus()", "openprofile.js", "post.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
 
 // PM link from profile
@@ -639,6 +653,7 @@ echo "        <tr>\n";
 echo "          <td><h2>". $lang['messageoptions'] .":</h2>\n";
 
 echo "            ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo "            ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo "            ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
 
 echo "          </td>\n";
@@ -688,7 +703,7 @@ $tools = new TextAreaHTML("f_post");
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-        echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+        echo $tools->toolbar(false, form_submit('submit', $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
@@ -729,7 +744,7 @@ if ($allow_html == true) {
         echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
+echo form_submit('submit', $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.8 2004-11-27 01:33:45 tribalonline Exp $ */
+/* $Id: dictionary.php,v 1.9 2004-11-28 22:57:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -281,10 +281,10 @@ if ($dictionary->is_check_complete()) {
 
 echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('obj_id', $dictionary->get_obj_id()), "\n";
-echo "  ", form_input_hidden('ignored_words', $dictionary->get_ignored_words()), "\n";
-echo "  ", form_input_hidden('content', $dictionary->get_content()), "\n";
-echo "  ", form_input_hidden('current_word', $dictionary->get_current_word_index()), "\n";
+echo "  ", form_input_hidden('obj_id', _htmlentities($dictionary->get_obj_id())), "\n";
+echo "  ", form_input_hidden('ignored_words', _htmlentities($dictionary->get_ignored_words())), "\n";
+echo "  ", form_input_hidden('content', _htmlentities($dictionary->get_content())), "\n";
+echo "  ", form_input_hidden('current_word', _htmlentities($dictionary->get_current_word_index())), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

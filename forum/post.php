@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.230 2004-11-28 17:47:59 tribalonline Exp $ */
+/* $Id: post.php,v 1.231 2004-11-28 22:57:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -232,6 +232,17 @@ if (isset($_POST['t_post_emots'])) {
 } else {
         $emots_enabled = true;
 }
+
+if (isset($_POST['t_check_spelling'])) {
+        if ($_POST['t_check_spelling'] == "enabled") {
+                $spelling_enabled = true;
+        } else {
+                $spelling_enabled = false;
+        }
+} else {
+        $spelling_enabled = false;
+}
+
 if (isset($_POST['t_post_links'])) {
         if ($_POST['t_post_links'] == "enabled") {
                 $links_enabled = true;
@@ -241,6 +252,7 @@ if (isset($_POST['t_post_links'])) {
 } else {
         $links_enabled = false;
 }
+
 if (isset($_POST['t_post_interest'])) {
                 if ($_POST['t_post_interest'] == "high") {
                                 $high_interest = true;
@@ -262,7 +274,9 @@ if (isset($_POST['t_post_html'])) {
         } else {
                 $post_html = 0;
         }
+
 } else {
+
         if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
                 $post_html = 1;
         } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
@@ -273,6 +287,7 @@ if (isset($_POST['t_post_html'])) {
 
         $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
         $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+        $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
         $high_interest = bh_session_get_value('MARK_AS_OF_INT');
 }
 
@@ -806,11 +821,13 @@ echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onclic
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
 echo form_checkbox("t_post_interest", "high", $lang['setthreadtohighinterest'], $high_interest)."<br />\n";
 
 if (perm_is_moderator($t_fid)) {
 
+    echo "<br />\n";
     echo "<h2>".$lang['admin'].":</h2>\n";
     echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
     echo form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
@@ -822,8 +839,8 @@ $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
-                echo "<br />\n";
 
+        echo "<br />\n";
         echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "  <tr>\n";
         echo "    <td class=\"subhead\">\n";
@@ -860,7 +877,7 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-        echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+        echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
@@ -894,9 +911,9 @@ if ($allow_html == true) {
 // SUBMIT BUTTONS
 
 echo "<br /><br />\n";
-echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
-echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
-echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
+echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
 if (forum_get_setting('attachments_enabled', 'Y', false) && (perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ) || $newthread)) {
 

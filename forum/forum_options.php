@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.60 2004-11-22 22:10:16 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.61 2004-11-28 22:57:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -117,12 +117,12 @@ if (bh_session_get_value('UID') == 0) {
 
 $timezones = array("UTC -12h", "UTC -11h", "UTC -10h", "UTC -9h30m", "UTC -9h", "UTC -8h30m", "UTC -8h",
                    "UTC -7h", "UTC -6h", "UTC -5h", "UTC -4h", "UTC -3h30m", "UTC -3h", "UTC -2h", "UTC -1h",
-                   "UTC", "UTC +1h", "UTC +2h", "UTC +3h",  "UTC +3h30m","UTC +4h", "UTC +4h30m", "UTC +5h",
+                   "UTC", "UTC +1h", "UTC +2h", "UTC +3h",  "UTC +3h30m", "UTC +4h", "UTC +4h30m", "UTC +5h",
                    "UTC +5h30m", "UTC +6h", "UTC +6h30m", "UTC +7h", "UTC +8h", "UTC +9h", "UTC +9h30m",
                    "UTC +10h", "UTC +10h30m", "UTC +11h", "UTC +11h30m", "UTC +12h", "UTC +13h", "UTC +14h");
 
-$timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
-                        6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
+$timezones_data = array(-12, -11, -10, -9.5, -9, -8.5, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0, 1, 2, 3, 3.5, 4, 4.5, 5, 5.5,
+                        6, 6.5, 7, 8, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13, 14);
 
 // Languages
 
@@ -222,7 +222,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['pm_auto_prune_global'])) {
         $user_prefs_global['PM_AUTO_PRUNE'] = ($_POST['pm_auto_prune_global'] == "Y") ? true : false;
     } else {
-        $user_prefs['PM_AUTO_PRUNE'] = "N";
+        $user_prefs_global['PM_AUTO_PRUNE'] = false;
     }
 
 
@@ -230,12 +230,6 @@ if (isset($_POST['submit'])) {
         $user_prefs['PM_AUTO_PRUNE_LENGTH'] = $_POST['pm_auto_prune_length'];
     } else {
         $user_prefs['PM_AUTO_PRUNE_LENGTH'] = 60;
-    }
-
-    if (isset($_POST['pm_auto_prune_length_global'])) {
-        $user_prefs_global['PM_AUTO_PRUNE_LENGTH'] = ($_POST['pm_auto_prune_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['PM_AUTO_PRUNE_LENGTH'] = false;
     }
 
 
@@ -370,6 +364,10 @@ if (isset($_POST['submit'])) {
         $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
     }
 
+    if (isset($_POST['check_spelling']) && $_POST['check_spelling'] == "Y") {
+        $user_prefs['POST_PAGE'] |= POST_CHECK_SPELLING;
+    }
+
     if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
         $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
     }
@@ -434,9 +432,9 @@ if (!empty($error_html)) {
     echo "if (top.document.body.rows) {\n\n";
 
     if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
-        echo "    top.document.body.rows='60,' + ". max($user_prefs['FONT_SIZE']* 2, 22) ."+ ',*';\n";
+        echo "    top.document.body.rows='60, ' + ". max($user_prefs['FONT_SIZE']* 2, 22) ."+ ', *';\n";
     }else {
-        echo "    top.document.body.rows='60,22,*';\n";
+        echo "    top.document.body.rows='60, 22, *';\n";
     }
 
     echo "    top.frames['ftop'].location.replace('$top_html');\n";
@@ -500,7 +498,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['preferredlang']}:</td>\n";
 echo "                  <td>", form_dropdown_array("language", $available_langs, $available_langs_labels, (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("language_global","Y",$lang['setforallforums'],$user_prefs['LANGUAGE_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("language_global", "Y", $lang['setforallforums'], $user_prefs['LANGUAGE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">&nbsp;</td>\n";
@@ -525,15 +523,15 @@ echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['privatemessa
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_global","Y",$lang['setforallforums'],$user_prefs['PM_NOTIFY_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_global", "Y", $lang['setforallforums'], $user_prefs['PM_NOTIFY_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_save_sent_items", "Y", $lang['savepminsentitems'], (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_save_sent_items_global","Y",$lang['setforallforums'],$user_prefs['PM_SAVE_SENT_ITEM_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_save_sent_items_global", "Y", $lang['setforallforums'], $user_prefs['PM_SAVE_SENT_ITEM_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_include_reply", "Y", $lang['includepminreply'], (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_include_reply_global","Y",$lang['setforallforums'],$user_prefs['PM_INCLUDE_REPLY_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_include_reply_global", "Y", $lang['setforallforums'], $user_prefs['PM_INCLUDE_REPLY_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 
@@ -568,23 +566,23 @@ echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['display']}</
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("view_sigs", "N", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("view_sigs_global","Y",$lang['setforallforums'],$user_prefs['VIEW_SIGS_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("view_sigs_global", "Y", $lang['setforallforums'], $user_prefs['VIEW_SIGS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("mark_as_of_int_global","Y",$lang['setforallforums'],$user_prefs['MARK_AS_OF_INT_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("mark_as_of_int_global", "Y", $lang['setforallforums'], $user_prefs['MARK_AS_OF_INT_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("images_to_links", "Y", $lang['convertimagestolinks'], (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("images_to_links_global","Y",$lang['setforallforums'],$user_prefs['IMAGES_TO_LINKS_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], $user_prefs['IMAGES_TO_LINKS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1) ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_stats_global","Y",$lang['setforallforums'],$user_prefs['SHOW_STATS_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_stats_global", "Y", $lang['setforallforums'], $user_prefs['SHOW_STATS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span class=\"smalltext\">[<a href=\"edit_wordfilter.php?webtag=$webtag\">{$lang['editwordfilter']}</a>]</span></td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_word_filter_global","Y",$lang['setforallforums'],$user_prefs['USE_WORD_FILTER_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_word_filter_global", "Y", $lang['setforallforums'], $user_prefs['USE_WORD_FILTER_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";
@@ -599,7 +597,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 if ($user_prefs['POST_PAGE'] == 0) {
-        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
+    $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
@@ -613,33 +611,33 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['postpage']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-$toolbar_toggle = $user_prefs['POST_PAGE'] & POST_TOOLBAR_DISPLAY;
-echo "                  <td>", form_checkbox("toolbar_toggle", "Y", $lang['displayhtmltoolbar'], $toolbar_toggle), "</td>\n";
+echo "                  <td>", form_checkbox("toolbar_toggle", "Y", $lang['displayhtmltoolbar'], $user_prefs['POST_PAGE'] & POST_TOOLBAR_DISPLAY), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-$emots_toggle = $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISPLAY;
-echo "                  <td>", form_checkbox("emots_toggle", "Y", $lang['displayemoticonspanel'], $emots_toggle), "</td>\n";
+echo "                  <td>", form_checkbox("emots_toggle", "Y", $lang['displayemoticonspanel'], $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISPLAY), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-$sig_toggle = $user_prefs['POST_PAGE'] & POST_SIGNATURE_DISPLAY;
-echo "                  <td>", form_checkbox("sig_toggle", "Y", $lang['displaysignature'], $sig_toggle), "</td>\n";
+echo "                  <td>", form_checkbox("sig_toggle", "Y", $lang['displaysignature'], $user_prefs['POST_PAGE'] & POST_SIGNATURE_DISPLAY), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-$emots_disabled = $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISABLED;
-echo "                  <td>", form_checkbox("emots_disable", "Y", $lang['disableemoticonsinpostsbydefault'], $emots_disabled), "</td>\n";
+echo "                  <td>", form_checkbox("emots_disable", "Y", $lang['disableemoticonsinpostsbydefault'], $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISABLED), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-$post_links = $user_prefs['POST_PAGE'] & POST_AUTO_LINKS;
-echo "                  <td>", form_checkbox("post_links", "Y", $lang['automaticallyparseurlsbydefault'], $post_links), "</td>\n";
+echo "                  <td>", form_checkbox("check_spelling", "Y", $lang['automaticallycheckspelling'], $user_prefs['POST_PAGE'] & POST_CHECK_SPELLING), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
+echo "                  <td>", form_checkbox("post_links", "Y", $lang['automaticallyparseurlsbydefault'], $user_prefs['POST_PAGE'] & POST_AUTO_LINKS), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+
 if (($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = 1;
-} else if (($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0) {
-        $post_html = 2;
-} else {
-        $post_html = 0;
+    $post_html = 1;
+}else if (($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0) {
+    $post_html = 2;
+}else {
+    $post_html = 0;
 }
+
 echo "                  <td>", form_radio("post_html", "0", $lang['postinplaintextbydefault'], $post_html == 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -678,7 +676,7 @@ if (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PA
 }else {
     echo "                  <td>", form_dropdown_array("posts_per_page", array(10, 20, 30), array(10, 20, 30), 10), "</td>\n";
 }
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("posts_per_page_global","Y",$lang['setforallforums'],$user_prefs['POSTS_PER_PAGE_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("posts_per_page_global", "Y", $lang['setforallforums'], $user_prefs['POSTS_PER_PAGE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['fontsize']}:</td>\n";
@@ -688,7 +686,7 @@ if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
 }else {
     echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), 10), "</td>\n";
 }
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("font_size_global","Y",$lang['setforallforums'],$user_prefs['FONT_SIZE_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("font_size_global", "Y", $lang['setforallforums'], $user_prefs['FONT_SIZE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['forumstyle']}:</td>\n";
@@ -703,11 +701,11 @@ if (_in_array($user_prefs['STYLE'], $styles_keys)) {
 }
 
 echo "                  <td>", form_dropdown_array("style", $styles_keys, array_values($styles), $selected_style), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("style_global","Y",$lang['setforallforums'],$user_prefs['STYLE_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("style_global", "Y", $lang['setforallforums'], $user_prefs['STYLE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['forumemoticons']} ";
-echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
+echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('', '$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
 
 $emot_sets = emoticons_get_sets();
 $emot_sets_keys = array_keys($emot_sets);
@@ -719,7 +717,7 @@ if (_in_array($user_prefs['EMOTICONS'], $emot_sets_keys)) {
 }
 
 echo "                  <td>", form_dropdown_array("emoticons", $emot_sets_keys, array_values($emot_sets), $emot_selected), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("emoticons_global","Y",$lang['setforallforums'],$user_prefs['EMOTICONS_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("emoticons_global", "Y", $lang['setforallforums'], $user_prefs['EMOTICONS_GLOBAL']), "&nbsp;</td>\n";
 
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -730,7 +728,7 @@ if (isset($user_prefs['START_PAGE'])) {
 }else {
     echo "                  <td>", form_dropdown_array("start_page", range(0, 3), array($lang['start'], $lang['messages'], $lang['pminbox'], $lang['startwiththreadlist']), 0), "</td>\n";
 }
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("start_page_global","Y",$lang['setforallforums'],$user_prefs['START_PAGE_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("start_page_global", "Y", $lang['setforallforums'], $user_prefs['START_PAGE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.98 2004-03-21 09:38:01 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.99 2004-03-28 08:48:45 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -242,6 +242,25 @@ function poll_get_votes($tid)
 
     return $pollresults;
 
+}
+
+function poll_get_total_votes($tid)
+{
+    $db_poll_get_total_votes = db_connect();
+
+    if (!is_numeric($tid)) return false;
+
+    $webtag = get_webtag();
+
+    $sql = "SELECT COUNT(ID) AS VOTES FROM {$webtag['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "GROUP BY OPTION_ID";
+
+    $result_get_total_votes = db_query($sql, $db_poll_get_total_votes);
+    $total_votes = db_fetch_array($result_get_total_votes);
+
+    if (isset($total_votes['VOTES'])) return $total_votes['VOTES'];
+
+    return 0;
 }
 
 function poll_get_user_votes($tid, $viewstyle)
@@ -476,23 +495,13 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
       for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-        $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
-
         if (!in_array($pollresults['GROUP_ID'][$i], $group_array)) {
             $group_array[] = $pollresults['GROUP_ID'][$i];
         }
       }
 
+      $totalvotes = poll_get_total_votes($tid);
       $poll_group_count = sizeof($group_array);
-
-      if ($poll_group_count > 0 && $totalvotes > 0) {
-      
-        $totalvotes = ceil($totalvotes / $poll_group_count);
-
-      }else {
-
-	$totalvotes = 0;
-      }
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 

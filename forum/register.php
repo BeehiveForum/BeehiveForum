@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.48 2003-08-03 00:26:12 decoyduck Exp $ */
+/* $Id: register.php,v 1.49 2003-08-15 15:33:49 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -360,6 +360,14 @@ if (strlen($error_html) > 0) {
             <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes(trim($HTTP_POST_VARS['logon'])) : ''), 35, 32); ?></td>
           </tr>
           <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['passwd']; ?>:</td>
+            <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 35, 32,"password"); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['confirmpassword']; ?>:</td>
+            <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes(trim($HTTP_POST_VARS['cpw'])) : ''), 35, 32,"password"); ?></td>
+          </tr>
+          <tr>
             <td class="posthead">&nbsp;<?php echo $lang['nickname']; ?>:</td>
             <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes(trim($HTTP_POST_VARS['nickname'])) : ''), 35, 32); ?></td>
           </tr>
@@ -371,14 +379,7 @@ if (strlen($error_html) > 0) {
             <td class="posthead">&nbsp;<?php echo $lang['dateofbirth']; ?>:</td>
             <td><?php echo form_dob_dropdowns((isset($HTTP_POST_VARS['dob_year']) ? $HTTP_POST_VARS['dob_year'] : 0), (isset($HTTP_POST_VARS['dob_month']) ? $HTTP_POST_VARS['dob_month'] : 0), (isset($HTTP_POST_VARS['dob_day']) ? $HTTP_POST_VARS['dob_day'] : 0), true); ?></td>
           </tr>
-          <tr>
-            <td class="posthead">&nbsp;<?php echo $lang['passwd']; ?>:</td>
-            <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 35, 32,"password"); ?></td>
-          </tr>
-          <tr>
-            <td class="posthead">&nbsp;<?php echo $lang['confirmpassword']; ?>:</td>
-            <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes(trim($HTTP_POST_VARS['cpw'])) : ''), 35, 32,"password"); ?></td>
-          </tr>
+
           <tr>
             <td>&nbsp;</td>
             <td><?php echo form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")); ?></td>

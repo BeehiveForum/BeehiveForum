@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.14 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: display.php,v 1.15 2003-07-29 16:26:43 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -38,6 +38,7 @@ require_once("./include/beehive.inc.php"); // Beehive stuff
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/lang.inc.php");
 
 if (!bh_session_check()) {
 
@@ -92,13 +93,15 @@ if ($message) {
         $last_pid = $message['PID'];
 }
 
-echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";
-echo form_quick_button("./messages.php", "Back", "msg", "$tid.$pid");
-echo "</td></tr></table>\n";
-
 messages_end_panel();
-
-draw_beehive_bar();
+echo "<table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";
+echo "<form name=\"display\" method=\"get\" action=\"./messages.php\" target=\"_self\">\n";
+echo form_input_hidden("msg", "$tid.$pid");
+echo form_submit("submit", $lang['back']);
+echo "&nbsp;";
+echo form_button("print", $lang['print'], "onclick=\"window.print()\"");
+echo "</form>\n";
+echo "</td></tr></table>\n";
 html_draw_bottom();
 
 ?>

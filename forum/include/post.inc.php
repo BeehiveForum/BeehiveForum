@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.117 2005-03-27 13:02:58 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.118 2005-04-03 00:56:06 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -566,34 +566,21 @@ class MessageTextParse {
 
         $this->original = $message;
 
-        $message_temp = preg_split("/<div class=\"sig\">/", $message);
+        $message = explode('<div class="sig">', $message);
 
-        if (count($message_temp) > 1) {
+        if (count($message) > 1 && substr($message[count($message)-1], -6) == '</div>') {
 
-            $sig_temp = array_pop($message_temp);
-            $sig_temp = preg_split("/<\/div>/", $sig_temp);
-
-            $sig = "";
-
-            for ($i = 0; $i < count($sig_temp) - 1; $i++) {
-                $sig .= $sig_temp[$i];
-                if ($i < count($sig_temp) - 2) {
-                    $sig .= "</div>";
-                }
-            }
+            $sig = '<div class="sig">' . array_pop($message);
+            do {
+                $sig = '<div class="sig">' . array_pop($message) . $sig;
+            } while (count(explode('<div', $sig)) != count(explode('</div>', $sig)));
+            $sig = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', $sig);
 
         } else {
             $sig = "";
         }
 
-        $message = "";
-
-        for ($i = 0; $i < count($message_temp); $i++) {
-            $message .= $message_temp[$i];
-            if ($i < count($message_temp) - 1) {
-                $message .= "<div class=\"sig\">";
-            }
-        }
+        $message = implode('<div class="sig">', $message);
 
         $sig = clean_emoticons($sig);
         $message_temp = clean_emoticons($message);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.343 2005-03-28 00:16:07 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.344 2005-04-03 00:55:31 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -160,80 +160,227 @@ function message_get_content($tid, $pid)
     return isset($fa['CONTENT']) ? $fa['CONTENT'] : "";
 }
 
-function message_apply_wikilinks($content)
+/**
+* Adds emoticons/wikilinks to posts; ignores signature
+*
+* Message text is split into the message/sig parts. If the user ignores this sig/all sigs the
+* sig is set to an empty string. The message is then split into it's HTML and text parts.
+* <nowiki> tags are added around <code>, <spoiler>, <a> tags
+* <noemots> tags are added around <code>, <spoiler> tags
+* The message is collapsed and re-split by the new <nowiki>/<noemots> tags, and wiki links and
+* emoticons are added where appropriate.
+*
+* @return string
+* @param string $content Message HTML
+* @param boolean $emoticons Toggle to add emoticons (default true)
+* @param boolean $sig Toggle to display signature (default true)
+*/
+function message_split_fiddle($content,$emoticons=true,$sig=true)
 {
     $webtag = get_webtag($webtag_search);
 
-    if (forum_get_setting('enable_wiki_integration', 'Y') && bh_session_get_value('ENABLE_WIKI_WORDS') == 'Y') {
+    $message = explode('<div class="sig">', $content);
 
-        $wiki_location = forum_get_setting('wiki_integration_uri', false, '');
+    if (count($message) > 1 && substr($message[count($message)-1], -6) == '</div>') {
 
-        if (strlen($wiki_location) > 0) {
+        $sig = '<div class="sig">' . array_pop($message);
+        do {
+            $sig = '<div class="sig">' . array_pop($message) . $sig;
+        } while (count(explode('<div', $sig)) != count(explode('</div>', $sig)));
+        $sig = preg_replace("/^<div class=\"sig\">(.*)<\/div>$/s", '$1', $sig);
 
-            $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
+    } else {
+        $sig = '';
+    }
 
-            if (preg_match("/<div class=\"sig\">/", $content)) {
+    $message = implode('<div class="sig">', $message);
 
-                $content_array = preg_split("/<div class=\"sig\">/", $content);
-                $message_array = preg_split('/([<|>])/', $content_array[0], -1, PREG_SPLIT_DELIM_CAPTURE);
 
-                for ($i = 0; $i < sizeof($message_array); $i++) {
-                    if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
-                        $message_array[$i] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $message_array[$i]);
-                    }
+    $message_parts = preg_split('/<([^<>]+)>/', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+    for($j=0;$j<1;$j++){
+        $noemots = 0;
+        $nowiki = 0;
+        $fakenoemots = '';
+        $fakenowiki = '';
+        $opendivs = 0;
+        $opena = 0;
+        for($i=0;$i<sizeof($message_parts);$i++){
+            if ($i%2) {
+                if ($message_parts[$i] == 'noemots') {
+                    $noemots++;
+                } else if ($message_parts[$i] == '/noemots') {
+                    $noemots--;
                 }
 
-                $content = implode('', $message_array);
-                $content.= "<div class=\"sig\">{$content_array[1]}";
-
-            }else {
-
-                $content_array = preg_split('/([<|>])/', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-                for ($i = 0; $i < sizeof($content_array); $i++) {
-                    if (!($i % 4) && (!isset($content_array[$i - 2]) || !strstr($content_array[$i - 2], "href"))) {
-                        $content_array[$i] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $content_array[$i]);
+                if ($noemots == 0 || $nowiki == 0) {
+                    if (strpos($message_parts[$i], 'div class="quotetext" id="code-') !== false) {
+                        if ($noemots == 0) {
+                            $fakenoemots = 'pre';
+                            $noemots++;
+                            array_splice($message_parts,$i,0,array('noemots',''));
+                            $i += 2;
+                        }
+                        if ($nowiki == 0) {
+                            $fakenowiki = 'pre';
+                            $nowiki++;
+                            array_splice($message_parts,$i,0,array('nowiki',''));
+                            $i += 2;
+                        }
+                    } else if (strpos($message_parts[$i], 'div class="quotetext" id="spoiler"') !== false) {
+                        $opendivs = -1;
+                        if ($noemots == 0) {
+                            $fakenoemots = 'div';
+                            $noemots++;
+                            array_splice($message_parts,$i,0,array('noemots',''));
+                            $i += 2;
+                        }
+                        if ($nowiki == 0) {
+                            $fakenowiki = 'div';
+                            $nowiki++;
+                            array_splice($message_parts,$i,0,array('nowiki',''));
+                            $i += 2;
+                        }
                     }
                 }
+                if ($noemots != 0 || $nowiki != 0) {
+                    if ($fakenoemots == 'pre' || $fakenowiki == 'pre') {
+                        if ($message_parts[$i] == '/pre') {
+                            if ($fakenowiki == 'pre') {
+                                $fakenowiki = '';
+                                $nowiki--;
+                                array_splice($message_parts,$i+1,0,array('','/nowiki'));
+                                $i += 2;
+                            }
+                            if ($fakenoemots == 'pre') {
+                                $fakenoemots = '';
+                                $noemots--;
+                                array_splice($message_parts,$i+1,0,array('','/noemots'));
+                                $i += 2;
+                            }
+                        }
+                    } else if ($fakenoemots == 'div' || $fakenowiki == 'div') {
+                        if (substr($message_parts[$i],0,4) == 'div ' || $message_parts[$i] == 'div') {
+                            if ($opendivs != -1) {
+                                $opendivs++;
+                            }
+                        } else if ($message_parts[$i] == '/div') {
+                            if ($opendivs != -1) {
+                                $opendivs--;
+                                if ($opendivs == 0) {
+                                    if ($fakenowiki == 'div') {
+                                        $fakenowiki = '';
+                                        $nowiki--;
+                                        array_splice($message_parts,$i+1,0,array('','/nowiki'));
+                                        $i += 2;
+                                    }
+                                    if ($fakenoemots == 'div') {
+                                        $fakenoemots = '';
+                                        $noemots--;
+                                        array_splice($message_parts,$i+1,0,array('','/noemots'));
+                                        $i += 2;
+                                    }
+                                }
+                            } else {
+                                $opendivs = 0;
+                            }
+                        }
+                    }
+                }
+                if ($nowiki == 0) {
+                    if (substr($message_parts[$i],0,2) == 'a ' || $message_parts[$i] == 'a') {
+                        $nowiki++;
+                        $opena++;
+                        array_splice($message_parts,$i,0,array('nowiki',''));
+                        $i += 2;
+                    }
+                } else {
+                    if (substr($message_parts[$i],0,2) == 'a ' || $message_parts[$i] == 'a') {
+                        $opena++;
+                    } else if ($message_parts[$i] == '/a') {
+                        $opena--;
+                        if ($opena == 0) {
+                            $nowiki--;
+                            array_splice($message_parts,$i+1,0,array('','/nowiki'));
+                            $i += 2;
+                        }
+                    }
+                }
+            }
+        }
+        if ($j == 0) {
+            $message = '';
+            for($i=0;$i<sizeof($message_parts);$i++){
+                if ($i%2) {
+                    $message.= '<'.$message_parts[$i].'>';
+                } else {
+                    $message.= $message_parts[$i];
+                }
+            }
 
-                $content = implode('', $content_array);
+            if ($sig == true) {
+                $message_parts = preg_split('/<([^<>]+)>/', $sig, -1, PREG_SPLIT_DELIM_CAPTURE);
+            } else {
+                $sig = '';
+                break;
+            }
+        } else {
+            $sig = '';
+            for($i=0;$i<sizeof($message_parts);$i++){
+                if ($i%2) {
+                    $sig.= '<'.$message_parts[$i].'>';
+                } else {
+                    $sig.= $message_parts[$i];
+                }
             }
         }
     }
 
-    if (forum_get_setting('enable_wiki_quick_links', 'Y')) {
+    $wiki1 = forum_get_setting('enable_wiki_integration', 'Y') && bh_session_get_value('ENABLE_WIKI_WORDS') == 'Y';
+    $wiki2 = forum_get_setting('enable_wiki_quick_links', 'Y');
 
-        if (preg_match("/<div class=\"sig\">/", $content)) {
-
-            $content_array = preg_split("/<div class=\"sig\">/", $content);
-            $message_array = preg_split('/([<|>])/', $content_array[0], -1, PREG_SPLIT_DELIM_CAPTURE);
-
-            for ($i = 0; $i < sizeof($message_array); $i++) {
-                if (!($i % 4) && (!isset($message_array[$i - 2]) || !strstr($message_array[$i - 2], "href"))) {
-                    $message_array[$i] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $message_array[$i]);
-                    $message_array[$i] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $message_array[$i]);
-                }
-            }
-
-            $content = implode('', $message_array);
-            $content.= "<div class=\"sig\">{$content_array[1]}";
-
-        }else {
-
-            $content_array = preg_split('/([<|>])/', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-            for ($i = 0; $i < sizeof($content_array); $i++) {
-                if (!($i % 4) && (!isset($content_array[$i - 2]) || !strstr($content_array[$i - 2], "href"))) {
-                    $content_array[$i] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $content_array[$i]);
-                    $content_array[$i] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $content_array[$i]);
-                }
-            }
-
-            $content = implode('', $content_array);
+    if ($wiki1 || $wiki2) {
+        if ($wiki1) {
+            $wiki_location = forum_get_setting('wiki_integration_uri', false, '');
+            if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
+
+        $message_parts = preg_split("/<\/?nowiki>/", $message);
+
+        for ($i=0;$i<sizeof($message_parts);$i++){
+            if(!($i%2)) {
+                if ($wiki1) {
+                    $message_parts[$i] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $message_parts[$i]);
+                }
+                if ($wiki2) {
+                    $message_parts[$i] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $message_parts[$i]);
+                    $message_parts[$i] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $message_parts[$i]);
+                }
+            }
+        }
+
+        $message = implode('',$message_parts);
     }
 
-    return $content;
+    if ($emoticons == true) {
+        $emots = new Emoticons();
+
+        $message_parts = preg_split("/<\/?noemots>/", $message);
+        $sig_parts = preg_split("/<\/?noemots>/", $sig);
+
+        $message_parts = array_merge($message_parts, $sig_parts);
+
+        for ($i=0;$i<sizeof($message_parts);$i++){
+            if(!($i%2)) {
+                $message_parts[$i] = $emots->convert($message_parts[$i]);
+            }
+        }
+
+        $message = implode('',$message_parts);
+    }
+
+    return $message;
+
 }
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
@@ -300,15 +447,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
 
-    // Convert emoticons
+    // Add emoticons/WikiLinks and ignore signature ----------------------------
 
-    $emots = new Emoticons();
-
-    $message['CONTENT'] = $emots->convert($message['CONTENT']);
-
-    // Convert any WikiWords to hyperlinks -------------------------------------
-
-    $message['CONTENT'] = message_apply_wikilinks($message['CONTENT']);
+    $message['CONTENT'] = message_split_fiddle($message['CONTENT'],true,(($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
@@ -574,27 +715,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         echo "&nbsp;</span></td>\n";
         echo "              </tr>\n";
-
-        if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-
-            if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
-
-                $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
-                $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
-                $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
-                $message['CONTENT'] = "";
-
-                for ($i=0; $i<count($msg_split); $i++) {
-
-                    if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-
-                    $message['CONTENT'] .= $msg_split[$i];
-                }
-
-                $message['CONTENT'] .= "</div>";
-            }
-        }
-
         echo "              <tr>\n";
         echo "                <td class=\"postbody\" align=\"left\">{$message['CONTENT']}</td>\n";
         echo "              </tr>\n";

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.96 2005-03-29 00:42:02 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.97 2005-04-03 00:56:27 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "geshi.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
@@ -576,7 +576,11 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                 if ($tag != "" && $tag != "/") {
 
-                    $ret_text .= "<".$tag.">";
+                    if (($tag == 'noemots' && $noemots > 0) || ($tag == '/noemots' && $noemots > 1)) {
+                        // disallows <noemots> nesting
+                    } else {
+                        $ret_text .= "<".$tag.">";
+                    }
 
                     if ($tag == 'noemots') {
                         $noemots++;
@@ -960,7 +964,7 @@ function tidy_html ($html, $linebreaks = true, $links = true)
 
     // convert smileys back to plain text
 
-    $html = clean_emoticons($html);
+    // $html = clean_emoticons($html);
 
     return $html;
 }

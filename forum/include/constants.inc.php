@@ -21,7 +21,7 @@ define("PERM_CHECK_SOLDIER",USER_PERM_SOLDIER|USER_PERM_QUEEN);
 
 define("MAX_ATTACHMENT_SIZE", 5242880);
 
-// Constats for Search Dialog Errors
+// Constants for Search Dialog Errors
 
 define("SEARCH_USER_NOT_FOUND", 1);
 define("SEARCH_NO_KEYWORDS", 2);

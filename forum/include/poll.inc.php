@@ -26,6 +26,7 @@ USA
 require_once('./include/messages.inc.php');
 require_once('./include/thread.inc.php');
 require_once('./include/user_rel.inc.php');
+require_once("./include/lang.inc.php");
 
 function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $show_results)
 {
@@ -203,7 +204,7 @@ function poll_sort($a, $b) {
 function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $lang;
     $uid = bh_session_get_value('UID');
 
     $polldata     = poll_get($tid);
@@ -345,29 +346,29 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
-        $polldata['CONTENT'].= "<b>Nobody voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>";
 
       }elseif ($totalvotes == 0 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
 
-        $polldata['CONTENT'].= "<b>Nobody has voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>";
 
       }elseif ($totalvotes == 1 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
-        $polldata['CONTENT'].= "<b>1 person voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>";
 
       }elseif ($totalvotes == 1 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
 
-        $polldata['CONTENT'].= "<b>1 person has voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>";
 
       }else {
 
         if ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0) {
 
-          $polldata['CONTENT'].= "<b>". $totalvotes. " people voted.</b>";
+          $polldata['CONTENT'].= "<b>". $totalvotes. " {$lang['peoplevoted']}</b>";
 
         }else {
 
-          $polldata['CONTENT'].= "<b>". $totalvotes. " people have voted.</b>";
+          $polldata['CONTENT'].= "<b>". $totalvotes. " {$lang['peoplehavevoted']}</b>";
 
         }
 
@@ -382,7 +383,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       if (($polldata['CLOSES'] <= gmmktime()) && $polldata['CLOSES'] != 0) {
 
         $polldata['CONTENT'].= "        <tr>\n";
-        $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">Poll has ended.</td>\n";
+        $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
         $polldata['CONTENT'].= "        </tr>\n";
 
         if (isset($userpolldata['OPTION_ID'])) {
@@ -391,12 +392,12 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">";
 
           if ($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'] == strip_tags($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'])) {
-            $polldata['CONTENT'].= "Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "'";
+            $polldata['CONTENT'].= "{$lang['yourvotewas']} '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "'";
           }else {
-            $polldata['CONTENT'].= "You voted for option #". $userpolldata['OPTION_ID'];
+            $polldata['CONTENT'].= $lang['youvotedforoption']. $userpolldata['OPTION_ID'];
           }
 
-          $polldata['CONTENT'].=  " on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
+          $polldata['CONTENT'].=  " {$lang['on']} ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
 
         }
@@ -409,12 +410,12 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">";
 
           if ($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'] == strip_tags($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'])) {
-            $polldata['CONTENT'].= "Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "'";
+            $polldata['CONTENT'].= "{$lang['yourvotewas']} '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "'";
           }else {
-            $polldata['CONTENT'].= "You voted for option #". $userpolldata['OPTION_ID'];
+            $polldata['CONTENT'].= $lang['youvotedforoption']. $userpolldata['OPTION_ID'];
           }
 
-          $polldata['CONTENT'].=  " on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
+          $polldata['CONTENT'].=  " {$lang['on']} ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>\n";
@@ -424,13 +425,13 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
+            $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
 
           }
 
           if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()){
 
-            $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', 'End Poll'). "</td>\n";
+            $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']). "</td>\n";
 
           }
 
@@ -440,7 +441,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           if ($polldata['CHANGEVOTE'] == 1) {
 
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', 'Change Vote'). "</td>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', $lang['changevote']). "</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
           }
@@ -448,20 +449,20 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         }elseif (bh_session_get_value('UID') > 0) {
 
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', 'Vote'). "</td>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
+            $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
 
           }
 
           if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()){
 
-            $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', 'End Poll');
+            $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
 
           }
 
@@ -490,6 +491,8 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
 function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
 {
+
+    global $lang;
 
     //usort($pollresults, "poll_sort");
 
@@ -529,7 +532,7 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
         $polldisplay.= "              </tr>\n";
         $polldisplay.= "              <tr>\n";
         $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['VOTES']. " votes (". $vote_percent. "%)</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['VOTES']. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
 
         $polldisplay.= "              </tr>\n";
 
@@ -548,6 +551,8 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
 
 function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
 {
+
+    global $lang;
 
     //usort($pollresults, "poll_sort");
 
@@ -596,7 +601,7 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
           $vote_percent = 0;
         }
 
-        $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"top\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " votes (". $vote_percent. "%)</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"top\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
 
       }
 
@@ -612,7 +617,7 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
 function poll_confirm_close($tid)
 {
 
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $lang;
 
     $preview_message = messages_get($tid, 1, 1);
 
@@ -638,15 +643,15 @@ function poll_confirm_close($tid)
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
 
-    echo "<h2>Are you sure you want to close the following Poll?</h2>\n";
+    echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
 
     poll_display($tid, $preview_message, 0, 0, false);
 
     echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
-    echo form_submit("pollclose", "End Poll");
-    echo "&nbsp;".form_submit("cancel", "Cancel");
+    echo form_submit("pollclose", $lang['endpoll']);
+    echo "&nbsp;".form_submit("cancel", $lang['cancel']);
     echo "</form>\n";
 
 }

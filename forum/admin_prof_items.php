@@ -48,12 +48,13 @@ require_once("./include/profile.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -72,8 +73,8 @@ if(isset($HTTP_GET_VARS['psid'])){
 
 }else {
 
-  echo "<h1>Invalid Operation</h1>\n";
-  echo "<p>No Profile Section specified.</p>\n";
+  echo "<h1>{$lang['invalidop']}</h1>\n";
+  echo "<p>{$lang['noprofilesectionspecified']}</p>\n";
   html_draw_bottom();
   exit;
 
@@ -81,7 +82,7 @@ if(isset($HTTP_GET_VARS['psid'])){
 
 if(isset($HTTP_POST_VARS['submit'])) {
 
-  if ($HTTP_POST_VARS['submit'] == "Submit") {
+  if ($HTTP_POST_VARS['submit'] == $lang['submit']) {
 
     for($i = 0; $i < $HTTP_POST_VARS['t_count']; $i++) {
 
@@ -93,12 +94,12 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     }
 
-    if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != "New Item"){
+    if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != $lang['newitem']){
         $new_piid = profile_item_create($psid,$HTTP_POST_VARS['t_name_new']);
         admin_addlog(0, 0, 0, 0, $psid, $new_piid, 14);
     }
 
-  }elseif ($HTTP_POST_VARS['submit'] == "Delete") {
+  }elseif ($HTTP_POST_VARS['submit'] == $lang['delete']) {
 
     $sql = "delete from ". forum_table("PROFILE_ITEM"). " where PIID = ". $HTTP_POST_VARS['piid'];
     $result = db_query($sql, $db);
@@ -109,7 +110,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 }
 
 // Draw the form
-echo "<h1>Manage Profile Items<br />Section: ".profile_section_get_name($psid)."</h1>\n";
+echo "<h1>{$lang['manageprofileitems']}<br />{$lang['section']}: ".profile_section_get_name($psid)."</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\">\n";
@@ -118,10 +119,10 @@ echo "    <td class=\"posthead\">\n";
 echo "      <form name=\"f_items\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">ID</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">Item Name</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">Move to</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">Delete Item</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['itemname']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['moveto']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['deleteitem']}</td>\n";
 echo "          </tr>\n";
 
 $sql = "select PROFILE_ITEM.PIID, PROFILE_ITEM.NAME ";
@@ -141,15 +142,15 @@ for($i=0;$i<$result_count;$i++){
     echo "            <td valign=\"top\" align=\"left\">", $row['PIID'], form_input_hidden("t_piid_$i",$row['PIID']), "</td>\n";
     echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i", $row['NAME']), "</td>\n";
     echo "            <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid,"t_move","_$i"), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\" width=\"100\">", form_input_hidden("t_psid", $psid), form_input_hidden("piid", $row['PIID']). form_submit("submit", "Delete"), "</td>\n";
+    echo "            <td valign=\"top\" align=\"left\" width=\"100\">", form_input_hidden("t_psid", $psid), form_input_hidden("piid", $row['PIID']). form_submit("submit", $lang['delete']), "</td>\n";
     echo "          </tr>\n";
 
 }
 
 // Draw a row for a new section to be created
 echo "          <tr>\n";
-echo "            <td align=\"left\">NEW</td>\n";
-echo "            <td align=\"left\">", form_field("t_name_new","New Item",64,64), "</td>";
+echo "            <td align=\"left\">{$lang['new_caps']}</td>\n";
+echo "            <td align=\"left\">", form_field("t_name_new",$lang['newitem'],64,64), "</td>";
 echo "            <td align=\"center\">&nbsp;</td>\n";
 echo "            <td align=\"center\">&nbsp;</td>\n";
 echo "          </tr>\n";

@@ -62,6 +62,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
@@ -99,7 +100,7 @@ if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0,
 
   }else{
 
-    $error_html = "<h2>Invalid username</h2>";
+    $error_html = "<h2>{$lang['invalidusername']}</h2>";
     $valid = false;
 
   }
@@ -113,21 +114,21 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     if (isset($HTTP_POST_VARS['t_threadtitle']) && trim($HTTP_POST_VARS['t_threadtitle']) != "") {
         $t_threadtitle = trim($HTTP_POST_VARS['t_threadtitle']);
     }else{
-        $error_html = "<h2>You must enter a title for the thread</h2>";
+        $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_fid'])) {
         $t_fid = $HTTP_POST_VARS['t_fid'];
     } else if ($valid) {
-        $error_html = "<h2>Please select a folder</h2>";
+        $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
         $t_content = $HTTP_POST_VARS['t_content'];
     }else{
-        $error_html = "<h2>You must enter some content for the post</h2>";
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
@@ -141,7 +142,7 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
         if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
             $t_content = $HTTP_POST_VARS['t_content'];
         }else{
-            $error_html = "<h2>You must enter some content for the post</h2>";
+            $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
             $valid = false;
         }
 
@@ -278,7 +279,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     }else{
 
-        $error_html = "<h2>Error creating post. Please try again in a few minutes.</h2>";
+        $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
 
     }
 
@@ -294,7 +295,7 @@ if (!isset($HTTP_POST_VARS['aid'])) {
 
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
-    echo "<h1>Preview Message</h1>";
+    echo "<h1>{$lang['messagepreview']}</h1>";
 
     if ($HTTP_POST_VARS['t_to_uid'] == 0) {
 
@@ -404,9 +405,9 @@ if (!isset($t_sig) || !$t_sig) {
 }
 
 if ($newthread) {
-    echo "<h1>Create new thread</h1>\n";
+    echo "<h1>{$lang['createnewthread']}</h1>\n";
 }else{
-    echo "<h1>Post reply</h1>\n";
+    echo "<h1>{$lang['postreply']}</h1>\n";
 }
 if (isset($error_html)) {
     echo $error_html . "\n";
@@ -415,7 +416,7 @@ if (isset($error_html)) {
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 echo "function launchOthers() {\n\n";
-echo "  newUser = prompt(\"Please enter a MemberName.\",document.f_post.t_to_uid.options[0].text);\n";
+echo "  newUser = prompt(\"{$lang['pleaseentermembername']}\",document.f_post.t_to_uid.options[0].text);\n";
 echo "  if (newUser != null) {\n";
 echo "    if (newUser != document.f_post.t_to_uid.options[0].text) {\n";
 echo "      document.f_post.t_to_uid.options[0] = new Option(newUser, \"U:\" + newUser, true, true);\n";
@@ -435,9 +436,9 @@ if (!isset($t_fid)) {
 if ($newthread) {
 
     echo "<table>\n";
-    echo "<tr><td><h2>Select folder:</h2></td></tr>\n";
+    echo "<tr><td><h2>{$lang['selectfolder']}:</h2></td></tr>\n";
     echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
-    echo "<tr><td><h2>Thread title:</h2></td></tr>\n";
+    echo "<tr><td><h2>{$lang['threadtitle']}:</h2></td></tr>\n";
     echo "<tr><td>".form_input_text("t_threadtitle", _stripslashes($t_threadtitle), 30, 64);
     echo "\n";
     echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
@@ -452,7 +453,7 @@ if ($newthread) {
 
     if ((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
 
-      echo "<h2>Message has been deleted.</h2>\n";
+      echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
       html_draw_bottom();
       exit;
 
@@ -460,13 +461,13 @@ if ($newthread) {
 
       if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
 
-        echo "<h2>Message has been deleted.</h2>\n";
+        echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         html_draw_bottom();
         exit;
 
       }else{
 
-        echo "<h2>Thread title: ". _stripslashes($threaddata['TITLE']). "</h2>\n";
+        echo "<h2>{$lang['threadtitle']}: ". _stripslashes($threaddata['TITLE']). "</h2>\n";
         echo form_input_hidden("t_tid",$reply_to_tid);
         echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
 
@@ -488,7 +489,7 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td>To: ". post_draw_to_dropdown($t_to_uid). "&nbsp;", form_button("others", "Others", "onclick=\"javascript:launchOthers()\""), "&nbsp;", form_submit("submit","Post") ."</td>\n";
+echo "          <td>{$lang['to']}: ". post_draw_to_dropdown($t_to_uid). "&nbsp;", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "&nbsp;", form_submit("submit",$lang['post']) ."</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\">\n";
@@ -496,27 +497,27 @@ echo "        <tr>\n";
 echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>Signature:<br />".form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</td>\n";
+echo "          <td>{$lang['signature']}:<br />".form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>", form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", (isset($t_post_html) && $t_post_html == "Y")), "</td>\n";
+echo "          <td>", form_checkbox("t_post_html", "Y", $lang['messagecontainsHTML'], (isset($t_post_html) && $t_post_html == "Y")), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit','Post', 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
-echo "&nbsp;".form_submit('preview', 'Preview');
-echo "&nbsp;".form_submit('cancel', 'Cancel');
+echo form_submit('submit',$lang['post'], 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
+echo "&nbsp;".form_submit('preview', $lang['preview']);
+echo "&nbsp;".form_submit('cancel', $lang['cancel']);
 
 if ($attachments_enabled) {
 
-    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
     echo form_input_hidden("aid", $aid);
 
 }
 
-echo "&nbsp;".form_submit("convert_html", "Convert to HTML");
+echo "&nbsp;".form_submit("convert_html", $lang['converttoHTML']);
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
@@ -528,7 +529,7 @@ echo "</form>\n";
 
 if (!$newthread) {
 
-    echo "<p>In reply to:</p>\n";
+    echo "<p>{$lang['inreplyto']}:</p>\n";
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 

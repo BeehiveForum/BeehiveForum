@@ -34,6 +34,7 @@ require_once("./include/session.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/light.inc.php");
+require_once("./include/lang.inc.php");
 
 if(!bh_session_check()){
 
@@ -105,21 +106,21 @@ echo "<form name=\"f_mode\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SEL
 
 if (bh_session_get_value('UID') == 0) {
 
-  $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
+  $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
   echo light_form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode). "\n        ";
 
 }else {
 
-  $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
-                  "2 Days Back","7 Days Back","High Interest","Unread High Interest",
-                  "I've recently seen","I've ignored","I've subscribed to","Started by Friend",
-                  "Unread std by Friend");
+  $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
+                  $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
+                  $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
+                  $lang['unreadstartedbyfriend']);
 
   echo light_form_dropdown_array("mode",range(0,12),$labels,$mode). "\n        ";
 
 }
 
-echo light_form_submit("go","Go!"). "\n";
+echo light_form_submit("go",$lang['goexcmark']). "\n";
 
 echo "</form>\n";
 
@@ -175,7 +176,7 @@ if(isset($folder)){
 
 // Get folder FIDs and titles
 $folder_info = threads_get_folders();
-if (!$folder_info) die ("<p>Could not retrieve folder information</p>");
+if (!$folder_info) die ("<p>{$lang['couldnotretrievefolderinformation']}</p>");
 
 // Get total number of messages for each folder
 $folder_msgs = threads_get_folder_msgs();
@@ -250,10 +251,10 @@ if (isset($ignored_folders)) $folder_order = array_merge($folder_order, $ignored
 // If no threads are returned, say something to that effect
 
 if (!$thread_info) {
-    echo "<p>No messages in this category. Please select another, or <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0\">click here</a> for all threads.</p>\n";
+    echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></p>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
 
 // Iterate through the information we've just got and display it in the right order
 
@@ -273,10 +274,10 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "0";
             }
 
-            echo " threads - \n";
-            echo "<b><a href=\"lpost.php?fid=".$folder_number."\">Post New</a></b></p>\n";
+            echo " {$lang['threads']} - \n";
+            echo "<b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b></p>\n";
 
-            if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\">Previous 50 threads</a></i></p>\n";
+            if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></i></p>\n";
 
             echo "<ul>\n";
 
@@ -310,7 +311,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     // work out how long ago the thread was posted and format the time to display
                     $thread_time = format_time($thread['modified']);
 
-                    echo "<a href=\"lmessages.php?msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " Started by ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
+                    echo "<a href=\"lmessages.php?msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".$thread['title']."</a> ";
                     if ($thread['interest'] == 1) echo "(HI) ";
                     if ($thread['interest'] == 2) echo "(Sub) ";
                     if ($thread['poll_flag'] == 'Y') echo "(P) ";
@@ -327,8 +328,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                 $more_threads = $folder_msgs[$folder] - $start_from - 50;
 
-                if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">Next $more_threads threads</a></i></p>\n";
-                if ($more_threads > 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">Next 50 threads</a></i></p>\n";
+                if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</a></i></p>\n";
+                if ($more_threads > 50) echo "<p><i><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></i></p>\n";
 
             }
 
@@ -342,8 +343,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
                 echo "0";
             }
 
-            echo " threads - </a>\n";
-            echo "<a href=\"post.php?fid=".$folder_number."\">Post New</a></p>\n";
+            echo " {$lang['threads']} - </a>\n";
+            echo "<a href=\"post.php?fid=".$folder_number."\">{$lang['postnew']}w</a></p>\n";
         }
 
     }
@@ -362,27 +363,27 @@ if ($mode == 0 && !isset($folder)) {
       }
 
       $more_threads = $total_threads - $start_from - 50;
-      if ($more_threads > 0 && $more_threads <= 50) echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</p>\n";
-      if ($more_threads > 50) echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></p>\n";
+      if ($more_threads > 0 && $more_threads <= 50) echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</p>\n";
+      if ($more_threads > 50) echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></p>\n";
 
     }
 }
 
 if (bh_session_get_value('UID') != 0) {
 
-    echo "  <h5>Mark as Read:</h5>\n";
+    echo "  <h5>{$lang['markasread']}:</h5>\n";
     echo "    <form name=\"f_mark\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
 
-    $labels = array("All Discussions", "Next 50 discussions");
+    $labels = array($lang['alldiscussions'], $lang['next50discussions']);
 
     if (isset($visiblethreads) && is_array($visiblethreads)) {
 
-        $labels[] = "Visible discussions";
+        $labels[] = $lang['visiblediscussions'];
         echo form_input_hidden("tids", implode(',', $visiblethreads));
     }
 
     echo light_form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n        ";
-    echo light_form_submit("go","Go!"). "\n";
+    echo light_form_submit("go",$lang['goexcmark']). "\n";
     echo "    </form>\n";
 
 }

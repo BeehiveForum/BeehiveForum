@@ -48,12 +48,13 @@ require_once("./include/profile.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -63,7 +64,7 @@ $db = db_connect();
 // Do updates
 if(isset($HTTP_POST_VARS['submit'])){
 
-  if ($HTTP_POST_VARS['submit'] == "Submit") {
+  if ($HTTP_POST_VARS['submit'] == $lang['submit']) {
 
     for($i=0;$i<$HTTP_POST_VARS['t_count'];$i++){
 
@@ -76,14 +77,14 @@ if(isset($HTTP_POST_VARS['submit'])){
         }
     }
 
-    if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != "New Section"){
+    if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != $lang['newsection']){
 
         $new_psid = profile_section_create($HTTP_POST_VARS['t_name_new']);
         admin_addlog(0, 0, 0, 0, $new_psid, 0, 11);
 
     }
 
-  }elseif ($HTTP_POST_VARS['submit'] == "Delete") {
+  }elseif ($HTTP_POST_VARS['submit'] == $lang['delete']) {
 
     $sql = "delete from ". forum_table("PROFILE_SECTION"). " where PSID = ". $HTTP_POST_VARS['psid'];
     $result = db_query($sql, $db);
@@ -95,7 +96,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
 
 // Draw the form
-echo "<h1>Manage Profile Sections</h1>\n";
+echo "<h1>{$lang['manageprofilesections']}</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\">\n";
@@ -104,8 +105,8 @@ echo "    <td class=\"posthead\">\n";
 echo "      <form name=\"f_sections\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">ID</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">Section Name</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
 echo "          </tr>\n";
@@ -125,7 +126,7 @@ for($i = 0; $i < $result_count; $i++){
     echo "          <tr>\n";
     echo "            <td valign=\"top\" align=\"left\">", $row['PSID'], form_input_hidden("t_psid_$i",$row['PSID']), "</td>\n";
     echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i",$row['NAME']), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\"><a href=\"./admin_prof_items.php?psid=".$row['PSID']."\">Items...</a></td>\n";
+    echo "            <td valign=\"top\" align=\"left\"><a href=\"./admin_prof_items.php?psid=".$row['PSID']."\">{$lang['items']}...</a></td>\n";
     echo "            <td>";
 
     $psid_sql = "select * from ". forum_table("PROFILE_ITEM"). " where PSID = ". $row['PSID'];
@@ -133,7 +134,7 @@ for($i = 0; $i < $result_count; $i++){
 
     if (db_num_rows($psid_result) == 0) {
 
-      echo form_input_hidden("psid", $row['PSID']). form_submit("submit", "Delete");
+      echo form_input_hidden("psid", $row['PSID']). form_submit("submit", $lang['delete']);
 
     }else{
 
@@ -148,7 +149,7 @@ for($i = 0; $i < $result_count; $i++){
 // Draw a row for a new section to be created
 echo "          <tr>\n";
 echo "            <td align=\"left\">NEW</td>\n";
-echo "            <td align=\"left\">", form_field("t_name_new","New Section",64,64), "</td>\n";
+echo "            <td align=\"left\">", form_field("t_name_new",$lang['newsection'],64,64), "</td>\n";
 echo "            <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";

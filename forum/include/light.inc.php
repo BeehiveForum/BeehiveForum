@@ -25,6 +25,8 @@ USA
 
 define("BEEHIVEMODE_LIGHT", true);
 
+require_once("./include/lang.inc.php");
+
 function light_html_draw_top ($title = false)
 {
 
@@ -75,7 +77,7 @@ function light_form_submit($name = "submit", $value = "Submit")
 function light_poll_confirm_close($tid)
 {
 
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $lang;
 
     if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse();
@@ -101,24 +103,25 @@ function light_poll_confirm_close($tid)
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
 
-    echo "<h2>Are you sure you want to close the following Poll?</h2>\n";
+    echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
 
     light_poll_display($tid, $preview_message, 0, 0, false);
 
     echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
-    echo light_form_submit("pollclose", "End Poll");
-    echo "&nbsp;".light_form_submit("cancel", "Cancel");
+    echo light_form_submit("pollclose", $lang['endpoll']);
+    echo "&nbsp;".light_form_submit("cancel", $lang['cancel']);
     echo "</form>\n";
 
 }
 
 function light_messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
+    global $lang;
     echo "<h2>$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;(High Interest)";
-    if ($interest_level == 2) echo "&nbsp;(Subscribed)";
+    if ($interest_level == 1) echo "&nbsp;({$lang['highinterest']})";
+    if ($interest_level == 2) echo "&nbsp;({$lang['subscribed']})";
     echo "</h2>";
 }
 
@@ -132,7 +135,7 @@ function light_form_radio($name, $value, $text, $checked = false)
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
 {
 
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $lang;
     $uid = bh_session_get_value('UID');
 
     $polldata     = poll_get($tid);
@@ -222,29 +225,29 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
-        $polldata['CONTENT'].= "<b>Nobody voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>";
 
       }elseif ($totalvotes == 0 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
 
-        $polldata['CONTENT'].= "<b>Nobody has voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>";
 
       }elseif ($totalvotes == 1 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
-        $polldata['CONTENT'].= "<b>1 person voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>";
 
       }elseif ($totalvotes == 1 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
 
-        $polldata['CONTENT'].= "<b>1 person has voted.</b>";
+        $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>";
 
       }else {
 
         if ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0) {
 
-          $polldata['CONTENT'].= "<b>". $totalvotes. " people voted.</b>";
+          $polldata['CONTENT'].= "<b>". $totalvotes. " {$lang['peoplevoted']}</b>";
 
         }else {
 
-          $polldata['CONTENT'].= "<b>". $totalvotes. " people have voted.</b>";
+          $polldata['CONTENT'].= "<b>". $totalvotes. " {$lang['peoplehavevoted']}</b>";
 
         }
 
@@ -254,22 +257,22 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
       if (($polldata['CLOSES'] <= gmmktime()) && $polldata['CLOSES'] != 0) {
 
-        $polldata['CONTENT'].= "<p>Poll has ended.</p>\n";
+        $polldata['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
 
         if (isset($userpolldata['OPTION_ID'])) {
-          $polldata['CONTENT'].= "<p>Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</p>\n";
+          $polldata['CONTENT'].= "<p>{$lang['yourvotewas']} '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' {$lang['on']} ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</p>\n";
         }
 
       }else {
 
         if (isset($userpolldata['OPTION_ID'])) {
 
-          $polldata['CONTENT'].= "<p>Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</p>\n";
+          $polldata['CONTENT'].= "<p>{$lang['yourvotewas']} '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' {$lang['on']} ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</p>\n";
 
         }elseif (bh_session_get_value('UID') > 0) {
 
 
-          $polldata['CONTENT'].= "<p>". light_form_submit('pollsubmit', 'Vote'). "</p>\n";
+          $polldata['CONTENT'].= "<p>". light_form_submit('pollsubmit', $lang['vote']). "</p>\n";
 
 
         }
@@ -288,7 +291,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
 {
 
-    global $maximum_post_length, $attachment_dir;
+    global $maximum_post_length, $attachment_dir, $lang;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         light_message_display_deleted($tid, $message['PID']);
@@ -311,7 +314,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     if((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
-        $message['CONTENT'].= "...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">View full message.</a>";
+        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list){
@@ -320,7 +323,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 
-    echo "<p><b>From: " . format_user_name($message['FLOGON'], $message['FNICK'])."</b><br />";
+    echo "<p><b>{$lang['from']}: " . format_user_name($message['FLOGON'], $message['FNICK'])."</b><br />";
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
@@ -329,44 +332,44 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     }
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "&nbsp;(Friend) ";
+        echo "&nbsp;({$lang['friend']}) ";
     } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
-        echo "&nbsp;(Ignored user) ";
+        echo "&nbsp;({$lang['ignoreduser']}) ";
     }
 
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
-        echo "<b>Ignored message</b>";
+        echo "<b>{$lang['ignoredmsg']}</b>";
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
-            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
+            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>{$lang['wormeduser']}</b> ";
+            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
         }
     }
 
     if(($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
 
-        echo "<b>To: " . format_user_name($message['TLOGON'], $message['TNICK'])."</b>";
+        echo "<b>{$lang['to']}: " . format_user_name($message['TLOGON'], $message['TNICK'])."</b>";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "&nbsp;(Friend)";
+            echo "&nbsp;({$lang['friend']})";
         } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
-            echo "&nbsp;(Ignored user)";
+            echo "&nbsp;({$lang['ignoreduser']})";
         }
 
         if(isset($message['VIEWED']) && $message['VIEWED'] > 0) {
             echo "&nbsp;".format_time($message['VIEWED'], 1);
         } else {
-            echo "&nbsp;unread";
+            echo "&nbsp;{$lang['unread']}";
         }
     }else {
-        echo "<b>To: ALL</b>";
+        echo "<b>{$lang['to']}: {$lang['all_caps']}</b>";
     }
 
     echo "</p>\n";
 
-    if (!$in_list && isset($message['PID'])) echo "<p><i>Message ".$message['PID'] . " of " . $msg_count."</i></p>\n";
+    if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} ".$message['PID'] . " {$lang['of']} " . $msg_count."</i></p>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
             $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
@@ -388,7 +391,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         if($in_list && $limit_text != false){
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
-                echo "<a href=\"lpost.php?replyto=$tid.".$message['PID']."\">Reply</a>";
+                echo "<a href=\"lpost.php?replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
 
             }
 
@@ -401,13 +404,16 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 function light_message_display_deleted($tid,$pid)
 {
 
-    echo "<p>Message ${tid}.${pid} was deleted</p>\n";
+    global $lang;
+    echo "<p>{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}</p>\n";
     echo "<hr />";
 
 }
 
 function light_messages_nav_strip($tid,$pid,$length,$ppp)
 {
+
+    global $lang;
 
     // Less than 20 messages, no nav needed
     if($pid == 1 && $length < $ppp){
@@ -453,10 +459,10 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     }
     $max = $i;
 
-    $html = "Show messages:";
+    $html = "{$lang['showmessages']}:";
 
     if($length <= $ppp){
-        $html .= " <a href=\"lmessages.php?msg=$tid.1\">All</a>\n";
+        $html .= " <a href=\"lmessages.php?msg=$tid.1\">{$lang['all']}</a>\n";
     }
 
     for($i=0;$i<=$max;$i++) {
@@ -479,8 +485,9 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
 function light_html_guest_error ()
 {
+     global $lang;
      light_html_draw_top();
-     echo "<h1>Sorry, you need to be logged in to use this feature.</h1>";
+     echo "<h1>{$lang['guesterror']}</h1>";
      light_html_draw_bottom();
 }
 

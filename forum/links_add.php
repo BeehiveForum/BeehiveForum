@@ -34,6 +34,7 @@ require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/perm.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/lang.inc.php");
 
 if(!bh_session_check()){
     $uri = "./index.php?final_uri=". urlencode(get_request_uri());
@@ -43,7 +44,7 @@ if(!bh_session_check()){
 
 if (!$show_links) {
     html_draw_top();
-    echo "<h2>You may not access this section.</h2>\n";
+    echo "<h2>{$lang['maynotaccessthissection']}.</h2>\n";
     html_draw_bottom();
     exit;
 }
@@ -76,9 +77,9 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     $name = $HTTP_POST_VARS['name'];
     $description = $HTTP_POST_VARS['description'];
     if (!preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\](){}<>]|\S[^\s;,.?\"'[\](){}<>])*)?)/i", $HTTP_POST_VARS['uri'])) {
-        $error = "That is not a valid URI!";
+        $error = $lang['notvalidURI'];
     }
-    if ($name == "") $error = "You must specify a name!";
+    if ($name == "") $error = $lang['mustspecifyname'];
     if (!$error) {
         $name = addslashes(_htmlentities($name));
         $description = addslashes(_htmlentities($description));
@@ -89,7 +90,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
 } elseif (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "folder") {
     $fid = $HTTP_POST_VARS['fid'];
     $name = $HTTP_POST_VARS['name'];
-    if ($name == "") $error = "You must specify a name!";
+    if ($name == "") $error = $lang['mustspecifyname'];
     if (!$error) {
         $name = addslashes(_htmlentities($name));
         links_add_folder($fid, $name, true);
@@ -100,13 +101,13 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     $fid = $HTTP_GET_VARS['fid'];
     if ($HTTP_GET_VARS['mode'] == 'link' && !in_array($fid, array_keys($folders))) { // this did use array_key_exists(), but that's only supported in PHP/4.1.0+
         html_draw_top();
-        echo "<h2>You must specify a valid folder!</h2>";
+        echo "<h2>{$lang['mustspecifyvalidfolder']}</h2>";
         html_draw_bottom();
         exit;
     }
 } else {
     html_draw_top();
-    echo "<h2>You must specify a folder!</h2>";
+    echo "<h2>{$lang['mustspecifyfolder']}</h2>";
     html_draw_bottom();
     exit;
 }
@@ -118,18 +119,18 @@ if ($mode == "link") {
     if (!isset($name)) $name = "";
     if (!isset($description)) $description = "";
 
-    echo "<h1>Links: Add a link</h1>\n";
-    echo "<p>Adding link in: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
+    echo "<h1>{$lang['links']}: {$lang['addlink']}</h1>\n";
+    echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
     if ($error) echo "<h2>$error</h2>\n";
     echo "<form name=\"linkadd\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
     echo form_input_hidden("fid", $fid) . "\n";
     echo form_input_hidden("mode", "link") . "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
     echo "<table class=\"posthead\" cellpadding=\"2\" cellspacing=\"0\">\n";
-    echo "<tr><td align=\"right\">Address (URL/URI):</td><td>" . form_input_text("uri", $uri, 60, 255) . "</td></tr>\n";
-    echo "<tr><td align=\"right\">Name:</td><td>" . form_input_text("name", $name, 60, 64) . "</td></tr>\n";
-    echo "<tr><td align=\"right\">Description:</td><td>" . form_input_text("description", $description, 60) . "</td></tr>\n";
-    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", "Cancel") . "</td></tr>\n";
+    echo "<tr><td align=\"right\">{$lang['addressurluri']}:</td><td>" . form_input_text("uri", $uri, 60, 255) . "</td></tr>\n";
+    echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", $name, 60, 64) . "</td></tr>\n";
+    echo "<tr><td align=\"right\">{$lang['description']}:</td><td>" . form_input_text("description", $description, 60) . "</td></tr>\n";
+    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table>\n";
     echo "</form>\n";
@@ -140,16 +141,16 @@ if ($mode == "link") {
 if ($mode == "folder") {
     html_draw_top();
 
-    echo "<h1>Links: Add a new folder</h1>\n";
-    echo "<p>Adding new folder under: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
+    echo "<h1>{$lang['links']}: {$lang['addnewfolder']}</h1>\n";
+    echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
     if ($error) echo "<h2>$error</h2>\n";
     echo "<form name=\"folderadd\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
     echo form_input_hidden("fid", $fid) . "\n";
     echo form_input_hidden("mode", "folder") . "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
     echo "<table class=\"posthead\" cellpadding=\"2\" cellspacing=\"0\">\n";
-    echo "<tr><td align=\"right\">Name:</td><td>" . form_input_text("name", isset($name) ? $name : '', 60, 64) . "</td></tr>\n";
-    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", "Cancel") . "</td></tr>\n";
+    echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", isset($name) ? $name : '', 60, 64) . "</td></tr>\n";
+    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
     echo "</table>\n";
     echo "</td></tr></table>\n";
     echo "</form>\n";

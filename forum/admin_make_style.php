@@ -37,12 +37,13 @@ require_once("./include/constants.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 // Start Here
 
 html_draw_top();
 
-echo "<h1>Create a Forum Style</h1>\n";
+echo "<h1>{$lang['createforumstyle']}</h1>\n";
 
 // Save the style
 
@@ -82,29 +83,29 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
                     admin_addlog(0, 0, 0, 0, 0, 0, 17);
 
-                    echo "<h2>New style \"$stylename\" successfully created.</h2>\n";
+                    echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
 
                 }else {
 
-                    echo "<h2>The styles directory is not writeable. Please CHMOD the styles directory and retry.</h2>\n";
+                    echo "<h2>{$lang['stylesdirnotwritable']}</h2>\n";
 
                 }
 
             }else {
 
-                echo "<h2>A style with that filename already exists.</h2>\n";
+                echo "<h2>{$lang['stylealreadyexists']}</h2>\n";
 
             }
 
         }else {
 
-            echo "<h2>You did not enter a filename to save the style with.</h2>\n";
+            echo "<h2>{$lang['stylenofilename']}</h2>\n";
 
         }
 
     }else {
 
-        echo "<h2>You are not authorised to create forum styles.</h2>\n";
+        echo "<h2>{$lang['stylenotauthorised']}</h2>\n";
 
     }
 
@@ -148,14 +149,14 @@ list ($r, $g, $b) = hexToDec($colour);
 $steps = sizeof($elements);
 
 
-echo "<p>Use this page to help create a randomly generated style for your forum.</p>\n";
+echo "<p>{$lang['styleexp']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "  <table width=\"70%\" class=\"box\">\n";
 echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";
 echo "        <table width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td colspan=\"2\" class=\"subhead\" align=\"left\">Controls</td>\n";
+echo "            <td colspan=\"2\" class=\"subhead\" align=\"left\">{$lang['stylecontrols']}</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td colspan=\"2\" class=\"posthead\">\n";
@@ -197,7 +198,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"", sizeof($elements), "\" class=\"posthead\" align=\"left\">\n";
-echo "                    Click on a colour to make a new stylesheet based on that colour. Current base colour is first in list.\n";
+echo "                    {$lang['stylecolourexp']}\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
@@ -224,9 +225,9 @@ echo "                  <td class=\"subhead\" align=\"left\">New</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?r=$r\">Standard Style</a><br />\n";
-echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?mode=med&amp;r=$r\">Rotated Element Style</a><br />\n";
-echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?mode=rand&amp;r=$r\">Random Style</a>\n";
+echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?r=$r\">{$lang['standardstyle']}</a><br />\n";
+echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?mode=med&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
+echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -237,21 +238,21 @@ echo "                  <td class=\"subhead\" align=\"left\">This Colour</td>\n"
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=$seed&amp;r=$r\">Standard Style</a><br />\n";
-echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=$seed&amp;mode=medi&amp;r=$r\">Rotated Element Style</a><br />\n";
-echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=$seed&amp;mode=rand&amp;r=$r\">Random Style</a>\n";
+echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=$seed&amp;r=$r\">{$lang['standardstyle']}</a><br />\n";
+echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=$seed&amp;mode=medi&amp;r=$r\">{$lang['rotelementstyle']}</a><br />\n";
+echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=$seed&amp;mode=rand&amp;r=$r\">{$lang['randstyle']}</a>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">or enter a hex colour to base a new stylesheet on</td>\n";
+echo "                  <td class=\"posthead\" align=\"left\">{$lang['enterhexcolour']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
 echo "                    <form action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"get\">\n";
-echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "&nbsp;", form_submit('submit', 'Go'), "\n";
+echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "&nbsp;", form_submit('submit', $lang['go']), "\n";
 echo "                    </form>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
@@ -260,7 +261,7 @@ echo "            </td>\n";
 echo "            <td valign=\"top\" class=\"posthead\" align=\"left\">\n";
 echo "              <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">Save this style</td>\n";
+echo "                  <td class=\"subhead\">{$lang['savestyle']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">\n";
@@ -274,11 +275,11 @@ reset($elements);
 
 echo "                      <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                        <tr>\n";
-echo "                          <td class=\"posthead\">Filename:</td>\n";
+echo "                          <td class=\"posthead\">{$lang['filename']}:</td>\n";
 echo "                          <td>", form_input_text("stylename", isset($HTTP_POST_VARS['stylename']) ? $HTTP_POST_VARS['stylename'] : '', 35, 10), "</td>\n";
 echo "                        </tr>\n";
 echo "                        <tr>\n";
-echo "                          <td class=\"posthead\">Style Desc.:</td>\n";
+echo "                          <td class=\"posthead\">{$lang['styledesc']}:</td>\n";
 echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
@@ -286,7 +287,7 @@ echo "                    </form>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\">(lowercase letters (a-z), numbers (0-9) and underscores (_) only)</td>\n";
+echo "                  <td class=\"posthead\">{$lang['fileallowedchars']}</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -327,20 +328,20 @@ reset($elements);
 */
 
 ?>
-<p>Style Preview:</p>
+<p><?php echo $lang['stylepreview']; ?>:</p>
 <table width="96%" cellpadding="0" cellspacing="0" align="center" class="box">
   <tr>
     <td>
       <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="background-color: #<?php echo $elements['body']; ?>; color: #<?php echo contrastFont($elements['body']); ?>">
         <tr>
           <td colspan="3" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>; font-size: 10px; font-weight: bold; text-decoration: none">&nbsp;&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Start</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Messages</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Links</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Preferences</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Profile</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Admin</a>&nbsp;|&nbsp;
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Logout</a>
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['start']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['messages']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['links']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['preferences']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['profile']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['admin']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['logout']; ?></a>
           </td>
         </tr>
         <tr>
@@ -348,9 +349,9 @@ reset($elements);
             <table width="220" border="0" cellpadding="0" cellspacing="0">
               <tr>
                 <td class="postbody" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left">
-                  <img src="./images/post.png" height="15" alt="New Discussion" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">New Discussion</a><br />
-                  <img src="./images/poll.png" height="15" alt="Create Poll" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">Create Poll</a><br />
-                  <img src="./images/search.png" height="15" alt="Search" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">Search</a><br />
+                  <img src="./images/post.png" height="15" alt="<?php echo $lang['newdiscussion']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['newdiscussion']; ?></a><br />
+                  <img src="./images/poll.png" height="15" alt="<?php echo $lang['createpoll']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['createpoll']; ?></a><br />
+                  <img src="./images/search.png" height="15" alt="<?php echo $lang['search']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['search']; ?></a><br />
                 </td>
               </tr>
               <tr>
@@ -360,21 +361,21 @@ reset($elements);
                 <td colspan="2" align="left">
                   <form name="f_mode" method="get" action="">
                     <select name="mode" class="bhselect">
-                      <option value="0" selected="selected">All Discussions</option>
-                      <option value="1">Unread Discussions</option>
-                      <option value="2">Unread &quot;To: Me&quot;</option>
-                      <option value="3">Today's Discussions</option>
-                      <option value="4">2 Days Back</option>
-                      <option value="5">7 Days Back</option>
-                      <option value="6">High Interest</option>
-                      <option value="7">Unread High Interest</option>
-                      <option value="8">I've recently seen</option>
-                      <option value="9">I've ignored</option>
-                      <option value="10">I've subscribed to</option>
-                      <option value="11">Started by Friend</option>
-                      <option value="12">Unread std by Friend</option>
+                      <option value="0" selected="selected"><?php echo $lang['alldiscussions']; ?></option>
+                      <option value="1"><?php echo $lang['unreaddiscussions']; ?></option>
+                      <option value="2"><?php echo $lang['unreadtome']; ?></option>
+                      <option value="3"><?php echo $lang['todaysdiscussions']; ?></option>
+                      <option value="4"><?php echo $lang['2daysback']; ?></option>
+                      <option value="5"><?php echo $lang['7daysback']; ?></option>
+                      <option value="6"><?php echo $lang['highinterest']; ?></option>
+                      <option value="7"><?php echo $lang['unreadhighinterest']; ?></option>
+                      <option value="8"><?php echo $lang['iverecentlyseen']; ?></option>
+                      <option value="9"><?php echo $lang['iveignored']; ?></option>
+                      <option value="10"><?php echo $lang['ivesubscribedto']; ?></option>
+                      <option value="11"><?php echo $lang['startedbyfriend']; ?></option>
+                      <option value="12"><?php echo $lang['unreadstartedbyfriend']; ?></option>
                     </select>
-                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
+                    <input type="submit" name="go" value=<?php echo $lang['goexcmark']; ?> class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
                 </td>
               </tr>
@@ -382,8 +383,8 @@ reset($elements);
                 <td colspan="2" align="left">
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                      <td class="foldername"><img src="./images/folder.png" height="15" alt="Folder" /><a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">General</a></td>
-                      <td class="folderpostnew" width="15"><a href="#"><img src="images/folder_hide.png" border="0" height="15" alt="Folder Interest" /></a></td>
+                      <td class="foldername"><img src="./images/folder.png" height="15" alt="<?php echo $lang['folder']; ?>" /><a href="#" style="color: #<?php echo contrastFont($elements['body']); ?>">General</a></td>
+                      <td class="folderpostnew" width="15"><a href="#"><img src="images/folder_hide.png" border="0" height="15" alt="<?php echo $lang['folderinterest']; ?>" /></a></td>
                     </tr>
                   </table>
                 </td>
@@ -393,10 +394,10 @@ reset($elements);
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td class="threads" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>; border-color: #<?php echo contrastFont($elements['box']); ?>; border-bottom-width: 0px; border-right-width: 0px" align="left" valign="top" width="50%" nowrap="nowrap">
-                        <a href="#" class="folderinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 threads</a>
+                        <a href="#" class="folderinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 <?php echo $lang['thread']; ?></a>
                       </td>
                       <td class="threads" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>; border-color: #<?php echo contrastFont($elements['box']); ?>; border-bottom-width: 0px; border-left-width: 0px" align="right" valign="top" width="50%" nowrap="nowrap">
-                        <a href="#" class="folderpostnew" style="color: #<?php echo contrastFont($elements['threads']); ?>">Post New</a>
+                        <a href="#" class="folderpostnew" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['postnew']; ?></a>
                       </td>
                     </tr>
                   </table>
@@ -407,9 +408,9 @@ reset($elements);
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td valign="top" align="center" nowrap="nowrap" width="16">
-                        <img src="./images/current_thread.png" align="middle" height="15" alt="Current Thread" />&nbsp;
+                        <img src="./images/current_thread.png" align="middle" height="15" alt="<?php echo $lang['currentthread']; ?>" />&nbsp;
                       </td>
-                      <td valign="top"><a href="#" class="threadname" style="color: #<?php echo contrastFont($elements['threads']); ?>">Welcome</a>&nbsp;<img src="./images/high_interest.png" height="15" alt="High Interest" />&nbsp;<span class="threadxnewofy" style="color: #<?php echo contrastFont($elements['threads']); ?>">[2]</span></td>
+                      <td valign="top"><a href="#" class="threadname" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['welcome']; ?></a>&nbsp;<img src="./images/high_interest.png" height="15" alt="<?php echo $lang['highinterest']; ?>" />&nbsp;<span class="threadxnewofy" style="color: #<?php echo contrastFont($elements['threads']); ?>">[2]</span></td>
                       <td valign="top" nowrap="nowrap" align="right"><span class="threadtime" style="color: #<?php echo contrastFont($elements['threads']); ?>">16 Mar&nbsp;</span></td>
                     </tr>
                   </table>
@@ -421,7 +422,7 @@ reset($elements);
             </table>
             <table width="220" border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left">Mark as Read:</td>
+                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left"><?php echo $lang['markasread']; ?>:</td>
               </tr>
               <tr>
                 <td>&nbsp;</td>
@@ -429,25 +430,25 @@ reset($elements);
                   <form name="f_mark" method="get" action="">
                     <input type="hidden" name="tids" class="bhinputtext" value="1" />
                     <select name="markread" class="bhselect">
-                      <option value="0" selected="selected">All Discussions</option>
-                      <option value="1">Next 50 discussions</option>
-                      <option value="2">Visible discussions</option>
+                      <option value="0" selected="selected"><?php echo $lang['alldiscussions']; ?></option>
+                      <option value="1"><?php echo $lang['next50discussions']; ?>s</option>
+                      <option value="2"><?php echo $lang['visiblediscussions']; ?></option>
                     </select>
-                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
+                    <input type="submit" name="go" value="<?php echo $lang['goexcmark']; ?>" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
                 </td>
               </tr>
             </table>
             <table width="220" border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left">Navigate:</td>
+                <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left"><?php echo $lang['navigate']; ?>:</td>
               </tr>
               <tr>
                 <td>&nbsp;</td>
                 <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" align="left">
                   <form name="f_nav" method="get" action="">
                     <input type="text" name="msg" class="bhinputtext" value="1.1" size="10" />
-                    <input type="submit" name="go" value="Go!" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
+                    <input type="submit" name="go" value="<?php echo $lang['goexcmark']; ?>" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
                 </td>
               </tr>
@@ -458,7 +459,7 @@ reset($elements);
             <div align="center">
               <table width="96%" border="0">
                 <tr>
-                  <td style="color: #<?php echo contrastFont($elements['body']); ?>"><p style="color: #<?php echo contrastFont($elements['body']); ?>" align="left"><img src="./images/folder.png" alt="Folder" />&nbsp;General: Welcome&nbsp;<img src="./images/high_interest.png" height="15" alt="High Interest" /></p></td>
+                  <td style="color: #<?php echo contrastFont($elements['body']); ?>"><p style="color: #<?php echo contrastFont($elements['body']); ?>" align="left"><img src="./images/folder.png" alt="<?php echo $lang['folder']; ?>" />&nbsp;General: Welcome&nbsp;<img src="./images/high_interest.png" height="15" alt="<?php echo $lang['highinterest']; ?>" /></p></td>
                 </tr>
               </table>
             </div>
@@ -469,14 +470,14 @@ reset($elements);
                   <td>
                     <table width="100%" class="posthead" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>" cellspacing="1" cellpadding="0">
                       <tr>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;From:&nbsp;</span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;<?php echo $lang['from']; ?>:&nbsp;</span></td>
                         <td nowrap="nowrap" width="98%" align="left"><span class="posttofrom"><a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">User</a></span></td>
                         <td width="1%" align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">14 Mar 23:56&nbsp;</span></td>
                       </tr>
                       <tr>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;To:&nbsp;</span></td>
-                        <td nowrap="nowrap" width="98%" align="left"><span class="posttofrom" style="color: #<?php echo contrastFont($elements['threads']); ?>">ALL</span></td>
-                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 of 2&nbsp;</span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;<?php echo $lang['to']; ?>:&nbsp;</span></td>
+                        <td nowrap="nowrap" width="98%" align="left"><span class="posttofrom" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['all_caps']; ?></span></td>
+                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 <?php echo $lang['of']; ?> 2&nbsp;</span></td>
                       </tr>
                     </table>
                   </td>
@@ -485,10 +486,10 @@ reset($elements);
                   <td>
                     <table width="100%">
                       <tr align="right">
-                        <td colspan="3"><span class="postnumber" style="color: #<?php echo contrastFont($elements['box']); ?>"><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.1</a> in reply to <a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.2</a>&nbsp;</span></td>
+                        <td colspan="3"><span class="postnumber" style="color: #<?php echo contrastFont($elements['box']); ?>"><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.1</a> <?php echo $lang['inreplyto']; ?> <a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.2</a>&nbsp;</span></td>
                       </tr>
                       <tr>
-                        <td class="postbody" style="color: #<?php echo contrastFont($elements['box']); ?>" align="left">Message Preview</td>
+                        <td class="postbody" style="color: #<?php echo contrastFont($elements['box']); ?>" align="left"><?php echo $lang['messagepreview']; ?></td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
@@ -499,10 +500,10 @@ reset($elements);
                       <tr>
                         <td align="center">
                           <span class="postresponse">
-                            <img src="./images/post.png" height="15" border="0" alt="Reply" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Reply</a>&nbsp;&nbsp;
-                            <img src="./images/delete.png" height="15" border="0" alt="Delete" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Delete</a>&nbsp;&nbsp;
-                            <img src="./images/edit.png" height="15" border="0" alt="Edit" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Edit</a>&nbsp;&nbsp;
-                            <img src="./images/admintool.png" height="15" border="0" alt="Privileges" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">Privileges</a>
+                            <img src="./images/post.png" height="15" border="0" alt="<?php echo $lang['reply']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['reply']; ?></a>&nbsp;&nbsp;
+                            <img src="./images/delete.png" height="15" border="0" alt="<?php echo $lang['delete']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['delete']; ?></a>&nbsp;&nbsp;
+                            <img src="./images/edit.png" height="15" border="0" alt="<?php echo $lang['edit']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['edit']; ?></a>&nbsp;&nbsp;
+                            <img src="./images/admintool.png" height="15" border="0" alt="<?php echo $lang['privileges']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['privileges']; ?></a>
                           </span>
                         </td>
                       </tr>
@@ -516,26 +517,26 @@ reset($elements);
             <table width="96%" class="messagefoot" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>">
               <tr>
                 <td align="center">
-                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements['threads']); ?>">Show messages: &nbsp;1 &nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">2</a></p>
+                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['showmessages']; ?>: &nbsp;1 &nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">2</a></p>
                   <p align="center"></p>
                   <form name="rate_interest" target="_self" action="" method="post">
-                    Rate my interest:
-                    <span class="bhinputradio"><input type="radio" name="interest" value="-1" />Ignore </span>
-                    <span class="bhinputradio"><input type="radio" name="interest" value="0" checked="checked" />Normal </span>
-                    <span class="bhinputradio"><input type="radio" name="interest" value="1" />Interested </span>
-                    <span class="bhinputradio"><input type="radio" name="interest" value="2" />Subscribe </span>&nbsp;
-                    <input type="submit" name="submit" value="Apply" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
+                    <?php echo $lang['ratemyinterest']; ?>t:
+                    <span class="bhinputradio"><input type="radio" name="interest" value="-1" /><?php echo $lang['ignore']; ?> </span>
+                    <span class="bhinputradio"><input type="radio" name="interest" value="0" checked="checked" /><?php echo $lang['normal']; ?> </span>
+                    <span class="bhinputradio"><input type="radio" name="interest" value="1" /><?php echo $lang['interested']; ?> </span>
+                    <span class="bhinputradio"><input type="radio" name="interest" value="2" /><?php echo $lang['subscribe']; ?> </span>&nbsp;
+                    <input type="submit" name="submit" value="<?php echo $lang['apply']; ?>" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
-                  <p style="color: #<?php echo contrastFont($elements['threads']); ?>">Adjust text size: <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">Smaller</a> 10 <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">Larger</a></p>
+                  <p style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['adjtextsize']; ?>: <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['smaller']; ?></a> 10 <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['larger']; ?></a></p>
                   <p align="center"></p>
                   <div align="center">
                     <table width="96%" class="posthead" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>">
                       <tr>
                         <td width="60%" class="smalltext" align="left">
                           Beehive Forum &nbsp;|&nbsp;
-                          <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">FAQ</a>&nbsp;|&nbsp;
-                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>">Docs</a> &nbsp;|&nbsp;
-                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>">Support</a>
+                          <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['faq']; ?></a>&nbsp;|&nbsp;
+                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['docs']; ?></a> &nbsp;|&nbsp;
+                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['support']; ?></a>
                         </td>
                         <td width="40%" align="right" class="smalltext">&copy;<?php echo date('Y'); ?> <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">Project BeehiveForum</a></td>
                       </tr>
@@ -546,8 +547,8 @@ reset($elements);
             </table>
             </div>
             <p>&nbsp;</p>
-            <h1 style="background-color: #<?php echo $elements['h1']; ?>; color: #<?php echo contrastFont($elements['h1']); ?>">H1 Tag</h1>
-            <p class="subhead" style="background-color: #<?php echo $elements['subhead']; ?>; color: #<?php echo contrastFont($elements['subhead']); ?>">Subhead</p>
+            <h1 style="background-color: #<?php echo $elements['h1']; ?>; color: #<?php echo contrastFont($elements['h1']); ?>"><?php echo $lang['h1tag']; ?></h1>
+            <p class="subhead" style="background-color: #<?php echo $elements['subhead']; ?>; color: #<?php echo contrastFont($elements['subhead']); ?>"><?php echo $lang['subhead']; ?></p>
             <p>&nbsp;</p>
           </td>
         </tr>

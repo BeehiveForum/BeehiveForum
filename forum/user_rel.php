@@ -28,6 +28,7 @@ require_once("./include/errorhandler.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/messages.inc.php");
+require_once("./include/lang.inc.php");
 
 if(!bh_session_check()){
 
@@ -86,8 +87,8 @@ if (isset($HTTP_GET_VARS['uid'])) {
     $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
 }else {
     html_draw_top();
-    echo "<h1>Error:</h1>";
-    echo "<p>No user specified</p>";
+    echo "<h1>{$lang['error']}:</h1>";
+    echo "<p>{$lang['nouserspecified']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -96,7 +97,7 @@ html_draw_top_script();
 
 $rel = user_rel_get($my_uid, $uid);
 
-echo "<h1>User Relationship: $uname</h1>\n";
+echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 ?>
 
 <div class="postbody">
@@ -105,40 +106,40 @@ echo "<h1>User Relationship: $uname</h1>\n";
     <table class="posthead" width="500">
 <?php if (isset($uid)) { ?>
       <tr>
-        <td class="subhead" colspan="2">Relationship</td>
+        <td class="subhead" colspan="2"><?php echo $lang['relationship']; ?></td>
       </tr>
       <tr>
-        <td width="130"><?php echo form_radio("rel", "1", "Friend", $rel & USER_FRIEND ? true : false); ?></td>
-        <td width="370">: User's posts marked with a &quot;Friend&quot; icon.</td>
+        <td width="130"><?php echo form_radio("rel", "1", $lang['friend'], $rel & USER_FRIEND ? true : false); ?></td>
+        <td width="370">: <?php echo $lang['friend_exp']; ?></td>
       </tr>
       <tr>
-        <td width="130"><?php echo form_radio("rel", "0", "Normal", !(($rel & USER_IGNORED) || ($rel & USER_FRIEND)) ? true : false); ?></td>
-        <td width="370">: User's posts appear as normal.</td>
+        <td width="130"><?php echo form_radio("rel", "0", $lang['normal'], !(($rel & USER_IGNORED) || ($rel & USER_FRIEND)) ? true : false); ?></td>
+        <td width="370">: <?php echo $lang['normal_exp']; ?></td>
       </tr>
       <tr>
-        <td width="130"><?php echo form_radio("rel", "2", "Ignored", $rel & USER_IGNORED ? true : false); ?></td>
-        <td width="370">: User's posts are hidden.</td>
+        <td width="130"><?php echo form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false); ?></td>
+        <td width="370">: <?php echo $lang['ignore_exp']; ?></td>
       </tr>
 <?php } ?>
       <tr>
-        <td class="subhead" colspan="2">Signature</td>
+        <td class="subhead" colspan="2"><?php echo $lang['signature']; ?></td>
       </tr>
 <?php if (isset($uid)) { ?>
       <tr>
-        <td width="130"><?php echo form_radio("sig", "0", "Display", $rel ^ USER_IGNORED_SIG ? true : false); ?></td>
-        <td width="370">: User's signature is displayed on their posts.</td>
+        <td width="130"><?php echo form_radio("sig", "0", $lang['display'], $rel ^ USER_IGNORED_SIG ? true : false); ?></td>
+        <td width="370">: <?php echo $lang['displaysig_exp']; ?></td>
       </tr>
       <tr>
-        <td width="130"><?php echo form_radio("sig", "4", "Ignore", $rel & USER_IGNORED_SIG ? true : false); ?></td>
-        <td width="370">: User's signature is hidden on their posts.</td>
+        <td width="130"><?php echo form_radio("sig", "4", $lang['ignore'], $rel & USER_IGNORED_SIG ? true : false); ?></td>
+        <td width="370">: <?php echo $lang['hidesig_exp']; ?></td>
       </tr>
 <?php } ?>
       <tr>
-        <td width="130"><?php echo form_checkbox("sig_global", "Y", "Globally ignored", user_get_global_sig(bh_session_get_value('UID')) == "Y"); ?></td>
-        <td width="370">: No signatures are displayed.</td>
+        <td width="130"><?php echo form_checkbox("sig_global", "Y", $lang['globallyignored'], user_get_global_sig(bh_session_get_value('UID')) == "Y"); ?></td>
+        <td width="370">: <?php echo $lang['globallyignoredsig_exp']; ?></td>
       </tr>
     </table>
-    <p><?php echo form_submit("submit", "Submit")."&nbsp;".form_submit("cancel", "Cancel"); ?></p>
+    <p><?php echo form_submit("submit", $lang['submit'])."&nbsp;".form_submit("cancel", $lang['cancel']); ?></p>
   </form>
 </div>
 <?php html_draw_bottom(); ?>

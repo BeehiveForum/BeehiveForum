@@ -43,12 +43,13 @@ if(!bh_session_check()){
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -58,25 +59,25 @@ echo "  <tr>\n";
 echo "    <td class=\"subhead\">Tools</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_users.php\" target=\"right\">Users</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_users.php\" target=\"right\">{$lang['users']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_folders.php\" target=\"right\">Folders</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_folders.php\" target=\"right\">{$lang['folders']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_prof_sect.php\" target=\"right\">Profiles</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_prof_sect.php\" target=\"right\">{$lang['profiles']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_startpage.php\" target=\"right\">Start Page</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_startpage.php\" target=\"right\">{$lang['startpage']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_make_style.php\" target=\"right\">Forum Style</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_make_style.php\" target=\"right\">{$lang['forumstyle']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_wordfilter.php\" target=\"right\">Word Filter</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_wordfilter.php\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./admin_viewlog.php\" target=\"right\">View Log</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_viewlog.php\" target=\"right\">{$lang['viewlog']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

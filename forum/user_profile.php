@@ -34,6 +34,7 @@ require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
@@ -45,8 +46,8 @@ if (isset($HTTP_GET_VARS['psid'])) {
 
 if (!isset($uid)) {
     html_draw_top();
-    echo "<h1>Error:</h1>";
-    echo "<p>No user specified</p>";
+    echo "<h1>{$lang['error']}:</h1>";
+    echo "<p>{$lang['nouserspecified']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -69,8 +70,8 @@ $result = db_query($sql,$db);
 $row_count = db_num_rows($result);
 
 if($row_count == 0){
-    echo "<h1>Error:</h1>";
-    echo "<p>Profiles not set up</p>";
+    echo "<h1>{$lang['error']}:</h1>";
+    echo "<p>{$lang['profilesnotsetup']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -92,15 +93,15 @@ echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\
 echo "          <tr>\n";
 echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
 
-if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Friend\" />";
-if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"Ignored user\" />";
+if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
 
 echo "</h2></td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">Last Visit: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>&nbsp;</td>\n";
-echo "            <td align=\"right\" class=\"smalltext\">Posts: " . user_get_post_count($uid). "&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: " . user_get_post_count($uid). "&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
@@ -169,16 +170,16 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">", (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) ? "<img src=\"". $row['PIC_URL']. "\" width=\"110\" height=\"110\" />" : "&nbsp;", "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td><a href=\"email.php?uid=$uid\">Send email</a></td>\n";
+echo "                  <td><a href=\"email.php?uid=$uid\">{$lang['sendemail']}</a></td>\n";
 echo "                </tr>\n";
 
 if ($uid != $your_uid) {
     if ($relationship & USER_FRIEND) {
         $setrel = 0;
-        $text = "Remove from friends";
+        $text = $lang['removefromfriends'];
     } else {
         $setrel = USER_FRIEND;
-        $text = "Add to friends";
+        $text = $lang['addtofriends'];
     }
 
     echo "                <tr>\n";
@@ -187,10 +188,10 @@ if ($uid != $your_uid) {
 
     if ($relationship & USER_IGNORED) {
         $setrel = 0;
-        $text = "Stop ignoring user";
+        $text = $lang['stopignoringuser'];
     } else {
         $setrel = USER_IGNORED;
-        $text = "Ignore this user";
+        $text = $lang['ignorethisuser'];
     }
 
     echo "                <tr>\n";

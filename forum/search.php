@@ -51,6 +51,7 @@ require_once("./include/fixhtml.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 // Check that required variables are set
 if (!bh_session_get_value('UID')) {
@@ -104,18 +105,18 @@ if (isset($HTTP_POST_VARS['submit'])) {
   if (isset($HTTP_POST_VARS['search_string']) && strlen(trim($HTTP_POST_VARS['search_string'])) > 0) {
     $search_string = trim($HTTP_POST_VARS['search_string']);
     if (!search_construct_query($HTTP_POST_VARS, $searchsql, $urlquery, $error)) {
-      echo "<h1>Search Results</h1>";
+      echo "<h1>{$lang['searchresults']}</h1>";
       if ($error = SEARCH_USER_NOT_FOUND) {
-        echo "<h2>The username you specified in the to or from field was not found.</h2>\n";
+        echo "<h2>{$lang['usernamenotfound']}</h2>\n";
       }elseif ($error = SEARCH_NO_KEYWORDS) {
-        echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
+        echo "<h2>{$lang['notexttosearchfor_1']} ", isset($search_min_word_length) ? $search_min_word_length : "3", " {$lang['notexttosearchfor_2']}.</h2>\n";
       }
       html_draw_bottom();
       exit;
     }
   }else {
-    echo "<h1>Search Results</h1>";
-    echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
+    echo "<h1>{$lang['searchresults']}</h1>";
+    echo "<h2>{$lang['notexttosearchfor_1']} ", isset($search_min_word_length) ? $search_min_word_length : "3", " {$lang['notexttosearchfor_2']}.</h2>\n";
     html_draw_bottom();
     exit;
   }
@@ -123,18 +124,18 @@ if (isset($HTTP_POST_VARS['submit'])) {
   if (isset($HTTP_GET_VARS['search_string']) && strlen(trim($HTTP_GET_VARS['search_string'])) > 0) {
     $search_string = trim($HTTP_POST_VARS['search_string']);
     if (!search_construct_query($HTTP_GET_VARS, $searchsql, $urlquery, $error)) {
-      echo "<h1>Search Results</h1>";
+      echo "<h1>{$lang['searchresults']}</h1>";
       if ($error = SEARCH_USER_NOT_FOUND) {
-        echo "<h2>The username you specified in the to or from field was not found.</h2>\n";
+        echo "<h2>{$lang['usernamenotfound']}</h2>\n";
       }elseif ($error = SEARCH_NO_KEYWORDS) {
-        echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
+        echo "<h2>{$lang['notexttosearchfor_1']} ", isset($search_min_word_length) ? $search_min_word_length : "3", " {$lang['notexttosearchfor_2']}.</h2>\n";
       }
       html_draw_bottom();
       exit;
     }
   }else {
-    echo "<h1>Search Results</h1>";
-    echo "<h2>You did not specify any words to search for or the words were under ", isset($search_min_word_length) ? $search_min_word_length : "3", " characters long.</h2>\n";
+    echo "<h1>{$lang['searchresults']}</h1>";
+    echo "<h2>{$lang['notexttosearchfor_1']} ", isset($search_min_word_length) ? $search_min_word_length : "3", " {$lang['notexttosearchfor_2']}.</h2>\n";
     html_draw_bottom();
     exit;
   }
@@ -145,9 +146,9 @@ if (isset($searchsql)) {
   echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
   echo "  <tr>\n";
   echo "    <td class=\"postbody\" colspan=\"2\">\n";
-  echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
-  echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
-  echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">Search</a><br />\n";
+  echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+  echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+  echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">{$lang['search']}</a><br />\n";
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
@@ -159,27 +160,27 @@ if (isset($searchsql)) {
 
   if (bh_session_get_value('UID') == 0) {
 
-    $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
+    $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
     echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n";
 
   }else {
 
-    $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
-                    "2 Days Back","7 Days Back","High Interest","Unread High Interest",
-                    "I've recently seen","I've ignored","I've subscribed to","Started by Friend",
-                    "Unread std by Friend");
+    $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
+                    $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
+                    $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
+                    $lang['unreadstartedbyfriend']);
 
     echo form_dropdown_array("mode", range(0, 12), $labels, $mode, "onchange=\"submit()\""), "\n";
 
   }
 
-  echo form_submit("go", "Go!"), "\n";
+  echo form_submit("go", $lang['goexcmark']), "\n";
   echo "      </form>\n";
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
 
-  echo "<h1>Search Results</h1>\n";
+  echo "<h1>{$lang['searchresults']}</h1>\n";
 
   $db  = db_connect();
   $sql = $basesql.$searchsql;
@@ -193,10 +194,10 @@ if (isset($searchsql)) {
   $result  = db_query($sql, $db);
   $numrows = db_num_rows($result);
 
-  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;Found: ", $numrows, " matches<br />\n";
+  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: ", $numrows, " {$lang['matches']}<br />\n";
 
   if ($sstart >= 50) {
-      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">Previous Page</a>\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
   }
 
   echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -253,7 +254,7 @@ if (isset($searchsql)) {
   echo "</ol>\n";
 
   if ($numrows == 50) {
-      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">Find More</a>\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
   }
 
   html_draw_bottom();
@@ -262,58 +263,58 @@ if (isset($searchsql)) {
 }
 
 ?>
-<h1>Search Messages</h1>
+<h1><?php echo $lang['searchmessages']; ?></h1>
 <form method="post" action="search.php" target="left">
 <?php echo form_input_hidden('sstart', '0'); ?>
 <table border="0" width="550" align="center">
   <tr>
-    <td class="postbody" colspan="2">Search Discussions...</td>
+    <td class="postbody" colspan="2"><?php echo $lang['searchdiscussions']; ?>...</td>
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td><?php echo form_dropdown_array("method", range(1,3), array("Containing all of the words", "Containing any of the words", "Containing the exact phrase"), 1). "&nbsp;". form_input_text("search_string", "", 20). "&nbsp;". form_submit("submit", "Find"); ?></td>
+    <td><?php echo form_dropdown_array("method", range(1,3), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1). "&nbsp;". form_input_text("search_string", "", 20). "&nbsp;". form_submit("submit", $lang['find']); ?></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td class="postbody">Words shorter than <?php echo isset($search_min_word_length) ? $search_min_word_length : "3"; ?> characters will not be included.</td>
+    <td class="postbody"><?php echo $lang['wordsshorterthan_1']." ".(isset($search_min_word_length) ? $search_min_word_length : "3")." {$lang['wordsshorterthan_2']}"; ?>.</td>
   </tr>
   <tr>
     <td class="postbody" colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody" colspan="2">Additional Criteria</td>
+    <td class="postbody" colspan="2"><?php echo $lang['additionalcriteria']; ?></td>
   </tr>
   <tr>
-    <td align="right" class="postbody">Folder(s):</td>
+    <td align="right" class="postbody"><?php echo $lang['folderbrackets_s']; ?>:</td>
     <td><?php echo folder_search_dropdown(); ?></td>
   </tr>
   <tr>
-    <td align="right" class="postbody">To:</td>
+    <td align="right" class="postbody"><?php echo $lang['to']; ?>:</td>
     <td class="postbody"><?php echo search_draw_user_dropdown("to_uid"); ?> or <?php echo form_input_text("to_other", "", 20); ?></td>
   </tr>
   <tr>
-    <td align="right" class="postbody">From:</td>
+    <td align="right" class="postbody"><?php echo $lang['from']; ?>:</td>
     <td class="postbody"><?php echo search_draw_user_dropdown("from_uid"); ?> or <?php echo form_input_text("from_other", "", 20); ?></td>
   </tr>
   <tr>
-    <td align="right" class="postbody">Posted From:</td>
-    <td><?php echo form_dropdown_array("date_from", range(1, 12), array("Today", "Yesterday", "Day before yesterday", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago", "2 months ago", "3 months ago", "6 months ago", "1 year ago", "Beginning of time"), 7); ?></td>
+    <td align="right" class="postbody"><?php echo $lang['postedfrom']; ?>:</td>
+    <td><?php echo form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}", $lang['beginningoftime']), 7); ?></td>
   </tr>
   <tr>
-    <td align="right" class="postbody">Posted To:</td>
-    <td><?php echo form_dropdown_array("date_to", range(1, 12), array("Now", "Today", "Yesterday", "Day before yesterday", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago", "2 months ago", "3 months ago", "6 months ago", "1 year ago"), 2); ?></td>
+    <td align="right" class="postbody"><?php echo $lang['postedto']; ?>:</td>
+    <td><?php echo form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}"), 2); ?></td>
   </tr>
   <tr>
     <td align="right" class="postbody">Order by:</td>
-    <td><?php echo form_dropdown_array("order_by", range(1, 3), array("Relevance", "Newest First", "Oldest First"), 1); ?></td>
+    <td><?php echo form_dropdown_array("order_by", range(1, 3), array($lang['relevance'], $lang['newestfirst'], $lang['oldestfirst']), 1); ?></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td><?php echo form_checkbox("me_only", "Y", "Only show messages to or from me", false); ?></td>
+    <td><?php echo form_checkbox("me_only", "Y", $lang['onlyshowmessagestoorfromme'], false); ?></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td><?php echo form_submit("submit", "Find"); ?></td>
+    <td><?php echo form_submit("submit", $lang['find']); ?></td>
   </tr>
 </table>
 </form>

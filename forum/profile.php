@@ -61,12 +61,13 @@ require_once("./include/db.inc.php");
 require_once("./include/user_profile.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/format.inc.php");
+require_once("./include/lang.inc.php");
 
 
 html_draw_top();
 
 
-echo "<h1>Edit Profile</h1>\n";
+echo "<h1>{$lang['editprofile']}</h1>\n";
 echo "<br />\n";
 
 
@@ -85,7 +86,7 @@ if(isset($HTTP_POST_VARS['submit'])){
             }
         }
     }
-    echo "<p>Profile updated.</p>";
+    echo "<p>{$lang['profileupdated']}</p>";
 }
 
 
@@ -116,7 +117,7 @@ $result_count = db_num_rows($result);
 
 
 if($result_count == 0){
-    echo "<p>The forum owner has not set up Profiles.</p>";
+    echo "<p>{$lang['profilesnotsetup']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -154,7 +155,7 @@ for($i=0;$i<$result_count;$i++){
 echo "          <tr>\n            <td colspan=\"2\">&nbsp;</td>\n          </tr>\n";
 echo "          <tr>\n            <td colspan=\"2\" align=\"right\">";
 echo form_input_hidden("t_count", $result_count);
-echo form_submit("submit", "Submit");
+echo form_submit("submit", $lang['submit']);
 echo "</td>\n          </tr>\n        </table>\n";
 echo "      </form>\n";
 echo "    </td>\n  </tr>\n</table>\n";

@@ -24,6 +24,7 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/poll.inc.php");
+require_once("./include/lang.inc.php");
 
 function post_update($tid,$pid,$content)
 {
@@ -72,11 +73,11 @@ function post_delete($tid, $pid)
 
 function edit_refuse($tid, $pid)
 {
-
+    global $lang;
     echo "<div align=\"center\">";
-    echo "<h1>Denied</h1>";
-    echo "<p>You are not permitted to edit this message.</p>";
-    echo form_quick_button("discussion.php", "Back", "msg", "$tid.$pid");
+    echo "<h1>{$lang['error']}</h1>";
+    echo "<p>{$lang['nopermissiontoedit']}</p>";
+    echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
     echo "</div>";
 
 }

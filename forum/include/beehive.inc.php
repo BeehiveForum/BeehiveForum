@@ -21,18 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+require_once("./include/lang.inc.php");
+
 function draw_beehive_bar()
 {
+	global $lang;
 ?>
 <div align="center"><table width="96%" class="posthead"><tr>
 <td width="60%" class="smalltext" align="left">
 Beehive Forum 0.4-dev
 &nbsp;|&nbsp;
-<a href="http://beehiveforum.net/faq" target="_blank">FAQ</a>
+<a href="http://beehiveforum.net/faq" target="_blank"><?php echo $lang['faq']; ?></a>
 &nbsp;|&nbsp;
-<a href="http://sourceforge.net/docman/?group_id=50772" target="_blank">Docs</a>
+<a href="http://sourceforge.net/docman/?group_id=50772" target="_blank"><?php echo $lang['docs']; ?></a>
 &nbsp;|&nbsp;
-<a href="http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926" target="_blank">Support</a>
+<a href="http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926" target="_blank"><?php echo $lang['support']; ?></a>
 </td>
 <td width="40%" align="right" class="smalltext">&copy;2003
 <a href="http://beehiveforum.net/" target="_blank">Project BeehiveForum</a>

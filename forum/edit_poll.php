@@ -43,6 +43,7 @@ require_once("./include/html.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/edit.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_GET_VARS['msg'])) {
 
@@ -57,8 +58,8 @@ if (isset($HTTP_GET_VARS['msg'])) {
 }else {
 
   html_draw_top();
-  echo "<h1>Invalid Operation</h1>\n";
-  echo "<h2>No message specified for editing</h2>";
+  echo "<h1>{$lang['invalidop']}</h1>\n";
+  echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
   html_draw_bottom();
   exit;
 
@@ -80,12 +81,12 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
 
   if ($valid && strlen($HTTP_POST_VARS['answers'][1]) == 0) {
-    $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
+    $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }
 
   if ($valid && strlen($HTTP_POST_VARS['answers'][2]) == 0) {
-    $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
+    $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }
 
@@ -174,9 +175,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "          <td class=\"postbody\">";
 
   if ($HTTP_POST_VARS['changevote'] == 1) {
-    $polldata['CONTENT'].= "You will be able to change your vote.";
+    $polldata['CONTENT'].= "{$lang['abletochangevote']}";
   }else {
-    $polldata['CONTENT'].= "You will not be able to change your vote.";
+    $polldata['CONTENT'].= "{$lang['notabletochangevote']}";
   }
 
   $polldata['CONTENT'].= "          </td>";
@@ -185,7 +186,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    </td>";
   $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "</table>\n";
-  $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">Note: Poll votes are randomly generated for preview only.</p>\n";
+  $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
 }elseif ($valid && isset($HTTP_POST_VARS['submit'])) {
 
@@ -220,8 +221,8 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
 
   echo "<div align=\"center\">";
-  echo "<p>Edit Applied to Poll $tid.$pid</p>";
-  echo form_quick_button("discussion.php", "Continue", "msg", "$tid.$pid");
+  echo "<p>{$lang['editappliedtopoll']} $tid.$pid</p>";
+  echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
   echo "</div>";
 
   html_draw_bottom();
@@ -314,9 +315,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "          <td class=\"postbody\">";
 
   if ($polldata['CHANGEVOTE'] == 1) {
-    $polldata['CONTENT'].= "You will be able to change your vote.";
+    $polldata['CONTENT'].= $lang['abletochangevote'];
   }else {
-    $polldata['CONTENT'].= "You will not be able to change your vote.";
+    $polldata['CONTENT'].= $lang['notabletochangevote'];
   }
 
   $polldata['CONTENT'].= "          </td>";
@@ -339,12 +340,12 @@ if (isset($error_html)) echo $error_html;
 echo "<form name=\"f_edit_poll\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
 //echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
-echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</p>\n";
+echo "<p>{$lang['editpollwarning']}</p>\n";
 
 ?>
   <table border="0" cellpadding="0" cellspacing="0" width="500">
     <tr>
-      <td><h2>Poll Question</h2></td>
+      <td><h2><?php echo $lang['pollquestion'] ?></h2></td>
     </tr>
     <tr>
       <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid), 30, 64); ?></td>
@@ -358,7 +359,7 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
       <td>
         <table border="0" class="posthead" width="500">
           <tr>
-            <td><h2>Answers</h2></td>
+            <td><h2><?php echo $lang['possibleanswers'] ?></h2></td>
           </tr>
           <tr>
             <td>
@@ -389,11 +390,7 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
                 ?>
                 <tr>
                   <td>&nbsp;</td>
-                  <td>No. Answers: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), $answerselection), " ", form_submit("changecount", "Change")  ?></td>
-                </tr>
-                <tr>
-                  <td><?php echo sizeof($pollresults); ?></td>
-                  <td>&nbsp;</td>
+                  <td><?php echo $lang['numberanswers'] ?>: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), $answerselection), " ", form_submit("changecount", $lang['change'])  ?></td>
                 </tr>
                 <?php
 
@@ -435,7 +432,7 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
                 ?>
                 <tr>
                   <td>&nbsp;</td>
-                  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", $t_post_html); ?></td>
+                  <td><?php echo form_checkbox("t_post_html", "Y", $lang['answerscontainHTML'], $t_post_html); ?></td>
                 </tr>
               </table>
             </td>
@@ -444,18 +441,18 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td><h2>Vote Changing</h2></td>
+            <td><h2><?php echo $lang['votechanging'] ?></h2></td>
           </tr>
           <tr>
-            <td>Can a person change his or her vote?</td>
+            <td><?php echo $lang['votechangingexp'] ?></td>
           </tr>
           <tr>
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('changevote', '1', 'Yes', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1); ?></td>
-                  <td><?php echo form_radio('changevote', '0', 'No', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0); ?></td>
-                  <td><?php echo form_radio('changevote', '2', 'Allow Multiple Votes', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : $polldata['CHANGEVOTE'] == 2); ?></td>
+                  <td><?php echo form_radio('changevote', '1', $lang['yes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1); ?></td>
+                  <td><?php echo form_radio('changevote', '0', $lang['no'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0); ?></td>
+                  <td><?php echo form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : $polldata['CHANGEVOTE'] == 2); ?></td>
                 </tr>
               </table>
             </td>
@@ -464,17 +461,17 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td><h2>Poll Results</h2></td>
+            <td><h2><?php echo $lang['pollresults'] ?></h2></td>
           </tr>
           <tr>
-            <td>How should the results of the poll be shown?</td>
+            <td><?php echo $lang['pollresultsexp'] ?></td>
           </tr>
           <tr>
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('polltype', '0', 'Horizontal Bar graph', isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : $polldata['POLLTYPE'] == 0); ?></td>
-                  <td><?php echo form_radio('polltype', '1', 'Vertical Bar graph', isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : $polldata['POLLTYPE'] == 1); ?></td>
+                  <td><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : $polldata['POLLTYPE'] == 0); ?></td>
+                  <td><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : $polldata['POLLTYPE'] == 1); ?></td>
                 </tr>
               </table>
             </td>
@@ -483,17 +480,17 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td><h2>Expiration</h2></td>
+            <td><h2><?php echo $lang['expiration'] ?></h2></td>
           </tr>
           <tr>
-            <td>Show results while the poll is open?</td>
+            <td><?php echo $lang['showresultswhileopen'] ?></td>
           </tr>
           <tr>
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('showresults', '1', 'Yes', isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : $polldata['SHOWRESULTS'] == 1); ?></td>
-                  <td><?php echo form_radio('showresults', '0', 'No', isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : $polldata['SHOWRESULTS'] == 0); ?></td>
+                  <td><?php echo form_radio('showresults', '1', $lang['yes'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : $polldata['SHOWRESULTS'] == 1); ?></td>
+                  <td><?php echo form_radio('showresults', '0', $lang['no'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : $polldata['SHOWRESULTS'] == 0); ?></td>
                 </tr>
               </table>
             </td>
@@ -502,10 +499,10 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td>Change when the poll closes?</td>
+            <td><?php echo $lang['changewhenpollcloses']; ?></td>
           </tr>
           <tr>
-            <td><?php echo form_dropdown_array('closepoll', range(0, 5), array('One Day', 'Three Days', 'Seven Days', 'Thirty Days', 'Never', 'No Change'), isset($HTTP_POST_VARS['closepoll']) ? $HTTP_POST_VARS['closepoll'] : 5); ?></td>
+            <td><?php echo form_dropdown_array('closepoll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($HTTP_POST_VARS['closepoll']) ? $HTTP_POST_VARS['closepoll'] : 5); ?></td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -516,10 +513,10 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
   </table>
 <?php
 
-  echo form_submit("submit", "Apply"). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel", "Cancel");
+  echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
   if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
   }
 
   echo "</form>\n";
@@ -527,7 +524,7 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
   $threaddata = thread_get($tid);
 
   if ($valid) {
-    echo "<h2>Message Preview:</h2>";
+    echo "<h2>{$lang['messagepreview']}:</h2>";
     message_display($tid, $polldata, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
   }
 

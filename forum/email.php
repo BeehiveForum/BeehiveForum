@@ -51,6 +51,7 @@ if(isset($HTTP_POST_VARS['cancel'])){
 require_once("./include/user.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_GET_VARS['uid'])) {
     $to_uid = $HTTP_GET_VARS['uid'];
@@ -58,8 +59,8 @@ if (isset($HTTP_GET_VARS['uid'])) {
     $to_uid = $HTTP_POST_VARS['t_to_uid'];
 }else {
   html_draw_top();
-  echo "<h1>Invalid Operation</h1>\n";
-  echo "<h2>No user specified for emailing.</h2>";
+  echo "<h1>{$lang['invalidop']}</h1>\n";
+  echo "<h2>{$lang['nouserspecifiedforemail']}</h2>";
   html_draw_bottom();
   exit;
 }
@@ -74,41 +75,41 @@ if (isset($HTTP_POST_VARS['submit'])) {
     $message = _stripslashes($HTTP_POST_VARS['t_message']);
 
     if (!$subject) {
-        $error = "<p>Enter a subject for the message:</p>";
+        $error = "<p>{$lang['entersubjectformessage']}:</p>";
         $valid = false;
     }
 
     if ($valid && !$message) {
-        $error = "<p>Enter some content for the message:</p>";
+        $error = "<p>{$lang['entercontentformessage']}:</p>";
         $valid = false;
     }
 
     if ($valid) {
 
-        $message = wordwrap($message . "\n\nThis message was sent from a Beehive Forum by ".$from_user['LOGON']);
+        $message = wordwrap($message . "\n\n{$lang['msgsentfrombeehiveforumby']} ".$from_user['LOGON']);
         $from = "From: ".$from_user['EMAIL'];
 
-        html_draw_top("Email result");
+        html_draw_top($lang['emailresult']);
 
         echo "<p>&nbsp;</p>\n";
         echo "<div align=\"center\">\n";
 
         if (@mail($to_user['EMAIL'],$subject,$message,$from)) {
-            echo "<p>Message sent.</p>";
+            echo "<p>{$lang['msgsent']}.</p>";
         }else {
-            echo "<p>Mail system failure. Message not sent</p>";
+            echo "<p>{$lang['msgfail']}</p>";
         }
 
-        echo "<a href=\"./user_profile.php?uid=", $HTTP_POST_VARS['t_to_uid'], "\">Continue</a>";
+        echo "<a href=\"./user_profile.php?uid=", $HTTP_POST_VARS['t_to_uid'], "\">{$lang['continue']}</a>";
         html_draw_bottom();
         exit;
 
     }
 }
 
-html_draw_top("Email ".$to_user['LOGON']);
+html_draw_top("{$lang['email']} ".$to_user['LOGON']);
 
-echo "<h1>Email ".$to_user['LOGON']."</h1>\n";
+echo "<h1>{$lang['email']} ".$to_user['LOGON']."</h1>\n";
 
 if (isset($error)) echo $error;
 
@@ -118,17 +119,17 @@ if (!isset($message)) $message = "";
 echo "<div align=\"center\">";
 echo "<form name=\"f_email\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\" method=\"POST\">\n";
 echo "<table border=\"0\" width=\"96%\">\n";
-echo "<tr><td class=\"subhead\">From:</td>\n";
+echo "<tr><td class=\"subhead\">{$lang['from']}:</td>\n";
 echo "<td class=\"posthead\">".$from_user['EMAIL']."</td></tr>\n";
-echo "<tr><td class=\"subhead\">Subject:</td>\n";
+echo "<tr><td class=\"subhead\">{$lang['subject']}:</td>\n";
 echo "<td class=\"posthead\">".form_field("t_subject",$subject,32,128)."</td></tr>\n";
-echo "<tr><td class=\"subhead\" valign=\"top\">Message:</td>\n";
+echo "<tr><td class=\"subhead\" valign=\"top\">{$lang['message']}:</td>\n";
 echo "<td class=\"posthead\">".form_textarea("t_message",$message,8,32)."</td></tr>\n";
 echo "<tr><td class=\"subhead\">&nbsp;</td>\n";
 echo "<td class=\"posthead\" align=\"right\">\n";
 echo form_field("t_to_uid",$to_uid,0,0,"hidden");
-echo form_submit("submit","Send")."\n";
-echo form_submit("cancel","Cancel")."\n";
+echo form_submit("submit",$lang['send'])."\n";
+echo form_submit("cancel",$lang['cancel'])."\n";
 echo "</tr></table>\n";
 echo "</form>";
 echo "</div>\n";

@@ -26,6 +26,7 @@ require_once("./include/format.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
 {
@@ -401,6 +402,7 @@ function folder_search_dropdown()
 function search_draw_user_dropdown($name)
 {
 
+    global $lang;
     $db_search_draw_user_dropdown = db_connect();
 
     $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
@@ -411,12 +413,12 @@ function search_draw_user_dropdown($name)
     $result = db_query($sql, $db_search_draw_user_dropdown);
 
     $uids[]  = 0;
-    $names[] = "ALL";
+    $names[] = $lang['all_caps'];
 
     if (bh_session_get_value('UID') > 0) {
 
       $uids[]  = bh_session_get_value('UID');
-      $names[] = "ME";
+      $names[] = $lang['me_caps'];
 
     }
 

@@ -39,6 +39,7 @@ require_once("./include/user.inc.php");
 require_once("./include/perm.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/light.inc.php");
+require_once("./include/lang.inc.php");
 
 if(!bh_session_check()){
 
@@ -82,7 +83,7 @@ if ($pid == '') $pid = 1;
 
 if(!thread_can_view($tid, bh_session_get_value('UID'))){
         light_html_draw_top();
-        echo "<h2>The requested thread could not be found or access was denied.</h2>";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
         exit;
 }
@@ -99,7 +100,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
   }else {
 
     light_html_draw_top();
-    echo "<h2>You must select an option to vote for.</h2>";
+    echo "<h2>{$lang['mustselectpolloption']}</h2>";
     light_html_draw_bottom();
     exit;
 
@@ -120,7 +121,7 @@ $messages = messages_get($tid,$pid,$ppp);
 $threaddata = thread_get($tid);
 $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
-if($closed) $foldertitle .= " (closed)";
+if($closed) $foldertitle .= " ({$lang['closed']})";
 
 $show_sigs = false; // explicitly set sigs not to show in light mode
 
@@ -137,7 +138,7 @@ if($msg_count > 0){
             if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
                 $message['CONTENT'] = message_get_content($tid, $message['PID']);
             } else {
-                $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
+                $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
             }
 
             } else {
@@ -173,12 +174,12 @@ unset($messages, $message);
 
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;
-    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "Keep reading", "msg", "$tid.$npid");
+    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], $lang['keepreading'], "msg", "$tid.$npid");
 }
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
-echo "<h4><a href=\"./lthread_list.php\">Back to thread list</a></h4>";
+echo "<h4><a href=\"./lthread_list.php\">{$lang['backtothreadlist']}</a></h4>";
 
 light_html_draw_bottom();
 

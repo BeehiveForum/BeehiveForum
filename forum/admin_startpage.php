@@ -48,12 +48,13 @@ require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 
     html_draw_top();
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 
@@ -74,7 +75,7 @@ if (isset($HTTP_POST_VARS['save'])) {
     fwrite($fp, $content);
     fclose($fp);
 
-    $status_text = "<p><b>Start page updated</b> <a href=\"./start_main.php\" target=\"_blank\">View Updated Start Page</a></p>";
+    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"./start_main.php\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
 
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
@@ -94,11 +95,11 @@ if (isset($HTTP_POST_VARS['save'])) {
 }
 
 echo "<form name=\"startpage\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
-echo "<h1>Edit Start Page</h1>\n";
+echo "<h1>{$lang['editstartpage']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;
 
-echo "<p>Use this page to edit the Start Page on your forum.</p>\n";
+echo "<p>{$lang['editstartpageexp']}</p>\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
@@ -110,7 +111,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('save', 'Save'), "&nbsp;", form_reset(), "\n";
+echo form_submit('save', $lang['save']), "&nbsp;", form_reset(), "\n";
 echo "</form>\n";
 
 html_draw_bottom();

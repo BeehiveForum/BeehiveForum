@@ -46,12 +46,13 @@ require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -65,6 +66,8 @@ if (isset($HTTP_GET_VARS['sort_by'])) {
         $sort_by = "ADMIN_LOG.ADMIN_UID";
     } elseif ($HTTP_GET_VARS['sort_by'] == "ACTION") {
         $sort_by = "ADMIN_LOG.ACTION";
+    } else {
+        $sort_by = "ADMIN_LOG.LOG_TIME";
     }
 } else {
     $sort_by = "ADMIN_LOG.LOG_TIME";
@@ -88,7 +91,7 @@ if (isset($HTTP_GET_VARS['offset'])) {
 
 $db = db_connect();
 
-if (isset($HTTP_POST_VARS['clear'])) {
+if (isset($HTTP_POST_VARS['clear']) && (bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 
     $sql = "DELETE FROM ". forum_table("ADMIN_LOG");
     $result = db_query($sql, $db);
@@ -111,17 +114,17 @@ $sql.= "ORDER BY $sort_by $sort_dir LIMIT $start, 20";
 $result = db_query($sql, $db);
 
 // Draw the form
-echo "<h1>Admin Access Log</h1>\n";
-echo "<p>This list shows the last actions sanctioned by users with Admin privileges.</p>\n";
+echo "<h1>{$lang['adminaccesslog']}</h1>\n";
+echo "<p>{$lang['adminlogexp']}</p>\n";
 
 if ($start > 0) {
-  echo "<p>Showing actions ", $start + 1, " to ";
+  echo "<p>{$lang['showingactions']} ", $start + 1, " to ";
   if ($start + 20 > db_num_rows($result)) {
     echo $start + db_num_rows($result);
   }else {
     echo $start + 20;
   }
-  echo " inclusive.</p>\n";
+  echo " {$lang['inclusive']}.</p>\n";
 }
 
 echo "<div align=\"center\">\n";
@@ -132,21 +135,21 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=DESC\">Date/Time</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=ASC\">Date/Time</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=DESC\">Action</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=DESC\">{$lang['action']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=ASC\">Action</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=ASC\">{$lang['action']}</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -163,13 +166,13 @@ if (db_num_rows($result)) {
             $user = "<a href=\"./admin_user.php?uid=". $row['UID']. "\">";
             $user.= format_user_name($row['LOGON'], $row['NICKNAME']). "</a>";
         }else {
-            $user = "Unknown User (UID: ". $row['UID']. ")";
+            $user = "{$lang['unknownuser']} (UID: ". $row['UID']. ")";
         }
 
         if (isset($row['FID']) && $row['FID'] > 0) {
             $title = $row['FID'];
         }else {
-            $title = "Unknown Folder";
+            $title = "{$lang['unknownfolder']}";
         }
 
         if (isset($row['TID']) && $row['TID'] > 0) {
@@ -183,102 +186,102 @@ if (db_num_rows($result)) {
         if (isset($row['FOLDER_TITLE']) && !empty($row['FOLDER_TITLE'])) {
             $folder_title = _stripslashes($row['FOLDER_TITLE']);
         }else {
-            $folder_title = "Unknown (FID: ". $row['FID']. ")";
+            $folder_title = "{$lang['unknown']} (FID: ". $row['FID']. ")";
         }
 
         if (isset($row['THREAD_TITLE']) && !empty($row['THREAD_TITLE'])) {
             $thread_title = _stripslashes($row['THREAD_TITLE']);
         }else {
-            $thread_title = "Unknown (TID: ". $row['TID']. ")";
+            $thread_title = "{$lang['unknown']} (TID: ". $row['TID']. ")";
         }
 
         if (isset($row['PS_NAME']) && !empty($row['PS_NAME'])) {
             $ps_name = _stripslashes($row['PS_NAME']);
         }else {
-            $ps_name = "Unknown (PSID: ". $row['PSID']. ")";
+            $ps_name = "{$lang['unknown']} (PSID: ". $row['PSID']. ")";
         }
 
         if (isset($row['PI_NAME']) && !empty($row['PI_NAME'])) {
             $pi_name = _stripslashes($row['PI_NAME']);
         }else {
-            $pi_name = "Unknown (PIID: ". $row['PIID']. ")";
+            $pi_name = "{$lang['unknown']} (PIID: ". $row['PIID']. ")";
         }
 
         switch ($row['ACTION']) {
             case 1:
-                $action_text = "Changed User Status for User: $user";
+                $action_text = "{$lang['changeduserstatus']}: $user";
                 break;
             case 2:
-                $action_text = "Changed User Folder Access Privs for User: $user";
+                $action_text = "{$lang['changedfolderaccess']}: $user";
                 break;
             case 3:
-                $action_text = "Deleted All Posts for User: $user";
+                $action_text = "{$lang['deletedallusersposts']}: $user";
                 break;
             case 4:
-                $action_text = "Banned User $user's IP Address";
+                $action_text = "{$lang['banneduser']} $user's {$lang['ipaddress']}";
                 break;
             case 5:
-                $action_text = "Unbanned User $user's IP Address";
+                $action_text = "{$lang['unbanneduser']} $user's {$lang['ipaddress']}";
                 break;
             case 6:
-                $action_text = "Deleted User $user's attachment";
+                $action_text = "{$lang['deleteduser']} $user's {$lang['attachment']}";
                 break;
             case 7:
-                $action_text = "Changed Folder Title / Access Privs for folder: '$folder_title'";
+                $action_text = "{$lang['changedtitleaccessfolder']}: '$folder_title'";
                 break;
             case 8:
-                $action_text = "Moved threads to folder: '$folder_title'";
+                $action_text = "{$lang['movedthreads']}: '$folder_title'";
                 break;
             case 9:
-                $action_text = "Created new folder: '$folder_title'";
+                $action_text = "{$lang['creatednewfolder']}: '$folder_title'";
                 break;
             case 10:
-                $action_text = "Changed Profile Section title for section: $ps_name";
+                $action_text = "{$lang['changedprofilesectiontitle']}: $ps_name";
                 break;
             case 11:
-                $action_text = "Added New Profile Section: $ps_name";
+                $action_text = "{$lang['addednewprofilesection']}: $ps_name";
                 break;
             case 12:
-                $action_text = "Deleted Profile Section: $ps_name";
+                $action_text = "{$lang['deletedprofilesection']}: $ps_name";
                 break;
             case 13:
-                $action_text = "Changed Profile Item title for item: $pi_name";
+                $action_text = "{$lang['changedprofileitemtitle']}: $pi_name";
                 break;
             case 14:
-                $action_text = "Added New Profile Item: $pi_name";
+                $action_text = "{$lang['addednewprofileitem']}: $pi_name";
                 break;
             case 15:
-                $action_text = "Deleted Profile Item: $pi_name";
+                $action_text = "{$lang['deletedprofileitem']}: $pi_name";
                 break;
             case 16:
-                $action_text = "Edited Start Page";
+                $action_text = "{$lang['editedstartpage']}";
                 break;
             case 17:
-                $action_text = "Saved New Style";
+                $action_text = "{$lang['savednewstyle']}";
                 break;
             case 18:
-                $action_text = "Moved Thread: '$thread_title'";
+                $action_text = "{$lang['movedthread']}: '$thread_title'";
                 break;
             case 19:
-                $action_text = "Closed Thread: '$thread_title'";
+                $action_text = "{$lang['closedthread']}: '$thread_title'";
                 break;
             case 20:
-                $action_text = "Opened Thread: '$thread_title'";
+                $action_text = "{$lang['openedthread']}: '$thread_title'";
                 break;
             case 21:
-                $action_text = "Renamed Thread: '$thread_title'";
+                $action_text = "{$lang['renamedthread']}: '$thread_title'";
                 break;
             case 22:
-                $action_text = "Deleted Post: $tid.$pid";
+                $action_text = "{$lang['deletedpost']}: $tid.$pid";
                 break;
             case 23:
-                $action_text = "Edited Post: $tid.$pid";
+                $action_text = "{$lang['editedpost']}: $tid.$pid";
                 break;
             case 24:
-                $action_text = "Edited Word Filter";
+                $action_text = "{$lang['editedwordfilter']}";
                 break;
             default:
-                $action_text = "Unknown";
+                $action_text = "{$lang['unknown']}";
                 break;
 
         }
@@ -293,7 +296,7 @@ if (db_num_rows($result)) {
 }else {
 
     echo "        <tr>\n";
-    echo "          <td class=\"posthead\" colspan=\"3\" align=\"left\">Admin Log is empty</td>\n";
+    echo "          <td class=\"posthead\" colspan=\"3\" align=\"left\">{$lang['adminlogempty']}</td>\n";
     echo "        </tr>\n";
 
 }
@@ -305,14 +308,14 @@ echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">Recent Entries</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">Recent Entries</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
   }
 }
 
@@ -321,7 +324,7 @@ echo "<p>&nbsp;</p>\n";
 
 if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && db_num_rows($result)) {
     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-    echo form_submit('clear', 'Clear Log');
+    echo form_submit('clear',$lang['clearlog']);
     echo "</form>\n";
 }
 

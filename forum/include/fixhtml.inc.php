@@ -23,13 +23,74 @@ USA
 // fix_html - process html to prevent it breaking the forum
 
 // "$bad_tags" is an array of tags to be filtered
-function fix_html($html, $bad_tags = array("plaintext","horg","!--"))
+function fix_html($html, $bad_tags = array("plaintext"))
 {
-	$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
+	$open_pos = strpos($html, "<");
+	$next_open_pos = strpos($html, "<", $open_pos+1);
+	$close_pos = strpos($html, ">");
+
+	$html_parts = array();
+
+	while(is_integer($open_pos) || is_integer($close_pos)){
+		if(substr($html, $open_pos+1, 3) == "!--"){
+			$end_comment = strpos($html, "-->", $open_pos);
+			if(!is_integer($end_comment)){
+				$html = substr($html, 0, $open_pos+4)." -->".substr($html, $open_pos+4);
+				$end_comment = $open_pos+5;
+			}
+			if(substr($html, $open_pos+4, 1) != " "){
+				$html = substr($html, 0, $open_pos+4)." ".substr($html, $open_pos+4);
+				$end_comment++;
+			}
+
+			array_push($html_parts, substr($html, 0, $open_pos));
+			array_push($html_parts, substr($html, $open_pos+1, $end_comment-$open_pos+1));
+
+			$html = substr($html, $end_comment+3);
+
+		} else if(!is_integer($open_pos) || $close_pos < $open_pos){
+			// > by itself
+			$html = substr($html, 0, $close_pos)."&gt;".substr($html, $close_pos+1);
+
+		} else if(!is_integer($close_pos)){
+			// < by itself
+			$html = substr($html, 0, $open_pos)."&lt;".substr($html, $open_pos+1);
+
+		} else if($next_open_pos < $close_pos && is_integer($next_open_pos)){
+			// < inside <..>
+			$html = substr($html, 0, $open_pos)."&lt;".substr($html, $open_pos+1);
+
+		} else if($open_pos+1 == $close_pos || substr($html, $open_pos+1, 1) == " "){
+			// empty tag < >
+			$html = substr($html, 0, $open_pos)."&lt;".substr($html, $open_pos+1, $close_pos-$open_pos-1)."&gt;". substr($html, $close_pos+1);
+
+		} else {
+			// normal <..>
+			array_push($html_parts, substr($html, 0, $open_pos));
+			array_push($html_parts, substr($html, $open_pos+1, $close_pos-$open_pos-1));
+
+			$html = substr($html, $close_pos+1);
+		}
+
+		$html_length = strlen($html);
+
+		$open_pos = strpos($html, "<");
+		if($open_pos < $html_length){
+			$next_open_pos = strpos($html, "<", $open_pos+1);
+			$close_pos = strpos($html, ">");
+		} else {
+			$next_open_pos = false;
+			$close_pos = false;
+		}
+	}
+
+	$html_parts[count($html_parts)] .= $html;
+
+	//$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
 
 	$opentags = array();
 	$last_tag = array();
-	$single_tags = array("br","img","hr");
+	$single_tags = array("br","img","hr","!--");
 	$no_nest = array("p");
 
 	for($i=0; $i<count($html_parts); $i++){
@@ -65,29 +126,49 @@ function fix_html($html, $bad_tags = array("plaintext","horg","!--"))
 				}
 
 			} else {
-				// check for XHTML single tag
-				if(substr($html_parts[$i],-1) != "/"){
-					$tag_bits = explode(" ", strtolower($html_parts[$i]));
-					$tag = $tag_bits[0];
+				$tag_bits = explode(" ", strtolower($html_parts[$i]));
 
-					// filter 'bad' tags
-					if(in_array($tag, $bad_tags)){
-						$html_parts[$i] = "####";
+				if(substr($tag_bits[0], -1) == "/"){
+					$tag_bits[0] = substr($tag_bits[0], 0, -1);
+				}
 
-					} else if(!in_array($tag, $single_tags)){
-						$opentags[$tag]++;
-						array_push($last_tag, $tag);
+				$tag = $tag_bits[0];
 
-						// make sure certain tags can't nest within themselves, e.g. <p><p>
-						if(in_array($tag, $no_nest) && $opentags[$tag] > 1){
-							array_splice($html_parts, $i, 0, array("/$tag", ""));
-							$opentags[$tag]--;
-							$i+=2;
+				// filter 'bad' tags
+				if(in_array($tag, $bad_tags)){
+					$html_parts[$i] = "####";
+
+				} else if(!in_array($tag, $single_tags)){
+					$opentags[$tag]++;
+					array_push($last_tag, $tag);
+
+					// make sure certain tags can't nest within themselves, e.g. <p><p>
+					if(in_array($tag, $no_nest) && $opentags[$tag] > 1){
+
+						for($j=count($last_tag)-2;$j>=0;$j--){
+							if($last_tag[$j] == $tag){
+								array_splice($last_tag, $j, 1);
+								break;
+							} else {
+								array_splice($html_parts, $i, 0, array("/".$last_tag[$j], ""));
+								$opentags[$last_tag[$j]]--;
+								array_splice($last_tag, $j, 1);	
+								$i+=2;
+							}
 						}
 
-					// make XHTML single tag
-					} else {
+						array_splice($html_parts, $i, 0, array("/".$tag, ""));
+						$opentags[$tag]--;
+						$i+=2;
+
+					}
+
+				// make XHTML single tag
+				} else if(substr($html_parts[$i], -2) != "--"){
+					if(substr($html_parts[$i], -1) != "/" && substr($html_parts[$i], -2) != " /"){
 						$html_parts[$i] .= " /";
+					} else if (substr($html_parts[$i], -1) == "/"){
+						$html_parts[$i] = substr($html_parts[$i], 0, -1)." /";
 					}
 				}
 			}

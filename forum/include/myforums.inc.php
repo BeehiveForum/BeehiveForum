@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.29 2004-10-19 19:31:41 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.30 2004-11-21 14:08:09 decoyduck Exp $ */
 
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
@@ -159,7 +159,11 @@ function get_my_forums()
             $sql.= "(THREAD.TID = POST.TID) ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
             $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ";
+            $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
+            $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+            $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
             $sql.= "AND ((USER_THREAD.LAST_READ < THREAD.LENGTH AND USER_THREAD.LAST_READ < POST.PID) ";
             $sql.= "OR USER_THREAD.LAST_READ IS NULL) ";
 
@@ -173,9 +177,13 @@ function get_my_forums()
             $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
             $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_POST POST ON ";
-            $sql.= "(POST.TID = THREAD.TID) ";
+            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_POST POST ";
+            $sql.= "ON (POST.TID = THREAD.TID) ";
+            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ";
+            $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
+            $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+            $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
             $sql.= "AND (POST.PID > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
             $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL";
 

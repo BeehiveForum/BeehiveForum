@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.105 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.106 2004-03-16 23:03:22 decoyduck Exp $ */
 
 function threads_get_available_folders()
 {
@@ -82,7 +82,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER_STATUS.status, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -92,6 +92,8 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN USER_STATUS USER_STATUS ON ";
+    $sql .= "(USER_STATUS.UID = USER.UID) ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -464,7 +466,7 @@ function threads_get_polls($uid, $start = 0)
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER_STATUS.status, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -474,6 +476,8 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN USER_STATUS USER_STATUS ON ";
+    $sql .= "(USER_STATUS.UID = USER.UID) ";    
     $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -508,7 +512,7 @@ function threads_get_sticky($uid, $start = 0)
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER_STATUS.status, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -518,6 +522,8 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN USER_STATUS USER_STATUS ON ";
+    $sql .= "(USER_STATUS.UID = USER.UID) ";    
     $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
@@ -593,7 +599,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "USER.logon, USER_STATUS.status, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -603,6 +609,8 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN USER_STATUS USER_STATUS ON ";
+    $sql .= "(USER_STATUS.UID = USER.UID) ";    
     $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($fid) ";

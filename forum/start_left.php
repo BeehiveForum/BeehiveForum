@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.59 2004-03-15 21:33:31 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.60 2004-03-16 23:03:13 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,7 +127,7 @@ echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">", form_quick_button("discussion.php", "{$lang['startreading']} &gt;&gt;", "webtag", $webtag, "main"), "</td>\n";
+echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">", form_quick_button("discussion.php", "{$lang['startreading']} &gt;&gt;", "webtag", $webtag['WEBTAG'], "main"), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";

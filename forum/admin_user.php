@@ -90,6 +90,10 @@ $result = db_query($sql,$db);
 
 $user = db_fetch_array($result);
 
+if (!isset($user['STATUS'])) {
+  $user['STATUS'] = 0;
+}
+
 // Do updates
 if(isset($HTTP_POST_VARS['submit'])) {
 
@@ -101,28 +105,27 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
   }else {
 
-    $new_status = 0;
+    $t_soldier = (isset($HTTP_POST_VARS['t_soldier'])) ? $HTTP_POST_VARS['t_soldier'] : 0;
+    $t_worker  = (isset($HTTP_POST_VARS['t_worker']))  ? $HTTP_POST_VARS['t_worker']  : 0;
+    $t_worm    = (isset($HTTP_POST_VARS['t_worm']))    ? $HTTP_POST_VARS['t_worm']    : 0;
+    $t_wasp    = (isset($HTTP_POST_VARS['t_wasp']))    ? $HTTP_POST_VARS['t_wasp']    : 0;
+    $t_splat   = (isset($HTTP_POST_VARS['t_splat']))   ? $HTTP_POST_VARS['t_splat']   : 0;
 
-    if (isset($HTTP_POST_VARS['t_worker'])) $new_status = $new_status | $HTTP_POST_VARS['t_worker'];
-    if (isset($HTTP_POST_VARS['t_worm']))   $new_status = $new_status | $HTTP_POST_VARS['t_worm'];
-    if (isset($HTTP_POST_VARS['t_wasp']))   $new_status = $new_status | $HTTP_POST_VARS['t_wasp'];
-    if (isset($HTTP_POST_VARS['t_splat']))  $new_status = $new_status | $HTTP_POST_VARS['t_splat'];
+    $new_status = $t_worker | $t_worm | $t_wasp | $t_splat;
 
-    //$new_status = @$HTTP_POST_VARS['t_worker'] | @$HTTP_POST_VARS['t_worm'];
-    //$new_status = $new_status | @$HTTP_POST_VARS['t_wasp'] | @$HTTP_POST_VARS['t_splat'];
-
-    if (($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN) && isset($HTTP_POST_VARS['t_soldier'])) {
-        $new_status = $new_status | $HTTP_POST_VARS['t_soldier'];
-    }elseif (isset($user['STATUS'])) {
-        $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
-        $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
+    if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN) {
+        $new_status = $new_status | $t_soldier;
     }
+
+    $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
+    $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
 
     // Add lower ranks automatically
     if ($new_status & USER_PERM_QUEEN) $new_status |= USER_PERM_SOLDIER;
     if ($new_status & USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
 
     user_update_status($uid, $new_status);
+    $user['STATUS'] = $new_status;
 
     // Add Log entry.
     admin_addlog($uid, 0, 0, 0, 0, 0, 1);
@@ -173,8 +176,18 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     if (isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
 
-      ban_ip($HTTP_POST_VARS['t_ip_address']);
-      admin_addlog($uid, 0, 0, 0, 0, 0, 4);
+      if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+      }else {
+        $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+      }
+
+      if ($HTTP_POST_VARS['t_ip_address'] != $ipaddress) {
+
+        ban_ip($HTTP_POST_VARS['t_ip_address']);
+        admin_addlog($uid, 0, 0, 0, 0, 0, 4);
+
+      }
 
     }elseif (isset($HTTP_POST_VARS['t_ip_banned']) && !isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
 

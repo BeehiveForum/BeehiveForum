@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.29 2004-12-01 09:25:47 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.30 2005-01-23 23:50:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -33,7 +33,7 @@ function ip_check()
 
         if (!$table_data = get_table_prefix()) return false;
 
-        $sql = "SELECT IP FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
+        $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}BANNED WHERE IPADDRESS = '$ipaddress'";
         $result = db_query($sql, $db_ip_banned);
 
         if (db_num_rows($result) > 0) {
@@ -58,7 +58,7 @@ function ban_ip($ipaddress)
 
    if (!ip_is_banned($ipaddress)) {
 
-       $sql = "INSERT INTO {$table_data['PREFIX']}BANNED_IP (IP) VALUES ('$ipaddress')";
+       $sql = "INSERT INTO {$table_data['PREFIX']}BANNED (IPADDRESS) VALUES ('$ipaddress')";
        $result = db_query($sql, $db_ban_ip);
 
        return $result;
@@ -75,7 +75,7 @@ function unban_ip($ipaddress)
 
    if (!$table_data = get_table_prefix()) return false;
 
-   $sql = "DELETE FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
+   $sql = "DELETE FROM {$table_data['PREFIX']}BANNED WHERE IPADDRESS = '$ipaddress'";
    $result = db_query($sql, $db_ban_ip);
 
    return $result;
@@ -89,7 +89,7 @@ function ip_is_banned($ipaddress)
 
    if (!$table_data = get_table_prefix()) return false;
 
-   $sql = "SELECT IP FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
+   $sql = "SELECT IP FROM {$table_data['PREFIX']}BANNED WHERE IPADDRESS = '$ipaddress'";
    $result = db_query($sql, $db_ip_is_banned);
 
    return (db_num_rows($result) > 0);

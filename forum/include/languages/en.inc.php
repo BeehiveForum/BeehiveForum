@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.207 2005-01-21 21:25:52 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.208 2005-01-23 23:50:55 decoyduck Exp $ */
 
 // International English language file
 
@@ -183,17 +183,18 @@ $lang['forumadmin'] = "Forum Admin";
 $lang['adminexp_1'] = "Use the menu on the left to manage things in your forum.";
 $lang['adminexp_2'] = "<b>Users</b> allows you to set individual user permissions, including appointing Editors and gagging people.";
 $lang['adminexp_3'] = "<b>User Groups</b> allows you to create User Groups to assign permissions to as many or as few users quickly and easily.";
-$lang['adminexp_4'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
-$lang['adminexp_5'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
-$lang['adminexp_6'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
-$lang['adminexp_7'] = "<b>Start Page</b> lets you customise your forum's start page.";
-$lang['adminexp_8'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
-$lang['adminexp_9'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
-$lang['adminexp_10'] = "<b>Posting stats</b> generates a report listing the top 10 posters by month, week, day and hour.";
-$lang['adminexp_11'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
-$lang['adminexp_12'] = "<b>View log</b> lists recent actions by the forum moderators.";
-$lang['adminexp_13'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
-$lang['adminexp_14'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
+$lang['adminexp_4'] = "<b>Ban Controls</b> allows the banning and unbanning of IP Addresses, Usernames, Email addresses and Nicknames.";
+$lang['adminexp_5'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
+$lang['adminexp_6'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
+$lang['adminexp_7'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
+$lang['adminexp_8'] = "<b>Start Page</b> lets you customise your forum's start page.";
+$lang['adminexp_9'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
+$lang['adminexp_10'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
+$lang['adminexp_11'] = "<b>Posting stats</b> generates a report listing the top 10 posters by month, week, day and hour.";
+$lang['adminexp_12'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
+$lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum moderators.";
+$lang['adminexp_14'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
+$lang['adminexp_15'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";
@@ -259,7 +260,7 @@ $lang['possiblealiases'] = "Possible Aliases";
 $lang['usersettingsupdated'] = "User Settings Successfully Updated";
 $lang['nomatches'] = "No matches";
 $lang['useripaddresses'] = "User IP addresses";
-$lang['listofthelastknownipaddresses'] = "This is a list of the last known IP addresses for this user. To ban an IP address tick the box next to the address and click the Submit button below.";
+$lang['listofthelastknownipaddresses'] = "This is a list of the last 10 known IP addresses for this user, ordered recent first. To ban an IP address tick the box next to the address and click the Save button below.";
 $lang['cannotipbansoldiers'] = "You cannot IP ban other Soldiers. Lower their Status first.";
 $lang['banthisipaddress'] = "Ban this IP address";
 $lang['noipaddress'] = "There is no IP address for this account. The user cannot be banned by IP address.";
@@ -444,6 +445,12 @@ $lang['totalpoststhismonth'] = "Total posts this month";
 $lang['totalpoststhisweek'] = "Total posts this week";
 $lang['totalpoststoday'] = "Total posts today";
 $lang['totalpoststhishour'] = "Total posts this hour";
+
+$lang['bancontrols'] = "Ban Controls";
+$lang['bannedipaddresses'] = "Banned IP Addresses";
+$lang['bannedlogons'] = "Banned Logons";
+$lang['bannednicknames'] = "Banned Nicknames";
+$lang['bannedemailaddresses'] = "Banned Email Addresses";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

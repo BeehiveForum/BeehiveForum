@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.220 2005-01-21 21:25:51 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.221 2005-01-23 23:50:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -789,73 +789,22 @@ function user_get_ip_addresses($uid)
     // Fetch the last 20 IP addresses from the POST table
 
     $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 20";
+    $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
 
     $result = db_query($sql, $db_user_get_ip_addresses);
 
     if (db_num_rows($result) > 0) {
 
-        while($user_get_aliases_row = db_fetch_array($result)) {
+        while($user_ip_addresses_row = db_fetch_array($result)) {
 
-            if (strlen($user_get_aliases_row['IPADDRESS']) > 0) {
+            if (strlen($user_ip_addresses_row['IPADDRESS']) > 0) {
 
-                $user_ip_addresses_array[] = $user_get_aliases_row['IPADDRESS'];
+                $user_ip_addresses_array[] = $user_ip_addresses_row['IPADDRESS'];
             }
         }
     }
 
     return $user_ip_addresses_array;
-}
-
-function user_get_aliases($uid, $user_ip_address_array)
-{
-    $db_user_get_aliases = db_connect();
-
-    if (!$table_data = get_table_prefix()) return array();
-
-    if (!is_numeric($uid)) return false;
-    if (!is_array($user_ip_address_array)) return false;
-
-    // Intialise the arrays we need
-
-    $user_get_aliases_array = array();
-
-    // validate each key in the array to make sure it's
-    // a valid formatted IP Address.
-
-    $ip_address_preg = "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-
-    foreach ($user_ip_address_array as $key => $ip_address) {
-
-        if (!preg_match("/^$ip_address_preg$/", $ip_address)) {
-
-            unset($user_ip_address_array[$key]);
-        }
-    }
-
-    // Search the POST table for any matches - limit 10 matches
-
-    $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);
-
-    $sql = "SELECT DISTINCT USER.UID, USER.LOGON FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
-    $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
-    $sql.= "GROUP BY USER.UID ORDER BY POST.TID DESC LIMIT 0, 10";
-
-    $result = db_query($sql, $db_user_get_aliases);
-
-    if (db_num_rows($result) > 0) {
-
-        while($user_get_aliases_row = db_fetch_array($result)) {
-
-            $user_get_aliases_array[] = $user_get_aliases_row;
-        }
-    }
-
-    return $user_get_aliases_array;
 }
 
 function users_get_recent($offset, $limit)

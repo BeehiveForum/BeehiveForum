@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.51 2004-12-22 22:21:10 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.52 2005-01-23 23:50:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -401,6 +401,56 @@ function admin_get_forum_list()
     }
 
     return $get_forum_list_array;
+}
+
+function admin_get_ban_data()
+{
+    $db_admin_get_bandata = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $ip_address_preg = "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
+    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
+    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
+    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
+
+    $ipaddress_array = array();
+    $logon_array     = array();
+    $nickname_array  = array();
+    $email_array     = array();
+
+    $sql = "SELECT IPADDRESS, LOGON, NICKNAME, EMAIL ";
+    $sql.= "FROM {$table_data['PREFIX']}BANNED";
+
+    $result = db_query($sql, $db_admin_get_bandata);
+
+    while ($ban_data_array = db_fetch_array($result)) {
+
+        if (isset($ban_data_array['IPADDRESS']) && preg_match("/^$ip_address_preg$/", $ban_data_array['IPADDRESS'])) {
+
+            $ipaddress_array[] = $ban_data_array['IPADDRESS'];
+        }
+
+        if (isset($ban_data_array['LOGON']) && strlen(trim($ban_data_array['LOGON'])) > 0) {
+
+            $logon_array[] = $ban_data_array['LOGON'];
+        }
+
+        if (isset($ban_data_array['NICKNAME']) && strlen(trim($ban_data_array['NICKNAME'])) > 0) {
+
+            $nickname_array[] = $ban_data_array['LOGON'];
+        }
+
+        if (isset($ban_data_array['EMAIL']) && strlen(trim($ban_data_array['EMAIL'])) > 0) {
+
+            $email_array[] = $email_array['LOGON'];
+        }
+    }
+
+    return array('IPADDRESS' => $ipaddress_array,
+                 'LOGON'     => $logon_array,
+                 'NICKNAME'  => $nickname_array,
+                 'EMAIL'     => $email_array);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.7 2005-01-17 17:39:14 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.8 2005-01-23 23:50:55 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -126,6 +126,37 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    // Improved ban controls allow banning of IP, LOGON
+    // NICKNAME and EMAIL seperatly or in combinations.
+
+    $sql = "CREATE TABLE {$forum_webtag}_BANNED (";
+    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  IPADDRESS CHAR(15) NOT NULL DEFAULT '',";
+    $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
+    $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
+    $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
+    $sql.= "  PRIMARY KEY  (IP)";
+    $sql.= ") TYPE=MyISAM";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Insert the old IP addresses from the BANNED_IP table if any
+
+    $sql = "INSERT INTO {$forum_webtag}_BANNED (IPADDRESS) ";
+    $sql.= "SELECT IP FROM {$forum_webtag}_BANNED_IP";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
 
     // Move the attachment file records into a global PAF table
 

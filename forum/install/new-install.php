@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.18 2005-01-21 21:26:01 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.19 2005-01-23 23:50:55 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -69,8 +69,12 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_BANNED_IP (";
-$sql.= "  IP CHAR(15) NOT NULL DEFAULT '',";
+$sql = "CREATE TABLE {$forum_webtag}_BANNED (";
+$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  IPADDRESS CHAR(15) NOT NULL DEFAULT '',";
+$sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
+$sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
+$sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (IP)";
 $sql.= ") TYPE=MyISAM";
 

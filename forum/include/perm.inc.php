@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.71 2005-04-03 16:09:00 rowan_hill Exp $ */
+/* $Id: perm.inc.php,v 1.72 2005-04-03 17:38:11 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -783,7 +783,7 @@ function perm_remove_user_from_group($uid, $gid)
 /**
 * Fetches a user's permissions
 *
-* Retrieves the permissions of the user with UID = $uid, stored using bitwise logic in 
+* Retrieves the permissions of the user with UID = $uid, stored using bitwise logic in
 * a 32-bit integer. See config.inc.php for the user permissions constants
 *
 * @see config.inc.php

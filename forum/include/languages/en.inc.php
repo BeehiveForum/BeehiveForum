@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.255 2005-04-03 16:09:00 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.256 2005-04-03 17:38:11 decoyduck Exp $ */
 
 // International English language file
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "utf-8"; // ISO Charset code
+$lang['_charset'] = "UTF-8"; // ISO Charset code
 $lang['_isocode'] = "en";    // ISO-639 language code
 $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 
@@ -426,6 +426,8 @@ $lang['useriswormed'] = "User is wormed";
 $lang['usercanignoreadmin'] = "User can ignore administrators";
 
 $lang['groupcanaccessadmintools'] = "Group can access admin tools";
+$lang['groupcanmoderateallfolders'] = "Group can moderate all folders";
+$lang['groupcanmoderatelinkssection'] = "Group can moderate Links sections";
 $lang['groupisbanned'] = "Group is banned";
 $lang['groupiswormed'] = "Group is wormed";
 $lang['groupisglobalmod'] = "Group is global moderator";

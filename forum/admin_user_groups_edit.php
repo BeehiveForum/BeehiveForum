@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.28 2005-03-28 23:45:11 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.29 2005-04-03 17:38:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -251,10 +251,10 @@ if (perm_has_forumtools_access()) {
 }
 
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['usercanmoderateallfolders'], $group_permissions & USER_PERM_FOLDER_MODERATE), "</td>\n";
+echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['groupcanmoderateallfolders'], $group_permissions & USER_PERM_FOLDER_MODERATE), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, $lang['usercanmoderatelinkssection'], $group_permissions & USER_PERM_LINKS_MODERATE), "</td>\n";
+echo "                        <td>", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, $lang['groupcanmoderatelinkssection'], $group_permissions & USER_PERM_LINKS_MODERATE), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>", form_checkbox("t_banned", USER_PERM_BANNED, $lang['groupisbanned'], $group_permissions & USER_PERM_BANNED), "</td>\n";

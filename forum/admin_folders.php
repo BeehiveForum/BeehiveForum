@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.96 2005-03-28 23:45:07 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.97 2005-04-03 17:38:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -220,45 +220,35 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\" class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;Permissions Key</td>\n";
+echo "                  <td colspan=\"4\" class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;Permissions Key</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td><b>R</b></td>\n";
 echo "                  <td>{$lang['postreadingallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
 echo "                  <td><b>W</b></td>\n";
 echo "                  <td>{$lang['postcreationallowed']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td><b>T</b></td>\n";
 echo "                  <td>{$lang['threadcreationallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
 echo "                  <td><b>E</b></td>\n";
 echo "                  <td>{$lang['posteditingallowed']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td><b>D</b></td>\n";
 echo "                  <td>{$lang['postdeletionallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
 echo "                  <td><b>A</b></td>\n";
 echo "                  <td>{$lang['attachmentsallowed']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td><b>H</b></td>\n";
 echo "                  <td>{$lang['htmlpostingallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
 echo "                  <td><b>S</b></td>\n";
 echo "                  <td>{$lang['signatureallowed']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td><b>G</b></td>\n";
 echo "                  <td>{$lang['guestaccessallowed']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
 echo "                  <td><b>V</b></td>\n";
 echo "                  <td>{$lang['postapprovalrequired']}</td>\n";
 echo "                </tr>\n";

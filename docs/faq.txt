@@ -24,6 +24,7 @@ Version 0.1 / 8th December 2002
    6.1 Database connectivity problems or permission denied errors
    6.2 Unknown or missing table errors
    6.3 Blank page errors
+   6.4 Error: Strict Standards: var: Deprecated on PHP/5.x
 
 1. About Beehive
 ================
@@ -31,13 +32,13 @@ Version 0.1 / 8th December 2002
 1.1 What is Beehive?
 ====================
 
-Beehive is an online forum/messageboard system with several powerful features:
+Beehive is an online forum/message board system with several powerful features:
 - Frames-based layout (OK, some people hate frames, but they really are handy
   when you're using a forum like this)
 - Per-user tracking of read and unread posts
-- Email notification when someone posts a message to you
+- E-mail notification when someone posts a message to you
 - Polls
-- Attatchments to posts
+- Attachments to posts
 - Customisable colour schemes and styles
 - The ability to ignore folders that do not interest you
 - Restricted-access folders
@@ -179,3 +180,14 @@ compression for PHP scripts enabled or a 3rd party compression library such as
 mod_gzip is installed. Before reporting this as a bug, try disabling the gzip
 compression in config.inc.php of your Beehive Forum by changing the
 $gzip_compress_output variable to False.
+
+6.4 Error: Strict Standards: var: Deprecated on PHP/5.x
+=======================================================
+
+With PHP/5.0 the var modifier for variables within classes has been deprecated,
+hence the error message. Under normal circumstances this wouldn't be a problem
+as the error reporting level is by default set the same as PHP/4.x. However
+if the level is increased to include E_STRICT, a new reporting level which
+is designed to notify on less than recommended coding practices, the above error
+will occur when using your BeehiveForum. At the moment the only work around
+for this is to disable / step down the error reporting to E_ALL or below.

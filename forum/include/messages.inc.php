@@ -123,7 +123,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['FROM_UID'].")\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a><br />";
     if($message['TLOGON'] != "ALL"){
-        echo "<a href=\"#\" onclick=\"openProfile(".$message['TO_UID'].")\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['TO_UID'].")\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a>";
     } else {
         echo "ALL";

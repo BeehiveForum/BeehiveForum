@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.108 2005-03-19 17:53:35 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.109 2005-03-19 21:12:39 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -510,7 +510,7 @@ function search_index_old_post()
 
         $result = db_query($sql, $db_search_index_old_post);
 
-        return search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $created);
+        search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $created);
     }
 
     return false;
@@ -528,7 +528,7 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
     if (!is_numeric($fuid)) return false;
     if (!is_numeric($tuid)) return false;
 
-    if (is_numeric($created)) {
+    if (is_numeric($created) && $created > 0) {
         $created = "FROM_UNIXTIME($created)";
     }else {
         $created = "NOW()";

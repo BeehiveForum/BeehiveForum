@@ -185,7 +185,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
 
     if($new_pid > -1){
     
-        post_save_attachment_id($new_pid, $aid);
+        post_save_attachment_id($t_tid, $new_pid, $aid);
     
         html_draw_top();
         echo "<p>&nbsp;</p>";

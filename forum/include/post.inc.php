@@ -48,10 +48,10 @@ require_once("./include/forum.inc.php");
     return $new_pid;
 }
 
-function post_save_attachment_id($pid, $aid)
+function post_save_attachment_id($tid, $pid, $aid)
 {
     $db_post_save_attachment_id = db_connect();
-    $sql = "insert into ". forum_table("POST_ATTACHMENT_ID"). " (PID, AID) values ($pid, '$aid')";
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_ID"). " (TID, PID, AID) values ($tid, $pid, '$aid')";
     $result = db_query($sql, $db_post_save_attachment_id);
     return $result;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.11 2004-12-18 19:36:53 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.12 2004-12-19 17:22:26 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -642,13 +642,11 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_POLL_VOTES (";
-$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PTUID VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-$sql.= "  PRIMARY KEY  (ID,TID,PTUID)";
+$sql.= "  PRIMARY KEY  (TID, UID, OPTION_ID)";
 $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {

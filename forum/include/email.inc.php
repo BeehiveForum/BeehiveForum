@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.76 2004-12-06 19:09:16 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.77 2004-12-19 17:22:21 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -118,62 +118,66 @@ function email_sendsubscription($tuid, $msg, $fuid)
     $forum_settings = get_forum_settings();
     $webtag = get_webtag($webtag_search);
 
-    $sql = "SELECT USER.UID, USER.NICKNAME, USER.EMAIL FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "ON (USER_THREAD.UID = USER.UID) WHERE USER_THREAD.TID = $tid ";
-    $sql.= "AND USER_THREAD.INTEREST = 2 AND USER.UID NOT IN ($fuid, $tuid)";
+    $sql = "SELECT USER_THREAD.UID, USER.NICKNAME, USER.EMAIL ";
+    $sql.= "FROM DEFAULT_USER_THREAD USER_THREAD ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_THREAD.UID) ";
+    $sql.= "WHERE USER_THREAD.TID = $tid AND USER_THREAD.INTEREST = 2 ";
+    $sql.= "AND USER_THREAD.UID NOT IN ($fuid, $tuid)";
 
     $result = db_query($sql, $db_email_sendsubscription);
 
-    while ($to_user = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
 
-        // Validate the email address before we continue.
+        while ($to_user = db_fetch_array($result)) {
 
-        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+            // Validate the email address before we continue.
 
-        $from_user = user_get($fuid);
-        $thread = thread_get($tid);
+            if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
 
-        // get the right language for the email
-        $lang = email_get_language($tuid);
+            $from_user = user_get($fuid);
+            $thread = thread_get($tid);
 
-        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+            // get the right language for the email
+            $lang = email_get_language($tuid);
 
-        $subject = "{$lang['subnotification_subject']} $forum_name";
+            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
-        $message.= " {$lang['subnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-        $message.= "{$lang['subnotification_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
-        $message.= "{$lang['subnotification_3']}\n";
-        $message.= "http://{$_SERVER['HTTP_HOST']}";
+            $subject = "{$lang['subnotification_subject']} $forum_name";
 
-        if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
-            $message.= dirname($_SERVER['PHP_SELF']);
+            $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
+            $message.= " {$lang['subnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
+            $message.= "{$lang['subnotification_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
+            $message.= "{$lang['subnotification_3']}\n";
+            $message.= "http://{$_SERVER['HTTP_HOST']}";
+
+            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
+                $message.= dirname($_SERVER['PHP_SELF']);
+            }
+
+            $message.= "/?webtag=$webtag&msg=$msg\n\n";
+            $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+            $message.= "{$lang['subnotification_4']}\n";
+            $message.= "{$lang['subnotification_5']} ";
+            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/?msg=$msg,\n";
+            $message.= "{$lang['subnotification_6']}";
+
+            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+            $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+            $header.= "X-Mailer: PHP/". phpversion();
+
+            if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+
+                $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
+
+            }else {
+
+                $recipient = $to_user['EMAIL'];
+            }
+
+            mail($recipient, $subject, $message, $header);
         }
-
-        $message.= "/?webtag=$webtag&msg=$msg\n\n";
-        $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
-        $message.= "{$lang['subnotification_4']}\n";
-        $message.= "{$lang['subnotification_5']} ";
-        $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/?msg=$msg,\n";
-        $message.= "{$lang['subnotification_6']}";
-
-        $header = "From: \"$forum_name\" <$forum_email>\n";
-        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
-        $header.= "X-Mailer: PHP/". phpversion();
-
-        if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
-
-            $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
-
-        }else {
-
-            $recipient = $to_user['EMAIL'];
-        }
-
-        mail($recipient, $subject, $message, $header);
     }
 
     return true;

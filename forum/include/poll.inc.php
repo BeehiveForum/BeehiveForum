@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.136 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.137 2004-12-19 17:22:26 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -249,19 +249,13 @@ function poll_get_total_votes($tid)
 
     $ptuid_array = array();
 
-    $sql = "SELECT PTUID FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql = "SELECT COUNT(OPTION_ID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE TID = '$tid'";
 
     $result = db_query($sql, $db_poll_get_total_votes);
+    list($vote_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    while ($row = db_fetch_array($result)) {
-
-        if (!in_array($row['PTUID'], $ptuid_array)) {
-            $ptuid_array[] = $row['PTUID'];
-        }
-    }
-
-    return sizeof($ptuid_array);
+    return $vote_count;
 }
 
 function poll_get_user_votes($tid, $viewstyle)
@@ -306,8 +300,9 @@ function poll_get_user_vote($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE PTUID = MD5($tid.$uid) ORDER BY ID";
+    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "WHERE UID = '$uid' ORDER BY ID";
 
     $result = db_query($sql, $db_poll_get_user_vote);
 
@@ -326,7 +321,6 @@ function poll_get_user_vote($tid)
     }
 
     return $userpolldata;
-
 }
 
 function poll_sort_groups($a, $b) {
@@ -1769,13 +1763,13 @@ function poll_vote($tid, $vote_array)
 
             if ($polldata['VOTETYPE'] == 0) {
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
-                $sql.= "VALUES ($tid, 0, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
+                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME(". mktime(). "))";
 
             }else {
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
-                $sql.= "VALUES ($tid, $uid, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
+                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME(". mktime(). "))";
             }
 
             $result = db_query($sql, $db_poll_vote);
@@ -1793,14 +1787,10 @@ function poll_delete_vote($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT OPTION_ID FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
+    $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "WHERE TID = $tid AND UID = $uid";
+
     $result = db_query($sql, $db_poll_delete_vote);
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
-        $result = db_query($sql, $db_poll_delete_vote);
-    }
 }
 
 function thread_is_poll($tid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.10 2005-03-20 21:54:40 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.11 2005-03-20 22:09:27 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -45,6 +45,8 @@ function rn($r)
 
 function translate($string)
 {
+    $sprintf_chars = array('b', 'c', 'd', 'e', 'u', 'f', 'F', 'o', 's', 'x', 'X');
+
     $string_parts = preg_split('/([<|>])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     // Initialize the variables we need.
@@ -100,33 +102,40 @@ function translate($string)
 
                 $char = substr($string_parts[$i], $j, 1);
 
-                if ($char == "a" && rn(10) > 7) $char = "@";
-                if ($char == "a" && rn(10) > 2) $char = "4";
-                if ($char == "b" && rn(10) > 5) $char = "8";
-                if ($char == "d" && rn(10) > 10) $char = "|)";
-                if ($char == "e" && rn(10) > 5) $char = "3";
-                if ($char == "f" && rn(10) > 5) $char = "ph";
-                if ($char == "g" && rn(10) > 5) $char = "9";
-                if ($char == "h" && rn(10) > 10) $char = "|-|";
-                if ($char == "i" && rn(10) > 5) $char = "1";
-                if ($char == "k" && rn(10) > 10) $char = "|&gt;";
-                if ($char == "m" && rn(10) > 10) $char = "|\/|";
-                if ($char == "n" && rn(10) > 10) $char = "|\|";
-                if ($char == "o" && rn(10) > 5) $char = "0";
+                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%")) {
 
-                if ($char == "q" && isset($string_parts[$i + 1]) && $string_parts[$i + 1] == "u") {
-                    $char = "kw";
-                    $i++;
+                    if ($char == "a" && rn(10) > 7) $char = "@";
+                    if ($char == "a" && rn(10) > 2) $char = "4";
+                    if ($char == "b" && rn(10) > 5) $char = "8";
+                    if ($char == "d" && rn(10) > 10) $char = "|)";
+                    if ($char == "e" && rn(10) > 5) $char = "3";
+                    if ($char == "f" && rn(10) > 5) $char = "ph";
+                    if ($char == "g" && rn(10) > 5) $char = "9";
+                    if ($char == "h" && rn(10) > 10) $char = "|-|";
+                    if ($char == "i" && rn(10) > 5) $char = "1";
+                    if ($char == "k" && rn(10) > 10) $char = "|&gt;";
+                    if ($char == "m" && rn(10) > 10) $char = "|\/|";
+                    if ($char == "n" && rn(10) > 10) $char = "|\|";
+                    if ($char == "o" && rn(10) > 5) $char = "0";
+
+                    if ($char == "q" && isset($string_parts[$i + 1]) && $string_parts[$i + 1] == "u") {
+                        $char = "kw";
+                        $i++;
+                    }
+
+                    if ($char == "s" && rn(10) > 7) $char = "\\$";
+                    if ($char == "s" && rn(10) > 7) $char = "5";
+                    if ($char == "t" && rn(10) > 5) $char = "+";
+                    if ($char == "v" && rn(10) > 10) $char = "\/";
+                    if ($char == "w" && rn(10) > 10) $char = "\/\/";
+                    if ($char == "x" && rn(10) > 10) $char = "&gt;&lt;";
+
+                    $str_new = $str_new. $char;
+
+                }else {
+
+                    $str_new = $str_new. $char;
                 }
-
-                if ($char == "s" && isset($string_parts[$i - 1]) && $string_parts[$i - 1] != "%" && rn(10) > 7) $char = "\\$";
-                if ($char == "s" && isset($string_parts[$i - 1]) && $string_parts[$i - 1] != "%" && rn(10) > 7) $char = "5";
-                if ($char == "t" && rn(10) > 5) $char = "+";
-                if ($char == "v" && rn(10) > 10) $char = "\/";
-                if ($char == "w" && rn(10) > 10) $char = "\/\/";
-                if ($char == "x" && rn(10) > 10) $char = "&gt;&lt;";
-
-                $str_new = $str_new. $char;
             }
 
         }else {
@@ -147,18 +156,14 @@ function translate($string)
 
                 $char = substr($string_parts[$i], $j, 1);
 
-                if (strtolower($char) == 's') {
-
-                    if (isset($string_parts[$i - 1]) && $string_parts[$i - 1] != '%') {
-
-                        if (rn(10) > 5) $char = strtoupper($char);
-                        $str_out = $str_out. htmlentities($char);
-                    }
-
-                }else {
+                if (!(in_array($char, $sprintf_chars) && isset($string_parts[$i][$j - 1]) && $string_parts[$i][$j - 1] == "%")) {
 
                     if (rn(10) > 5) $char = strtoupper($char);
                     $str_out = $str_out. htmlentities($char);
+
+                }else {
+
+                    $str_out = $str_out. $char;
                 }
             }
 

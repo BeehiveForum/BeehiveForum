@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.32 2004-02-27 00:24:12 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.33 2004-02-27 00:29:25 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -179,7 +179,11 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         }
 
         if (!isset($aid)) {
-            echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+            if (is_md5($attachments[$i]['aid']) && $message_link = get_message_link($attachments[$i]['aid'])) {
+                echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+            }else {
+                echo "    <td>&nbsp;</td>\n";
+            }
         }
 
         echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";

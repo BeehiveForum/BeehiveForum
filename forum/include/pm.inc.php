@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.102 2004-12-11 14:37:29 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.103 2004-12-19 21:36:56 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -368,9 +368,9 @@ function pm_get_user($mid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN PM PM ON (PM.FROM_UID = USER.UID) ";
-    $sql.= "WHERE PM.MID = '$mid'";
+    $sql = "SELECT LOGON FROM PM PM ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = PM.FROM_UID) ";
+    $sql.= "WHERE PM.MID = $mid";
 
     $result = db_query($sql, $db_pm_get_user);
 
@@ -392,12 +392,11 @@ function pm_user_get_friends()
 
     $uid = bh_session_get_value('UID');
 
-    $relationship = USER_FRIEND;
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP & $relationship = $relationship ";
-    $sql.= "ORDER BY USER.LOGON ASC LIMIT 0, 20";
+    $sql.= "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
+    $sql.= "WHERE USER_PEER.UID = $uid AND USER_PEER.RELATIONSHIP & 1 = 1 ";
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_relationships);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.7 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.8 2004-12-19 21:36:56 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -49,7 +49,9 @@ $images_array = array();
 if ($dir = @opendir($images_dir)) {
 
     while(($file = readdir($dir)) !== false) {
+
         if ($file != '.' && $file != '..') {
+
             $images_array[] = $file;
         }
     }

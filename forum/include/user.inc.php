@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.214 2004-12-17 16:04:46 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.215 2004-12-19 21:36:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -917,11 +917,15 @@ function user_get_friends($uid)
 {
     $db_user_get_peers = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 1";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
+    $sql.= "WHERE USER_PEER.UID = $uid AND USER_PEER.RELATIONSHIP & 1 = 1 ";
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_peers);
 
@@ -935,22 +939,24 @@ function user_get_friends($uid)
         }
 
         return $user_get_peers_array;
-
-    }else {
-
-        return false;
     }
+
+    return false;
 }
 
 function user_get_ignored($uid)
 {
     $db_user_get_peers = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 2";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
+    $sql.= "WHERE USER_PEER.UID = $uid AND USER_PEER.RELATIONSHIP & 2 = 2 ";
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_peers);
 
@@ -964,22 +970,24 @@ function user_get_ignored($uid)
         }
 
         return $user_get_peers_array;
-
-    }else {
-
-        return false;
     }
+
+    return false;
 }
 
 function user_get_ignored_signatures($uid)
 {
     $db_user_get_peers = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 3";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
+    $sql.= "WHERE USER_PEER.UID = $uid AND USER_PEER.RELATIONSHIP & 4 = 4 ";
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_peers);
 
@@ -992,11 +1000,9 @@ function user_get_ignored_signatures($uid)
         }
 
         return $user_get_peers_array;
-
-    }else {
-
-        return false;
     }
+
+    return false;
 }
 
 function user_get_relationships($uid, $offset = 0)
@@ -1018,9 +1024,10 @@ function user_get_relationships($uid, $offset = 0)
     $result = db_query($sql, $db_user_get_relationships);
     list($user_get_peers_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP <> 0 ORDER BY USER.LOGON ASC ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
+    $sql.= "WHERE USER_PEER.UID = $uid AND USER_PEER.RELATIONSHIP <> 0 ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_get_relationships);

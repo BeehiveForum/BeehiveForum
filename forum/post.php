@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.232 2004-11-29 22:31:53 decoyduck Exp $ */
+/* $Id: post.php,v 1.233 2004-12-19 21:36:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -611,7 +611,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if (!(user_get_status($uid) & USER_PERM_WORMED)) {
                 email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
-                email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                if (!$newthread) email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
             }
 
             if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {

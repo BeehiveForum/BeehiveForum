@@ -29,6 +29,7 @@ require_once("./include/folder.inc.php"); // Folder processing functions
 require_once("./include/beehive.inc.php"); // Beehive stuff
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/config.inc.php");
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -69,7 +70,7 @@ echo "</td></tr></table></div>\n";
 if($msg_count>0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
-        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed);
+        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed,$maximum_post_length);
         $last_pid = $message['PID'];
     }
 }

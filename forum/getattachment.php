@@ -46,11 +46,14 @@ if (!$attachments_enabled) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['hash'])) {
+preg_match("/\/getattachment.php\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+
+if (isset($attachment_data[1])) {
+
+    $hash = $attachment_data[1];
 
     $db = db_connect();
 
-    $hash = $HTTP_GET_VARS['hash'];
     $sql  = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
     $result = db_query($sql, $db);
 
@@ -62,12 +65,6 @@ if (isset($HTTP_GET_VARS['hash'])) {
         $attachmentdetails = db_fetch_array($result);
 
         if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
-
-            if (strstr($HTTP_SERVER_VARS['HTTP_USER_AGENT'], 'MSIE')) {
-                $attachment=" inline;";
-            }else {
-                $attachment=" attachment;";
-            }
 
             // Use these quite a few times, so assign them to variables to make it easier
             $filepath = $attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']));
@@ -102,7 +99,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
                 }
                 header("Last-Modified: $local_last_modified", true);
                 header("Etag: \"$local_etag\"", true);
-                header("Content-disposition: $attachment filename=$filename", true);
+                header("Content-disposition: inline; filename=$filename", true);
                 readfile($filepath);
                 exit;
             }

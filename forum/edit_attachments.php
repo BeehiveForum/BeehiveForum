@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.47 2004-03-18 23:42:31 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.48 2004-03-22 12:58:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -174,7 +174,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
             echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
         }else {
-            echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
+            echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
         }         
 
         if (strlen($attachments[$i]['filename']) > 16) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.111 2004-04-29 15:58:33 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.112 2004-04-29 16:29:07 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -301,6 +301,8 @@ function bh_session_end()
     // Other cookies set by Beehive
 
     bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
+
+    bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 }
 
 // IIS does not support the REQUEST_URI server var, so we will make one for it

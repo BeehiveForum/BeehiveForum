@@ -1,5 +1,44 @@
 Beehive Forum Release Notes
 
+What's new in 0.4.1 ("TBD", released 5th Never)
+===================
+
+- Brand new features
+        - Multiple Forum support. Yes, finally you can run more than one
+          forum on your web space using a single Beehive installation.
+        - New 'My Controls' replaces the old preferences and profile
+          sections, incorporating them into a single location.
+        - Emoticons. Don't worry you can turn them off if you want to.
+        - Users can now perform basic moderation duties on their own
+          posts, including changing the thread title and moving the
+          thread to different folders. Admins can prevent this functionality
+          by 'edit locking' the thread to prevent it from being changed.
+        - New icons to display a closed / edit locked thread.
+        - New user option to change all images embedded into a post by users
+          (inc. signature images) into clickable links.
+        
+- Enhances old features
+        - Improved word filter that allows you to find and replace
+          rather than obscure the filtered words with asterix.
+        - Word filter can now be disable without having to clear the
+          filter list of the current entries. Useful if browsing from
+          different places such as home and work.
+        - Many pages have had their output tweaked so they fit in
+          with the overall style of beehive.
+        - Attachments now support the uploading of multiple files
+          at the same time. Useful for dial-up users who want
+          to attach multiple files without having to do each file
+          in turn.
+        - The forum owner can now choose to have deleted attachments
+          still show (with the link removed) in posts.
+        - Alternative attachment method which allows Beehive to make
+          use of the old 0.3 and older attachment retrieval method
+          for servers that can't handle the newer method.
+        - 
+          
+- Fixes
+        - Lots and lots!
+
 What's new in 0.4 ("In The Flesh", released 10th December 2003)
 =================
 
@@ -25,8 +64,8 @@ What's new in 0.4 ("In The Flesh", released 10th December 2003)
           to worry about paragraphs and other such things.
 	- New Register page includes some basic options that people can
 	  set when they sign up.
-	- Preferences page now remembers a users choosen settings if an
-	  error occured on submit.
+	- Preferences page now remembers a users chosen settings if an
+	  error occurred on submit.
 	- Preferences page has been restyled to fit in with the profile
 	  page better.
 	- Sticky threads can now be created by forum admins.
@@ -36,7 +75,7 @@ What's new in 0.4 ("In The Flesh", released 10th December 2003)
 	- Attachments can no longer be embedded in posts, making them more
 	  narrowband friendly, more secure and less bandwidth hungry.
 	- New cookie domain setting allows Beehive to set it's cookies so
-	  that they will work across all sub-domains of a website.
+	  that they will work across all sub-domains of a web site.
 	- Users can now choose to display their age and/or birthday in both 
 	  their profile pop-up and also on the Start page.
 	- Folders can now have a restriction placed upon them which prevents
@@ -59,7 +98,7 @@ What's new in 0.4 ("In The Flesh", released 10th December 2003)
 	- Folders were showing a thread count of 0 on threads which did
 	  actually contain some posts.
 	- User custom selected font size now applies to all on-screen
-	  fonts. Smallers fonts are automatically scaled to the main
+	  fonts. Smaller fonts are automatically scaled to the main
 	  font size used.
 	- Some layout changes make Beehive look better on non MSIE
 	  based web browsers.
@@ -94,10 +133,10 @@ What's new in 0.3 ("A little Beehind", released 11th February 2003)
           is now static, which saves even more bandwidth.
         - You can modify the start page directly from the admin interface.
         - As well as ignoring a user, you can make them your "Friend", and
-          filter the thread list to only show discusisons started by Friends if
+          filter the thread list to only show discussions started by Friends if
           you want.
         - New poll system, with up to 20 options per poll.
-        - There's a new frameless light HTML "diet" version of the forum - now
+        - There's a new frame-less light HTML "diet" version of the forum - now
           you can browse and post from a PDA and some mobile phones.
         - A links section that allows your users to create a database of useful
           links.

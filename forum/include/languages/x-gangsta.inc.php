@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.23 2004-07-25 20:04:30 rowan_hill Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.24 2004-07-30 00:00:18 rowan_hill Exp $ */
 
 // Gangsta language file
 
@@ -1140,6 +1140,7 @@ $lang['iveignored'] = "Shit I ain't down wit";
 $lang['ivesubscribedto'] = "I've subscribed to";
 $lang['startedbyfriend'] = "Started by a homie";
 $lang['unreadstartedbyfriend'] = "Unread std by a homie";
+$lang['unreadtoday'] = "Today's unread shit";
 $lang['goexcmark'] = "Hell yeah!";
 $lang['folderinterest'] = "Fo'da Interest";
 $lang['postnew'] = "Lay some shit down";

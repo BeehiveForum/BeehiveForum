@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.113 2004-07-25 20:04:30 rowan_hill Exp $ */
+/* $Id: x-hacker.inc.php,v 1.114 2004-07-30 00:00:18 rowan_hill Exp $ */
 
 // International English language file
 
@@ -1140,6 +1140,7 @@ $lang['iveignored'] = "1'v3 19NOr3d";
 $lang['ivesubscribedto'] = "1'Ve Su8\$Cr1BEd tO";
 $lang['startedbyfriend'] = "\$+4RtEd 8Y FRiENd";
 $lang['unreadstartedbyfriend'] = "Unr34D 5tD By FrIEnD";
+$lang['unreadtoday'] = "uNr34d T0D@y";
 $lang['goexcmark'] = "9o!";
 $lang['folderinterest'] = "FoLD3R 1N+3RE5T";
 $lang['postnew'] = "P0st N3W";

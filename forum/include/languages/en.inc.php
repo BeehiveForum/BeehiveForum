@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.149 2004-07-25 20:04:30 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.150 2004-07-30 00:00:17 rowan_hill Exp $ */
 
 // International English language file
 
@@ -1140,6 +1140,7 @@ $lang['iveignored'] = "I've ignored";
 $lang['ivesubscribedto'] = "I've subscribed to";
 $lang['startedbyfriend'] = "Started by friend";
 $lang['unreadstartedbyfriend'] = "Unread std by friend";
+$lang['unreadtoday'] = "Unread today";
 $lang['goexcmark'] = "Go!";
 $lang['folderinterest'] = "Folder Interest";
 $lang['postnew'] = "Post New";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.79 2004-05-06 14:40:19 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.80 2004-05-09 21:20:57 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -306,6 +306,7 @@ $lang['editwordfilter'] = "Editer le Filtre de Mot";
 $lang['wordfilterexp_1'] = "Utiliser cette page pour éditer le Filtre de Mot pour votre forum. Placer chaque mot être filtré sur une nouvelle ligne.";
 $lang['wordfilterexp_2'] = "Perl-les expressions régulières compatibles peuvent être utilisées aussi pour égaler des mots si vous savez.";
 $lang['wordfilterexp_3'] = "Utiliser cette page pour éditer votre filtre personnel de mot. Placer chaque mot être filtré sur une nouvelle ligne.";
+$lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
 $lang['allow'] = "Permettre";
 $lang['normalthreadsonly'] = "Les fils normaux seulement";
 $lang['pollthreadsonly'] = "Le sondage enfile seulement";

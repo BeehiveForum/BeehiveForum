@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.10 2004-05-06 14:40:19 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.11 2004-05-09 21:20:58 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -418,6 +418,7 @@ $lang['editwordfilter'] = "Fuck wit tha Wizord Fizilter";
 $lang['wordfilterexp_1'] = "Use thizis shot to fuck wit tha Wizord Fizilter fo' yo forum. Each word to fuckin' be fuckin' filtered goez on a new-ass line.";
 $lang['wordfilterexp_2'] = "If yo a geek-ass, yo should know that Pizerl-compizatible regular fuckin' expressions can go dizown like a mothafucka.";
 $lang['wordfilterexp_3'] = "Use thizis shot to fuck wit yo Wizord Fizilter. Place each word to be filtered on a new line.";
+$lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
 $lang['allow'] = "Word to that shit";
 $lang['normalthreadsonly'] = "Nizormal shit only";
 $lang['pollthreadsonly'] = "Polla shit only";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.73 2005-03-26 23:49:09 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.74 2005-03-27 13:02:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -413,7 +413,7 @@ $available_emoticons = emoticons_get_available();
 
 // Set the default POST_PAGE options if none set
 
-if ($user_prefs['POST_PAGE'] == 0) {
+if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
 
     $user_prefs['POST_PAGE']  = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY;
     $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT | POST_AUTO_LINKS;

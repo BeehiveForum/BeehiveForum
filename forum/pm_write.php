@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.110 2005-03-26 18:16:44 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.111 2005-03-27 13:02:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -157,9 +157,7 @@ if (isset($t_rmid) && $t_rmid > 0) {
             }
         }
 
-        $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-
-        if ($user_prefs['PM_INCLUDE_REPLY'] == 'Y') {
+        if (bh_session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
             // Quote the original PM using our psuedo HTML tag
 
@@ -296,11 +294,9 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                             $uid = bh_session_get_value('UID');
 
-                            $user_prefs = user_get_prefs($uid);
-
                             pm_user_prune_folders();
 
-                            if ((pm_get_free_space($uid) < 1) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+                            if ((pm_get_free_space($uid) < 1) && bh_session_get_value('PM_SAVE_SENT_ITEM') == 'Y') {
 
                                 $error_html.= "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
                                 $valid = false;

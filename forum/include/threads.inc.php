@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.167 2005-03-21 15:36:07 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.168 2005-03-27 13:02:59 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -839,7 +839,7 @@ function threads_mark_all_read()
     $result_threads = db_query($sql, $db_threads_mark_all_read);
 
     while($row = db_fetch_array($result_threads)) {
-        messages_update_read($row['TID'], $row['LENGTH'], bh_session_get_value('UID'));
+        messages_update_read($row['TID'], $row['LENGTH'], $uid);
     }
 }
 
@@ -860,7 +860,7 @@ function threads_mark_50_read()
     $result = db_query($sql, $db_threads_mark_50_read);
 
     while ($row = db_fetch_array($result)) {
-        messages_update_read($row['TID'], $row['LENGTH'], bh_session_get_value('UID'));
+        messages_update_read($row['TID'], $row['LENGTH'], $uid);
     }
 }
 
@@ -879,7 +879,7 @@ function threads_mark_read($tidarray)
         $result = db_query($sql, $db_threads_mark_read);
 
         list($ctlength) = db_fetch_array($result);
-        messages_update_read($ctid, $ctlength, bh_session_get_value('UID'));
+        messages_update_read($ctid, $ctlength, $uid);
     }
 }
 

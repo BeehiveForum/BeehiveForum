@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.234 2005-03-26 23:49:10 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.235 2005-03-27 13:02:59 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -681,8 +681,7 @@ function user_update_global_sig($uid, $value, $global = true)
 
 function user_get_global_sig($uid)
 {
-    $prefs = user_get_prefs($uid);
-    return $prefs['VIEW_SIGS'];
+    return bh_session_get_value('VIEW_SIGS');
 }
 
 function user_guest_enabled()
@@ -697,32 +696,6 @@ function user_guest_enabled()
 function user_cookies_set()
 {
     return isset($_COOKIE['bh_remember_username']);
-}
-
-function user_get_dob($uid)
-{
-    if (!is_numeric($uid)) return false;
-
-    $prefs = user_get_prefs($uid);
-
-    if (isset($prefs['DOB_DISPLAY']) && $prefs['DOB_DISPLAY'] == 2 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
-        return format_birthday($prefs['DOB']);
-    } else {
-        return false;
-    }
-}
-
-function user_get_age($uid)
-{
-    if (!is_numeric($uid)) return false;
-
-    $prefs = user_get_prefs($uid);
-
-    if (isset($prefs['DOB_DISPLAY']) && $prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
-        return format_age($prefs['DOB']);
-    }else {
-        return false;
-    }
 }
 
 function user_get_forthcoming_birthdays()
@@ -1203,20 +1176,17 @@ function user_is_active($uid)
 
 function user_allow_pm($uid)
 {
-    $prefs = user_get_prefs($uid);
-    return $prefs['ALLOW_PM'] == "Y" ? true : false;
+    return (bh_session_get_value('ALLOW_PM') == 'Y');
 }
 
 function user_allow_email($uid)
 {
-    $prefs = user_get_prefs($uid);
-    return $prefs['ALLOW_EMAIL'] == "Y" ? true : false;
+    return (bh_session_get_value('ALLOW_EMAIL') == "Y");
 }
 
 function user_is_guest()
 {
-    $uid = bh_session_get_value('UID');
-    return ($uid == 0);
+    return (bh_session_get_value('UID') == 0);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.80 2005-03-26 18:16:45 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.81 2005-03-27 13:02:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -910,10 +910,13 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     }
 
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
+
         echo "<b>{$lang['ignoredmsg']}</b>";
+
     } else {
+
         if($in_list) {
-            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+
             if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
 
             //This is commented out because as far as I know, all sigs are ignored in Light. Correct me if I'm wrong. - Rowan

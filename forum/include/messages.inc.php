@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.341 2005-03-27 01:47:41 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.342 2005-03-27 13:02:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -164,9 +164,7 @@ function message_apply_wikilinks($content)
 {
     $webtag = get_webtag($webtag_search);
 
-    $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-
-    if (forum_get_setting('enable_wiki_integration', 'Y') && $user_prefs['ENABLE_WIKI_WORDS'] == 'Y') {
+    if (forum_get_setting('enable_wiki_integration', 'Y') && bh_session_get_value('ENABLE_WIKI_WORDS') == 'Y') {
 
         $wiki_location = forum_get_setting('wiki_integration_uri', false, '');
 
@@ -265,6 +263,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     $webtag = get_webtag($webtag_search);
 
     $uid = bh_session_get_value('UID');
+    $posts_per_page = bh_session_get_value('POST_PER_PAGE');
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
 
@@ -380,7 +379,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if ($message['PID'] != $msg_count) {
 
-            if ((($first_msg + bh_session_get_value('POSTS_PER_PAGE')) - 1) == $message['PID']) {
+            if ((($first_msg + $posts_per_page) - 1) == $message['PID']) {
 
                 $down_arrow = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1). "\" target=\"_self\">";
                 $down_arrow.= "<img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
@@ -457,8 +456,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }else {
 
         if ($in_list) {
-
-            $user_prefs = user_get_prefs($uid);
 
             if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";

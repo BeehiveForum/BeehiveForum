@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.42 2005-03-14 13:27:18 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.43 2005-03-27 13:02:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,10 +87,10 @@ if (bh_session_get_value('UID') == 0) {
 
 if (isset($_POST['submit'])) {
 
-        $user_prefs = array();
+    $user_prefs = array();
     $user_prefs_global = array();
 
-        if (isset($_POST['allow_email']) && $_POST['allow_email'] == "Y") {
+    if (isset($_POST['allow_email']) && $_POST['allow_email'] == "Y") {
         $user_prefs['ALLOW_EMAIL'] = "Y";
     }else {
         $user_prefs['ALLOW_EMAIL'] = "N";
@@ -162,13 +162,13 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['DOB_DISPLAY'] = false;
     }
 
-        // User's UID for updating with.
+    // User's UID for updating with.
 
     $uid = bh_session_get_value('UID');
 
     // Update USER_PREFS
 
-        user_update_prefs($uid, $user_prefs, $user_prefs_global);
+    user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
     // Reinitialize the User's Session to save them having to logout and back in
 
@@ -176,8 +176,7 @@ if (isset($_POST['submit'])) {
 
     // IIS bug prevents redirect at same time as setting cookies.
 
-        header_redirect_cookie("./edit_email.php?webtag=$webtag&updated=true");
-
+    header_redirect_cookie("./edit_email.php?webtag=$webtag&updated=true");
 }
 
 if (!isset($uid)) $uid = bh_session_get_value('UID');
@@ -244,7 +243,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['ageanddob']}:</td>\n";
 
-if (isset($user_prefs['DOB_DISPLAY'])) {
+if (isset($user_prefs['DOB_DISPLAY']) && is_numeric($user_prefs['DOB_DISPLAY'])) {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $user_prefs['DOB_DISPLAY']), "</td>\n";
 }else {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), 0), "</td>\n";

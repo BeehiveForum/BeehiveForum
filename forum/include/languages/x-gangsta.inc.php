@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.8 2004-05-05 22:07:14 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.9 2004-05-05 22:08:41 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -983,6 +983,7 @@ $lang['automatichighinterestonpost'] = "Automizatic down wit that shit on pizost
 $lang['itemsmarkedwithaasterixarerequired'] = "Items tagged with a * are important shizit, yo";
 $lang['confirmpassword'] = "Confizirm yo Pizasswizord";
 $lang['invalidemailaddressformat'] = "Invalid email address format";
+$lang['moreoptionsavailable'] = "More Profile and Preference options are available once you register";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

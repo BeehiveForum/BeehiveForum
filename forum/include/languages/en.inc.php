@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.34 2003-09-01 21:31:56 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.35 2003-09-02 19:40:42 decoyduck Exp $ */
 
 // International English language file
 
@@ -635,6 +635,7 @@ $lang['showageanddob'] = "Show to others";
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "You must enter a poll question";
+$lang['groupcountmustbelessthananswercount'] = "Number of answer groups must be less than total number of answers";
 $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
 $lang['abletochangevote'] = "You will be able to change your vote.";
@@ -680,8 +681,7 @@ $lang['1personhasvoted'] = "1 person has voted.";
 $lang['peoplevoted'] = "people voted.";
 $lang['peoplehavevoted'] = "people have voted.";
 $lang['pollhasended'] = "Poll has ended";
-$lang['yourvotewas'] = "Your vote was";
-$lang['youvotedforoption'] = "You voted for option";
+$lang['youvotedfor'] = "You voted for";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";
 $lang['editpoll'] = "Edit Poll";
 $lang['results'] = "Results";

@@ -19,7 +19,7 @@
 # USA
 # ======================================================================
 #
-# $Id: install.sql,v 1.2 2004-05-09 00:57:49 decoyduck Exp $
+# $Id: install.sql,v 1.3 2004-05-22 21:05:01 decoyduck Exp $
 
 #
 # Table structure for table `ADMIN_LOG`
@@ -70,11 +70,11 @@ CREATE TABLE {forum_webtag}_DEDUPE (
 
 CREATE TABLE {forum_webtag}_FILTER_LIST (
   ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',
   UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',
   REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',
   FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY  (ID)
+  PRIMARY KEY  (ID,UID)
 ) TYPE=MYISAM;
 
 # --------------------------------------------------------
@@ -86,45 +86,94 @@ CREATE TABLE {forum_webtag}_FILTER_LIST (
 CREATE TABLE {forum_webtag}_FOLDER (
   FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   TITLE VARCHAR(32) DEFAULT NULL,
-  ACCESS_LEVEL TINYINT(4) DEFAULT '0',
   DESCRIPTION VARCHAR(255) DEFAULT NULL,
   ALLOWED_TYPES TINYINT(3) DEFAULT NULL,
+  PERM MEDIUMINT(8) UNSIGNED DEFAULT NULL,
   POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',
   PRIMARY KEY  (FID)
 ) TYPE=MYISAM;
 
+#
+# Dumping data for table `FOLDER`
+#
+
+INSERT INTO {forum_webtag}_FOLDER VALUES (1, 'General', NULL, NULL, 252, 0);
+
 # --------------------------------------------------------
 
 #
-# Table structure for table `FORUM_SETTINGS`
+# Table structure for table `GROUP_PERMS`
 #
 
-CREATE TABLE FORUM_SETTINGS (
-  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE {forum_webtag}_GROUP_PERMS (
+  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
   FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
-  SNAME VARCHAR(255) NOT NULL DEFAULT '',
-  SVALUE VARCHAR(255) NOT NULL DEFAULT '',
-  KEY SID (SID,FID)
+  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (GID,FID)
 ) TYPE=MYISAM;
+
+#
+# Dumping data for table `GROUP_PERMS`
+#
+
+INSERT INTO {forum_webtag}_GROUP_PERMS VALUES (1, 0, 1536);
+INSERT INTO {forum_webtag}_GROUP_PERMS VALUES (2, 1, 508);
+INSERT INTO {forum_webtag}_GROUP_PERMS VALUES (3, 0, 512);
+INSERT INTO {forum_webtag}_GROUP_PERMS VALUES (4, 1, 508);
+INSERT INTO {forum_webtag}_GROUP_PERMS VALUES (5, 0, 2);
+INSERT INTO {forum_webtag}_GROUP_PERMS VALUES (6, 0, 1);
 
 # --------------------------------------------------------
 
 #
-# Table structure for table `FORUMS`
+# Table structure for table `GROUP_USERS`
 #
 
-CREATE TABLE FORUMS (
-  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  WEBTAG VARCHAR(255) DEFAULT NULL,
-  DEFAULT_FORUM TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
-  ACCESS_LEVEL TINYINT(4) DEFAULT '0',
-  PRIMARY KEY  (FID)
+CREATE TABLE {forum_webtag}_GROUP_USERS (
+  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  UID MEDIUMINT(8) NOT NULL DEFAULT '0',
+  PRIMARY KEY  (GID,UID)
 ) TYPE=MYISAM;
+
+#
+# Dumping data for table `GROUP_USERS`
+#
+
+INSERT INTO {forum_webtag}_GROUP_USERS VALUES (1, 1);
+INSERT INTO {forum_webtag}_GROUP_USERS VALUES (2, 1);
+INSERT INTO {forum_webtag}_GROUP_USERS VALUES (3, 1);
+INSERT INTO {forum_webtag}_GROUP_USERS VALUES (4, 1);
 
 # --------------------------------------------------------
 
 #
-# Table structure for table `links`
+# Table structure for table `GROUPS`
+#
+
+CREATE TABLE {forum_webtag}_GROUPS (
+  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  GROUP_NAME VARCHAR(32) DEFAULT NULL,
+  GROUP_DESC VARCHAR(255) DEFAULT NULL,
+  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (GID)
+) TYPE=MYISAM;
+
+#
+# Dumping data for table `GROUPS`
+#
+
+INSERT INTO {forum_webtag}_GROUPS VALUES (1, 'Queen', NULL, 0);
+INSERT INTO {forum_webtag}_GROUPS VALUES (2, NULL, NULL, 1);
+INSERT INTO {forum_webtag}_GROUPS VALUES (3, 'Soldiers', NULL, 0);
+INSERT INTO {forum_webtag}_GROUPS VALUES (4, NULL, NULL, 1);
+INSERT INTO {forum_webtag}_GROUPS VALUES (5, 'Wormed', NULL, 0);
+INSERT INTO {forum_webtag}_GROUPS VALUES (6, 'Banned', NULL, 0);
+INSERT INTO {forum_webtag}_GROUPS VALUES (7, NULL, NULL, 1);
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `LINKS`
 #
 
 CREATE TABLE {forum_webtag}_LINKS (
@@ -170,6 +219,12 @@ CREATE TABLE {forum_webtag}_LINKS_FOLDERS (
   VISIBLE CHAR(1) NOT NULL DEFAULT '',
   PRIMARY KEY  (FID)
 ) TYPE=MYISAM;
+
+#
+# Dumping data for table `LINKS_FOLDERS`
+#
+
+INSERT INTO {forum_webtag}_LINKS_FOLDERS VALUES (1, NULL, 'Top Level', 'Y');
 
 # --------------------------------------------------------
 
@@ -282,6 +337,12 @@ CREATE TABLE {forum_webtag}_POST (
   KEY IPADDRESS (IPADDRESS)
 ) TYPE=MYISAM;
 
+#
+# Dumping data for table `POST`
+#
+
+INSERT INTO {forum_webtag}_POST VALUES (1, 1, 0, 1, 0, NULL, NOW(), 0, NULL, 0, '');
+
 # --------------------------------------------------------
 
 #
@@ -296,6 +357,7 @@ CREATE TABLE {forum_webtag}_POST_ATTACHMENT_FILES (
   MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',
   HASH VARCHAR(32) NOT NULL DEFAULT '',
   DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (ID),
   KEY AID (AID),
   KEY HASH (HASH)
@@ -329,6 +391,12 @@ CREATE TABLE {forum_webtag}_POST_CONTENT (
   FULLTEXT KEY CONTENT (CONTENT)
 ) TYPE=MYISAM;
 
+#
+# Dumping data for table `POST_CONTENT`
+#
+
+INSERT INTO {forum_webtag}_POST_CONTENT VALUES (1, 1, 'Welcome to your new Beehive Forum');
+
 # --------------------------------------------------------
 
 #
@@ -344,6 +412,16 @@ CREATE TABLE {forum_webtag}_PROFILE_ITEM (
   PRIMARY KEY  (PIID)
 ) TYPE=MYISAM;
 
+#
+# Dumping data for table `PROFILE_ITEM`
+#
+
+INSERT INTO {forum_webtag}_PROFILE_ITEM VALUES (1, 1, 'Location', 0, 0);
+INSERT INTO {forum_webtag}_PROFILE_ITEM VALUES (2, 1, 'Age', 0, 0);
+INSERT INTO {forum_webtag}_PROFILE_ITEM VALUES (3, 1, 'Gender', 0, 0);
+INSERT INTO {forum_webtag}_PROFILE_ITEM VALUES (4, 1, 'Quote', 0, 0);
+INSERT INTO {forum_webtag}_PROFILE_ITEM VALUES (5, 1, 'Occupation', 0, 0);
+
 # --------------------------------------------------------
 
 #
@@ -357,24 +435,11 @@ CREATE TABLE {forum_webtag}_PROFILE_SECTION (
   PRIMARY KEY  (PSID)
 ) TYPE=MYISAM;
 
-# --------------------------------------------------------
-
 #
-# Table structure for table `SESSIONS`
+# Dumping data for table `PROFILE_SECTION`
 #
 
-CREATE TABLE SESSIONS (
-  SESSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  HASH VARCHAR(32) NOT NULL DEFAULT '',
-  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
-  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',
-  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
-  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY  (SESSID),
-  KEY HASH (HASH),
-  KEY FID (FID),
-  KEY UID (UID)
-) TYPE=MYISAM;
+INSERT INTO {forum_webtag}_PROFILE_SECTION VALUES (1, 'Personal', 0);
 
 # --------------------------------------------------------
 
@@ -390,6 +455,12 @@ CREATE TABLE {forum_webtag}_STATS (
   MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (ID)
 ) TYPE=MYISAM;
+
+#
+# Dumping data for table `STATS`
+#
+
+INSERT INTO {forum_webtag}_STATS VALUES (1, '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 0);
 
 # --------------------------------------------------------
 
@@ -414,20 +485,11 @@ CREATE TABLE {forum_webtag}_THREAD (
   KEY BY_UID (BY_UID)
 ) TYPE=MYISAM;
 
-# --------------------------------------------------------
-
 #
-# Table structure for table `USER`
+# Dumping data for table `THREAD`
 #
 
-CREATE TABLE USER (
-  UID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  LOGON VARCHAR(32) DEFAULT NULL,
-  PASSWD VARCHAR(32) DEFAULT NULL,
-  NICKNAME VARCHAR(32) DEFAULT NULL,
-  EMAIL VARCHAR(80) DEFAULT NULL,
-  PRIMARY KEY  (UID)
-) TYPE=MYISAM;
+INSERT INTO {forum_webtag}_THREAD VALUES (1, 1, 1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);
 
 # --------------------------------------------------------
 
@@ -439,21 +501,6 @@ CREATE TABLE {forum_webtag}_USER_FOLDER (
   UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
   FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
   INTEREST TINYINT(4) DEFAULT '0',
-  ALLOWED TINYINT(4) DEFAULT '0',
-  PRIMARY KEY  (UID,FID)
-) TYPE=MYISAM;
-
-# --------------------------------------------------------
-
-#
-# Table structure for table `USER_FORUM`
-#
-
-CREATE TABLE USER_FORUM (
-  UID mediumint(8) unsigned NOT NULL default '0',
-  FID mediumint(8) unsigned NOT NULL default '0',
-  INTEREST tinyint(4) default '0',
-  ALLOWED tinyint(4) default '0',
   PRIMARY KEY  (UID,FID)
 ) TYPE=MYISAM;
 
@@ -494,33 +541,33 @@ CREATE TABLE {forum_webtag}_USER_POLL_VOTES (
 
 CREATE TABLE {forum_webtag}_USER_PREFS (
   UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
-  FIRSTNAME VARCHAR(32) DEFAULT NULL,
-  LASTNAME VARCHAR(32) DEFAULT NULL,
-  DOB DATE DEFAULT '0000-00-00',
-  HOMEPAGE_URL VARCHAR(255) DEFAULT NULL,
-  PIC_URL VARCHAR(255) DEFAULT NULL,
-  EMAIL_NOTIFY CHAR(1) DEFAULT NULL,
-  TIMEZONE DECIMAL(2,1) DEFAULT NULL,
-  DL_SAVING CHAR(1) DEFAULT NULL,
-  MARK_AS_OF_INT CHAR(1) DEFAULT NULL,
-  POSTS_PER_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,
-  FONT_SIZE TINYINT(3) UNSIGNED DEFAULT NULL,
-  STYLE VARCHAR(255) DEFAULT NULL,
-  EMOTICONS VARCHAR(255) DEFAULT NULL,
-  VIEW_SIGS CHAR(1) DEFAULT NULL,
-  START_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,
-  LANGUAGE VARCHAR(32) DEFAULT NULL,
-  PM_NOTIFY CHAR(1) DEFAULT NULL,
-  PM_NOTIFY_EMAIL CHAR(1) DEFAULT NULL,
-  DOB_DISPLAY TINYINT(3) UNSIGNED DEFAULT NULL,
-  ANON_LOGON TINYINT(3) UNSIGNED DEFAULT NULL,
-  SHOW_STATS TINYINT(3) UNSIGNED DEFAULT NULL,
-  IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,
-  USE_WORD_FILTER CHAR(1) DEFAULT NULL,
-  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,
-  ALLOW_EMAIL CHAR(1) DEFAULT NULL,
-  ALLOW_PM CHAR(1) DEFAULT NULL,
-  PRIMARY KEY  (UID,UID)
+  FIRSTNAME VARCHAR(32) NOT NULL DEFAULT '',
+  LASTNAME VARCHAR(32) NOT NULL DEFAULT '',
+  DOB DATE NOT NULL DEFAULT '0000-00-00',
+  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',
+  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',
+  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',
+  TIMEZONE DECIMAL(2,1) NOT NULL DEFAULT '0.0',
+  DL_SAVING CHAR(1) NOT NULL DEFAULT 'N',
+  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',
+  POSTS_PER_PAGE TINYINT(3) UNSIGNED NOT NULL DEFAULT '20',
+  FONT_SIZE TINYINT(3) UNSIGNED NOT NULL DEFAULT '10',
+  STYLE VARCHAR(255) NOT NULL DEFAULT '',
+  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',
+  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',
+  START_PAGE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',
+  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',
+  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',
+  DOB_DISPLAY TINYINT(3) UNSIGNED NOT NULL DEFAULT '2',
+  ANON_LOGON TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  SHOW_STATS TINYINT(3) UNSIGNED NOT NULL DEFAULT '1',
+  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',
+  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',
+  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',
+  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',
+  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',
+  PRIMARY KEY  (UID)
 ) TYPE=MYISAM;
 
 # --------------------------------------------------------
@@ -552,19 +599,6 @@ CREATE TABLE {forum_webtag}_USER_SIG (
 # --------------------------------------------------------
 
 #
-# Table structure for table `USER_STATUS`
-#
-
-CREATE TABLE USER_STATUS (
-  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
-  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
-  STATUS INT(16) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (UID,FID)
-) TYPE=MYISAM;
-
-# --------------------------------------------------------
-
-#
 # Table structure for table `USER_THREAD`
 #
 
@@ -580,6 +614,121 @@ CREATE TABLE {forum_webtag}_USER_THREAD (
 # --------------------------------------------------------
 
 #
+# Table structure for table `FORUM_SETTINGS`
+#
+
+CREATE TABLE FORUM_SETTINGS (
+  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  SNAME VARCHAR(255) NOT NULL DEFAULT '',
+  SVALUE VARCHAR(255) NOT NULL DEFAULT '',
+  KEY SID (SID,FID)
+) TYPE=MYISAM;
+
+#
+# Dumping data for table `FORUM_SETTINGS`
+#
+
+INSERT INTO FORUM_SETTINGS VALUES (1, 1, 'forum_name', 'A Beehive Forum');
+INSERT INTO FORUM_SETTINGS VALUES (2, 1, 'forum_email', 'admin@abeehiveforum.net');
+INSERT INTO FORUM_SETTINGS VALUES (3, 1, '{forum_webtag}_style', 'default');
+INSERT INTO FORUM_SETTINGS VALUES (4, 1, '{forum_webtag}_emoticon', 'default');
+INSERT INTO FORUM_SETTINGS VALUES (5, 1, '{forum_webtag}_language', 'en');
+INSERT INTO FORUM_SETTINGS VALUES (6, 1, 'show_stats', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (7, 1, 'show_links', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (8, 1, 'auto_logon', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (9, 1, 'show_pms', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (10, 1, 'pm_allow_attachments', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (11, 1, 'maximum_post_length', '6226');
+INSERT INTO FORUM_SETTINGS VALUES (12, 1, 'allow_post_editing', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (13, 1, 'post_edit_time', '0');
+INSERT INTO FORUM_SETTINGS VALUES (14, 1, 'allow_polls', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (15, 1, 'search_min_word_length', '3');
+INSERT INTO FORUM_SETTINGS VALUES (16, 1, 'attachments_enabled', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (17, 1, 'attachments_dir', 'attachments');
+INSERT INTO FORUM_SETTINGS VALUES (18, 1, 'attachments_allow_embed', 'N');
+INSERT INTO FORUM_SETTINGS VALUES (19, 1, 'attachments_use_old_method', 'N');
+INSERT INTO FORUM_SETTINGS VALUES (20, 1, 'guest_account_active', 'Y');
+INSERT INTO FORUM_SETTINGS VALUES (21, 1, 'session_cutoff', '86400');
+INSERT INTO FORUM_SETTINGS VALUES (22, 1, 'active_session_cutoff', '900');
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `FORUMS`
+#
+
+CREATE TABLE FORUMS (
+  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  WEBTAG VARCHAR(255) NOT NULL DEFAULT '',
+  {forum_webtag}_FORUM TINYINT(4) NOT NULL DEFAULT '0',
+  ACCESS_LEVEL TINYINT(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY  (FID)
+) TYPE=MYISAM;
+
+#
+# Dumping data for table `FORUMS`
+#
+
+INSERT INTO FORUMS VALUES (1, 'DEFAULT', 1, 0);
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `SESSIONS`
+#
+
+CREATE TABLE SESSIONS (
+  SESSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  HASH VARCHAR(32) NOT NULL DEFAULT '',
+  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',
+  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (SESSID),
+  KEY HASH (HASH),
+  KEY FID (FID),
+  KEY UID (UID)
+) TYPE=MYISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER`
+#
+
+CREATE TABLE USER (
+  UID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  LOGON VARCHAR(32) DEFAULT NULL,
+  PASSWD VARCHAR(32) DEFAULT NULL,
+  NICKNAME VARCHAR(32) DEFAULT NULL,
+  EMAIL VARCHAR(80) DEFAULT NULL,
+  PRIMARY KEY  (UID)
+) TYPE=MYISAM;
+
+#
+# Dumping data for table `USER`
+#
+
+INSERT INTO USER VALUES (1, 'ADMIN', MD5('honey'), 'Administrator', 'your@email.com');
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER_FORUM`
+#
+
+CREATE TABLE USER_FORUM (
+  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  INTEREST TINYINT(4) DEFAULT '0',
+  ALLOWED TINYINT(4) DEFAULT '0',
+  PRIMARY KEY  (UID,FID)
+) TYPE=MYISAM;
+
+# --------------------------------------------------------
+
+#
 # Table structure for table `VISITOR_LOG`
 #
 
@@ -589,49 +738,3 @@ CREATE TABLE VISITOR_LOG (
   LAST_LOGON DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY  (UID,FID)
 ) TYPE=MYISAM;
-
-# --------------------------------------------------------
-
-#
-# Populate some of the tables
-#
-
-INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM) VALUES ('{forum_webtag}', 1);
-INSERT INTO {forum_webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_name', 'A Beehive Forum');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_email', 'admin@abeehiveforum.net');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'style', 'default');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'emoticons', 'default');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'language', 'en');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_stats', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_links', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'auto_logon', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_pms', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'pm_allow_attachments', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'maximum_post_length', '6226');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'allow_post_editing', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'post_edit_time', '0');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'allow_polls', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'search_min_word_length', '3');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_enabled', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_dir', 'attachments');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_allow_embed', 'N');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_use_old_method', 'N');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'guest_account_active', 'Y');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'session_cutoff', '86400');
-INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'active_session_cutoff', '900');
-INSERT INTO {forum_webtag}_PROFILE_SECTION (NAME, POSITION) VALUES ('Personal', 0);
-INSERT INTO {forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) VALUES (1, 'Location', 0, 0);
-INSERT INTO {forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) VALUES (1, 'Age', 0, 0);
-INSERT INTO {forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) VALUES (1, 'Gender', 0, 0);
-INSERT INTO {forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) VALUES (1, 'Quote', 0, 0);
-INSERT INTO {forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) VALUES (1, 'Occupation', 0, 0);
-INSERT INTO {forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) VALUES (1, 'Birthday (DD/MM)', 0, 0);
-INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) VALUES ('{admin_username}', md5('{admin_password}'), 'Administrator', '{admin_email}');
-INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES (1, 0, 56);
-INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES (1, 1, 56);
-INSERT INTO {forum_webtag}_FOLDER (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) VALUES ('General', 0, NULL, NULL, 0);
-INSERT INTO {forum_webtag}_THREAD (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);
-INSERT INTO {forum_webtag}_POST (TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS) VALUES (1, 0, 1, 0, NULL, NOW(), 0, NULL, 0, '');
-INSERT INTO {forum_webtag}_POST_CONTENT (TID, PID, CONTENT) VALUES (1, 1, 'Welcome to your new Beehive Forum');
-INSERT INTO {forum_webtag}_STATS (MOST_USERS_DATE, MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) VALUES (NOW(), 0, NOW(), 0);

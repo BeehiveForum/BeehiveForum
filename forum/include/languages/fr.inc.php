@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.39 2004-03-19 13:53:08 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.40 2004-03-19 15:27:31 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -314,6 +314,7 @@ $lang['madethreadnonsticky'] = "Le Fil fait Non-Collant";
 $lang['matchedtext'] = "Texte Assorti";
 $lang['replacementtext'] = "Texte De rechange";
 $lang['preg'] = "PREG";
+$lang['wholeword'] = "Whole Word";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

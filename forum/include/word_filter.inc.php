@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.8 2004-03-14 19:38:32 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.9 2004-03-19 15:27:31 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -49,11 +49,13 @@ function load_wordfilter()
 
     while($row = db_fetch_array($result)) {
     
-        if ($row['PREG_EXPR'] == 1) {
+        if ($row['FILTER_OPTION'] == 1) {
+            $pattern_array[] = "/\b(". preg_quote(_stripslashes($row['MATCH_TEXT']), "/"). ")\b/i";        
+        }elseif ($row['FILTER_OPTION'] == 2) {
             if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $row['MATCH_TEXT'])) {
                 $row['MATCH_TEXT'] = "/{$row['MATCH_TEXT']}/i";
             }
-            $pattern_array[] = _stripslashes($row['MATCH_TEXT']);
+            $pattern_array[] = _stripslashes($row['MATCH_TEXT']);        
         }else {
             $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT']), "/"). "/i";
         }
@@ -61,10 +63,10 @@ function load_wordfilter()
         if (strlen(trim($row['REPLACE_TEXT'])) > 0) {
             $replace_array[] = _stripslashes($row['REPLACE_TEXT']);
         }else {
-            if ($row['PREG_EXPR'] == 1) {
+            if ($row['FILTER_OPTION'] == 2) {
                 $replace_array[] = "****";
             }else {
-                 $replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
+                $replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
             }
         }
     }

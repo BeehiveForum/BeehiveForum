@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.63 2004-03-17 20:41:44 decoyduck Exp $
+# $Id: schema.sql,v 1.64 2004-03-19 15:27:30 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -62,7 +62,7 @@ CREATE TABLE FILTER_LIST (
   MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',
   UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
   REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',
-  PREG_EXPR TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (ID)
 ) TYPE=MYISAM;
 

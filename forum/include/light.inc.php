@@ -120,8 +120,8 @@ function light_messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
     global $lang;
     echo "<h2>$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;({$lang['highinterest']})";
-    if ($interest_level == 2) echo "&nbsp;({$lang['subscribed']})";
+    if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
+    if ($interest_level == 2) echo "&nbsp;<font color=\"#FF0000\">({$lang['subscribed']})</font>";
     echo "</h2>";
 }
 
@@ -565,6 +565,14 @@ function light_form_input_text($name, $value = "", $width = 0, $maxchars = 0)
 function light_form_input_password($name, $value = "", $width = 0, $maxchars = 0)
 {
     return light_form_field($name,$value,$width,$maxchars,"password");
+}
+
+function light_html_message_type_error()
+{
+    global $lang;
+    light_html_draw_top();
+    echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
+    light_html_draw_bottom();
 }
 
 ?>

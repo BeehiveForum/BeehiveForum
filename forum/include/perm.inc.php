@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.44 2004-08-01 13:31:23 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.45 2004-08-07 17:45:50 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -89,42 +89,50 @@ function perm_has_forumtools_access()
 
 function perm_check_folder_permissions($fid, $access_level)
 {
-    $db_perm_check_folder_permissions = db_connect();
+    static $user_status = false;
+    static $folder_fid = false;
 
-    if (!is_numeric($fid)) return false;
-    if (!is_numeric($access_level)) return false;
+    if (!$folder_fid || !$user_status || $folder_fid != $fid) {
 
-    if (!$table_data = get_table_prefix()) return false;
+        $db_perm_check_folder_permissions = db_connect();
 
-    $uid = bh_session_get_value('UID');
+        if (!is_numeric($fid)) return false;
+        if (!is_numeric($access_level)) return false;
 
-    $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
-    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
-    $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID ";
+        if (!$table_data = get_table_prefix()) return false;
 
-    $result = db_query($sql, $db_perm_check_folder_permissions);
+        $uid = bh_session_get_value('UID');
 
-    $row = db_fetch_array($result);
+        $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+        $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
+        $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+        $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+        $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+        $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+        $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID ";
 
-    if ($row['USER_PERM_COUNT'] > 0) {
+        $result = db_query($sql, $db_perm_check_folder_permissions);
 
-        return ($row['USER_STATUS'] & $access_level) == $access_level;
+        $row = db_fetch_array($result);
 
-    }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+        if ($row['USER_PERM_COUNT'] > 0) {
 
-        return ($row['FOLDER_PERMS'] & $access_level) == $access_level;
+            $folder_fid = $fid;
+            $user_status = $row['USER_STATUS'];
+
+        }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+
+            $folder_fid = $fid;
+            $user_status = $row['FOLDER_PERMS'];
+        }
     }
 
-    return true;
+    return ($user_status & $access_level) == $access_level;
 }
 
 function perm_get_user_groups()

@@ -165,7 +165,7 @@ function add_tag (tag, a, v, enclose) {
 	str_enclose = extra_left + str_enclose;
 	var str_enclose_extra_left = extra_left.length;
 	var str_enclose_left = left_bound;
-
+//alert(str_enclose);
 	valid = null;
 	for (var i=left_bound.length-1; i>=0 && valid != false; i--) {
 		if (left_bound.charAt(i) != ">") {
@@ -232,7 +232,7 @@ function add_tag (tag, a, v, enclose) {
 			mark = true;
 		}
 	}
-	str_enclose = str;
+//	str_enclose = str;
 
 	str_enclose += extra_right;
 	var str_enclose_extra_right = extra_right.length;

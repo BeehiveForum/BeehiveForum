@@ -1,6 +1,8 @@
 Beehive Forum ReadMe
 
-Version 0.2 / 13th September 2002
+Version 0.3 / 11th February 2003
+
+A list of changes since previous Beehive versions can be found in release.txt.
 
 0. Contents
 ===========
@@ -18,17 +20,18 @@ Version 0.2 / 13th September 2002
     1.3.1    Stylesheet
     1.3.2    Images
     1.3.3    The top frame
-  1.4    Upgrading from 0.1
+  1.4    Upgrading from 0.2
     1.4.1    Update the database
     1.4.2    Update the config file
+  1.5    Upgrading from 0.1
 
-2 Known Issues
+2.    Known Issues
 
-3 Support
- 3.1 Requests / Bug reporting
- 3.2 General questions and help
+3.    Support
+  3.1    Requests / Bug reporting
+  3.2    General questions and help
 
-4 Credits
+4.    Credits
 
 
 1. Installation
@@ -49,7 +52,7 @@ You need web hosting which provides:
 
 To set up the database, use something like phpMyAdmin (get it from
 https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you
-have the skillz, to run the schema.sql file from the download.
+have the skillz, to run the /docs/schema.sql file from the download.
 
 (Beehive would prefer its very own database, but if you can't provide that, it
 should work in an existing one.)
@@ -194,11 +197,9 @@ to.
 1.3 Customising Beehive
 =======================
 
-New to version 0.2 of Beehive Forum are the user-selectable styles. Basically
-these are like themes (or skins for WinAmp users) for your forum. There are 
-several supplied styles, and it's easy to create your own. We will be creating 
-a Style Exchange in the near future where people can submit styles they have
-created, or download new ones for their own forums.
+Beehive Forum has user-selectable styles. Basically
+these are like themes (or skins for WinAmp users) for your forum. There are
+several supplied styles, and it's easy to create your own.
 
 You can edit the existing styles, but we recommend that you create your own styles.
 
@@ -236,35 +237,40 @@ inducing adverts for stuff, it's entirely up to you.
 Just keep it 60 pixels high or under.
 
 
-1.4 Upgrading from 0.1
+1.4 Upgrading from 0.2
 ======================
 
-If you are already using 0.1 of Beehive Forum, you will need to update your
+If you are already using 0.2 of Beehive Forum, you will need to update your
 database, and add some new variables to the config.inc.php file.
 
 
 1.4.1 Update the database
 =========================
 
-Simply run the update_db.sql script against the database using phpMyAdmin or
-command line MySQL.
+Simply run the /docs/update-02-to-03.sql script against the database using phpMyAdmin or
+MySQL directly.
 
 
 1.4.2 Update the config file
 ============================
 
-Probably the easiest way to do this is to edit the config.inc.php in the 0.2 download
+Probably the easiest way to do this is to edit the config.inc.php in the 0.3 download
 and set the relevant variables again.
 
 However, you can also add the new variables to your existing config.inc.php if you wish.
 See section 1.2.2 "Configuring the forum" for details.
 
+1.5 Upgrading from 0.1
+======================
+
+Follow the same procedure as detailed above, but you must run /docs/upgrade-01-to-02.sql
+beforehand.
+
 
 2 Known Issues
 ==============
 
-- The Opera browser doesn't display everything right. As usual.
-- Bound to be some other stuff.
+- Nothing critical at the moment.
 
 3 Support
 =========
@@ -319,7 +325,7 @@ and Matt/Andy while I was moving house...
 
 4.6 Thanks to
 =============
-- The NPCFFers for testing, moral support, saying nice things and just generally
+- The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.
 
 - SourceForge (http://sourceforge.net) for providing top-notch facilities to us

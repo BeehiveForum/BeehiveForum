@@ -29,7 +29,7 @@ function draw_beehive_bar()
 ?>
 <div align="center"><table width="96%" class="posthead"><tr>
 <td width="60%" class="smalltext">
-Beehive Forum 0.3ish
+Beehive Forum 0.3
 &nbsp;|&nbsp;
 <a href="http://beehiveforum.net/faq" target="_blank">FAQ</a>
 &nbsp;|&nbsp;

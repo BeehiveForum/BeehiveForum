@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.34 2005-03-23 21:36:28 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.35 2005-04-01 13:17:12 rowan_hill Exp $ */
+
+/**
+* Functions relating to profiles
+*/
+
+/**
+*/
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -247,6 +254,21 @@ function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="
     return $html;
 }
 
+/**
+* Gets profile values stored for a user
+*
+* Returns an array of the following information:
+* - <b>PSID</b> 	: <i>[PROFILE_SECTION.PSID]</i>	Profile section ID 
+* - <b>SECTION_NAME</b> : <i>[PROFILE_SECTION.NAME]</i>	Name of profile section 
+* - <b>PIID</b> 	: <i>[PROFILE_ITEM.PIID]</i>	Profile item ID 
+* - <b>ITEM_NAME</b> 	: <i>[PROFILE_ITEM.NAME]</i>	Name of the profile item 
+* - <b>TYPE</b> 	: <i>[PROFILE_ITEM.TYPE]</i>	Type of profile item (Eg radio-button, checkbox, text field, multi-line text field) 
+* - <b>CHECK_PIID</b> 	: <i>[USER_PROFILE.PIID]</i>
+* - <b>ENTRY</b> 	: <i>[USER_PROFILE.ENTRY]</i>	User entered value for profile item 
+* - <b>PRIVACY</b> 	: <i>[USER_PROFILE.PRIVACY]</i>	Level of privacy of profile item (Eg 0 for viewable by all, 1 for viewable only by friends) 
+*
+* @param integer $uid Returns the profile of this UID
+*/
 function profile_get_user_values($uid)
 {
     $db_profile_get_user_values = db_connect();
@@ -257,7 +279,7 @@ function profile_get_user_values($uid)
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";
-    $sql.= "USER_PROFILE.PIID AS CHECK_PIID, USER_PROFILE.ENTRY ";
+    $sql.= "USER_PROFILE.PIID AS CHECK_PIID, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION, ";
     $sql.= "{$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE ";

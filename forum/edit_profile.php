@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.46 2005-03-14 13:27:18 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.47 2005-04-01 13:17:12 rowan_hill Exp $ */
+
+/**
+* Displays the edit profile page, and processes sumbissions
+*/
+
+/**
+*/
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,9 +106,13 @@ $uid = bh_session_get_value('UID');
 if (isset($_POST['submit'])) {
 
     for ($i = 0; $i < sizeof($_POST['t_piid']); $i++) {
-
         $entry = trim($_POST['t_entry'][$i]);
-        user_profile_update($uid, $_POST['t_piid'][$i], $entry);
+        if (isset($_POST['t_entry_private'][$i])) {
+            $privacy = 1;
+        } else {
+            $privacy = 0;
+        }
+        user_profile_update($uid, $_POST['t_piid'][$i], $entry, $privacy);
     }
 
     echo "<h2>{$lang['profileupdated']}</h2>";
@@ -152,12 +163,14 @@ if ($profile_values = profile_get_user_values($uid)) {
             }
 
             echo "&nbsp;&nbsp;</td>\n";
+	    echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[$i]","N",$lang['friendsonly'],$profile_values[$i]['PRIVACY']), "&nbsp;</td>\n";
 
         }elseif ($profile_values[$i]['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
             echo "                  <td valign=\"top\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 42), "&nbsp;&nbsp;</td>\n";
+	    echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[$i]","N",$lang['friendsonly'],$profile_values[$i]['PRIVACY']), "&nbsp;</td>\n";
             echo "                </tr>\n";
 
         }else {
@@ -167,6 +180,7 @@ if ($profile_values = profile_get_user_values($uid)) {
             echo "                <tr>\n";
             echo "                  <td valign=\"top\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
             echo "                  <td valign=\"top\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), "&nbsp;&nbsp;</td>\n";
+	    echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[$i]","N",$lang['friendsonly'],$profile_values[$i]['PRIVACY']), "&nbsp;</td>\n";
             echo "                </tr>\n";
 
         }

@@ -21,7 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.88 2005-03-14 22:41:15 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.89 2005-04-01 13:17:12 rowan_hill Exp $ */
+
+/**
+* Displays user profiles
+*/
+
+/**
+*/
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -215,6 +222,7 @@ echo "                  <td width=\"400\" valign=\"top\">\n";
 echo "                    <table width=\"400\">\n";
 
 $user_profile_array = user_get_profile_entries($uid, $psid);
+$rel = user_rel_get($uid, bh_session_get_value('UID'));
 
 foreach ($user_profile_array as $profile_entry) {
 
@@ -242,7 +250,12 @@ foreach ($user_profile_array as $profile_entry) {
 
         echo "                      <tr>\n";
         echo "                        <td class=\"subhead\" width=\"33%\" valign=\"top\">{$profile_entry['NAME']}</td>\n";
-        echo "                        <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";
+        
+        if (($uid != bh_session_get_value('UID')) && ($rel != USER_FRIEND) && ($profile_entry['PRIVACY'] == 1)) {
+        	echo "                        <td width=\"67%\" class=\"posthead\" valign=\"top\"></td>\n";
+        } else {
+        	echo "                        <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";
+        }
         echo "                      </tr>\n";
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.42 2005-03-31 19:23:41 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.43 2005-04-01 13:17:14 rowan_hill Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -941,6 +941,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PROFILE ADD PRIVACY TINYINT(3) UNSIGNED NOT NULL DEFAULT '0';";
 
     if (!$result = db_query($sql, $db_install)) {
 

@@ -21,12 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.40 2005-03-15 21:30:08 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.41 2005-04-01 13:17:12 rowan_hill Exp $ */
+
+/**
+* Functions relating to users interacting with profiles
+*/
+
+/**
+*/
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 
-function user_profile_update($uid, $piid, $entry)
+function user_profile_update($uid, $piid, $entry, $privacy)
 {
     $db_user_profile_update = db_connect();
 
@@ -39,8 +46,8 @@ function user_profile_update($uid, $piid, $entry)
 
     if (db_query($sql, $db_user_profile_update)) {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY) ";
-        $sql.= "VALUES ($uid, $piid, '$entry')";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY, PRIVACY) ";
+        $sql.= "VALUES ($uid, $piid, '$entry', $privacy)";
 
         return db_query($sql, $db_user_profile_update);
     }
@@ -113,7 +120,7 @@ function user_get_profile_entries($uid, $psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
+    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY, UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
     $sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
 

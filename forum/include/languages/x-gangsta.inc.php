@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.11 2004-05-09 21:20:58 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.12 2004-05-11 16:49:15 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -100,6 +100,7 @@ $lang['change'] = "Chizange";
 $lang['yes'] = "Word!";
 $lang['no'] = "Hell no, biatch";
 $lang['signature'] = "Sizignature";
+$lang['signaturepreview'] = "Sizignature Prizeview";
 $lang['wasnotfound'] = "ain't nowhere, yo";
 $lang['back'] = "Bizack";
 $lang['subject'] = "Subject";
@@ -808,6 +809,7 @@ $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['newrelationship'] = "New Relationship";
 $lang['editrelationships'] = "Edit Relationships";
+$lang['norelationships'] = "You have no user relationships set up";
 $lang['editattachments'] = "Edit Attachments";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";

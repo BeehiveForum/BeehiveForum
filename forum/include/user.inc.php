@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.171 2004-05-09 20:58:31 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.172 2004-05-11 16:49:15 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -607,17 +607,19 @@ function user_get_forthcoming_birthdays()
     }
 }
 
-function user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "DESC", $offset = 0)
+function user_search($usersearch, $offset = 0)
 {
     $db_user_search = db_connect();
 
-    if (!$table_data = get_table_prefix()) return false;
+    $user_search_array = array();
+    $user_search_count = 0;
+
+    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
+                                                        'user_array' => array());
 
     $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 'VISITOR_LOG.LAST_LOGON');
 
     if (!is_numeric($offset)) $offset = 0;
-    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'USER.UID';
 
     $usersearch = addslashes($usersearch);
 
@@ -628,21 +630,33 @@ function user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "AND NOT (USER_PREFS.ANON_LOGON <=> 1)";
+
+    $result = db_query($sql, $db_user_search);
+    $user_search_count = db_num_rows($result);
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "USER_STATUS.STATUS FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "AND NOT (USER_PREFS.ANON_LOGON <=> 1) ";
-    $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_search);
 
     if (db_num_rows($result)) {
-        $user_search_array = array();
-	while ($row = db_fetch_array($result)) {
-	    $user_search_array[] = $row;
-	}
-	return $user_search_array;
-    }else {
-        return false;
+        while ($row = db_fetch_array($result)) {
+            if (!isset($users_get_recent_array[$row['UID']])) {
+                $user_search_array[$row['UID']] = $row;
+            }
+        }
     }
+
+    return array('user_count' => $user_search_count,
+                 'user_array' => $user_search_array);
 }
 
 function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $offset = 0)
@@ -766,7 +780,6 @@ function users_get_recent($offset, $limit)
 
     return array('user_count' => $users_get_recent_count,
                  'user_array' => $users_get_recent_array);
-
 }
 
 function users_search_recent($usersearch, $offset)
@@ -887,9 +900,20 @@ function user_get_relationships($uid, $offset = 0)
 {
     $db_user_get_relationships = db_connect();
 
-    if (!$table_data = get_table_prefix()) return false;
+    $user_get_peers_array = array();
+    $user_get_peers_count = 0;
+
+    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
+                                                        'user_array' => array());
 
     if (!is_numeric($offset)) $offset = 0;
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP <> 0 ORDER BY USER.LOGON ASC";
+
+    $result = db_query($sql, $db_user_get_relationships);
+    $user_get_peers_count = db_num_rows($result);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -899,14 +923,15 @@ function user_get_relationships($uid, $offset = 0)
     $result = db_query($sql, $db_user_get_relationships);
 
     if (db_num_rows($result)) {
-        $user_get_peers_array = array();
-        while ($row = db_fetch_array($result)) {
-            $user_get_peers_array[] = $row;
-        }
-        return $user_get_peers_array;
-    }else {
-        return false;
+	while ($row = db_fetch_array($result)) {
+	    if (!isset($user_search_array[$row['UID']])) {
+	        $user_get_peers_array[$row['UID']] = $row;
+	    }
+	}
     }
+
+    return array('user_count' => $user_get_peers_count,
+                 'user_array' => $user_get_peers_array);
 }
 
 function user_get_word_filter()

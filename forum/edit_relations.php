@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.30 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.31 2004-05-11 16:49:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -156,10 +156,20 @@ if (isset($_POST['add'])) {
     }
 }
 
-if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $start = $_GET['page'] * 20;
+if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
+    $start_main = floor($_GET['main_page'] - 1) * 20;
+}else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
+    $start_main = floor($_POST['main_page'] - 1) * 20;
 }else {
-    $start = 0;
+    $start_main = 0;
+}
+
+if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
+    $start_search = floor($_GET['search_page'] - 1) * 20;
+}else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
+    $start_search = floor($_POST['search_page'] - 1) * 20;
+}else {
+    $start_search = 0;
 }
 
 // Any error messages to display?
@@ -174,29 +184,33 @@ if (!empty($error_html)) {
 
 echo "<br />\n";
 
-if ($user_peers = user_get_relationships($uid, $start)) {
+echo "<form name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden("main_page", $start_main), "\n";
+echo "  ", form_input_hidden("search_page", $start_search), "\n";
 
-    echo "<form name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=\"_self\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
+    echo "  ", form_input_hidden("usersearch", trim($_POST['usersearch'])), "\n";
+}
 
-    if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
-        echo "  ", form_input_hidden("usersearch", trim($_POST['usersearch'])), "\n";
-    }
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
+echo "                </tr>\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
-    echo "                </tr>\n";
+$user_peers = user_get_relationships($uid, $start_main);
 
-    foreach ($user_peers as $user_peer) {
+if (sizeof($user_peers['user_array']) > 0) {
+
+    foreach ($user_peers['user_array'] as $user_peer) {
         echo "                <tr>\n";
         echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
         echo "                  <td>\n";
@@ -211,49 +225,42 @@ if ($user_peers = user_get_relationships($uid, $start)) {
         echo "                </tr>\n";
     }
 
+}else {
+
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td colspan=\"3\">&nbsp;{$lang['norelationships']}</td>\n";
     echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
+}
+
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+
+if (sizeof($user_peers['user_array']) > 0) {
+
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
-
-    if (sizeof($user_peers) == 20) {
-        if ($start < 20) {
-            echo "    <tr>\n";
-            echo "      <td align=\"center\"><p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&amp;page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p></td>\n";
-            echo "    </tr>\n";
-        }elseif ($start >= 20) {
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">\n";
-            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&amp;page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-            echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&amp;page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-        }
-    }else {
-        if ($start >= 20) {
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">\n";
-            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&amp;page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a></p>\n";
-            echo "      </td>\n";
-            echo "    </td>\n";
-        }
-    }
-
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start_main, $user_peers['user_count'], 20, "main_page"), "</td>\n";
+    echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
     echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "<br />\n";
 }
+
+echo "  </table>\n";
+echo "</form>\n";
+echo "<br />\n";
 
 if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
 
@@ -262,6 +269,8 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
     echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
+    echo "  ", form_input_hidden("main_page", $start_main), "\n";
+    echo "  ", form_input_hidden("search_page", $start_search), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
     echo "      <td class=\"posthead\">\n";
@@ -275,9 +284,11 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
     echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
     echo "                </tr>\n";
 
-    if ($user_search_array = user_search($usersearch)) {
+    $user_search_array = user_search($usersearch, $start_search);
 
-        foreach ($user_search_array as $user) {
+    if (sizeof($user_search_array['user_array']) > 0) {
+
+        foreach ($user_search_array['user_array'] as $user) {
 
             if ($user['UID'] != $uid) {
 
@@ -298,9 +309,9 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
 
     }else {
 
-        echo "      <tr>\n";
-        echo "        <td class=\"posthead\" colspan=\"7\" align=\"left\">{$lang['nomatches']}</td>\n";
-        echo "      </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"posthead\" colspan=\"7\" align=\"left\">&nbsp;{$lang['nomatches']}</td>\n";
+        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";
@@ -312,18 +323,32 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
-    echo "    </tr>\n";
+
+    if (sizeof($user_search_array['user_array']) > 0) {
+
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
+        echo "    </tr>\n";
+    }
+
     echo "  </table>\n";
     echo "</form>\n";
+    echo "<br />\n";
 }
 
 echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden("main_page", $start_main), "\n";
+echo "  ", form_input_hidden("search_page", $start_search), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";

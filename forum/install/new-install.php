@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.42 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.43 2005-03-23 20:34:28 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -914,8 +914,21 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SEARCH_MATCH (";
-$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  WID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  WID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (WID,FORUM,TID,PID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE SEARCH_POSTS (";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
@@ -924,12 +937,7 @@ $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  CREATED DATETIME DEFAULT NULL,";
-$sql.= "  PRIMARY KEY (SID),";
-$sql.= "  KEY WID (WID),";
-$sql.= "  KEY FORUM (FORUM),";
-$sql.= "  KEY FID (FID),";
-$sql.= "  KEY TID (TID),";
-$sql.= "  KEY PID (PID),";
+$sql.= "  PRIMARY KEY (FORUM,TID,PID),";
 $sql.= "  KEY BY_UID (BY_UID),";
 $sql.= "  KEY FROM_UID (FROM_UID),";
 $sql.= "  KEY TO_UID (TO_UID),";

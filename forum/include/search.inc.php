@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.111 2005-03-20 12:37:33 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.112 2005-03-23 20:34:12 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -71,29 +71,39 @@ function search_execute($argarray, &$urlquery, &$error)
         $argarray['forums'] = implode(",", $forum_fids);
     }
 
-    $sql = "SELECT SEARCH_MATCH.FID, SEARCH_MATCH.TID, SEARCH_MATCH.PID, ";
-    $sql.= "SEARCH_MATCH.BY_UID, SEARCH_MATCH.FROM_UID, SEARCH_MATCH.TO_UID, ";
-    $sql.= "UNIX_TIMESTAMP(SEARCH_MATCH.CREATED) AS CREATED ";
-    $sql.= "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
-    $sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ";
-    $sql.= "ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = SEARCH_MATCH.BY_UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE SEARCH_MATCH.FORUM IN ({$argarray['forums']}) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    // Base query - the same for all seraches
+
+    $select_sql = "SELECT SEARCH_POSTS.FID, SEARCH_POSTS.TID, SEARCH_POSTS.PID, ";
+    $select_sql.= "SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, SEARCH_POSTS.TO_UID, ";
+    $select_sql.= "UNIX_TIMESTAMP(SEARCH_POSTS.CREATED) AS CREATED ";
+    $select_sql.= "FROM SEARCH_POSTS SEARCH_POSTS ";
+
+    // Joins that we need for the search. Only join the keywords table
+    // if we're doing a keyword search. Searching by user can be done
+    // with just the SEARCH_POSTS table.
+
+    $join_sql = "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $join_sql.= "ON (USER_PEER.PEER_UID = SEARCH_POSTS.BY_UID AND USER_PEER.UID = '$uid') ";
+
+    // Where query base - used for all searches.
+    // Modified depending on the joins by the code
+    // below.
+
+    $where_sql = "WHERE SEARCH_POSTS.FORUM IN ({$argarray['forums']}) ";
+    $where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+    $where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+    $where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
     $folders = folder_get_available();
 
     if (isset($argarray['fid']) && in_array($argarray['fid'], explode(",", $folders))) {
-        $sql.= "AND SEARCH_MATCH.FID = {$argarray['fid']} ";
+        $where_sql.= "AND SEARCH_POSTS.FID = {$argarray['fid']} ";
     }else{
-        $sql.= "AND SEARCH_MATCH.FID IN ($folders) ";
+        $where_sql.= "AND SEARCH_POSTS.FID IN ($folders) ";
     }
 
-    $sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
     if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
@@ -101,16 +111,16 @@ function search_execute($argarray, &$urlquery, &$error)
 
             if ($argarray['user_include'] == 1) {
 
-                $sql.= "AND SEARCH_MATCH.FROM_UID = '{$user_uid['UID']}' ";
+                $where_sql.= "AND SEARCH_POSTS.FROM_UID = '{$user_uid['UID']}' ";
 
             }elseif ($argarray['user_include'] == 2) {
 
-                $sql.= "AND SEARCH_MATCH.TO_UID = '{$user_uid['UID']}' ";
+                $where_sql.= "AND SEARCH_POSTS.TO_UID = '{$user_uid['UID']}' ";
 
             }else {
 
-                $sql.= "AND (SEARCH_MATCH.FROM_UID = '{$user_uid['UID']}' ";
-                $sql.= "OR SEARCH_MATCH.TO_UID = '{$user_uid['UID']}') ";
+                $where_sql.= "AND (SEARCH_POSTS.FROM_UID = '{$user_uid['UID']}' ";
+                $where_sql.= "OR SEARCH_POSTS.TO_UID = '{$user_uid['UID']}') ";
             }
 
         }else {
@@ -142,17 +152,22 @@ function search_execute($argarray, &$urlquery, &$error)
 
         if (sizeof($keywords_array) > 0) {
 
+            $join_sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ";
+            $join_sql.= "ON (SEARCH_MATCH.TID = SEARCH_POSTS.TID AND SEARCH_MATCH.PID = SEARCH_POSTS.PID) ";
+            $join_sql.= "LEFT JOIN SEARCH_KEYWORDS SEARCH_KEYWORDS ";
+            $join_sql.= "ON (SEARCH_KEYWORDS.WID = SEARCH_MATCH.WID) ";
+
             if ($argarray['method'] == 1) { // AND
 
-                $sql.= "AND SEARCH_KEYWORDS.WORD = '";
-                $sql.= implode("' AND SEARCH_KEYWORDS.WORD = '", $keywords_array);
-                $sql.= "' ";
+                $where_sql.= "AND SEARCH_KEYWORDS.WORD = '";
+                $where_sql.= implode("' AND SEARCH_KEYWORDS.WORD = '", $keywords_array);
+                $where_sql.= "' ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
-                $sql.= "AND SEARCH_KEYWORDS.WORD = '";
-                $sql.= implode("' OR SEARCH_KEYWORDS.WORD = '", $keywords_array);
-                $sql.= "' ";
+                $where_sql.= "AND SEARCH_KEYWORDS.WORD = '";
+                $where_sql.= implode("' OR SEARCH_KEYWORDS.WORD = '", $keywords_array);
+                $where_sql.= "' ";
             }
 
         }elseif (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) {
@@ -171,21 +186,20 @@ function search_execute($argarray, &$urlquery, &$error)
     }
 
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
-        $sql.= "GROUP BY SEARCH_MATCH.TID ";
+        $group_sql = "GROUP BY SEARCH_POSTS.TID ";
+    }else {
+        $group_sql = "";
     }
 
     if ($argarray['order_by'] == 1) {
-
-        $sql.= "ORDER BY SEARCH_MATCH.CREATED DESC ";
-
+        $order_sql = "ORDER BY SEARCH_POSTS.CREATED DESC ";
     }elseif($argarray['order_by'] == 2) {
-
-        $sql.= "ORDER BY SEARCH_MATCH.CREATED ";
+        $order_sql = "ORDER BY SEARCH_POSTS.CREATED ";
     }
 
-    $sql.= "LIMIT {$argarray['sstart']}, 20";
-    $sql = preg_replace("/ +/", " ", $sql);
+    $limit_sql = "LIMIT {$argarray['sstart']}, 20";
 
+    $sql = preg_replace("/ +/", " ", "$select_sql $join_sql $where_sql $group_sql $order_sql");
     $result = db_query($sql, $db_search_execute);
 
     $uriquery = "";
@@ -343,8 +357,8 @@ function search_date_range($from, $to)
 
     }
 
-    if (isset($from_timestamp)) $range = "AND SEARCH_MATCH.CREATED >= FROM_UNIXTIME($from_timestamp) ";
-    if (isset($to_timestamp)) $range.= "AND SEARCH_MATCH.CREATED <= FROM_UNIXTIME($to_timestamp) ";
+    if (isset($from_timestamp)) $range = "AND SEARCH_POSTS.CREATED >= FROM_UNIXTIME($from_timestamp) ";
+    if (isset($to_timestamp)) $range.= "AND SEARCH_POSTS.CREATED <= FROM_UNIXTIME($to_timestamp) ";
 
     return $range;
 }
@@ -633,9 +647,14 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
         $result = db_query($sql, $db_search_index_post);
 
-        $sql = "INSERT IGNORE INTO SEARCH_MATCH (WID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
-        $sql.= "SELECT WID, $forum_fid, $fid, $tid, $pid, $by_uid, $fuid, $tuid, $created FROM ";
+        $sql = "INSERT IGNORE INTO SEARCH_MATCH ";
+        $sql.= "SELECT WID, $forum_fid, $tid, $pid FROM ";
         $sql.= "SEARCH_KEYWORDS WHERE WORD IN ('$keyword_list')";
+
+        $result = db_query($sql, $db_search_index_post);
+
+        $sql = "INSERT INTO SEARCH_POSTS (FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
+        $sql.= "VALUES ($forum_fid, $fid, $tid, $pid, $by_uid, $fuid, $tuid, $created)";
 
         return db_query($sql, $db_search_index_post);
     }

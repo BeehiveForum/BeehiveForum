@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.54 2003-08-24 19:45:54 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.55 2003-08-24 21:17:26 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -75,14 +75,14 @@ function html_message_type_error()
 //
 //      html_draw_top("title=Navigation", "class=nav");
 //
-//      This will set the title of the page to "Navigation" with the body
-//      class set to "nav"
+//      This will set the title of the page to "Navigation" with the
+//      body class set to "nav"
 //
 //      For the onload event, you do the same as the title and
 //      body_class named arguments, but you can include multiple
 //      arguments which will all then be loaded for you. For example:
 //
-//      html_draw_top("onload=pm_notification", "onload=openprofile(1)");
+//      html_draw_top("onload=pm_notification()", "onload=hicky()");
 //
 //      You can also mix and match all of these arguments in any order
 //      for example:
@@ -91,11 +91,31 @@ function html_message_type_error()
 //
 //      or
 //
-//      html_draw_top("class=nav", "openprofile.js", "title=Navigation");
+//      html_draw_top("class=nav", "openprofile.js");
 //
-//      Easy, eh?
+// ====================================================================*/
 //
-//      Any questions ask Matt.
+// Notes:
+//
+//      html_draw_top will only use the first of each named argument
+//      it encounters for title and class. Any subsequent named
+//      arguments for these two values will be ignored.
+//
+//      For example:
+//
+//      html_draw_top("title=Beehive Forum", "title=Yo Mama");
+//
+//      This will result in the title being set to Beehive Forum and
+//      the value Yo Mama being discarded by the function.
+//
+//      This functionality does not apply to the onload named argument
+//      as that can accept more than one value to be included in the
+//      body tag.
+//
+// ====================================================================*/
+//
+//      Stuck? Any questions? Ask Matt.
+
 
 function html_draw_top()
 {
@@ -107,12 +127,12 @@ function html_draw_top()
     foreach($arg_array as $key => $func_args) {
 
         if (preg_match("/^title=/", $func_args)) {
-            $title = substr($func_args, 6);
+            if (!isset($title)) $title = substr($func_args, 6);
             unset($arg_array[$key]);
         }
 
         if (preg_match("/^class=/", $func_args)) {
-            $body_class = substr($func_args, 6);
+            if (!isset($body_class)) $body_class = substr($func_args, 6);
             unset($arg_array[$key]);
         }
 
@@ -168,8 +188,10 @@ function html_draw_top()
         }
     }
 
+    $onload = trim(implode(";", $onload_array));
+
     echo "</head>\n\n";
-    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", " onload=\"", implode(";", $onload_array), "\">\n";
+    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", (strlen($onload) > 0) ? " onload=\"$onload\"" : "", "\">\n";
 }
 
 function html_draw_bottom ()

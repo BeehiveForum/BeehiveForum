@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.11 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: pm_write.php,v 1.12 2003-07-28 20:55:50 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -304,7 +304,7 @@ echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
 echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-echo "          <td>", form_field("t_subject", isset($t_subject) ? stripslashes(_htmlentities($t_subject)) : "", 32), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
+echo "          <td>", form_field("t_subject", isset($t_subject) ? _htmlentities(_stripslashes($t_subject)) : "", 32), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td align=\"right\">{$lang['to']}: </td>\n";

@@ -70,4 +70,15 @@ function post_delete($tid,$pid)
     return $return;
 }
 
+function edit_refuse()
+{
+    html_draw_top();
+    echo "<div align=\"center\">";
+    echo "<h1>Denied</h1>";
+    echo "<p>You are not permitted to edit this message, naughty person!</p>";
+    echo "<p><a href=\"discussion.php?msg=" . $msg_bits[0]. "." .$msg_bits[1];
+    echo "\">Return to messages</a></p>";
+    echo "</div>";
+
+
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.24 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.25 2004-06-08 19:22:52 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -53,19 +53,28 @@ include_once("./include/light.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if (!$user_sess = bh_session_check()) {
+// Load the user session
 
-    $uri = "./llogon.php?webtag=$webtag";
-    header_redirect($uri);
-}
+$user_sess = bh_session_check();
+
+// Check we have a webtag
+
+$webtag = get_webtag($webtag_search);
 
 // Load language file
 
 $lang = load_language_file();
 
-// Check we have a webtag
+// User was a guest that now wants to logon
 
-$webtag = get_webtag($webtag_search);
+if (bh_session_get_value('UID') == 0) {
+
+    bh_session_end();
+    bh_setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
+
+    $uri = "./llogon.php?webtag=$webtag";
+    header_redirect($uri);
+}
 
 // Where are we going after we've logged off?
 

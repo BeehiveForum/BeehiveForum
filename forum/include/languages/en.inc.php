@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.164 2004-08-17 20:13:49 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.165 2004-08-18 00:03:14 tribalonline Exp $ */
 
 // International English language file
 
@@ -53,7 +53,7 @@ $lang['to'] = "To";
 $lang['all_caps'] = "ALL";
 $lang['of'] = "of";
 $lang['reply'] = "Reply";
-$lang['replyall'] = "Reply All";
+$lang['replyall'] = "Reply to All";
 $lang['pm_reply'] = "Reply as PM";
 $lang['delete'] = "Delete";
 $lang['deleted'] = "Deleted";

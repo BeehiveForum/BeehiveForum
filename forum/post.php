@@ -28,12 +28,14 @@ USA
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
+if(!bh_session_check()) {
+
     $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
     $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $uri.= "/logon.php?final_uri=";
     $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
     header_redirect($uri);
+    
 }
 
 require_once("./include/html.inc.php");
@@ -49,53 +51,64 @@ require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 
-if (isset($HTTP_POST_VARS['cancel'])){
+if (isset($HTTP_POST_VARS['cancel'])) {
+
     $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
     $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $uri.= "/discussion.php";
     if(isset($HTTP_POST_VARS['t_rpid'])) $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
     header_redirect($uri);      
+    
 }
 
 $valid = true;
 $t_post_html = $HTTP_POST_VARS['t_post_html'];
 
-if(substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:"){
-	$u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
-	$db = db_connect();
-	$sql = "select UID from ". forum_table("USER"). " where LOGON = '" . $u_login. "'";
-	$result = db_query($sql,$db);
-	if(db_num_rows($result)>0){ 
-		 $touser = db_fetch_array($result); 
-		 $HTTP_POST_VARS['t_to_uid'] = $touser['UID']; 
-		 $t_to_uid = $touser['UID'];
-	} else {
-		$error_html = "<h2>Invalid username</h2>";
-		$valid = false;
-	}
-	db_disconnect($db);
+if(substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
+
+  $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
+	
+  $db = db_connect();
+  $sql = "select UID from ". forum_table("USER"). " where LOGON = '" . $u_login. "'";
+	
+  $result = db_query($sql,$db);
+	
+  if(db_num_rows($result) > 0) { 
+	
+    $touser = db_fetch_array($result); 
+    $HTTP_POST_VARS['t_to_uid'] = $touser['UID']; 
+    $t_to_uid = $touser['UID'];
+
+  }else{
+
+    $error_html = "<h2>Invalid username</h2>";
+    $valid = false;
+    
+  }
+
 }
 
+if(isset($HTTP_POST_VARS['t_newthread'])) {
 
-if(isset($HTTP_POST_VARS['t_newthread'])){
     $newthread = true;
-    if(isset($HTTP_POST_VARS['t_threadtitle']) && trim($HTTP_POST_VARS['t_threadtitle']) != ""){
+    
+    if(isset($HTTP_POST_VARS['t_threadtitle']) && trim($HTTP_POST_VARS['t_threadtitle']) != "") {
         $t_threadtitle = trim($HTTP_POST_VARS['t_threadtitle']);
-    } else {
+    }else{
         $error_html = "<h2>You must enter a title for the thread</h2>";
         $valid = false;
     }
 
-    if(isset($HTTP_POST_VARS['t_fid'])){
+    if(isset($HTTP_POST_VARS['t_fid'])) {
         $t_fid = $HTTP_POST_VARS['t_fid'];
-    } else if($valid){
+    } else if($valid) {
         $error_html = "<h2>Please select a folder</h2>";
         $valid = false;
     }
 
-    if(isset($HTTP_POST_VARS['t_content'])){
+    if(isset($HTTP_POST_VARS['t_content'])) {
         $t_content = $HTTP_POST_VARS['t_content'];
-    } else {
+    }else{
         $error_html = "<h2>You must enter some content for the post</h2>";
         $valid = false;
     }
@@ -103,66 +116,73 @@ if(isset($HTTP_POST_VARS['t_newthread'])){
     $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
     $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
 
-} else {
+}else{
 
-    if(isset($HTTP_POST_VARS['t_tid'])){
-        if(isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0){
+    if(isset($HTTP_POST_VARS['t_tid'])) {
+    
+        if(isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
             $t_content = $HTTP_POST_VARS['t_content'];
-        } else {
+        }else{
             $error_html = "<h2>You must enter some content for the post</h2>";
             $valid = false;
         }
 
         $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
         $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
-    } else {
+        
+    }else{
         $valid = false;
     }
 }
 
-if($valid){
-    if($t_post_html == "Y"){
+if($valid) {
+
+    if($t_post_html == "Y") {
         $t_content = fix_html($t_content);
     }
-	if(isset($t_sig)){
-		if($t_sig_html == "Y"){
+	if(isset($t_sig)) {
+		if($t_sig_html == "Y") {
 			$t_sig = fix_html($t_sig);
 		}
 	}
 }
 
-if($valid && isset($HTTP_POST_VARS['submit'])){
+if($valid && isset($HTTP_POST_VARS['submit'])) {
 
-    //Dedupe
     $db = db_connect();
+    
     $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
     $result = db_query($sql,$db);
-    if(db_num_rows($result)>0){
+    
+    if(db_num_rows($result)>0) {
         db_query($sql,$db);
         list($ddkey) = db_fetch_array($result);
         $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
-    } else {
+    }else{
         $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
     }
+    
     db_query($sql,$db);
     db_disconnect($db);
 
-    if($ddkey != $HTTP_POST_VARS['t_dedupe']){
-        if($newthread){
+    if($ddkey != $HTTP_POST_VARS['t_dedupe']) {
+    
+        if($newthread) {
             $t_tid = post_create_thread($t_fid, $t_threadtitle);
             $t_rpid = 0;
-        } else {
+        }else{
             $t_tid = $HTTP_POST_VARS['t_tid'];
             $t_rpid = $HTTP_POST_VARS['t_rpid'];
         }
 
-        if($t_tid > 0){
-            if($t_post_html != "Y"){
+        if($t_tid > 0) {
+        
+            if($t_post_html != "Y") {
                 $t_content = make_html($t_content);
             }
 
-            if($t_sig){
-                if($t_sig_html != "Y"){
+            if($t_sig) {
+                if($t_sig_html != "Y") {
                     $t_sig = make_html($t_sig);
                 }
                 $t_content .= "\n<div class=\"sig\">". stripslashes($t_sig). "</div>";
@@ -175,17 +195,20 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
             email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
             email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
         }
-    } else {
+        
+    }else{
+    
         $new_pid = 0;
-        if($newthread){
+        
+        if($newthread) {
             $t_rpid = 0;
-        } else {
+        }else{
             $t_tid = $HTTP_POST_VARS['t_tid'];
             $t_rpid = $HTTP_POST_VARS['t_rpid'];
         }
     }
 
-    if($new_pid > -1){
+    if($new_pid > -1) {
 
         html_draw_top();
     
@@ -204,17 +227,9 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
         
         echo "</p></div>\n";
         html_draw_bottom();
-
-
-//        $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-//        $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-//        $uri.= "/discussion.php";
-//        if($t_rpid) $uri.= "?msg=$t_tid.$t_rpid";
-//        header_redirect($uri);
-
         exit;
 
-    } else {
+    }else{
         $error_html = "<h2>Error creating post</h2>";
     }
 }
@@ -227,80 +242,109 @@ if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = $HTTP_POST_VARS['aid'];
 }
 
-if($valid){
-    if(isset($HTTP_POST_VARS['preview'])){
-        echo "<h2>Message Preview:</h2>";
-        if($HTTP_POST_VARS['t_to_uid'] == 0){
-            $preview_message['TLOGON'] = "ALL";
-            $preview_message['TNICK'] = "ALL";
-        } else {
-            $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
-            $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-            $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-        }
-        $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
-        $preview_message['FLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-        
-        if($t_post_html != "Y"){
-            $preview_message['CONTENT'] = make_html($t_content);
-        } else {
-            $preview_message['CONTENT'] = $t_content;
-        }
-        
-        if($t_sig){
-            if($t_sig_html != "Y"){
-                $preview_sig = make_html($t_sig);
-            } else {
-                $preview_sig = $t_sig;
-            }
-            $preview_message['CONTENT'] = $preview_message['CONTENT'] . "<div class=\"sig\">". stripslashes($preview_sig). "</div>";
-        } else {
-            $t_sig = " ";
-	}
-        
-        message_display(0,$preview_message,0,0,false,false,false);
-        echo "<br />\n";
+if($valid && isset($HTTP_POST_VARS['preview'])) {
+
+    echo "<h2>Message Preview:</h2>";
+
+    if($HTTP_POST_VARS['t_to_uid'] == 0) {
+    
+      $preview_message['TLOGON'] = "ALL";
+      $preview_message['TNICK'] = "ALL";
+      
+    }else{
+
+      $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
+      $preview_message['TLOGON'] = $preview_tuser['LOGON'];
+      $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
+      
     }
+
+    $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+    $preview_message['FLOGON'] = $preview_tuser['LOGON'];
+    $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
+        
+    if($t_post_html != "Y") {
+    
+      $preview_message['CONTENT'] = make_html($t_content);
+    
+    }else{
+    
+      $preview_message['CONTENT'] = $t_content;
+    
+    }
+        
+    if($t_sig) {
+    
+      if($t_sig_html != "Y") {
+      
+        $preview_sig = make_html($t_sig);
+
+      }else{
+
+        $preview_sig = $t_sig;
+        
+      }
+
+      $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". stripslashes($preview_sig). "</div>";
+
+    }else{
+
+      $t_sig = " ";
+    
+    }
+        
+    message_display(0, $preview_message, 0, 0, false, false, false);
+    echo "<br />\n";
+
 }
 
-if(isset($HTTP_GET_VARS['replyto'])){
+if(isset($HTTP_GET_VARS['replyto'])) {
+
     $replyto = $HTTP_GET_VARS['replyto'];
-    $ma = explode(".",$replyto);
-    $reply_to_tid = $ma[0];
-    $reply_to_pid = $ma[1];
+    list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
     $newthread = false;
-} else if(isset($HTTP_POST_VARS['t_tid'])){
+    
+}elseif(isset($HTTP_POST_VARS['t_tid'])) {
+
     $reply_to_tid = $HTTP_POST_VARS['t_tid'];
     $reply_to_pid = $HTTP_POST_VARS['t_rpid'];
     $newthread = false;
-} else {
+    
+}else{
+
     $newthread = true;
-    if(isset($HTTP_GET_VARS['fid'])){
+    
+    if(isset($HTTP_GET_VARS['fid'])) {
+    
         $t_fid = $HTTP_GET_VARS['fid'];
-    } else if(isset($HTTP_POST_VARS['t_fid'])){
+        
+    }elseif(isset($HTTP_POST_VARS['t_fid'])) {
+    
         $t_fid = $HTTP_POST_VARS['t_fid'];
     }
+    
 }
 
-if(!$newthread){
-    if(!isset($HTTP_POST_VARS['t_to_uid'])){
+if(!$newthread) {
+
+    if(!isset($HTTP_POST_VARS['t_to_uid'])) {
         $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
     }
+    
 }
 
-if(!$t_sig){
+if(!$t_sig) {
     $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$t_sig,$t_sig_html);
-} else {
+}else{
     $has_sig = true;
 }
 
-if($newthread){
+if($newthread) {
     echo "<h1>Create new thread</h1>\n";
-} else {
+}else{
     echo "<h1>Post reply</h1>\n";
 }
-if(isset($error_html)){
+if(isset($error_html)) {
     echo $error_html . "\n";
 }
 
@@ -313,43 +357,36 @@ echo "document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].v
 echo "document.f_post.t_to_uid.options[document.f_post.t_to_uid.selectedIndex].text = newUser;\n";
 echo "}\n}\n}\n";
 echo "</script>\n";
-
 echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
-if($newthread){
+
+if($newthread) {
+
     echo "<table>\n";
     echo "<tr><td>Select folder:</td></tr>\n";
     echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
     echo "<tr><td>Thread title:</td></tr>\n";
-    //echo "<tr><td>".form_input_text("t_threadtitle",stripslashes(htmlentities($t_threadtitle)),30,64);
-    echo "<tr><td>".form_input_text("t_threadtitle", htmlentities($t_threadtitle), 30,64);    
+    echo "<tr><td>".form_input_text("t_threadtitle", htmlspecialchars(stripslashes($t_threadtitle)), 30,64);    
     echo "\n";
     echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
     echo "</table>\n";
-} else {
+    
+}else{
+
     echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
     echo form_input_hidden("t_tid",$reply_to_tid);
     echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
+    
 }
+
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
 echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
 echo "<td>To: \n";
-
 echo post_draw_to_dropdown($t_to_uid). "&nbsp;";
-//echo form_quick_button("javascript:t_tlogin = prompt('Please enter a membername:', '');", "Others");
 echo  "<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\">\n";
-
 echo "</td></tr></table>\n";
 echo "<table border=\"0\" class=\"posthead\">\n";
-if(isset($t_content)){
-    if($t_post_html == "Y"){
-        $t_content = stripslashes(htmlentities($t_content));
-    } else {
-        $t_content = stripslashes(htmlspecialchars($t_content));
-    }
-}
-echo "<tr><td>".form_textarea("t_content",$t_content,12,80)."</tr></td>";
-echo "<tr><td>Signature:<br />".form_textarea("t_sig",htmlspecialchars(stripslashes($t_sig)),4,80);
-echo form_input_hidden("t_sig_html",$t_sig_html)."</td></tr>\n";
+echo "<tr><td>".form_textarea("t_content", htmlspecialchars(stripslashes($t_content)), 12, 80). "</tr></td>";
+echo "<tr><td>Signature:<br />".form_textarea("t_sig", htmlspecialchars(stripslashes($t_sig)), 4, 80). form_input_hidden("t_sig_html", $t_sig_html)."</td></tr>\n";
 echo "<tr><td>".form_checkbox("t_post_html","Y","Contains HTML (not including signature)",($t_post_html == "Y"))."</td></tr>\n";
 echo "</table>\n";
 echo "</td></tr></table>\n";
@@ -358,17 +395,23 @@ echo "&nbsp;".form_submit("preview","Preview");
 echo "&nbsp;".form_submit("cancel", "Cancel");
 echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
 echo form_input_hidden("aid", $aid);
-if(isset($HTTP_POST_VARS['t_dedupe'])){
+
+if(isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
-} else {
+}else{
     echo form_input_hidden("t_dedupe",date("YmdHis"));
 }
+
 echo "</form>\n";
-if(!$newthread){
+
+if(!$newthread) {
+
     echo "<p>In reply to:</p>\n";
     $reply_message = messages_get($reply_to_tid,$reply_to_pid);
     message_display(0,$reply_message[0],0,0,false,false,false);
     echo "<p>&nbsp;&nbsp;</p>\n";
+    
 }
+
 html_draw_bottom();
 ?>

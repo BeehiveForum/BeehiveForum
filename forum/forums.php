@@ -48,21 +48,17 @@ $user_wordfilter = load_wordfilter();
 
 html_draw_top("basetarget=_top");
 
-echo "<h1>Available Forums</h1>\n";
-echo "<br>\n";
-
-//echo "<form action=\"\" method=\"post\" name=\"form1\" id=\"form1\">\n";
-
-echo "<div align=\"center\">\n";
-echo "<table width=\"90%\" border=\"1\" class=\"box\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"posthead\">\n";
-echo "      <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" class=\"posthead\">\n";
-
 if ($user_sess = bh_session_check()) {
 
-    $forums_array = get_forum_list();
+    $forums_array = get_my_forums();
 
+    echo "<h1>My Forums</h1>\n";
+    echo "<br>\n";
+    echo "<div align=\"center\">\n";
+    echo "<table width=\"90%\" border=\"1\" class=\"box\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"posthead\">\n";
+    echo "      <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" class=\"posthead\">\n";
     echo "        <tr class=\"subhead\">\n";
     echo "          <td colspan=\"3\">Available Forums:</td>\n";
     echo "          <td>Last Visited</td>\n";
@@ -82,15 +78,37 @@ if ($user_sess = bh_session_check()) {
 
         echo "          </td>\n";
         echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
-        echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} Messages</a></td>\n";
-        echo "          <td width=\"20%\">{$forum['LAST_VISIT']}</td>\n";
+
+	if ($forum['UNREAD_TO_ME'] > 0) {
+            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} Unread Messages ({$forum['UNREAD_TO_ME']} unread to me)</a></td>\n";
+	}else {
+            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} Unread Messages</a></td>\n";	}
+
+        echo "          <td width=\"20%\">{$forum['LAST_LOGON']}</td>\n";
         echo "        </tr>\n";
     }
+
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</div>\n";
 
 }else {
 
     $forums_array = get_forum_list();
 
+    echo "<h1>Available Forums</h1>\n";
+    echo "<br>\n";
+    echo "<div align=\"center\">\n";
+    echo "<table width=\"90%\" border=\"1\" class=\"box\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"posthead\">\n";
+    echo "      <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "        <tr class=\"subhead\">\n";
+    echo "          <td colspan=\"3\">Available Forums:</td>\n";
+    echo "          <td>Last Visited</td>\n";
+    echo "        </tr>\n";
     echo "        <tr class=\"subhead\">\n";
     echo "          <td colspan=\"3\">Available Forums:</td>\n";
     echo "          <td>&nbsp;</td>\n";
@@ -111,16 +129,16 @@ if ($user_sess = bh_session_check()) {
         echo "          </td>\n";
         echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
         echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} Messages</a></td>\n";
-        echo "          <td width=\"20%\">{$forum['LAST_VISIT']}</td>\n";
+        echo "          <td width=\"20%\">&nbsp;</td>\n";
         echo "        </tr>\n";
     }
-}
 
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-echo "</div>\n";
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</div>\n";
+}
 
 html_draw_bottom();
 

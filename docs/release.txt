@@ -1,54 +1,107 @@
 Beehive Forum Release Notes
 
-What's new in 0.2
+What's new in 0.3
 =================
 
-User Selectable Styles
-======================
-Forum members can now select from a number of styles to
-change the appearance of the forum. Pretty much everything can be styled, by
+- Brand new features
+        - All output is now optionally gzip encoded to save bandwidth.
+        - The styles system has changed a bit - the majority of the stylesheet
+          is now static, which saves even more bandwidth.
+        - You can modify the start page directly from the admin interface.
+        - As well as ignoring a user, you can make them your "friend" - you can
+          now filter the thread list to only show discusisons started by Friends
+          if you want.
+        - New poll system, with up to 20 options per poll.
+        - There's a new frameless light HTML "diet" version of the forum - now
+          you can post from a PDA and some mobile phones.
+        - A links section that allows your users to create a database of useful
+          links.
+        - You can see a list of possible aliases for any user (people who have
+          logged in from the same IP address before)
+        - Banning a user by IP address is now possible.
+        - Option to delete all of a user's posts in the admin interface.
+        - You can now ignore entire folders.
+
+- Enhanced old features
+        - Guest access is now optional.
+        - Other changes to polls, such as the ability to post an explanatory
+          message at the same time as you post the poll.
+        - Various new UI stuff - friend / attatchment icons in the thread list,
+          link back to the voting form in a poll thread, etc.
+        - Polls are now slightly more anonymous (at least, it's not trivial for
+          someone with database access to see how you voted, but neither is it
+          secure).
+        - Users can choose to be directed straight to the forum (bypassing the
+          start page) when logging in.
+        - The time a user last logged on and the total number of posts they have
+          made on the forum are displayed in their profile.
+        - You can now ignore only someone's signature, or globally ignore all
+          signatures if you want.
+        - Mark as Read has more options (all discussions, visible discussions,
+          next 50 discussions)
+
+- Fixes
+        - We've given the code a spring clean - hopefully there are now no PHP
+          errors/warnings/notices at all.
+        - Various fixes to make things work properly with Microsoft-IIS.
+        - Some fixes to properly support PHP 4.3.x.
+        - Some of the database stuff (mainly thread list queries) has been
+          optimised for efficiency.
+        - Database errors are now caught in a nice way.
+        - Some session handling improvements
+
+What's new in 0.2 ("Let It Bee", released 12th September 2002)
+=================
+
+- User Selectable Styles: Forum members can now select from a number of styles
+to change the appearance of the forum. Pretty much everything can be styled, by
 editing the CSS files and altering the images.
 
-Polls
-=====
-Polls are now enabled. They let people vote, and stuff.
+- Polls: Polls are now enabled. They let people vote, and stuff.
 
-Attachments
-===========
-Forum owners can optionally enable the attachments feature, allowing members to 
-upload files to the forum server. Space available per member can be limited.
+- Attachments: Forum owners can optionally enable the attachments feature,
+allowing members to upload files to the forum server. Space available per member
+can be limited.
 
-Forgot password
-===============
-Muppets who forget their passwords can now get an e-mail to the address they 
-entered, with a link where they can reset the password.
+- Forgot password: Muppets who forget their passwords can now get an e-mail to
+the address they entered, with a link where they can reset the password.
 
-Guest access
-============
-Casual browsers can access forums as guests, but can not post.
+- Guest access: Casual browsers can access forums as guests, but can not post.
 
-Lots of little things
-=====================
-Little enhancements here and there that just generally make things nicer. Like 
-friend icons in the message view, and multiple logins being saveable.
+- Lots of little things: Little enhancements here and there that just generally
+make things nicer. Like friend icons in the message view, and multiple logins
+being saveable.
 
-Discontinued undocumented features
-==================================
-Most of the undocumented features from 0.1 have been removed, such as the 
-undocumented feature where fix_html would occasionally loop until PHP timed out,
-and the famous "time-travelling" undocumented feature where post's creation times 
-were updated when they were read by the user they were addressed to.
+- Discontinued undocumented features: Most of the undocumented features from 0.1
+have been removed, such as the undocumented feature where fix_html would
+occasionally loop until PHP timed out, and the famous "time-travelling"
+undocumented feature where post's creation times were updated when they were
+read by the user they were addressed to.
 
-New undocumented features
-=========================
-It is possible that the addition of the new documented features has resulted in 
-the accidental addition of new undocumented features. If you believe you have 
-found an undocumented feature, please let us know in the test forum at 
-http://beehiveforum.net/forum
+- New undocumented features: It is possible that the addition of the new 
+documented features has resulted in the accidental addition of new undocumented
+features. If you believe you have found an undocumented feature, please let us
+know in the test forum at http://beehiveforum.net/forum
 
-\o/ Domain name \o/
+- \o/ Domain name \o/: We got the domain name registered, so you can now use
+http://beehiveforum.net for all your Beehive URL needs. It's still hosted on
+SourceForge (http://sf.net), lovely people that they are.
+
+What's new in 0.1.1 ("Jump This Way", released 28th June 2002)
 ===================
-We got the domain name registered, so you can now use http://beehiveforum.net for 
-all your Beehive URL needs. It's still hosted on SourceForge (http://sf.net),
-lovely people that they are.
 
+- Some fixes, as a result of the fact that we'd never tested 0.1 on Microsoft 
+IIS :)
+
+What's new in 0.1 ("Don't Call Me Baby", released 26th June 2002)
+=================
+
+- General forum functionality
+- User administration (gag, ban, promote to moderator)
+- Moderation (edit/delete/remove posts)
+- Private folders
+- Search
+- HTML posting with full rigourous vaildation (you can't break the page)
+- Editing posts
+- Ignoring users/threads
+- Email post notification

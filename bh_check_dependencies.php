@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.4 2004-03-16 23:22:37 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.5 2004-04-23 22:22:49 decoyduck Exp $ */
 
 $include_files_dir   = "forum/include";
-$include_files_array = array();                             
- 
+$include_files_array = array("lang.inc.php");
+
 $source_files_dir_array = array("forum", "forum/include");
 $source_files_array     = array();
-  
+
 $excl_include_files_array = array("gzipenc.inc.php", "forum.inc.php", "errorhandler.inc.php");
-  
+
 if (is_dir($include_files_dir)) {
     if ($dir = opendir($include_files_dir)) {
         while (($file = readdir($dir)) !== false) {
@@ -42,7 +42,7 @@ if (is_dir($include_files_dir)) {
                         $include_files_array[$function_matches[1][$i]] = $file;
                     }
                 }
-                if (preg_match_all("/define[ ]?\(\"([a-z1-9-_]+)\"/i", $file_contents, $function_matches)) {
+                if (preg_match_all("/define[ ]?\([\"|']?([a-z1-9-_]+)[\"|']?\)/i", $file_contents, $function_matches)) {
                     for ($i = 0; $i < sizeof($function_matches[1]); $i++) {
                         $include_files_array[$function_matches[1][$i]] = $file;
                     }
@@ -51,7 +51,7 @@ if (is_dir($include_files_dir)) {
         }
     }
 }
-  
+
 foreach($source_files_dir_array as $source_files_dir) {
     if (is_dir($source_files_dir)) {
         if ($dir = opendir($source_files_dir)) {
@@ -67,13 +67,18 @@ foreach($source_files_dir_array as $source_files_dir) {
                                 $file_include_array[$file][] = $include_file;
                             }
                         }
+                        if (!in_array("lang.inc.php", $file_include_array[$file]) && !in_array("lang.inc.php", $excl_include_files_array) && "lang.inc.php" != $file) {
+                            if (preg_match("/\\\$lang/", $file_contents)) {
+                                $file_include_array[$file][] = "lang.inc.php";
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
-  
+
 foreach($file_include_array as $filename => $include_array) {
     if (is_array($include_array) && sizeof($include_array) > 0) {
         echo " === $filename ===\n\n";
@@ -85,4 +90,4 @@ foreach($file_include_array as $filename => $include_array) {
     }
 }
 
-?> 
+?>

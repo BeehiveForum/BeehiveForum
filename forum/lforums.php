@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.5 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.6 2004-04-23 22:22:51 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -35,7 +35,7 @@ include_once("./include/errorhandler.inc.php");
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$webtag = get_webtag();
+$forum_settings = get_forum_settings();
 
 include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
@@ -53,6 +53,10 @@ include_once("./include/user.inc.php");
 // to be able to see this page.
 
 $user_sess = bh_session_check();
+
+// Load Language File
+
+$lang = load_language_file();
 
 light_html_draw_top();
 
@@ -73,7 +77,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 	        }else {
                     echo "<p>{$forum['NEW_MESSAGES']} New Messages</p>\n";
                 }
-  
+
                 echo "<p>Last Visit: ", format_time($forum['LAST_LOGON']), "</p>\n";
 	    }
         }
@@ -89,7 +93,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 	        }else {
                     echo "<p>{$forum['NEW_MESSAGES']} New Messages</p>\n";
                 }
-  
+
                 echo "<p>Last Visit: ", format_time($forum['LAST_LOGON']), "</p>\n";
 	    }
         }

@@ -21,25 +21,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.242 2004-03-10 21:42:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.243 2004-03-11 22:34:38 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
-require_once("./include/db.inc.php"); // Database functions
-require_once("./include/thread.inc.php"); // Thread processing functions
-require_once("./include/format.inc.php"); // Formatting functions
-require_once("./include/perm.inc.php"); // Permissions functions
-require_once("./include/forum.inc.php"); // Forum functions
-require_once("./include/form.inc.php"); // Form functions
-require_once("./include/user.inc.php"); // User functions
-require_once("./include/folder.inc.php");
-require_once("./include/fixhtml.inc.php");
-require_once("./include/attachments.inc.php");
-require_once("./include/config.inc.php");
-require_once("./include/constants.inc.php");
-require_once("./include/lang.inc.php");
-require_once("./include/stats.inc.php");
-require_once("./include/word_filter.inc.php");
+include_once("./include/db.inc.php"); // Database functions
+include_once("./include/thread.inc.php"); // Thread processing functions
+include_once("./include/format.inc.php"); // Formatting functions
+include_once("./include/perm.inc.php"); // Permissions functions
+include_once("./include/forum.inc.php"); // Forum functions
+include_once("./include/form.inc.php"); // Form functions
+include_once("./include/user.inc.php"); // User functions
+include_once("./include/folder.inc.php");
+include_once("./include/fixhtml.inc.php");
+include_once("./include/attachments.inc.php");
+include_once("./include/config.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/stats.inc.php");
+include_once("./include/word_filter.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {

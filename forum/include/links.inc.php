@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.24 2004-03-10 21:42:47 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.25 2004-03-11 22:34:38 decoyduck Exp $ */
 
 // Functions for the links database
 
-require_once('./include/db.inc.php');
-require_once('./include/forum.inc.php');
-require_once('./include/header.inc.php');
-require_once('./include/html.inc.php');
-require_once('./include/form.inc.php');
-require_once('./include/format.inc.php');
+include_once('./include/db.inc.php');
+include_once('./include/forum.inc.php');
+include_once('./include/header.inc.php');
+include_once('./include/html.inc.php');
+include_once('./include/form.inc.php');
+include_once('./include/format.inc.php');
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {

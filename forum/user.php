@@ -21,23 +21,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.5 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: user.php,v 1.6 2004-03-11 22:34:37 decoyduck Exp $ */
 
 //Multiple forum support
-require_once("./include/forum.inc.php");
+include_once("./include/forum.inc.php");
 
 // Frameset for thread list and messages
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
-require_once("./include/errorhandler.inc.php");
+include_once("./include/errorhandler.inc.php");
 
 //Check logged in status
-require_once("./include/session.inc.php");
+include_once("./include/session.inc.php");
 
-require_once("./include/header.inc.php");
+include_once("./include/header.inc.php");
 
 if (!bh_session_check()) {
 
@@ -50,10 +50,10 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-require_once("./include/perm.inc.php");
-require_once("./include/html.inc.php");
-require_once("./include/constants.inc.php");
-require_once("./include/lang.inc.php");
+include_once("./include/perm.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/lang.inc.php");
 
 if (!isset($default_style)) $default_style = "default";
 $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";

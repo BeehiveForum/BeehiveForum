@@ -21,20 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.21 2004-03-10 18:43:17 decoyduck Exp $ */
+/* $Id: interest.php,v 1.22 2004-03-11 22:34:36 decoyduck Exp $ */
 
 //Multiple forum support
-require_once("./include/forum.inc.php");
+include_once("./include/forum.inc.php");
 
 // Enable the error handler
-require_once("./include/errorhandler.inc.php");
+include_once("./include/errorhandler.inc.php");
 
-require_once("./include/session.inc.php");
-require_once("./include/html.inc.php");
-require_once("./include/db.inc.php");
-require_once("./include/header.inc.php");
-require_once("./include/thread.inc.php");
-require_once("./include/messages.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/header.inc.php");
+include_once("./include/thread.inc.php");
+include_once("./include/messages.inc.php");
 
 if (!bh_session_check()) {
 

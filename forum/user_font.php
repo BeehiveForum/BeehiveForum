@@ -21,15 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.15 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.16 2004-03-11 22:34:37 decoyduck Exp $ */
 
 //Multiple forum support
-require_once("./include/forum.inc.php");
+include_once("./include/forum.inc.php");
 
-require_once("./include/user.inc.php");
-require_once("./include/session.inc.php");
-require_once("./include/messages.inc.php");
-require_once("./include/format.inc.php");
+include_once("./include/user.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/format.inc.php");
 
 if (!bh_session_check()) {
     $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());

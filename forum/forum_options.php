@@ -21,20 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.7 2004-03-10 18:43:17 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.8 2004-03-11 22:34:36 decoyduck Exp $ */
 
 //Multiple forum support
-require_once("./include/forum.inc.php");
+include_once("./include/forum.inc.php");
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
-require_once("./include/errorhandler.inc.php");
+include_once("./include/errorhandler.inc.php");
 
 //Check logged in status
-require_once("./include/session.inc.php");
-require_once("./include/header.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
@@ -47,13 +47,13 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-require_once("./include/html.inc.php");
-require_once("./include/user.inc.php");
-require_once("./include/post.inc.php");
-require_once("./include/fixhtml.inc.php");
-require_once("./include/form.inc.php");
-require_once("./include/header.inc.php");
-require_once("./include/lang.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/user.inc.php");
+include_once("./include/post.inc.php");
+include_once("./include/fixhtml.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/header.inc.php");
+include_once("./include/lang.inc.php");
 
 if (!isset($default_style)) $default_style = "default";
 

@@ -21,17 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.39 2004-03-10 21:42:47 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.40 2004-03-11 22:34:39 decoyduck Exp $ */
 
-require_once('./include/db.inc.php');
-require_once('./include/forum.inc.php');
-require_once('./include/header.inc.php');
-require_once('./include/html.inc.php');
-require_once('./include/form.inc.php');
-require_once('./include/format.inc.php');
-require_once('./include/constants.inc.php');
-require_once('./include/attachments.inc.php');
-require_once('./include/messages.inc.php');
+include_once('./include/db.inc.php');
+include_once('./include/forum.inc.php');
+include_once('./include/header.inc.php');
+include_once('./include/html.inc.php');
+include_once('./include/form.inc.php');
+include_once('./include/format.inc.php');
+include_once('./include/constants.inc.php');
+include_once('./include/attachments.inc.php');
+include_once('./include/messages.inc.php');
 
 function pm_markasread($mid)
 {

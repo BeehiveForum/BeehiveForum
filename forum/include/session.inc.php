@@ -21,15 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.77 2004-03-10 21:42:48 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.78 2004-03-11 22:34:40 decoyduck Exp $ */
 
-require_once("./include/format.inc.php");
-require_once("./include/forum.inc.php");
-require_once("./include/config.inc.php");
-require_once("./include/user.inc.php");
-require_once("./include/ip.inc.php");
-require_once("./include/html.inc.php");
-require_once("./include/stats.inc.php");
+include_once("./include/format.inc.php");
+include_once("./include/forum.inc.php");
+include_once("./include/config.inc.php");
+include_once("./include/user.inc.php");
+include_once("./include/ip.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/stats.inc.php");
 
 // An array to cache the user session in - saves querying the database lots of times.
 

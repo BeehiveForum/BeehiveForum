@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.39 2004-09-07 01:50:49 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.40 2004-09-13 12:34:12 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -454,6 +454,7 @@ $lang['lockedthreadtitlefolder'] = "Locked Thread Title/Folder";
 $lang['unlockedthreadtitlefolder'] = "Unlocked Thread Title/Folder";
 $lang['userspostsdeletedinthread'] = "User's Posts Deleted in Thread";
 $lang['deleteduserattachmentfrompost'] = "Deleted User's Attachment From Post";
+$lang['editedforumlinks'] = "Edited Forum Links";
 $lang['threaddeleted'] = "Thread Deleted";
 $lang['deletedpost'] = "Gatted Pizost";
 $lang['editedpost'] = "Edizited like a mizotherfizucker";

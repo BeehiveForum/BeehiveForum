@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.110 2004-09-07 01:50:48 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.111 2004-09-13 12:34:12 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -301,6 +301,7 @@ $lang['lockedthreadtitlefolder'] = "Locked Thread Title/Folder";
 $lang['unlockedthreadtitlefolder'] = "Unlocked Thread Title/Folder";
 $lang['userspostsdeletedinthread'] = "User's Posts Deleted in Thread";
 $lang['deleteduserattachmentfrompost'] = "Deleted User's Attachment From Post";
+$lang['editedforumlinks'] = "Edited Forum Links";
 $lang['threaddeleted'] = "Thread Deleted";
 $lang['deletedpost'] = "Poste effacée";
 $lang['editedpost'] = "Poste éditée";

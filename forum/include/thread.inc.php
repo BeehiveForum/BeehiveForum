@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.32 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.33 2003-08-31 16:21:07 hodcroftcj Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -52,26 +52,8 @@ function thread_get($tid)
 
    $uid = bh_session_get_value('UID');
 
-/*   $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
-   $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
-   $sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID ";
-   $sql.= "FROM ". forum_table("THREAD"). " THREAD ";
-   $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
-   $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)";
-   $sql.= "JOIN " . forum_table("USER") . " USER ";
-   $sql.= "JOIN " . forum_table("POST") . " POST ";
-   $sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
-   $sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
-   $sql.= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
-   $sql.= "(AT.TID = THREAD.TID) ";
-   $sql.= "WHERE USER.UID = POST.FROM_UID ";
-   $sql.= "AND POST.TID = THREAD.TID ";
-   $sql.= "AND POST.PID = 1 ";
-   $sql.= "AND THREAD.TID = $tid ";
-   $sql.= "GROUP BY THREAD.tid ";*/
-
 	$sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
-	$sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
+	$sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
 	$sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
 	$sql.= "FROM ". forum_table("THREAD"). " THREAD ";
 	$sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
@@ -99,11 +81,15 @@ function thread_get($tid)
      $threaddata = db_fetch_array($resource_id);
 
      if (!isset($threaddata['INTEREST'])) {
-       $threaddata['INTEREST'] = 0;
+        $threaddata['INTEREST'] = 0;
      }
 
      if (!isset($threaddata['LAST_READ'])) {
-       $threaddata['LAST_READ'] = 0;
+        $threaddata['LAST_READ'] = 0;
+     }
+     
+     if (!isset($threaddata['STICKY_UNTIL'])) {
+        $threaddata['STICKY_UNTIL'] = 0;
      }
 
    }
@@ -169,12 +155,16 @@ function thread_can_view($tid = 0, $uid = 0)
     return ($count > 0);
 }
 
-function thread_set_sticky($tid, $sticky = true)
+function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 {
     $db_thread_set_sticky = db_connect();
 
     if ($sticky) {
-        $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = 'Y' WHERE TID = $tid";
+        $sql  = "UPDATE ".forum_table("THREAD")." SET STICKY = 'Y' ";
+        if ($sticky_until) {
+            $sql .= ", STICKY_UNTIL = FROM_UNIXTIME($sticky_until) ";
+        }
+        $sql .= "WHERE TID = $tid";
     } else {
         $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = 'N' WHERE TID = $tid";
     }

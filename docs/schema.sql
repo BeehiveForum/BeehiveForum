@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.45 2003-08-24 19:45:51 tribalonline Exp $
+# $Id: schema.sql,v 1.46 2003-08-31 16:21:06 hodcroftcj Exp $
 #
 # --------------------------------------------------------
 
@@ -360,6 +360,7 @@ CREATE TABLE THREAD (
   MODIFIED datetime default NULL,
   CLOSED datetime default NULL,
   STICKY varchar(1) default NULL,
+  STICKY_UNTIL datetime default NULL,
   PRIMARY KEY  (TID),
   KEY ix_thread_fid (FID),
   KEY BY_UID (BY_UID)

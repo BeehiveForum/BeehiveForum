@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.85 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: messages.php,v 1.86 2003-08-31 16:21:06 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -67,8 +67,8 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
 list($tid, $pid) = explode('.', $msg);
 
-if (!isset($tid)) $tid = 1;
-if (!isset($pid)) $pid = 1;
+if (!isset($tid) || !is_numeric($tid)) $tid = 1;
+if (!isset($pid) || !is_numeric($pid)) $pid = 1;
 
 if(!thread_can_view($tid, bh_session_get_value('UID'))) {
         html_draw_top();
@@ -142,6 +142,11 @@ if (!$threaddata = thread_get($tid)) {
    exit;
 }
 
+if ($threaddata['STICKY'] == "Y" && $threaddata['STICKY_UNTIL'] != 0 && time() > $threaddata['STICKY_UNTIL']) {
+   // thread needs un-stickyfing
+   thread_set_sticky($tid, false);
+   $threaddata['STICKY'] == "N";
+}
 $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
 if($closed) $foldertitle .= " ({$lang['closed']})";
@@ -260,7 +265,7 @@ if (bh_session_get_value('UID') != 0) {
         messages_fontsize_form($tid, $pid);
 
         if(perm_is_moderator()){
-                messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false);
+                messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL']);
         }
 }
 

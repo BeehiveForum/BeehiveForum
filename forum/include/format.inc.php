@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.51 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.52 2003-08-31 16:21:07 hodcroftcj Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -77,7 +77,7 @@ function format_url2link($html)
 }
 
 
-function format_time($time, $verbose = 0)
+function format_time($time, $verbose = false)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
@@ -87,12 +87,20 @@ function format_time($time, $verbose = 0)
 
 
     // Amend times for daylight saving if necessary (using critera for British Summer Time)
-    if (bh_session_get_value('DL_SAVING')) $local_time = timestamp_amend_bst($local_time);
-    if (bh_session_get_value('DL_SAVING')) $local_time_now = timestamp_amend_bst($local_time_now);
+    if (bh_session_get_value('DL_SAVING')) {
+        $local_time = timestamp_amend_bst($local_time);
+        $local_time_now = timestamp_amend_bst($local_time_now);
+    }
 
-
-    if ((gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) || (gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
-        // time not today
+    if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) {
+        // time not this year
+        if ($verbose) {
+            $fmt = gmdate("j M Y", $local_time); // display day, month, and year
+        } else {
+            $fmt = gmdate("M Y", $local_time); // display month and year
+        }
+    } elseif ((gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
+        // time this year, but not today
         if ($verbose) {
             if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) {
                 $fmt = gmdate("j M Y H:i", $local_time); // display day, date, year, hours, and minutes
@@ -103,7 +111,8 @@ function format_time($time, $verbose = 0)
             $fmt = gmdate("j M", $local_time); // display day and date only
         }
     } else {
-        $fmt = gmdate("H:i", $local_time); // time is today, display hours and minutes
+        // time is today
+        $fmt = gmdate("H:i", $local_time); // display hours and minutes
     }
 
     return $fmt;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.2 2004-04-10 12:20:57 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.3 2004-04-10 14:33:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -226,12 +226,12 @@ if (sizeof($forums_array) > 0) {
         echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
         echo "                  <td align=\"left\">{$forum['FORUM_NAME']}</td>\n";
         echo "                  <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
-        echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $forum['ACCESS_LEVEL']), "</td>\n";
+        echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwd']), $forum['ACCESS_LEVEL']), "</td>\n";
 
         if ($forum['ACCESS_LEVEL'] > 0) {
-            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php&fid={$forum['FID']}'\""), "</td>\n";
+            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_forum_access.php?fid={$forum['FID']}'\""), "</td>\n";
         }else {
-            echo "                  <td align=\"center\">-</td>\n";
+            echo "                  <td align=\"center\">&nbsp;</td>\n";
         }
 
         echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", "Delete Forum"), "</td>\n";
@@ -273,8 +273,8 @@ echo "                  <td class=\"subhead\" width=\"50%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['newcaps']}</td>\n";
-echo "                  <td>", form_field("t_webtag_new", "", 20, 32), "</td>\n";
-echo "                  <td>", form_field("t_name_new", "", 45, 255), "</td>\n";
+echo "                  <td>", form_input_text("t_webtag_new", "", 20, 32), "</td>\n";
+echo "                  <td>", form_input_text("t_name_new", "", 45, 255), "</td>\n";
 echo "                  <td>", form_dropdown_array("t_access_new", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), 0), "</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";

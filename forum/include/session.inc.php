@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.96 2004-04-10 10:27:05 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.97 2004-04-10 14:33:57 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -70,7 +70,7 @@ function bh_session_check()
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = 0) ";
 	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 	}
-
+	
 	$result = db_query($sql, $db_bh_session_check);
 
 	if (db_num_rows($result) > 0) {
@@ -163,6 +163,10 @@ function bh_session_check()
 
                 return $user_sess;
             }
+
+	}else {
+
+	    bh_session_end();
 	}
     }
 

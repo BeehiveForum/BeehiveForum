@@ -29,6 +29,8 @@ function get_forum_list()
     $db_get_forum_list = db_connect();
     $get_forum_list_array = array();
 
+    $uid = bh_session_get_value('UID');
+
     $sql = "SELECT FORUMS.*, FORUM_SETTINGS.SVALUE AS FORUM_NAME ";
     $sql.= "FROM FORUMS FORUMS LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON ";
     $sql.= "(FORUMS.FID = FORUM_SETTINGS.FID AND FORUM_SETTINGS.SNAME = 'forum_name') ";
@@ -51,7 +53,7 @@ function get_forum_list()
 
       	        // Get number of messages on forum
 
-                $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+                $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
                 $result = db_query($sql, $db_get_forum_list);
         
                 if (db_num_rows($result)) {
@@ -132,11 +134,11 @@ function get_my_forums()
 
 	        $folders = threads_get_available_folders();
 
-                $sql = "SELECT COUNT(POST.PID) AS NEW_MESSAGES ";
+                $sql = "SELECT COUNT(*) AS NEW_MESSAGES ";
                 $sql.= "FROM {$forum_data['WEBTAG']}_POST POST ";
 	        $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON (POST.TID = THREAD.TID) ";
 	        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (VISITOR_LOG.UID = $uid) ";
-	        $sql.= "WHERE THREAD.FID IN ($folders) AND POST.CREATED >= VISITOR_LOG.LAST_LOGON";
+	        $sql.= "WHERE THREAD.FID IN ($folders) AND POST.CREATED > VISITOR_LOG.LAST_LOGON";
 
                 $result = db_query($sql, $db_get_my_forums);
 
@@ -149,7 +151,7 @@ function get_my_forums()
 
                 // Get unread to me message count
         
-                $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+                $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
                 $sql.= "WHERE TO_UID = '$uid' AND VIEWED IS NULL";
 
                 $result = db_query($sql, $db_get_my_forums);

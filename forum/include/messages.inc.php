@@ -565,7 +565,7 @@ function messages_admin_form($tid, $pid, $title, $closed = false)
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid";
     echo "\" method=\"post\">\n";
-    echo "<p>Rename thread:". form_input_text("t_name", htmlspecialchars(_stripslashes($title)), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
+    echo "<p>Rename thread:". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
     echo "<p>Move thread:" . folder_draw_dropdown(0,"t_move"). "&nbsp;".form_submit("move", "Move");
 
     if ($closed) {

@@ -204,7 +204,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($newthread) {
 
-            $t_tid = post_create_thread($t_fid, $t_threadtitle);
+            $t_tid = post_create_thread($t_fid, _stripslashes($t_threadtitle));
             $t_rpid = 0;
 
         }else{

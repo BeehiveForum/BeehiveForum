@@ -103,7 +103,7 @@ while($row = db_fetch_array($result)){
     if (!isset($row['LAST_READ'])) {
         echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Thread\" />";
     }else if ($row['LAST_READ'] == 0 || $row['LAST_READ'] < $row['LENGTH']) {
-        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Thread\" />";
+        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Messages\" />";
     }else if ($row['LAST_READ'] == $row['LENGTH']) {
         echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Read Thread\" />";
     }
@@ -129,7 +129,31 @@ echo "  </tr>\n";
 
 // Display "Start Reading" button
 echo "  <tr>\n";
-echo "    <td align=\"center\">", form_quick_button("discussion.php","Start reading >>", 0, 0, "main"), "</td>\n";
+echo "    <td align=\"center\">\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "        <tr>\n";
+echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">", form_quick_button("discussion.php","Start reading >>", 0, 0, "main"), "</td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"subhead\">Thread Options</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\" colspan=\"2\">\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "        <tr>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a></td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a></td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
@@ -148,7 +172,7 @@ $result = db_query($sql, $db);
 
 echo "  <tr>\n";
 echo "    <td>\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 
 while($row = db_fetch_array($result)){
 
@@ -167,17 +191,29 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\" colspan=\"2\">Navigate:</td>\n";
+echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"right\">Show More Visitors</a>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"subhead\" colspan=\"2\">Navigate</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>\n";
-echo "      <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
-echo "        ", form_input_text('msg', '1.1', 10). "\n";
-echo "        ", form_submit("go","Go!"). "\n";
-echo "      </form>\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "        <tr>\n";
+echo "          <td>\n";
+echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
+echo "              ", form_input_text('msg', '1.1', 10). "\n";
+echo "              ", form_submit("go","Go!"). "\n";
+echo "            </form>\n";
+echo "          </td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";

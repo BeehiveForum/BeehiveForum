@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.204 2005-01-17 17:12:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.205 2005-01-19 22:44:14 decoyduck Exp $ */
 
 // International English language file
 
@@ -181,16 +181,19 @@ $lang['restricted'] = "Restricted";
 $lang['newfolder'] = "New Folder";
 $lang['forumadmin'] = "Forum Admin";
 $lang['adminexp_1'] = "Use the menu on the left to manage things in your forum.";
-$lang['adminexp_2'] = "<b>Users</b> allows you to set user permissions, including appointing Editors and gagging people.";
-$lang['adminexp_3'] = "Use <b>Manage Forums</b> to add new forums or change existing ones.";
-$lang['adminexp_4'] = "<b>Forum Settings</b> allows you to change the current forums settings.";
-$lang['adminexp_5'] = "Use <b>Folders</b> to add new folders or change the names of existing ones.";
-$lang['adminexp_6'] = "<b>Profiles</b> lets you change the items appearing in user profiles.";
-$lang['adminexp_7'] = "Choose <b>Start Page</b> to edit the forum start page.";
-$lang['adminexp_8'] = "Using <b>Forum Style</b> allows you to create new colour schemes for the forum.";
-$lang['adminexp_9'] = "The words in the <b>Word Filter</b> can be edited.";
-$lang['adminexp_10'] = "Add links to neighbouring sites and Beehive forums in <b>Forum Links</b>.";
-$lang['adminexp_11'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";
+$lang['adminexp_2'] = "<b>Users</b> allows you to set individual user permissions, including appointing Editors and gagging people.";
+$lang['adminexp_3'] = "<b>User Groups</b> allows you to create User Groups to assign permissions to as many or as few users quickly and easily.";
+$lang['adminexp_4'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
+$lang['adminexp_5'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
+$lang['adminexp_6'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
+$lang['adminexp_7'] = "<b>Start Page</b> lets you customise your forum's start page.";
+$lang['adminexp_8'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
+$lang['adminexp_9'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
+$lang['adminexp_10'] = "<b>Posting stats</b> generates a report listing the top 10 posters by month, week, day and hour.";
+$lang['adminexp_11'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
+$lang['adminexp_12'] = "<b>View log</b> lists recent actions by the forum moderators.";
+$lang['adminexp_13'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
+$lang['adminexp_14'] = "<b>Default Forum Settings</b> allows you to modify settings which affect all forums.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";

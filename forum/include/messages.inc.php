@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -32,21 +32,28 @@ require_once("./include/user.inc.php"); // User functions
 
 function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    if(!$uid) $uid = 0;
+
 	$db = db_connect();
 
     $tbl_post = forum_table("POST");
-    
+
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
 	$sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-	$sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.CONTENT, ";
+	$sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, POST_CONTENT.CONTENT, ";
 	$sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
-	$sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK ";
-	$sql .= "from " . forum_table("POST") . " POST ";
+	$sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
+	$sql .= "from " . forum_table("POST") . " POST, " . forum_table("POST_CONTENT") . " POST_CONTENT ";
 	$sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
 	$sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
+	$sql .= "left join " . forum_table("USER_PEER") . " USER_PEER ";
+	$sql .= "on (USER_PEER.uid = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";
 	$sql .= "where POST.TID = $tid ";
 	$sql .= "and POST.PID >= $pid ";
+	$sql .= "and POST_CONTENT.TID = POST.TID and POST_CONTENT.PID = POST.PID ";
 	$sql .= "order by POST.PID ";
 	$sql .= "limit 0, " . $limit;
 
@@ -63,7 +70,9 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 		$messages[$i]['FROM_UID'] = $message['FROM_UID'];
 		$messages[$i]['TO_UID'] = $message['TO_UID'];
 		$messages[$i]['CREATED'] = $message['CREATED'];
+		$messages[$i]['VIEWED'] = $message['VIEWED'];
 		$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
+		$messages[$i]['RELATIONSHIP'] = $message['RELATIONSHIP'];
 		$messages[$i]['FNICK'] = $message['FNICK'];
 		$messages[$i]['FLOGON'] = $message['FLOGON'];
 		if(isset($message['TNICK'])){
@@ -272,13 +281,14 @@ function messages_update_read($tid,$pid,$uid)
     if(db_num_rows($result)){
         $fa = db_fetch_array($result);
         if($pid > $fa['LAST_READ']){
-            $sql = "update " . forum_table("USER_THREAD") . " set LAST_READ = $pid  where UID = $uid and TID = $tid";
+            $sql = "update " . forum_table("USER_THREAD") . " set LAST_READ = $pid, LAST_READ_AT = NOW() ";
+            $sql .= "where UID = $uid and TID = $tid";
             //echo "<p>$sql</p>";
             db_query($sql,$db);
         }
     } else {
-        $sql = "insert into " . forum_table("USER_THREAD") . " (UID,TID,LAST_READ,INTEREST) ";
-        $sql .= "values ($uid, $tid, $pid, 0)";
+        $sql = "insert into " . forum_table("USER_THREAD") . " (UID,TID,LAST_READ,LAST_READ_AT,INTEREST) ";
+        $sql .= "values ($uid, $tid, $pid, NOW(), 0)";
         db_query($sql,$db);
     }
     db_disconnect($db);

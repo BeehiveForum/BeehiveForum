@@ -31,23 +31,28 @@ function post_create($tid,$reply_pid,$fuid,$tuid,$content)
     $content = mysql_escape_string($content);
 
     $sql = "insert into " . forum_table("POST");
-    $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED,CONTENT) ";
-    $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW(),\"$content\")";
+    $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED) ";
+    $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW())";
 
     $result = db_query($sql,$db);
 
     if($result){
-        $new_uid = db_insert_id($db);
+        $new_pid = db_insert_id($db);
+        $sql = "insert into  " . forum_table("POST_CONTENT");
+        $sql .= " (TID,PID,CONTENT) ";
+        $sql .= "values ($tid,$new_pid,\"$content\")";
+        $result = db_query($sql,$db);
+        
         $sql = "update " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
         $sql .= "where tid = $tid";
         $result = db_query($sql,$db);
     } else {
-        $new_uid = -1;
+        $new_pid = -1;
     }
 
     db_disconnect($db);
 
-    return $new_uid;
+    return $new_pid;
 }
 
 function post_create_thread($fid,$title)

@@ -1,7 +1,14 @@
-# beehiveforum database schema
-# version 0.1
-# requires MySQL version 3.23.5 or greater
-#-----------------------------------------
+# phpMyAdmin MySQL-Dump
+# version 2.2.5
+# http://phpwizard.net/phpMyAdmin/
+# http://phpmyadmin.sourceforge.net/ (download page)
+#
+# Host: mysql.sourceforge.net
+# Generation Time: May 22, 2002 at 04:01 AM
+# Server version: 3.23.36
+# PHP Version: 4.0.6
+# Database : `beehiveforum`
+# --------------------------------------------------------
 
 #
 # Table structure for table `FOLDER`
@@ -30,7 +37,8 @@ CREATE TABLE POLL (
   O4_VOTES mediumint(8) unsigned default NULL,
   O5 varchar(255) default NULL,
   O6_VOTES mediumint(8) unsigned default NULL,
-  CLOSES datetime default NULL
+  CLOSES datetime default NULL,
+  UNIQUE KEY TID (TID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -46,7 +54,6 @@ CREATE TABLE POST (
   TO_UID mediumint(8) unsigned default NULL,
   VIEWED datetime default NULL,
   CREATED timestamp(14) NOT NULL,
-  CONTENT text,
   PRIMARY KEY  (TID,PID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -58,6 +65,18 @@ CREATE TABLE POST (
 CREATE TABLE POST_ATTACHMENT (
   PID mediumint(8) unsigned default NULL,
   FILE varchar(255) default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `POST_CONTENT`
+#
+
+CREATE TABLE POST_CONTENT (
+  TID mediumint(8) unsigned NOT NULL default '0',
+  PID mediumint(8) unsigned NOT NULL default '0',
+  CONTENT text,
+  KEY  (TID,PID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -122,7 +141,8 @@ CREATE TABLE USER (
 CREATE TABLE USER_FOLDER (
   UID mediumint(8) unsigned default NULL,
   FID mediumint(8) unsigned default NULL,
-  INTEREST tinyint(4) default NULL
+  INTEREST tinyint(4) default NULL,
+  KEY UID (UID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -133,7 +153,8 @@ CREATE TABLE USER_FOLDER (
 CREATE TABLE USER_PEER (
   UID mediumint(8) unsigned default NULL,
   PEER_UID mediumint(8) unsigned default NULL,
-  RELATIONSHIP tinyint(4) default NULL
+  RELATIONSHIP tinyint(4) default NULL,
+  KEY UID (UID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -173,7 +194,8 @@ CREATE TABLE USER_PROFILE (
 CREATE TABLE USER_SIG (
   UID mediumint(8) unsigned default NULL,
   CONTENT text,
-  HTML char(1) default NULL
+  HTML char(1) default NULL,
+  KEY ix_user_sig (UID)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -185,6 +207,8 @@ CREATE TABLE USER_THREAD (
   UID mediumint(8) unsigned default NULL,
   TID mediumint(8) unsigned default NULL,
   LAST_READ mediumint(8) unsigned default NULL,
-  INTEREST tinyint(4) default NULL
+  LAST_READ_AT datetime default NULL,
+  INTEREST tinyint(4) default NULL,
+  UNIQUE KEY ix_user_thread_1 (UID,TID)
 ) TYPE=MyISAM;
 

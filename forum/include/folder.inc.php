@@ -25,6 +25,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/format.inc.php");
 
 function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
@@ -56,12 +57,12 @@ function folder_get_title($fid)
    return $foldertitle;
 }
 
-function folder_create($title,$access)
+function folder_create($title,$access,$description = "")
 {
     $db_folder_create = db_connect();
 
-    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL) ";
-    $sql.= "values (\"$title\",$access)";
+    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION) ";
+    $sql.= "values (\"$title\",$access,\"$description\")";
 
     $result = db_query($sql, $db_folder_create);
 
@@ -74,12 +75,13 @@ function folder_create($title,$access)
     return $new_fid;
 }
 
-function folder_update($fid,$title,$access)
+function folder_update($fid,$title,$access,$description = "")
 {
     $db_folder_update = db_connect();
     $sql = "update low_priority " . forum_table("FOLDER") . " ";
     $sql.= "set TITLE = \"$title\", ";
-    $sql.= "ACCESS_LEVEL = $access ";
+    $sql.= "ACCESS_LEVEL = $access, ";
+    $sql.= "DESCRIPTION = \"$description\" ";
     $sql.= "where FID = $fid";
     $result = db_query($sql, $db_folder_update);
     return $result;
@@ -128,7 +130,7 @@ function folder_get_all()
 
     $db_folder_get_all = db_connect();
 
-    $sql = "select FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, count(*) as THREAD_COUNT ";
+    $sql = "select FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, count(*) as THREAD_COUNT ";
     $sql.= "from " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
     $sql.= " on (THREAD.FID = FOLDER.FID) ";
     $sql.= "group by FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";

@@ -194,11 +194,11 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"visitor_log.php\" target=\"right\">{$lang['showmorevisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "  </tr>\n";
 
 if ($birthdays = user_get_forthcoming_birthdays()) {
-    echo "  <tr>\n";
-    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"subhead\" colspan=\"2\">{$lang['forthcomingbirthdays']}</td>\n";
     echo "  </tr>\n";

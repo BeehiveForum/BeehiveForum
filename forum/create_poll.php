@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.147 2005-03-18 23:58:37 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.148 2005-03-20 12:37:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -470,82 +470,91 @@ if (strlen($t_sig) >= 65535) {
 
 if ($valid && isset($_POST['submit'])) {
 
-    if (check_ddkey($_POST['t_dedupe'])) {
+    if (check_post_frequency()) {
 
-        // Work out when the poll will close.
+        if (check_ddkey($_POST['t_dedupe'])) {
 
-        if ($t_close_poll == 0) {
+            // Work out when the poll will close.
 
-            $t_poll_closes = gmmktime() + DAY_IN_SECONDS;
+            if ($t_close_poll == 0) {
 
-        }elseif ($t_close_poll == 1) {
+                $t_poll_closes = gmmktime() + DAY_IN_SECONDS;
 
-            $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
+            }elseif ($t_close_poll == 1) {
 
-        }elseif ($t_close_poll == 2) {
+                $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
 
-            $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
+            }elseif ($t_close_poll == 2) {
 
-        }elseif ($t_close_poll == 3) {
+                $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
 
-            $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
+            }elseif ($t_close_poll == 3) {
 
-        }elseif ($t_close_poll == 4) {
+                $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
 
-            $t_poll_closes = false;
-        }
+            }elseif ($t_close_poll == 4) {
 
-        // Check HTML tick box, innit.
-
-        $answers = array();
-        $ans_h = 0;
-
-        if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
-            $ans_h = 2;
-        }
-
-        foreach($t_answers as $key => $poll_answer) {
-
-            $answers[$key] = new MessageText($ans_h, $poll_answer);
-            $t_answers[$key] = $answers[$key]->getContent();
-        }
-
-        // Create the poll thread with the poll_flag set to Y and sticky flag set to N
-
-        $t_tid = post_create_thread($t_fid, $uid, $t_question, 'Y', 'N');
-        $t_pid = post_create($t_fid, $t_tid, 0, $uid, $uid, 0, '');
-
-        if ($t_poll_type == 2) {
-
-            $t_poll_vote_type = 1;
-        }
-
-        poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type);
-
-        if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
-
-            if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $t_pid, $aid);
-        }
-
-        if (strlen($t_message_text) > 0) {
-
-            if ($allow_sig == true && trim($t_sig) != "") {
-                $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
+                $t_poll_closes = false;
             }
 
-            post_create($t_fid, $t_tid, 1, $uid, $uid, 0, $t_message_text);
+            // Check HTML tick box, innit.
+
+            $answers = array();
+            $ans_h = 0;
+
+            if ($allow_html == true && isset($t_post_html) && $t_post_html == 'Y') {
+                $ans_h = 2;
+            }
+
+            foreach($t_answers as $key => $poll_answer) {
+
+                $answers[$key] = new MessageText($ans_h, $poll_answer);
+                $t_answers[$key] = $answers[$key]->getContent();
+            }
+
+            // Create the poll thread with the poll_flag set to Y and sticky flag set to N
+
+            $t_tid = post_create_thread($t_fid, $uid, $t_question, 'Y', 'N');
+            $t_pid = post_create($t_fid, $t_tid, 0, $uid, $uid, 0, '');
+
+            if ($t_poll_type == 2) {
+
+                $t_poll_vote_type = 1;
+            }
+
+            poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type);
+
+            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+
+                if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $t_pid, $aid);
+            }
+
+            if (strlen($t_message_text) > 0) {
+
+                if ($allow_sig == true && trim($t_sig) != "") {
+                    $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
+                }
+
+                post_create($t_fid, $t_tid, 1, $uid, $uid, 0, $t_message_text);
+            }
+
+            if ($high_interest) thread_set_high_interest($t_tid, 1, true);
         }
 
-        if ($high_interest) thread_set_high_interest($t_tid, 1, true);
-    }
+        if (isset($t_tid) && $t_tid > 0) {
+            $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
+        }else {
+            $uri = "./discussion.php?webtag=$webtag";
+        }
 
-    if (isset($t_tid) && $t_tid > 0) {
-        $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
+        header_redirect($uri);
+
     }else {
-        $uri = "./discussion.php?webtag=$webtag";
-    }
 
-    header_redirect($uri);
+        $error_html = "<h2>{$lang['postfrequencytoogreat_1']} ";
+        $error_html.= forum_get_setting('minimum_post_frequency', false, 0);
+        $error_html.= " {$lang['postfrequencytoogreat_2']}</h2>\n";
+    }
 }
 
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
@@ -688,7 +697,7 @@ echo form_input_hidden('webtag', $webtag), "\n";
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else{
-    echo form_input_hidden("t_dedupe", date("YmdHis"));
+    echo form_input_hidden("t_dedupe", gmmktime());
 }
 
 echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";

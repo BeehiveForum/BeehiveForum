@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.68 2005-03-18 23:58:37 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.69 2005-03-20 12:37:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -557,9 +557,9 @@ echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_subm
 echo "</p>";
 
 if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe",$_POST['t_dedupe']);
+    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else {
-    echo form_input_hidden("t_dedupe",date("YmdHis"));
+    echo form_input_hidden("t_dedupe", gmmktime());
 }
 
 echo "</form>\n";

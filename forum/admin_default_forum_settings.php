@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.19 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.20 2005-03-20 12:37:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,6 +98,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['search_min_word_length'] = $_POST['search_min_word_length'];
     }else {
         $new_forum_settings['search_min_word_length'] = 3;
+    }
+
+    if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
+        $new_forum_settings['search_min_frequency'] = $_POST['search_min_frequency'];
+    }else {
+        $new_forum_settings['search_min_frequency'] = 30;
     }
 
     if (isset($_POST['session_cutoff']) && is_numeric($_POST['session_cutoff'])) {
@@ -304,11 +310,16 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['minsearchwordlength']}:</td>\n";
-echo "                        <td>", form_input_text("search_min_word_length", (isset($default_forum_settings['search_min_word_length'])) ? $default_forum_settings['search_min_word_length'] : "", 10, 2), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("search_min_word_length", (isset($default_forum_settings['search_min_word_length'])) ? $default_forum_settings['search_min_word_length'] : "", 10, 3), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['minsearchfrequency']}:</td>\n";
+echo "                        <td>", form_input_text("search_min_frequency", (isset($default_forum_settings['search_min_frequency'])) ? $default_forum_settings['search_min_frequency'] : "", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_14']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_39']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

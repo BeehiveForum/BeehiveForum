@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.245 2005-03-19 17:53:34 decoyduck Exp $ */
+/* $Id: post.php,v 1.246 2005-03-20 12:37:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -504,144 +504,151 @@ if (!$newthread) {
 
 if ($valid && isset($_POST['submit'])) {
 
-    if (check_ddkey($_POST['t_dedupe'])) {
+    if (check_post_frequency()) {
 
-        if ($newthread) {
+        if (check_ddkey($_POST['t_dedupe'])) {
 
-            if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
-            if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
-            if (isset($_POST['t_sticky'])) $t_sticky = $_POST['t_sticky'];
-            if (isset($_POST['old_t_sticky'])) $old_t_sticky = $_POST['old_t_sticky'];
-
-            if (perm_is_moderator($t_fid)) {
-                $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
-                $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
-            } else {
-                $t_closed = false;
-                $t_sticky = "N";
-            }
-
-            $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, "N", $t_sticky, $t_closed);
-            $t_rpid = 0;
-
-        }else{
-
-            $t_tid = $_POST['t_tid'];
-            $t_rpid = $_POST['t_rpid'];
-
-            if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!perm_is_moderator($t_fid))) {
-
-                html_draw_top();
-
-                echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-                echo "<table class=\"posthead\" width=\"720\">\n";
-                echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
-                echo "<tr><td>\n";
-                echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
-                echo "</td></tr>\n";
-
-                echo "<tr><td align=\"center\">\n";
-                echo form_input_hidden('t_tid', $t_tid);
-                echo form_input_hidden('t_rpid', $t_rpid);
-                echo form_submit('cancel', $lang['cancel']);
-                echo "</td></tr>\n";
-                echo "</table></form>\n";
-
-                html_draw_bottom();
-                exit;
-            }
-
-            if (perm_is_moderator($t_fid)) {
+            if ($newthread) {
 
                 if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
                 if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
                 if (isset($_POST['t_sticky'])) $t_sticky = $_POST['t_sticky'];
                 if (isset($_POST['old_t_sticky'])) $old_t_sticky = $_POST['old_t_sticky'];
 
-                if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
-                    thread_set_closed($t_tid, true);
-                } elseif ((!isset($t_closed) || (isset($t_closed) && $t_closed != "Y")) && $old_t_closed == "Y") {
-                    thread_set_closed($t_tid, false);
+                if (perm_is_moderator($t_fid)) {
+                    $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
+                    $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
+                } else {
+                    $t_closed = false;
+                    $t_sticky = "N";
                 }
-                if (isset($t_sticky) && isset($old_t_sticky) && $t_sticky != $old_t_sticky && $t_sticky == "Y") {
-                    thread_set_sticky($t_tid, true);
-                } elseif ((!isset($t_sticky) || (isset($t_sticky) && $t_sticky != "Y")) && $old_t_sticky == "Y") {
-                    thread_set_sticky($t_tid, false);
+
+                $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, "N", $t_sticky, $t_closed);
+                $t_rpid = 0;
+
+            }else{
+
+                $t_tid = $_POST['t_tid'];
+                $t_rpid = $_POST['t_rpid'];
+
+                if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!perm_is_moderator($t_fid))) {
+
+                    html_draw_top();
+
+                    echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+                    echo "<table class=\"posthead\" width=\"720\">\n";
+                    echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
+                    echo "<tr><td>\n";
+                    echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
+                    echo "</td></tr>\n";
+
+                    echo "<tr><td align=\"center\">\n";
+                    echo form_input_hidden('t_tid', $t_tid);
+                    echo form_input_hidden('t_rpid', $t_rpid);
+                    echo form_submit('cancel', $lang['cancel']);
+                    echo "</td></tr>\n";
+                    echo "</table></form>\n";
+
+                    html_draw_bottom();
+                    exit;
+                }
+
+                if (perm_is_moderator($t_fid)) {
+
+                    if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
+                    if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
+                    if (isset($_POST['t_sticky'])) $t_sticky = $_POST['t_sticky'];
+                    if (isset($_POST['old_t_sticky'])) $old_t_sticky = $_POST['old_t_sticky'];
+
+                    if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
+                        thread_set_closed($t_tid, true);
+                    } elseif ((!isset($t_closed) || (isset($t_closed) && $t_closed != "Y")) && $old_t_closed == "Y") {
+                        thread_set_closed($t_tid, false);
+                    }
+                    if (isset($t_sticky) && isset($old_t_sticky) && $t_sticky != $old_t_sticky && $t_sticky == "Y") {
+                        thread_set_sticky($t_tid, true);
+                    } elseif ((!isset($t_sticky) || (isset($t_sticky) && $t_sticky != "Y")) && $old_t_sticky == "Y") {
+                        thread_set_sticky($t_tid, false);
+                    }
                 }
             }
-        }
 
-        if ($t_tid > 0) {
+            if ($t_tid > 0) {
 
-            if ($allow_sig == true && trim($t_sig) != "") {
-                $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
+                if ($allow_sig == true && trim($t_sig) != "") {
+                    $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
 
+                }
+
+                if ($newthread) {
+
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+
+                }else {
+
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                }
+
+                if ($high_interest) thread_set_high_interest($t_tid, 1, $newthread);
+
+                if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
+                    email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                    if (!$newthread) email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                }
+
+                if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+                    if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $new_pid, $aid);
+                }
             }
+
+        }else {
+
+            $new_pid = 0;
 
             if ($newthread) {
 
-                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+                $t_tid  = 0;
+                $t_rpid = 0;
 
             }else {
 
-                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                $t_tid  = (isset($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
+                $t_rpid = (isset($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
+            }
+        }
+
+        if ($new_pid > -1) {
+
+            if ($newthread && $t_tid > 0) {
+
+                $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
+
+            }else {
+
+                if ($t_tid > 0 && $t_rpid > 0) {
+
+                    $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+
+                }else{
+
+                    $uri = "./discussion.php?webtag=$webtag";
+                }
             }
 
-            if ($high_interest) thread_set_high_interest($t_tid, 1, $newthread);
+            header_redirect($uri);
+            exit;
 
-            if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
-                email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
-                if (!$newthread) email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
-            }
+        }else{
 
-            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
-                if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $new_pid, $aid);
-            }
+            $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
         }
 
     }else {
 
-        $new_pid = 0;
-
-        if ($newthread) {
-
-            $t_tid  = 0;
-            $t_rpid = 0;
-
-        }else {
-
-            $t_tid  = (isset($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
-            $t_rpid = (isset($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
-        }
+        $error_html = "<h2>{$lang['postfrequencytoogreat_1']} ";
+        $error_html.= forum_get_setting('minimum_post_frequency', false, 0);
+        $error_html.= " {$lang['postfrequencytoogreat_2']}</h2>\n";
     }
-
-    if ($new_pid > -1) {
-
-        if ($newthread && $t_tid > 0) {
-
-            $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
-
-        }else {
-
-            if ($t_tid > 0 && $t_rpid > 0) {
-
-                $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
-
-            }else{
-
-                $uri = "./discussion.php?webtag=$webtag";
-            }
-        }
-
-        header_redirect($uri);
-        exit;
-
-    }else{
-
-        $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
-
-    }
-
 }
 
 if (!isset($t_fid)) {
@@ -951,7 +958,7 @@ echo $tools->js();
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else{
-    echo form_input_hidden("t_dedupe", date("YmdHis"));
+    echo form_input_hidden("t_dedupe", gmmktime());
 }
 
 if (!$newthread && $reply_to_pid > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.3 2004-04-24 18:42:29 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.4 2004-04-25 13:40:26 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -38,8 +38,11 @@ include_once("./include/forum.inc.php");
 $forum_settings = get_forum_settings();
 
 include_once("./include/db.inc.php");
+include_once("./include/format.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/threads.inc.php");
+
+$webtag = get_webtag();
 
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
 
@@ -76,21 +79,25 @@ if ($threads_array = threads_get_most_recent()) {
         // post in the thread. Can easily change this if it isn't right
         // by making it fetch post 1.
 
+        $thread['TITLE'] = _stripslashes($thread['TITLE']);
+
         $modified_date   = date("D, d M Y H:i:s  T", $thread['MODIFIED']);
-        $message_content = message_get_content($thread['TID'], $thread['LENGTH']);
+
+        $message_content = _stripslashes(message_get_content($thread['TID'], $thread['LENGTH']));
+        $message_content = strip_tags(_htmlentities_decode($message_content));
 
         echo "\t\t\t<item>\n";
         echo "\t\t\t\t<guid isPermaLink=\"true\">\n";
-        echo "\t\t\t\t\thttp://{$forum_location}?msg={$thread['TID']}.1\n";
+        echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
         echo "\t\t\t\t</guid>\n";
         echo "\t\t\t\t<pubDate>{$modified_date}</pubDate>\n";
         echo "\t\t\t\t<title>{$thread['TITLE']}</title>\n";
         echo "\t\t\t\t<link>\n";
-        echo "\t\t\t\t\thttp://{$forum_location}?msg={$thread['TID']}.1\n";
+        echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
         echo "\t\t\t\t</link>\n";
         echo "\t\t\t\t<description><![CDATA[{$message_content}]]></description>\n";
         echo "\t\t\t\t<comments>\n";
-        echo "\t\t\t\t\thttp://{$forum_location}?msg={$thread['TID']}.1\n";
+        echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
         echo "\t\t\t\t</comments>\n";
         echo "\t\t\t</item>\n";
     }

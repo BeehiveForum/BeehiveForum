@@ -32,6 +32,7 @@ require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/beehive.inc.php");
 require_once("./include/format.inc.php");
+require_once("./include/config.inc.php");
 
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
@@ -99,7 +100,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
 
-        bh_session_init(0); // Use UID 0 for guest account.
+        if (user_guest_enabled() && $guest_account_enabled) {
+
+          bh_session_init(0); // Use UID 0 for guest account.
+
+	}
 
       }else {
 
@@ -386,10 +391,16 @@ echo "          </table>\n";
 echo "        </td>\n";
 echo "      </tr>\n";
 echo "    </table>\n";
-echo "  </form>\n";
-echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
-echo "    <p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
-echo "  </form>\n";
+
+if (user_guest_enabled() && $guest_account_enabled) { 
+
+  echo "  </form>\n";
+  echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
+  echo "    <p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
+  echo "  </form>\n";
+
+}
+
 echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php?final_uri=" . urlencode($final_uri). "\" target=\"_self\">Register now.</a></p>\n";
 echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php\" target=\"_self\">Forgotten your password?</a></p>\n";
 echo "</div>\n";

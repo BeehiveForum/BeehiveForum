@@ -395,10 +395,17 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
           
         }
         
+        if ($totalvotes > 0) {
+          $vote_percent = round((100 / $totalvotes) * $pollresults[$i]['votes'], 2);
+        }else {
+          $vote_percent = 0;
+        }        
+        
         $polldisplay.= "              </tr>\n";
         $polldisplay.= "              <tr>\n";
         $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['votes']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['votes'], 2). "%)</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['votes']. " votes (". $vote_percent. "%)</td>\n";
+        
         $polldisplay.= "              </tr>\n";
         
       }

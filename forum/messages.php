@@ -87,17 +87,11 @@ messages_start_panel();
 messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
 messages_interest_form($tid, $pid);
 
-/* I *KNOW* this generates an error on the more bitchy PHP setups,
-   but the font-size selector won't work if it's not done this way.
-   I will try to come up with something better, but please do not change
-   this to an IF statement to check for $HTTP_GET_VARS['fontsize'].
-
-   Thank you.
-
-   Matt.
-   
-*/
-message_fontsize_form($HTTP_GET_VARS['fontsize'], $tid, $pid); 
+if (isset($HTTP_GET_VARS['fontsize'])) {
+  message_fontsize_form($HTTP_GET_VARS['fontsize'], $tid, $pid);
+}else{
+  message_fontsize_form(NULL, $tid, $pid);
+}
 
 if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
     messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);

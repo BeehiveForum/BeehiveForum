@@ -43,11 +43,6 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
         $uri = "./index.php";
-
-        if (isset($HTTP_GET_VARS['final_uri'])) {
-          $uri.= "?final_uri=". $HTTP_GET_VARS['final_uri'];
-        }
-
 	bh_session_end();
 	header_redirect($uri);
   

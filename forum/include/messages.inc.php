@@ -263,20 +263,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if($in_list && $limit_text != false){
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
-            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
-                
-                if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-                
-                    echo "<img src=\"".style_image('star.png')."\" border=\"0\" />";
-                    echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_top\">Reply</a>";
-                    
-                }else {
-                
-                    echo "<img src=\"".style_image('star.png')."\" border=\"0\" />";
-                    echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
-                    
-                }
-                
+            if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP)) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+               
+                echo "<img src=\"".style_image('star.png')."\" border=\"0\" />";
+                echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
+                                    
             }
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('folder.png')."\" border=\"0\" />";

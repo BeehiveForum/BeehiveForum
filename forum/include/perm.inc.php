@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.37 2004-06-03 10:24:45 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.38 2004-06-03 14:03:45 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -434,13 +434,13 @@ function perm_get_user_permissions($uid)
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT GROUP_PERMS.GID, BIT_OR(GROUP_PERMS.PERM) AS STATUS ";
-    $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON ";
-    $sql.= "(GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUPS GROUPS ON ";
-    $sql.= "(GROUP_USERS.GID = GROUPS.GID AND GROUPS.AUTO_GROUP = 1) ";
-    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = 0 ";
-    $sql.= "GROUP BY GROUP_PERMS.GID";
+    $sql.= "FROM {$table_data['PREFIX']}GROUPS GROUPS ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+    $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_USERS.UID = '$uid' ";
+    $sql.= "AND GROUP_PERMS.FID = '0' GROUP BY GROUP_USERS.UID";
 
     $result = db_query($sql, $db_perm_get_user_permissions);
 
@@ -449,7 +449,7 @@ function perm_get_user_permissions($uid)
         return db_fetch_array($result);
     }
 
-    return 0;
+    return array('STATUS' => 0);
 }
 
 function perm_get_user_folder_perms($uid, $fid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.95 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: logon.php,v 1.96 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -75,7 +75,7 @@ if (bh_session_check()) {
     }
 
     echo "</div>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 
 }
@@ -136,7 +136,7 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
     echo "</script>";
 
     // If they're still here, Javascript's not working. Give up, give a link.
-    echo "<div align=\"center\"><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>";
+    echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
     echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
     if (isset($final_uri)) {
@@ -145,7 +145,7 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
         form_quick_button("./index.php", $lang['continue'], "", "", "_top");
     }
 
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 
   }
@@ -275,7 +275,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
           echo "</script>";
 
           // If they're still here, Javascript's not working. Give up, give a link.
-          echo "<div align=\"center\"><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>";
+          echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
           echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
           if (isset($final_uri)) {
@@ -284,7 +284,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
               form_quick_button("./index.php", $lang['continue'], "", "", "_top");
           }
 
-          // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+          html_draw_bottom();
           exit;
 
       }
@@ -307,7 +307,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
       echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
       echo form_quick_button("./index.php", $lang['back'], 0, 0, "_top");
-      // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+      html_draw_bottom();
       exit;
 
     }
@@ -350,7 +350,7 @@ if (isset($HTTP_GET_VARS['other'])) {
   $otherlogon = false;
 }
 
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
 echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -409,7 +409,7 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
     $request_uri.= "?other=true";
   }
 
-  echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_button("other", "Other", "onclick=\"self.location.href='". $request_uri. "';\""), "</td>\n";
+  echo "&nbsp;", form_button("other", "Other", "onclick=\"self.location.href='". $request_uri. "';\""), "</td>\n";
 
   echo "          </tr>\n";
   echo "          <tr>\n";
@@ -473,7 +473,7 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 }
 
 echo "            <tr>\n";
-echo "              <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "              <td>&nbsp;</td>\n";
 echo "              <td>";
 
 echo form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && $password_array[0] != str_repeat(chr(255), 4)) && strlen($password_array[0]) > 0 && $otherlogon == false);
@@ -513,6 +513,6 @@ echo "  <h2>{$lang['usingaPDA']}</h2>\n";
 echo "  <p class=\"smalltext\"><a href=\"llogon.php\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
 echo "</div>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.146 2003-09-15 19:04:31 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.147 2003-09-21 12:57:59 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -235,7 +235,7 @@ if (!$folder_info) {
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";
 
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -611,6 +611,6 @@ if (isset($first_thread)) {
 echo "// -->";
 echo "</script>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.18 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.19 2003-09-21 12:57:57 decoyduck Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -233,7 +233,7 @@ echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?mode=ran
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "                  <td class=\"posthead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">This Colour</td>\n";
@@ -246,7 +246,7 @@ echo "                    <a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?seed=$se
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "                  <td class=\"posthead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">{$lang['enterhexcolour']}</td>\n";
@@ -254,7 +254,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
 echo "                    <form action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"get\">\n";
-echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit('submit', $lang['go']), "\n";
+echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "&nbsp;", form_submit('submit', $lang['go']), "\n";
 echo "                    </form>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
@@ -282,7 +282,7 @@ echo "                          <td>", form_input_text("stylename", isset($HTTP_
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td class=\"posthead\">{$lang['styledesc']}:</td>\n";
-echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 35, 20), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit('submit', 'Save'), "</td>\n";
+echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </form>\n";
@@ -336,13 +336,13 @@ reset($elements);
     <td>
       <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="background-color: #<?php echo $elements['body']; ?>; color: #<?php echo contrastFont($elements['body']); ?>">
         <tr>
-          <td colspan="3" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>; font-size: 10px; font-weight: bold; text-decoration: none"><bdo dir="<?php echo $lang['_textdir']; ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></bdo>
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['start']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['messages']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['links']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['preferences']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['profile']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
-            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['admin']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
+          <td colspan="3" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>; font-size: 10px; font-weight: bold; text-decoration: none"><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['start']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['messages']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['links']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['preferences']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['profile']; ?></a>&nbsp;|&nbsp;
+            <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['admin']; ?></a>&nbsp;|&nbsp;
             <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['logout']; ?></a>
           </td>
         </tr>
@@ -351,13 +351,13 @@ reset($elements);
             <table width="220" border="0" cellpadding="0" cellspacing="0">
               <tr>
                 <td class="postbody" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left">
-                  <img src="./images/post.png" height="15" alt="<?php echo $lang['newdiscussion']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['newdiscussion']; ?></a><br />
-                  <img src="./images/poll.png" height="15" alt="<?php echo $lang['createpoll']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['createpoll']; ?></a><br />
-                  <img src="./images/search.png" height="15" alt="<?php echo $lang['search']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['search']; ?></a><br />
+                  <img src="./images/post.png" height="15" alt="<?php echo $lang['newdiscussion']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['newdiscussion']; ?></a><br />
+                  <img src="./images/poll.png" height="15" alt="<?php echo $lang['createpoll']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['createpoll']; ?></a><br />
+                  <img src="./images/search.png" height="15" alt="<?php echo $lang['search']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['body'])."\">".$lang['search']; ?></a><br />
                 </td>
               </tr>
               <tr>
-                <td colspan="2"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                <td colspan="2">&nbsp;</td>
               </tr>
               <tr>
                 <td colspan="2" align="left">
@@ -410,16 +410,16 @@ reset($elements);
                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                       <td valign="top" align="center" nowrap="nowrap" width="16">
-                        <img src="./images/current_thread.png" align="middle" height="15" alt="<?php echo $lang['currentthread']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
+                        <img src="./images/current_thread.png" align="middle" height="15" alt="<?php echo $lang['currentthread']; ?>" />&nbsp;
                       </td>
-                      <td valign="top"><a href="#" class="threadname" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['welcome']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><img src="./images/high_interest.png" height="15" alt="<?php echo $lang['highinterest']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><span class="threadxnewofy" style="color: #<?php echo contrastFont($elements['threads']); ?>">[2]</span></td>
-                      <td valign="top" nowrap="nowrap" align="right"><span class="threadtime" style="color: #<?php echo contrastFont($elements['threads']); ?>">16 Mar<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></span></td>
+                      <td valign="top"><a href="#" class="threadname" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['welcome']; ?></a>&nbsp;<img src="./images/high_interest.png" height="15" alt="<?php echo $lang['highinterest']; ?>" />&nbsp;<span class="threadxnewofy" style="color: #<?php echo contrastFont($elements['threads']); ?>">[2]</span></td>
+                      <td valign="top" nowrap="nowrap" align="right"><span class="threadtime" style="color: #<?php echo contrastFont($elements['threads']); ?>">16 Mar&nbsp;</span></td>
                     </tr>
                   </table>
                 </td>
               </tr>
               <tr>
-                <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                <td>&nbsp;</td>
               </tr>
             </table>
             <table width="220" border="0" cellspacing="0" cellpadding="0">
@@ -427,7 +427,7 @@ reset($elements);
                 <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left"><?php echo $lang['markasread']; ?>:</td>
               </tr>
               <tr>
-                <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                <td>&nbsp;</td>
                 <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" align="left">
                   <form name="f_mark" method="get" action="">
                     <input type="hidden" name="tids" class="bhinputtext" value="1" />
@@ -446,7 +446,7 @@ reset($elements);
                 <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" colspan="2" align="left"><?php echo $lang['navigate']; ?>:</td>
               </tr>
               <tr>
-                <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                <td>&nbsp;</td>
                 <td class="smalltext" style="color: #<?php echo contrastFont($elements['body']); ?>" align="left">
                   <form name="f_nav" method="get" action="">
                     <input type="text" name="msg" class="bhinputtext" value="1.1" size="10" />
@@ -461,7 +461,7 @@ reset($elements);
             <div align="center">
               <table width="96%" border="0">
                 <tr>
-                  <td style="color: #<?php echo contrastFont($elements['body']); ?>"><p style="color: #<?php echo contrastFont($elements['body']); ?>" align="left"><img src="./images/folder.png" alt="<?php echo $lang['folder']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>General: Welcome<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><img src="./images/high_interest.png" height="15" alt="<?php echo $lang['highinterest']; ?>" /></p></td>
+                  <td style="color: #<?php echo contrastFont($elements['body']); ?>"><p style="color: #<?php echo contrastFont($elements['body']); ?>" align="left"><img src="./images/folder.png" alt="<?php echo $lang['folder']; ?>" />&nbsp;General: Welcome&nbsp;<img src="./images/high_interest.png" height="15" alt="<?php echo $lang['highinterest']; ?>" /></p></td>
                 </tr>
               </table>
             </div>
@@ -472,14 +472,14 @@ reset($elements);
                   <td>
                     <table width="100%" class="posthead" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>" cellspacing="1" cellpadding="0">
                       <tr>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><?php echo $lang['from']; ?>:<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;<?php echo $lang['from']; ?>:&nbsp;</span></td>
                         <td nowrap="nowrap" width="98%" align="left"><span class="posttofrom"><a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">User</a></span></td>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">14 Mar 23:56<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">14 Mar 23:56&nbsp;</span></td>
                       </tr>
                       <tr>
-                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><?php echo $lang['to']; ?>:<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></span></td>
+                        <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements['threads']); ?>">&nbsp;<?php echo $lang['to']; ?>:&nbsp;</span></td>
                         <td nowrap="nowrap" width="98%" align="left"><span class="posttofrom" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['all_caps']; ?></span></td>
-                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 <?php echo $lang['of']; ?> 2<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></span></td>
+                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements['threads']); ?>">1 <?php echo $lang['of']; ?> 2&nbsp;</span></td>
                       </tr>
                     </table>
                   </td>
@@ -488,13 +488,13 @@ reset($elements);
                   <td>
                     <table width="100%">
                       <tr align="right">
-                        <td colspan="3"><span class="postnumber" style="color: #<?php echo contrastFont($elements['box']); ?>"><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.1</a> <?php echo $lang['inreplyto']; ?> <a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.2</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></span></td>
+                        <td colspan="3"><span class="postnumber" style="color: #<?php echo contrastFont($elements['box']); ?>"><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.1</a> <?php echo $lang['inreplyto']; ?> <a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>">1.2</a>&nbsp;</span></td>
                       </tr>
                       <tr>
                         <td class="postbody" style="color: #<?php echo contrastFont($elements['box']); ?>" align="left"><?php echo $lang['messagepreview']; ?></td>
                       </tr>
                       <tr>
-                        <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                        <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td class="postbody"></td>
@@ -503,10 +503,10 @@ reset($elements);
                     <table width="100%" class="postresponse" style="background-color: #<?php echo $elements['body']; ?>; color: #<?php echo contrastFont($elements['body']); ?>" cellspacing="1" cellpadding="0">
                       <tr>
                         <td align="center">
-                            <img src="./images/post.png" height="15" border="0" alt="<?php echo $lang['reply']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['reply']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></bdo>
-                            <img src="./images/delete.png" height="15" border="0" alt="<?php echo $lang['delete']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['delete']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></bdo>
-                            <img src="./images/edit.png" height="15" border="0" alt="<?php echo $lang['edit']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['edit']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></bdo>
-                            <img src="./images/admintool.png" height="15" border="0" alt="<?php echo $lang['privileges']; ?>" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['privileges']; ?></a>
+                            <img src="./images/post.png" height="15" border="0" alt="<?php echo $lang['reply']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['reply']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
+                            <img src="./images/delete.png" height="15" border="0" alt="<?php echo $lang['delete']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['delete']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
+                            <img src="./images/edit.png" height="15" border="0" alt="<?php echo $lang['edit']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['edit']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
+                            <img src="./images/admintool.png" height="15" border="0" alt="<?php echo $lang['privileges']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['privileges']; ?></a>
                         </td>
                       </tr>
                     </table>
@@ -514,19 +514,19 @@ reset($elements);
                 </tr>
               </table>
             </div>
-            <p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
+            <p>&nbsp;</p>
             <div align="center">
             <table width="96%" class="messagefoot" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>">
               <tr>
                 <td align="center">
-                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['showmessages']; ?>: <bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>1 <bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">2</a></p>
+                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['showmessages']; ?>: &nbsp;1 &nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">2</a></p>
                   <p align="center"></p>
                   <form name="rate_interest" target="_self" action="" method="post">
                     <?php echo $lang['ratemyinterest']; ?>t:
                     <span class="bhinputradio"><input type="radio" name="interest" value="-1" /><?php echo $lang['ignore']; ?> </span>
                     <span class="bhinputradio"><input type="radio" name="interest" value="0" checked="checked" /><?php echo $lang['normal']; ?> </span>
                     <span class="bhinputradio"><input type="radio" name="interest" value="1" /><?php echo $lang['interested']; ?> </span>
-                    <span class="bhinputradio"><input type="radio" name="interest" value="2" /><?php echo $lang['subscribe']; ?> </span><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
+                    <span class="bhinputradio"><input type="radio" name="interest" value="2" /><?php echo $lang['subscribe']; ?> </span>&nbsp;
                     <input type="submit" name="submit" value="<?php echo $lang['apply']; ?>" class="button" style="background-color: #<?php echo $elements['button']; ?>; color: #<?php echo contrastFont($elements['button']); ?>" onclick="return false" />
                   </form>
                   <p style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['adjtextsize']; ?>: <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['smaller']; ?></a> 10 <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['larger']; ?></a></p>
@@ -535,9 +535,9 @@ reset($elements);
                     <table width="96%" class="posthead" style="background-color: #<?php echo $elements['threads']; ?>; color: #<?php echo contrastFont($elements['threads']); ?>">
                       <tr>
                         <td width="60%" class="smalltext" align="left">
-                          Beehive Forum <bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
-                          <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['faq']; ?></a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
-                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['docs']; ?></a> <bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>|<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>
+                          Beehive Forum &nbsp;|&nbsp;
+                          <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['faq']; ?></a>&nbsp;|&nbsp;
+                          <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['docs']; ?></a> &nbsp;|&nbsp;
                           <a href="#" target="_blank" style="color: #<?php echo contrastFont($elements['threads']); ?>"><?php echo $lang['support']; ?></a>
                         </td>
                         <td width="40%" align="right" class="smalltext">&copy;<?php echo date('Y'); ?> <a href="#" style="color: #<?php echo contrastFont($elements['threads']); ?>">Project BeehiveForum</a></td>
@@ -548,19 +548,19 @@ reset($elements);
               </tr>
             </table>
             </div>
-            <p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
+            <p>&nbsp;</p>
             <h1 style="background-color: #<?php echo $elements['h1']; ?>; color: #<?php echo contrastFont($elements['h1']); ?>"><?php echo $lang['h1tag']; ?></h1>
             <p class="subhead" style="background-color: #<?php echo $elements['subhead']; ?>; color: #<?php echo contrastFont($elements['subhead']); ?>"><?php echo $lang['subhead']; ?></p>
-            <p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
+            <p>&nbsp;</p>
           </td>
         </tr>
       </table>
     </td>
   </tr>
 </table>
-<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
+<p>&nbsp;</p>
 <?php
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

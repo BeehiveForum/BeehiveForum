@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.27 2003-09-20 17:53:35 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.28 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -84,7 +84,7 @@ if (isset($mid)) {
     }else {
         html_draw_top();
         pm_error_refuse();
-        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+        html_draw_bottom();
         exit;
     }
 }
@@ -302,11 +302,11 @@ echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lan
 echo form_submit('cancel', $lang['cancel']);
 
 if ($attachments_enabled && $pm_allow_attachments) {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
     echo form_input_hidden("aid", $aid);
 }
 
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML']);
+echo "&nbsp;".form_submit("convert_html", $lang['converttoHTML']);
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
@@ -321,6 +321,6 @@ if (isset($mid)) {
     draw_pm_message($pm_data);
 }
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.19 2003-09-15 19:04:31 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.20 2003-09-21 12:57:59 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -89,7 +89,7 @@ if (isset($HTTP_GET_VARS['uid'])) {
         html_draw_top();
         echo "<h1>{$lang['error']}:</h1>";
         echo "<p>{$lang['invalidusername']}</p>";
-        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+        html_draw_bottom();
         exit;
     }
     $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
@@ -97,7 +97,7 @@ if (isset($HTTP_GET_VARS['uid'])) {
     html_draw_top();
     echo "<h1>{$lang['error']}:</h1>";
     echo "<p>{$lang['nouserspecified']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -147,11 +147,11 @@ echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
         <td width="370">: <?php echo $lang['globallyignoredsig_exp']; ?></td>
       </tr>
     </table>
-    <p><?php echo form_submit("submit", $lang['submit'])."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("cancel", $lang['cancel']); ?></p>
+    <p><?php echo form_submit("submit", $lang['submit'])."&nbsp;".form_submit("cancel", $lang['cancel']); ?></p>
   </form>
 </div>
 <?php
 
-  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+  html_draw_bottom();
 
 ?>

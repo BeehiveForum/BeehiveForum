@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.29 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.30 2003-09-21 12:57:57 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -54,7 +54,7 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -75,7 +75,7 @@ if (isset($HTTP_GET_VARS['psid'])) {
   html_draw_top();
   echo "<h1>{$lang['invalidop']}</h1>\n";
   echo "<p>{$lang['noprofilesectionspecified']}</p>\n";
-  // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+  html_draw_bottom();
   exit;
 
 }
@@ -144,22 +144,22 @@ echo "          <tr>\n";
 echo "            <td align=\"left\">{$lang['new_caps']}</td>\n";
 echo "            <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 64, 64), "</td>";
 echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type_new", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown'])), "</td>\n";
-echo "            <td align=\"center\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-echo "            <td align=\"center\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td align=\"center\">&nbsp;</td>\n";
+echo "            <td align=\"center\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td colspan=\"4\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td colspan=\"4\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "  <p>", form_input_hidden("t_psid", $psid), form_submit('submit', 'Save'), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("cancel", $lang['back']), "</p>\n";
+echo "  <p>", form_input_hidden("t_psid", $psid), form_submit('submit', 'Save'), "&nbsp;", form_submit("cancel", $lang['back']), "</p>\n";
 echo "  <p>{$lang['fieldtypeexample1']}</p>\n";
 echo "  <p>{$lang['fieldtypeexample2']}</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

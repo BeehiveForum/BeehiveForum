@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.26 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.27 2003-09-21 12:57:57 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -57,7 +57,7 @@ html_draw_top();
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -122,7 +122,7 @@ if ($profile_sections = profile_sections_get()) {
         if (!profile_items_get($profile_sections[$i]['PSID'])) {
             echo "            <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";
         }else{
-            echo "            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+            echo "            <td>&nbsp;</td>\n";
         }
 
         echo "          </tr>\n";
@@ -133,10 +133,10 @@ if ($profile_sections = profile_sections_get()) {
 echo "          <tr>\n";
 echo "            <td align=\"left\">NEW</td>\n";
 echo "            <td align=\"left\">", form_field("t_name_new", $lang['newsection'], 64, 64), "</td>\n";
-echo "            <td align=\"center\" colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td colspan=\"4\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td colspan=\"4\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -146,6 +146,6 @@ echo "<p>", form_submit('submit', 'Save'), "</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

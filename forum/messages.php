@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.92 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: messages.php,v 1.93 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -74,7 +74,7 @@ if(!thread_can_view($tid, bh_session_get_value('UID'))) {
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+        html_draw_bottom();
         exit;
 }
 
@@ -91,7 +91,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
     html_draw_top();
     echo "<h2>{$lang['mustselectpolloption']}</h2>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 
   }
@@ -107,7 +107,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
     html_draw_top("openprofile.js");
     poll_confirm_close($HTTP_POST_VARS['tid']);
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 
   }
@@ -132,13 +132,13 @@ $messages = messages_get($tid, $pid, $ppp);
 
 if (!$messages) {
    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
-   // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+   html_draw_bottom();
    exit;
 }
 
 if (!$threaddata = thread_get($tid)) {
    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
-   // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+   html_draw_bottom();
    exit;
 }
 
@@ -253,7 +253,7 @@ if($last_pid < $threaddata['LENGTH']){
     echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "{$lang['keepreading']} >>", "msg", "$tid.$npid");
     echo "</td></tr></table>\n";
 }else {
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+    echo "<p>&nbsp;</p>\n";
 }
 
 messages_start_panel();
@@ -275,7 +275,8 @@ if (bh_session_get_value('UID') != 0) {
 
 draw_beehive_bar();
 messages_end_panel();
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+messages_forum_stats();
+html_draw_bottom();
 
 if($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0){
     messages_update_read($tid,$last_pid,bh_session_get_value('UID'));

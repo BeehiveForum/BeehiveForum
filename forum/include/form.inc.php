@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.37 2003-09-07 20:21:51 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.38 2003-09-21 12:57:59 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -324,9 +324,9 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
     }
 
     $output = form_dropdown_array("dob_day", $birthday_days_values, $birthday_days, $dob_day);
-    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= "&nbsp;";
     $output.= form_dropdown_array("dob_month", $birthday_months_values, $birthday_months, $dob_month);
-    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= "&nbsp;";
     $output.= form_dropdown_array("dob_year", $birthday_years_values, $birthday_years, $dob_year);
 
     return $output;
@@ -375,9 +375,9 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
     $years_values = array_merge(0, range(date('Y'), 2037));
 
     $output = form_dropdown_array("{$prefix}day", range(0,31), $days, $day);
-    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= "&nbsp;";
     $output.= form_dropdown_array("{$prefix}month", range(0, 12), $months, $month);
-    $output.= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output.= "&nbsp;";
     $output.= form_dropdown_array("{$prefix}year", $years_values, $years, $year);
 
     return $output;

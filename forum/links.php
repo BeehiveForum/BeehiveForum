@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.22 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: links.php,v 1.23 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -49,7 +49,7 @@ if(!bh_session_check()){
 if (!$show_links) {
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -130,9 +130,9 @@ if ($viewmode == 0) {
         while (list($key, $val) = each($subfolders)) {
             echo "<tr><td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"folder\" /></td><td class=\"postbody\"><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "style=\"color: gray;\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             if (perm_is_moderator() && $folders[$val]['VISIBLE'] == "Y") {
-                echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['hide']}]</a>\n";
+                echo "&nbsp;<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['hide']}]</a>\n";
             } elseif (perm_is_moderator() && $folders[$val]['VISIBLE'] == "N") {
-                echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['unhide']}]</a>\n";
+                echo "&nbsp;<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['unhide']}]</a>\n";
             }
             if (perm_is_moderator() && count(links_get_subfolders($val, $folders)) == 0) echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['delete']}]</a>\n";
             echo "</td></tr>\n";
@@ -190,37 +190,37 @@ if ($viewmode == 0) {
 echo "<table width=\"95%\" align=\"center\">\n";
 echo "  <tr>\n";
 
-echo "    <td class=\"posthead\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>";
 } else {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>";
 }
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "&nbsp;</td>\n";
 
-echo "    <td class=\"posthead\" width=\"250\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+echo "    <td class=\"posthead\" width=\"250\">&nbsp;";
 if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>";
 } else {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>";
 }
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "&nbsp;</td>\n";
 
-echo "    <td class=\"posthead\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>";
 } else {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>";
 }
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "&nbsp;</td>\n";
 
-echo "    <td class=\"posthead\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>";
 } else {
     echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>";
 }
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "&nbsp;</td>\n";
 echo "    <td class=\"posthead\">{$lang['commentsslashvote']}</td>\n";
 echo "  </tr>\n";
 
@@ -242,7 +242,7 @@ if (sizeof($links) > 0 ) {
 
 if (bh_session_get_value('UID') && $viewmode == 0) {
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
@@ -251,6 +251,6 @@ if (bh_session_get_value('UID') && $viewmode == 0) {
 
 echo "</table>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

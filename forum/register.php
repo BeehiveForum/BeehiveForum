@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.54 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: register.php,v 1.55 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -52,7 +52,7 @@ if (bh_session_get_value('UID')) {
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
     echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
     echo "</div>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -288,7 +288,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
           echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), "Continue", 0, 0, "_top");
           echo "</div>\n";
 
-          // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+          html_draw_bottom();
           exit;
 
       } else {
@@ -403,7 +403,7 @@ if (strlen($error_html) > 0) {
             <td><?php echo form_textarea("sig_content", (isset($HTTP_POST_VARS['sig_content']) ? _htmlentities(_stripslashes(trim($HTTP_POST_VARS['sig_content']))) : ''), 6, 32); ?>
           </tr>
          <tr>
-           <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+           <td>&nbsp;</td>
            <td><?php echo form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y")); ?></td>
          </tr>
           <tr>
@@ -484,6 +484,6 @@ if (strlen($error_html) > 0) {
 </div>
 <?php
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

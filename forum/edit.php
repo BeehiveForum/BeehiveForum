@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.68 2003-09-16 15:09:44 tribalonline Exp $ */
+/* $Id: edit.php,v 1.69 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -91,7 +91,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 	echo "</td></tr>\n";
 	echo "</table>\n";
 
-	// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+	html_draw_bottom();
 	exit;
 
 }
@@ -115,7 +115,7 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 	echo "</td></tr>\n";
 	echo "</table>\n";
 
-	// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+	html_draw_bottom();
 	exit;
 
 }
@@ -334,7 +334,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 		echo "</td></tr>\n";
 		echo "</table>\n";
 
-		// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+		html_draw_bottom();
         exit;
     }
 
@@ -383,7 +383,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			echo "</td></tr>\n";
 			echo "</table>\n";
 
-			// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+			html_draw_bottom();
 			exit;
 
         }else{
@@ -415,7 +415,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			echo "</td></tr>\n";
 			echo "</table>\n";
 
-			// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+			html_draw_bottom();
 			exit;
         }
 
@@ -598,16 +598,16 @@ echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="cl
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
 if ($edit_type == "html") {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_text", $lang['edittext']);
+    echo "&nbsp;".form_submit("b_edit_text", $lang['edittext']);
     echo form_input_hidden("edit_type", "html");
 
 } else {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_html", $lang['editHTML']);
+    echo "&nbsp;".form_submit("b_edit_html", $lang['editHTML']);
     echo form_input_hidden("edit_type", "text");
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin($aid, $from_uid);");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin($aid, $from_uid);");
 }
 
 
@@ -640,6 +640,6 @@ echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
 echo "</form>";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

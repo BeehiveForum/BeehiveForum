@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.7 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.8 2003-09-21 12:57:57 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -57,7 +57,7 @@ html_draw_top();
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -77,7 +77,7 @@ echo "<h1>{$lang['managefolder']} : ", _stripslashes($folder_array['TITLE']), "<
 
 if ($folder_array['ACCESS_LEVEL'] < 1) {
     echo "<h2>{$lang['folderisnotrestricted']}</h2>\n";
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -114,7 +114,7 @@ if (isset($HTTP_POST_VARS['add_recent_user'])) {
     }
 }
 
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\">\n";
 echo form_input_hidden('fid', $fid), "\n";
@@ -133,7 +133,7 @@ if ($user_array = folder_get_permissions($fid)) {
         echo "        </tr>\n";
     }
     echo "        <tr>\n";
-    echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "          <td align=\"left\">&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td align=\"center\">", form_submit('remove_user', $lang['remove']), "</td>\n";
@@ -145,7 +145,7 @@ if ($user_array = folder_get_permissions($fid)) {
 }
 
 echo "        <tr>\n";
-echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "          <td align=\"left\">&nbsp;</td>\n";
 echo "        </tr>\n";
 
 if (strlen($usersearch) > 0) {
@@ -163,7 +163,7 @@ if (strlen($usersearch) > 0) {
         }
 
         echo "        <tr>\n";
-        echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "          <td align=\"left\">&nbsp;</td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
         echo "          <td align=\"left\">", form_submit('add_searched_user', $lang['add']), "</td>\n";
@@ -186,7 +186,7 @@ if (strlen($usersearch) > 0) {
 }
 
 echo "        <tr>\n";
-echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "          <td align=\"left\">&nbsp;</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforuser']}</td>\n";
@@ -195,7 +195,7 @@ echo "        <tr>\n";
 echo "          <td align=\"left\">{$lang['search']}: ", form_input_text('usersearch', $usersearch), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "          <td align=\"left\">&nbsp;</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
@@ -205,6 +205,6 @@ echo "<p>", form_button("back", "Back", "onclick=\"document.location.href='admin
 echo "</form>\n";
 echo "</div>\n";
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

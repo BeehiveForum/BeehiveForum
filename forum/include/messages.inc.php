@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.171 2003-09-20 17:54:39 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.172 2003-09-21 12:57:59 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -806,31 +806,68 @@ function messages_forum_stats()
 
     $session_stamp = time() - $session_cutoff;
 
-    $sql = "SELECT SG.COUNT(UID) AS GUESTS, SN.COUNT(UID) AS USERS, SA.COUNT(UID) AS ANON ";
-    $sql.= "FROM SESSIONS SG, SESSIONS SN, SESSIONS SA ";
-    $sql.= "LEFT JOIN USER_PREFS UPN ON (UPN.UID = SN.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS UPA ON (UPA.UID = SN.UID) ";
-    $sql.= "WHERE SG.UID = 0 AND SG.TIME >= $session_stamp";
-    $sql.= "WHERE SU.UID <> 0 AND SN.TIME >= $session_stamp AND UPN.ANON_LOGON = 0";
-    $sql.= "WHERE SG.UID <> 0 AND SG.TIME >= $session_stamp AND UPA.ANON_LOGON = 1";
-    $sql.= "LIMIT 0, 1";
+    // Number of active guests
+
+    $sql = "SELECT COUNT(UID) AS GUESTS FROM SESSIONS WHERE UID = 0 ";
+    $sql.= "AND TIME >= FROM_UNIXTIME($session_stamp) ORDER BY SESSIONS.TIME DESC";
 
     $result = db_query($sql, $db_messages_forum_stats);
 
-    while ($row = db_fetch_array($result)) {
-        $stats['GUESTS'] = (isset($row['GUESTS'])) ? $row['GUESTS'] : 0;
-        $stats['USERS']  = (isset($row['USERS']))  ? $row['USERS']  : 0;
-        $stats['ANON']   = (isset($row['ANON']))   ? $row['ANON']   : 0;
-    }
+    $row = db_fetch_array($result);
+    $stats['GUESTS'] = (isset($row['GUESTS'])) ? $row['GUESTS'] : 0;
+
+    // Number of active members
+
+    $sql = "SELECT COUNT(SESSIONS.UID) AS NUSERS FROM SESSIONS ";
+    $sql.= "LEFT JOIN USER_PREFS ON (SESSIONS.UID = USER_PREFS.UID) ";
+    $sql.= "WHERE SESSIONS.UID <> 0 AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql.= "AND USER_PREFS.ANON_LOGON <> 1 ";
+    $sql.= "GROUP BY SESSIONS.UID";
+
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    $row = db_fetch_array($result);
+    $stats['NUSERS'] = (isset($row['NUSERS'])) ? $row['NUSERS'] : 0;
+
+    // Anonymous members
+
+    $sql = "SELECT COUNT(SESSIONS.UID) AS AUSERS FROM SESSIONS ";
+    $sql.= "LEFT JOIN USER_PREFS ON (SESSIONS.UID = USER_PREFS.UID) ";
+    $sql.= "WHERE SESSIONS.UID <> 0 AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql.= "AND USER_PREFS.ANON_LOGON = 1 ";
+    $sql.= "GROUP BY SESSIONS.UID";
+
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    $row = db_fetch_array($result);
+    $stats['AUSERS'] = (isset($row['AUSERS'])) ? $row['AUSERS'] : 0;
+
+    // Newest user
+
+    $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE ";
+    $sql.= "LOGON <> 'GUEST' AND PASSWD <> MD5('GUEST') ";
+    $sql.= "ORDER BY UID DESC LIMIT 0, 1";
+
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    $row = db_fetch_array($result);
+    $stats['NEWUSER'] = array('UID'     => $row['UID'],
+                              'LOGON'   => $row['LOGON'],
+                              'NICNAME' => $row['NICKNAME']);
+
+    // Current active users
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
-    $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
-    $sql.= "WHERE SESSIONS.UID <> 0 AND SESSIONS.TIME >= $session_stamp ";
-    $sql.= "AND USER_PREFS.ANON_LOGON = 0 LIMIT 0, 8 ";
-    $sql.= "ORDER BY SESSION.ID DESC";
+    $sql.= "LEFT JOIN SESSIONS SESSIONS ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS ON (SESSIONS.UID = USER_PREFS.UID) ";
+    $sql.= "WHERE SESSIONS.UID <> 0 AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql.= "AND USER_PREFS.ANON_LOGON <> 1 ";
+    $sql.= "GROUP BY SESSIONS.UID ORDER BY SESSIONS.SESSID ";
+    $sql.= "DESC LIMIT 0, 8";
 
     $result = db_query($sql, $db_messages_forum_stats);
+
+    $stats['USERS'] = array();
 
     while ($row = db_fetch_array($result)) {
         $stats['USERS'][] = array('UID'      => $row['UID'],
@@ -838,18 +875,120 @@ function messages_forum_stats()
                                   'NICKNAME' => $row['NICKNAME']);
     }
 
-    $sql = "SELECT COUNT(POST.TID) AS TCOUNT, COUNT(POST.PID) AS PCOUNT, ";
-    $sql.= "THREAD.TITLE, THREAD.TID, THREAD.LENGTH ";
-    $sql.= "FROM POSTS POSTS, THREADS THREADS ";
-    $sql.= "ORDER BY THREADS.LENGTH DESC ";
+    // Thread Count
+
+    $sql = "SELECT COUNT(THREAD.TID) AS TCOUNT FROM THREAD";
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    while ($row = db_fetch_array($result)) {
+        $stats['TCOUNT'] = $row['TCOUNT'];
+    }
+
+    // Post Count
+
+    $sql = "SELECT COUNT(POST.PID) AS PCOUNT FROM POST";
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    while ($row = db_fetch_array($result)) {
+        $stats['PCOUNT'] = $row['PCOUNT'];
+    }
+
+    // Longest Thread
+
+    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH ";
+    $sql.= "FROM POST POST, THREAD THREAD ";
+    $sql.= "ORDER BY THREAD.LENGTH DESC ";
     $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_messages_forum_stats);
 
     while ($row = db_fetch_array($result)) {
-        $stats['TCOUNT'] = $row['TCOUNT'];
-        $stats['PCOUNT'] = $row['PCOUNT'];
+        $stats['LTID']    = $row['TID'];
+        $stats['LTITLE']  = $row['TITLE'];
+        $stats['LLENGTH'] = $row['LENGTH'];
     }
+
+    // Most user count
+
+    $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE FROM STATS";
+    $result = db_query($sql, $db_messages_forum_stats);
+
+    while ($row = db_fetch_array($result)) {
+        $stats['MOST_USERS_COUNT'] = $row['MOST_USERS_COUNT'];
+        $stats['MOST_USERS_DATE']  = $row['MOST_USERS_DATE'];
+    }
+
+    // User count
+
+    $usercount = user_count();
+
+    echo "<div align=\"center\">\n";
+    echo "  <br />\n";
+    echo "  <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"subhead\">&nbsp;Forum stats:</td>\n";
+    echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><img src=\"", style_image('stats_hide.png'), "\"></td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>&nbsp;</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td>&nbsp;</td>\n";
+    echo "            <td><b>{$stats['GUESTS']}</b> guest", ($stats['GUESTS'] != 1) ? "s" : "", ", <b>{$stats['NUSERS']}</b> member", ($stats['NUSERS'] != 1) ? "s" : "", ", <b>{$stats['AUSERS']}</b> anonymous member", ($stats['AUSERS'] != 1) ? "s" : "", " [ <a href=\"start.php?show=visitors\" target=\"discussion\">View Complete List</a> ]</td>\n";
+    echo "          </tr>\n";
+
+    if (sizeof($stats['USERS']) > 0) {
+
+        echo "          <tr>\n";
+        echo "            <td>&nbsp;</td>\n";
+        echo "            <td>";
+
+        for ($i = 0; $i < sizeof($stats['USERS']); $i++) {
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$stats['USERS'][$i]['UID']})\" target=\"_self\">", format_user_name($stats['USERS'][$i]['LOGON'], $stats['USERS'][$i]['NICKNAME']), "</a>";
+            if ($i < (sizeof($stats['USERS']) - 1)) echo ", ";
+        }
+    }
+
+    echo "</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>&nbsp;</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>Our members have made a total of {$stats['TCOUNT']} thread", ($stats['TCOUNT'] != 1) ? "s" : "", " and {$stats['PCOUNT']} post", ($stats['PCOUNT'] != 1) ? "s" : "", "</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>Longest thread is '<a href=\"./?msg={$stats['LTID']}.1\">{$stats['LTITLE']}</a>' with {$stats['LLENGTH']} posts.</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>&nbsp;</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>We have $usercount registered member", ($usercount > 1) ? "s" : "", ". The newest member is <a href=\"javascript:void(0);\" onclick=\"openProfile({$stats['NEWUSER']['UID']})\" target=\"_self\">", format_user_name($stats['NEWUSER']['LOGON'], $stats['NEWUSER']['NICNAME']), "</a>.</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>Most users ever online was {$stats['MOST_USERS_COUNT']} on ", date("M jS Y, g:i A", $stats['MOST_USERS_DATE']), "</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td width=\"30\">&nbsp;</td>\n";
+    echo "            <td>&nbsp;</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</div>\n";
+
 }
 
 ?>

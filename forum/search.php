@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.46 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: search.php,v 1.47 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -77,15 +77,15 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "    <td class=\"postbody\" colspan=\"2\">", $lang['searchdiscussions'], "...</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "    <td>", form_dropdown_array("method", range(1,3), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_input_text("search_string", "", 20), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("submit", $lang['find']), "</td>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td>", form_dropdown_array("method", range(1,3), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1). "&nbsp;", form_input_text("search_string", "", 20), "&nbsp;", form_submit("submit", $lang['find']), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td>&nbsp;</td>\n";
     echo "    <td class=\"postbody\">{$lang['wordsshorterthan_1']} ", (isset($search_min_word_length) ? $search_min_word_length : "3"), " {$lang['wordsshorterthan_2']}", ".</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\" colspan=\"2\">", $lang['additionalcriteria'], "</td>\n";
@@ -115,21 +115,21 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "    <td>", form_dropdown_array("order_by", range(1, 3), array($lang['relevance'], $lang['newestfirst'], $lang['oldestfirst']), 1), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td>&nbsp;</td>\n";
     echo "    <td>", form_checkbox("me_only", "Y", $lang['onlyshowmessagestoorfromme'], false), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td>&nbsp;</td>\n";
     echo "    <td>", form_checkbox("group_by_thread", "Y", $lang['groupsresultsbythread'], false), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td>&nbsp;</td>\n";
     echo "    <td>", form_submit("submit", $lang['find']), "</td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</form>\n";
 
-    // -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+    html_draw_bottom();
     exit;
 }
 
@@ -139,13 +139,13 @@ $error = false;
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
-echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
-echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
-echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"search.php\" target=\"right\">{$lang['search']}</a><br />\n";
+echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">{$lang['search']}</a><br />\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "    <td colspan=\"2\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td colspan=\"2\">\n";
@@ -182,10 +182,10 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
         $sstart = 0;
     }
 
-    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>{$lang['found']}: ", sizeof($search_results_array), " {$lang['matches']}<br />\n";
+    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: ", sizeof($search_results_array), " {$lang['matches']}<br />\n";
 
     if ($sstart >= 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
     }
 
     echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -235,13 +235,13 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
         echo "  <li><p><a href=\"messages.php?msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
         if (strlen($message['CONTENT']) > 0) echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-        echo "<span class=\"smalltext\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>-<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
+        echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
     }
 
     echo "</ol>\n";
 
     if (sizeof($search_results_array) == 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
     }
 
 }else if ($error) {
@@ -255,11 +255,11 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 	    echo "<h2>{$lang['notexttosearchfor_1']} ", isset($search_min_word_length) ? $search_min_word_length : "3", " {$lang['notexttosearchfor_2']}.</h2>\n";
 	    break;
 	case SEARCH_NO_MATCHES:
-	    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>{$lang['found']}: 0 {$lang['matches']}<br />\n";
+	    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
 	    break;
     }
 }
 
-// -- html_draw_bottom is now handled by bh_gz_handler -- html_draw_bottom();
+html_draw_bottom();
 
 ?>

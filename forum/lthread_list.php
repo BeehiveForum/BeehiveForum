@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.19 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.20 2003-09-21 12:57:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -287,13 +287,13 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                     if ($thread['last_read'] == 0) {
 
-                        $number = "[".$thread['length']."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>new]";
+                        $number = "[".$thread['length']."&nbsp;new]";
                         $latest_post = 1;
 
                     }elseif ($thread['last_read'] < $thread['length']) {
 
                         $new_posts = $thread['length'] - $thread['last_read'];
-                        $number = "[".$new_posts."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>new<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>of<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".$thread['length']."]";
+                        $number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
                         $latest_post = $thread['last_read'] + 1;
 
                     } else {

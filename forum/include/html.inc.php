@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.120 2004-07-07 19:34:28 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.121 2004-08-10 21:43:11 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -247,7 +247,7 @@ function html_draw_top()
     $onunload_array = array();
     $arg_array = func_get_args();
     $meta_refresh = false;
-	$robots = false;
+        $robots = false;
 
     $forum_settings = get_forum_settings();
     $webtag = get_webtag($webtag_search);
@@ -309,9 +309,9 @@ function html_draw_top()
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$forum_description\" />\n";
 
-	if ($robots) {
-		echo "<meta name=\"robots\" content=\"$robots\" />\n";
-	}
+        if ($robots) {
+                echo "<meta name=\"robots\" content=\"$robots\" />\n";
+        }
     if ($meta_refresh) {
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
@@ -343,8 +343,8 @@ function html_draw_top()
         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
         echo "<!--\n\n";
         echo "top.document.body.rows='60,' + $fontsize * 2 + ',*';\n";
-	echo "top.frames['main'].frames['left'].location.reload();\n";
-	echo "top.frames['fnav'].location.reload();\n\n";
+        echo "top.frames['main'].frames['left'].location.reload();\n";
+        echo "top.frames['fnav'].location.reload();\n\n";
         echo "//-->\n";
         echo "</script>\n";
     }
@@ -352,15 +352,15 @@ function html_draw_top()
     if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
         if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
             echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-	    echo "<!--\n\n";
+            echo "<!--\n\n";
             echo "function pm_notification() {\n";
             echo "    if (window.confirm('{$lang['pmnotificationpopup']}')) {\n";
             echo "        top.frames['main'].location.replace('pm.php?webtag=$webtag');\n";
             echo "    }\n";
             echo "    return true;\n";
             echo "}\n\n";
-	    echo "//-->\n";
-	    echo "</script>\n";
+            echo "//-->\n";
+            echo "</script>\n";
             if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
         }
     }
@@ -475,6 +475,11 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             echo "<a href=\"{$uri}&amp;page={$prev_page}\" target=\"_self\">&lt;&lt;</a> ";
         }
 
+        if ($start_page > 1) {
+
+            echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">1</a> ... ";
+        }
+
         for ($page = $start_page; $page <= $end_page; $page++) {
 
             if ($page == $current_page) {
@@ -482,6 +487,11 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             }else {
                 echo "<a href=\"{$uri}&amp;{$page_var}={$page}\" target=\"_self\">{$page}</a> ";
             }
+        }
+
+        if ($end_page < $page_count) {
+
+            echo "... <a href=\"{$uri}&amp;page={$page_count}\" target=\"_self\">{$page_count}</a> ";
         }
 
         if ($current_page < $page_count) {

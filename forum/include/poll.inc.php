@@ -195,7 +195,7 @@ function poll_sort($a, $b) {
 
 }
 
-function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
+function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true)
 {
 
     global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
@@ -303,17 +303,23 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     }else {
 
+      $polldata['CONTENT'].= "        <tr>\n";
+      $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
+      $polldata['CONTENT'].= "            <ul>\n";
+
       for ($i = 1; $i <= sizeof($pollresults); $i++) {
 
         if (!empty($pollresults[$i]['OPTION_NAME'])) {
 
-          $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td class=\"postbody\">". $pollresults[$i]['OPTION_NAME']. "</td>\n";
-          $polldata['CONTENT'].= "        </tr>\n";
+          $polldata['CONTENT'].= "        <li>". $pollresults[$i]['OPTION_NAME']. "</li>\n";
 
         }
 
       }
+
+      $polldata['CONTENT'].= "            </ul>\n";
+      $polldata['CONTENT'].= "          </td>\n";
+      $polldata['CONTENT'].= "        </tr>\n";
 
     }
 
@@ -440,8 +446,8 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     
     // Work out what relationship the user has to the user who posted the poll
     $polldata['FROM_RELATIONSHIP'] = user_rel_get($HTTP_COOKIE_VARS['bh_sess_uid'], $polldata['FROM_UID']);
-
-    message_display($tid, $polldata, $msg_count, $first_msg, $in_list, $closed, $limit_text, true);
+    
+    message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs);
 
 }
 

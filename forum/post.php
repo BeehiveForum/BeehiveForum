@@ -511,11 +511,9 @@ if(!$newthread) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      poll_display($reply_to_tid,$reply_message,0,0,false,false,false,true);
+      poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, true);
 
     }else {
-
-      // $tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true
       
       message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, true);
 

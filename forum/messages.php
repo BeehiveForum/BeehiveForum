@@ -75,8 +75,9 @@ if($msg_count>0){
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;
     echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
-    echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?msg=$tid.$npid\">\n";
-    echo "<button class=\"button\">Keep reading</button>\n</a></td></tr></table>\n";
+    echo "<form name=\"f_keepreading\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
+    echo "<input type=\"submit\" class=\"button\" value=\"Keep reading\">\n";
+    echo "<input type=\"hidden\" name=\"msg\" value=\"$tid.$npid\"></form></td></tr></table>\n";
 }
 
 messages_start_panel();

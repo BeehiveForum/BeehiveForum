@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.66 2003-11-30 19:26:00 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.67 2003-12-02 22:02:24 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -31,11 +31,15 @@ require_once("./include/ip.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/stats.inc.php");
 
+// An array to cache the user session in - saves querying the database lots of times.
+
+if (!isset($user_sess) || !is_array($user_sess)) $user_sess = array();
+
 // Checks the session and loads it into an array.
 
 function bh_session_check()
 {
-    global $HTTP_COOKIE_VARS, $show_stats, $session_cutoff;
+    global $HTTP_COOKIE_VARS, $user_sess, $session_cutoff, $show_stats, $default_language, $default_style;
 
     ip_check();
 
@@ -46,40 +50,56 @@ function bh_session_check()
 
     $current_time = time();
 
-    // Check the current user's cookie data. This is the main session
-    // data that Beehive relies on. We only store something in the
-    // SESSIONS table in the database for user tracking purposes, e.g:
-    // Active User list, etc.
+    // Check the current user's session data. This is the main session
+    // data that Beehive relies on. If this data does not match what
+    // we have stored in the database then the user gets logged out
+    // automatically.
 
     if (isset($HTTP_COOKIE_VARS['bh_sess_hash']) && is_md5($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
-	$sql = "SELECT SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, USER.LOGON, ";
-	$sql.= "USER.PASSWD, USER.STATUS FROM ". forum_table("SESSIONS"). " SESSIONS ";
+	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER.STATUS, ";
+	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME FROM ". forum_table("SESSIONS"). " SESSIONS ";
 	$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
+        $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
 	$result = db_query($sql, $db_bh_session_check);
 
 	if (db_num_rows($result) > 0) {
 	    
-	    $user_sess_check = db_fetch_array($result, MYSQL_ASSOC);
+	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
-	    if (isset($user_sess_check['UID']) && $user_sess_check['UID'] == 0) {
+	    if (isset($user_sess['UID']) && $user_sess['UID'] == 0) {
 
-                $user_sess_check['LOGON']  = 'GUEST';
-		$user_sess_check['PASSWD'] = md5('GUEST');
+                $guest_user_sess = array('UID'            => 0,
+                                         'LOGON'          => 'GUEST',
+                                         'PASSWD'         => md5('GUEST'),
+                                         'STATUS'         => 0,
+                                         'POSTS_PER_PAGE' => 5,
+                                         'TIMEZONE'       => 0,
+                                         'DL_SAVING'      => 0,
+                                         'MARK_AS_OF_INT' => 0,
+                                         'FONT_SIZE'      => 10,
+                                         'STYLE'          => $default_style,
+                                         'VIEW_SIGS'      => 0,
+                                         'START_PAGE'     => 0,
+                                         'LANGUAGE'       => $default_language,
+                                         'PM_NOTIFY'      => 'N',
+                                         'SHOW_STATS'     => 1);
+
+		$user_sess = array_merge($user_sess, $guest_user_sess);
 	    }
 
-	    if (isset($user_sess_check['UID']) && isset($user_sess_check['LOGON']) && isset($user_sess_check['PASSWD'])) {
+	    if (isset($user_sess['UID']) && isset($user_sess['LOGON']) && isset($user_sess['PASSWD'])) {
 
-                if (user_check_logon($user_sess_check['UID'], $user_sess_check['LOGON'], $user_sess_check['PASSWD'])) {
+                if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
 
                     // Everything checks out OK. If the user's session is older
                     // then 5 minutes we should update it.
 
-		    if ($current_time - $user_sess_check['TIME'] > 60) {
+		    if ($current_time - $user_sess['TIME'] > 60) {
 
                         $session_stamp = time() - $session_cutoff;
                         
@@ -87,7 +107,7 @@ function bh_session_check()
                         
                         $sql = "UPDATE ". forum_table("SESSIONS"). " ";
                         $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
-                        $sql.= "WHERE SESSID = {$user_sess_check['SESSID']}";
+                        $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
 
                         db_query($sql, $db_bh_session_check);
 
@@ -113,6 +133,15 @@ function bh_session_check()
 // Fetches a value from the session
 
 function bh_session_get_value($session_key)
+{
+    global $user_sess;
+
+    if (isset($user_sess[$session_key])) return $user_sess[$session_key];
+
+    return false;
+}
+
+/*function bh_session_get_value($session_key)
 {
     global $HTTP_COOKIE_VARS, $default_style, $default_language;
 
@@ -160,7 +189,7 @@ function bh_session_get_value($session_key)
     }
 
     return false;
-}
+} */
 
 // Initialises the session
 

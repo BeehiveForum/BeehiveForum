@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.37 2003-11-29 12:07:05 decoyduck Exp $ */
+/* $Id: nav.php,v 1.38 2003-12-02 22:02:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -38,6 +38,8 @@ require_once("./include/config.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
+
+bh_session_check();
 
 header_no_cache();
 

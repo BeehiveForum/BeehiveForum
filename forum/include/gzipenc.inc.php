@@ -21,11 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.21 2003-11-02 12:47:36 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.22 2003-12-02 22:02:23 decoyduck Exp $ */
 
 // Compresses the output of the PHP scripts to save bandwidth.
 
 require_once('./include/config.inc.php');
+
+if (!isset($gzip_compress_state)) $gzip_compress_state = false;
 
 function bh_check_gzip()
 {
@@ -58,7 +60,7 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $gzip_compress_level;
+    global $gzip_compress_level, $gzip_compress_state;
 
     // check the compression level variable
     if (!isset($gzip_compress_level)) $gzip_compress_level = 1;
@@ -72,6 +74,10 @@ function bh_gzhandler($contents)
         // do the compression
         if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
+            // Gzip is successful
+
+	    $gzip_compression_state = true;
+            
             // generate the error checking bits
             $size  = strlen($contents);
             $crc32 = crc32($contents);

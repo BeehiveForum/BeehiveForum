@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_logout.php,v 1.14 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: user_logout.php,v 1.15 2003-12-02 22:02:23 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -40,8 +40,13 @@ $logged_off = false;
 
 // Where are we going after we've logged on?
 if (isset($HTTP_POST_VARS['submit'])) {
+
     bh_session_end();
     $logged_off = true;
+
+}else {
+
+    bh_session_check();
 }
 
 html_draw_top();

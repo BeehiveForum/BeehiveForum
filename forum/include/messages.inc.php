@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.201 2003-12-01 21:37:54 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.202 2003-12-02 22:02:23 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -832,7 +832,7 @@ function validate_msg($msg)
 
 function messages_forum_stats($tid, $pid)
 {
-    global $lang, $show_stats;
+    global $lang, $show_stats, $bh_query_count, $gzip_compress_state, $gzip_compress_level;
 
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
@@ -998,6 +998,45 @@ function messages_forum_stats($tid, $pid)
             echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
+
+	    /* Work in progress.
+            
+            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "          <tr>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "            <td>Queries used to display this page: <b>$bh_query_count</b></td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "          <tr>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "            <td>GZIP Compression Status: <b>", ($gzip_compress_state) ? "Enabled" : "Disabled", "</b></td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+
+	    if ($gzip_compress_state) {
+
+                echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+                echo "          <tr>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
+                echo "            <td>GZIP Compression Level: <b>$gzip_compress_level</b></td>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+	    }
+
+            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "          <tr>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "            <td>&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+
+	    -- */
+
             echo "      </td>\n";
 
         }else {

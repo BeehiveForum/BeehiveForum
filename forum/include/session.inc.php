@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.51 2003-09-21 14:22:47 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.52 2003-09-21 18:28:45 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -29,42 +29,7 @@ require_once("./include/user.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/ip.inc.php");
 require_once("./include/html.inc.php");
-
-// Updates the sessions. Removes stale sessions and checks the stats
-
-function bh_update_session_stats()
-{
-    global $session_cutoff;
-
-    $db_bh_update_session_stats = db_connect();
-
-    $session_stamp = time() - $session_cutoff;
-
-    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE TIME < $session_stamp";
-    $result = db_query($sql, $db_bh_update_session_stats);
-
-    // Fetch the number of active users
-
-    $sql = "SELECT COUNT(UID) AS SCOUNT FROM ". forum_table("SESSIONS");
-    $result = db_query($sql, $db_bh_update_session_stats);
-
-    $sessions = db_fetch_array($result);
-
-    // Fetch the current stat entry from the database
-
-    $sql = "SELECT MOST_USERS_COUNT FROM ". forum_table("STATS");
-    $result = db_query($sql, $db_bh_update_session_stats);
-
-    $most_users = db_fetch_array($result);
-
-    // Check to see if we've got a higher value
-
-    if ($sessions['SCOUNT'] > $most_users['MOST_USERS_COUNT']) {
-
-        $sql = "UPDATE ". forum_table("STATS"). " SET MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = {$sessions['SCOUNT']}";
-        $result = db_query($sql, $db_bh_update_session_stats);
-    }
-}
+require_once("./include/stats.inc.php");
 
 // Checks the session
 
@@ -115,15 +80,29 @@ function bh_session_check()
                     $sql.= "VALUES ('{$user_sess['UID']}', '$ipaddress', NOW())";
                 }
 
-                if (db_query($sql, $db_bh_session_check)) {
-                    bh_update_session_stats();
-                    return true;
-                }
+                db_query($sql, $db_bh_session_check);
+                bh_remove_stale_sessions();
+                update_stats();
+                return true;
             }
         }
     }
 
     return false;
+}
+
+// Remove all active users that are over the $session_cutoff in age.
+
+function bh_remove_stale_sessions()
+{
+    global $session_cutoff;
+
+    $db_bh_update_session_stats = db_connect();
+
+    $session_stamp = time() - $session_cutoff;
+
+    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE TIME < $session_stamp";
+    $result = db_query($sql, $db_bh_update_session_stats);
 }
 
 // Fetches a value from the session

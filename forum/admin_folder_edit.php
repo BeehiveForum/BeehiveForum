@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.25 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.26 2005-01-28 23:50:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -145,12 +145,13 @@ if (isset($_POST['submit'])) {
     $t_post_html     = (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
     $t_post_sig      = (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
     $t_guest_access  = (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
+    $t_post_approval = (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
 
     // We need a double / float here because we're storing a high bit value
 
     $folder_data['PERM'] = (double)$t_post_read | $t_post_create | $t_thread_create;
     $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_edit | $t_post_delete | $t_post_attach;
-    $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_html | $t_post_sig | $t_guest_access;
+    $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_html | $t_post_sig | $t_guest_access | $t_post_approval;
 
     if ($valid) {
 
@@ -207,11 +208,11 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['nameanddesc'
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                  <td>".form_input_text("name", $folder_data['TITLE'], 30, 64)."</td>\n";
+echo "                  <td>".form_input_text("name", $folder_data['TITLE'], 30, 32)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                  <td>".form_input_text("description", $folder_data['DESCRIPTION'], 30, 64)."</td>\n";
+echo "                  <td>".form_input_text("description", $folder_data['DESCRIPTION'], 30, 255)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -275,7 +276,7 @@ echo "                        <td>", form_checkbox("t_post_sig", USER_PERM_SIGNA
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>", form_checkbox("t_guest_access", USER_PERM_GUEST_ACCESS, $lang['allowguestaccess'], $folder_data['PERM'] & USER_PERM_GUEST_ACCESS), "</td>\n";
-echo "                        <td>&nbsp;</td>\n";
+echo "                        <td>", form_checkbox("t_post_approval", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], $folder_data['PERM'] & USER_PERM_POST_APPROVAL), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

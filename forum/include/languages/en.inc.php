@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.213 2005-01-27 22:58:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.214 2005-01-28 23:50:31 decoyduck Exp $ */
 
 // International English language file
 
@@ -34,6 +34,7 @@ $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 
 // Common words --------------------------------------------------------
 
+$lang['approve'] = "Approve";
 $lang['banned'] = "Banned";
 $lang['locked'] = "Locked";
 $lang['add'] = "Add";
@@ -462,6 +463,8 @@ $lang['nicknameisalreadybanned'] = "That Nickname is already banned. Check your 
 $lang['emailisalreadybanned'] = "That Email Address is already banned. Check your wildcards to see if they already match it.";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 
+$lang['requirepostapproval'] = "Require Post Approval";
+
 // Admin Forms (admin_forums.php) ------------------------------------------------
 
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9, _ - characters";
@@ -883,6 +886,7 @@ $lang['makesticky'] = "Make sticky";
 $lang['makenonsticky'] = "Make non-sticky";
 $lang['until'] = "Until 00:00 UTC";
 $lang['stickyuntil'] = "Sticky until";
+$lang['approvalrequired'] = "Approval Required";
 $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['approvepost'] = "Approve post for display";
 

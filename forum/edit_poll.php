@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.75 2004-06-13 20:02:09 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.76 2004-06-15 20:49:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -218,10 +218,11 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['FROM_UID'] = $preview_tuser['UID'];
 
     $polldata['CONTENT'] = "<br />\n";
-    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+    $polldata['CONTENT'].= "<div align=\"center\">\n";
+    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td>\n";
-    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">\n";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td><h2>". (isset($_POST['question']) ? _htmlentities(_stripslashes($_POST['question'])) : thread_get_title($tid)). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
@@ -296,8 +297,8 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    </td>\n";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td>";
-    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
 
@@ -313,6 +314,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    </td>";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
+    $polldata['CONTENT'].= "</div>\n";
     $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
 }elseif ($valid && isset($_POST['submit'])) {
@@ -373,10 +375,11 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['FROM_UID'] = $preview_tuser['UID'];
 
     $polldata['CONTENT'] = "<br />\n";
-    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+    $polldata['CONTENT'].= "<div align=\"center\">\n";
+    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td>\n";
-    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">\n";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
@@ -415,8 +418,8 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    </td>\n";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "  <tr>\n";
-    $polldata['CONTENT'].= "    <td>";
-    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "    <td align=\"center\">";
+    $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td class=\"postbody\" align=\"center\">";
 
@@ -432,6 +435,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "    </td>";
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
+    $polldata['CONTENT'].= "</div>\n";
     $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
 
     if (bh_session_get_value('UID') != $polldata['FROM_UID'] && !perm_is_moderator()) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.61 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: links.php,v 1.62 2004-06-15 20:49:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -248,7 +248,8 @@ if ($viewmode == 0) {
     $links = links_get_all(perm_is_moderator(), $sort_by, $sort_dir, $start);
 }
 
-echo "<table width=\"95%\" align=\"center\">\n";
+echo "<div align=\"center\">\n";
+echo "<table width=\"95%\">\n";
 echo "  <tr>\n";
 
 echo "    <td class=\"posthead\">&nbsp;";
@@ -320,6 +321,7 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"5\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $links['links_count'], 20), "</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

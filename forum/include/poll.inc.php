@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.123 2004-06-14 13:43:56 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.124 2004-06-15 20:49:31 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -761,7 +761,8 @@ function poll_preview_graph_horz($pollresults)
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
-    $polldisplay = "            <table width=\"100%\" align=\"center\">\n";
+    $polldisplay = "            <div align=\"center\">\n";
+    $polldisplay.= "            <table width=\"100%\">\n";
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
@@ -814,6 +815,7 @@ function poll_preview_graph_horz($pollresults)
     }
 
     $polldisplay.= "            </table>\n";
+    $polldisplay.= "            </div>\n";
 
     return $polldisplay;
 }
@@ -847,7 +849,8 @@ function poll_preview_graph_vert($pollresults)
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
-    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    $polldisplay = "            <div align=\"center\">\n";
+    $polldisplay.= "            <table width=\"460\" cellpadding=\"0\" cellspacing=\"0\">\n";
     $polldisplay.= "              <tr>\n";
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
@@ -915,6 +918,7 @@ function poll_preview_graph_vert($pollresults)
 
     $polldisplay.= "              </tr>\n";
     $polldisplay.= "            </table>\n";
+    $polldisplay.= "            </div>\n";
 
     return $polldisplay;
 }
@@ -948,7 +952,8 @@ function poll_horizontal_graph($tid)
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
-    $polldisplay = "            <table width=\"100%\" align=\"center\">\n";
+    $polldisplay = "            <div align=\"center\">\n";
+    $polldisplay.= "            <table width=\"100%\">\n";
 
     if (sizeof($pollresults['OPTION_ID']) > 0) {
 
@@ -1002,6 +1007,7 @@ function poll_horizontal_graph($tid)
 	}
 
     $polldisplay.= "            </table>\n";
+    $polldisplay.= "            </div>\n";
 
     return $polldisplay;
 
@@ -1130,7 +1136,8 @@ function poll_vertical_graph($tid)
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
-    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    $polldisplay = "            <div align=\"center\">\n";
+    $polldisplay.= "            <table width=\"460\" cellpadding=\"0\" cellspacing=\"0\">\n";
     $polldisplay.= "              <tr>\n";
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
@@ -1199,6 +1206,7 @@ function poll_vertical_graph($tid)
 
     $polldisplay.= "              </tr>\n";
     $polldisplay.= "            </table>\n";
+    $polldisplay.= "            </div>\n";
 
     return $polldisplay;
 
@@ -1392,7 +1400,8 @@ function poll_public_ballot($tid, $viewstyle)
 
       array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
-      $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
+      $polldisplay = "            <div align=\"center\">\n";
+      $polldisplay.= "            <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
       $polldisplay.= "              <tr>\n";
 
       for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
@@ -1403,7 +1412,7 @@ function poll_public_ballot($tid, $viewstyle)
 
           if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
             $polldisplay.= "            </table><br />\n";
-            $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
+            $polldisplay.= "            <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
           }
 
           $polldisplay.= "              <tr>\n";
@@ -1455,6 +1464,7 @@ function poll_public_ballot($tid, $viewstyle)
       }
 
       $polldisplay.= "            </table><br />\n";
+      $polldisplay.= "            </div>\n";
 
     }else {
 
@@ -1464,7 +1474,8 @@ function poll_public_ballot($tid, $viewstyle)
 
         if ($user = user_get($uid)) {
 
-          $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
+          $polldisplay.= "            <div align=\"center\">\n";
+          $polldisplay.= "            <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
           $polldisplay.= "              <tr>\n";
           $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javascript:void(0)\" onclick=\"openProfile({$user['UID']}, '$webtag')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
           $polldisplay.= "              </tr>\n";
@@ -1479,7 +1490,7 @@ function poll_public_ballot($tid, $viewstyle)
           }
 
           $polldisplay.= "            </table><br />\n";
-
+	  $polldisplay.= "            </div>\n";
         }
       }
     }

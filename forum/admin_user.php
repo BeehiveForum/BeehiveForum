@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.105 2004-06-13 11:49:07 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.106 2004-06-15 20:49:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -632,8 +632,8 @@ if (isset($_POST['t_delete_posts'])) {
 	    echo "                  <td>&nbsp;</td>\n";
 	    echo "                </tr>\n";
 	    echo "                <tr>\n";
-            echo "                  <td>\n";
-            echo "                    <table class=\"box\" align=\"center\" width=\"90%\">\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"box\" width=\"90%\">\n";
 	    echo "                      <tr>\n";
             echo "                        <td>\n";
             echo "                          <table class=\"posthead\" width=\"100%\">\n";
@@ -700,7 +700,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
-    echo "              <table width=\"100%\" align=\"center\">\n";
+    echo "              <table width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}:</td>\n";
     echo "                </tr>\n";
@@ -730,7 +730,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
-    echo "              <table width=\"100%\" align=\"center\">\n";
+    echo "              <table width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}:</td>\n";
     echo "                </tr>\n";
@@ -741,8 +741,8 @@ if (isset($_POST['t_delete_posts'])) {
 	echo "                  <td>&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>\n";
-        echo "                    <table class=\"box\" align=\"center\" width=\"90%\">\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"box\" width=\"90%\">\n";
         echo "                      <tr>\n";
         echo "                        <td>\n";
         echo "                          <table class=\"posthead\" width=\"100%\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.4 2004-04-28 22:39:36 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.5 2004-06-15 20:49:31 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -103,7 +103,8 @@ echo "<body class=\"bodytext\">\n";
 
 if (isset($HTTP_GET_VARS['gallery'])) {
 
-    echo "<table border=\"0\" cellpadding=\"10\" cellspacing=\"10\" align=\"center\" width=\"500\">\n";
+    echo "<div align=\"center\">\n";
+    echo "<table border=\"0\" cellpadding=\"10\" cellspacing=\"10\" width=\"500\">\n";
 
     for ($i = 0; $i < sizeof($images_array); $i++) {  // $i+=2
 
@@ -118,6 +119,7 @@ if (isset($HTTP_GET_VARS['gallery'])) {
     }
 
     echo "</table>\n";
+    echo "</div>\n";
 
 }else {
 

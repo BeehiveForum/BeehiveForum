@@ -209,7 +209,7 @@ html_draw_top();
         <td class="subhead" colspan="2">Signature</td>
       </tr>
       <tr>
-        <td colspan="2"><?php echo form_textarea("sig_content", $user_sig['CONTENT'], 4, 60); ?></td>
+        <td colspan="2"><?php echo form_textarea("sig_content", htmlspecialchars($user_sig['CONTENT']), 4, 60); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.99 2004-04-12 18:42:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.100 2004-04-14 21:28:02 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -44,6 +44,10 @@ function bh_session_check()
 
     $current_time = time();
 
+    // Session cut off timestamp
+
+    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
+
     // Check the current user's session data. This is the main session
     // data that Beehive relies on. If this data does not match what
     // we have stored in the database then the user gets logged out
@@ -60,7 +64,7 @@ function bh_session_check()
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$table_data['FID']}) ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)";
 
 	}else {
 
@@ -68,7 +72,7 @@ function bh_session_check()
 	    $sql.= "SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = 0) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
+	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)";
 	}
 	
 	$result = db_query($sql, $db_bh_session_check);
@@ -108,27 +112,26 @@ function bh_session_check()
                     
                 if ($user_sess['FID'] <> $table_data['FID']) {
                     
-                    $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' AND FID = '{$table_data['FID']}'";
-                    $result = db_query($sql, $db_bh_session_check);
-                        
-                    if (db_num_rows($result) == 0) {
-                        
-                        $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-                        $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
-                        $sql.= "'$ipaddress', NOW())";
-                        
-                        $result = db_query($sql, $db_bh_session_check);
-                            
-                        $sql = "DELETE FROM VISITOR_LOG WHERE FID = '{$table_data['FID']}' ";
-                        $sql.= "AND UID = '{$user_sess['UID']}'";
+                    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash' ";
+                    $sql.= "AND FID = '{$table_data['FID']}'";
 
-                        $result = db_query($sql, $db_bh_session_check);
+		    $result = db_query($sql, $db_bh_session_check);
+                    
+                    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
+                    $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
+                    $sql.= "'$ipaddress', NOW())";
+                        
+                    $result = db_query($sql, $db_bh_session_check);
+                            
+                    $sql = "DELETE FROM VISITOR_LOG WHERE FID = '{$table_data['FID']}' ";
+                    $sql.= "AND UID = '{$user_sess['UID']}'";
+
+                    $result = db_query($sql, $db_bh_session_check);
     
-                        $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                        $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
+                    $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
+                    $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
     
-                        $result = db_query($sql, $db_bh_session_check);
-                    }
+                    $result = db_query($sql, $db_bh_session_check);
                 }
 
                 // Everything checks out OK. If the user's session is older

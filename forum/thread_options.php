@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.1 2004-04-12 03:11:38 tribalonline Exp $ */
+/* $Id: thread_options.php,v 1.2 2004-04-12 14:31:20 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -189,7 +189,7 @@ if ($ismod) {
 		if (($HTTP_POST_VARS['lock'] == "Y") != $locked) {
 			$locked = ($HTTP_POST_VARS['lock'] == "Y");
 	        thread_admin_lock($tid, $locked);
-		    admin_addlog(0, 0, $tid, 0, 0, 0, ($locked) ? 19 : 20);
+		    admin_addlog(0, 0, $tid, 0, 0, 0, ($locked) ? 30 : 31);
 			$update = true;
 		}
 	}
@@ -212,6 +212,20 @@ if ($ismod) {
 			$sticky = $HTTP_POST_VARS['sticky'];
 			thread_set_sticky($tid, false);
 			admin_addlog(0, 0, $tid, 0, 0, 0, 26);
+			$update = true;
+		}
+	}
+	if (isset($HTTP_POST_VARS['deluser']) && isset($HTTP_POST_VARS['deluser_con']) && $HTTP_POST_VARS['deluser_con'] == "Y") {
+		if ($del_uid = user_get_uid($HTTP_POST_VARS['deluser'])) {
+			thread_delete_by_user($tid, $del_uid['UID']);
+			admin_addlog($del_uid['UID'], 0, $tid, 0, 0, 0, 32);
+			$update = true;
+		}
+	}
+	if (isset($HTTP_POST_VARS['delthread']) && $HTTP_POST_VARS['delthread'] == "Y") {
+		if (isset($HTTP_POST_VARS['delthread_con']) && $HTTP_POST_VARS['delthread_con'] == "Y") {
+			thread_delete_by_user($tid, 0);
+			admin_addlog(0, 0, $tid, 0, 0, 0, 33);
 			$update = true;
 		}
 	}

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.47 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.48 2004-04-12 14:31:20 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -313,6 +313,18 @@ if ($admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir)) {
                 break;
             case 29:
                 $action_text = "{$lang['editedforumsettings']}";
+                break;
+            case 30:
+                $action_text = "{$lang['lockedthreadtitlefolder']}: '$thread_title'";
+                break;
+            case 31:
+                $action_text = "{$lang['unlockedthreadtitlefolder']}: '$thread_title'";
+                break;
+            case 32:
+                $action_text = "{$lang['userspostsdeletedinthread']}: '$thread_title'";
+                break;
+            case 33:
+                $action_text = "{$lang['threaddeleted']}: '$thread_title'";
                 break;
             default:
                 $action_text = "{$lang['unknown']}";

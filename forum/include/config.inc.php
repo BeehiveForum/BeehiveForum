@@ -45,6 +45,9 @@ $default_style = "default"; // the default forum style directory name
 // Post stuff ----------------------------------------------------------
 
 $maximum_post_length = 6226;	// maximum character-length of posts
+$allow_post_editing = true;     // allow users to edit their posts
+$post_edit_time = 0;            // time that users can edit posts for in
+                                // hours after posting, 0 = infinite
 
 // ---------------------------------------------------------------------
 

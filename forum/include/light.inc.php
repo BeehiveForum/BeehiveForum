@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.56 2004-10-21 10:19:02 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.57 2004-10-27 16:43:17 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -389,8 +389,15 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if(!isset($message['FROM_RELATIONSHIP'])) {
         $message['FROM_RELATIONSHIP'] = 0;
     }
+
     if(!isset($message['TO_RELATIONSHIP'])) {
         $message['TO_RELATIONSHIP'] = 0;
+    }
+
+    if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
+    {
+        light_message_display_deleted($tid, $message['PID']);
+        return;
     }
 
     // Check for words that should be filtered ---------------------------------

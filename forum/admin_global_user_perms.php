@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.13 2005-03-06 23:36:40 decoyduck Exp $ */
+/* $Id: admin_global_user_perms.php,v 1.1 2005-03-06 23:36:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -86,26 +86,11 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (isset($_POST['cancel'])) {
-    header_redirect("./admin_user_groups.php?webtag=$webtag");
-}
-
 html_draw_top("openprofile.js");
 
 if (!(perm_has_admin_access())) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
-    html_draw_bottom();
-    exit;
-}
-
-if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
-    $gid = $_GET['gid'];
-}elseif (isset($_POST['gid']) && is_numeric($_POST['gid'])) {
-    $gid = $_POST['gid'];
-}else {
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['invalidop']}</h2>\n";
     html_draw_bottom();
     exit;
 }
@@ -140,15 +125,16 @@ if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch'])
     $usersearch = "";
 }
 
-if (isset($_POST['add'])) {
+if (isset($_POST['update'])) {
 
-    if (isset($_POST['add_user']) && is_array($_POST['add_user'])) {
+    if (isset($_POST['t_admin_tools']) && is_array($_POST['t_admin_tools'])) {
 
-        foreach($_POST['add_user'] as $uid) {
+        foreach($_POST['t_admin_tools'] as $uid => $t_admin_tools) {
 
-            if (!perm_user_in_group($uid, $gid)) {
-                perm_add_user_to_group($uid, $gid);
-            }
+           $t_forum_tools = (isset($_POST['t_forum_tools'][$uid])) ? $_POST['t_forum_tools'][$uid] : 0;
+           $new_user_perms = ((double) $t_admin_tools | (double) $t_forum_tools);
+
+           perm_update_global_perms($uid, $new_user_perms);
         }
     }
 }
@@ -159,21 +145,32 @@ if (isset($_POST['remove'])) {
 
         foreach($_POST['remove_user'] as $uid) {
 
-            if (perm_user_in_group($uid, $gid)) {
-                perm_remove_user_from_group($uid, $gid);
-            }
+            perm_remove_global_perms($uid);
         }
     }
 }
 
-$group = perm_get_group($gid);
+if (isset($_POST['add'])) {
 
-echo "<h1>{$lang['admin']} : {$lang['manageusergroups']} : {$group['GROUP_NAME']} : {$lang['addremoveusers']}</h1>\n";
+    if (isset($_POST['add_user']) && is_array($_POST['add_user'])) {
+
+        foreach($_POST['add_user'] as $uid) {
+
+            $t_admin_tools = (isset($_POST['t_admin_tools'][$uid])) ? $_POST['t_admin_tools'][$uid] : 0;
+            $t_forum_tools = (isset($_POST['t_forum_tools'][$uid])) ? $_POST['t_forum_tools'][$uid] : 0;
+
+            $new_user_perms = ((double) $t_admin_tools | (double) $t_forum_tools);
+
+            perm_add_global_perms($uid, $new_user_perms);
+        }
+    }
+}
+
+echo "<h1>{$lang['admin']} : {$lang['globaluserpermissions']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";
+echo "<form name=\"f_folders\" action=\"admin_global_user_perms.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('gid', $gid), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
@@ -184,24 +181,28 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['admintools']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['forumtools']}</td>\n";
 echo "                </tr>\n";
 
-$group_users_array = perm_group_get_users($gid);
+$group_users_array = perm_get_global_permissions();
 
 if (sizeof($group_users_array['user_array']) > 0) {
 
     foreach($group_users_array['user_array'] as $user) {
 
         echo "                <tr>\n";
-        echo "                  <td>", form_checkbox("remove_user[]", $user['UID'], "", false), "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME']), "</td>\n";
+        echo "                  <td width=\"50%\">&nbsp;". form_checkbox("remove_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+        echo "                  <td>", form_radio("t_admin_tools[{$user['UID']}]", USER_PERM_ADMIN_TOOLS, $lang['yes'], $user['PERM'] & USER_PERM_ADMIN_TOOLS), "&nbsp;", form_radio("t_admin_tools[{$user['UID']}]", 0, $lang['no'], !$user['PERM'] & USER_PERM_ADMIN_TOOLS), "</td>\n";
+        echo "                  <td>", form_radio("t_forum_tools[{$user['UID']}]", USER_PERM_FORUM_TOOLS, $lang['yes'], $user['PERM'] & USER_PERM_FORUM_TOOLS), "&nbsp;", form_radio("t_forum_tools[{$user['UID']}]", 0, $lang['no'], !$user['PERM'] & USER_PERM_FORUM_TOOLS), "</td>\n";
         echo "                </tr>\n";
     }
 
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td>{$lang['nousersingroup']}</td>\n";
+    echo "                  <td>{$lang['nousers']}</td>\n";
     echo "                </tr>\n";
 }
 
@@ -221,13 +222,13 @@ if (sizeof($group_users_array['user_array']) > 0) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid&usersearch=$usersearch&search_page=$search_page", $start_main, $group_users_array['user_count'], 20, "main_page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_global_user_perms.php?webtag=$webtag&usersearch=$usersearch&search_page=$search_page", $start_main, $group_users_array['user_count'], 20, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("remove", $lang['remove']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("remove", $lang['remove']), "&nbsp;", form_submit("update", $lang['update']), "</td>\n";
     echo "    </tr>\n";
 }
 
@@ -237,9 +238,8 @@ echo "<br />\n";
 
 if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
-    echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
+    echo "<form method=\"post\" action=\"admin_global_user_perms.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('gid', $gid), "\n";
     echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
     echo "  ", form_input_hidden("main_page", $main_page), "\n";
     echo "  ", form_input_hidden("search_page", $search_page), "\n";
@@ -251,7 +251,9 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['searchresults']}</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['admintools']}</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['forumtools']}</td>\n";
     echo "                </tr>\n";
 
     $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', $start_search);
@@ -261,7 +263,9 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
 
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+            echo "                  <td width=\"50%\">&nbsp;", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+            echo "                  <td>", form_radio("t_admin_tools[{$user['UID']}]", USER_PERM_ADMIN_TOOLS, $lang['yes'], false), "&nbsp;", form_radio("t_admin_tools[{$user['UID']}]", 0, $lang['no'], false), "</td>\n";
+            echo "                  <td>", form_radio("t_forum_tools[{$user['UID']}]", USER_PERM_FORUM_TOOLS, $lang['yes'], false), "&nbsp;", form_radio("t_forum_tools[{$user['UID']}]", 0, $lang['no'], false), "</td>\n";
             echo "                </tr>\n";
         }
 
@@ -288,7 +292,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         echo "      <td>&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_global_user_perms.php?webtag=$webtag&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>&nbsp;</td>\n";
@@ -303,9 +307,8 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "<br />\n";
 }
 
-echo "<form method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
+echo "<form method=\"post\" action=\"admin_global_user_perms.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('gid', $gid), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";

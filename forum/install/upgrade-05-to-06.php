@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.25 2005-03-05 21:59:16 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.26 2005-03-06 23:36:41 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -134,7 +134,7 @@ $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (GID,FID)";
+$sql.= "  PRIMARY KEY  (GID,FORUM,FID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -228,46 +228,21 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Find any users with USER_PERM_FORUM_TOOLS permissions
-    // and make sure they have global perms set.
+    // Extend any USER_PERM_FORUM_TOOLS AND USER_PERM_ADMIN_TOOLS permissions
+    // to cover all forums so it mimics the behavior in 0.5.
 
-    $sql = "SELECT DISTINCT GROUP_USERS.UID FROM TEST_GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN TEST_GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_PERMS.PERM & 1024 > 0 AND FID = 0";
+    $sql = "SELECT GID, PERM FROM {$forum_webtag}_GROUP_PERMS ";
+    $sql.= "WHERE (PERM & 1024 > 0 OR PERM & 512 > 0) ";
+    $sql.= "AND FID = 0";
 
     if ($result = db_query($sql, $db_install)) {
 
         while ($user_data = db_fetch_array($result)) {
 
-            $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-            $sql.= "VALUES ('$forum_fid', '{$group_data['GROUP_NAME']}', ";
-            $sql.= "'{$group_data['GROUP_DESC']}', '{$group_data['AUTO_GROUP']}')";
+            $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
+            $sql.= "VALUES ('{$user_data['GID']', 0, 0, '{$user_data['PERM']}')";
 
-            if ($result_group = db_query($sql, $db_instal)) {
-
-                $new_group_gid = db_insert_id($db_install);
-
-                $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
-                $sql.= "VALUES ('$new_group_gid', '$forum_fid', 0, 1024)";
-
-                if (!$result = db_query($sql, $db_install)) {
-
-                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-                    $valid = false;
-                    return;
-                }
-
-                $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
-                $sql.= "VALUES('$new_group_gid', '{$user_data['UID']}')";
-
-                if (!$result = db_query($sql, $db_install)) {
-
-                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-                    $valid = false;
-                    return;
-                }
-
-            }else {
+            if (!$result = db_query($sql, $db_install)) {
 
                 $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
@@ -281,7 +256,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_GROUPS";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.64 2005-01-23 23:50:54 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.65 2005-03-06 23:36:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -70,18 +70,18 @@ $lang = load_language_file();
 
 html_draw_top();
 
-if (!(perm_has_admin_access())) {
+if (!perm_has_admin_access() && !perm_has_forumtools_access()) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
 
-if (forum_check_access_level()) {
+if (perm_has_admin_access()) {
 
     echo "<table border=\"0\" width=\"100%\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">Tools</td>\n";
+    echo "    <td class=\"subhead\">{$lang['admintools']}</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_users.php?webtag=$webtag\" target=\"right\">{$lang['users']}</a></td>\n";
@@ -130,13 +130,16 @@ if (perm_has_forumtools_access()) {
 
     echo "<table border=\"0\" width=\"100%\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">Forums</td>\n";
+    echo "    <td class=\"subhead\">{$lang['forummanagement']}</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['globalforumsettings']}</a></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_global_user_perms.php?webtag=$webtag\" target=\"right\">{$lang['globaluserpermissions']}</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.62 2005-02-06 14:43:12 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.63 2005-03-06 23:36:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -149,7 +149,7 @@ if (isset($_POST['submit']) && $uid != 0) {
 
         $creator = links_get_creator_uid($lid);
 
-        if (perm_is_moderator() || $creator['UID'] == $uid) {
+        if (perm_is_links_moderator() || $creator['UID'] == $uid) {
 
             if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
 
@@ -209,7 +209,7 @@ if (isset($_GET['action'])) {
     if ($_GET['action'] == "delete_comment") {
 
         $creator = links_get_comment_uid($_GET['cid']);
-        if (perm_is_moderator() || $creator['UID'] == $uid) links_delete_comment($_GET['cid']);
+        if (perm_is_links_moderator() || $creator['UID'] == $uid) links_delete_comment($_GET['cid']);
     }
 }
 
@@ -221,7 +221,7 @@ if (!$link = links_get_single($lid)) {
     exit;
 }
 
-$folders = links_folders_get(perm_is_moderator());
+$folders = links_folders_get(perm_is_links_moderator());
 
 html_draw_top();
 
@@ -359,7 +359,7 @@ if ($comments_array = links_get_comments($lid)) {
 
         if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
 
-            if (perm_is_moderator() || $comment['UID'] == $uid) {
+            if (perm_is_links_moderator() || $comment['UID'] == $uid) {
                 echo "                  <td class=\"subhead\">{$lang['commentby']} ", format_user_name($comment['LOGON'], $comment['NICKNAME']), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
                 echo "                  <td class=\"subhead\">{$lang['commentby']} ", format_user_name($comment['LOGON'], $comment['NICKNAME']), "</td>\n";
@@ -367,7 +367,7 @@ if ($comments_array = links_get_comments($lid)) {
 
         }else {
 
-            if (perm_is_moderator()) {
+            if (perm_is_links_moderator()) {
                 echo "                  <td class=\"subhead\">{$lang['commentby']} {$lang['unknownuser']} <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
                 echo "                  <td class=\"subhead\">{$lang['commentby']} {$lang['unknownuser']}</td>\n";
@@ -433,7 +433,7 @@ if ($uid != 0) {
     echo "</form>\n";
 }
 
-if (perm_is_moderator() || $link['UID'] == $uid) {
+if (perm_is_links_moderator() || $link['UID'] == $uid) {
 
     echo "<form name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";

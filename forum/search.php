@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.52 2004-01-19 20:56:29 decoyduck Exp $ */
+/* $Id: search.php,v 1.53 2004-01-26 19:40:47 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -142,13 +142,13 @@ $error = false;
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
-echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
-echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
 
 if ($pm_new_count = pm_new_check(false)) {
-    echo "      <img src=\"", style_image('pmnewmessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"./pm.php\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['new']}]</span><br />\n";
+    echo "      <img src=\"", style_image('pmnewmessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['new']}]</span><br />\n";
 }else {
-    echo "      <img src=\"", style_image('pmnomessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"./pm.php\" target=\"main\">{$lang['pminbox']}</a><br />\n";
+    echo "      <img src=\"", style_image('pmnomessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php\" target=\"main\">{$lang['pminbox']}</a><br />\n";
 }
 
 echo "    </td>\n";

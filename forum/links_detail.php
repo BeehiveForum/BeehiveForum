@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.26 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.27 2004-01-26 19:40:34 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -144,7 +144,7 @@ if (bh_session_get_value('UID') != 0) {
     $vote = links_get_vote($lid, bh_session_get_value('UID'));
     $vote = $vote ? $vote : -1;
     echo "<p>&nbsp;</p>\n";
-    echo "<form name=\"link_vote\" action=\"./links_detail.php\" method=\"POST\">\n";
+    echo "<form name=\"link_vote\" action=\"links_detail.php\" method=\"POST\">\n";
     echo form_input_hidden("type", "vote") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";
     echo "<table class=\"box\" cellspacing=\"1\" align=\"center\"><tr><td>\n";
@@ -167,7 +167,7 @@ if ($comments) {
     echo "<table width=\"90%\" align=\"center\">\n";
     while (list($key, $val) = each($comments)) {
         echo "<tr class=\"subhead\"><td>{$lang['commentby']} ", (isset($val['LOGON']) ? format_user_name($val['LOGON'], $val['NICKNAME']) : $lang['unknownuser']), " [" . format_time($val['CREATED'], true) . "]";
-        if (perm_is_moderator() || $val['UID'] == bh_session_get_value('UID')) echo " <a href=\"./links_detail.php?action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a>";
+        if (perm_is_moderator() || $val['UID'] == bh_session_get_value('UID')) echo " <a href=\"links_detail.php?action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a>";
         echo "</td></tr>\n";
         echo "<tr class=\"posthead\"><td>" . _stripslashes($val['COMMENT']) . "</td></tr>\n";
     }
@@ -178,7 +178,7 @@ if ($comments) {
 
 if (bh_session_get_value('UID') != 0) {
     echo "<p>&nbsp;</p>\n";
-    echo "<form name=\"link_comment\" action=\"./links_detail.php\" method=\"POST\">\n";
+    echo "<form name=\"link_comment\" action=\"links_detail.php\" method=\"POST\">\n";
     echo form_input_hidden("type", "comment") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";
     echo "<table class=\"box\" align=\"center\"><tr class=\"subhead\"><td>\n";
@@ -193,7 +193,7 @@ if (bh_session_get_value('UID') != 0) {
 
 if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
     echo "<p>&nbsp;</p>\n";
-    echo "<form name=\"link_moderation\" action=\"./links_detail.php\" method=\"POST\">\n";
+    echo "<form name=\"link_moderation\" action=\"links_detail.php\" method=\"POST\">\n";
     echo "<table align=\"center\" class=\"box\"><tr><td>\n";
     echo form_input_hidden("type", "moderation") . "\n";
     echo form_input_hidden("lid", $lid) . "\n";

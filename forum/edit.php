@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.78 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: edit.php,v 1.79 2004-01-26 19:40:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -494,7 +494,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 }
 
 echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-echo "<br /><form name=\"f_edit\" action=\"./edit.php\" method=\"post\" target=\"_self\">\n";
+echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 
 if (isset($error_html)) {
     echo "<table class=\"posthead\" width=\"720\">\n";

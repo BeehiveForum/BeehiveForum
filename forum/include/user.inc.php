@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.111 2004-01-07 20:35:36 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.112 2004-01-26 19:41:15 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -335,8 +335,7 @@ function user_get_prefs($uid)
 
     if (!is_numeric($uid)) return false;
 
-    $sql = "select * from " . forum_table("USER_PREFS") . " where uid = $uid";
-
+    $sql = "SELECT * FROM ". forum_table("USER_PREFS"). " WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_prefs);
 
     if (!db_num_rows($result)) {
@@ -353,36 +352,41 @@ function user_get_prefs($uid)
     return $fa;
 }
 
-function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_url = "",$pic_url = "",
-            $email_notify = "",$timezone = 0,$dl_saving = "",$mark_as_of_int = "",
-            $posts_per_page = 5, $font_size = 10, $style, $view_sigs = "",
-            $start_page = 0, $language = "", $pm_notify = "", $pm_notify_email = "", $dob_display = 0,
-            $anon_logon = "", $show_stats = "")
+function user_update_prefs($uid, $prefs_array)
 {
-
     global $default_style;
 
     if (!is_numeric($uid)) return false;
+    if (!is_array($prefs_array)) return false;
 
     $db_user_update_prefs = db_connect();
+    
+    // Get the current prefs and merge them with the new ones.   
 
-    $sql = "delete from ". forum_table("USER_PREFS"). " where UID = $uid";
+    $prefs_array = array_merge(user_get_prefs($uid), $prefs_array);    
+    
+    // Now delete the old preferences
+    
+    $sql = "DELETE FROM ". forum_table("USER_PREFS"). " WHERE UID = $uid";
     $result = db_query($sql, $db_user_update_prefs);
+    
+    if (empty($prefs_array['TIMEZONE']))       $prefs_array['TIMEZONE']       = 0;   
+    if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 5;
+    if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
+    
+    if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = $default_style;
 
-    if (empty($timezone)) $timezone = 0;
-    if (empty($posts_per_page)) $posts_per_page = 5;
-    if (empty($font_size)) $font_size = 10;
-    if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
-
-    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
+    $sql = "INSERT INTO " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
     $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS) ";
-    $sql.= "values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
-    $sql.= "'". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "', ";
-    $sql.= "'". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int', ";
-    $sql.= "$posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language', '$pm_notify', ";
-    $sql.= "'$pm_notify_email', '$dob_display', '$anon_logon', '$show_stats')";
-
+    $sql.= "VALUES ($uid, '{$prefs_array['FIRSTNAME']}', '{$prefs_array['LASTNAME']}', '{$prefs_array['DOB']}', ";
+    $sql.= "'{$prefs_array['HOMEPAGE_URL']}', '{$prefs_array['PIC_URL']}', '{$prefs_array['EMAIL_NOTIFY']}', ";
+    $sql.= "'{$prefs_array['TIMEZONE']}', '{$prefs_array['DL_SAVING']}', '{$prefs_array['MARK_AS_OF_INT']}', ";
+    $sql.= "'{$prefs_array['POSTS_PER_PAGE']}', '{$prefs_array['FONT_SIZE']}', '{$prefs_array['STYLE']}', ";
+    $sql.= "'{$prefs_array['VIEW_SIGS']}', '{$prefs_array['START_PAGE']}', '{$prefs_array['LANGUAGE']}', ";
+    $sql.= "'{$prefs_array['PM_NOTIFY']}', '{$prefs_array['PM_NOTIFY_EMAIL']}', '{$prefs_array['DOB_DISPLAY']}', ";
+    $sql.= "'{$prefs_array['ANON_LOGON']}', '{$prefs_array['SHOW_STATS']}')";
+    
     $result = db_query($sql, $db_user_update_prefs);
 
     return $result;

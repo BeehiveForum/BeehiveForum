@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.2 2004-01-25 12:45:56 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.3 2004-01-26 19:40:30 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -33,11 +33,15 @@ require_once("./include/errorhandler.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
+if (!bh_session_check()) {
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
+}
 
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/html.inc.php");
@@ -48,19 +52,95 @@ require_once("./include/form.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/lang.inc.php");
 
+if (isset($HTTP_POST_VARS['submit'])) {
+
+    if (isset($HTTP_POST_VARS['email_notify']) && $HTTP_POST_VARS['email_notify'] == "Y") {
+        $user_prefs['EMAIL_NOTIFY'] = "Y";
+    }else {
+        $user_prefs['EMAIL_NOTIFY'] = "";
+    }
+
+    if (isset($HTTP_POST_VARS['pm_notify_email']) && $HTTP_POST_VARS['pm_notify_email'] == "Y") {
+        $user_prefs['PM_NOTIFY_EMAIL'] = "Y";
+    }else {
+        $user_prefs['PM_NOTIFY_EMAIL'] = "";
+    }
+
+    if (isset($HTTP_POST_VARS['anon_logon']) && $HTTP_POST_VARS['anon_logon'] == "Y") {
+        $user_prefs['ANON_LOGON'] = 1;
+    }else {
+        $user_prefs['ANON_LOGON'] = 0;
+    }
+
+    if (isset($HTTP_POST_VARS['dob_display'])) {
+        $user_prefs['DOB_DISPLAY'] = _stripslashes(trim($HTTP_POST_VARS['dob_display']));
+    }else {
+        $user_prefs['DOB_DISPLAY'] = 0;
+    }
+
+    // User's UID for updating with.
+
+    $uid = bh_session_get_value('UID');
+
+    // Update USER_PREFS
+
+    user_update_prefs($uid, $user_prefs);
+
+    // Reinitialize the User's Session to save them having to logout and back in
+
+    bh_session_init($uid);
+
+    // IIS bug prevents redirect at same time as setting cookies.
+
+    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+
+        header_redirect("./edit_email.php?updated=true");
+
+    }else {
+
+        html_draw_top();
+
+        // Try a Javascript redirect
+        echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n";
+        echo "document.location.href = './edit_email.php?updated=true';\n";
+        echo "//-->\n";
+        echo "</script>";
+
+        // If they're still here, Javascript's not working. Give up, give a link.
+        echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+        echo "<p>{$lang['preferencesupdated']}</p>";
+
+        form_quick_button("./edit_email.php", $lang['continue'], "", "", "_top");
+
+        html_draw_bottom();
+        exit;
+    }
+}
+
 // Get User Prefs
 
-$user = user_get(bh_session_get_value('UID'));
-$user_prefs = user_get_prefs(bh_session_get_value('UID'));
+if (!isset($user_prefs) || !is_array($user_prefs)) $user_prefs = array();
+$user_prefs = array_merge(user_get(bh_session_get_value('UID')), $user_prefs);
+$user_prefs = array_merge(user_get_prefs(bh_session_get_value('UID')), $user_prefs);
 
 // Start output here
 
 html_draw_top();
 
 echo "<h1>{$lang['emailandprivacy']}</h1>\n";
+
+// Any error messages to display?
+
+if (!empty($error_html)) {
+    echo $error_html;
+}else if (isset($HTTP_GET_VARS['updated'])) {
+    echo "<h2>{$lang['preferencesupdated']}</h2>\n";
+}
+
 echo "<br />\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"prefs\" action=\"./edit_email.php\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"prefs\" action=\"edit_email.php\" method=\"post\" target=\"_self\">\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
@@ -72,10 +152,10 @@ echo "                  <tr>\n";
 echo "                    <td colspan=\"2\" class=\"subhead\">Email Settings</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($t_email_notify) && $t_email_notify == "Y") ? true : (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y")), "</td>\n";
+echo "                    <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($t_pm_notify_email) && $t_pm_notify_email == "Y") ? true : (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y")), "</td>\n";
+echo "                    <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td>&nbsp;</td>\n";
@@ -101,9 +181,7 @@ echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td>{$lang['ageanddob']}</td>\n";
 
-if (isset($t_dob_display)) {
-    echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $t_dob_display), "</td>\n";
-}elseif (isset($user_prefs['DOB_DISPLAY'])) {
+if (isset($user_prefs['DOB_DISPLAY'])) {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $user_prefs['DOB_DISPLAY']), "</td>\n";
 }else {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), 0), "</td>\n";
@@ -111,7 +189,7 @@ if (isset($t_dob_display)) {
 
 echo "                  </tr>\n";
 echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($t_anon_logon) && $t_anon_logon == 1) ? true : (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1)), "</td>\n";
+echo "                    <td>", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td>&nbsp;</td>\n";

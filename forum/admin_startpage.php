@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.19 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.20 2004-01-26 19:40:16 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -77,7 +77,7 @@ if (isset($HTTP_POST_VARS['save'])) {
     fwrite($fp, $content);
     fclose($fp);
 
-    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"./start_main.php\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
+    $status_text = "<p><b>{$lang['startpageupdated']}</b> <a href=\"start_main.php\" target=\"_blank\">{$lang['viewupdatedstartpage']}</a></p>";
 
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
@@ -96,7 +96,7 @@ if (isset($HTTP_POST_VARS['save'])) {
 
 }
 
-echo "<form name=\"startpage\" method=\"post\" action=\"./admin_startpage.php\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php\">\n";
 echo "<h1>{$lang['editstartpage']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;

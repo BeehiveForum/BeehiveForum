@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.24 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.25 2004-01-26 19:40:59 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -109,7 +109,7 @@ echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 ?>
 
 <div class="postbody">
-  <form name="relationship" action="./user_rel.php" method="post" target="_self">
+  <form name="relationship" action="user_rel.php" method="post" target="_self">
 <?php echo "    ", form_input_hidden("uid", $uid), "\n    ", form_input_hidden("msg", $msg), "\n"; ?>
     <table class="posthead" width="500">
 <?php if (isset($uid)) { ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_main.php,v 1.1 2004-01-24 16:43:14 decoyduck Exp $ */
+/* $Id: user_main.php,v 1.2 2004-01-26 19:40:58 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -56,6 +56,8 @@ echo "<p>{$lang['userexp_3']}</p>\n";
 echo "<p>{$lang['userexp_4']}</p>\n";
 echo "<p>{$lang['userexp_5']}</p>\n";
 echo "<p>{$lang['userexp_6']}</p>\n";
+echo "<p>{$lang['userexp_7']}</p>\n";
+echo "<p>{$lang['userexp_8']}</p>\n";
 
 html_draw_bottom();
 

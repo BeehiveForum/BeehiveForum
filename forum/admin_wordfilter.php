@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.14 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.15 2004-01-26 19:40:19 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -76,7 +76,7 @@ if (isset($HTTP_POST_VARS['save'])) {
 $word_filter_array = admin_get_word_filter();
 $wordlist = implode("\n", $word_filter_array);
 
-echo "<form name=\"startpage\" method=\"post\" action=\"./admin_wordfilter.php\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
 echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;

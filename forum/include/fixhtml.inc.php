@@ -142,7 +142,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 								$source_name = $url_name;
 							}
 							$html_parts[$i] = "div class=\"quote\"";
-							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", "", "a href=\"./$url_name\"", $source_name, "/a", "", "/div", ""));
+							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
 							$i += 12;
 						} else {
 							$html_parts[$i] = "div class=\"quote\"";
@@ -396,7 +396,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 	}
 }
 
-// $tag being everything with the < and >, e.g. $tag = 'a href="./file.html"';
+// $tag being everything with the < and >, e.g. $tag = 'a href="file.html"';
 function clean_attributes($tag)
 {
 	$valid = array();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.15 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.16 2004-01-26 19:40:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -165,7 +165,7 @@ if($last_pid < $threaddata['LENGTH']){
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
-echo "<h4><a href=\"./lthread_list.php\">{$lang['backtothreadlist']}</a></h4>";
+echo "<h4><a href=\"lthread_list.php\">{$lang['backtothreadlist']}</a></h4>";
 
 light_html_draw_bottom();
 

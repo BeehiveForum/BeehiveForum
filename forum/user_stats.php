@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.3 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.4 2004-01-26 19:40:59 decoyduck Exp $ */
 
 // Changes the user's fontsize. Moved from messages.php (02.05.2003)
 
@@ -45,15 +45,10 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
 if (isset($HTTP_GET_VARS['show_stats']) && $uid > 0) {
 
-    $userprefs = user_get_prefs(bh_session_get_value('UID'));
+    $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+    $user_prefs['SHOW_STATS'] = $HTTP_GET_VARS['show_stats'];
 
-    user_update_prefs(bh_session_get_value('UID'), $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
-                      $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
-                      $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
-                      $userprefs['MARK_AS_OF_INT'], $userprefs['POSTS_PER_PAGE'], $userprefs['FONT_SIZE'],
-                      $userprefs['STYLE'], $userprefs['VIEW_SIGS'], $userprefs['START_PAGE'],
-                      $userprefs['LANGUAGE'], $userprefs['PM_NOTIFY'], $userprefs['PM_NOTIFY_EMAIL'],
-                      $userprefs['DOB_DISPLAY'], $userprefs['ANON_LOGON'], $HTTP_GET_VARS['show_stats']);
+    user_update_prefs($uid, $user_prefs);
 
     bh_session_init(bh_session_get_value('UID'));
     header_redirect("./messages.php?msg=$msg");

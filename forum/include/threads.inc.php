@@ -211,18 +211,19 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
 function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
 {
-	// If the user has clicked on a folder header, we want that folder to be first in the list
-	global $HTTP_GET_VARS;
-	if (isset($HTTP_GET_VARS['folder'])) $folder_order[] = $HTTP_GET_VARS['folder'];
+    if (db_num_rows($resource_id)) { // check that the set of threads returned is not empty
+        // If the user has clicked on a folder header, we want that folder to be first in the list
+	    global $HTTP_GET_VARS;
+	    if (isset($HTTP_GET_VARS['folder'])) $folder_order[] = $HTTP_GET_VARS['folder'];
 
-	// Loop through the results and construct an array to return
-	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
+	    // Loop through the results and construct an array to return
+    	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
 		$thread = db_fetch_array($resource_id);
 
 		// If this folder ID has not been encountered before, make it the next folder in the order to be displayed
 		if (!isset($folder_order)) {
 			$folder_order[] = $thread['fid'];
-		} else {
+        } else {
 			if (!in_array($thread['fid'], $folder_order)) $folder_order[] = $thread['fid'];
 		}
 
@@ -238,8 +239,12 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 		}
 
 		$lst[$i]['modified'] = $thread['modified'];
-		
-	}
+
+	    }
+    } else { // special case - no threads returned, but we have to return something
+        $lst = 0;
+        $folder_order = 0;
+    }
 	return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
 }
 

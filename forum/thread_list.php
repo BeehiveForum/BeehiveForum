@@ -170,6 +170,16 @@ while (list($fid, $title) = each($folder_info)) {
 	if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
 }
 
+// If no threads are returned, say something to that effect
+
+if (!$thread_info) {
+    echo "<tr>\n";
+    echo "<td class=\"smalltext\">\n";
+    echo "No messages in this category. Please select another, or <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0\">click here</a> for all threads.\n";
+    echo "</td>\n";
+    echo "</tr>\n";
+}
+
 // Iterate through the information we've just got and display it in the right order
 while (list($key1, $folder) = each($folder_order)) {
 	echo "<tr>\n";

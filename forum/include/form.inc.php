@@ -24,6 +24,7 @@ USA
 // form.inc.php : form item functions
 
 require_once("./include/db.inc.php");
+require_once("./include/lang.inc.php");
 
 // create a <input type="text"> field
 function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text")
@@ -184,4 +185,33 @@ function form_quick_button($href,$label,$var = 0,$value = 0,$target = "_self")
     echo form_submit("submit",$label)."</form>";
 }
 
+function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
+{
+    global $lang;
+
+    $birthday_days   = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
+    $birthday_months = array($lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
+    $birthday_years = range(1900, date('Y', mktime()));
+    
+    if ($show_blank) {
+        $birthday_days_values = range(0, 31);
+        $birthday_days = array_merge(' ', $birthday_days);
+        $birthday_months_values = range(0, 12);
+        $birthday_months = array_merge(' ', $birthday_months);
+        $birthday_years_values = array_merge(0, $birthday_years);
+        $birthday_years = array_merge(' ', $birthday_years);
+    } else {
+        $birthday_days_values = range(1, 31);
+        $birthday_months_values = range(1, 12);
+        $birthday_years_values = $birthday_years;
+    }
+
+    $output  = form_dropdown_array("dob_day", $birthday_days_values, $birthday_days, $dob_day);
+    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output .= form_dropdown_array("dob_month", $birthday_months_values, $birthday_months, $dob_month);
+    $output .= "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    $output .= form_dropdown_array("dob_year", $birthday_years_values, $birthday_years, $dob_year);
+
+    return $output;
+}
 ?>

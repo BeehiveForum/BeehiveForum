@@ -206,8 +206,9 @@ $lang['wormdesc'] = "<b>Worms</b> can read messages and post as normal, but thei
 $lang['waspdesc'] = "<b>Wasps</b> can read messages, but cannot reply or post new messages.";
 $lang['splatdesc'] = "<b>Splats</b> cannot access the forum. Use this to ban persistent idiots.";
 $lang['aliasdesc'] = "<b>Possible Aliases</b> is a list of other users who's last recorded IP address match this user.";
-$lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by $sort_by. To alter a user's permissions click their name.";
-$lang['manageusersexp_2'] = "To see the last few users to logon, sort the list by LAST_LOGON.";
+$lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
+$lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
+$lang['manageusersexp_3'] = "To see the last few users to logon, sort the list by LAST_LOGON.";
 $lang['lastlogon'] = "Last Logon";
 $lang['logonfrom'] = "Logon From";
 $lang['nouseraccounts'] = "No user accounts in database.";
@@ -547,6 +548,10 @@ $lang['forumstyle'] = "Forum style";
 $lang['startpage'] = "Start page";
 $lang['containsHTML'] = "Contains HTML";
 $lang['preferredlang'] = "Preferred language";
+$lang['ageanddob'] = "Age and date of birth";
+$lang['neitheragenordob'] = "Do not show to others";
+$lang['showonlyage'] = "Show only age to others";
+$lang['showageanddob'] = "Show to others";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 
@@ -609,6 +614,9 @@ $lang['removefromfriends'] = "Remove from friends";
 $lang['addtofriends'] = "Add to friends";
 $lang['stopignoringuser'] = "Stop ignoring user";
 $lang['ignorethisuser'] = "Ignore this user";
+$lang['age'] = "Age";
+$lang['aged'] = "aged";
+$lang['birthday'] = "Birthday";
 
 // Registration (register.php) -----------------------------------------
 
@@ -633,6 +641,7 @@ $lang['errorcreatinguserrecord'] = "Error creating user record";
 $lang['userregistration'] = "User Registration";
 $lang['register'] = "Register";
 $lang['rememberpasswd'] = "Remember password";
+$lang['birthdayrequired'] = "Your date of birth is required or is invalid";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 
@@ -695,6 +704,7 @@ $lang['recentthreads'] = "Recent threads";
 $lang['startreading'] = "Start Reading";
 $lang['threadoptions'] = "Thread Options";
 $lang['showmorevisitors'] = "Show More Visitors";
+$lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

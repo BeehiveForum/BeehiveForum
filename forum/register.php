@@ -34,6 +34,7 @@ require_once("./include/session.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/config.inc.php");
 
 // Where are we going after we've logged on?
 
@@ -122,7 +123,11 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $error_html.= "<h2>{$lang['emailrequired']}</h2>\n";
       $valid = false;
   }
-
+  
+  if (!isset($HTTP_POST_VARS['dob_year']) || !isset($HTTP_POST_VARS['dob_month']) || !isset($HTTP_POST_VARS['dob_day']) || !checkdate($HTTP_POST_VARS['dob_month'], $HTTP_POST_VARS['dob_day'], $HTTP_POST_VARS['dob_year'])) {
+          $error_html .= "<h2>{$lang['birthdayrequired']}</h2>\n";
+          $valid = false;
+  }
 
   if ($valid) {
       if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']) {
@@ -145,8 +150,11 @@ if(isset($HTTP_POST_VARS['submit'])) {
   if($valid) {
 
       $new_uid = user_create(strtoupper(trim($HTTP_POST_VARS['logon'])), trim($HTTP_POST_VARS['pw']), trim($HTTP_POST_VARS['nickname']), trim($HTTP_POST_VARS['email']));
+      $dob = $HTTP_POST_VARS['dob_year']."-".$HTTP_POST_VARS['dob_month']."-".$HTTP_POST_VARS['dob_day'];
 
       if($new_uid > -1) {
+
+          $prefs_set = user_update_prefs($new_uid,"","",$dob,"","","","","","","","",$default_style,"",0,"","","");
 
           bh_session_init($new_uid);
 
@@ -292,6 +300,9 @@ if (isset($error_html)) echo $error_html;
             <td align="right" class="posthead"><?php echo $lang['email']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes(trim($HTTP_POST_VARS['email'])) : ''), 32, 80); ?></td>
           </tr>
+          <tr>
+            <td align="right" class="posthead"><?php echo $lang['dateofbirth']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+            <td><?php echo form_dob_dropdowns((isset($HTTP_POST_VARS['dob_year']) ? $HTTP_POST_VARS['dob_year'] : 0), (isset($HTTP_POST_VARS['dob_month']) ? $HTTP_POST_VARS['dob_month'] : 0), (isset($HTTP_POST_VARS['dob_day']) ? $HTTP_POST_VARS['dob_day'] : 0), true); ?></td>
           <tr>
             <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")); ?></td>

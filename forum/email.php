@@ -21,11 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Frameset for thread list and messages
-
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/html.inc.php");
+require_once("./include/format.inc.php");
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 	html_guest_error();

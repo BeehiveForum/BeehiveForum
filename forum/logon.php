@@ -33,7 +33,7 @@ require_once("./include/format.inc.php");
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }else {
-    $final_uri = "./discussion.php";
+    $final_uri = "./start.php";
 }
 
 if (strstr($final_uri, 'logout.php')) {
@@ -132,6 +132,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       }
 
+      if (!strstr($final_uri, 'discussion.php')) {
+        if ($HTTP_COOKIE_VARS['bh_sess_sp'] == 1) {
+          $final_uri = "./discussion.php";
+        }
+      }
+
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
           header_redirect("./index.php?final_uri=". urlencode($final_uri));
@@ -219,7 +225,7 @@ if (isset($HTTP_GET_VARS['other'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "  <form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"POST\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
 echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
@@ -312,7 +318,7 @@ echo "        </td>\n";
 echo "      </tr>\n";
 echo "    </table>\n";
 echo "  </form>\n";
-echo "  <form name=\"guest\" action=\"". get_request_uri(). "&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
+echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
 echo "    <p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
 echo "  </form>\n";
 echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php?final_uri=" . urlencode($final_uri). "\" target=\"_self\">Register now.</a></p>\n";

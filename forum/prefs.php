@@ -111,7 +111,8 @@ if(isset($HTTP_POST_VARS['submit'])){
                           @$HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
                           @$HTTP_POST_VARS['dl_saving'], @$HTTP_POST_VARS['mark_as_of_int'],
                           $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size'],
-                          $HTTP_POST_VARS['style'], @$HTTP_POST_VARS['view_sigs']);
+                          $HTTP_POST_VARS['style'], @$HTTP_POST_VARS['view_sigs'],
+                          $HTTP_POST_VARS['start_page']);
                         
         // Update USER_SIG
         
@@ -277,6 +278,10 @@ if(!empty($error_html)) {
                         
           ?>
         </td>
+      </tr>
+      <tr>
+        <td>Start Page</td>
+	<td><?php echo form_dropdown_array("start_page", array(0, 1), array('Start', 'Messages'), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

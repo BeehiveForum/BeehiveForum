@@ -60,7 +60,7 @@ if(bh_session_check()) {
       echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" border=\"1\">\n";
       
     }else {
-    
+
       echo "<frame src=\"./start.php\" name=\"main\" border=\"1\">\n";
       
     }
@@ -80,7 +80,7 @@ if(bh_session_check()) {
         
     }else {
     
-        echo "<frame src=\"./logon.php?final_uri=". urlencode("./start.php"). "\" name=\"main\" border=\"1\">\n";
+        echo "<frame src=\"./logon.php\" name=\"main\" border=\"1\">\n";
         
     }
     

@@ -47,6 +47,7 @@ function bh_session_check()
     $check.= " ". $HTTP_COOKIE_VARS['bh_sess_fontsize'];
     $check.= " ". $HTTP_COOKIE_VARS['bh_sess_style'];
     $check.= " ". $HTTP_COOKIE_VARS['bh_sess_sig'];
+    $check.= " ". $HTTP_COOKIE_VARS['bh_sess_sp'];
 
     if(isset($HTTP_SERVER_VARS['SERVER_SIGNATURE'])) {
         $check.= " ". $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
@@ -83,12 +84,13 @@ function bh_session_init($uid)
         $user_markread = 0;
         $user_fontsize = 10;
 	$user_style = $default_style;
-		$user_sig = 0;
+	$user_sig = 0;
+	$user_sp = 0;
 
     }else {
 
         $sql = "select USER.LOGON, USER.PASSWD, USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, ";
-        $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, USER_PREFS.VIEW_SIGS ";
+        $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE ";
         $sql.= "from " . forum_table("USER") . " USER left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
         $sql.= "where USER.UID = $uid";
 
@@ -106,7 +108,8 @@ function bh_session_init($uid)
             $user_markread = 0;
             $user_fontsize = 10;
 	    $user_style = $default_style;
-			$user_sig = 0;
+	    $user_sig = 0;
+	    $user_sp = 0;
 
         }else {
 
@@ -172,6 +175,12 @@ function bh_session_init($uid)
                 $user_sig = 0;
             }
 
+	    if (isset($fa['START_PAGE'])) {
+	        $user_sp = $fa['START_PAGE'];
+	    } else {
+	        $user_sp = 0;
+	    }
+
         }
 
     }
@@ -187,6 +196,7 @@ function bh_session_init($uid)
     $check.= " ". $user_fontsize;
     $check.= " ". $user_style;
     $check.= " ". $user_sig;
+    $check.= " ". $user_sp;
 
     if(isset($HTTP_SERVER_VARS['SERVER_SIGNATURE'])){
         $check.= " " . $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
@@ -205,6 +215,7 @@ function bh_session_init($uid)
     setcookie("bh_sess_fontsize", $user_fontsize);
     setcookie("bh_sess_style", $user_style);
     setcookie("bh_sess_sig", $user_sig);
+    setcookie("bh_sess_sp", $user_sp);
     setcookie("bh_sess_check", md5($check));
 
 }

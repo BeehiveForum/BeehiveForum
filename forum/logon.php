@@ -59,7 +59,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
         setcookie('bh_remember_password', $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS, '/');
             
-      }else {
+      } else {
         
         setcookie("bh_remember_user","", time() - YEAR_IN_SECONDS, '/');
         setcookie("bh_remember_password", time() - YEAR_IN_SECONDS, '/');
@@ -67,10 +67,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
       
       header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
         
-    }else {
-    
+    } else if($luid == -2){ // User is banned - everybody hide
+        header("HTTP/1.0 500 Internal Server Error");
+        exit;
+    } else {
+
       $error_html = "<h2>Invalid login</h2>";
-        
+
     }
     
   }else {

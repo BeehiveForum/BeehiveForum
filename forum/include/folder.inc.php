@@ -24,30 +24,23 @@ USA
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/constants.inc.php");
 
 function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 {
-    $sql = "select FID, TITLE from " . forum_table("FOLDER");
+    global $HTTP_COOKIE_VARS;
+    $ustatus = $HTTP_COOKIE_VARS['bh_sess_ustatus'];
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
-    return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);
-
-    /* Old code
-    $html = "<select name=\"${field_name}${suffix}\">";
-    $db_folder_draw_dropdown = db_connect();
-    $result = db_query($sql,$db_folder_draw_dropdown);
-
-    $i = 0;
-    while($row = db_fetch_array($result)){
-        $html .= "<option value=\"" . $row['FID'] . "\"";
-        if($row['FID'] == $default_fid){
-            $html .= " selected";
-        }
-        $html .= ">" . $row['TITLE'] . "</option>";
+    if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+        $sql = "select FID, TITLE from ".forum_table("FOLDER");
+    } else {
+        $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
+        $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
+        $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
     }
 
-    $html .= "</select>";
-    return $html;
-    */
+    return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);
 }
 
 function folder_get_title($fid)
@@ -92,6 +85,33 @@ function folder_move_threads($from,$to)
     $sql.= "where FID = $from";
     $result = db_query($sql, $db_folder_move_threads);
     return $result;
+}
+
+function folder_get_available()
+{
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $db_folder_get_available = db_connect();
+
+    $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
+    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
+    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+
+    $result = db_query($sql, $db_folder_get_available);
+    $count = db_num_rows($result);
+
+    if($count==0){
+        $return = "0";
+    } else {
+        $row = db_fetch_array($result);
+        $return = $row['FID'];
+
+        while($row = db_fetch_array($result)){
+            $return .= ",".$row['FID'];
+        }
+    }
+
+    return $return;
 }
 
 ?>

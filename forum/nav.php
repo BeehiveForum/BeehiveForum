@@ -33,6 +33,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/session.inc.php");
 
 header_no_cache();
 
@@ -45,16 +46,16 @@ if ($show_links) {
     echo "<a href=\"links.php\" target=\"main\">Links</a>&nbsp;|&nbsp;\n";
 }
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+if (bh_session_get_value('UID') > 0) {
     echo "<a href=\"prefs.php\" target=\"main\">Preferences</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"profile.php\" target=\"main\">Profile</a>&nbsp;|&nbsp;\n";
 }
 
-if (isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)) {
+if (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
     echo "<a href=\"admin.php\" target=\"main\">Admin</a>&nbsp;|&nbsp;\n";
 }
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
     echo "<a href=\"logout.php\" target=\"_top\">Login</a>\n";
 }else {
     echo "<a href=\"logout.php\" target=\"main\">Logout</a>\n";

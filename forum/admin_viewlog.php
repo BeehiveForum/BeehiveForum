@@ -49,7 +49,7 @@ require_once("./include/constants.inc.php");
 
 html_draw_top();
 
-if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
+if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     echo "<h1>Access Denied</h1>\n";
     echo "<p>You do not have permission to use this section.</p>";
     html_draw_bottom();
@@ -319,7 +319,7 @@ if (db_num_rows($result) == 20) {
 echo "</div>\n";
 echo "<p>&nbsp;</p>\n";
 
-if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN && db_num_rows($result)) {
+if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && db_num_rows($result)) {
     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
     echo form_submit('clear', 'Clear Log');
     echo "</form>\n";

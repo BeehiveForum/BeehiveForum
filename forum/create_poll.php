@@ -40,7 +40,7 @@ if(!bh_session_check()){
 
 }
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
@@ -53,7 +53,7 @@ require_once("./include/post.inc.php");
 require_once("./include/poll.inc.php");
 
 // Check if the user is viewing signatures.
-$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS') == 1);
 
 $valid = true;
 
@@ -123,18 +123,18 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
   $db = db_connect();
 
-  $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
+  $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ".bh_session_get_value('UID');
   $result = db_query($sql,$db);
 
   if(db_num_rows($result) > 0) {
 
       db_query($sql, $db);
       list($ddkey) = db_fetch_array($result);
-      $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
+      $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".bh_session_get_value('UID');
 
   }else{
 
-      $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
+      $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".bh_session_get_value('UID').",\"".$HTTP_POST_VARS['t_dedupe']."\")";
       $ddkey = "";
 
   }
@@ -173,7 +173,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     // Create the poll thread with the poll_flag set to Y
 
     $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y');
-    $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');
+    $pid = post_create($tid, 0, bh_session_get_value('UID'), 0, '');
 
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
 
@@ -190,11 +190,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
       }
 
-      post_create($tid, 1, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, $t_message_text);
+      post_create($tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
 
     }
 
-    if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($tid, 1, true);
+    if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($tid, 1, true);
 
   }
 
@@ -218,7 +218,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['TLOGON'] = "ALL";
   $polldata['TNICK'] = "ALL";
 
-  $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+  $preview_tuser = user_get(bh_session_get_value('UID'));
 
   $polldata['FLOGON']   = $preview_tuser['LOGON'];
   $polldata['FNICK']    = $preview_tuser['NICKNAME'];
@@ -355,7 +355,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
 }
 
 if(!isset($t_sig) || !$t_sig) {
-    $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'], $t_sig, $t_sig_html);
+    $has_sig = user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 }else{
     $has_sig = true;
 }

@@ -40,7 +40,7 @@ if(!bh_session_check()){
 
 require_once("./include/html.inc.php");
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
@@ -97,7 +97,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 }
 
 // Check if the user is viewing signatures.
-$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS') == 1);
 
 $valid = true;
 
@@ -171,7 +171,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $t_content.= "<div class=\"sig\">".fix_html($HTTP_POST_VARS['t_sig'])."</div>";
 
         $t_content.= "<p style=\"font-size: 10px\">EDITED: ". date("d/m/y H:i T");
-        $t_content.= " by ". user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']);
+        $t_content.= " by ". user_get_logon(bh_session_get_value('UID'));
         $t_content.= "</p>";
 
         $updated = post_update($tid, $pid, $t_content);
@@ -206,7 +206,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
             $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
-            if ((!$allow_post_editing || ($HTTP_COOKIE_VARS['bh_sess_uid'] != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
+            if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
                 edit_refuse($tid, $pid);
                 exit;
             }

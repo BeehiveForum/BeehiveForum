@@ -27,14 +27,12 @@ require_once("./include/constants.inc.php");
 
 function perm_is_moderator()
 {
-    global $HTTP_COOKIE_VARS;
-    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER);
+    return (bh_session_get_value('STATUS') & PERM_CHECK_WORKER);
 }
 
 function perm_is_soldier()
 {
-    global $HTTP_COOKIE_VARS;
-    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_SOLDIER);
+    return (bh_session_get_value('STATUS') & PERM_CHECK_SOLDIER);
 }
 
 ?>

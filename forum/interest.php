@@ -35,7 +35,7 @@ require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
@@ -44,7 +44,7 @@ if (isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest'])) {
 
     $tid = $HTTP_POST_VARS['tid'];
     $int = $HTTP_POST_VARS['interest'];
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db  = db_connect();
     $sql = "UPDATE LOW_PRIORITY ". forum_table("USER_THREAD"). " SET INTEREST = $int WHERE TID = $tid AND UID = $uid";

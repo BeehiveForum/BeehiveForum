@@ -42,11 +42,11 @@ if(!bh_session_check()){
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
 
-if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+if(!bh_session_get_value('UID')){
     header_no_cache();
 }
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
 
         $uri = "./index.php";
         bh_session_end();
@@ -86,7 +86,7 @@ if($logged_off){
     echo "<tr><td>You have logged out.</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
 } else {
-    echo "<tr><td>You are currently logged in as ". user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']). "</td></tr>\n";
+    echo "<tr><td>You are currently logged in as ". user_get_logon(bh_session_get_value('UID')). "</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
     echo "<tr><td align=\"center\">".form_submit("submit", "Log out");
 }

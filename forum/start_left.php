@@ -41,7 +41,7 @@ if(!bh_session_check()){
 
 }
 
-$uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+$uid = bh_session_get_value('UID');
 
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");

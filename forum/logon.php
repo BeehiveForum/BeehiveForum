@@ -53,7 +53,7 @@ if (bh_session_check()) {
 
     html_draw_top();
     echo "<div align=\"center\">\n";
-    echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
+    echo "<p>User ID ", bh_session_get_value('UID'), " already logged in.</p>\n";
 
     if (isset($final_uri)) {
         form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri), "_top");
@@ -155,7 +155,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if (isset($luid) && $luid > -1) {
 
-      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
       if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
 
@@ -370,8 +370,8 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
     }else {
 
-      echo form_input_hidden('password'. $i, $password_array[$i]);
-      echo form_input_hidden('savepass'. $i, true);
+      echo form_input_hidden('password'. $i, '');
+      echo form_input_hidden('savepass'. $i, false);
 
     }
 
@@ -392,14 +392,23 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
   echo "            <td align=\"right\">Password:</td>\n";
   echo "            <td>";
 
-  if ($password_array[0] == $passhash_array[0]) {
+  if (isset($password_array[0]) && isset($passhash_array[0])) {
 
-    echo form_input_password('password', '');
+    if ($password_array[0] == $passhash_array[0]) {
+
+      echo form_input_password('password', '');
+
+    }else {
+
+      echo form_input_password('password', $password_array[0]);
+      echo form_input_hidden('savepass', true);
+
+    }
 
   }else {
 
-    echo form_input_password('password', $password_array[0]);
-    echo form_input_hidden('savepass', true);
+    echo form_input_hidden('password'. $i, '');
+    echo form_input_hidden('savepass'. $i, false);
 
   }
 
@@ -410,13 +419,13 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
   echo "          <tr>\n";
   echo "            <td align=\"right\">User Name:</td>\n";
-  echo "            <td>", form_input_text('logon', isset($username_array[0]) ? _stripslashes($username_array[0]) : ''), "</td>\n";
+  echo "            <td>", form_input_text('logon', isset($username_array[0]) && $otherlogon == false ? _stripslashes($username_array[0]) : ''), "</td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
   echo "            <td align=\"right\">Password:</td>\n";
   echo "            <td>";
 
-  if (isset($password_array[0]) && isset($passhash_array[0])) {
+  if (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false) {
 
     if ($password_array[0] == $passhash_array[0]) {
 
@@ -444,7 +453,7 @@ echo "            <tr>\n";
 echo "              <td>&nbsp;</td>\n";
 echo "              <td>";
 
-echo form_checkbox("remember_user", "Y", "Remember passwords", (isset($password_array[0]) && $password_array[0] != str_repeat(chr(255), 4)) && strlen($password_array[0]) > 0);
+echo form_checkbox("remember_user", "Y", "Remember passwords", (isset($password_array[0]) && $password_array[0] != str_repeat(chr(255), 4)) && strlen($password_array[0]) > 0 && $otherlogon == false);
 
 echo "</td>\n";
 echo "            </tr>\n";

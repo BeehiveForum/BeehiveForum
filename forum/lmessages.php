@@ -50,8 +50,8 @@ if(!bh_session_check()){
 // Check that required variables are set
 // default to display most recent discussion for user
 if (!isset($HTTP_GET_VARS['msg'])) {
-    if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-        $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    if(bh_session_get_value('UID')){
+        $msg = messages_get_most_recent(bh_session_get_value('UID'));
     } else {
         $msg = "1.1";
     }
@@ -61,9 +61,9 @@ if (!isset($HTTP_GET_VARS['msg'])) {
 
 if (isset($HTTP_GET_VARS['fontsize'])) {
 
-    $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+    $userprefs = user_get_prefs(bh_session_get_value('UID'));
 
-    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
+    user_update_prefs(bh_session_get_value('UID'), $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
                       $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
                       $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
                       $userprefs['MARK_AS_OF_INT'], $userprefs['POST_PER_PAGE'],
@@ -71,7 +71,7 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
 
     unset($userprefs);
 
-    bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+    bh_session_init(bh_session_get_value('UID'));
     header_redirect(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$msg");
 
 }
@@ -80,7 +80,7 @@ list($tid, $pid) = explode('.', $msg);
 if ($tid == '') $tid = 1;
 if ($pid == '') $pid = 1;
 
-if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
+if(!thread_can_view($tid, bh_session_get_value('UID'))){
         light_html_draw_top();
         echo "<h2>The requested thread could not be found or access was denied.</h2>";
         light_html_draw_bottom();
@@ -110,8 +110,8 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 // Output XHTML header
 light_html_draw_top();
 
-if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
-    $ppp = $HTTP_COOKIE_VARS['bh_sess_ppp'];
+if (bh_session_get_value('POSTS_PER_PAGE')) {
+    $ppp = bh_session_get_value('POSTS_PER_PAGE');
 } else {
     $ppp = 20;
 }
@@ -182,8 +182,8 @@ echo "<h4><a href=\"./lthread_list.php\">Back to thread list</a></h4>";
 
 light_html_draw_bottom();
 
-if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0){
-    messages_update_read($tid,$last_pid,$HTTP_COOKIE_VARS['bh_sess_uid']);
+if($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0){
+    messages_update_read($tid,$last_pid,bh_session_get_value('UID'));
 }
 
 ?>

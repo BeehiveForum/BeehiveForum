@@ -64,10 +64,15 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
 
 }
 
-function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show_results)
+function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $poll_type, $show_results)
 {
 
     $db_poll_edit = db_connect();
+
+    // Rename the thread
+    
+    $sql = "update ".forum_table("THREAD")." set TITLE = \"$poll_question\" where TID = $tid";
+    $result = db_query($sql, $db_poll_edit);
 
     // Delete the recorded user votes for this poll
 
@@ -83,7 +88,7 @@ function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show
     }
 
     $sql = "update ". forum_table("POLL"). " set CHANGEVOTE = '$change_vote', POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results' ";
-    if ($closes) $sql.= ", CLOSES = $closes ";
+    if ($closes && $closes > 0) $sql.= ", CLOSES = $closes ";
     $sql.= "where TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
 
@@ -112,9 +117,7 @@ function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show
 
 function poll_get($tid)
 {
-
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_poll_get = db_connect();
 
@@ -170,8 +173,7 @@ function poll_get_votes($tid)
 function poll_get_user_vote($tid)
 {
 
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $polldata = poll_get($tid);
     if ($polldata['CHANGEVOTE'] == 2) return POLL_MULTIVOTE;
@@ -201,8 +203,8 @@ function poll_sort($a, $b) {
 function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
-    global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    global $HTTP_SERVER_VARS;
+    $uid = bh_session_get_value('UID');
 
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
@@ -256,7 +258,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     if ($in_list) {
 
-      if ((!isset($userpolldata['OPTION_ID']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
+      if ((!isset($userpolldata['OPTION_ID']) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
 
         for ($i = 1; $i <= sizeof($pollresults); $i++) {
 
@@ -420,13 +422,13 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
 
-          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || $HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
+          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
             $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
 
           }
 
-          if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
+          if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()){
 
             $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', 'End Poll'). "</td>\n";
 
@@ -443,7 +445,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           }
 
-        }elseif ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+        }elseif (bh_session_get_value('UID') > 0) {
 
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', 'Vote'). "</td>\n";
@@ -451,13 +453,13 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
 
-          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || $HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
+          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
             $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
 
           }
 
-          if ($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
+          if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()){
 
             $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', 'End Poll');
 
@@ -480,7 +482,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
 
     // Work out what relationship the user has to the user who posted the poll
-    $polldata['FROM_RELATIONSHIP'] = user_rel_get($HTTP_COOKIE_VARS['bh_sess_uid'], $polldata['FROM_UID']);
+    $polldata['FROM_RELATIONSHIP'] = user_rel_get(bh_session_get_value('UID'), $polldata['FROM_UID']);
 
     message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
 
@@ -610,11 +612,11 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
 function poll_confirm_close($tid)
 {
 
-    global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS;
 
     $preview_message = messages_get($tid, 1, 1);
 
-    if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
+    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse();
         return;
     }
@@ -652,8 +654,6 @@ function poll_confirm_close($tid)
 function poll_close($tid)
 {
 
-    global $HTTP_COOKIE_VARS;
-
     $db_poll_close = db_connect();
 
     $sql = "select FROM_UID from ". forum_table("POST"). " where TID = $tid and PID = 1";
@@ -663,7 +663,7 @@ function poll_close($tid)
 
       $polldata = db_fetch_array($result);
 
-      if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
+      if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
         $sql = "update ". forum_table("POLL"). " set CLOSES = FROM_UNIXTIME(". gmmktime(). ") where TID = $tid";
         $result = db_query($sql, $db_poll_close);
@@ -674,11 +674,27 @@ function poll_close($tid)
 
 }
 
+function poll_is_closed($tid)
+{
+
+    $db_poll_is_closed = db_connect();
+
+    $sql = "select CLOSES from ". forum_table("POLL"). " where TID = $tid";
+    $result = db_query($sql, $db_poll_is_closed);
+
+    if (db_num_rows($result)) {
+      $polldata = db_fetch_array($result);
+      if (($polldata['CLOSES'] <= gmmktime()) && $polldata['CLOSES'] != 0) return true;
+    }
+
+    return false;
+
+}
+
 function poll_vote($tid, $vote)
 {
 
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_poll_vote = db_connect();
 
@@ -711,11 +727,9 @@ function poll_vote($tid, $vote)
 function poll_delete_vote($tid)
 {
 
-    global $HTTP_COOKIE_VARS;
-
     $db_poll_delete_vote = db_connect();
 
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $sql = "select OPTION_ID from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_delete_vote);

@@ -119,7 +119,7 @@ echo "        <tr>\n";
 echo "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
 echo "        </tr>\n";
 
-if ($polldata['SHOWRESULTS'] == 1 || $HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
+if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
   if ($polldata['POLLTYPE'] == 0) {
 

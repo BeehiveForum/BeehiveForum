@@ -34,26 +34,26 @@ require_once("./include/config.inc.php");
 
 header("Content-Type: text/css");
 
-if ($HTTP_COOKIE_VARS['bh_sess_fontsize'] != '10') {
+if (bh_session_get_value('FONT_SIZE') != '10') {
 
-    echo "BODY               { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo "P                  { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo "H1                 { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo "H2                 { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".thread_list_mode  { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".threads           { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".threadname        { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".foldername        { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".posthead          { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".postbody          { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".postnumber        { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".postinfo          { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".posttofromlabel   { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".posttofrom        { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".postresponse      { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".messagefoot       { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".notifier          { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
-    echo ".subhead           { font-size: ", $HTTP_COOKIE_VARS['bh_sess_fontsize'], "pt }\n";
+    echo "BODY               { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo "P                  { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo "H1                 { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo "H2                 { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".thread_list_mode  { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".threads           { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".threadname        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".foldername        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".posthead          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".postbody          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".postnumber        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".postinfo          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".posttofromlabel   { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".posttofrom        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".postresponse      { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".messagefoot       { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".notifier          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    echo ".subhead           { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
 
 }
 

@@ -49,10 +49,10 @@ if (!$show_links) {
 }
 
 $error = false;
-if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
     if ($HTTP_POST_VARS['type'] == "vote") {
         if (isset($HTTP_POST_VARS['vote'])) {
-            links_vote($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['vote'], $HTTP_COOKIE_VARS['bh_sess_uid']);
+            links_vote($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['vote'], bh_session_get_value('UID'));
         } else {
             $error = "<b>You must choose a rating!</b>";
         }
@@ -60,7 +60,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
     } elseif ($HTTP_POST_VARS['type'] == "comment") {
         if ($HTTP_POST_VARS['comment'] != "") {
             $comment = addslashes(htmlentities($HTTP_POST_VARS['comment']));
-            links_add_comment($HTTP_POST_VARS['lid'], $HTTP_COOKIE_VARS['bh_sess_uid'], $comment);
+            links_add_comment($HTTP_POST_VARS['lid'], bh_session_get_value('UID'), $comment);
             $error = "<b>Your comment was added.</b>";
         } else {
             $error = "<b>You must type a comment!</b>";
@@ -68,7 +68,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
         $lid = $HTTP_POST_VARS['lid'];
     } elseif ($HTTP_POST_VARS['type'] == "moderation") {
         $creator = links_get_creator_uid($HTTP_POST_VARS['lid']);
-        if (perm_is_moderator() || $creator['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) {
+        if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) {
             if ($HTTP_POST_VARS['delete'] == "confirm") {
                 links_delete($HTTP_POST_VARS['lid']);
                 header_redirect("./links.php");
@@ -84,7 +84,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 if (isset($HTTP_GET_VARS['action'])) {
     if ($HTTP_GET_VARS['action'] == "delete_comment") {
         $creator = links_get_comment_uid($HTTP_GET_VARS['cid']);
-        if (perm_is_moderator() || $creator['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) links_delete_comment($HTTP_GET_VARS['cid']);
+        if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) links_delete_comment($HTTP_GET_VARS['cid']);
     }
 }
 
@@ -109,7 +109,7 @@ $folders = links_folders_get(perm_is_moderator());
 
 html_draw_top();
 echo "<h1>Links: " . links_display_folder_path($link['FID'], $folders, true, true, "links.php") . "&nbsp;:&nbsp;<a href=\"links.php?lid=$lid&action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
-if (isset($HTTP_POST_VARS['type']) && $HTTP_POST_VARS['type'] == "vote" && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0 && isset($HTTP_POST_VARS['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
+if (isset($HTTP_POST_VARS['type']) && $HTTP_POST_VARS['type'] == "vote" && bh_session_get_value('UID') != 0 && isset($HTTP_POST_VARS['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
 $error = $error ? $error : "&nbsp;";
 echo "<p>$error</p>\n";
 echo "<table class=\"box\" cellpadding=\"5\" cellspacing=\"2\" align=\"center\">\n";
@@ -132,8 +132,8 @@ if (isset($link['RATING']) && $link['RATING'] != "") {
 echo "</td></tr>\n";
 echo "</table>\n";
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
-    $vote = links_get_vote($lid, $HTTP_COOKIE_VARS['bh_sess_uid']);
+if (bh_session_get_value('UID') != 0) {
+    $vote = links_get_vote($lid, bh_session_get_value('UID'));
     $vote = $vote ? $vote : -1;
     echo "<p>&nbsp;</p>\n";
     echo "<form name=\"link_vote\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
@@ -159,7 +159,7 @@ if ($comments) {
     echo "<table width=\"90%\" align=\"center\">\n";
     while (list($key, $val) = each($comments)) {
         echo "<tr class=\"subhead\"><td>Comment by " . format_user_name($val['LOGON'], $val['NICKNAME']) . " [" . format_time($val['CREATED'], true) . "]";
-        if (perm_is_moderator() || $val['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) echo " <a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[delete]</a>";
+        if (perm_is_moderator() || $val['UID'] == bh_session_get_value('UID')) echo " <a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?action=delete_comment&cid={$val['CID']}&lid=$lid\" class=\"threadtime\">[delete]</a>";
         echo "</td></tr>\n";
         echo "<tr class=\"posthead\"><td>" . _stripslashes($val['COMMENT']) . "</td></tr>\n";
     }
@@ -168,7 +168,7 @@ if ($comments) {
     echo "<p align=\"center\">No comments have yet been posted.</p>";
 }
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+if (bh_session_get_value('UID') != 0) {
     echo "<p>&nbsp;</p>\n";
     echo "<form name=\"link_comment\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
     echo form_input_hidden("type", "comment") . "\n";
@@ -183,7 +183,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
     echo "</form>\n";
 }
 
-if (perm_is_moderator() || $link['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) {
+if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
     echo "<p>&nbsp;</p>\n";
     echo "<form name=\"link_moderation\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
     echo "<table align=\"center\" class=\"box\"><tr><td>\n";

@@ -77,19 +77,16 @@ function format_time($time, $verbose = 0)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
-
     include_once("./include/constants.inc.php");
-    global $HTTP_COOKIE_VARS;
-
 
     // Calculate $time in local timezone and current local time (the cookie bh_sess_tz = hours difference from GMT, West = negative)
-    $local_time = $time + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
-    $local_time_now = time() + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
+    $local_time = $time + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
+    $local_time_now = time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
 
 
     // Amend times for daylight saving if necessary (using critera for British Summer Time)
-    if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time = timestamp_amend_bst($local_time);
-    if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time_now = timestamp_amend_bst($local_time_now);
+    if (bh_session_get_value('DL_SAVING')) $local_time = timestamp_amend_bst($local_time);
+    if (bh_session_get_value('DL_SAVING')) $local_time_now = timestamp_amend_bst($local_time_now);
 
 
     if ((gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) || (gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {

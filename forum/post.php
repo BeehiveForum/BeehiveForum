@@ -43,7 +43,7 @@ if (!bh_session_check()){
 
 require_once("./include/html.inc.php");
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }
@@ -72,7 +72,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 }
 
 // Check if the user is viewing signatures.
-$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS') == 1);
 
 $valid = true;
 
@@ -184,18 +184,18 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     $db = db_connect();
 
-    $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ". bh_session_get_value('UID');
     $result = db_query($sql,$db);
 
     if (db_num_rows($result) > 0) {
 
         db_query($sql, $db);
         list($ddkey) = db_fetch_array($result);
-        $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
+        $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".bh_session_get_value('UID');
 
     }else{
 
-        $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
+        $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".bh_session_get_value('UID').",\"".$HTTP_POST_VARS['t_dedupe']."\")";
         $ddkey = "";
 
     }
@@ -230,14 +230,14 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, $HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['t_to_uid'], $t_content);
+            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $HTTP_POST_VARS['t_to_uid'], $t_content);
 
-            if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($t_tid, 1, $newthread);
+            if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 
-            if (!(user_get_status($HTTP_COOKIE_VARS['bh_sess_uid']) & USER_PERM_WORM)) {
+            if (!(user_get_status(bh_session_get_value('UID')) & USER_PERM_WORM)) {
 
-              email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
-              email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
+              email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
+              email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
 
             }
         }
@@ -310,7 +310,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     }
 
-    $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+    $preview_tuser = user_get(bh_session_get_value('UID'));
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
@@ -398,7 +398,7 @@ if (!$newthread) {
 }
 
 if (!isset($t_sig) || !$t_sig) {
-    $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$t_sig,$t_sig_html);
+    $has_sig = user_get_sig(bh_session_get_value('UID'),$t_sig,$t_sig_html);
 }else{
     $has_sig = true;
 }

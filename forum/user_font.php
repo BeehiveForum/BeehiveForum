@@ -37,20 +37,20 @@ if (!bh_session_check()) {
 if (isset($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
-    $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    $msg = messages_get_most_recent(bh_session_get_value('UID'));
 }
 
 if (isset($HTTP_GET_VARS['fontsize']) && $HTTP_GET_VARS['fontsize'] > 0 && $HTTP_GET_VARS['fontsize'] < 16) {
 
-    $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+    $userprefs = user_get_prefs(bh_session_get_value('UID'));
 
-    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
+    user_update_prefs(bh_session_get_value('UID'), $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
                       $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
                       $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
                       $userprefs['MARK_AS_OF_INT'], $userprefs['POSTS_PER_PAGE'], $HTTP_GET_VARS['fontsize'],
                       $userprefs['STYLE'], $userprefs['VIEW_SIGS'], $userprefs['START_PAGE']);
 
-    bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+    bh_session_init(bh_session_get_value('UID'));
     header_redirect("./messages.php?msg=$msg");
 
 }else {

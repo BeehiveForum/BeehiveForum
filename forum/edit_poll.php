@@ -68,7 +68,7 @@ $polldata    = poll_get($tid);
 $pollresults = poll_get_votes($tid);
 
 // Check if the user is viewing signatures.
-$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS') == 1);
 
 $valid = true;
 
@@ -98,7 +98,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['TLOGON'] = "ALL";
   $polldata['TNICK'] = "ALL";
 
-  $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+  $preview_tuser = user_get(bh_session_get_value('UID'));
 
   $polldata['FLOGON']   = $preview_tuser['LOGON'];
   $polldata['FNICK']    = $preview_tuser['NICKNAME'];
@@ -110,7 +110,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    <td>\n";
   $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
   $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
+  $polldata['CONTENT'].= "          <td><h2>". (isset($HTTP_POST_VARS['question']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid)). "</h2></td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -202,6 +202,8 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
   }elseif ($HTTP_POST_VARS['closepoll'] == 4) {
     $poll_closes = 0;
+  }elseif ($HTTP_POST_VARS['closepoll'] == 5) {
+    $poll_closes = -1;
   }else {
     $poll_closes = false;
   }
@@ -216,7 +218,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }
   }
 
-  poll_edit($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
+  poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
 
   echo "<div align=\"center\">";
   echo "<p>Edit Applied to Poll $tid.$pid</p>";
@@ -326,7 +328,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "</table>\n";
   $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
 
-  if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $polldata['FROM_UID'] && !perm_is_moderator()) {
+  if (bh_session_get_value('UID') != $polldata['FROM_UID'] && !perm_is_moderator()) {
     edit_refuse($tid, $pid);
     exit;
   }
@@ -337,20 +339,25 @@ if (isset($error_html)) echo $error_html;
 
 echo "<form name=\"f_edit_poll\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
-echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
+//echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
 echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</p>\n";
 
 ?>
+  <table border="0" cellpadding="0" cellspacing="0" width="500">
+    <tr>
+      <td><h2>Poll Question</h2></td>
+    </tr>
+    <tr>
+      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid), 30, 64); ?></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
   <table class="box" cellpadding="0" cellspacing="0" width="500">
     <tr>
       <td>
         <table border="0" class="posthead" width="500">
-          <tr>
-            <td><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</td>
-          </tr>
-          <tr>
-            <td><hr /></td>
-          </tr>
           <tr>
             <td><h2>Answers</h2></td>
           </tr>

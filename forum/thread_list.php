@@ -49,7 +49,7 @@ if(!bh_session_check()){
 header_no_cache();
 
 // Check that required variables are set
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
     $user = 0; // default to UID 0 if no other UID specified
     if (!isset($HTTP_GET_VARS['mode'])) {
         if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
@@ -66,7 +66,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
         }
     }
 } else {
-    $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $user = bh_session_get_value('UID');
 
     if (isset($HTTP_GET_VARS['markread'])) {
 
@@ -115,8 +115,8 @@ html_draw_top();
 function change_current_thread (thread_id) {
     if (current_thread > 0){
         document["t" + current_thread].src = "<?php echo style_image('bullet.png'); ?>";
-        document["t" + thread_id].src = "<?php echo style_image('current_thread.png'); ?>";
     }
+    document["t" + thread_id].src = "<?php echo style_image('current_thread.png'); ?>";     
     current_thread = thread_id;
 }
 // -->
@@ -139,7 +139,7 @@ function change_current_thread (thread_id) {
 
 echo "      <form name=\"f_mode\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n        ";
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if (bh_session_get_value('UID') == 0) {
 
   $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
   echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
@@ -231,7 +231,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
 
-    if(thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])) {
+    if(thread_can_view($tid, bh_session_get_value('UID'))) {
 
         if ($thread = thread_get($tid)) {
 
@@ -274,11 +274,11 @@ if (isset($HTTP_GET_VARS['msg'])) {
 // Work out if any folders have no messages and add them.
 // Seperate them by INTEREST level
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+if (bh_session_get_value('UID') > 0) {
 
   if (isset($HTTP_GET_VARS['msg'])) {
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
-    if (thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])) {
+    if (thread_can_view($tid, bh_session_get_value('UID'))) {
       list(,$selectedfolder) = thread_get($tid);
     }
   }elseif (isset($HTTP_GET_VARS['folder'])) {
@@ -336,7 +336,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "            <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&amp;folder=".$folder_number. "\">". htmlspecialchars($folder_info[$folder_number]['TITLE']). "</a>\n";
     echo "          </td>\n";
 
-    if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+    if (bh_session_get_value('UID') > 0) {
 
       echo "          <td class=\"folderpostnew\" width=\"15\">\n";
 
@@ -355,7 +355,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "    </td>\n";
     echo "  </tr>\n";
 
-    if (($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
+    if ((bh_session_get_value('UID') == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
         if (is_array($thread_info)) {
 
@@ -405,15 +405,11 @@ while (list($key1, $folder_number) = each($folder_order)) {
                             $number = "[".$thread['length']."&nbsp;new]";
                             $latest_post = 1;
 
-                            if(!isset($first_thread)) {
-
+                            if(!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
-
                             }else {
-
                                 echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\"/>";
-
                             }
 
                         }elseif ($thread['last_read'] < $thread['length']) {
@@ -422,7 +418,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                             $number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
                             $latest_post = $thread['last_read'] + 1;
 
-                            if(!isset($first_thread)){
+                            if(!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }else {
@@ -434,7 +430,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                             $number = "[".$thread['length']."]";
                             $latest_post = 1;
 
-                            if(!isset($first_thread)){
+                            if(!isset($first_thread) && isset($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             } else {
@@ -533,7 +529,7 @@ echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+if (bh_session_get_value('UID') != 0) {
 
     echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";

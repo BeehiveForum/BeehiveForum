@@ -44,7 +44,7 @@ if(!bh_session_check()){
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
 
-if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+if(!bh_session_get_value('UID')){
     header_no_cache();
 }
 
@@ -53,8 +53,8 @@ require_once("./include/config.inc.php");
 if (isset($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
-    if (isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
-        $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    if (bh_session_get_value('UID')) {
+        $msg = messages_get_most_recent(bh_session_get_value('UID'));
     }else {
         $msg = "1.1";
     }

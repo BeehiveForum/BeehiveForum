@@ -44,11 +44,10 @@ function thread_get_title($tid)
 
 function thread_get($tid)
 {
-   global $HTTP_COOKIE_VARS;
 
    $db_thread_get = db_connect();
 
-   $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+   $uid = bh_session_get_value('UID');
 
    $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
@@ -105,8 +104,7 @@ function thread_get_author($tid)
 
 function thread_get_interest($tid)
 {
-        global $HTTP_COOKIE_VARS;
-        $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+        $uid = bh_session_get_value('UID');
         $db_thread_get_interest = db_connect();
         $sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
         $resource_id = db_query($sql, $db_thread_get_interest);
@@ -117,9 +115,8 @@ function thread_get_interest($tid)
 
 function thread_set_interest($tid, $interest, $new = false)
 {
-    global $HTTP_COOKIE_VARS;
 
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     if($new){
 

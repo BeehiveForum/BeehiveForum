@@ -50,12 +50,12 @@ if (!$show_links) {
 
 $folders = links_folders_get(perm_is_moderator());
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
     html_guest_error();
         exit;
 }
 
-$uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+$uid = bh_session_get_value('UID');
 
 if (isset($HTTP_POST_VARS['cancel'])) header_redirect("./links.php?fid={$HTTP_POST_VARS['fid']}");
 

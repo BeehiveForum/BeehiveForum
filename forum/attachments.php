@@ -56,7 +56,7 @@ if (!isset($HTTP_GET_VARS['aid'])) {
   exit;
 }
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }
@@ -68,7 +68,7 @@ require_once("./include/format.inc.php");
 
 html_draw_top();
 
-$users_free_space = get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']);
+$users_free_space = get_free_attachment_space(bh_session_get_value('UID'));
 $total_attachment_size = 0;
 
 // Make sure the attachments directory exists
@@ -82,7 +82,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   if ($HTTP_POST_VARS['submit'] == 'Del') {
 
     @unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
-    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+    delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
 
   }elseif ($HTTP_POST_VARS['submit'] == 'Upload' || $HTTP_POST_VARS['submit'] == 'wait..') {
 
@@ -97,7 +97,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         if (move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. _stripslashes($HTTP_POST_FILES['userfile']['name'])))) {
 
-          add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'])), $HTTP_POST_FILES['userfile']['type']);
+          add_attachment(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'])), $HTTP_POST_FILES['userfile']['type']);
           echo "<p>Successfully Uploaded: ". _stripslashes($HTTP_POST_FILES['userfile']['name']). "</p>\n";
 
         }else {
@@ -160,7 +160,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
 <?php
 
-  if ($attachments = get_attachments($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid'])) {
+  if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -248,7 +248,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
 <?php
 
-  if ($attachments = get_all_attachments($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid'])) {
+  if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -322,7 +322,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody">Free space:</td>
-    <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid'])); ?></td>
+    <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space(bh_session_get_value('UID'))); ?></td>
     <td width="100" class="postbody">&nbsp;</td>
   </tr>
 </table>

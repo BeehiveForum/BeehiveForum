@@ -40,7 +40,7 @@ if(!bh_session_check()){
 
 require_once("./include/html.inc.php");
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }
@@ -111,7 +111,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         // Update basic settings in USER table
 
-        user_update($HTTP_COOKIE_VARS['bh_sess_uid'],
+        user_update(bh_session_get_value('UID'),
                     $HTTP_POST_VARS['pw'],
                     $HTTP_POST_VARS['nickname'],
                     $HTTP_POST_VARS['email']);
@@ -127,7 +127,7 @@ if(isset($HTTP_POST_VARS['submit'])){
         if (!isset($HTTP_POST_VARS['mark_as_of_int'])) $HTTP_POST_VARS['mark_as_of_int'] = '';
         if (!isset($HTTP_POST_VARS['view_sigs']))      $HTTP_POST_VARS['view_sigs']      = '';
 
-        user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['firstname'],
+        user_update_prefs(bh_session_get_value('UID'), $HTTP_POST_VARS['firstname'],
                           $HTTP_POST_VARS['lastname'], $user_dob, $HTTP_POST_VARS['homepage_url'],
                           $HTTP_POST_VARS['pic_url'], $HTTP_POST_VARS['email_notify'],
                           $HTTP_POST_VARS['timezone'], $HTTP_POST_VARS['dl_saving'],
@@ -137,13 +137,13 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         // Update USER_SIG
 
-        user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
+        user_update_sig(bh_session_get_value('UID'),
                         $HTTP_POST_VARS['sig_content'],
                         isset($HTTP_POST_VARS['sig_html']) ? $HTTP_POST_VARS['sig_html'] : '');
 
         // Update the User's Session to save them having to logout and back in
 
-        bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+        bh_session_init(bh_session_get_value('UID'));
 
         header_redirect("./prefs.php?updated=true");
 
@@ -151,9 +151,9 @@ if(isset($HTTP_POST_VARS['submit'])){
 
 }
 
-$user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
-$user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'], $user_sig['CONTENT'], $user_sig['HTML']);
+$user = user_get(bh_session_get_value('UID'));
+$user_prefs = user_get_prefs(bh_session_get_value('UID'));
+user_get_sig(bh_session_get_value('UID'), $user_sig['CONTENT'], $user_sig['HTML']);
 
 // Arrys for Birthday
 
@@ -183,7 +183,7 @@ if(!empty($error_html)) {
 
     echo "<h2>Preferences were successfully updated.</h2>\n";
 
-        $top_html = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/top.html";
+        $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style) . "/top.html";
         if (!file_exists($top_html)) {
                 $top_html = "./top.html";
         }
@@ -306,8 +306,8 @@ if(!empty($error_html)) {
         <td>
           <?php
 
-            if (isset($HTTP_COOKIE_VARS['bh_sess_style'])) {
-                $selected_style = $HTTP_COOKIE_VARS['bh_sess_style'];
+            if (bh_session_get_value('STYLE')) {
+                $selected_style = bh_session_get_value('STYLE');
                 if (!in_array($selected_style, $available_styles)) {
                     $selected_style = $default_style;
                 }

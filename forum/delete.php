@@ -47,7 +47,7 @@ if(isset($HTTP_POST_VARS['cancel'])) {
 
 require_once("./include/html.inc.php");
 
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+if(bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }
@@ -64,7 +64,7 @@ require_once("./include/poll.inc.php");
 require_once("./include/admin.inc.php");
 
 // Check if the user is viewing signatures.
-$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+$show_sigs = !(bh_session_get_value('VIEW_SIGS') == 1);
 
 $valid = true;
 
@@ -99,7 +99,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
             $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
-            if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
+            if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
                 edit_refuse();
                 exit;
             }

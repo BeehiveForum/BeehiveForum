@@ -44,7 +44,7 @@ require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
 
-if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
+if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     html_draw_top();
     echo "<h1>Access Denied</h1>\n";
     echo "<p>You do not have permission to use this section.</p>";
@@ -52,7 +52,7 @@ if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
     exit;
 }
 
-$stylesheet = "./styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/style.css";
+$stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">

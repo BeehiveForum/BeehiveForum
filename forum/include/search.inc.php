@@ -30,7 +30,7 @@ require_once("./include/constants.inc.php");
 function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
 {
 
-  global $HTTP_COOKIE_VARS, $search_min_word_length;
+  global $search_min_word_length;
 
   if ($argarray['fid'] > 0) {
       $folders = "THREAD.FID = ". $argarray['fid'];
@@ -105,10 +105,10 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
           $searchsql.= $folders. " AND (";
 
           if (strlen($threadtitle) > 0) $searchsql.= $threadtitle. " AND ";
-          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".  $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ") OR (";
+          $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ".  bh_session_get_value('UID'). ")". $daterange. ") OR (";
 
           if (strlen($postcontent) > 0) $searchsql.= $postcontent. " AND ";
-          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ")";
+          $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")". $daterange. ")";
 
         }else {
 
@@ -157,10 +157,10 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
           $searchsql = $folders. " AND (";
 
           if (strlen($threadtitle) > 0) $searchsql.= $threadtitle. " AND ";
-          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ") OR (";
+          $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")". $daterange. ") OR (";
 
           if (strlen($postcontent) > 0) $searchsql.= $postcontent. " AND ";
-          $searchsql.= "(POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")". $daterange. ")";
+          $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")". $daterange. ")";
 
         }else {
 
@@ -192,8 +192,8 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
 
       if ($argarray['me_only'] == 'Y') {
 
-        $searchsql.= " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
-        $searchsql.= " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")";
+        $searchsql.= " AND (POST.TO_UID = ". bh_session_get_value('UID');
+        $searchsql.= " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")";
 
       }else {
 
@@ -370,13 +370,11 @@ function search_date_range($from, $to)
 function folder_search_dropdown()
 {
 
-    global $HTTP_COOKIE_VARS;
-
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_folder_search_dropdown = db_connect();
 
-    if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+    if(bh_session_get_value('STATUS') & PERM_CHECK_WORKER){
       $sql = "select FID, TITLE from " . forum_table("FOLDER");
     }else {
       $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
@@ -403,12 +401,10 @@ function folder_search_dropdown()
 function search_draw_user_dropdown($name)
 {
 
-    global $HTTP_COOKIE_VARS;
-
     $db_search_draw_user_dropdown = db_connect();
 
     $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
-    $sql.= "from ".forum_table("USER")." U WHERE U.UID > 0 AND U.UID <> ". $HTTP_COOKIE_VARS['bh_sess_uid']. " ";
+    $sql.= "from ".forum_table("USER")." U WHERE U.UID > 0 AND U.UID <> ". bh_session_get_value('UID'). " ";
     $sql.= "order by U.LAST_LOGON desc ";
     $sql.= "limit 0, 20";
 
@@ -417,9 +413,9 @@ function search_draw_user_dropdown($name)
     $uids[]  = 0;
     $names[] = "ALL";
 
-    if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+    if (bh_session_get_value('UID') > 0) {
 
-      $uids[]  = $HTTP_COOKIE_VARS['bh_sess_uid'];
+      $uids[]  = bh_session_get_value('UID');
       $names[] = "ME";
 
     }

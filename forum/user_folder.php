@@ -38,7 +38,7 @@ if(!bh_session_check()){
 
 }
 
-if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+if (bh_session_get_value('UID') > 0) {
   if (isset($HTTP_GET_VARS['fid']) && isset($HTTP_GET_VARS['interest'])) {
     user_set_folder_interest($HTTP_GET_VARS['fid'], $HTTP_GET_VARS['interest']);
   }

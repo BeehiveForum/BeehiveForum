@@ -40,11 +40,11 @@ if(isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }
 
-if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+if(bh_session_get_value('UID')){
 
     html_draw_top();
     echo "<div align=\"center\">\n";
-    echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
+    echo "<p>User ID ", bh_session_get_value('UID'), " already logged in.</p>\n";
     echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), "Continue", 0, 0, "_top");
     echo "</div>\n";
     html_draw_bottom();

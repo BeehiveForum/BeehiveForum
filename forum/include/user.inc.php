@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.142 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.143 2004-03-21 09:22:10 decoyduck Exp $ */
 
 function user_count()
 {
@@ -721,7 +721,7 @@ function user_get_aliases($uid)
     
     $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);    
     
-    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, POST.IPADDRESS FROM {$webtag['PREFIX']}POST ";
+    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, POST.IPADDRESS FROM {$webtag['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
     $sql.= "ORDER BY POST.TID DESC LIMIT 0, 10";

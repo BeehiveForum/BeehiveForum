@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.96 2004-03-18 23:42:31 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.97 2004-03-21 09:22:10 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -226,7 +226,7 @@ function poll_get_votes($tid)
         $option_names[]  = $row['OPTION_NAME'];
         $option_groups[] = $row['GROUP_ID'];
         
-        $sql = "SELECT COUNT(ID) AS VOTES FROM USER_POLL_VOTES ";
+        $sql = "SELECT COUNT(ID) AS VOTES FROM {$webtag['PREFIX']}USER_POLL_VOTES ";
         $sql.= "WHERE OPTION_ID = '{$row['OPTION_ID']}' ";
         $sql.= "AND TID = '$tid'";
         

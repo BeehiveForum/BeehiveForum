@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.183 2004-03-20 22:33:32 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.184 2004-03-21 09:22:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -157,7 +157,8 @@ echo "    <td colspan=\"2\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td colspan=\"2\">\n";
-echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php?webtag={$webtag['WEBTAG']}\">\n        ";
+echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+echo "        ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 
 if (bh_session_get_value('UID') == 0) {
 
@@ -177,11 +178,9 @@ if (bh_session_get_value('UID') == 0) {
 
 echo form_submit("go",$lang['goexcmark']). "\n";
 
-?>
-      </form>
-    </td>
-  </tr>
-<?php
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
@@ -649,7 +648,6 @@ echo "      </form>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['search']} (<a href=\"search.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['advanced']}</a>):</td>\n";

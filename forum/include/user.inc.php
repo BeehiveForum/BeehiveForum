@@ -61,7 +61,7 @@ function user_create($logon,$password,$nickname,$email)
 function user_update($uid,$password,$nickname,$email)
 {
     if($password){
-        $bit = "PASSWORD = \"" . md5($password) . "\", ";
+        $bit = "PASSWD = \"" . md5($password) . "\", ";
     }
 
     $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"$nickname\", EMAIL = \"$email\"";

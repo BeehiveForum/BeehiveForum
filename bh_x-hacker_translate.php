@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.8 2004-12-12 12:50:43 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.9 2005-02-14 13:38:59 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -165,23 +165,37 @@ function translate($string)
 // Start here
 
 if ($langfile = file('./forum/include/languages/en.inc.php')) {
+
     if ($fp = fopen('./forum/include/languages/x-hacker.inc.php', 'w')) {
+
         foreach($langfile as $line) {
-            if (preg_match('/\$lang\[\'(.*)\'\] = "(.*)";/', $line, $value)) {
+
+            if (preg_match('/\$lang\[\'([^\']+)\'\]([^"]+)"([^"]+)";/', $line, $value)) {
+
                 if (substr($value[1], 0, 1) != "_") {
-                    $value[2] = translate($value[2]);
+
+                    $value[3] = translate($value[3]);
                 }
-                fwrite($fp, "\$lang['{$value[1]}'] = \"{$value[2]}\";\n");
+
+                fwrite($fp, "\$lang['{$value[1]}']{$value[2]}\"{$value[3]}\";\n");
+
             }else {
+
                 fwrite($fp, $line);
             }
         }
+
         fclose($fp);
+
         echo "Translation of en.inc.php into x-hacker.inc.php has completed successfully.\n";
+
     }else {
+
         echo "Could not open x-hacker.inc.php for writing.\n";
     }
+
 }else {
+
     echo "Could not open en.inc.php for reading.\n";
 }
 

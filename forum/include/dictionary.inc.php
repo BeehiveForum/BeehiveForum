@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.9 2004-12-04 17:49:13 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.10 2004-12-04 22:01:36 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
@@ -108,12 +108,13 @@ class dictionary {
     {
         $db_dictionary_add_custom_word = db_connect();
 
+        $metaphone = addslashes(metaphone(trim($word)));
         $word = addslashes(trim($word));
 
         $uid = bh_session_get_value('UID');
 
         $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-        $sql.= "VALUES ('$word', SUBSTRING(SOUNDEX('$word'), 1, 4), '$uid')";
+        $sql.= "VALUES ('$word', '$metaphone', '$uid')";
 
         return db_query($sql, $db_dictionary_add_custom_word);
     }
@@ -125,7 +126,7 @@ class dictionary {
 
     function correct_all_word_matches($change_to)
     {
-        $current_word = $this->content_array[$this->current_word];
+        $current_word = $this->get_current_word();
 
         foreach($this->content_array as $key => $word) {
 
@@ -147,12 +148,17 @@ class dictionary {
 
     function word_is_valid()
     {
-        return (preg_match("/([abcdefghijklmnopqrstuvwxyz']+)/i", $this->content_array[$this->current_word]) > 0);
+        return (preg_match("/([abcdefghijklmnopqrstuvwxyz']+)/i", $this->get_current_word()) > 0);
     }
 
     function word_is_ignored()
     {
-        return _in_array($this->content_array[$this->current_word], $this->ignored_words_array);
+        return _in_array($this->get_current_word(), $this->ignored_words_array);
+    }
+
+    function word_get_metaphone()
+    {
+        return metaphone(trim($this->get_current_word()));
     }
 
     function word_get_suggestions()
@@ -161,7 +167,12 @@ class dictionary {
 
         if (!isset($this->content_array[$this->current_word])) return false;
 
-        $word = addslashes(trim($this->content_array[$this->current_word]));
+        // Fetch the current word and generate it's metaphone value
+
+        $word = addslashes($this->get_current_word);
+        $metaphone = addslashes($this->word_get_metaphone);
+
+        // The current user's UID
 
         $uid = bh_session_get_value('UID');
 
@@ -172,12 +183,13 @@ class dictionary {
 
         $result = db_query($sql, $db_dictionary_word_get_suggestions);
 
+        // If we found an exact match then they spelt it right?
+
         if (db_num_rows($result) > 0) return false;
 
-        // Soundex match
+        // Metaphone match (English pronounciation match)
 
-        $sql = "SELECT WORD FROM DICTIONARY WHERE ";
-        $sql.= "SUBSTRING(SOUNDEX(WORD), 1, 4) = SUBSTRING(SOUNDEX('$word'), 1, 4) ";
+        $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
         $sql.= "AND (UID = 0 OR UID = '$uid')";
 
         $result = db_query($sql, $db_dictionary_word_get_suggestions);

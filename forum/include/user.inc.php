@@ -133,15 +133,23 @@ function user_logon($logon, $password)
 function user_check_logon($uid, $logon, $md5pass)
 {
 
-    $db_user_check_logon = db_connect();
+    if ($uid > 0) {
 
-    $sql = "SELECT uid FROM ". forum_table("USER"). " WHERE uid = '$uid' AND logon = '$logon' AND passwd = '$md5pass'";
-    $result = db_query($sql, $db_user_check_logon);
+      $db_user_check_logon = db_connect();
 
-    if (!db_num_rows($result)) {
-        return false;
+      $sql = "SELECT uid FROM ". forum_table("USER"). " WHERE uid = '$uid' AND logon = '$logon' AND passwd = '$md5pass'";
+      $result = db_query($sql, $db_user_check_logon);
+
+      if (!db_num_rows($result)) {
+          return false;
+      }else {
+          return true;
+      }
+
     }else {
-        return true;
+
+      return true;
+
     }
 
 }

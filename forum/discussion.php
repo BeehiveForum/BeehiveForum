@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.65 2004-08-14 21:10:14 tribalonline Exp $ */
+/* $Id: discussion.php,v 1.66 2004-09-13 11:48:53 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -129,7 +129,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
 }else if (isset($_GET['right']) && $_GET['right'] == 'search') {
 
-    echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./thread_list.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./search.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 
 }else {

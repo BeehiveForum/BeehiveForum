@@ -63,16 +63,16 @@ function format_file_size($size)
 
 function format_url2link($html)
 {
-	$html = " ".$html;
-	// URL:
-    $html = preg_replace("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\](){}<>]|\S[^\s;,.?\"'[\](){}<>])*)?)/i",
-        "<a href=\"$1\">$1</a>", $html);
-	$html = preg_replace("/([^\/])(www\.([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\](){}<>]|\S[^\s;,.?\"'[\](){}<>])*)?)/i",
-        "$1<a href=\"http://$2\">$2</a>", $html);
-	// MAIL:
-	$html = preg_replace("/\b(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]{2,}|:\d+))/i",
-		"<a href=\"mailto:$2\">$1$2</a>", $html);
-    return substr($html, 1);
+        $html = " ".$html;
+        // URL:
+        $html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:[^@\s]+@)?([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i",
+                "$1<a href=\"$2\">$2</a>", $html);
+        $html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i",
+                "$1<a href=\"http://$2\">$2</a>", $html);
+        // MAIL:
+        $html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i",
+                "$1<a href=\"mailto:$3\">$2$3</a>", $html);
+        return substr($html, 1);
 }
 
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.53 2003-11-09 14:19:47 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.54 2003-11-09 14:37:29 decoyduck Exp $ */
 
 // International English language file
 
@@ -923,6 +923,5 @@ $lang['wehave'] = "We have";
 $lang['registeredmembers'] = "registered members";
 $lang['thenewestmemberis'] = "The newest member is";
 $lang['mostuserseveronlinewas'] = "Most users ever online was";
-
 
 ?>

@@ -155,7 +155,7 @@ while (list($key1, $folder) = each($folder_order)) {
 				}
 
 				echo "<tr><td>\n";
-				if(isset($first_thread)){
+				if(!isset($first_thread)){
 					$first_thread = $thread['tid'];
 					echo "<img src=\"./images/poll.png\" name=\"t".$thread['tid']."\" />\n";
 				} else {

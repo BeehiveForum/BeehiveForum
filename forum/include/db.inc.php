@@ -45,7 +45,7 @@ function db_disconnect ($connection_id)
 // Executes a query on the database and returns a resource ID
 function db_query ($sql, $connection_id)
 {
-	$resource_id = mysql_query($sql, $connection_id) or die("Invalid query:" . $sql);
+	$resource_id = mysql_query($sql, $connection_id) or die("Invalid query:" . $sql . "<br />\n<br />\n". mysql_error());
 	return $resource_id;
 }
 

@@ -78,7 +78,7 @@ html_draw_top();
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
 echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_top\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
-echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
+echo "<table class=\"subhead\" width=\"100%\"><tr><td align=\"left\">\n";
 echo "Log out:\n";
 echo "</td></tr></table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";

@@ -26,10 +26,6 @@ USA
 // in any script where access to the database is needed. Use these functions
 // instead of the usual database functions.
 
-require_once('./include/html.inc.php');
-require_once('./include/form.inc.php');
-require_once('./include/format.inc.php');
-
 // Connects to the database and returns the connection ID
 
 function db_connect ()

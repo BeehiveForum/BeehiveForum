@@ -81,7 +81,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 echo form_textarea("t_content", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85);
 
                 if (isset($HTTP_GET_VARS['replyto'])) {
-	      
+
                     echo "<p>{$lang['replymsgnumber']}:</p>\n";
                     echo form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64);
 
@@ -222,7 +222,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             html_draw_bottom();
             exit;
 
-	}
+        }
     }
 }
 

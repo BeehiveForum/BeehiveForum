@@ -66,7 +66,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 <link rel="stylesheet" href="./styles/style.css" type="text/css" />
 </head>
 <frameset cols="250,*" border="1">
-  <frame src="./thread_list.php?msg=<?php echo $msg; ?>" name="left" border="1">
-  <frame src="./messages.php?msg=<?php echo $msg; ?>" name="right" border="1">
+  <frame src="./thread_list.php?msg=<?php echo $msg; ?>" name="left" border="1" />
+  <frame src="./messages.php?msg=<?php echo $msg; ?>" name="right" border="1" />
 </frameset>
 </html>

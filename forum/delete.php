@@ -58,6 +58,7 @@ require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/edit.inc.php");
 require_once("./include/poll.inc.php");
+require_once("./include/admin.inc.php");
 
 $valid = true;
 
@@ -113,6 +114,8 @@ if ($valid) {
     if(isset($HTTP_POST_VARS['submit'])) {
 
         if (post_delete($tid, $pid)) {
+
+            admin_addlog(0, 0, $tid, $pid, 0, 0, 22);
 
             echo "<div align=\"center\">";
             echo "<p>Post deleted successfully</p>";

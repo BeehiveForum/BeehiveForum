@@ -151,7 +151,7 @@ $birthday_years  = array_merge(array(' '), range(1900 + (date('Y', mktime()) - 2
 
 // Split the DOB into usable variables.
 
-list($dob_year, $dob_month, $dob_day) = explode('-', $user_prefs['DOB']);
+@list($dob_year, $dob_month, $dob_day) = explode('-', $user_prefs['DOB']);
 
 // Start output here
 

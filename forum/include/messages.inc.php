@@ -534,10 +534,11 @@ function messages_interest_form($tid,$pid)
     echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"post\">\n";
-    echo "Rate my interest: \n";
+    echo "<p>Rate my interest: \n";
     echo form_radio_array("interest",array(-1,0,1,2),array("Ignore ","Normal ","Interested ","Subscribe "),$interest);
     echo form_input_hidden("tid",$tid);
-    echo form_submit("submit", "Apply"); //,"smallbutton");
+    echo form_submit("submit", "Apply");
+    echo "</p>\n";
     echo "</form>\n";
     echo "</div>\n";
 }
@@ -550,15 +551,13 @@ function messages_admin_form($tid, $pid, $title, $closed = false)
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid";
     echo "\" method=\"post\">\n";
-    echo "Rename thread:". form_input_text("t_name", htmlspecialchars(_stripslashes($title)), 30, 64). "&nbsp;";
-    echo form_submit("rename", "Apply");
-    echo "<br />Move thread:" . folder_draw_dropdown(0,"t_move");
-    echo "&nbsp;".form_submit("move", "Move");
+    echo "<p>Rename thread:". form_input_text("t_name", htmlspecialchars(_stripslashes($title)), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
+    echo "<p>Move thread:" . folder_draw_dropdown(0,"t_move"). "&nbsp;".form_submit("move", "Move");
 
-    if($closed){
-        echo "&nbsp;&nbsp;".form_submit("reopen","Reopen for posting");
+    if ($closed) {
+        echo "&nbsp;".form_submit("reopen","Reopen for posting"). "</p>\n";
     } else {
-        echo "&nbsp;&nbsp;".form_submit("close","Close for posting");
+        echo "&nbsp;".form_submit("close","Close for posting"). "</p>\n";
     }
 
     echo form_input_hidden("t_tid",$tid);
@@ -662,7 +661,7 @@ function messages_fontsize_form($tid, $pid)
 
     global $HTTP_COOKIE_VARS;
 
-    $fontstrip = "Adjust text size: ";
+    $fontstrip = "<p>Adjust text size: ";
 
     if (($HTTP_COOKIE_VARS['bh_sess_fontsize'] > 1) && ($HTTP_COOKIE_VARS['bh_sess_fontsize'] < 15)) {
 
@@ -673,15 +672,15 @@ function messages_fontsize_form($tid, $pid)
       if ($fontlarger > 15) $fontlarger = 15;
 
       $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ";
-      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">Larger</a>";
+      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">Larger</a></p>\n";
 
     }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 1) {
 
-      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=2\" target=\"_self\">Larger</a>";
+      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=2\" target=\"_self\">Larger</a></p>\n";
 
     }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 15) {
 
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize'];
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize']. "</p>\n";
 
     }
 

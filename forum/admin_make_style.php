@@ -73,6 +73,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     fwrite($fp, $stylesheet);
                     fclose($fp);
 
+                    admin_addlog(0, 0, 0, 0, 0, 0, 17);
+
                     echo "<h2>New style \"$stylename\" successfully created.</h2>\n";
 
                 }else {

@@ -44,10 +44,19 @@ function profile_section_get_name($psid)
 function profile_section_create($name)
 {
     $db_profile_section_create = db_connect();
+
     $sql = "insert into " . forum_table("PROFILE_SECTION") . " (NAME) ";
     $sql.= "values (\"$name\")";
+
     $result = db_query($sql, $db_profile_section_create);
-    return $result;
+
+    if ($result) {
+       $new_psid = db_insert_id($db_profile_section_create);
+    }else {
+       $new_psid = 0;
+    }
+
+    return $new_psid;
 }
 
 function profile_section_update($psid,$name)
@@ -63,10 +72,20 @@ function profile_section_update($psid,$name)
 function profile_item_create($psid,$name)
 {
     $db_profile_item_create = db_connect();
+
     $sql = "insert into " . forum_table("PROFILE_ITEM") . " (PSID,NAME) ";
     $sql.= "values ($psid,\"$name\")";
+
     $result = db_query($sql, $db_profile_item_create);
-    return $result;
+
+    if ($result) {
+       $new_piid = db_insert_id($db_profile_item_create);
+    }else {
+       $new_piid = 0;
+    }
+
+    return $new_piid;
+
 }
 
 function profile_item_update($piid,$psid,$name)

@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -30,6 +30,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/admin.inc.php");
 
 if(isset($HTTP_POST_VARS['move'])){
     if(isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move'])){
@@ -41,6 +42,8 @@ if(isset($HTTP_POST_VARS['move'])){
 
         db_query($sql,$db);
 
+        admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
+
     }
 } else if(isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
@@ -50,6 +53,8 @@ if(isset($HTTP_POST_VARS['move'])){
 
         db_query($sql,$db);
 
+        admin_addlog(0, 0, $tid, 0, 0, 0, 19);
+
 } else if(isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
 
@@ -57,6 +62,8 @@ if(isset($HTTP_POST_VARS['move'])){
         $sql = "update ".forum_table("THREAD")." set CLOSED = NULL where TID = $tid";
 
         db_query($sql,$db);
+
+        admin_addlog(0, 0, $tid, 0, 0, 0, 20);
 
 } else if(isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
@@ -67,16 +74,18 @@ if(isset($HTTP_POST_VARS['move'])){
 
         db_query($sql,$db);
 
+        admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+
 }
 
 if(isset($HTTP_GET_VARS['ret'])){
 
     header_redirect($HTTP_GET_VARS['ret']);
-    
+
 } else {
 
     header_redirect(dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
-   
+
 }
 
 ?>

@@ -53,6 +53,7 @@ require_once("./include/edit.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/admin.inc.php");
 
 if (isset($HTTP_GET_VARS['msg'])) {
 
@@ -167,6 +168,9 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $updated = post_update($tid, $pid, $t_content);
 
         if ($updated) {
+
+            admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
+
             echo "<div align=\"center\">";
             echo "<p>Edit Applied to Message $tid.$pid</p>";
             echo form_quick_button("discussion.php", "Continue", "msg", "$tid.$pid");

@@ -44,6 +44,7 @@ require_once("./include/db.inc.php");
 require_once("./include/profile.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/admin.inc.php");
 
 html_draw_top();
 
@@ -84,18 +85,21 @@ if(isset($HTTP_POST_VARS['submit'])) {
         if($HTTP_POST_VARS['t_name_'.$i] != $HTTP_POST_VARS['t_old_name_'.$i] || $HTTP_POST_VARS['t_move_'.$i] != $psid){
             $new_name = (trim($HTTP_POST_VARS['t_name_'.$i]) != "") ? $HTTP_POST_VARS['t_name_'.$i] : $HTTP_POST_VARS['t_old_name_'.$i];
             profile_item_update($HTTP_POST_VARS['t_piid_'.$i],$HTTP_POST_VARS['t_move_'.$i],$new_name);
+            admin_addlog(0, 0, 0, 0, $psid. $HTTP_POST_VARS['t_piid_'.$i], 13);
         }
 
     }
 
     if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != "New Item"){
-        profile_item_create($psid,$HTTP_POST_VARS['t_name_new']);
+        $new_piid = profile_item_create($psid,$HTTP_POST_VARS['t_name_new']);
+        admin_addlog(0, 0, 0, 0, $psid, $new_piid, 14);
     }
 
   }elseif ($HTTP_POST_VARS['submit'] == "Delete") {
 
-    $sql = "delete from ". forum_table("PROFILE_ITEM"). " where PIID = $psid";
+    $sql = "delete from ". forum_table("PROFILE_ITEM"). " where PIID = ". $HTTP_POST_VARS['piid'];
     $result = db_query($sql, $db);
+    admin_addlog(0, 0, 0, 0, 0, $HTTP_POST_VARS['piid'], 15);
 
   }
 

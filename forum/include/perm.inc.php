@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.24 2004-05-21 23:25:57 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.25 2004-05-22 17:58:14 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -222,12 +222,12 @@ function perm_remove_group($gid)
 {
     $db_perm_remove_group = db_connect();
 
-    if (!is_numeric($fid)) return false;
+    if (!is_numeric($gid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}GROUP_USERS ";
-    $sql.= "WHERE GID = $gid AND AUTO_GROUP = 0";
+    $sql.= "WHERE GID = '$gid'";
 
     $result = db_query($sql, $db_perm_remove_group);
 
@@ -631,17 +631,17 @@ function perm_group_get_users($gid, $offset = 0)
         $result = db_query($sql, $db_perm_group_get_users);
         $group_user_count = db_num_rows($result);
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME ";
+        $sql = "SELECT GROUP_USERS.UID, USER.LOGON, USER.NICKNAME ";
         $sql.= "FROM {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = GROUP_USERS.UID) ";
-        $sql.= "WHERE GID = '$gid' ";
+        $sql.= "WHERE GROUP_USERS.GID = '$gid' ";
         $sql.= "LIMIT $offset, 20";
 
         $result = db_query($sql, $db_perm_group_get_users);
 
-        if (db_num_rows($result)) {
+        if (db_num_rows($result) > 0) {
             while ($row = db_fetch_array($result)) {
-                $admin_log_array[] = $row;
+                $group_user_array[] = $row;
 	    }
         }
 

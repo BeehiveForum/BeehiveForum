@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.136 2004-05-21 23:25:57 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.137 2004-05-22 17:58:14 decoyduck Exp $ */
 
 // International English language file
 
@@ -371,6 +371,7 @@ $lang['addusergroup'] = "Add Group";
 $lang['addremoveusers'] = "Add/Remove Users";
 $lang['addtogroup'] = "Add to group";
 $lang['nousersingroup'] = "There are no users in this group";
+$lang['deletegroups'] = "Delete Groups";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

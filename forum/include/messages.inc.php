@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.235 2004-03-03 23:36:25 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.236 2004-03-04 12:27:10 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -180,7 +180,7 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_filter($content)
+function message_filter($content, $debug = false)
 {
     $db_mf = db_connect();
     
@@ -197,7 +197,7 @@ function message_filter($content)
         if ($row['PREG_EXPR'] == 1) {
             $pattern_array[] = _stripslashes($row['MATCH_TEXT']);
         }else {
-            $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT'])). "/i";
+            $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT']), "/"). "/i";
         }
             
         if (strlen(trim($row['REPLACE_TEXT'])) > 0) {
@@ -214,7 +214,7 @@ function message_filter($content)
     if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
         return $new_content;
     }
-    
+        
     return $content;
 }
 
@@ -250,7 +250,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     // Check for words that should be filtered ---------------------------------
 
-    $message['CONTENT'] = message_filter($message['CONTENT']);    
+    $message['CONTENT'] = message_filter($message['CONTENT'], true);    
     
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);

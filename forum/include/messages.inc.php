@@ -139,9 +139,9 @@ function message_get_content($tid,$pid)
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
-    echo "<p><img src=\"".style_image('folder.png')."\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\">";
-    if ($interest_level == 2) echo "&nbsp;".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\">";
+    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" alt=\"High Interest\" align=\"middle\">";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" alt=\"Subscribed\" align=\"middle\">";
     echo "</p>";
     // To be expanded later
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.98 2004-01-19 20:56:29 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.99 2004-01-26 22:26:53 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -44,9 +44,9 @@ function threads_get_folders()
 
     $db_threads_get_folders = db_connect();
 
-    $sql = "SELECT DISTINCT F.FID, F.TITLE, F.DESCRIPTION, F.ALLOWED_TYPES, UF.INTEREST FROM ".forum_table("FOLDER")." F LEFT JOIN ";
+    $sql = "SELECT DISTINCT F.FID, F.TITLE, F.DESCRIPTION, F.ALLOWED_TYPES, F.ACCESS_LEVEL, UF.INTEREST FROM ".forum_table("FOLDER")." F LEFT JOIN ";
     $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
-    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) ORDER BY F.FID";
+    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) ORDER BY F.FID";
 
     $result = db_query($sql, $db_threads_get_folders);
 
@@ -55,9 +55,9 @@ function threads_get_folders()
     }else {
         while($row = db_fetch_array($result)) {
             if (isset($row['INTEREST'])) {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => $row['INTEREST']);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => $row['INTEREST'], 'ACCESS_LEVEL' => $row['ACCESS_LEVEL']);
             }else {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => 0);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => 0, 'ACCESS_LEVEL' => $row['ACCESS_LEVEL']);
             }
         }
     }

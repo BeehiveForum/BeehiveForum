@@ -50,8 +50,8 @@ function threads_get_all($uid) // get "all" threads (i.e. most recent threads, i
 
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
-	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, AUTHOR.LOGON, AUTHOR.NICKNAME, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ". forum_table("USER") . " AUTHOR ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
@@ -70,8 +70,8 @@ function threads_get_unread($uid) // get unread messages for $uid
 	$db = db_connect();
 
 	// Formulate query
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
-	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, AUTHOR.LOGON, AUTHOR.NICKNAME, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD". forum_table("USER") . " AUTHOR ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
@@ -115,6 +115,9 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 		}
 
 		$lst[$i]['modified'] = $thread['modified'];
+		
+		$lst[$i]['authorlogon'] = $thread['logon'];
+		$lst[$i]['authornick'] = $thread['logon'];
 	}
 	return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
 }

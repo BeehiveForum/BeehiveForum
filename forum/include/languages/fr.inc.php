@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.54 2004-04-11 13:53:42 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.55 2004-04-11 15:27:07 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -619,6 +619,7 @@ $lang['currentlyloggedinas'] = "Vous êtes actuellement abonnés comme";
 // My Forums (forums.php) ---------------------------------------------------------
 
 $lang['myforums'] = "My Forums";
+$lang['recentlyvisitedforums'] = "Recently Visited Forums";
 $lang['availableforums'] = "Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
 $lang['lastvisited'] = "Last Visited";

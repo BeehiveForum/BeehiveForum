@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.52 2004-04-11 13:53:42 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.53 2004-04-11 15:27:07 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -631,6 +631,7 @@ $lang['currentlyloggedinas'] = "Yo logged in as";
 // My Forums (forums.php) ---------------------------------------------------------
 
 $lang['myforums'] = "My Forums";
+$lang['recentlyvisitedforums'] = "Recently Visited Forums";
 $lang['availableforums'] = "Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
 $lang['lastvisited'] = "Last Visited";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.138 2005-03-21 15:35:48 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.139 2005-03-28 23:11:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -160,6 +160,10 @@ if (isset($_POST['t_confirm_delete_posts'])) {
 
 if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_delete_posts'] != "Y")) {
 
+    $valid = true;
+
+    // Local user permissions
+
     $new_user_perms = (double) 0;
 
     $t_admintools = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
@@ -184,6 +188,36 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
     perm_update_user_permissions($uid, $new_user_perms);
 
     $user_perms = perm_get_user_permissions($uid);
+
+    // Global user permissions
+
+    $new_global_user_perms = (double) 0;
+
+    $forum_tools_perm_count = perm_get_admin_tools_perm_count();
+    $admin_tools_perm_count = perm_get_forum_tools_perm_count();
+
+    $t_all_admin_tools = (double) (isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
+    $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
+
+    $new_global_user_perms = ((double) $t_all_admin_tools | (double) $t_all_forum_tools);
+
+    if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 2) {
+
+         $valid = false;
+         echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+    }
+
+    if ($valid && !($new_global_user_perms & USER_PERM_FORUM_TOOLS) && $forum_tools_perm_count < 2) {
+
+        $valid = false;
+        echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+    }
+
+    if ($valid) {
+        perm_update_global_perms($uid, $new_global_user_perms);
+    }
+
+    // Local folder permissions
 
     if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
 
@@ -225,7 +259,9 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
         $t_new_password = false;
     }
 
-    echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
+    if ($valid) {
+        echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
+    }
 
     if ($t_reset_password === true && strlen($t_new_password) > 0) {
 
@@ -378,6 +414,45 @@ if (isset($_POST['t_delete_posts'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
+
+    if (perm_has_forumtools_access()) {
+
+        $global_user_perm = perm_get_global_user_permissions($uid);
+
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['globaluserpermissions']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table width=\"90%\" class=\"posthead\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>", form_checkbox("t_all_admin_tools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintoolsonallforums'], $global_user_perm & USER_PERM_ADMIN_TOOLS), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>", form_checkbox("t_all_forum_tools", USER_PERM_FORUM_TOOLS, $lang['usercanaccessforumtools'], $global_user_perm & USER_PERM_FORUM_TOOLS), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
+    }
 
     if ($folder_array = perm_user_get_folders($uid)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.67 2005-03-14 13:27:15 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.68 2005-03-28 23:11:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -140,9 +140,6 @@ if (perm_has_forumtools_access()) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['globalforumsettings']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"postbody\"><a href=\"admin_global_user_perms.php?webtag=$webtag\" target=\"right\">{$lang['userpermissions']}</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }

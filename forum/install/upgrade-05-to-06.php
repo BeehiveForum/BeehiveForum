@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.27 2005-03-07 00:04:41 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.28 2005-03-07 21:32:45 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -424,6 +424,29 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Rename our new THREAD table
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
+
+    if (!@$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Add INDEXED column to POST_CONTENT which we now use to track if a post
+    // has been indexed for searching.
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST_CONTENT ADD INDEXED TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL";
+
+    if (!@$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Index our INDEXED column (no, really)
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST_CONTENT ADD INDEX (INDEXED)";
 
     if (!@$result = db_query($sql, $db_install)) {
 

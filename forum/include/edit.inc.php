@@ -47,9 +47,8 @@ function post_update($tid,$pid,$content)
 
 function post_delete($tid,$pid)
 {
-    if(!($tid && $pid)){
-        return false;
-    }
+    if(!($tid && $pid)) return false;
+
     $db_post_delete = db_connect();
 
     $content = mysql_escape_string($content);
@@ -57,10 +56,7 @@ function post_delete($tid,$pid)
     $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = NULL ";
     $sql .= "where TID = $tid and PID = $pid";
     
-    echo $sql;
-
     $result = db_query($sql,$db_post_delete);
-
     $return = ($result) ? true : false;
 
     return $return;

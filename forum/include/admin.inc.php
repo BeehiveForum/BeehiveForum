@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.35 2004-04-20 10:01:23 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.36 2004-04-23 15:53:47 decoyduck Exp $ */
+
+include_once("./include/perm.inc.php");
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {

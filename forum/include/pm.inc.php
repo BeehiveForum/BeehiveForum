@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.65 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.66 2004-04-23 15:53:47 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -35,19 +35,19 @@ function pm_markasread($mid)
     // ------------------------------------------------------------
     // Update the row so it appears as read to the receipient
     // ------------------------------------------------------------
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
-    
+
     $result = db_query($sql, $db_pm_markasread);
 }
 
 function pm_edit_refuse()
 {
     global $lang;
-    
+
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannoteditpm']}</p>";
@@ -59,7 +59,7 @@ function pm_edit_refuse()
 function pm_error_refuse()
 {
     global $lang;
-    
+
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannotviewpm']}</p>";
@@ -73,7 +73,7 @@ function pm_add_sentitem($mid)
     $uid = bh_session_get_value('UID');
 
     if (!is_numeric($mid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT, AT.AID ";
@@ -326,12 +326,12 @@ function pm_get_free_space($uid = false)
     $sql.= "OR (PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
 
     $result = db_query($sql, $db_pm_get_free_space);
-    
+
     while($result_array = db_fetch_array($result)) {
         $pm_used_space+= (strlen(trim($result_array['SUBJECT'])) + strlen(trim($result_array['CONTENT'])));
     }
 
-    if ($pm_used_space > $max_pm_space) return 0;    
+    if ($pm_used_space > $max_pm_space) return 0;
     return $max_pm_space - $pm_used_space;
 }
 
@@ -340,7 +340,7 @@ function pm_get_user($mid)
     $db_pm_get_user = db_connect();
 
     if (!is_numeric($mid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT LOGON FROM USER USER ";
@@ -374,15 +374,15 @@ function pm_draw_to_dropdown($default_uid)
             $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
         }
     }
-    
+
     if (!$table_data = get_table_prefix()) return "";
-    
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND USER.UID <> '$default_uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";    
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
@@ -408,7 +408,7 @@ function pm_single_get($mid, $folder, $uid = false)
     // ------------------------------------------------------------
     // Fetch the single message as specified by the MID
     // ------------------------------------------------------------
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.TO_UID, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
@@ -442,9 +442,9 @@ function pm_single_get($mid, $folder, $uid = false)
         // Check to see if we should add a sent item before delete
         // ------------------------------------------------------------
 
-        if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
-            pm_markasread($mid);
-            pm_add_sentitem($mid);
+        if (($db_pm_list_get_row['TO_UID'] == $uid) && (($db_pm_list_get_row['TYPE'] == PM_NEW) || ($db_pm_list_get_row['TYPE'] == PM_UNREAD))) {
+            pm_markasread($db_pm_list_get_row['MID']);
+            pm_add_sentitem($db_pm_list_get_row['MID']);
         }
 
         return $db_pm_list_get_row;
@@ -513,22 +513,22 @@ function draw_pm_message($pm_elements_array)
     echo "          </tr>\n";
 
     if (isset($pm_elements_array['AID'])) {
-          
+
         $aid = $pm_elements_array['AID'];
         $attachments_array = get_attachments($pm_elements_array['FROM_UID'], $aid);
 
         if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-                    
+
             // Draw the attachment header at the bottom of the post
-                
+
             echo "<tr><td>&nbsp;</td></tr>\n";
             echo "<tr><td class=\"postbody\" align=\"left\">\n";
-            echo "<b>{$lang['attachments']}:</b><br />\n";                
-                
+            echo "<b>{$lang['attachments']}:</b><br />\n";
+
             foreach($attachments_array as $attachment) {
 
                 echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
-                            
+
                 if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                     echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
                 }else {
@@ -546,7 +546,7 @@ function draw_pm_message($pm_elements_array)
                 if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
                     echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                 }
- 
+
                 echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
                 echo "{$lang['downloaded']}: ". $attachment['downloads'];
 
@@ -560,7 +560,7 @@ function draw_pm_message($pm_elements_array)
             }
             echo "</td></tr>\n";
         }
-    }    
+    }
 
     if (isset($pm_elements_array['FOLDER']) && ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) && (isset($pm_elements_array['MID']))) {
         echo "          </table>\n";
@@ -606,7 +606,7 @@ function pm_save_attachment_id($mid, $aid)
 
     if (!is_numeric($mid)) return false;
     if (!is_md5($aid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $db_pm_save_attachment_id = db_connect();
@@ -621,7 +621,7 @@ function pm_send_message($tuid, $subject, $content)
     $db_pm_send_message = db_connect();
 
     if (!is_numeric($tuid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $subject = addslashes($subject);
@@ -667,7 +667,7 @@ function pm_edit_message($mid, $subject, $content)
 
     $subject = addslashes($subject);
     $content = addslashes($content);
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     // ------------------------------------------------------------
@@ -695,7 +695,7 @@ function pm_delete_message($mid)
     if (!is_numeric($mid)) return false;
 
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     // ------------------------------------------------------------
@@ -745,7 +745,7 @@ function pm_archive_message($mid)
     if (!is_numeric($mid)) return false;
 
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     // ------------------------------------------------------------
@@ -786,7 +786,7 @@ function pm_new_check()
 {
     $db_pm_new_check = db_connect();
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     // ------------------------------------------------------------
@@ -805,12 +805,12 @@ function pm_new_check()
     // messages that arrives and NOT every time they reload
     // the page, so set all NEW messages to UNREAD.
     // ------------------------------------------------------------
-    
+
     $sql = "UPDATE {$table_data['PREFIX']}PM SET NOTIFIED = 1 ";
     $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
-    
+
     return ($num_rows > 0);
 }
 
@@ -818,7 +818,7 @@ function pm_get_unread_count()
 {
     $db_pm_get_unread_count = db_connect();
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     // ------------------------------------------------------------

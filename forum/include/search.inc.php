@@ -362,6 +362,8 @@ function folder_search_dropdown()
 
     global $HTTP_COOKIE_VARS;
 
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+
     $db_folder_search_dropdown = db_connect();
 
     if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){

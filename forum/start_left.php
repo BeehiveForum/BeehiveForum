@@ -91,7 +91,7 @@ while($row = db_fetch_array($result)){
 
     $tid = $row['TID'];
 
-    if($row['LAST_READ'] && $row['LENGTH'] > $row['LAST_READ']){
+    if (isset($row['LAST_READ']) && $row['LAST_READ'] && $row['LENGTH'] > $row['LAST_READ']){
         $pid = $row['LAST_READ'] + 1;
     } else {
         $pid = 1;
@@ -100,9 +100,11 @@ while($row = db_fetch_array($result)){
     echo "        <tr>\n";
     echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
 
-    if (($row['LAST_READ'] == 0) || ($row['LAST_READ'] < $row['LENGTH'])) {
+    if (!isset($row['LAST_READ'])) {
         echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Thread\" />";
-    } elseif ($row['LAST_READ'] == $row['LENGTH']) {
+    }else if ($row['LAST_READ'] == 0 || $row['LAST_READ'] < $row['LENGTH']) {
+        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Thread\" />";
+    }else if ($row['LAST_READ'] == $row['LENGTH']) {
         echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Read Thread\" />";
     }
 
@@ -110,8 +112,8 @@ while($row = db_fetch_array($result)){
     echo "          <td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($row['LOGON'], $row['NICKNAME']) . "\">";
     echo _stripslashes($row['TITLE'])."</a>&nbsp;";
 
-    if ($row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\" />";
-    if ($row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\" />";
+    if (isset($row['INTEREST']) && $row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\" />";
+    if (isset($row['INTEREST']) && $row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\" />";
 
     echo "          </td>\n";
     echo "        </tr>\n";

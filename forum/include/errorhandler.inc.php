@@ -40,7 +40,16 @@ function error_handler($errno, $errstr, $errfile, $errline)
     }
 
     ob_end_clean();
-    ob_start();
+
+    if ($gzip_compress_output && (phpversion() >= '4.2')) {
+        if (isset($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING']) && strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+            ob_start("ob_gzhandler");
+        }else{
+            ob_start();
+        }
+    }else {
+        ob_start();
+    }
 
     html_draw_top();
 

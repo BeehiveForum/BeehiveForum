@@ -148,13 +148,13 @@ function bh_session_init($uid)
                 $user_tz = 0;
             }
 
-            if (@$fa['DL_SAVING'] == "Y") {
+            if (isset($fa['DL_SAVING']) && $fa['DL_SAVING'] == "Y") {
                 $user_dlsav = 1;
             } else {
                 $user_dlsav = 0;
             }
 
-            if (@$fa['MARK_AS_OF_INT'] == "Y") {
+            if (isset($fa['MARK_AS_OF_INT']) && $fa['MARK_AS_OF_INT'] == "Y") {
                 $user_markread = 1;
             } else {
                 $user_markread = 0;
@@ -172,7 +172,7 @@ function bh_session_init($uid)
                 $user_style = $default_style;
             }
 
-            if (@$fa['VIEW_SIGS'] == "Y") {
+            if (isset($fa['VIEW_SIGS']) && $fa['VIEW_SIGS'] == "Y") {
                 $user_sig = 1;
             } else {
                 $user_sig = 0;

@@ -124,7 +124,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       if (($key = array_search($HTTP_POST_VARS['logon'], $username_array)) !== false) {
 
-        if ($HTTP_POST_VARS['password'] == $password_array[$key]) {
+        if (isset($password_array[$key]) && $HTTP_POST_VARS['password'] == $password_array[$key]) {
 
           $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $passhash_array[$key], true);
 

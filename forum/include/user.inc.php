@@ -151,7 +151,7 @@ function user_logon($logon, $password, $md5hash = false)
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
 
-        if($fa['status'] & USER_PERM_SPLAT){ // User is banned
+        if (isset($fa['status']) && $fa['status'] & USER_PERM_SPLAT) { // User is banned
             $uid = -2;
         }
 

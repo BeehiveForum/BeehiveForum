@@ -147,11 +147,11 @@ $guest_account_enabled = true;  // Enable the use of forum guest account
                                 // Requires the creation of a GUEST user
                                 // with the password also set as GUEST.
 
-$session_cutoff = 3600;         // Time before user becomes inactive in
-                                // seconds. User will not be logged out
-                                // when this timeout occurs, they will
-                                // meerly be removed from the active user
-                                // list.
+$session_cutoff = 3600;         // Time before a guest user becomes
+                                // inactive in seconds. Registered users
+				// are not affected by this. Also used
+				// to limit the display of the active
+				// users in the stats display.
 
 // ---------------------------------------------------------------------
 

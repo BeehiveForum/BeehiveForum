@@ -36,7 +36,9 @@ function bh_check_gzip()
         return false;
     }
 
-    // Skip gzip compression if the browser/proxy reports it is HTTP/1.0
+    // Only enable gzip compression for HTTP/1.1 browsers that aren't coming via a proxy server.
+
+    if (isset($HTTP_SERVER_VARS['HTTP_VIA'])) return false;
     if (strpos($HTTP_SERVER_VARS['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
 
     // determine which gzip encoding the client asked for
@@ -54,6 +56,7 @@ function bh_check_gzip()
 function bh_gzhandler($contents)
 {
     global $gzip_compress_level;
+    static $bh_headers_sent = false;
 
     // check the compression level variable
     if (!isset($gzip_compress_level)) $gzip_compress_level = 1;
@@ -71,12 +74,21 @@ function bh_gzhandler($contents)
         if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
             // generate the error checking bits
-            $size      = strlen($contents);
-            $crc32     = crc32($contents);
+            $size   = strlen($contents);
+            $crc32  = crc32($contents);
+            $length = strlen($gz_contents);
+            $etag   = md5($gz_contents);
 
-            // send the headers to the client
-            header("Etag: VT$crc32");
-            header("Content-Encoding: $encoding");
+            // sends the headers to the client while making sure they are
+            // only sent once. This prevents corrupt gzipped data in PHP
+            // builds which are fickle about the headers.
+            if (!$bh_headers_sent) {
+                header("Content-Encoding: $encoding");
+                header("Vary: Accept-Encoding");
+                header("ETag: \"$etag\"");
+                header("Content-Length: $length");
+                $bh_headers_sent = true;
+            }
 
             // construct the gzip output with gz headers and error checking bits
             $ret = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
@@ -111,5 +123,6 @@ function bh_gzhandler($contents)
 
 // Enabled the gzip handler
 ob_start("bh_gzhandler");
+ob_implicit_flush(0);
 
 ?>

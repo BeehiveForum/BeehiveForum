@@ -141,6 +141,23 @@ function user_get_logon($uid)
     return $logon;
 }
 
+function user_get_uid($logon)
+{
+
+    $db_user_get_uid = db_connect();
+    
+    $sql = "select UID from ". forum_table("USER"). " where LOGON = '$logon'";
+    $result = db_query($sql, $db_user_get_uid);
+    
+    if (!db_num_rows($result)) {
+        return -1;
+    }else{
+        $fa = db_fetch_array($result);
+        return $fa['UID'];
+    }
+    
+}
+
 function user_get_sig($uid, &$content, &$html)
 {
     $db_user_get_sig = db_connect();

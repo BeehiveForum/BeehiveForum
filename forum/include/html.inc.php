@@ -101,14 +101,18 @@ function _html_draw_top_script()
 
 function _html_draw_pm_script()
 {
+    global $HTTP_SERVER_VARS;
+
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";
     echo "function pm_notification() {\n";
 
-    if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
-        echo "    if (window.confirm('You have a new PM. Would you like to go to your Inbox now?')) {\n";
-        echo "        top.frames['main'].location.replace('pm.php');\n";
-        echo "    }\n";
+    if (basename($HTTP_SERVER_VARS['PHP_SELF']) != 'pm.php') {
+        if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
+            echo "    if (window.confirm('You have a new PM. Would you like to go to your Inbox now?')) {\n";
+            echo "        top.frames['main'].location.replace('pm.php');\n";
+            echo "    }\n";
+        }
     }
 
     echo "    return true;\n";

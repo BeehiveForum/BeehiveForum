@@ -64,7 +64,7 @@ function pm_add_sentitem($mid)
 
     $sql = "INSERT INTO ". forum_table("PM"). " (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
-    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '{$db_pm_add_sentitem_row['SUBJECT']}', ";
+    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}')";
 
     $result  = db_query($sql, $db_pm_add_sentitem);
@@ -337,9 +337,6 @@ function pm_send_message($tuid, $subject, $content)
 
     $subject = addslashes($subject);
     $content = addslashes($content);
-
-    echo "<p>content:</p>\n";
-    echo $content;
 
     $fuid = bh_session_get_value('UID');
 

@@ -49,8 +49,17 @@ $maximum_post_length = 6226;	// maximum character-length of posts
 
 
 // Attachment stuff ----------------------------------------------------
+if(isset($HTTP_SERVER_VARS['PATH_TRANSLATED'])){
+    $path = dirname($HTTP_SERVER_VARS['PATH_TRANSLATED']);
+} else if(isset($HTTP_SERVER_VARS['SCRIPT_FILENAME'])){
+    $path = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']);
+} else if(isset($HTTP_ENV_VARS['PATH_TRANSLATED'])){
+    $path = dirname($HTTP_ENV_VARS['PATH_TRANSLATED']);
+} else {
+    $path = ".";
+}
 
-$attachment_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments';
+$attachment_dir = "$path/attachments";
 
 // ---------------------------------------------------------------------
 

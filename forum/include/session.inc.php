@@ -41,7 +41,7 @@ function bh_session_check()
     $check.= " " . $HTTP_COOKIE_VARS['bh_sess_dlsav'];
     $check.= " " . $HTTP_COOKIE_VARS['bh_sess_markread'];
     $check.= " " . $HTTP_COOKIE_VARS['bh_sess_fontsize'];
-    $check.= " " . $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
+    $check.= " " . @$HTTP_SERVER_VARS['SERVER_SIGNATURE'];
     $check.= " " . BH_SESS_HASH;
 
     if(md5($check) != $HTTP_COOKIE_VARS['bh_sess_check']){
@@ -76,32 +76,32 @@ function bh_session_init($uid)
 
         $fa = db_fetch_array($result);
 
-        if($fa['STATUS']){
+        if(isset($fa['STATUS'])){
             $user_status = $fa['STATUS'];
         } else {
             $user_status = 0;
         }
-        if($fa['POSTS_PER_PAGE']){
+        if(isset($fa['POSTS_PER_PAGE'])){
             $user_ppp = $fa['POSTS_PER_PAGE'];
         } else {
             $user_ppp = 20;
         }
-        if ($fa['TIMEZONE']){
+        if (isset($fa['TIMEZONE'])){
             $user_tz = $fa['TIMEZONE'];
         } else {
             $user_tz = 0;
         }
-        if ($fa['DL_SAVING'] == "Y") {
+        if (@$fa['DL_SAVING'] == "Y") {
             $user_dlsav = 1;
         } else {
             $user_dlsav = 0;
         }
-        if ($fa['MARK_AS_OF_INT'] == "Y") {
+        if (@$fa['MARK_AS_OF_INT'] == "Y") {
             $user_markread = 1;
         } else {
             $user_markread = 0;
         }
-        if ($fa['FONT_SIZE']) {
+        if (isset($fa['FONT_SIZE'])) {
             $user_fontsize = $fa['FONT_SIZE'];
         } else {
             $user_fontsize = 10;
@@ -115,7 +115,7 @@ function bh_session_init($uid)
     $check.= " " . $user_dlsav;
     $check.= " " . $user_markread;
     $check.= " " . $user_fontsize;
-    $check.= " " . $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
+    $check.= " " . @$HTTP_SERVER_VARS['SERVER_SIGNATURE'];
     $check.= " " . BH_SESS_HASH;
 
     setcookie("bh_sess_uid",$uid);

@@ -295,7 +295,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." msgs</a>\n";
 		echo "<a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
 		echo "</td></tr>\n";
-		echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
+		echo "<tr><td class=\"threads\" style=\"border-top: 0; background-color: transparent;\">";
 	}
 	echo "</td></tr>\n";
 	if (is_array($thread_info)) reset($thread_info);

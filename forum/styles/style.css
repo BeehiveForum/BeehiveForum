@@ -114,14 +114,15 @@ A		{
 
 .folderinfo {
           font-size: 8pt;
-          text-align: right;
           float: left;
+          text-decoration: underline;
 }
 
 .folderpostnew {
           font-size: 8pt;
           text-align: right;
           float: right;
+          text-decoration: underline;
 }
 
 .threadname {

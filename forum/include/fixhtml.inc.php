@@ -540,7 +540,7 @@ function clean_styles ($style) {
 function add_paragraphs ($html, $base = true, $br_only = false) {
 	$html = str_replace("\r", "", $html);
 
-	$tags = array("table", "div", "pre", "ul", "ol", "object");
+	$tags = array("table", "div", "pre", "ul", "ol", "object", "font");
 
 	$tags_nest = array();
 	$tags_nest["table"] = array("td", "th");
@@ -549,6 +549,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 	$tags_nest["div"] = true;
 	$tags_nest["pre"] = false;
 	$tags_nest["object"] = false;
+	$tags_nest["font"] = true;
 
 	$cur_tag = "";
 
@@ -637,7 +638,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 						$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
 						$tmp[2] = substr($html_a[$i], $close);
 
-						$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/(\bstyle=[^<>]*>$)|(^<div\b)/i", $tmp[0]));
+						$tmp[1] = add_paragraphs($tmp[1], false, true);
 
 						$offset = strlen($tmp[0].$tmp[1]);
 
@@ -653,7 +654,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 				$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
 				$tmp[2] = substr($html_a[$i], $close);
 
-				$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/(\bstyle=[^<>]*>$)|(^<div\b)/i", $tmp[0]));
+				$tmp[1] = add_paragraphs($tmp[1], false, true);
 
 				$html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
 			}
@@ -672,9 +673,9 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 			$p_open = false;
 
 			$tmp = split("\n", $html_a[$i]);
-			if (count($tmp) > 2) {
+			if (count($tmp) > 0) {
 				$p_open = true;
-				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0])) {
+				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0]) && trim($tmp[0]) != "") {
 					$tmp[0] = "<p>".$tmp[0];
 				}
 //				if (!preg_match("/<\/p>$/i", $tmp[count($tmp)-1])) {
@@ -718,7 +719,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 					$tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
 				}
 			}
-			if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j])) {
+			if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j]) && trim($tmp[$j]) != "") {
 				$tmp[$j] .= "</p>";
 			}
 			$html_a[$i] = implode("\n", $tmp);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.42 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.43 2004-11-14 00:45:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,40 +121,40 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['match']) && is_array($_POST['match'])) {
 
-        foreach ($_POST['match'] as $key => $value) {
+        foreach ($_POST['match'] as $key => $match_text) {
+
+            $match_text = _stripslashes($match_text);
 
             if ($filter_count < 20) {
 
+                $replace_text  = (isset($_POST['replace'][$key])) ? _stripslashes($_POST['replace'][$key]) : "";
                 $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
 
-                if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $_POST['match'][$key])) {
-                    $_POST['match'][$key] = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $_POST['match'][$key]);
+                if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $match_text)) {
+
+                    $match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $match_text);
                 }
 
-                if (isset($_POST['replace'][$key]) && trim(strlen($_POST['replace'][$key])) > 0) {
-                    user_add_word_filter($_POST['match'][$key], $_POST['replace'][$key], $filter_option);
-                }else {
-                    user_add_word_filter($_POST['match'][$key], "", $filter_option);
-                }
+                user_add_word_filter($match_text, $replace_text, $filter_option);
             }
 
             $filter_count++;
         }
     }
 
-    if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0 && $filter_count < 20) {
+    if (isset($_POST['new_match']) && strlen(trim(_stripslashes($_POST['new_match']))) > 0 && $filter_count < 20) {
 
+        $match_text = trim(_stripslashes($_POST['new_match']));
+
+        $replace_text  = (isset($_POST['new_replace'])) ? _stripslashes($_POST['new_replace']) : "";
         $filter_option = (isset($_POST['new_filter_option'])) ? $_POST['new_filter_option'] : 0;
 
-        if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $_POST['new_match'])) {
-            $_POST['new_match'] = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $_POST['new_match']);
+        if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $match_text)) {
+
+            $match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $match_text);
         }
 
-        if (isset($_POST['new_replace']) && strlen(trim($_POST['new_replace'])) > 0) {
-            user_add_word_filter($_POST['new_match'], $_POST['new_replace'], $filter_option);
-        }else {
-            user_add_word_filter($_POST['new_match'], "", $filter_option);
-        }
+        user_add_word_filter($match_text, $replace_text, $filter_option);
     }
 
     if (isset($_POST['use_admin_filter']) && $_POST['use_admin_filter'] == "Y") {

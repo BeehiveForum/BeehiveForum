@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.58 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.59 2004-11-14 00:45:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -125,63 +125,113 @@ $uid = bh_session_get_value('UID');
 if (isset($_POST['cancel'])) header_redirect("./links.php?webtag=$webtag&fid={$_POST['fid']}");
 
 if (isset($_GET['mode'])) {
+
     if ($_GET['mode'] == 'link') {
+
         $mode = 'link';
+
     }elseif ($_GET['mode'] = 'folder') {
+
         $mode = 'folder';
+
     }else {
+
         $mode = 'link';
     }
+
 } elseif (isset($_POST['mode'])) {
+
     if ($_POST['mode'] == 'link') {
+
         $mode = 'link';
+
     }elseif ($_POST['mode'] = 'folder') {
+
         $mode = 'folder';
+
     }else {
+
         $mode = 'link';
     }
+
 } else {
+
     $mode = "link";
 }
 
-$error = false;
+if (isset($_POST['submit']) && $mode == "link") {
 
-if (isset($_POST['submit']) && $_POST['mode'] == "link") {
-    // validate input
-    $fid = $_POST['fid'];
-    $uri = $_POST['uri'];
-    $name = $_POST['name'];
-    $description = $_POST['description'];
-    if (!preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
-        $error = $lang['notvalidURI'];
+    $valid = true;
+
+    if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+        $fid = $_POST['fid'];
+    }else {
+        $fid = 1;
     }
-    if ($name == "") $error = $lang['mustspecifyname'];
-    if (!$error) {
-        $name = addslashes(_htmlentities($name));
-        $description = addslashes(_htmlentities($description));
+
+    if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
+        $uri = $_POST['uri'];
+    }else {
+        $error_html = $lang['notvalidURI'];
+        $valid = false;
+    }
+
+    if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
+        $name = trim(_stripslashes($_POST['name']));
+    }else {
+        $error_html = $lang['mustspecifyname'];
+        $valid = false;
+    }
+
+    if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
+        $description = trim(_stripslashes($_POST['description']));
+    }else {
+        $description = "";
+    }
+
+    if ($valid) {
+
         links_add($uri, $name, $description, $fid, $uid);
         header_redirect("./links.php?webtag=$webtag&fid=$fid");
-        exit;
     }
-} elseif (isset($_POST['submit']) && $_POST['mode'] == "folder") {
-    $fid = $_POST['fid'];
-    $name = $_POST['name'];
-    if ($name == "") $error = $lang['mustspecifyname'];
-    if (!$error) {
-        $name = addslashes(_htmlentities($name));
+
+}else if (isset($_POST['submit']) && $mode == "folder") {
+
+    $valid = true;
+
+    if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+        $fid = $_POST['fid'];
+    }else {
+        $fid = 1;
+    }
+
+    if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
+        $name = trim(_stripslashes($_POST['name']));
+    }else {
+        $error_html = $lang['mustspecifyname'];
+        $valid = false;
+    }
+
+    if ($valid) {
+
         links_add_folder($fid, $name, true);
         header_redirect("./links.php?webtag=$webtag&fid=$fid");
-        exit;
     }
-} elseif (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+
+}else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+
     $fid = $_GET['fid'];
-    if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) { // this did use array_key_exists(), but that's only supported in PHP/4.1.0+
+
+    if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) {
+
         html_draw_top();
         echo "<h2>{$lang['mustspecifyvalidfolder']}</h2>";
         html_draw_bottom();
         exit;
     }
-} else {
+
+}else {
+
     html_draw_top();
     echo "<h2>{$lang['mustspecifyfolder']}</h2>";
     html_draw_bottom();
@@ -255,7 +305,9 @@ if ($mode == "link") {
     echo "<h1>{$lang['links']}: {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
 
-    if ($error) echo "<h2>$error</h2>\n";
+    if (isset($error_html) && strlen(trim($error_html))) {
+        echo "<h2>$error_html</h2>\n";
+    }
 
     echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.58 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.59 2004-11-14 00:45:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -114,80 +114,139 @@ if (forum_get_setting('show_links', 'N', false)) {
     exit;
 }
 
-$error = false;
-if (isset($_POST['submit']) && bh_session_get_value('UID') != 0) {
-    if ($_POST['type'] == "vote") {
-        if (isset($_POST['vote'])) {
-            links_vote($_POST['lid'], $_POST['vote'], bh_session_get_value('UID'));
-        } else {
-            $error = "<b>{$lang['mustchooserating']}</b>";
+if (isset($_POST['lid'])) {
+
+    $lid = $_POST['lid'];
+
+}else if (isset($_GET['lid'])) {
+
+    $lid = $_GET['lid'];
+
+}else {
+
+    html_draw_top();
+    echo "<h2>{$lang['mustprovidelinkID']}</h2>\n";
+    html_draw_bottom();
+    exit;
+}
+
+$uid = bh_session_get_value('UID');
+
+if (isset($_POST['submit']) && $uid != 0) {
+
+    $valid = true;
+
+    if (isset($_POST['type']) && $_POST['type'] == "vote") {
+
+        if (isset($_POST['vote']) && is_numeric($_POST['vote'])) {
+
+            links_vote($lid, $_POST['vote'], $uid);
+            $error_html = "<h2>{$lang['voterecorded']}</h2>\n";
+
+        }else {
+
+            $error_html = "<b>{$lang['mustchooserating']}</b>";
         }
-        $lid = $_POST['lid'];
-    } elseif ($_POST['type'] == "comment") {
-        if ($_POST['comment'] != "") {
-            $comment = addslashes(_htmlentities($_POST['comment']));
-            links_add_comment($_POST['lid'], bh_session_get_value('UID'), $comment);
-            $error = "<b>{$lang['commentadded']}</b>";
-        } else {
-            $error = "<b>{$lang['musttypecomment']}</b>";
+
+    }else if (isset($_POST['type']) && $_POST['type'] == "comment") {
+
+        if (isset($_POST['comment']) && strlen(trim(_stripslashes($_POST['comment']))) > 0) {
+
+            $comment = trim(_stripslashes($_POST['comment']));
+
+            links_add_comment($lid, $uid, $comment);
+            $error_html = "<b>{$lang['commentadded']}</b>";
+
+        }else {
+
+            $error_html = "<b>{$lang['musttypecomment']}</b>";
         }
-        $lid = $_POST['lid'];
-    } elseif ($_POST['type'] == "moderation") {
-        $creator = links_get_creator_uid($_POST['lid']);
-        if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) {
+
+    }else if (isset($_POST['type']) && $_POST['type'] == "moderation") {
+
+        $creator = links_get_creator_uid($lid);
+
+        if (perm_is_moderator() || $creator['UID'] == $uid) {
+
             if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
-                links_delete($_POST['lid']);
+
+                links_delete($lid);
                 header_redirect("./links.php?webtag=$webtag");
                 exit;
-            } else {
-                links_update($_POST['lid'], $_POST['fid'], addslashes(_htmlentities($_POST['title'])), $_POST['uri'], addslashes(_htmlentities($_POST['description'])));
-                $lid = $_POST['lid'];
+
+            }else {
+
+                if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+                    $fid = $_POST['fid'];
+                }else {
+                    $error_html = $lang['nofolderidspecified'];
+                    $valid = false;
+                }
+
+                if (isset($_POST['uri']) && preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
+                    $uri = $_POST['uri'];
+                }else {
+                    $error_html = $lang['notvalidURI'];
+                    $valid = false;
+                }
+
+                if (isset($_POST['title']) && strlen(trim(_stripslashes($_POST['title']))) > 0) {
+                    $title = trim(_stripslashes($_POST['title']));
+                }else {
+                    $error_html = $lang['mustspecifyname'];
+                    $valid = false;
+                }
+
+                if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
+                    $description = trim(_stripslashes($_POST['description']));
+                }else {
+                    $description = "";
+                }
+
+                if ($valid) {
+
+                    links_update($lid, $fid, $title, $uri, $description);
+                }
             }
+
             if (isset($_POST['hide']) && $_POST['hide'] == "confirm") {
-                links_change_visibility($_POST['lid'], false);
+
+                links_change_visibility($lid, false);
+
             }elseif (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
-                links_change_visibility($_POST['lid'], true);
+
+                links_change_visibility($lid, true);
             }
         }
     }
 }
 
 if (isset($_GET['action'])) {
+
     if ($_GET['action'] == "delete_comment") {
+
         $creator = links_get_comment_uid($_GET['cid']);
-        if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) links_delete_comment($_GET['cid']);
+        if (perm_is_moderator() || $creator['UID'] == $uid) links_delete_comment($_GET['cid']);
     }
 }
 
-if (!isset($_GET['lid']) && !isset($lid)) {
-    html_draw_top();
-    echo "<h2>{$lang['mustprovidelinkID']}</h2>\n";
-    html_draw_bottom();
-    exit;
-} elseif (!isset($lid)) {
-    $lid = $_GET['lid'];
-}
+if (!$link = links_get_single($lid)) {
 
-$link = links_get_single($lid);
-if (!$link) {
     html_draw_top();
     echo "<h2>{$lang['invalidlinkID']}</h2>\n";
     html_draw_bottom();
     exit;
 }
 
-$link['TITLE'] = _stripslashes($link['TITLE']);
 $folders = links_folders_get(perm_is_moderator());
 
 html_draw_top();
 
 echo "<h1>{$lang['links']}: ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;:&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
 
-if (isset($_POST['type']) && $_POST['type'] == "vote" && bh_session_get_value('UID') != 0 && isset($_POST['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
-
-$error = $error ? $error : "&nbsp;";
-
-echo "<p>$error</p>\n";
+if (isset($error_html) && strlen(trim($error_html)) > 0) {
+    echo "<p>$error_html</p>\n";
+}
 
 echo "<div align=\"center\">\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
@@ -255,9 +314,9 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 
-if (bh_session_get_value('UID') != 0) {
+if ($uid != 0) {
 
-    $vote = links_get_vote($lid, bh_session_get_value('UID'));
+    $vote = links_get_vote($lid, $uid);
     $vote = $vote ? $vote : -1;
 
     echo "<form name=\"link_vote\" action=\"links_detail.php\" method=\"post\">\n";
@@ -314,7 +373,7 @@ if ($comments_array = links_get_comments($lid)) {
 
         if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
 
-            if (perm_is_moderator() || $comment['UID'] == bh_session_get_value('UID')) {
+            if (perm_is_moderator() || $comment['UID'] == $uid) {
                 echo "                  <td class=\"subhead\">{$lang['commentby']} ", format_user_name($comment['LOGON'], $comment['NICKNAME']), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
                 echo "                  <td class=\"subhead\">{$lang['commentby']} ", format_user_name($comment['LOGON'], $comment['NICKNAME']), "</td>\n";
@@ -348,7 +407,7 @@ if ($comments_array = links_get_comments($lid)) {
     echo "  <br />\n";
 }
 
-if (bh_session_get_value('UID') != 0) {
+if ($uid != 0) {
 
     echo "<form name=\"link_comment\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
@@ -387,7 +446,7 @@ if (bh_session_get_value('UID') != 0) {
     echo "</form>\n";
 }
 
-if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
+if (perm_is_moderator() || $link['UID'] == $uid) {
 
     echo "<form name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";

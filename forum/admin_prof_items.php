@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.66 2004-11-05 18:50:01 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.67 2004-11-14 00:45:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -141,20 +141,75 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
 if (isset($_POST['submit'])) {
 
-    if (isset($_POST['t_piid'])) {
+    $valid = true;
+
+    if (isset($_POST['t_piid']) && is_array($_POST['t_piid'])) {
 
         foreach($_POST['t_piid'] as $piid => $value) {
 
-            if (($_POST['t_name'][$piid] != $_POST['t_old_name'][$piid]) || ($_POST['t_move'][$piid] != $psid) || ($_POST['t_position'][$piid] != $_POST['t_old_position'][$piid]) || ($_POST['t_type'][$piid] != $_POST['t_old_type'][$piid])) {
-                $new_name = (trim($_POST['t_name'][$piid]) != "") ? trim($_POST['t_name'][$piid]) : $_POST['t_old_name'][$piid];
-                profile_item_update($_POST['t_piid'][$piid], $_POST['t_move'][$piid], $_POST['t_position'][$piid], $_POST['t_type'][$piid], $new_name);
-                admin_addlog(0, 0, 0, 0, $psid, $_POST['t_piid'][$piid], 13);
+            if (isset($_POST['t_name'][$piid]) && strlen(trim(_stripslashes($_POST['t_name'][$piid]))) > 0) {
+                $t_new_name = trim(_stripslashes($_POST['t_name'][$piid]));
+            }else {
+                $valid = false;
+            }
+
+            if (isset($_POST['t_move'][$piid]) && is_numeric($_POST['t_move'][$piid])) {
+                $t_new_move = $_POST['t_move'][$piid];
+            }else {
+                $valid = false;
+            }
+
+            if (isset($_POST['t_type'][$piid]) && is_numeric($_POST['t_type'][$piid])) {
+                $t_new_type = $_POST['t_type'][$piid];
+            }else {
+                $valid = false;
+            }
+
+            if (isset($_POST['t_position'][$piid]) && is_numeric($_POST['t_position'][$piid])) {
+                $t_new_position = $_POST['t_position'][$piid];
+            }else {
+                $valid = false;
+            }
+
+            if ($valid) {
+
+                profile_item_update($piid, $t_new_move, $t_new_position, $t_new_type, $t_new_name);
+                admin_addlog(0, 0, 0, 0, $psid, $piid, 13);
             }
         }
     }
 
-    if (trim($_POST['t_name_new']) != "" && trim($_POST['t_name_new']) != $lang['newitem']) {
-        $new_piid = profile_item_create($psid, trim($_POST['t_name_new']), (isset($_POST['t_piid']) ? sizeof($_POST['t_piid']) : 1), $_POST['t_type_new']);
+    if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
+
+        if (trim(_stripslashes($_POST['t_name_new'])) != $lang['newitem']) {
+
+            $t_name_new = trim(_stripslashes($_POST['t_name_new']));
+
+        }else {
+
+            $valid = false;
+        }
+
+    }else {
+
+        $valid = false;
+    }
+
+    if (isset($_POST['t_piid']) && is_array($_POST['t_piid'])) {
+        $t_position_new = sizeof($_POST['t_piid']);
+    }else {
+        $t_position_new = 1;
+    }
+
+    if (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new'])) {
+        $t_type_new = $_POST['t_type_new'];
+    }else {
+        $valid = false;
+    }
+
+    if ($valid) {
+
+        $new_piid = profile_item_create($psid, $t_name_new, $t_position_new, $t_type_new);
         admin_addlog(0, 0, 0, 0, $psid, $new_piid, 14);
     }
 

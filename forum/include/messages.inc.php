@@ -480,8 +480,8 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
     }
 
     // Mark posts as Viewed...
-    //$sql = "update low_priority POST set VIEWED = NOW() where TID = $tid and PID between $spid and $pid and TO_UID = $uid and VIEWED is null";
-    //db_query($sql, $db_message_update_read);
+    $sql = "update low_priority POST set VIEWED = NOW() where TID = $tid and PID between $spid and $pid and TO_UID = $uid and VIEWED is null";
+    db_query($sql, $db_message_update_read);
 
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.16 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.17 2003-08-26 18:30:48 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -218,6 +218,16 @@ if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = $HTTP_POST_VARS['aid'];
 }
 
+// Was pm_write reached from profile popup?
+
+if (isset($HTTP_GET_VARS['f_profile'])) {
+    $f_profile = $HTTP_GET_VARS['f_profile'];
+}elseif (isset($HTTP_POST_VARS['f_profile'])) {
+    $f_profile = $HTTP_POST_VARS['f_profile'];
+}else {
+    $f_profile = 0;
+}
+
 // User clicked the Convert button.
 
 if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
@@ -274,7 +284,12 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 }
 
 echo "<h1>{$lang['privatemessages']}: {$lang['writepm']}</h1>\n";
-echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a></div><br />\n";
+
+if (!$f_profile) {
+    echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a></div><br />\n";
+}else {
+    echo "<br />\n";
+}
 
 if ($valid == false) {
     echo $error_html;
@@ -285,6 +300,7 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
 }
 
 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo form_input_hidden("f_profile", $f_profile), "\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";

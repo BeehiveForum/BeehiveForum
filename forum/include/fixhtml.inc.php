@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.85 2004-08-12 20:41:33 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.86 2004-08-14 23:25:36 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -35,7 +35,7 @@ $fix_html_spoiler_text = 'spoiler:';
 
 // "$bad_tags" is an array of tags to be filtered
 
-function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
+function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
 {
 
 	global $fix_html_code_text;
@@ -460,6 +460,9 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 				if ($emoticons == true && $tag_quote == false && $tag_code == false && $noemots == 0 && $spoiler == 0) {
 					$html_parts[$i] = emoticons_convert($html_parts[$i]);
 				}
+				if ($links == true && $tag_code == false && $spoiler == 0) {
+					$html_parts[$i] = make_links($html_parts[$i]);
+				}
 				$ret_text .= $html_parts[$i];
 			}
 		}
@@ -617,7 +620,7 @@ function clean_attributes ($tag)
 	return $new_tag;
 }
 
-function tidy_html ($html, $linebreaks = true)
+function tidy_html ($html, $linebreaks = true, $links = true)
 {
 	// turn <br /> and <p>...</p> back into linebreaks
 	// only if auto-linebreaks is enabled
@@ -625,6 +628,10 @@ function tidy_html ($html, $linebreaks = true)
 		$html = preg_replace("/<br( [^>]*)?>(\n)?/i", "\n", $html);
 		$html = preg_replace("/<p( [^>]*)?>/i", "\n\n", $html);
 		$html = preg_replace("/<\/p( [^>]*)?>/i", "\n\n", $html);
+	}
+	// turn autoconverted links back into text
+	if ($links == true) {
+		$html = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $html);
 	}
 
 	// make <code>..</code> tag, and html_entity_decode
@@ -966,10 +973,13 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 	return $return;
 }
 
-function make_html ($html, $br_only = false, $emoticons = true)
+function make_html ($html, $br_only = false, $emoticons = true, $links = true)
 {
     $html = _htmlentities($html);
-    $html = format_url2link($html);
+
+	if ($links == true) {
+	    $html = make_links($html);
+	}
 
 	if ($emoticons == true) {
 		$h_s = preg_split("/(<a[^>]+>[^<]+<\/a>)/", $html, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -982,6 +992,20 @@ function make_html ($html, $br_only = false, $emoticons = true)
     $html = add_paragraphs($html, true, $br_only);
 
     return $html;
+}
+
+function make_links ($html)
+{
+    $html = " ".$html;
+
+    // URL:
+    $html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:?[^@\s]+@)?([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.?)*(:\d+)?([\/?#]\S*)?\/?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
+
+    // MAIL:
+    $html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i", "$1<a href=\"mailto:$3\">$2$3</a>", $html);
+
+    return substr($html, 1);
 }
 
 ?>

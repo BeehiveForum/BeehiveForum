@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.52 2004-08-15 01:10:35 tribalonline Exp $ */
+/* $Id: pm_edit.php,v 1.53 2004-09-08 01:50:01 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -118,11 +118,8 @@ if (bh_session_get_value('UID') == 0) {
 
 // Get the user's post page preferences.
 
-$page_prefs = bh_session_get_value('POST_PAGE');
+$page_prefs = bh_session_get_post_page_prefs();
 
-if ($page_prefs == 0) {
-        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
-}
 
 // Get the Message ID (MID)
 
@@ -145,6 +142,12 @@ if (isset($_POST['cancel'])) {
 }
 
 $valid = true;
+
+$fix_html = true;
+
+// For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
+// Then just do something like $allow_html = forum_allow_html_pms() ? true : false
+$allow_html = true;
 
 $t_content = "";
 
@@ -294,6 +297,8 @@ if ($valid && isset($_POST['preview'])) {
 
 	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 
+	$fix_html = false;
+
 } else {
 
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
@@ -328,7 +333,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top("openprofile.js", "edit.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("onUnload=clearFocus()", "openprofile.js", "edit.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
 
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
@@ -432,14 +437,18 @@ echo "           <h2>{$lang['message']}:</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
-echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
-echo $tools->textarea("t_content", $post->getTidyContent(), 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+}
+
+echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
 echo "          <td>\n";
 echo "        </tr>\n";
 
-if ($post->isDiff()) {
+if ($post->isDiff() && $fix_html) {
 
     echo "        <tr>\n";
     echo "          <td>\n";
@@ -450,15 +459,25 @@ if ($post->isDiff()) {
 
 echo "        <tr>\n";
 echo "          <td>\n";
-echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-$tph_radio = $post->getHTML();
+if ($allow_html == true) {
 
-echo "            ", form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\""), " \n";
-echo "            ", form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1), " \n";
-echo "            ", form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2), " \n";
+	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	$tph_radio = $post->getHTML();
+
+	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+
+	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	}
+
+} else {
+
+	echo form_input_hidden("t_post_html", "disabled");
+}
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
 
@@ -492,7 +511,9 @@ echo "    <td colspan=\"2\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
+
 echo $tools->js();
+
 
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.85 2004-09-02 21:16:46 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.86 2004-09-08 01:50:01 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -476,7 +476,7 @@ function pm_single_get($mid, $folder)
         // Check to see if we should add a sent item before delete
         // ------------------------------------------------------------
 
-        if (($db_pm_list_get_row['TO_UID'] == $uid) && ($db_pm_list_get_row['TYPE'] == PM_UNREAD)) {
+        if (($db_pm_list_get_row['TO_UID'] == $uid) && ($db_pm_list_get_row['TYPE'] == PM_UNREAD) && ($folder == PM_FOLDER_INBOX)) {
 
             pm_markasread($db_pm_list_get_row['MID']);
 

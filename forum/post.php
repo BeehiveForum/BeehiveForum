@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.221 2004-09-08 00:49:46 tribalonline Exp $ */
+/* $Id: post.php,v 1.222 2004-09-08 01:50:01 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -833,11 +833,9 @@ $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent())
 
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
 	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
-	echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
-
-} else {
-	echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 }
+
+echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
 if ($post->isDiff() && $fix_html) {
 
@@ -895,11 +893,7 @@ if ($allow_sig == true) {
 		echo "  <tr>\n";
 		echo "    <td colspan=\"2\">\n";
 
-		if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-			echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
-		} else {
-			echo form_textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
-		}
+		echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
 		echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
@@ -926,9 +920,7 @@ echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
 
 
-if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo $tools->js();
-}
+echo $tools->js();
 
 
 if (isset($_POST['t_dedupe'])) {

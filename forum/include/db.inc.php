@@ -30,6 +30,7 @@ USA
 
 require_once('./include/html.inc.php');
 require_once('./include/form.inc.php');
+require_once('./include/format.inc.php');
 
 function db_connection_error()
 {
@@ -49,7 +50,7 @@ function db_connection_error()
     echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
 
     foreach ($HTTP_POST_VARS as $key => $value) {
-      echo form_input_hidden($key, rawurlencode($value)), "\n";
+      echo form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
     }
 
     srand((double)microtime()*1000000);

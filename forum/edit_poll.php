@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.30 2003-10-29 21:05:20 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.31 2003-11-09 14:19:46 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -46,6 +46,13 @@ require_once("./include/poll.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/edit.inc.php");
 require_once("./include/lang.inc.php");
+
+if (isset($allow_polls) && !$allow_polls) {
+    html_draw_top();
+    echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
+    html_draw_bottom();
+    exit;
+}
 
 if (isset($HTTP_GET_VARS['msg'])) {
 

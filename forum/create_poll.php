@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.57 2003-11-09 14:13:12 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.58 2003-11-09 14:19:46 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -53,7 +53,17 @@ require_once("./include/post.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/lang.inc.php");
 
+// Check to see if the forum owner has allowed the creation of polls
+
+if (isset($allow_polls) && !$allow_polls) {
+    html_draw_top();
+    echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
+    html_draw_bottom();
+    exit;
+}
+
 // Check that there are some available folders for this thread type
+
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
     html_message_type_error();
     exit;

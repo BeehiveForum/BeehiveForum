@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.209 2004-11-22 22:10:16 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.210 2004-11-29 20:32:22 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -616,7 +616,7 @@ function user_check_pref($name, $value)
         } elseif ($name ==  "DOB") {
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
         } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {
-            return preg_match("/^(http:\/\/[a-z0-9\/.-]+|)$/i", $value);
+            return preg_match("/^(http:\/\/[a-z0-9\/.-_]+|)$/i", $value);
         } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_AUTO_PRUNE" || $name == "IMAGES_TO_LINKS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM") {
             return ($value == "Y" || $value == "N") ? true : false;
         } elseif ($name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "ANON_LOGON" || $name == "SHOW_STATS" || $name == "POST_PAGE" || $name == "PM_AUTO_PRUNE_LENGTH") {
@@ -867,12 +867,14 @@ function users_get_recent($offset, $limit)
     $db_users_get_recent = db_connect();
 
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
-                                                       'user_array' => array());
+                                                        'user_array' => array());
 
     $sql = "SELECT USER.UID FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
+    $sql.= "WHERE ((LENGTH(USER_PREFS.ANON_LOGON) > 0 AND USER_PREFS.ANON_LOGON = 0) OR ";
+    $sql.= "(LENGTH(USER_PREFS.ANON_LOGON) = 0 AND USER_PREFS_GLOBAL.ANON_LOGON = 0)) ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
 
     $result = db_query($sql, $db_users_get_recent);
@@ -881,8 +883,10 @@ function users_get_recent($offset, $limit)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE (USER_PREFS.ANON_LOGON IS NULL OR USER_PREFS.ANON_LOGON = '' OR USER_PREFS.ANON_LOGON = 'N') ";
+    $sql.= "WHERE ((LENGTH(USER_PREFS.ANON_LOGON) > 0 AND USER_PREFS.ANON_LOGON = 0) OR ";
+    $sql.= "(LENGTH(USER_PREFS.ANON_LOGON) = 0 AND USER_PREFS_GLOBAL.ANON_LOGON = 0)) ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, $limit";

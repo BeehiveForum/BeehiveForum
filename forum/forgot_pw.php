@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.34 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.35 2004-05-31 12:31:54 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -57,6 +57,10 @@ if (isset($_POST['submit'])) {
         $logon = strtoupper($_POST['logon']);
 
 	if (email_send_pw_reminder($logon)) {
+
+            // Load language file
+
+            $lang = load_language_file();
 
             html_draw_top();
 

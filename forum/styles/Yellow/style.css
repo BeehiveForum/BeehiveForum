@@ -766,6 +766,7 @@ A {
 
 .admin_startpage_textarea {
     font-family: monospace;
+    width: 580px;
 }
 
 .dictionary_pretty_content {

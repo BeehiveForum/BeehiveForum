@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.163 2005-02-14 23:34:38 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.164 2005-02-17 10:19:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -464,7 +464,7 @@ $lang['allowsearchenginespidering'] = "4Ll0w \$34rch en9iN3 \$Pider1n9";
 $lang['newuserregistrations'] = "n3w U\$eR R3gI\$+r@ti0Ns";
 $lang['allownewuserregistrations'] = "4lL0W n3W us3R r3g15Tr@t10NS";
 
-$lang['top10postersforperiod'] = "+op 10 P0\$t3rS PH0r p3Ri0D";
+$lang['top20postersforperiod'] = "+op 20 P0\$t3rS PH0r p3Ri0D";
 $lang['postingstats'] = "pOSTIN9 s+@+5";
 $lang['nodata'] = "n0 DAt@";
 $lang['totalposts'] = "Tot4l p0s+S";

@@ -36,7 +36,7 @@ require_once("./include/threads.inc.php"); // Thread processing functions
 if (!isset($HTTP_GET_VARS['mode'])) { $mode = 0; } else { $mode = $HTTP_GET_VARS['mode']; }
 
 // default to UID 0 (nobody) if no other UID is specified
-if (!isset($HTTP_GET_VARS['user'])) { $user = 0; } else { $user = $HTTP_GET_VARS['user']; }
+if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) { $user = 0; } else { $user = $HTTP_COOKIE_VARS['bh_sess_uid']; }
 
 // Output XHTML header
 html_draw_top();
@@ -47,9 +47,8 @@ html_draw_top();
 	<tr>
 		<td>
 			<?
-			// Calls the desired mode, whilst retaining the current UID
+			// Calls the desired mode
 			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
-			echo "<input type=\"hidden\" name=\"user\" value=\"$user\">";
 			echo "<select name=\"mode\" class=\"thread_list_mode\">\n";
 			
 			echo "<option ";

@@ -32,4 +32,19 @@ function folder_draw_dropdown($default_fid)
     return $html;
 }
 
+function folder_get_title($fid)
+{
+   $db = db_connect();
+   $sql = "SELECT FOLDER.TITLE FROM FOLDER WHERE fid = $fid";
+   $resource_id = db_query($sql,$db);
+   if(!db_num_rows($resource_id)){
+     $foldertitle = "The Unknown Folder";
+   } else {
+     $data = db_fetch_array($resource_id);
+     $foldertitle = $data['TITLE'];
+   }
+   db_disconnect($db);
+   return $foldertitle;
+}
+
 ?>

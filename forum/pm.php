@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.69 2004-09-14 17:42:16 decoyduck Exp $ */
+/* $Id: pm.php,v 1.70 2004-09-14 18:47:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -144,9 +144,9 @@ pm_user_prune_folders();
 // Check to see which page we should be one
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $start = floor($_GET['page'] - 1) * 10;
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
-    $start = 0;
+    $page = 1;
 }
 
 // Default Folder
@@ -194,6 +194,9 @@ echo "</script>\n";
 
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
+
+$start = floor($page - 1) * 20;
+if ($start < 0) $start = 0;
 
 if ($folder == PM_FOLDER_INBOX) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.91 2004-09-14 17:42:15 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.92 2004-09-14 18:47:57 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -956,7 +956,8 @@ function pm_user_prune_folders($uid = false)
 
         if (isset($user_prefs['PM_PRUNE_LENGTH']) && is_numeric($user_prefs['PM_PRUNE_LENGTH'])) {
 
-            $pm_prune_length = time() - ($user_prefs['PM_PRUNE_LENGTH'] * DAY_IN_SECONDS);
+            $pm_prune_length = intval($user_prefs['PM_PRUNE_LENGTH']);
+            $pm_prune_length = time() - ($pm_prune_length * DAY_IN_SECONDS);
 
             $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}PM WHERE ";
             $sql.= "((TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid') ";
@@ -979,7 +980,8 @@ function pm_system_prune_folders()
 
     if (forum_get_setting('pm_auto_prune', 'Y', false)) {
 
-        $pm_prune_length = time() - forum_get_setting('pm_auto_prune_length', false, 60);
+        $pm_prune_length = intval(forum_get_setting('pm_auto_prune_length', false, 60));
+        $pm_prune_length = time() - ($pm_prune_length * DAY_IN_SECONDS);
 
         $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}PM WHERE ";
         $sql.= "((TYPE = TYPE & ". PM_INBOX_ITEMS. ") ";

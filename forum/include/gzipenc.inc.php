@@ -57,7 +57,6 @@ function bh_check_gzip()
 function bh_gzhandler($contents)
 {
     global $gzip_compress_level;
-    static $bh_headers_sent = false;
 
     // check the compression level variable
     if (!isset($gzip_compress_level)) $gzip_compress_level = 1;
@@ -90,12 +89,9 @@ function bh_gzhandler($contents)
 
             // sends the headers to the client while making
             // sure they are only sent once.
-            if (!$bh_headers_sent) {
-                header("Content-Encoding: $encoding", true);
-                header("Vary: Accept-Encoding", true);
-                header("Content-Length: $length", true);
-                $bh_headers_sent = true;
-            }
+            header("Content-Encoding: $encoding", true);
+            header("Vary: Accept-Encoding", true);
+            header("Content-Length: $length", true);
 
             // return the compressed text to PHP.
             return $ret;

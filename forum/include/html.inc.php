@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.150 2005-02-17 22:58:12 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.151 2005-03-13 20:15:54 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -66,7 +66,7 @@ function html_get_top_page()
 {
     $webtag = get_webtag($webtag_search);
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if ($user_style = bh_session_get_value('STYLE')) {
 
@@ -101,7 +101,7 @@ function html_get_style_sheet()
 {
     $webtag = get_webtag($webtag_search);
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if ($user_style = bh_session_get_value('STYLE')) {
 
@@ -136,7 +136,7 @@ function html_get_forum_keywords()
 {
     $webtag = get_webtag($webtag_search);
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if ($forum_keywords = forum_get_setting('forum_keywords')) {
 
@@ -150,7 +150,7 @@ function html_get_forum_description()
 {
     $webtag = get_webtag($webtag_search);
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if ($forum_desc = forum_get_setting('forum_desc')) {
 
@@ -164,7 +164,7 @@ function html_get_forum_email()
 {
     $webtag = get_webtag($webtag_search);
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if ($forum_email = forum_get_setting('forum_email')) {
 
@@ -250,7 +250,7 @@ function html_draw_top()
     $meta_refresh_url = false;
     $robots = "noindex,follow";
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
 
     foreach($arg_array as $key => $func_args) {
@@ -415,7 +415,7 @@ function style_image($img)
 {
     $webtag = get_webtag($webtag_search);
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if ($user_style = bh_session_get_value('STYLE')) {
 

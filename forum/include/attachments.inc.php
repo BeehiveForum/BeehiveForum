@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.87 2005-02-14 16:03:58 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.88 2005-03-13 20:15:53 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -43,7 +43,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
     $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -105,7 +105,7 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
     $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -166,7 +166,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
     $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -248,7 +248,7 @@ function delete_attachment_by_aid($aid)
     if (!$uid = bh_session_get_value('UID')) return false;
     if(!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -275,14 +275,14 @@ function delete_attachment($hash)
     if (!$uid = bh_session_get_value('UID')) return false;
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.AID, PAF.UID, PAI.TID, PAI.PID, THREAD.FID ";
+    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, PAI.PID, THREAD.FID ";
     $sql.= "FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
@@ -304,7 +304,8 @@ function delete_attachment($hash)
 
                 if (perm_is_moderator($row['FID'])) {
 
-                    admin_addlog(0, 0, $row['TID'], $row['TID'], 0, 0, 34);
+                    $log_data = array($row['TID'], $row['PID'], $row['FILENAME']);
+                    admin_add_log_entry(DELETE_ATTACHMENT, $log_data);
                 }
             }
 
@@ -352,7 +353,7 @@ function get_free_attachment_space($uid)
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 

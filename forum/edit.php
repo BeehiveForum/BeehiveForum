@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.161 2005-02-16 23:39:33 decoyduck Exp $ */
+/* $Id: edit.php,v 1.162 2005-03-13 20:15:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/attachments.inc.php");
@@ -500,9 +500,8 @@ if (isset($_POST['preview'])) {
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
 
-            if ($preview_message['FROM_UID'] != bh_session_get_value('UID')) {
-
-                admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
+            if (perm_is_moderator($t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+                admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
             echo "<script language=\"Javascript\" type=\"text/javascript\">\n";

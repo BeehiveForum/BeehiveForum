@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.21 2005-02-09 21:45:33 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.22 2005-03-13 20:15:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -97,7 +97,7 @@ if ($forum_array = forum_get($fid)) {
 
     echo "<h1>{$lang['admin']} : {$lang['manageforums']} : ", $forum_array['FORUM_SETTINGS']['forum_name'], "</h1>\n";
 
-    if ($forum_array['ACCESS_LEVEL'] < 1) {
+    if ($forum_array['ACCESS_LEVEL'] != 1) {
         echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";
         html_draw_bottom();
         exit;
@@ -133,7 +133,7 @@ if ($forum_array = forum_get($fid)) {
                 $uf[0]['fid'] = $fid;
                 $uf[0]['allowed'] = 0;
                 user_update_forums($_POST['user_remove'][$i], $uf);
-                admin_addlog($_POST['user_remove'][$i], $fid, 0, 0, 0, 0, 2);
+                admin_add_log_entry(CHANGE_FORUM_ACCESS, array($fid, $_POST['user_remove'][$i]));
             }
         }
     }
@@ -143,7 +143,7 @@ if ($forum_array = forum_get($fid)) {
     echo "<form name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('fid', $fid), "\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -200,7 +200,7 @@ if ($forum_array = forum_get($fid)) {
 
     if (strlen($usersearch) > 0) {
 
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
         echo "      <td>\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -254,36 +254,9 @@ if ($forum_array = forum_get($fid)) {
             echo "  </table>\n";
             echo "  <br />\n";
         }
-
-    }else {
-
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">{$lang['addnewuser']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td>{$lang['adduser']}: ", post_draw_to_dropdown(false, false), "&nbsp;", form_submit('add_recent_user', $lang['add']), "</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </tr>\n";
-        echo "    </td>\n";
-        echo "  </table>\n";
-        echo "  <br />\n";
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

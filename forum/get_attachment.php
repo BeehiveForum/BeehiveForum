@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.4 2005-01-31 20:29:11 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.5 2005-03-13 20:15:29 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.237 2005-03-09 19:12:38 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.238 2005-03-13 20:15:55 decoyduck Exp $ */
 
 // International English language file
 
@@ -358,6 +358,9 @@ $lang['threaddeleted'] = "Thread Deleted";
 $lang['deletedpost'] = "Deleted Post";
 $lang['editedpost'] = "Edited Post";
 $lang['editedwordfilter'] = "Edited Word Filter";
+$lang['createdusergroup'] = "Created User Group";
+$lang['deletedusergroup'] = "Deleted User Group";
+$lang['addedusertogroup'] = "Added User to group";
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['recententries'] = "Recent Entries";
 $lang['clearlog'] = "Clear Log";
@@ -505,7 +508,7 @@ $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's 
 
 $lang['requirepostapproval'] = "Require Post Approval";
 
-$lang['globaluserpermissions'] = "Global User Permissions";
+$lang['userpermissions'] = "User Permissions";
 $lang['admintools'] = "Admin Tools";
 $lang['forumtools'] = "Forum Tools";
 
@@ -535,6 +538,11 @@ $lang['forumkeywords'] = "Forum Keywords";
 $lang['defaultstyle'] = "Default Style";
 $lang['defaultemoticons'] = "Default Emoticons";
 $lang['defaultlanguage'] = "Default Language";
+$lang['forumaccessstatus'] = "Forum Access Status";
+$lang['changeclosedmessage'] = "Change Closed Message";
+$lang['changepermissions'] = "Change Permissions";
+$lang['changepassword'] = "Change Password";
+$lang['passwordprotected'] = "Password Protected";
 $lang['errorhandler'] = "Error Handler";
 $lang['showfriendlyerrors'] = "Show Friendly Error Messages";
 $lang['gzipcompression'] = "GZIP Compression";

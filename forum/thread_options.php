@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.35 2005-03-08 22:50:52 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.36 2005-03-13 20:15:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -38,7 +38,7 @@ check_install();
 // Multiple forum support
 include_once("./include/forum.inc.php");
 
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/beehive.inc.php");
@@ -195,34 +195,41 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
         if ($t_rename != $threaddata['TITLE']) {
 
-            $threaddata['TITLE'] = _htmlentities($t_rename);
-            thread_change_title($tid, $threaddata['TITLE']);
+            thread_change_title($tid, $t_rename);
 
             post_add_edit_text($tid, 1);
 
             if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
-                admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 21);
+
+                admin_add_log_entry(RENAME_THREAD, array($tid, $threaddata['TITLE'], $t_rename));
             }
 
+            $threaddata['TITLE'] = _htmlentities($t_rename);
             $update = true;
         }
     }
 
     if (isset($_POST['move']) && is_numeric($_POST['move'])) {
 
-        if (folder_is_valid($_POST['move']) && $_POST['move'] != $threaddata['FID']) {
+        $t_move = $_POST['move'];
 
-            if (perm_check_folder_permissions($_POST['move'], USER_PERM_THREAD_CREATE)) {
+        if (folder_is_valid($t_move) && $t_move != $threaddata['FID']) {
 
-                $threaddata['FID'] = $_POST['move'];
-                thread_change_folder($tid, $threaddata['FID']);
+            if (perm_check_folder_permissions($t_move, USER_PERM_THREAD_CREATE)) {
+
+                thread_change_folder($tid, $t_move);
+
+                $new_folder_title = folder_get_title($t_move);
+                $old_folder_title = folder_get_title($threaddata['FID']);
 
                 post_add_edit_text($tid, 1);
 
                 if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
-                    admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 18);
+
+                    admin_add_log_entry(MOVED_THREAD, array($tid, $threaddata['TITLE'], $old_folder_title, $new_folder_title));
                 }
 
+                $threaddata['FID'] = $_POST['move'];
                 $update = true;
             }
         }
@@ -237,7 +244,7 @@ if (perm_is_moderator($fid)) {
 
             $threaddata['CLOSED'] = ($_POST['closed'] == "Y");
             thread_set_closed($tid, $threaddata['CLOSED']);
-            admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, ($threaddata['CLOSED']) ? 19 : 20);
+            admin_add_log_entry(($threaddata['CLOSED']) ? CLOSED_THREAD : OPENED_THREAD, array($tid, $threaddata['TITLE']));
             $update = true;
         }
     }
@@ -248,7 +255,7 @@ if (perm_is_moderator($fid)) {
 
             $threaddata['ADMIN_LOCK'] = ($_POST['lock'] == "Y");
             thread_admin_lock($tid, $threaddata['ADMIN_LOCK']);
-            admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, ($threaddata['ADMIN_LOCK']) ? 30 : 31);
+            admin_add_log_entry(($threaddata['ADMIN_LOCK']) ? LOCKED_THREAD : UNLOCKED_THREAD, array($tid, $threaddata['TITLE']));
             $update = true;
         }
     }
@@ -267,14 +274,17 @@ if (perm_is_moderator($fid)) {
                 $threaddata['STICKY'] = $_POST['sticky'];
                 $threaddata['STICKY_UNTIL'] = $tmp_sticky_until;
                 thread_set_sticky($tid, true, $threaddata['STICKY_UNTIL']);
-                admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 25);
+                admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
                 $update = true;
             }
 
         }elseif ($_POST['sticky'] != $threaddata['STICKY']) {
+
             $threaddata['STICKY'] = $_POST['sticky'];
             thread_set_sticky($tid, false);
-            admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 26);
+
+            admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $threaddata['TITLE']));
+
             $update = true;
         }
     }
@@ -283,8 +293,12 @@ if (perm_is_moderator($fid)) {
 
         if ($del_uid = $_POST['t_to_uid_in_thread']) {
 
+            $user_logon = user_get_logon($del_uid['UID']);
+
             thread_delete_by_user($tid, $del_uid['UID']);
-            admin_addlog($del_uid['UID'], $threaddata['FID'], $tid, 0, 0, 0, 32);
+
+            admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $threaddata['TITLE'], $del_uid['UID'], $user_logon));
+
             $update = true;
         }
     }
@@ -294,7 +308,9 @@ if (perm_is_moderator($fid)) {
         if (isset($_POST['delthread_con']) && $_POST['delthread_con'] == "Y") {
 
             thread_delete($tid);
-            admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 33);
+
+            admin_add_log_entry(DELETE_THREAD, array($tid, $threaddata['TITLE']));
+
             $update = true;
         }
     }

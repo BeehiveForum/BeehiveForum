@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.29 2005-02-09 21:45:34 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.30 2005-03-13 20:15:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -222,7 +222,6 @@ if (sizeof($forums_array) > 0) {
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['name']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['messages']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['allow']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']} / {$lang['passwd']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['delete']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['defaultforum']}</td>\n";
     echo "                </tr>\n";
@@ -234,16 +233,7 @@ if (sizeof($forums_array) > 0) {
         echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
         echo "                  <td align=\"left\">{$forum['FORUM_NAME']}</td>\n";
         echo "                  <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
-        echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwd']), $forum['ACCESS_LEVEL']), "</td>\n";
-
-        if ($forum['ACCESS_LEVEL'] == 1) {
-            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_forum_access.php?webtag=$webtag&fid={$forum['FID']}'\""), "</td>\n";
-        }else if ($forum['ACCESS_LEVEL'] == 2) {
-            echo "                  <td align=\"left\">", form_input_password("t_password[{$forum['FID']}]", ""), "</td>\n";
-        }else {
-            echo "                  <td align=\"center\">&nbsp;</td>\n";
-        }
-
+        echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0), array($lang['closed'], $lang['open']), $forum['ACCESS_LEVEL']), "</td>\n";
         echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", $lang['deleteforum']), "</td>\n";
 
         if ($forum['DEFAULT_FORUM'] == 1) {

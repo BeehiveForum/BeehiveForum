@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.6 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.7 2005-03-13 20:15:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -121,7 +121,7 @@ if (isset($_POST['l_lid'])) {
     }
 
     $uid = bh_session_get_value('UID');
-    admin_addlog($uid, 0, 0, 0, 0, 0, 35);
+    admin_add_log_entry(EDIT_FORUM_LINKS);
 }
 
 if (isset($_POST['l_title_new']) && $_POST['l_title_new'] != "" && isset($_POST['l_pos_new']) && isset($_POST['l_uri_new'])) {
@@ -129,7 +129,7 @@ if (isset($_POST['l_title_new']) && $_POST['l_title_new'] != "" && isset($_POST[
     forum_links_add($_POST['l_pos_new'] + 1, $_POST['l_title_new'], $_POST['l_uri_new']);
 
     $uid = bh_session_get_value('UID');
-    admin_addlog($uid, 0, 0, 0, 0, 0, 35);
+    admin_add_log_entry(EDIT_FORUM_LINKS);
 }
 
 html_draw_top();

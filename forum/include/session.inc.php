@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.163 2005-03-08 19:17:30 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.164 2005-03-13 20:15:54 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -42,7 +42,7 @@ function bh_session_check($show_session_fail = true)
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     // Current server time.
 
@@ -364,7 +364,7 @@ function bh_session_init($uid, $update_visitor_log = true)
         $forum_fid = 0;
     }
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     // Check to see if the user alredy hash a session
     // and reuse it if we can.

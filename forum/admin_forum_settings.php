@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.57 2005-02-14 23:34:38 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.58 2005-03-13 20:15:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -72,7 +72,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
-if (!perm_has_forumtools_access()) {
+if (!perm_has_admin_access()) {
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
@@ -245,7 +245,7 @@ if (isset($_POST['submit'])) {
         save_forum_settings($new_forum_settings);
 
         $uid = bh_session_get_value('UID');
-        admin_addlog($uid, 0, 0, 0, 0, 0, 29);
+        admin_add_log_entry(EDIT_FORUM_SETTINGS, $forum_settings['FID']);
 
         if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
             header_redirect("./admin_forum_settings.php?webtag=$webtag&updated=true");
@@ -276,9 +276,13 @@ if (isset($_POST['submit'])) {
 $available_styles = styles_get_available();
 $available_emoticons = emoticons_get_available();
 
+// Get the forum settings just for this forum
+
+$current_forum_settings = get_forum_settings(true);
+
 // Start Output Here
 
-html_draw_top("emoticons.js");
+html_draw_top("emoticons.js", "admin.js");
 
 if ($webtag) {
     echo "<h1>{$lang['forumsettings']} : ", forum_get_setting('forum_name', false, 'Unknown Forum'), "</h1>\n";
@@ -298,7 +302,7 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<form name=\"prefs\" action=\"admin_forum_settings.php\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefsform\" action=\"admin_forum_settings.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -346,6 +350,50 @@ echo "                        <td>", form_dropdown_array("default_language", $av
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['mainsettings']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\">{$lang['forumaccessstatus']}:</td>\n";
+echo "                        <td>", form_radio("forum_access", 0, $lang['open'], forum_get_setting('forum_access', 0, true)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\">&nbsp;</td>\n";
+echo "                        <td>", form_radio("forum_access", 0, $lang['closed'], forum_get_setting('forum_access', 0, true)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\">&nbsp;</td>\n";
+echo "                        <td>", form_radio("forum_access", 0, $lang['restricted'], forum_get_setting('forum_access', 0, true)), "&nbsp;<span class=\"bhinputradio\">[<a href=\"admin_forum_access.php?webtag=$webtag&fid=1\">{$lang['changepermissions']}</a>]</span></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\">&nbsp;</td>\n";
+echo "                        <td>", form_radio("forum_access", 0, $lang['passwordprotected'], forum_get_setting('forum_access', 0, true)), "&nbsp;<span class=\"bhinputradio\">[<a href=\"admin_forum_access.php?webtag=$webtag&fid=1\">{$lang['changepassword']}</a>]</span></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                        <td>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.26 2005-01-28 23:50:30 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.27 2005-03-13 20:15:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -122,47 +122,71 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
+    if (isset($_POST['old_name']) && strlen(trim(_stripslashes($_POST['old_name']))) > 0) {
+        $folder_data['OLD_TITLE'] = trim(_stripslashes($_POST['old_name']));
+    }else {
+        $folder_data['OLD_TITLE'] = "";
+    }
+
     if (isset($_POST['description']) && strlen(trim(_stripslashes($_POST['description']))) > 0) {
         $folder_data['DESCRIPTION'] = trim(_stripslashes($_POST['description']));
     }else {
         $folder_data['DESCRIPTION'] = "";
     }
 
+    if (isset($_POST['old_description']) && strlen(trim(_stripslashes($_POST['old_description']))) > 0) {
+        $folder_data['OLD_DESCRIPTION'] = trim(_stripslashes($_POST['old_description']));
+    }else {
+        $folder_data['OLD_DESCRIPTION'] = "";
+    }
+
     if (isset($_POST['allowed_types']) && is_numeric($_POST['allowed_types'])) {
         $folder_data['ALLOWED_TYPES'] = $_POST['allowed_types'];
+    }
+
+    if (isset($_POST['old_allowed_types']) && is_numeric($_POST['old_allowed_types'])) {
+        $folder_data['OLD_ALLOWED_TYPES'] = $_POST['allowed_types'];
     }
 
     if (isset($_POST['position']) && is_numeric($_POST['position'])) {
         $folder_data['POSITION'] = $_POST['position'];
     }
 
-    $t_post_read     = (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
-    $t_post_create   = (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
-    $t_thread_create = (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
-    $t_post_edit     = (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
-    $t_post_delete   = (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
-    $t_post_attach   = (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
-    $t_post_html     = (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
-    $t_post_sig      = (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
-    $t_guest_access  = (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
-    $t_post_approval = (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
+    if (isset($_POST['old_perms']) && is_numeric($_POST['old_perms'])) {
+        $folder_data['OLD_PERMS'] = (double) $_POST['old_perms'];
+    }
+
+    $t_post_read     = (double) (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
+    $t_post_create   = (double) (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
+    $t_thread_create = (double) (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
+    $t_post_edit     = (double) (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
+    $t_post_delete   = (double) (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
+    $t_post_attach   = (double) (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
+    $t_post_html     = (double) (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
+    $t_post_sig      = (double) (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
+    $t_guest_access  = (double) (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
+    $t_post_approval = (double) (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
 
     // We need a double / float here because we're storing a high bit value
 
-    $folder_data['PERM'] = (double)$t_post_read | $t_post_create | $t_thread_create;
-    $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_edit | $t_post_delete | $t_post_attach;
-    $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_html | $t_post_sig | $t_guest_access | $t_post_approval;
+    $t_permissions = (double) $t_post_read | $t_post_create | $t_thread_create;
+    $t_permissions = (double) $t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
+    $t_permissions = (double) $t_permissions | $t_post_html | $t_post_sig | $t_guest_access | $t_post_approval;
+
+    $folder_data['PERM'] = (double) $t_permissions;
 
     if ($valid) {
 
         folder_update($fid, $folder_data);
-        admin_addlog(0, $fid, 0, 0, 0, 0, 7);
 
-        if (isset($_POST['move']) && is_numeric($_POST['move']) && isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
+        admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
+
+        if (isset($_POST['move']) && is_numeric($_POST['move'])
+            && isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
 
             if ($fid != $_POST['move']) {
                 folder_move_threads($fid, $_POST['move']);
-                admin_addlog(0, $_POST['t_fid'][$fid], 0, 0, 0, 0, 8);
+                admin_add_log_entry(MOVED_THREADS, array($fid, $_POST['t_fid'][$fid]));
             }
         }
     }
@@ -208,11 +232,11 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['nameanddesc'
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                  <td>".form_input_text("name", $folder_data['TITLE'], 30, 32)."</td>\n";
+echo "                  <td>", form_input_text("name", $folder_data['TITLE'], 30, 32), form_input_hidden("old_name", $folder_data['TITLE']), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                  <td>".form_input_text("description", $folder_data['DESCRIPTION'], 30, 255)."</td>\n";
+echo "                  <td>", form_input_text("description", $folder_data['DESCRIPTION'], 30, 255), form_input_hidden("old_description", $folder_data['DESCRIPTION']), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -248,6 +272,7 @@ if ($folder_dropdown = folder_draw_dropdown($folder_data['FID'], "move")) {
     echo "        <br />\n";
 }
 
+echo "        ", form_input_hidden("old_perms", $folder_data['PERM']), "\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
@@ -298,7 +323,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['allow']}</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
-echo "                  <td>", form_dropdown_array("allowed_types", $allow_values, $allow_labels, $folder_data['ALLOWED_TYPES'] ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), "</td>\n";
+echo "                  <td>", form_dropdown_array("allowed_types", $allow_values, $allow_labels, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.71 2005-02-16 23:39:32 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.72 2005-03-13 20:15:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -144,7 +144,7 @@ if (isset($_POST['submit'])) {
             if ($valid) {
 
                 profile_item_update($piid, $t_new_move, $t_new_position, $t_new_type, $t_new_name);
-                admin_addlog(0, 0, 0, 0, $psid, $piid, 13);
+                admin_add_log_entry(CHANGE_PROFILE_ITEM, array($psid, $piid));
             }
         }
     }
@@ -180,14 +180,19 @@ if (isset($_POST['submit'])) {
     if ($valid) {
 
         $new_piid = profile_item_create($psid, $t_name_new, $t_position_new, $t_type_new);
-        admin_addlog(0, 0, 0, 0, $psid, $new_piid, 14);
+        admin_add_log_entry(ADDED_PROFILE_ITEM, array($psid, $new_piid, $t_name_new));
     }
 
 }elseif (isset($_POST['t_delete'])) {
 
     list($piid) = array_keys($_POST['t_delete']);
+
+    $t_section_name = profile_section_get_name($psid);
+    $t_item_name = isset($_POST['t_old_name']) ? $_POST['t_old_name'] : "";
+
     profile_item_delete($piid);
-    admin_addlog(0, 0, 0, 0, 0, $piid, 15);
+
+    admin_add_log_entry(DELETE_PROFILE_ITEM, array($t_section_name, $t_item_name));
 }
 
 html_draw_top();

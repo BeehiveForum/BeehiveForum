@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.65 2005-03-12 13:26:54 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.66 2005-03-13 20:15:47 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -44,7 +44,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/db.inc.php");
 include_once("./include/email.inc.php");

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.8 2005-02-17 10:19:38 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.9 2005-03-13 20:15:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,7 +41,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -73,7 +73,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
-if (!perm_has_forumtools_access()) {
+if (!perm_has_admin_access()) {
     html_draw_top();
     echo "<h2>{$lang['accessdenied']}</h2>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";

@@ -21,35 +21,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.55 2005-02-17 22:58:11 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.56 2005-03-13 20:15:52 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
 
-function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
+function admin_add_log_entry($action, $data = 0)
 {
-    $db_admin_addlog = db_connect();
-    $admin_uid = bh_session_get_value('UID');
+    $db_admin_add_log_entry = db_connect();
+    $uid = bh_session_get_value('UID');
 
-    if (perm_is_moderator($fid)) {
+    if (!is_numeric($action)) return false;
 
-        $uid    = addslashes($uid);
-        $fid    = addslashes($fid);
-        $tid    = addslashes($tid);
-        $pid    = addslashes($pid);
-        $psid   = addslashes($psid);
-        $piid   = addslashes($piid);
-        $action = addslashes($action);
-
-        if (!$table_data = get_table_prefix()) return false;
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
-        $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
-
-        if (!$result = db_query($sql, $db_admin_addlog)) return false;
-
-        return true;
+    if (is_array($data)) {
+        $data = addslashes(implode("\x00", $data));
+    }else {
+        $data = addslashes($data);
     }
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (CREATED, UID, ACTION, DATA) ";
+    $sql.= "VALUES (NOW(), '$uid', '$action', '$data')";
+
+    if (!$result = db_query($sql, $db_admin_add_log_entry)) return false;
+
+    return true;
 }
 
 function admin_clearlog()
@@ -65,40 +62,33 @@ function admin_clearlog()
     return true;
 }
 
-function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_dir = 'DESC')
+function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC')
 {
     $db_admin_get_log_entries = db_connect();
 
-    $sort_by_array  = array('ADMIN_LOG.LOG_TIME', 'ADMIN_LOG.ADMIN_UID', 'ADMIN_LOG.ACTION');
+    $sort_by_array  = array('CREATED', 'UID', 'ACTION');
     $sort_dir_array = array('ASC', 'DESC');
 
     $admin_log_array = array();
 
     if (!is_numeric($offset)) $offset = 0;
 
-    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(LOG_ID) AS LOG_COUNT ";
+    $sql = "SELECT COUNT(ID) AS LOG_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ";
 
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 
     list($admin_log_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
-    $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "ADMIN_LOG.FID, ADMIN_LOG.TID, ADMIN_LOG.PID, FOLDER.TITLE AS FOLDER_TITLE, THREAD.TITLE AS THREAD_TITLE, ";
-    $sql.= "ADMIN_LOG.PSID, ADMIN_LOG.PIID, PS.NAME AS PS_NAME, PI.NAME AS PI_NAME, ADMIN_LOG.ACTION ";
+    $sql = "SELECT ADMIN_LOG.ID, UNIX_TIMESTAMP(ADMIN_LOG.CREATED) AS CREATED, ";
+    $sql.= "ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.DATA, USER.LOGON, USER.NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ADMIN_LOG ";
-    $sql.= "LEFT JOIN USER AUSER ON (AUSER.UID = ADMIN_LOG.ADMIN_UID) ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PS ON (PS.PSID = ADMIN_LOG.PSID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PI ON (PI.PIID = ADMIN_LOG.PIID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = ADMIN_LOG.FID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
@@ -302,7 +292,7 @@ function admin_get_users_attachments($uid)
 
     if (!$table_data = get_table_prefix()) return $userattachments;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
     $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.85 2005-03-09 17:59:21 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.86 2005-03-13 20:15:53 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -38,7 +38,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
 
     if ($to_user_prefs = user_get_prefs($tuid)) {
@@ -117,7 +117,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
 
     $sql = "SELECT USER_THREAD.UID, USER.NICKNAME, USER.EMAIL ";
@@ -196,7 +196,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
 
     if ($to_user_prefs = user_get_prefs($tuid)) {
@@ -267,7 +267,7 @@ function email_send_pw_reminder($logon)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
 
     if ($to_user = user_get_uid($logon)) {
@@ -323,7 +323,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
 
     if ($to_user = user_get($tuid)) {
@@ -369,7 +369,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
 function email_get_language($to_uid)
 {
-    $forum_settings = get_forum_settings();
+    $forum_settings = forum_get_settings();
 
      // if the user has expressed a preference for language, use it
      // if available otherwise use the default language.

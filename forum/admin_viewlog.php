@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.73 2005-02-14 21:00:59 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.74 2005-03-13 20:15:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ check_install();
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
-$forum_settings = get_forum_settings();
+$forum_settings = forum_get_settings();
 
 include_once("./include/admin.inc.php");
 include_once("./include/constants.inc.php");
@@ -90,17 +90,17 @@ if (!(perm_has_admin_access())) {
 // Column sorting stuff
 
 if (isset($_GET['sort_by'])) {
-    if ($_GET['sort_by'] == "LOG_TIME") {
-        $sort_by = "ADMIN_LOG.LOG_TIME";
-    } elseif ($_GET['sort_by'] == "ADMIN_UID") {
-        $sort_by = "ADMIN_LOG.ADMIN_UID";
+    if ($_GET['sort_by'] == "CREATED") {
+        $sort_by = "CREATED";
+    } elseif ($_GET['sort_by'] == "UID") {
+        $sort_by = "ADMIN_LOG.UID";
     } elseif ($_GET['sort_by'] == "ACTION") {
         $sort_by = "ADMIN_LOG.ACTION";
     } else {
-        $sort_by = "ADMIN_LOG.LOG_TIME";
+        $sort_by = "CREATED";
     }
 } else {
-    $sort_by = "ADMIN_LOG.LOG_TIME";
+    $sort_by = "CREATED";
 }
 
 if (isset($_GET['sort_dir'])) {
@@ -138,16 +138,16 @@ echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 
-if ($sort_by == 'ADMIN_LOG.LOG_TIME' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=LOG_TIME&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
+if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=LOG_TIME&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
 }
 
-if ($sort_by == 'ADMIN_LOG.ADMIN_UID' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ADMIN_UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
+if ($sort_by == 'ADMIN_LOG.UID' && $sort_dir == 'ASC') {
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ADMIN_UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'ADMIN_LOG.ACTION' && $sort_dir == 'ASC') {
@@ -165,169 +165,206 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
     foreach ($admin_log_array['admin_log_array'] as $admin_log_entry) {
 
         echo "                  <tr>\n";
-        echo "                    <td class=\"posthead\" align=\"left\">", format_time($admin_log_entry['LOG_TIME']), "</td>\n";
-        echo "                    <td class=\"posthead\" align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['ADMIN_UID'], "\">", format_user_name($admin_log_entry['ALOGON'], $admin_log_entry['ANICKNAME']), "</a></td>\n";
-
-        if (!empty($admin_log_entry['LOGON']) && !empty($admin_log_entry['NICKNAME'])) {
-            $user = "<a href=\"admin_user.php?webtag=$webtag&amp;uid=". $admin_log_entry['UID']. "\">";
-            $user.= format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']). "</a>";
-        }else {
-            $user = "{$lang['unknownuser']} (UID: {$admin_log_entry['UID']})";
-        }
-
-        if (isset($admin_log_entry['FID']) && $admin_log_entry['FID'] > 0) {
-            $title = $admin_log_entry['FID'];
-        }else {
-            $title = "{$lang['unknownfolder']}";
-        }
-
-        if (isset($admin_log_entry['TID']) && $admin_log_entry['TID'] > 0) {
-            $tid = $admin_log_entry['TID'];
-        }
-
-        if (isset($admin_log_entry['PID']) && $admin_log_entry['PID'] > 0) {
-            $pid = $admin_log_entry['PID'];
-        }
-
-        if (isset($admin_log_entry['FOLDER_TITLE']) && !empty($admin_log_entry['FOLDER_TITLE'])) {
-            $folder_title = $admin_log_entry['FOLDER_TITLE'];
-        }else {
-            $folder_title = "{$lang['unknown']} (FID: {$admin_log_entry['FID']})";
-        }
-
-        if (isset($admin_log_entry['THREAD_TITLE']) && !empty($admin_log_entry['THREAD_TITLE'])) {
-            $thread_title = $admin_log_entry['THREAD_TITLE'];
-        }else {
-            $thread_title = "{$lang['unknown']} (TID: {$admin_log_entry['TID']})";
-        }
-
-        if (isset($admin_log_entry['PS_NAME']) && !empty($admin_log_entry['PS_NAME'])) {
-            $ps_name = $admin_log_entry['PS_NAME'];
-        }else {
-            $ps_name = "{$lang['unknown']} (PSID: {$admin_log_entry['PSID']})";
-        }
-
-        if (isset($admin_log_entry['PI_NAME']) && !empty($admin_log_entry['PI_NAME'])) {
-            $pi_name = $admin_log_entry['PI_NAME'];
-        }else {
-            $pi_name = "{$lang['unknown']} (PIID: {$admin_log_entry['PIID']})";
-        }
+        echo "                    <td class=\"posthead\" align=\"left\">", format_time($admin_log_entry['CREATED']), "</td>\n";
+        echo "                    <td class=\"posthead\" align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), "</a></td>\n";
 
         switch ($admin_log_entry['ACTION']) {
-            case 1:
-                $action_text = "{$lang['changeduserstatus']}: $user";
+
+            case CHANGE_USER_STATUS:
+
+                $action_text = "{$lang['changeduserstatus']}: {$admin_log_entry['DATA']}";
                 break;
-            case 2:
-                $action_text = "{$lang['changedfolderaccess']}: $user";
+
+            case CHANGE_FORUM_ACCESS:
+
+                $action_text = "{$lang['changedfolderaccess']}: {$admin_log_entry['DATA']}";
                 break;
-            case 3:
-                $action_text = "{$lang['deletedallusersposts']}: $user";
+
+            case DELETE_ALL_USER_POSTS:
+
+                $action_text = "{$lang['deletedallusersposts']}: {$admin_log_entry['DATA']}";
                 break;
-            case 4:
-                $action_text = "{$lang['banneduser']} $user's {$lang['ipaddress']}";
+
+            case BANNED_IPADDRESS:
+
+                $action_text = "{$lang['bannedipaddress']} {$admin_log_entry['DATA']}";
                 break;
-            case 5:
-                $action_text = "{$lang['unbanneduser']} $user's {$lang['ipaddress']}";
+
+            case UNBANNED_IPADDRESS:
+
+                $action_text = "{$lang['unbannedipaddress']} {$admin_log_entry['DATA']}";
                 break;
-            case 6:
-                $action_text = "{$lang['deleteduser']} $user's {$lang['attachment']}";
+
+            case DELETE_ALL_ATTACHMENTS:
+
+                $action_text = "{$lang['deletedusersattachments']} {$admin_log_entry['DATA']}";
                 break;
-            case 7:
-                $action_text = "{$lang['changedtitleaccessfolder']}: '$folder_title'";
+
+            case EDIT_THREAD_OPTIONS:
+
+                $action_text = "{$lang['changedtitleaccessfolder']}: {$admin_log_entry['DATA']}";
                 break;
-            case 8:
-                $action_text = "{$lang['movedthreads']}: '$folder_title'";
+
+            case MOVED_THREADS:
+
+                $action_text = "{$lang['movedthreads']}: {$admin_log_entry['DATA']}";
                 break;
-            case 9:
-                $action_text = "{$lang['creatednewfolder']}: '$folder_title'";
+
+            case CREATE_NEW_FOLDER:
+
+                $action_text = "{$lang['creatednewfolder']}: {$admin_log_entry['DATA']}";
                 break;
-            case 10:
-                $action_text = "{$lang['changedprofilesectiontitle']}: $ps_name";
+
+            case CHANGE_PROFILE_SECT:
+
+                $action_text = "{$lang['changedprofilesectiontitle']}: {$admin_log_entry['DATA']}";
                 break;
-            case 11:
-                $action_text = "{$lang['addednewprofilesection']}: $ps_name";
+
+            case ADDED_PROFILE_SECT:
+
+                $action_text = "{$lang['addednewprofilesection']}: {$admin_log_entry['DATA']}";
                 break;
-            case 12:
-                $action_text = "{$lang['deletedprofilesection']}: $ps_name";
+
+            case DELETE_PROFILE_SECT:
+
+                $action_text = "{$lang['deletedprofilesection']}: {$admin_log_entry['DATA']}";
                 break;
-            case 13:
-                $action_text = "{$lang['changedprofileitemtitle']}: $pi_name";
+
+            case CHANGE_PROFILE_ITEM:
+
+                $action_text = "{$lang['changedprofileitemtitle']}: {$admin_log_entry['DATA']}";
                 break;
-            case 14:
-                $action_text = "{$lang['addednewprofileitem']}: $pi_name";
+
+            case ADDED_PROFILE_ITEM:
+
+                $action_text = "{$lang['addednewprofileitem']}: {$admin_log_entry['DATA']}";
                 break;
-            case 15:
-                $action_text = "{$lang['deletedprofileitem']}: $pi_name";
+
+            case DELETE_PROFILE_ITEM:
+
+                $action_text = "{$lang['deletedprofileitem']}: {$admin_log_entry['DATA']}";
                 break;
-            case 16:
+
+            case EDITED_START_PAGE:
+
                 $action_text = "{$lang['editedstartpage']}";
                 break;
-            case 17:
+
+            case CREATED_NEW_STYLE:
+
                 $action_text = "{$lang['savednewstyle']}";
                 break;
-            case 18:
-                $action_text = "{$lang['movedthread']}: '$thread_title'";
+
+            case MOVED_THREAD:
+
+                $action_text = "{$lang['movedthread']}: {$admin_log_entry['DATA']}";
                 break;
-            case 19:
-                $action_text = "{$lang['closedthread']}: '$thread_title'";
+
+            case CLOSED_THREAD:
+
+                $action_text = "{$lang['closedthread']}: {$admin_log_entry['DATA']}";
                 break;
-            case 20:
-                $action_text = "{$lang['openedthread']}: '$thread_title'";
+
+            case OPENED_THREAD:
+
+                $action_text = "{$lang['openedthread']}: {$admin_log_entry['DATA']}";
                 break;
-            case 21:
-                $action_text = "{$lang['renamedthread']}: '$thread_title'";
+
+            case RENAME_THREAD:
+
+                $action_text = "{$lang['renamedthread']}: {$admin_log_entry['DATA']}";
                 break;
-            case 22:
-                $action_text = "{$lang['deletedpost']}: $tid.$pid";
+
+            case DELETE_POST:
+
+                $action_text = "{$lang['deletedpost']}: {$admin_log_entry['DATA']}";
                 break;
-            case 23:
-                $action_text = "{$lang['editedpost']}: $tid.$pid";
+
+            case EDIT_POST:
+
+                $action_text = "{$lang['editedpost']}: {$admin_log_entry['DATA']}";
                 break;
-            case 24:
+
+            case EDIT_WORD_FILTER:
+
                 $action_text = "{$lang['editedwordfilter']}";
                 break;
-            case 25:
-                $action_text = "{$lang['madethreadsticky']}: '$thread_title'";
+
+            case CREATE_THREAD_STICKY:
+
+                $action_text = "{$lang['madethreadsticky']}: {$admin_log_entry['DATA']}";
                 break;
-            case 26:
-                $action_text = "{$lang['madethreadnonsticky']}: '$thread_title'";
+
+            case REMOVE_THREAD_STICKY:
+
+                $action_text = "{$lang['madethreadnonsticky']}: {$admin_log_entry['DATA']}";
                 break;
-            case 27:
-                $action_text = "{$lang['endedsessionforuser']}: '$user'";
+
+            case END_USED_SESSION:
+
+                $action_text = "{$lang['endedsessionforuser']}: {$admin_log_entry['DATA']}";
                 break;
-            case 28:
-                $action_text = "{$lang['editedwordfilter']}";
-                break;
-            case 29:
+
+            case EDIT_FORUM_SETTINGS:
+
                 $action_text = "{$lang['editedforumsettings']}";
                 break;
-            case 30:
-                $action_text = "{$lang['lockedthreadtitlefolder']}: '$thread_title'";
+
+            case LOCKED_THREAD:
+
+                $action_text = "{$lang['lockedthreadtitlefolder']}: {$admin_log_entry['DATA']}";
                 break;
-            case 31:
-                $action_text = "{$lang['unlockedthreadtitlefolder']}: '$thread_title'";
+
+            case UNLOCKED_THREAD:
+
+                $action_text = "{$lang['unlockedthreadtitlefolder']}: {$admin_log_entry['DATA']}";
                 break;
-            case 32:
-                $action_text = "{$lang['userspostsdeletedinthread']}: '$thread_title'";
+
+            case DELETE_USER_THREAD_POSTS:
+
+                $action_text = "{$lang['userspostsdeletedinthread']}: {$admin_log_entry['DATA']}";
                 break;
-            case 33:
-                $action_text = "{$lang['threaddeleted']}: '$thread_title'";
+
+            case DELETE_THREAD:
+
+                $action_text = "{$lang['threaddeleted']}: {$admin_log_entry['DATA']}";
                 break;
-            case 34:
-                $action_text = "{$lang['deleteduserattachmentfrompost']}: $tid.$pid";
+
+            case DELETE_ATTACHMENT:
+
+                $action_text = "{$lang['deleteduserattachmentfrompost']}: {$admin_log_entry['DATA']}";
                 break;
-            case 35:
+
+            case EDIT_FORUM_LINKS:
+
                 $action_text = "{$lang['editedforumlinks']}";
                 break;
-            case 36:
-                $action_text = "{$lang['approvedpost']}: $tid.$pid";
-            default:
-                $action_text = "{$lang['unknown']}";
+
+            case APPROVED_POST:
+
+                $action_text = "{$lang['approvedpost']}: {$admin_log_entry['DATA']}";
                 break;
 
-        }
+            case CREATE_USER_GROUP:
 
-        unset($user, $title, $tid, $pid, $title, $ps_name, $pi_name);
+                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['DATA']}";
+                break;
+
+            case DELETE_USER_GROUP:
+
+                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['DATA']}";
+                break;
+
+            case ADD_USER_TO_GROUP:
+
+                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['DATA']}";
+                break;
+
+            default:
+
+                $action_text = "{$lang['unknown']}";
+                break;
+        }
 
         echo "                    <td class=\"posthead\" align=\"left\">", $action_text, "</td>\n";
         echo "                  </tr>\n";

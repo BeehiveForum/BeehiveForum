@@ -34,7 +34,7 @@ function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text
     if($width) $html.= " size=\"$width\"";
     if($maxchars) $html.= " maxchars=\"$maxchars\"";
 
-    return $html.">\n";
+    return $html.">";
 }
 
 function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
@@ -61,7 +61,7 @@ function form_textarea($name, $value = "", $rows = 0, $cols = 0)
     if($rows) $html.= " rows=\"$rows\"";
     if($cols) $html.= " cols=\"$cols\"";
 
-    $html .= ">$value</textarea>\n";
+    $html .= ">$value</textarea>";
 
     return $html;
 }
@@ -69,7 +69,7 @@ function form_textarea($name, $value = "", $rows = 0, $cols = 0)
 // create a <select> dropdown with values from database
 function form_dropdown_sql($name, $sql, $default)
 {
-    $html = "<select name=\"$name\" class=\"bhselect\">\n";
+    $html = "<select name=\"$name\" class=\"bhselect\">";
 
     $db_form_dropdown_sql = db_connect();
 
@@ -90,17 +90,17 @@ function form_dropdown_sql($name, $sql, $default)
 // create a <select> dropdown with values from array(s)
 function form_dropdown_array($name, $value, $label, $default = "", $custom_html = "")
 {
-    $html = "<select name=\"$name\" class=\"bhselect\" $custom_html>\n";
+    $html = "<select name=\"$name\" class=\"bhselect\" $custom_html>";
 
     for($i=0;$i<count($value);$i++){
         $sel = ($value[$i] == $default) ? " selected" : "";
         if($label[$i]){
-            $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>\n";
+            $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>";
         } else {
-            $html.= "<option$sel>".$value[$i]."</option>\n";
+            $html.= "<option$sel>".$value[$i]."</option>";
         }
     }
-    return $html."</select>\n";
+    return $html."</select>";
 }
 
 // create a <input type="checkbox">
@@ -108,7 +108,7 @@ function form_checkbox($name, $value, $text, $checked = false)
 {
     $html = "<span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"$name\" value=\"$value\"";
     if($checked) $html .= " checked";
-    return $html . " />$text</span>\n";
+    return $html . " />$text</span>";
 }
 
 // create a <input type="radio">
@@ -116,7 +116,7 @@ function form_radio($name, $value, $text, $checked = false)
 {
     $html = "<span class=\"bhinputradio\"><input type=\"radio\" name=\"$name\" value=\"$value\"";
     if($checked) $html .= " checked";
-    return $html . " />$text</span>\n";
+    return $html . " />$text</span>";
 }
 
 // create a <input type="radio"> set with values from array(s)
@@ -147,7 +147,7 @@ function form_button($name, $value, $customhtml, $class="button")
 // create a form just to be a link button
 function form_quick_button($href,$label,$var = 0,$value = 0,$target = "_self")
 {
-    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" target=\"$target\">\n";
+    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" target=\"$target\">";
 
     if($var){
         if(is_array($var)){

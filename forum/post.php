@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.210 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: post.php,v 1.211 2004-08-08 12:10:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -434,6 +434,28 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }
 }
 
+$allow_html = true;
+$allow_sig = true;
+
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+	$allow_html = false;
+}
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+	$allow_sig = false;
+}
+
+if ($allow_html == false) {
+	if ($post->getHTML() > 0) {
+		$post->setHTML(false);
+		$t_content = $post->getContent();
+	}
+	if ($sig->getHTML() > 0) {
+		$sig->setHTML(false);
+		$t_sig = $sig->getContent();
+	}
+}
+
+
 if (!$newthread) {
 
     $reply_message = messages_get($reply_to_tid, $reply_to_pid);
@@ -518,7 +540,7 @@ if ($valid && isset($_POST['submit'])) {
 
         if ($t_tid > 0) {
 
-            if (trim($t_sig) != "") {
+            if ($allow_sig == true && trim($t_sig) != "") {
                 $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
 
             }
@@ -638,7 +660,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $preview_message['CONTENT'] = $post->getContent();
 
-    if (trim($t_sig) != "") {
+    if ($allow_sig == true && trim($t_sig) != "") {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
@@ -775,7 +797,7 @@ if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
-if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
@@ -790,15 +812,22 @@ if ($post->isDiff()) {
     echo "<br /><br />\n";
 }
 
-echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+if ($allow_html == true) {
 
-$tph_radio = $post->getHTML();
+	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+	$tph_radio = $post->getHTML();
 
-echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+
+	echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
+} else {
+
+	echo form_input_hidden("t_post_html", "disabled");
+}
 
 echo "<br /><br /><h2>". $lang['emoticonsinmessage'] .":</h2>\n";
 
@@ -817,18 +846,21 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_pe
     echo form_input_hidden("aid", $aid);
 }
 
-echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
+if ($allow_sig == true) {
 
-$t_sig = $sig->getTidyContent();
+	echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+	$t_sig = $sig->getTidyContent();
 
-echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+	echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-if ($sig->isDiff() && !$fetched_sig) {
+	echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-    echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+	if ($sig->isDiff() && !$fetched_sig) {
 
+		echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+
+	}
 }
 
 echo "</td></tr>\n";

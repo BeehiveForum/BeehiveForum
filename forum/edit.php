@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.138 2004-08-07 15:23:56 tribalonline Exp $ */
+/* $Id: edit.php,v 1.139 2004-08-08 12:10:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -293,6 +293,25 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 $post = new MessageText($post_html, "", $emots_enabled);
 $sig = new MessageText($sig_html);
 
+$allow_html = true;
+$allow_sig = true;
+
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+	$allow_html = false;
+}
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+	$allow_sig = false;
+}
+
+if ($allow_html == false) {
+	if ($post->getHTML() > 0) {
+		$post->setHTML(false);
+	}
+	if ($sig->getHTML() > 0) {
+		$sig->setHTML(false);
+	}
+}
+
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
@@ -359,7 +378,10 @@ if (isset($_POST['preview'])) {
     if ($valid) {
 
         $preview_message['CONTENT'] = $t_content;
-        $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
+
+		if ($allow_sig == true) {
+	        $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
+		}
 
         if ($to_uid == 0) {
 
@@ -434,7 +456,9 @@ if (isset($_POST['preview'])) {
 
     if ($valid) {
 
-        $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
+		if ($allow_sig == true) {
+	        $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
+		}
 
         $updated = post_update($tid, $pid, $t_content_tmp);
 
@@ -586,8 +610,8 @@ if (isset($_POST['preview'])) {
             $t_content = strip_tags($t_content);
         }
 
-        $post = new MessageText($post_html, $t_content, $emots_enabled);
-        $sig = new MessageText($sig_html, $t_sig);
+        $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled);
+        $sig = new MessageText($allow_html ? $sig_html : false, $t_sig);
 
 		$post->diff = false;
 		$sig->diff = false;
@@ -705,7 +729,7 @@ echo "<tr><td>\n";
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
-if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
 	echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
@@ -718,15 +742,20 @@ if ($post->isDiff()) {
         echo "<br /><br />\n";
 }
 
-echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+if ($allow_html == true) {
+	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-$tph_radio = $post->getHTML();
+	$tph_radio = $post->getHTML();
 
-echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
+} else {
+	echo form_input_hidden("t_post_html", "disabled");
+}
 
 echo "<br /><br /><h2>". $lang['emoticonsinmessage'] .":</h2>\n";
 
@@ -754,9 +783,11 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_pe
 }
 
 // ---- SIGNATURE ----
-echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
+if ($allow_sig == true) {
+	echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-echo $tools->textarea("t_sig", $sig->getTidyContent(), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+	echo $tools->textarea("t_sig", $sig->getTidyContent(), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+}
 
 echo $tools->js();
 

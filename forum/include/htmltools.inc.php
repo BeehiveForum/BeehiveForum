@@ -71,7 +71,7 @@ class TextAreaHTML {
 
         $this->tbs++;
 
-        $str = "<div id=\"_tb{$this->tbs}\" class=\"tools\">\n";
+        $str = "<div id=\"_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar.png');\">\n";
 
         $str.= $this->_tb_img($lang['bold'], "add_tag('b');");
         $str.= $this->_tb_img($lang['italic'], "add_tag('i');");

@@ -112,7 +112,7 @@ function html_draw_top_post_script($title = false)
 
 function html_draw_bottom ()
 {
-	echo "</body>\n";
+    echo "</body>\n";
 	echo "</html>\n";
 }
 

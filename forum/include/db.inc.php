@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.59 2004-11-24 18:27:22 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.60 2004-12-01 09:25:47 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -45,6 +45,12 @@ function db_connect ()
 
                 if (mysql_select_db($db_database, $connection_id)) {
 
+                    if (isset($mysql_big_selects) && $mysql_big_selects == true) {
+
+                        $sql = "SET OPTION SQL_BIG_SELECTS = 1";
+                        db_query($sql, $connection_id);
+                    }
+
                     return $connection_id;
                 }
             }
@@ -67,6 +73,12 @@ function db_connect ()
         if (!$connection_id) {
 
             if ($connection_id = mysqli_connect($db_server, $db_username, $db_password, $db_database)) {
+
+                if (isset($mysql_big_selects) && $mysql_big_selects == true) {
+
+                    $sql = "SET OPTION SQL_BIG_SELECTS = 1";
+                    db_query($sql, $connection_id);
+                }
 
                 return $connection_id;
             }

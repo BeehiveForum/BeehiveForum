@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.105 2004-11-25 09:02:13 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.106 2004-12-01 09:25:47 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -34,6 +34,17 @@ $db_server   = "localhost";    // the address of your MySQL server
 $db_username = "beehiveforum";  // your MySQL username
 $db_password = "password";  // your MySQL password
 $db_database = "beehiveforum";  // the name of your MySQL database
+
+// ---------------------------------------------------------------------
+
+// MySQL Big Selects ---------------------------------------------------
+
+$mysql_big_selects = false;
+
+// Depending on the configuration of the MySQL server you may run into
+// errors along the lines of: "The SELECT would examine too many records
+// and probably take a very long time" when using Beehive. To attempt to
+// prevent this from happening you can try turning this option on.
 
 // ---------------------------------------------------------------------
 

@@ -10,12 +10,14 @@ A list of changes since previous Beehive versions can be found in release.txt.
 1.    Installation
   1.1    Requirements
   1.2    Instructions
-    1.2.1    Database setup
-    1.2.2    Configuring the forum
-    1.2.3    Upload
-    1.2.4    First use
-    1.2.5    Adminning
-    1.2.6    What to do if it doesn't work
+    1.2.1    Archive Extraction
+    1.2.2    Database setup
+    1.2.3    Configuring the forum
+    1.2.4    Upload
+    1.2.5    First use
+    1.2.6    Adminning
+    1.2.7    What to do if it doesn't work
+    1.2.8    Add your forum to our list
   1.3    Customising Beehive
     1.3.1    Stylesheet
     1.3.2    Images
@@ -52,12 +54,58 @@ You need web hosting which provides:
 1.2 Instructions
 ================
 
-1.2.1 Database setup
+1.2.1 Archive Extraction
+========================
+
+How you extract the contents of the Beehiveforum distribution archive is very
+important. At all times please ensure that you retain the directory structure
+of the archive. If everything has been extracted correctly you should be
+presented with a directory that looks a bit like this:
+
+|- forum
+|  |- docs
+|  |  |- schema.sql
+|  |  |- upgrade-01-to-02.sql
+|  |  |- ...
+|  |
+|  |- forum
+|  |  |- attachments
+|  |  |- images
+|  |  |  |- admintool.png
+|  |  |  |- align_center_button.png
+|  |  |  |- ...
+|  |  |
+|  |  |- include
+|  |  |  |- admin.inc.php
+|  |  |  |- attachments.inc.php
+|  |  |  |- ...
+|  |  |
+|  |  |- js
+|  |  |  |- edit.js
+|  |  |  |- htmltools.js
+|  |  |  |- ...
+|  |  |
+|  |  |- styles
+|  |  |  |- default
+|  |  |  |  |- images
+|  |  |  |  |  |- admintool.png
+|  |  |  |  |  |- attach.png
+|  |  |  |  |- style.css
+|  |  |  |  |- top.html
+
+
+As you can see the main distribution contains a docs and forum folder. The main
+forum folder, which actually contains Beehive, itself contains several more
+folders with relevant files in them. If they are not extracted in the right place
+subsequently uploading them to your server in this incorrect order will result in
+Beehive not working correctly.
+
+1.2.2 Database setup
 ====================
 
 To set up the database, use something like phpMyAdmin (get it from
 https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you
-have the “skillz”, to run the /docs/schema.sql file from the download.
+have the "skillz", to run the /docs/schema.sql file from the download.
 
 (Beehive would prefer its very own database, but if you can't provide that, it
 should work in an existing one.)
@@ -67,7 +115,7 @@ title and content of the default first post, but if you don't know SQL, it's
 probably best to leave well alone.
 
 
-1.2.2 Configuring the forum
+1.2.3 Configuring the forum
 ===========================
 
 OK, now you need to make some simple changes to one of the files. Don't
@@ -157,6 +205,10 @@ $post_edit_time: you can restrict the time that posts are editable by users for
 after they are created - set it to a number of hours, or to 0 to allow posts to be
 edited at any time.
 
+$allow_polls: When set to false this prevents users from being able to create any
+new polls. Current polls will be unaffected by this setting so users' will still
+be able to vote.
+
 $search_min_word_length: This allows you to specify a minimum word length that can
 be searched for using the Beehive search page. Setting this higher can decrease
 the load on your server caused by people searching and also increases the overall
@@ -173,18 +225,30 @@ root-relative path to keep them somewhere else (e.g. "/www/myattachmentdir").
 $guest_account_enabled: enable (true) or disable (false) the guest account, to choose
 whether or not to allow casual browsers to read the forum.
 
-$session_cutoff: This is the length of time in seconds before a user is deemed inactive
-by the active users stats display. Once this time laps the user's name will be removed
-from the active users list. They will though not be logged out.
+$session_cutoff: This is the length of time in seconds before an idle user is
+deemed 'stale' and the user's session is automatically ended. By default this
+is set to 24 hours (86400 seconds). If a user remains active then their session
+will not expire.
+
+$active_sess_cutoff: This is the length of time in seconds before an idle user
+is removed from the active users stats display. Once this time laps the user's
+name will be removed from the display. This setting does not affect the validity
+of their session and they will not be logged out. Once they become active again
+they will automatically reappear on the stats display.
 
 $gzip_compress_output: this nifty feature compresses the HTML output that is sent to
 the browser, which saves your bandwidth, at a cost of a slight increase in server CPU
 usage. Set to true for on or false for off.
 
+$gzip_compress_level: this setting specifies the level of the gzip compression to use,
+with 1 being the lowest and least CPU intensive and 9 the highest. Only integer values
+may be expressed in this setting, so a value of 1.4 would be meaningless. Unless you
+know what you are doing it is not recommended that you change this value.
+
 Save your changes.
 
 
-1.2.3 Upload
+1.2.4 Upload
 ============
 
 Once you have configured that file, you can upload the forum onto your webspace.
@@ -192,7 +256,7 @@ We recommend that you simply upload the "forum" folder directly, either into the
 root of your webspace or into another folder of your choosing.
 
 
-1.2.4 First use
+1.2.5 First use
 ===============
 
 When it's uploaded, open it in your browser, using the address like:
@@ -213,7 +277,7 @@ change that password to something only you know, to stop someone else staging a
 coup, and stuff.
 
 
-1.2.5 Adminning
+1.2.6 Adminning
 ===============
 
 Now you're ready to create some folders, so click the admin link near the top of
@@ -224,19 +288,19 @@ your members can provide information about themselves if they like, and do stuff
 to users, like ban them, gag them or promote them. It's all explained in there.
 
 
-1.2.6 What to do if it doesn't work
+1.2.7 What to do if it doesn't work
 ===================================
 
 Don't panic. Pop over to http://beehiveforum.net/forum and ask us
 for help, but remember, we don't get paid for this, so be nice.
 
 It's helpful if you can tell us your setup when you've got a problem, such as
-the type of server (e.g. Linux/Apache or Windows/IIS) and the version of PHP and
-MySQL that you're using. If Beehive threw up an error message, paste that in as
-well.
+the type of server (e.g. Linux/Apache, Windows/Apache or Windows/IIS, etc) and
+the version of PHP and MySQL that you're using. If Beehive threw up an error
+message, paste that in as well.
 
 
-1.2.7 Add your forum to our list (optional)
+1.2.8 Add your forum to our list (optional)
 ===========================================
 
 If you like, you can add your shiny new forum to our list of live copies by
@@ -250,9 +314,9 @@ to.
 1.3 Customising Beehive
 =======================
 
-Beehive Forum has user-selectable styles. Basically
-these are like themes (or skins for WinAmp users) for your forum. There are
-several supplied styles, and it's easy to create your own.
+Beehive Forum has user-selectable styles. Basically these are like themes
+(or skins for WinAmp users) for your forum. There are several supplied styles,
+and it's easy to create your own.
 
 You can edit the existing styles, but we recommend that you create your own styles.
 
@@ -263,6 +327,12 @@ of the new style. For example, to add a style called "fish", you need a folder c
 Then copy in the contents of one of the existing folders to base your new style on
 (the "default" folder is probably a good start) - style.css, top.html and the images
 folder with contents.
+
+Additionally you can also create random styles by using the forum styles tool in the
+admin section of the forum. Unfortunatly this tool does not allow you to specify
+different multiple colours to use, rather it rather cunningly chooses some for you
+that are mathematically determined to be suitable based on your first choice. Watch
+this space for a fully fledged style edited.
 
 
 1.3.1 Stylesheet
@@ -327,8 +397,8 @@ Follow the same procedure as detailed above, but you must run /docs/upgrade-01-t
 beforehand
 
 
-1.7 Upgrading from 0.1 or 0.2 to to 0.4
-=======================================
+1.7 Upgrading from 0.1 or 0.2 to 0.4
+====================================
 
 No direct route exists for 0.1 or 0.2 to be upgraded to 0.4. To upgrade either of these
 versions to 0.4 you will need to run the relevant schema files in order. For example
@@ -445,15 +515,20 @@ Matt Beale
 Mark Rendle - taking time out
 
 
-4.7 Thanks to
-=============
-
-- Mike Franklin, Pete Kelly, Jon Cooper and Yvonne for just being who you are.
+4.7 Thanks
+==========
 
 - The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.
 
 - SourceForge (http://sourceforge.net) for providing top-notch facilities to us
   (and to thousands of other projects) at absolutely no cost.
+
+
+4.7.1 Matt would like to thank:
+===============================
+
+- Mike Franklin, Pete Kelly, Jon Cooper and Yvonne for just being who you are.
+
 
 FIN

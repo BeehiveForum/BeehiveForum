@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.55 2004-04-24 18:42:46 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.56 2004-04-25 16:05:38 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -40,8 +40,11 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['from_other'])) $argarray['from_other'] = "";
     if (!isset($argarray['to_uid'])) $argarray['to_uid'] = 0;
     if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;
+    if (!isset($argarray['me_only'])) $argarray['me_only'] = "N";
 
     $db_search_execute = db_connect();
+
+    $uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -55,87 +58,64 @@ function search_execute($argarray, &$urlquery, &$error)
     $searchsql.= "WHERE ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
-        $folders = "THREAD.FID = ". $argarray['fid'];
+        $folder_sql = "THREAD.FID = {$argarray['fid']}";
     }else{
-        $folders = "THREAD.FID in (". threads_get_available_folders(). ")";
+        $folders = threads_get_available_folders();
+        $folder_sql = "THREAD.FID in ($folders)";
     }
 
-    $daterange = search_date_range($argarray['date_from'], $argarray['date_to']);
-    $fromtouser = "";
+    $date_range_sql = search_date_range($argarray['date_from'], $argarray['date_to']);
 
-    if (!isset($argarray['me_only'])) {
-        $argarray['me_only'] = "N";
-    }
-
-    if (isset($argarray['to_other']) && empty($argarray['to_other']) && isset($argarray['to_uid']) && $argarray['to_uid'] > 0) {
-        $fromtouser = "AND POST.TO_UID = ". $argarray['to_uid'];
-    }elseif (isset($argarray['to_other']) && !empty($argarray['to_other'])) {
-        $touid = user_get_uid($argarray['to_other']);
-        if ($touid['UID'] > -1) {
-            $fromtouser = "AND POST.TO_UID = ". $touid['UID'];
+    if (isset($argarray['to_other']) && strlen(trim($argarray['to_other'])) > 0) {
+        if ($to_uid = user_get_uid($argarray['to_other'])) {
+            $from_to_user_sql = "AND POST.TO_UID = '{$to_uid['UID']}'";
         }else {
             $error = SEARCH_USER_NOT_FOUND;
             return false;
         }
+    }elseif (isset($argarray['to_uid']) && $argarray['to_uid']) {
+        $from_to_user_sql = "AND POST.TO_UID = {$argarray['to_uid']}";
+    }else {
+        $from_to_user_sql = "";
     }
 
-    if (isset($argarray['from_other']) && empty($argarray['from_other']) && isset($argarray['from_uid']) && $argarray['from_uid'] > 0) {
-        $fromtouser.= " AND POST.FROM_UID = ". $argarray['from_uid'];
-    }elseif (isset($argarray['from_other']) && !empty($argarray['from_other'])) {
-        $fromuid = user_get_uid($argarray['from_other']);
-        if ($fromuid['UID'] > -1) {
-            $fromtouser.= " AND POST.FROM_UID = ". $fromuid['UID'];
+    if (isset($argarray['from_other']) && strlen(trim($argarray['from_other'])) > 0) {
+        if ($from_uid = user_get_uid($argarray['from_other'])) {
+            $from_to_user_sql.= " AND POST.FROM_UID = '{$from_uid['UID']}'";
         }else {
             $error = SEARCH_USER_NOT_FOUND;
             return false;
         }
+    }elseif (isset($argarray['from_uid']) && $argarray['from_uid'] > 0) {
+        $from_to_user_sql.= " AND POST.FROM_UID = {$argarray['from_uid']}";
     }
 
     if (strlen(trim($argarray['search_string'])) > 0) {
 
         if ($argarray['method'] == 1) { // AND
 
-            $keywords = explode(' ', trim($argarray['search_string']));
+            $keywords_array = explode(' ', trim($argarray['search_string']));
 
-            $threadtitle = "";
-            foreach($keywords as $word) {
-                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
-                    $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' AND ";
-                }
-            }
+            $thread_title_sql = "THREAD.TITLE LIKE '%";
+            $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
 
-            $postcontent = "";
-            foreach($keywords as $word) {
-                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
-                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' AND ";
-                }
-            }
+            $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
+            $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
 
-            $threadtitle = trim(substr($threadtitle, 0, -5));
-            $postcontent = trim(substr($postcontent, 0, -5));
+            $thread_title_sql.= "%'";
+            $post_content_sql.= "%'";
 
-            if ((strlen($threadtitle) > 0) && (strlen($postcontent) > 0)) {
+            if ((strlen($thread_title_sql) > 0) && (strlen($post_content_sql) > 0)) {
 
                 if (isset($argarray['me_only']) && $argarray['me_only'] == 'Y') {
 
-                    $searchsql.= $folders. " AND (";
-
-                    if (strlen($threadtitle) > 0) $searchsql.= $threadtitle. " AND ";
-                    $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ".  bh_session_get_value('UID'). ")". $daterange. ") OR (";
-
-                    if (strlen($postcontent) > 0) $searchsql.= $postcontent. " AND ";
-                    $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")". $daterange. ")";
+                    $searchsql.= "{$folder_sql} AND ({$thread_title_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
+                    $searchsql.= "{$post_content_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
 
                 }else {
 
-                    $searchsql.= "(". $folders;
-                    if (strlen($threadtitle) > 0) $searchsql.= " AND ". $threadtitle;
-                    $searchsql.= $daterange. $fromtouser. ") ";
-
-                    $searchsql.= "OR (". $folders;
-                    if (strlen($postcontent) > 0) $searchsql.= " AND ". $postcontent;
-                    $searchsql.= $daterange. $fromtouser. ") ";
-
+                    $searchsql.= "({$folder_sql} AND {$thread_title_sql} {$date_range_sql} {$from_to_user_sql}) ";
+                    $searchsql.= "OR ({$folder_sql} AND {$post_content_sql} {$date_range_sql} {$from_to_user_sql}) ";
                 }
 
             }else {
@@ -147,80 +127,56 @@ function search_execute($argarray, &$urlquery, &$error)
 
         }elseif ($argarray['method'] == 2) { // OR
 
-            $keywords = explode(' ', trim($argarray['search_string']));
+            $keywords_array = explode(' ', trim($argarray['search_string']));
 
-            $threadtitle = "";
-            foreach($keywords as $word) {
-                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
-                    $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' OR ";
-                }
-            }
+            $thread_title_sql = "THREAD.TITLE LIKE '%";
+            $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
 
-            $postcontent = "";
-            foreach($keywords as $word) {
-                if (strlen($word) >= intval(forum_get_setting('search_min_word_length'))) {
-                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' OR ";
-                }
-            }
+            $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
+            $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
 
-            $threadtitle = substr($threadtitle, 0, -4);
-            $postcontent = substr($postcontent, 0, -4);
+            $thread_title_sql.= "%'";
+            $post_content_sql.= "%'";
 
-            if ((strlen($threadtitle) > 0) && (strlen($postcontent) > 0)) {
+            if ((strlen($thread_title_sql) > 0) && (strlen($post_content_sql) > 0)) {
 
                 if ($argarray['me_only'] == 'Y') {
 
-                    $searchsql.= $folders. " AND (";
-
-                    if (strlen($threadtitle) > 0) $searchsql.= $threadtitle. " AND ";
-                    $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")". $daterange. ") OR (";
-
-                    if (strlen($postcontent) > 0) $searchsql.= $postcontent. " AND ";
-                    $searchsql.= "(POST.TO_UID = ". bh_session_get_value('UID'). " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")". $daterange. ")";
+                    $searchsql.= "{$folder_sql} AND (({$thread_title_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
+                    $searchsql.= "({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
 
                 }else {
 
-                    $searchsql.= "(". $folders;
-                    if (strlen($threadtitle) > 0) $searchsql.= " AND ". $threadtitle;
-                    $searchsql.= $daterange. $fromtouser. ")";
-
-                    $searchsql.= " OR (". $folders;
-                    if (strlen($postcontent) > 0) $searchsql.= " AND ". $postcontent;
-                    $searchsql.= $daterange. $fromtouser. ")";
-
+                    $searchsql.= "({$folder_sql} AND ({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql})";
+                    $searchsql.= " OR ({$folder_sql} AND ({$post_content_sql}) {$date_range_sql} {$from_to_user_sql})";
                 }
 
             }else {
 
                 $error = SEARCH_NO_KEYWORDS;
                 return false;
-
             }
 
         }elseif ($argarray['method'] == 3) { // EXACT
 
-            $searchsql.= $folders. " AND INSTR(THREAD.TITLE, ' ". addslashes(trim($argarray['search_string'])). " ')";
-            $searchsql.= " OR INSTR(POST_CONTENT.CONTENT, ' ". addslashes(trim($argarray['search_string'])). " ')";
-            $searchsql.= $daterange;
+            $words = addslashes(trim($argarray['search_string']));
+
+            $searchsql.= "$folder_sql AND INSTR(THREAD.TITLE, ' {$words} ') OR INSTR(POST_CONTENT.CONTENT, ' {$words} ') ";
+            $searchsql.= "$date_range_sql ";
 
             if ($argarray['me_only'] == 'Y') {
 
-                $searchsql.= " AND (POST.TO_UID = ". bh_session_get_value('UID');
-                $searchsql.= " OR POST.FROM_UID = ". bh_session_get_value('UID'). ")";
+                $searchsql.= "AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') ";
 
             }else {
 
-                $searchsql.= $fromtouser;
-
+                $searchsql.= "$from_to_user_sql";
             }
-
         }
 
     }else {
 
-        $error = SEARCH_NO_KEYWORDS;
-        return false;
-
+        $searchsql.= "{$folder_sql} {$date_range_sql} {$from_to_user_sql}";
     }
 
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
@@ -404,7 +360,7 @@ function folder_search_dropdown()
     if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
-    $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+    $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = ''$uid'') ";
     $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
     $result = db_query($sql, $db_folder_search_dropdown);
@@ -427,6 +383,7 @@ function search_draw_user_dropdown($name)
     $lang = load_language_file();
 
     $db_search_draw_user_dropdown = db_connect();
+
     $uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return "";
@@ -435,7 +392,7 @@ function search_draw_user_dropdown($name)
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
-    $sql.= "AND USER.UID <> '$uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "AND USER.UID <> ''$uid'' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_search_draw_user_dropdown);
@@ -443,9 +400,9 @@ function search_draw_user_dropdown($name)
     $uids[]  = 0;
     $names[] = $lang['all_caps'];
 
-    if (bh_session_get_value('UID') > 0) {
+    if ('$uid' > 0) {
 
-      $uids[]  = bh_session_get_value('UID');
+      $uids[]  = '$uid';
       $names[] = $lang['me_caps'];
 
     }

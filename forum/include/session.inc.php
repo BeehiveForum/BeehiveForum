@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.43 2003-08-30 00:16:23 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.44 2003-09-15 17:02:43 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -109,8 +109,8 @@ function bh_session_init($uid)
 
     $check = md5(serialize($user_sess));
 
-    setcookie("bh_sess_data", serialize($user_sess));
-    setcookie("bh_sess_check", $check);
+    bh_setcookie("bh_sess_data", serialize($user_sess));
+    bh_setcookie("bh_sess_check", $check);
 
 }
 
@@ -120,12 +120,12 @@ function bh_session_end()
 {
     // Session cookies
 
-    setcookie("bh_sess_data", "", time() - 3600);
-    setcookie("bh_sess_check", md5(uniqid(rand())), time() - 3600);
+    bh_setcookie("bh_sess_data", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_sess_check", md5(uniqid(rand())), time() - YEAR_IN_SECONDS);
 
     // Other cookies set by Beehive
 
-    setcookie("bh_thread_mode", "", time() - 3600);
+    bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
 
 }
 

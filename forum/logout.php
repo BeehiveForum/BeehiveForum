@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.25 2003-08-30 00:16:21 decoyduck Exp $ */
+/* $Id: logout.php,v 1.26 2003-09-15 17:02:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -35,10 +35,8 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
-
+if (!bh_session_check()) {
     header_redirect("./logon.php");
-
 }
 
 // Disable caching when showing logon page
@@ -57,7 +55,7 @@ if (bh_session_get_value('UID') == 0) {
         $uri = "./index.php";
     }
     bh_session_end();
-    setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
+    bh_setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
     header_redirect($uri);
 }
 

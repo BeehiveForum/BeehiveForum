@@ -26,7 +26,7 @@ USA
 require_once("./include/config.inc.php");
 
 if ($gzip_compress_output) {
-    if (strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+    if (isset($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING']) && strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
         ob_start("ob_gzhandler");
     }else{
         ob_start();

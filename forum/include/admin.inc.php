@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.30 2004-04-13 14:04:03 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.31 2004-04-13 17:57:50 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -162,8 +162,17 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
                         'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
     
     $usersearch = addslashes($usersearch);
+
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
+
+    $user_search_array = array();
+
+    $sql = "SELECT UID FROM USER WHERE (USER.LOGON LIKE '$usersearch%' ";
+    $sql.= "OR USER.NICKNAME LIKE '$usersearch%') ";
+
+    $result = db_query($sql, $db_user_search);
+    $user_search_count = db_num_rows($result);
     
     if ($table_data = get_table_prefix()) {
 
@@ -189,14 +198,15 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
     $result = db_query($sql, $db_user_search);
 
     if (db_num_rows($result)) {
-        $user_search_array = array();
         while ($row = db_fetch_array($result)) {
-            $user_search_array[] = $row;
+            if (!isset($user_search_array[$row['UID']])) {
+                $user_search_array[$row['UID']] = $row;
+	    }
         }
-        return $user_search_array;
-    }else {
-        return false;
     }
+
+    return array('user_count' => $user_search_count,
+                 'user_array' => $user_search_array);
 }
 
 function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
@@ -209,24 +219,45 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
-    
-    if (!$table_data = get_table_prefix()) return $user_get_all_array;
 
-    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
-    $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+    $user_get_all_array = array();
+
+    $sql = "SELECT UID FROM USER";
+
+    $result = db_query($sql, $db_user_get_all);
+    $user_get_all_count = db_num_rows($result);
+    
+    if ($table_data = get_table_prefix()) {
+
+        $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+        $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+        $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
+        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
+        $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+
+    }else {
+
+        $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+        $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
+        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
+        $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+    }
 
     $result = db_query($sql, $db_user_get_all);
 
-    while($row = db_fetch_array($result)) {
-       $user_get_all_array[] = $row;
+    if (db_num_rows($result)) {
+        while ($row = db_fetch_array($result)) {
+            if (!isset($user_get_all_array[$row['UID']])) {
+                $user_get_all_array[$row['UID']] = $row;
+	    }
+        }
     }
 
-    return $user_get_all_array;
+    return array('user_count' => $user_get_all_count,
+                 'user_array' => $user_get_all_array);
 }
 
 function admin_session_end($uid)

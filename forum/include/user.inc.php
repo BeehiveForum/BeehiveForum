@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.160 2004-04-12 19:44:43 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.161 2004-04-13 17:57:50 decoyduck Exp $ */
 
 function user_count()
 {
@@ -748,38 +748,55 @@ function user_get_aliases($uid)
 function users_get_recent()
 {
     $db_users_get_recent = db_connect();
+
+    $users_get_recent_array = array();
     
-    if (!$table_data = get_table_prefix()) return false;
+    if ($table_data = get_table_prefix()) {
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
-    $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 10";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
+        $sql.= "FROM USER USER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+        $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+        $sql.= "LIMIT 0, 10";
 
-    $result = db_query($sql, $db_users_get_recent);
+        $result = db_query($sql, $db_users_get_recent);
 
-    if (db_num_rows($result)) {
-        $users_get_recent_array = array();
-	while ($row = db_fetch_array($result)) {
-	    $users_get_recent_array[] = $row;
-	}
-	return $users_get_recent_array;
-    }else {
-        return false;
+        if (db_num_rows($result)) {
+	    while ($row = db_fetch_array($result)) {
+	        if (!isset($users_get_recent_array[$row['UID']])) {
+	            $users_get_recent_array[$row['UID']] = $row;
+    	        }
+	    }
+        }
     }
+
+    return array('user_count' => sizeof($users_get_recent_array),
+                 'user_array' => $users_get_recent_array);
+
 }
 
 function users_search_recent($usersearch, $offset)
 {
     if (!is_numeric($offset)) $offset = 0;
     $usersearch = addslashes($usersearch);
+
+    $user_search_array = array();
     
     $db_users_search_recent = db_connect();
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
+                                                        'user_array' => array());
+
+    $sql = "SELECT USER.UID FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "AND NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+
+    $result = db_query($sql, $db_users_search_recent);
+    $user_search_count = db_num_rows($result);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
@@ -793,14 +810,15 @@ function users_search_recent($usersearch, $offset)
     $result = db_query($sql, $db_users_search_recent);
 
     if (db_num_rows($result)) {
-        $users_get_recent_array = array();
 	while ($row = db_fetch_array($result)) {
-	    $users_get_recent_array[] = $row;
+	    if (!isset($user_search_array[$row['UID']])) {
+	        $user_search_array[$row['UID']] = $row;
+	    }
 	}
-	return $users_get_recent_array;
-    }else {
-        return false;
     }
+
+    return array('user_count' => $user_search_count,
+                 'user_array' => $user_search_array);
 }
 
 function user_get_friends($uid)

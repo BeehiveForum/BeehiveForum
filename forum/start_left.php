@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.70 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.71 2004-04-13 17:57:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -195,13 +195,16 @@ echo "    <td class=\"subhead\">{$lang['recentvisitors']}</td>\n";
 echo "  </tr>\n";
 
 // Get recent visitors
-if ($users_array = users_get_recent()) {
+
+$users_array = users_get_recent();
+
+if (sizeof($users_array['user_array']) > 0) {
 
     echo "  <tr>\n";
     echo "    <td>\n";
     echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 
-    foreach ($users_array as $resent_user) {
+    foreach ($users_array['user_array'] as $resent_user) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.36 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.37 2004-08-17 20:13:49 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -181,7 +181,8 @@ $lang['adminexp_6'] = "<b>Profiles</b> lets you change the items appearing in us
 $lang['adminexp_7'] = "Choose <b>Start Page</b> to edit the forum start page.";
 $lang['adminexp_8'] = "Using <b>Forum Style</b> allows you to create new colour schemes for the forum.";
 $lang['adminexp_9'] = "The words in the <b>Word Filter</b> can be edited.";
-$lang['adminexp_10'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";$lang['createforumstyle'] = "Crizeatize a geek-ass Fizorum Stizyle";
+$lang['adminexp_10'] = "Add links to neighbouring sites and Beehive forums in <b>Forum Links</b>.";
+$lang['adminexp_11'] = "Look at the <b>Admin Log</b> to see what actions forum moderators have taken recently.";$lang['createforumstyle'] = "Crizeatize a geek-ass Fizorum Stizyle";
 $lang['newstyle'] = "New punk-ass stizyle";
 $lang['successfullycreated'] = "Thizat shit be fly.";
 $lang['stylesdirnotwritable'] = "tha stizyles dirizectizory ain't writin' on yo ass. If yo a geek-ass fucka, then CHMOD tha stizyles dirizectizory and try that mofucker agizain.";
@@ -210,6 +211,7 @@ $lang['profiles'] = "Profiziles";
 $lang['startpage'] = "Crib";
 $lang['forumstyle'] = "Forum Stizyle";
 $lang['wordfilter'] = "Word Filter. Word";
+$lang['forumlinks'] = "Forum Lizinks";
 $lang['viewlog'] = "View Lizog";
 $lang['invalidop'] = "That shit is <i>nasty</i>";
 $lang['noprofilesectionspecified'] = "Ain't no Prizofile sizection spizecifizied, yo punk ass.";

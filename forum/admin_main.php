@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.45 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.46 2004-08-17 20:13:49 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,6 +120,7 @@ echo "<p>{$lang['adminexp_7']}</p>\n";
 echo "<p>{$lang['adminexp_8']}</p>\n";
 echo "<p>{$lang['adminexp_9']}</p>\n";
 echo "<p>{$lang['adminexp_10']}</p>\n";
+echo "<p>{$lang['adminexp_11']}</p>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.55 2004-05-19 00:27:28 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.56 2004-08-17 20:13:49 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -145,6 +145,9 @@ if ($webtag) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\"><a href=\"admin_forum_links.php?webtag=$webtag\" target=\"right\">{$lang['forumlinks']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_viewlog.php?webtag=$webtag\" target=\"right\">{$lang['viewlog']}</a></td>\n";

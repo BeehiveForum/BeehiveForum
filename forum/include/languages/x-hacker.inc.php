@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.126 2004-08-17 18:28:53 tribalonline Exp $ */
+/* $Id: x-hacker.inc.php,v 1.127 2004-08-17 20:13:49 tribalonline Exp $ */
 
 // International English language file
 
@@ -183,7 +183,8 @@ $lang['adminexp_6'] = "<b>Pr0F1LE5</b> L3T\$ j00 Ch4N93 +EH 1+EMs 4PP3@RIN9 IN U
 $lang['adminexp_7'] = "Ch00\$3 <b>s+@rT P4Ge</b> +0 Ed1+ TH3 PhoRUm \$T4R+ P@GE.";
 $lang['adminexp_8'] = "u\$INg <b>PhorUM StyLE</b> 4LlOw5 J00 +O cREAt3 new c0L0UR SCheM3\$ FOR The F0RuM.";
 $lang['adminexp_9'] = "TEh WoRD5 IN +3h <b>wOrD PhILTEr</b> c4n B3 3DIt3D.";
-$lang['adminexp_10'] = "loOK A+ +h3 <b>4Dmin LO9</b> To \$3e WH@t AC+I0NS ph0RUM M0D3R@T0RS H4V3 +4KEN r3c3N+lY.";
+$lang['adminexp_10'] = "4dd l1nks t0 n31ghb0ur1ng s1t3s 4nd B33h1v3 f0rums 1n <b>F0rum L1nks</b>.";
+$lang['adminexp_11'] = "loOK A+ +h3 <b>4Dmin LO9</b> To \$3e WH@t AC+I0NS ph0RUM M0D3R@T0RS H4V3 +4KEN r3c3N+lY.";
 $lang['createforumstyle'] = "cr34+3 4 F0rUm S+ylE";
 $lang['newstyle'] = "nEW S+yle";
 $lang['successfullycreated'] = "SucC355fUlLy CRE4T3d.";
@@ -214,6 +215,7 @@ $lang['forumsettings'] = "PhoRuM \$E++1n9\$";
 $lang['startpage'] = "\$T4RT P49E";
 $lang['forumstyle'] = "Ph0RuM S+yL3";
 $lang['wordfilter'] = "woRD F1LT3R";
+$lang['forumlinks'] = "f0ruM 71n|<5";
 $lang['viewlog'] = "V1Ew L09";
 $lang['invalidop'] = "inv4LiD Op3r4TiOn";
 $lang['noprofilesectionspecified'] = "no PrOf1L3 \$3ct1ON SP3ciF1eD.";

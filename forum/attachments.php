@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.69 2004-03-22 12:58:48 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.70 2004-03-27 18:28:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -125,17 +125,17 @@ if (isset($HTTP_POST_VARS['upload'])) {
     $aid = $HTTP_GET_VARS['aid'];
 
     if (isset($HTTP_POST_FILES['userfile']) && is_array($HTTP_POST_FILES['userfile'])) {
-    
+
         for ($i = 0; $i < sizeof($HTTP_POST_FILES['userfile']); $i++) {
-        
+
             if (isset($HTTP_POST_FILES['userfile']['name'][$i]) && strlen(trim($HTTP_POST_FILES['userfile']['name'][$i])) > 0) {
-            
+
                 $filesize = $HTTP_POST_FILES['userfile']['size'][$i];
                 $tempfile = $HTTP_POST_FILES['userfile']['tmp_name'][$i];
                 $filetype = $HTTP_POST_FILES['userfile']['type'][$i];
-                
+
                 $filename = _stripslashes(trim($HTTP_POST_FILES['userfile']['name'][$i]));
-                
+
                 if ($users_free_space < $filesize) {
 
                     $upload_failure[] = $filename;
@@ -145,9 +145,9 @@ if (isset($HTTP_POST_VARS['upload'])) {
                     }
 
                 }else {
-                    
+
                     $uniqfileid = md5(uniqid(rand()));
-                    
+
                     $filehash = md5("{$aid}{$uniqfileid}{$filename}");
                     $filepath = $attachment_dir. "/$filehash";
 
@@ -162,7 +162,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
                         if (@file_exists($tempfile)) {
                             unlink($tempfile);
                         }
-                        
+
                         $upload_failure[] = $filename;
                         echo "\"$filename\"<br />";
                     }
@@ -170,7 +170,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
             }
         }
     }
-  
+
 }elseif (isset($HTTP_POST_VARS['del'])) {
 
     if (isset($HTTP_POST_VARS['hash']) && is_md5($HTTP_POST_VARS['hash'])) {
@@ -256,7 +256,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
                 echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
                 echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
-            }            
+            }
 
             if (strlen($attachments[$i]['filename']) > 16) {
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
@@ -339,17 +339,17 @@ echo "  </tr>\n";
 if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
-    
-        if (@file_exists("{$attachment_dir}/{$attachments[$i]['hash']}")) {    
+
+        if (@file_exists("{$attachment_dir}/{$attachments[$i]['hash']}")) {
 
             echo "  <tr>\n";
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
-            
-            if ($attachment_use_old_method) {
+
+            if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                 echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
                 echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
-            }            
+            }
 
             if (strlen($attachments[$i]['filename']) > 16) {
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
@@ -381,7 +381,7 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
             }else {
                 echo "    <td>&nbsp;</td>\n";
             }
-        
+
             echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
             echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
             echo "      <form method=\"post\" action=\"attachments.php?webtag={$webtag['WEBTAG']}&aid=". $HTTP_GET_VARS['aid']. "\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.40 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: links.php,v 1.41 2004-03-27 18:28:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -105,7 +105,7 @@ if (isset($HTTP_GET_VARS['viewmode']) && is_numeric($HTTP_GET_VARS['viewmode']) 
     $viewmode = 0;
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page']) && viewmode == 1) {
+if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page']) && $viewmode == 1) {
     $start = $HTTP_GET_VARS['page'] * 20;
 }else {
     $start = 0;
@@ -272,7 +272,7 @@ if (bh_session_get_value('UID')) {
 
         echo "  <tr>\n";
         echo "    <td class=\"postbody\">&nbsp;</td>\n";
-        echo "  </tr>\n";    
+        echo "  </tr>\n";
         echo "  <tr>\n";
 
         if (sizeof($links) == 20) {
@@ -289,8 +289,8 @@ if (bh_session_get_value('UID')) {
                 echo "    <td class=\"postbody\">&nbsp;</td>";
             }
         }
-        
-        echo "  </tr>\n";        
+
+        echo "  </tr>\n";
     }
 }
 

@@ -118,7 +118,7 @@ echo "<tr><td class=\"subhead\" align=\"right\">Description:</td><td class=\"pos
 echo "<tr><td class=\"subhead\" align=\"right\">Date:</td><td class=\"posthead\">" . format_time($link['CREATED']) . "</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">Clicks:</td><td class=\"posthead\">{$link['CLICKS']}</td></tr>\n";
 echo "<tr><td class=\"subhead\" align=\"right\">Rating:</td><td class=\"posthead\">";
-if ($link['RATING'] != "") {
+if (isset($link['RATING']) && $link['RATING'] != "") {
     echo round($link['RATING'], 1);
     if ($link['VOTES'] == 1) {
         echo " (1 vote)";

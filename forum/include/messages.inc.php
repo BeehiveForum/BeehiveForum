@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 // Included functions for displaying messages in the main frameset.
 
 require_once("./include/db.inc.php"); // Database functions
@@ -97,17 +94,23 @@ function messages_get($tid, $pid = 1, $limit = 1)
             $messages[$i]['FROM_UID'] = $message['FROM_UID'];
             $messages[$i]['TO_UID'] = $message['TO_UID'];
             $messages[$i]['CREATED'] = $message['CREATED'];
-            $messages[$i]['VIEWED'] = @$message['VIEWED'];
+            $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
             $messages[$i]['CONTENT'] = '';
             $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
             $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
-            $messages[$i]['FNICK'] = $message['FNICK'];
-            $messages[$i]['FLOGON'] = $message['FLOGON'];
 
-            if(isset($message['TNICK'])){
+            if (isset($message['FNICK'])) {
+                $messages[$i]['FNICK'] = $message['FNICK'];
+                $messages[$i]['FLOGON'] = $message['FLOGON'];
+            }else {
+                $messages[$i]['FNICK'] = "Unknown User";
+                $messages[$i]['FLOGON'] = "Unknown User";
+            }
+
+            if (isset($message['TNICK'])) {
                 $messages[$i]['TNICK'] = $message['TNICK'];
                 $messages[$i]['TLOGON'] = $message['TLOGON'];
-            } else {
+            }else {
                 $messages[$i]['TNICK'] = "ALL";
                 $messages[$i]['TLOGON'] = "ALL";
             }
@@ -251,7 +254,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;To:&nbsp;</span></td>\n";
     echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
 
-    if(($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
+    if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
@@ -454,13 +457,16 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
         return;
     }
 
+    // Something.
+    $c = 0;
+
     // Modulus to get base for links, e.g. ppp = 20, pid = 28, base = 8
     $spid = $pid % $ppp;
 
     // The first section, 1-x
-    if($spid > 1){
+    if ($spid > 1) {
         if($pid > 1){
-            $navbits[0] = "<a href=\"messages.php?msg=$tid.1\" target=\"_self\">" . mess_nav_range(1,$spid-1) . "</a>";
+            $navbits[0] = "<a href=\"messages.php?msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid-1). "</a>";
         } else {
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
@@ -491,21 +497,29 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid,$length) . "</a>";
         }
     }
+
     $max = $i;
 
     $html = "Show messages:";
 
-    if($length <= $ppp){
+    if ($length <= $ppp) {
         $html .= " <a href=\"messages.php?msg=$tid.1\" target=\"_self\">All</a>\n";
     }
 
-    for($i=0;$i<=$max;$i++){
-        // Only display first, last and those within 3 of the current section
-        if((abs($c - $i) < 4) || $i == 0 || $i == $max){
-            $html .= "\n&nbsp;" . $navbits[$i];
-        } else if(abs($c - $i) == 4){
-            $html .= "\n&nbsp;...";
+    for ($i = 0; $i <= $max; $i++) {
+
+        if (isset($navbits[$i])) {
+
+            // Only display first, last and those within 3 of the current section
+
+            if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
+                $html .= "\n&nbsp;" . $navbits[$i];
+            } else if(abs($c - $i) == 4) {
+                $html .= "\n&nbsp;...";
+            }
+
         }
+
     }
 
     unset($navbits);
@@ -584,31 +598,38 @@ function message_get_user($tid,$pid)
     return $uid;
 }
 
-function messages_update_read($tid,$pid,$uid,$spid = 1)
+function messages_update_read($tid, $pid, $uid, $spid = 1)
 {
     $db_message_update_read = db_connect();
 
     // Check for existing entry in USER_THREAD
     $sql = "select LAST_READ from " . forum_table("USER_THREAD") . " where UID = $uid and TID = $tid";
-
     $result = db_query($sql, $db_message_update_read);
 
-    if(db_num_rows($result)){
-        // Update if already existing
+    if (db_num_rows($result)) {
+
         $fa = db_fetch_array($result);
-        if($pid > $fa['LAST_READ']){
+
+        if (!isset($fa['LAST_READ'])) {
+            $fa['LAST_READ'] = 0;
+        }
+
+        if ($pid > $fa['LAST_READ']) {
 
             $sql = "update low_priority " . forum_table("USER_THREAD");
             $sql.= " set LAST_READ = $pid, LAST_READ_AT = NOW()";
             $sql.= "where UID = $uid and TID = $tid";
 
             db_query($sql, $db_message_update_read);
+
         }
-    } else {
-        // Create new USER_THREAD entry
-        $sql = "insert into " . forum_table("USER_THREAD") . " (UID,TID,LAST_READ,LAST_READ_AT,INTEREST) ";
+
+    }else {
+
+        $sql = "insert into " . forum_table("USER_THREAD") . " (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql .= "values ($uid, $tid, $pid, NOW(), 0)";
         db_query($sql, $db_message_update_read);
+
     }
 
     // Mark posts as Viewed...

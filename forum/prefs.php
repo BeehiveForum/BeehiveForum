@@ -105,8 +105,6 @@ if(isset($HTTP_POST_VARS['submit'])){
             $HTTP_POST_VARS['sig_content'] = _stripslashes($HTTP_POST_VARS['sig_content']);
         }
 
-        // ALTER TABLE USER_PREFS ADD DOB DATE NOT NULL AFTER LASTNAME
-
         $user_dob = str_pad(trim($HTTP_POST_VARS['dob_year']),  4, '0', STR_PAD_LEFT). '-';
         $user_dob.= str_pad(trim($HTTP_POST_VARS['dob_month']), 2, '0', STR_PAD_LEFT). '-';
         $user_dob.= str_pad(trim($HTTP_POST_VARS['dob_day']),   2, '0', STR_PAD_LEFT);
@@ -120,11 +118,22 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         // Update USER_PREFS
 
-        user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'], $user_dob,
-                          $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'], @$HTTP_POST_VARS['email_notify'],
-                          $HTTP_POST_VARS['timezone'], @$HTTP_POST_VARS['dl_saving'], @$HTTP_POST_VARS['mark_as_of_int'],
-                          $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size'], $HTTP_POST_VARS['style'],
-                          @$HTTP_POST_VARS['view_sigs'], $HTTP_POST_VARS['start_page']);
+        // Check the checkbox variables are actually set.
+        // Older versions of PHP do not set the variables
+        // if the checkbox is left unticked.
+
+        if (!isset($HTTP_POST_VARS['email_notify']))   $HTTP_POST_VARS['email_notify']   = '';
+        if (!isset($HTTP_POST_VARS['dl_saving']))      $HTTP_POST_VARS['dl_saving']      = '';
+        if (!isset($HTTP_POST_VARS['mark_as_of_int'])) $HTTP_POST_VARS['mark_as_of_int'] = '';
+        if (!isset($HTTP_POST_VARS['view_sigs']))      $HTTP_POST_VARS['view_sigs']      = '';
+
+        user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['firstname'],
+                          $HTTP_POST_VARS['lastname'], $user_dob, $HTTP_POST_VARS['homepage_url'],
+                          $HTTP_POST_VARS['pic_url'], $HTTP_POST_VARS['email_notify'],
+                          $HTTP_POST_VARS['timezone'], $HTTP_POST_VARS['dl_saving'],
+                          $HTTP_POST_VARS['mark_as_of_int'], $HTTP_POST_VARS['posts_per_page'],
+                          $HTTP_POST_VARS['font_size'], $HTTP_POST_VARS['style'],
+                          $HTTP_POST_VARS['view_sigs'], $HTTP_POST_VARS['start_page']);
 
         // Update USER_SIG
 

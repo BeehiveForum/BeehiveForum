@@ -21,12 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
-
 
 function user_rel_update($uid,$peer_uid,$value){
 
@@ -38,8 +34,8 @@ function user_rel_update($uid,$peer_uid,$value){
     $sql = "insert into " . forum_table("USER_PEER") . " (UID, PEER_UID, RELATIONSHIP)";
     $sql .= " values ($uid, $peer_uid, $value)";
 
-//	$sql = "update " . forum_table("USER_PREFS") . " set ";
-//	$sql .= "VIEW_SIGS = $value where UID = $uid";
+//      $sql = "update " . forum_table("USER_PREFS") . " set ";
+//      $sql .= "VIEW_SIGS = $value where UID = $uid";
 
     $result = db_query($sql, $db_user_rel_update);
 
@@ -50,8 +46,8 @@ function user_rel_get($uid, $peer_uid){
 
     $db_user_rel_get = db_connect();
 
-	$sql = "select RELATIONSHIP from " . forum_table("USER_PEER");
-	$sql .= " where UID = '$uid' and PEER_UID = '$peer_uid'";
+        $sql = "select RELATIONSHIP from " . forum_table("USER_PEER");
+        $sql .= " where UID = '$uid' and PEER_UID = '$peer_uid'";
 
     $result = db_query($sql, $db_user_rel_get);
 

@@ -66,6 +66,11 @@ if (isset($HTTP_GET_VARS['msg'])) {
     }
 }
 
+list($tid, $pid) = explode('.', $msg);
+
+if (!isset($tid)) $tid = 1;
+if (!isset($pid)) $pid = 1;
+
 if (isset($HTTP_GET_VARS['fontsize'])) {
 
     $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
@@ -73,7 +78,7 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
     user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
                       $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
                       $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
-                      $userprefs['MARK_AS_OF_INT'], $userprefs['POST_PER_PAGE'], $HTTP_GET_VARS['fontsize'],
+                      $userprefs['MARK_AS_OF_INT'], $userprefs['POSTS_PER_PAGE'], $HTTP_GET_VARS['fontsize'],
                       $userprefs['STYLE'], $userprefs['VIEW_SIGS'], $userprefs['START_PAGE']);
 
     unset($userprefs);
@@ -82,10 +87,6 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
     header_redirect($HTTP_SERVER_VARS['PHP_SELF']. "?msg=$msg");
 
 }
-
-@list($tid, $pid) = explode('.', $msg);
-if ($tid == '') $tid = 1;
-if ($pid == '') $pid = 1;
 
 if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
         html_draw_top();
@@ -144,13 +145,20 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
     $ppp = 20;
 }
 
-$messages = messages_get($tid,$pid,$ppp);
+$messages = messages_get($tid, $pid, $ppp);
+
 if (!$messages) {
    echo "<h2>That post does not exist in this thread!</h2>\n";
    html_draw_bottom();
    exit;
 }
-$threaddata = thread_get($tid);
+
+if (!$threaddata = thread_get($tid)) {
+   echo "<h2>That post does not exist in this thread!</h2>\n";
+   html_draw_bottom();
+   exit;
+}
+
 $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
 if($closed) $foldertitle .= " (closed)";

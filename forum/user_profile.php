@@ -35,8 +35,13 @@ require_once("./include/forum.inc.php");
 require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
 
-$uid = $HTTP_GET_VARS['uid'];
-$psid = @$HTTP_GET_VARS['psid'];
+if (isset($HTTP_GET_VARS['uid'])) {
+    $uid = $HTTP_GET_VARS['uid'];
+}
+
+if (isset($HTTP_GET_VARS['psid'])) {
+    $psid = $HTTP_GET_VARS['psid'];
+}
 
 if(!$uid){
     html_draw_top();
@@ -108,7 +113,7 @@ for ($i = 0; $i < $row_count; $i++) {
 
     if ($i == 0) {
 
-        if(!$psid) {
+        if (!isset($psid)) {
             $psid = $row['PSID'];
         }
 

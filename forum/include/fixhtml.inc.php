@@ -20,9 +20,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
 

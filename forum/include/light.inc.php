@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 // Functions for the very stripped-down "light" version of Beehive
 
 function light_html_draw_top ($title = false)
@@ -35,20 +32,20 @@ function light_html_draw_top ($title = false)
         $title = $forum_name;
     }
 
-	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
-	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
-	echo "\t<head>\n";
-	echo "\t\t<title>$title</title>\n";
-	echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
-	echo "\t</head>\n";
-	echo "\t<body>\n";
+        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
+        echo "\t<head>\n";
+        echo "\t\t<title>$title</title>\n";
+        echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
+        echo "\t</head>\n";
+        echo "\t<body>\n";
 }
 
 function light_html_draw_bottom ()
 {
     echo "\t</body>\n";
-	echo "</html>\n";
+        echo "</html>\n";
 }
 
 // create a <select> dropdown with values from array(s)
@@ -77,35 +74,35 @@ function light_poll_confirm_close($tid)
 {
 
     global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
-    
+
     if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse();
         return;
-    }    
-    
+    }
+
     $preview_message = messages_get($tid, 1, 1);
-    
+
     if($preview_message['TO_UID'] == 0) {
-    
+
         $preview_message['TLOGON'] = "ALL";
         $preview_message['TNICK'] = "ALL";
-        
+
     }else {
-    
+
         $preview_tuser = user_get($preview_message['TO_UID']);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-        
+
     }
-    
+
     $preview_fuser = user_get($preview_message['FROM_UID']);
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
-    
+
     echo "<h2>Are you sure you want to close the following Poll?</h2>\n";
-    
+
     light_poll_display($tid, $preview_message, 0, 0, false);
-    
+
     echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
@@ -218,7 +215,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
     }
 
     if ($in_list) {
-    
+
     $polldata['CONTENT'] .= "<p>";
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
@@ -299,7 +296,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
       if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
         light_message_display_deleted($tid, $message['PID']);
-	return;
+        return;
       }
     }
 
@@ -340,8 +337,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-	    if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
-	    if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
+            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
+            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
         }
     }
@@ -380,7 +377,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
                 $message['CONTENT'] .= $msg_split[$i];
             }
             $message['CONTENT'] .= "</div>";
-	}
+        }
 
         echo "<p>". $message['CONTENT']. "</p>\n";
 
@@ -477,9 +474,9 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 }
 
 function light_html_guest_error ()
-{ 
+{
      light_html_draw_top();
-     echo "<h1>Sorry, you need to be logged in to use this feature.</h1>"; 
+     echo "<h1>Sorry, you need to be logged in to use this feature.</h1>";
      light_html_draw_bottom();
 }
 
@@ -543,7 +540,7 @@ function light_form_field($name, $value = "", $width = 0, $maxchars = 0, $type =
 {
     $html = "<input type=\"$type\" name=\"$name\"";
     $html.= " value=\"$value\"";
-    
+
     if($width) $html.= " size=\"$width\"";
     if($maxchars) $html.= " maxchars=\"$maxchars\"";
 

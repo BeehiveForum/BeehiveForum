@@ -83,12 +83,12 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
   if ($HTTP_POST_VARS['submit'] == "Submit") {
 
-    for($i=0;$i<$HTTP_POST_VARS['t_count'];$i++) {
+    for($i = 0; $i < $HTTP_POST_VARS['t_count']; $i++) {
 
         if($HTTP_POST_VARS['t_name_'.$i] != $HTTP_POST_VARS['t_old_name_'.$i] || $HTTP_POST_VARS['t_move_'.$i] != $psid){
             $new_name = (trim($HTTP_POST_VARS['t_name_'.$i]) != "") ? $HTTP_POST_VARS['t_name_'.$i] : $HTTP_POST_VARS['t_old_name_'.$i];
             profile_item_update($HTTP_POST_VARS['t_piid_'.$i],$HTTP_POST_VARS['t_move_'.$i],$new_name);
-            admin_addlog(0, 0, 0, 0, $psid. $HTTP_POST_VARS['t_piid_'.$i], 13);
+            admin_addlog(0, 0, 0, 0, $psid, $HTTP_POST_VARS['t_piid_'.$i], 13);
         }
 
     }

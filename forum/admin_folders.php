@@ -64,16 +64,16 @@ if (isset($HTTP_POST_VARS['submit'])) {
         if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i]) {
             $new_title = (trim($HTTP_POST_VARS['t_title_'.$i]) != "") ? $HTTP_POST_VARS['t_title_'.$i] : $HTTP_POST_VARS['t_old_title_'.$i];
             folder_update($HTTP_POST_VARS['t_fid_'.$i], $new_title, $HTTP_POST_VARS['t_access_'.$i]);
-            admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 7);
+            admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 0, 0, 7);
         }
         if($HTTP_POST_VARS['t_fid_'.$i] != $HTTP_POST_VARS['t_move_'.$i]){
             folder_move_threads($HTTP_POST_VARS['t_fid_'.$i], $HTTP_POST_VARS['t_move_'.$i]);
-            admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 8);
+            admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 0, 0, 8);
         }
     }
     if(trim($HTTP_POST_VARS['t_title_new']) != "" && $HTTP_POST_VARS['t_title_new'] != "New Folder"){
         $new_fid = folder_create($HTTP_POST_VARS['t_title_new'],$HTTP_POST_VARS['t_access_new']);
-        admin_addlog(0, $new_fid, 0, 0, 9);
+        admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
     }
 }
 

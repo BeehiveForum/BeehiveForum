@@ -101,12 +101,19 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
   }else {
 
-    $new_status = @$HTTP_POST_VARS['t_worker'] | @$HTTP_POST_VARS['t_worm'];
-    $new_status = $new_status | @$HTTP_POST_VARS['t_wasp'] | @$HTTP_POST_VARS['t_splat'];
+    $new_status = 0;
 
-    if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
+    if (isset($HTTP_POST_VARS['t_worker'])) $new_status = $new_status | $HTTP_POST_VARS['t_worker'];
+    if (isset($HTTP_POST_VARS['t_worm']))   $new_status = $new_status | $HTTP_POST_VARS['t_worm'];
+    if (isset($HTTP_POST_VARS['t_wasp']))   $new_status = $new_status | $HTTP_POST_VARS['t_wasp'];
+    if (isset($HTTP_POST_VARS['t_splat']))  $new_status = $new_status | $HTTP_POST_VARS['t_splat'];
+
+    //$new_status = @$HTTP_POST_VARS['t_worker'] | @$HTTP_POST_VARS['t_worm'];
+    //$new_status = $new_status | @$HTTP_POST_VARS['t_wasp'] | @$HTTP_POST_VARS['t_splat'];
+
+    if (($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN) && isset($HTTP_POST_VARS['t_soldier'])) {
         $new_status = $new_status | $HTTP_POST_VARS['t_soldier'];
-    } else {
+    }elseif (isset($user['STATUS'])) {
         $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
         $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
     }
@@ -167,7 +174,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
     if (isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
 
       ban_ip($HTTP_POST_VARS['t_ip_address']);
-      admin_addlog($uid, 0, 0, 0, 4);
+      admin_addlog($uid, 0, 0, 0, 0, 0, 4);
 
     }elseif (isset($HTTP_POST_VARS['t_ip_banned']) && !isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
 
@@ -212,13 +219,13 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "<td class=\"subhead\">User Status: ".$user['LOGON']."</td></tr>\n";
 
   if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
-    echo "<tr><td>".form_checkbox("t_soldier",USER_PERM_SOLDIER,"Soldier",($user['STATUS'] & USER_PERM_SOLDIER))."</td></tr>\n";
+    echo "<tr><td>".form_checkbox("t_soldier", USER_PERM_SOLDIER, "Soldier", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False)."</td></tr>\n";
   }
 
-  echo "<tr><td>".form_checkbox("t_worker",USER_PERM_WORKER,"Worker",($user['STATUS'] & USER_PERM_WORKER))."</td></tr>\n";
-  echo "<tr><td>".form_checkbox("t_worm",USER_PERM_WORM,"Worm",($user['STATUS'] & USER_PERM_WORM))."</td></tr>\n";
-  echo "<tr><td>".form_checkbox("t_wasp",USER_PERM_WASP,"Wasp",($user['STATUS'] & USER_PERM_WASP))."</td></tr>\n";
-  echo "<tr><td>".form_checkbox("t_splat",USER_PERM_SPLAT,"Splat",($user['STATUS'] & USER_PERM_SPLAT))."</td></tr>\n";
+  echo "<tr><td>".form_checkbox("t_worker", USER_PERM_WORKER, "Worker", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False). "</td></tr>\n";
+  echo "<tr><td>".form_checkbox("t_worm", USER_PERM_WORM, "Worm", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False). "</td></tr>\n";
+  echo "<tr><td>".form_checkbox("t_wasp", USER_PERM_WASP, "Wasp", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False). "</td></tr>\n";
+  echo "<tr><td>".form_checkbox("t_splat", USER_PERM_SPLAT, "Splat", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE). "</td></tr>\n";
   echo "<tr><td>&nbsp;</td></tr>\n";
   echo "<tr><td class=\"subhead\">Folder Access:</td></tr>\n";
 
@@ -232,7 +239,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   if (db_num_rows($result)) {
 
     while($row = db_fetch_array($result)) {
-      echo "<tr><td>".form_checkbox("t_fallow_$count", 1, $row['TITLE'], ($row['ALLOWED'] > 0));
+      echo "<tr><td>".form_checkbox("t_fallow_$count", 1, $row['TITLE'], (isset($row['ALLOWED']) && $row['ALLOWED'] > 0));
       echo form_input_hidden("t_fid_$count", $row['FID']). "</td></tr>\n";
       $count++;
     }

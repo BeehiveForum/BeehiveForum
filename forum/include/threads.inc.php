@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 // Included functions for displaying threads in the left frameset.
 
 require_once("./include/db.inc.php");
@@ -71,18 +68,21 @@ function threads_get_folders()
 
     $db_threads_get_folders = db_connect();
 
-    $sql = "select DISTINCT F.FID, F.TITLE, UF.INTEREST from ".forum_table("FOLDER")." F left join ";
-    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) order by F.FID";
+    $sql = "SELECT DISTINCT F.FID, F.TITLE, UF.INTEREST FROM ".forum_table("FOLDER")." F LEFT JOIN ";
+    $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
+    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) ORDER BY F.FID";
 
     $result = db_query($sql, $db_threads_get_folders);
 
     if (!db_num_rows($result)) {
          $folder_info = FALSE;
-    } else {
-        while($query_data = db_fetch_array($result)) {
-            //$folder_info[$query_data['FID']] = $query_data['TITLE'];
-            $folder_info[$query_data['FID']] = array('TITLE' => $query_data['TITLE'], 'INTEREST' => $query_data['INTEREST']);
+    }else {
+        while($row = db_fetch_array($result)) {
+            if (isset($row['INTEREST'])) {
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'INTEREST' => $row['INTEREST']);
+            }else {
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'INTEREST' => 0);
+            }
         }
     }
 

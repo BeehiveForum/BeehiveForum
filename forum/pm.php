@@ -72,6 +72,11 @@ if (isset($HTTP_POST_VARS['savemessages'])) {
     }
 }
 
+// Default Folder
+
+$folder_bitwise = PM_FOLDER_INBOX;
+$folder = 0;
+
 // Which folder are we in?
 
 if (isset($HTTP_POST_VARS['folder'])) {
@@ -88,9 +93,6 @@ if (isset($HTTP_POST_VARS['folder'])) {
         $folder_bitwise = PM_FOLDER_INBOX;
         $folder = 0;
     }
-}else {
-    $folder_bitwise = PM_FOLDER_INBOX;
-    $folder = 0;
 }
 
 if (isset($HTTP_GET_VARS['folder'])) {
@@ -107,9 +109,6 @@ if (isset($HTTP_GET_VARS['folder'])) {
         $folder_bitwise = PM_FOLDER_INBOX;
         $folder = 0;
     }
-}else {
-    $folder_bitwise = PM_FOLDER_INBOX;
-    $folder = 0;
 }
 
 html_draw_top_script();
@@ -134,7 +133,7 @@ if (isset($HTTP_GET_VARS['mid'])) {
     $pm_elements_array = array();
 
     if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder_bitwise)) {
-        if ($folder == PM_FOLDER_INBOX) {
+        if ($folder == 0) {
             draw_pm_message($pm_elements_array, $HTTP_GET_VARS['mid']);
         }else {
             draw_pm_message($pm_elements_array);

@@ -76,7 +76,7 @@ function pm_add_sentitem($mid)
     // ------------------------------------------------------------
 
     $sql = "INSERT INTO ". forum_table("PM_CONTENT"). " (MID, CONTENT) ";
-    $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['CONTENT']}')";
+    $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
 }
@@ -198,15 +198,15 @@ function pm_single_get($mid, $folder, $uid = false)
     $sql.= "FROM ". forum_table("PM"). " PM ";
     $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = PM.FROM_UID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "WHERE PM.MID = $mid AND ";
+    $sql.= "WHERE PM.MID = $mid ";
 
     if (($folder == PM_FOLDER_INBOX)) {
-        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = $uid ";
+        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = $uid ";
     }elseif (($folder == PM_FOLDER_SENT) || ($folder == PM_FOLDER_OUTBOX)) {
-        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = $uid ";
+        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = $uid ";
     }elseif ($folder == PM_FOLDER_SAVED) {
-        $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = $uid) OR ";
-        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid) ";
+        $sql.= " AND ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = $uid) OR ";
+        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid)) ";
     }
 
     $result = db_query($sql, $db_pm_list_get);
@@ -337,6 +337,10 @@ function pm_send_message($tuid, $subject, $content)
 
     $subject = addslashes($subject);
     $content = addslashes($content);
+
+    echo "<p>content:</p>\n";
+    echo $content;
+
     $fuid = bh_session_get_value('UID');
 
     // ------------------------------------------------------------
@@ -372,17 +376,18 @@ function pm_send_message($tuid, $subject, $content)
 function pm_delete_message($mid)
 {
     $db_delete_pm = db_connect();
+    $uid = bh_session_get_value('UID');
 
     // ------------------------------------------------------------
     // Get the PM data incase the sendee hasn't got a copy of it
     // in his Sent Items folder.
     // ------------------------------------------------------------
 
-    $sql = "SELECT PM.TYPE FROM ". forum_table("PM"). " PM WHERE PM.MID = $mid";
+    $sql = "SELECT PM.TYPE, PM.TO_UID FROM ". forum_table("PM"). " PM WHERE PM.MID = $mid";
     $result = db_query($sql, $db_delete_pm);
     $db_delete_pm_row = db_fetch_array($result);
 
-    if (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD)) {
+    if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
         pm_add_sentitem($mid);
     }
 

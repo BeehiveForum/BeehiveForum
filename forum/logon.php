@@ -402,7 +402,7 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
   echo "            <td align=\"right\">Password:</td>\n";
   echo "            <td>";
 
-  if (sizeof($password_array) > 0 && sizeof($passhash_array) > 0) {
+  if (isset($password_array[0]) && isset($passhash_array[0])) {
 
     if ($password_array[0] == $passhash_array[0]) {
 

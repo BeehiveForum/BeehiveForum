@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.112 2005-02-20 22:07:33 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.113 2005-03-04 22:54:07 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -508,7 +508,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY (ID,UID)";
+        $sql.= "  PRIMARY KEY (ID, UID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
@@ -544,7 +544,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (GID,FID)";
+        $sql.= "  PRIMARY KEY  (GID, FID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
@@ -649,7 +649,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (OPTION_ID, TID)";
+        $sql.= "  PRIMARY KEY  (TID, OPTION_ID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
@@ -670,7 +670,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  EDITED DATETIME DEFAULT NULL,";
         $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-        $sql.= "  PRIMARY KEY  (PID,TID),";
+        $sql.= "  PRIMARY KEY  (TID, PID),";
         $sql.= "  KEY TO_UID (TO_UID),";
         $sql.= "  KEY IPADDRESS (IPADDRESS)";
         $sql.= ") TYPE=MYISAM";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.70 2005-01-26 21:33:16 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.71 2005-03-04 22:54:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -269,7 +269,7 @@ $max_var = 15;
 $elements = array ('navpage' => '', 'threads' => '', 'button' => '', 'subhead' => '', 'h1' => '', 'body' => '', 'box' => '');
 
 if ($mode != "") {
-    uasort($elements, rand_sort());
+    uasort($elements, "rand_sort");
 }
 
 $colour = decToHex($red, $green, $blue);

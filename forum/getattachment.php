@@ -27,12 +27,12 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
 
-/*if(!bh_session_check()){
+if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 
-}*/
+}
 
 require_once("./include/html.inc.php");
 require_once("./include/attachments.inc.php");

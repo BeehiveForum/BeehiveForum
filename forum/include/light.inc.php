@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.55 2004-09-23 08:37:44 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.56 2004-10-21 10:19:02 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -368,7 +368,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
 }
 
-function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
+function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false)
 {
     $lang = load_language_file();
 
@@ -412,8 +412,14 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 
+    if (isset($message['PID'])) {
 
-    echo "<p><b>{$lang['from']}: " . format_user_name($message['FLOGON'], $message['FNICK'])."</b> [#{$message['PID']}]";
+        echo "<p><b>{$lang['from']}: ", format_user_name($message['FLOGON'], $message['FNICK']), "</b> [#{$message['PID']}]<br />";
+
+    }else {
+
+        echo "<p><b>{$lang['from']}: ", format_user_name($message['FLOGON'], $message['FNICK']), "<br />";;
+    }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
@@ -441,10 +447,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         }
     }
 
-    if(($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
+    if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
 
         echo "<b>{$lang['to']}: " . format_user_name($message['TLOGON'], $message['TNICK'])."</b>";
-        if ($message['REPLY_TO_PID'] > 0) echo " [#{$message['REPLY_TO_PID']}]";
+
+        if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [#{$message['REPLY_TO_PID']}]";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "&nbsp;({$lang['friend']})";
@@ -452,11 +459,15 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
             echo "&nbsp;({$lang['ignoreduser']})";
         }
 
-        if(isset($message['VIEWED']) && $message['VIEWED'] > 0) {
-            echo "&nbsp;".format_time($message['VIEWED'], 1);
-        } else {
-            echo "&nbsp;{$lang['unread']}";
+        if (!$is_preview) {
+
+            if(isset($message['VIEWED']) && $message['VIEWED'] > 0) {
+                echo "&nbsp;".format_time($message['VIEWED'], 1);
+            } else {
+                echo "&nbsp;{$lang['unread']}";
+            }
         }
+
     }else {
         echo "<b>{$lang['to']}: {$lang['all_caps']}</b>";
     }

@@ -117,6 +117,8 @@ if (isset($HTTP_POST_VARS['t_post_html'])) {
 
 if (isset($HTTP_POST_VARS['t_to_uid'])) {
     $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
+}elseif (isset($HTTP_GET_VARS['uid'])) {
+    $t_to_uid = $HTTP_GET_VARS['uid'];
 }elseif (isset($mid)) {
     $t_to_uid = pm_get_user($mid);
 }else {

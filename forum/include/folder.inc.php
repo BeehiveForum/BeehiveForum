@@ -252,17 +252,14 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
 function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_get_by_type_allowed = db_connect();
-    $ustatus = bh_session_get_value('STATUS');
 
-    if ($ustatus & PERM_CHECK_WORKER) {
-        $sql = "select FID from ". forum_table("FOLDER"). " WHERE ";
-        $sql.= "ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL";
-    } else {
-        $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
-        $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
-        $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
-        $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
-    }
+    $ustatus = bh_session_get_value('STATUS');
+    $uid = bh_session_get_value('UID');
+
+    $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
+    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
+    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+    $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
 
     $result = db_query($sql, $db_folder_get_by_type_allowed);
 

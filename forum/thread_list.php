@@ -217,7 +217,16 @@ if (isset($folder)) {
 
 // Get folder FIDs and titles
 $folder_info = threads_get_folders();
-if (!$folder_info) die ($lang['couldnotretrievefolderinformation']);
+
+if (!$folder_info) {
+
+    echo "</table>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
+}
 
 // Get total number of messages for each folder
 $folder_msgs = threads_get_folder_msgs();

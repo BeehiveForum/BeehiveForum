@@ -120,6 +120,7 @@ $lang['by'] = "by";
 $lang['permissions'] = "Permissions";
 $lang['position'] = "Position";
 $lang['or'] = "or";
+$lang['hours'] = "Hours";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -560,7 +561,7 @@ $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
 $lang['daylightsaving'] = "Adjust for daylight saving";
 $lang['autohighinterest'] = "Automatically mark threads I post in as High Interest";
 $lang['globallyignoresigs'] = "Globally ignore user signatures";
-$lang['timezonefromGMT'] = "Timezone (hours from GMT)";
+$lang['timezonefromGMT'] = "Timezone";
 $lang['postsperpage'] = "Posts per page";
 $lang['fontsize'] = "Font size";
 $lang['forumstyle'] = "Forum style";
@@ -629,6 +630,7 @@ $lang['nouserspecified'] = "No user specified";
 $lang['ignoreduser'] = "Ignored user";
 $lang['lastvisit'] = "Last Visit";
 $lang['sendemail'] = "Send email";
+$lang['sendpm'] = "Send PM";
 $lang['removefromfriends'] = "Remove from friends";
 $lang['addtofriends'] = "Add to friends";
 $lang['stopignoringuser'] = "Stop ignoring user";
@@ -658,9 +660,17 @@ $lang['usernameexists'] = "Sorry, a user with that name already exists";
 $lang['userrecordcreated'] = "Huzzah! Your user record has been created successfully!";
 $lang['errorcreatinguserrecord'] = "Error creating user record";
 $lang['userregistration'] = "User Registration";
+$lang['registrationinformationrequired'] = "Registration Information (Required)";
+$lang['profileinformationoptional'] = "Profile Information (Optional)";
+$lang['preferencesoptional'] = "Preferences (Optional)";
 $lang['register'] = "Register";
 $lang['rememberpasswd'] = "Remember password";
 $lang['birthdayrequired'] = "Your date of birth is required or is invalid";
+$lang['alwaysnotifymeofrepliestome'] = "Always notify me of replies to me";
+$lang['notifyonnewprivatemessage'] = "Notify on new Private Message";
+$lang['popuponnewprivatemessage'] = "Pop up on new Private Message";
+$lang['automatichighinterestonpost'] = "Automatic high interest on post";
+$lang['itemsmarkedwithaasterixarerequired'] = "Items marked with a * are required";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 
@@ -752,7 +762,7 @@ $lang['markasread'] = "Mark as Read";
 $lang['next50discussions'] = "Next 50 discussions";
 $lang['visiblediscussions'] = "Visible discussions";
 $lang['navigate'] = "Navigate";
-$lang['couldnotretrievefolderinformation'] = "Could not retrieve folder information!";
+$lang['couldnotretrievefolderinformation'] = "There are no folders available.";
 $lang['nomessagesinthiscategory'] = "No messages in this category. Please select another, or";
 $lang['clickhere'] = "click here";
 $lang['forallthreads'] = "for all threads";

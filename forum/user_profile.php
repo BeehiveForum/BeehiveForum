@@ -35,6 +35,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/session.inc.php");
 
 if (isset($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
@@ -59,11 +60,11 @@ html_draw_top(format_user_name($user['LOGON'],$user['NICKNAME']));
 
 $db = db_connect();
 
-$sql = "select distinct PS.PSID, PS.NAME from ";
+$sql = "SELECT DISTINCT PS.PSID, PS.NAME FROM ";
 $sql.= forum_table("PROFILE_SECTION") . " PS, ";
 $sql.= forum_table("PROFILE_ITEM") . " PI ";
-$sql.= " where PS.PSID = PI.PSID";
-$sql.= " order by PS.PSID";
+$sql.= "WHERE PS.PSID = PI.PSID ";
+$sql.= "ORDER BY PS.PSID";
 
 $result = db_query($sql,$db);
 
@@ -159,9 +160,9 @@ echo "          <tr>\n";
 echo "            <td width=\"75%\" valign=\"top\">\n";
 echo "              <table width=\"100%\">\n";
 
-$sql = "select PI.NAME, UP.ENTRY from " . forum_table("PROFILE_ITEM") . " PI ";
-$sql.= "left join " . forum_table("USER_PROFILE") . " UP on (UP.PIID = PI.PIID and UP.UID = $uid) ";
-$sql.= "where PI.PSID = $psid order by PI.PIID";
+$sql = "SELECT PI.NAME, UP.ENTRY FROM " . forum_table("PROFILE_ITEM") . " PI ";
+$sql.= "LEFT JOIN " . forum_table("USER_PROFILE") . " UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
+$sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
 
 $result = db_query($sql,$db);
 
@@ -183,9 +184,16 @@ echo "              <table width=\"100%\" class=\"subhead\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">", (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) ? "<img src=\"". $row['PIC_URL']. "\" width=\"110\" height=\"110\" />" : "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", "</td>\n";
 echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td><a href=\"email.php?uid=$uid\">{$lang['sendemail']}</a></td>\n";
-echo "                </tr>\n";
+
+if (bh_session_get_value('UID') <> 0) {
+
+    echo "                <tr>\n";
+    echo "                  <td><a href=\"email.php?uid=$uid\">{$lang['sendemail']}</a></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td><a href=\"#\" onclick=\"opener.top.frames['main'].location.href='pm_write.php?uid=$uid'\">{$lang['sendpm']}</a></td>\n";
+    echo "                </tr>\n";
+}
 
 if ($uid != $your_uid) {
     if ($relationship & USER_FRIEND) {

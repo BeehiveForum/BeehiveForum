@@ -216,6 +216,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 }
 
 html_draw_top_script();
+echo "<h1>{$lang[createpoll]}</h1>\n";
 
 if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = md5(uniqid(rand()));

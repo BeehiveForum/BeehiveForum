@@ -79,6 +79,15 @@ array_multisort($style_names, $available_styles);
 
 $available_langs = lang_get_available(); // get list of available languages
 
+$timezones = array("GMT - 11 {$lang['hours']}", "GMT - 10 {$lang['hours']}", "GMT - 9 {$lang['hours']}",
+                   "GMT - 8 {$lang['hours']}", "GMT - 7 {$lang['hours']}", "GMT - 6 {$lang['hours']}",
+                   "GMT - 5 {$lang['hours']}", "GMT - 4 {$lang['hours']}", "GMT - 3 {$lang['hours']}",
+                   "GMT - 2 {$lang['hours']}", "GMT - 1 {$lang['hours']}", "GMT",
+                   "GMT + 1 {$lang['hours']}", "GMT + 2 {$lang['hours']}", "GMT + 3 {$lang['hours']}",
+                   "GMT + 4 {$lang['hours']}", "GMT + 5 {$lang['hours']}", "GMT + 6 {$lang['hours']}",
+                   "GMT + 7 {$lang['hours']}", "GMT + 8 {$lang['hours']}", "GMT + 9 {$lang['hours']}",
+                   "GMT + 10 {$lang['hours']}", "GMT + 11 {$lang['hours']}");
+
 if(isset($HTTP_POST_VARS['submit'])) {
 
     $valid = true;
@@ -346,7 +355,7 @@ if(!empty($error_html)) {
     <table class="posthead" width="400">
       <tr>
         <td><?php echo $lang['timezonefromGMT']; ?></td>
-        <td><?php echo form_dropdown_array("timezone", range(-11,11), range(-11,11), $user_prefs['TIMEZONE']); ?></td>
+        <td><?php echo form_dropdown_array("timezone", range(-11,11), array('GMT - 12 hours'), $user_prefs['TIMEZONE']); ?></td>
       </tr>
       <tr>
         <td><?php echo $lang['postsperpage']; ?></td>

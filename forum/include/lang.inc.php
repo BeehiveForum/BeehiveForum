@@ -67,11 +67,10 @@ require_once ("./include/languages/$default_language.inc.php");
 
 function lang_get_available()
 {
-    $available_langs = array();
+    $available_langs = array('No Preference');
     $dir = opendir("./include/languages");
-    while($item = readdir($dir)){
-        if($item=="." or $item=="..") continue;
-        array_push($available_langs, substr($item, 0, -8));
+    while ($item = readdir($dir)) {
+        if (strpos($item, '.inc.php') !== false) array_push($available_langs, substr($item, 0, strpos($item, '.inc.php')));
     }
     closedir($dir);
     return $available_langs;

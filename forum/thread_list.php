@@ -439,16 +439,15 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 	echo "  <td class=\"smalltext\">\n";
 	echo "    <form name=\"f_mark\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n";
 
-	$labels = array("All Discussions","Next 50 discussions");
-	$max_range = 1;
+	$labels = array("All Discussions", "Next 50 discussions");
 
 	if (is_array($visiblethreads)) {
-		$labels[2] = "Visible discussions";
-		echo form_input_hidden("tids",implode(',', $visiblethreads));
-		$max_range = 2;
+
+		$labels[] = "Visible discussions";
+		echo form_input_hidden("tids", implode(',', $visiblethreads));
 	}
 
-	echo form_dropdown_array("markread", range(0, $max_range), $labels, 0). "\n        ";
+	echo form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n        ";
 	echo form_submit("go","Go!"). "\n";
 	echo "    </form>\n";
 	echo "  </td>\n";

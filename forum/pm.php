@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.65 2004-08-14 21:40:36 decoyduck Exp $ */
+/* $Id: pm.php,v 1.66 2004-09-13 12:22:01 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -242,19 +242,19 @@ echo "      <td width=\"20\" align=\"center\">&nbsp;</td>\n";
 echo "      <td class=\"posthead\" width=\"50%\">&nbsp;{$lang['subject']}</td>\n";
 
 if ($folder == PM_FOLDER_INBOX) {
-    echo "      <td class=\"posthead\">&nbsp;{$lang['from']}</td>\n";
+    echo "      <td class=\"posthead\" width=\"30%\">&nbsp;{$lang['from']}</td>\n";
 }elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
-    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
+    echo "      <td class=\"posthead\" width=\"30%\">&nbsp;{$lang['to']}</td>\n";
 }elseif  ($folder == PM_FOLDER_SAVED) {
-    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
-    echo "      <td class=\"posthead\">&nbsp;{$lang['from']}</td>\n";
+    echo "      <td class=\"posthead\" width=\"15%\">&nbsp;{$lang['to']}</td>\n";
+    echo "      <td class=\"posthead\" width=\"15%\">&nbsp;{$lang['from']}</td>\n";
 }
 
-echo "      <td class=\"posthead\">&nbsp;{$lang['timesent']}</td>\n";
+echo "      <td class=\"posthead\" width=\"20%\">&nbsp;{$lang['timesent']}</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
-    echo "      <td class=\"posthead\" width=\"25\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
+    echo "      <td class=\"posthead\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
     echo "    </tr>\n";
 
     foreach($pm_messages_array['message_array'] as $message) {
@@ -374,7 +374,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
 }else {
 
-    echo "      <td class=\"posthead\" width=\"20\">&nbsp;</td>\n";
+    echo "      <td class=\"posthead\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td class=\"postbody\"></td><td class=\"postbody\">{$lang['nomessages']}</td>\n";

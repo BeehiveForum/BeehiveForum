@@ -458,8 +458,13 @@ A		{
 		padding: 2px;
 		background-color: #FFFFFF;
 }
+
 .emoticon_preview img {
 		cursor: pointer;
+}
+
+.pmnewcount {
+                font-size: 8pt;
 }
 
 .pmbar_text {

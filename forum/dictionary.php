@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.1 2004-11-16 21:02:58 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.2 2004-11-18 00:14:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,11 +104,15 @@ $t_ignored_words_array = array();
 
 if (isset($_POST['body_text']) && strlen(trim(_stripslashes($_POST['body_text']))) > 0) {
 
-    $t_body_text_array = explode(" ", trim(_stripslashes($_POST['body_text'])));
+    $t_body_text = trim(_stripslashes($_POST['body_text']));
+    preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $t_body_text, $t_body_text_array);
+    $t_body_text_array = $t_body_text_array[0];
 
 }else if (isset($_GET['body_text']) && strlen(trim(_stripslashes($_GET['body_text']))) > 0) {
 
-    $t_body_text_array = explode(" ", trim(_stripslashes($_GET['body_text'])));;
+    $t_body_text = trim(_stripslashes($_GET['body_text']));
+    preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $t_body_text, $t_body_text_array);
+    $t_body_text_array = $t_body_text_array[0];
 
 }else {
 
@@ -193,7 +197,7 @@ if (isset($_POST['ignoreall'])) {
     if (isset($_POST['changeto']) && strlen(trim(_stripslashes($_POST['changeto']))) > 0) {
 
          $changeto = trim(_stripslashes($_POST['changeto']));
-         $t_body_text_array[$current_word] = preg_replace("/([^\w]+)?([\w]+)([^\w]+)?/", "\\1{$changeto}\\3 ", $t_body_text_array[$current_word]);
+         $t_body_text_array[$current_word] = $changeto;
     }
 
     $current_word++;
@@ -262,7 +266,7 @@ if ($check_complete) {
 echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('ignored_words', implode(" ", $t_ignored_words_array)), "\n";
-echo "  ", form_input_hidden('body_text', implode(" ", $t_body_text_array)), "\n";
+echo "  ", form_input_hidden('body_text', implode("", $t_body_text_array)), "\n";
 echo "  ", form_input_hidden('current_word', $current_word), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
 echo "    <tr>\n";
@@ -282,9 +286,9 @@ echo "                        <td class=\"spellcheckbodytext\" valign=\"top\">";
 
 foreach($t_body_text_array as $key => $word) {
     if ($key == $current_word) {
-        echo preg_replace("/([^\w]+)?([\w]+)([^\w]+)?/", "\\1<span class=\"highlight\">\\2</span>\\3 ", $word);
+        echo "<span class=\"highlight\">$word</span>";
     }else {
-        echo "$word ";
+        echo "$word";
     }
 }
 
@@ -318,14 +322,14 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"2\">Not in dictionary</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_input_text("word", isset($t_body_text_array[$current_word]) ? preg_replace("/[^\w]+/", "", $t_body_text_array[$current_word]) : "", 32, false, "style=\"width: 95%\""), "</td>\n";
+echo "                  <td colspan=\"2\">", form_input_text("word", isset($t_body_text_array[$current_word]) ? $t_body_text_array[$current_word] : "", 32, false, "style=\"width: 95%\""), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>Change to:</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"175\">", form_input_text("changeto", isset($t_suggestions_array) && is_array($t_suggestions_array) ? $t_suggestions_array[0] : "" , 32, false, "style=\"width: 95%\""), "</td>\n";
+echo "                  <td width=\"175\">", form_input_text("changeto", isset($t_suggestions_array[0]) ? $t_suggestions_array[0] : "" , 32, false, "style=\"width: 95%\""), "</td>\n";
 echo "                  <td rowspan=\"2\" width=\"175\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
 echo "                      <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.200 2004-10-16 17:58:50 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.201 2004-10-16 18:01:11 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -393,13 +393,6 @@ function user_get_prefs($uid)
     foreach ($global_prefs as $key => $value) {
         $global_prefs[$key.'_GLOBAL'] = true;
     }
-
-    echo "<pre>\n";
-    print_r($default_prefs);
-    print_r($global_prefs);
-    print_r($forum_prefs);
-    echo "</pre>\n";
-    exit;
 
     // Merge them all together, with forum prefs overriding
     // global prefs overriding default prefs

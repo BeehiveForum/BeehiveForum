@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.63 2003-09-02 22:11:45 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.64 2003-09-02 22:14:47 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -856,8 +856,6 @@ function poll_horizontal_graph($tid)
 
         }
 
-        //$totalsvotes = $totalvotes / $poll_group_count;
-
         if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
             $vote_percent = round((100 / $totalvotes[$pollresults['GROUP_ID'][$i]]) * $pollresults['VOTES'][$i], 2);
         }else {
@@ -960,8 +958,6 @@ function poll_vertical_graph($tid)
     $polldisplay.= "              </tr>\n";
     $polldisplay.= "              <tr>\n";
 
-    //$totalsvotes = $totalvotes / $poll_group_count;
-
     unset($poll_previous_group);
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
@@ -999,30 +995,24 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
 {
     global $lang;
 
-    $totalvotes  = 0;
-    $max_value   = 0;
-    $optioncount = 0;
+    $totalvotes  = array();
+    $max_value   = array();
 
     $pollresults = poll_get_votes($tid);
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
-      if ($pollresults['VOTES'][$i] > $max_value) $max_value = $pollresults['VOTES'][$i];
-      $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
-      $optioncount++;
-    }
 
-    if ($max_value > 0) {
+      if (!isset($max_values[$pollresults['GROUP_ID'][$i]])) {
+        $max_values[$pollresults['GROUP_ID'][$i]] = $pollresults['VOTES'][$i];
+      }else {
+        $max_values[$pollresults['GROUP_ID'][$i]]+= $pollresults['VOTES'][$i];
+      }
 
-      $horizontal_bar_width = round(300 / $max_value, 2);
-      $vertical_bar_height  = round(200 / $max_value, 2);
-      $vertical_bar_width   = round(400 / $optioncount, 2);
-
-    }else {
-
-      $horizontal_bar_width = 0;
-      $vertical_bar_height  = 0;
-      $vertical_bar_width   = round(400 / $optioncount, 2);
-
+      if (!isset($totalvotes[$pollresults['GROUP_ID'][$i]])) {
+        $totalvotes[$pollresults['GROUP_ID'][$i]] = $pollresults['VOTES'][$i];
+      }else {
+        $totalvotes[$pollresults['GROUP_ID'][$i]]+= $pollresults['VOTES'][$i];
+      }
     }
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
@@ -1044,10 +1034,10 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
 
         if ($pollresults['VOTES'][$i] > 0) {
 
-          if ($totalvotes > 0) {
-            $vote_percent = round((100 / $totalvotes) * $pollresults['VOTES'][$i], 2);
+          if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
+              $vote_percent = round((100 / $totalvotes[$pollresults['GROUP_ID'][$i]]) * $pollresults['VOTES'][$i], 2);
           }else {
-            $vote_percent = 0;
+              $vote_percent = 0;
           }
 
           $polldisplay.= "                <td class=\"postbody\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";

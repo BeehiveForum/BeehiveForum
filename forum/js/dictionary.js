@@ -22,7 +22,7 @@ USA
 function changeword() {
 
     var i = document.dictionary.suggestion.selectedIndex;
-    document.dictionary.changeto.value = document.dictionary.suggestion.options[i].value;
+    document.dictionary.change_to.value = document.dictionary.suggestion.options[i].value;
 }
 
 function openSpellCheck(webtag, obj_id) {

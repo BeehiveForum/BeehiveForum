@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.5 2004-11-22 22:44:51 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.6 2004-11-26 09:35:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -228,16 +228,6 @@ if (isset($_POST['ignoreall'])) {
 
     $dictionary->find_next_word();
 
-}else if (isset($_POST['suggest'])) {
-
-    // User wants more / different suggestions
-
-    if (isset($_POST['word']) && strlen(trim(_stripslashes($_POST['word']))) > 0) {
-
-        $t_suggest_word = trim(_stripslashes($_POST['word']));
-        $t_suggestions_array = $dictionary->get_suggestions($t_suggest_word);
-    }
-
 }else if (isset($_POST['change'])) {
 
     // User has selected to change the current word
@@ -289,10 +279,6 @@ if ($dictionary->is_check_complete()) {
     html_draw_top('dictionary.js');
 }
 
-// Get the suggestions for the current word
-
-$t_suggestions_array = $dictionary->get_suggestions();
-
 echo "<form name=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('obj_id', $dictionary->get_obj_id()), "\n";
@@ -314,7 +300,6 @@ echo "                  <td>\n";
 echo "                    <table border=\"0\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"spellcheckbodytext\" valign=\"top\">", $dictionary->pretty_print_content(), "</td>\n";
-echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -344,34 +329,37 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"2\">Not in dictionary</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_input_text("word", $dictionary->get_current_word(), 32, false, "style=\"width: 95%\" disabled=\"disabled\""), "</td>\n";
+echo "                  <td colspan=\"2\">", form_input_text("word_display", $dictionary->get_current_word(), 32, false, "style=\"width: 95%\" disabled=\"disabled\""), form_input_hidden("word", $dictionary->get_current_word()), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>Change to:</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"175\">", form_input_text("change_to", $t_suggestions_array[0] , 32, false, "style=\"width: 95%\""), "</td>\n";
-echo "                  <td rowspan=\"2\" width=\"175\" valign=\"top\">\n";
-echo "                    <table border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
+echo "                  <td width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion() , 32, false, "style=\"width: 99%\""), "</td>\n";
+echo "                  <td rowspan=\"2\" width=\"130\" valign=\"top\">\n";
+echo "                    <table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"120\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_submit("ignore", "Ignore"), "</td>\n";
-echo "                        <td align=\"center\">", form_submit("ignoreall", "Ignore All"), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("ignore", "Ignore", "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_submit("change", "Change"), "</td>\n";
-echo "                        <td align=\"center\">", form_submit("changeall", "Change all"), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("ignoreall", "Ignore All", "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_submit("add", "Add"), "</td>\n";
-echo "                        <td align=\"center\">", form_submit("suggest", "Suggest"), "</td>\n";
+echo "                        <td align=\"right\">", form_submit("change", "Change", "style=\"width: 90%\""), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"right\">", form_submit("changeall", "Change All", "style=\"width: 90%\""), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"right\">", form_submit("add", "Add", "style=\"width: 90%\""), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>\n";
-echo "                    ", form_dropdown_array("suggestion", $t_suggestions_array, false, false, "size=\"10\" style=\"width: 100%; height: 90px\" onchange=\"changeword()\""), "\n";
+echo "                  <td width=\"270\">\n";
+echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions(), false, false, "size=\"10\" style=\"width: 100%; height: 90px\" onchange=\"changeword()\""), "\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

@@ -151,7 +151,9 @@ if ($langfile = file('./forum/include/languages/en.inc.php')) {
     if ($fp = fopen('./forum/include/languages/x-hacker.inc.php', 'w')) {
         foreach($langfile as $line) {
             if (preg_match('/\$lang\[\'(.*)\'\] = "(.*)";/', $line, $value)) {
-                $value[2] = translate($value[2]);
+                if (substr($value[1], 0, 1) != "_") {
+                    $value[2] = translate($value[2]);
+                }
                 fwrite($fp, "\$lang['{$value[1]}'] = \"{$value[2]}\";\n");
             }else {
                 fwrite($fp, $line);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.39 2003-11-11 19:10:26 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.40 2003-11-16 22:10:08 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -41,11 +41,11 @@ require_once("./include/session.inc.php");
 require_once("./include/user_profile.inc.php");
 require_once("./include/profile.inc.php");
 
-if (isset($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['uid']) && is_int($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
 }
 
-if (isset($HTTP_GET_VARS['psid'])) {
+if (isset($HTTP_GET_VARS['psid']) && is_int($HTTP_GET_VARS['psid'])) {
     $psid = $HTTP_GET_VARS['psid'];
 }
 

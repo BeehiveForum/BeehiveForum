@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.99 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: messages.php,v 1.100 2003-11-16 22:10:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -161,7 +161,7 @@ $msg_count = count($messages);
 
 $highlight = array();
 
-if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
+if (isset($HTTP_GET_VARS['search_string']) && strlen(trim($HTTP_GET_VARS['search_string'])) > 0) {
     $highlight = explode(' ', rawurldecode($HTTP_GET_VARS['search_string']));
 }
 

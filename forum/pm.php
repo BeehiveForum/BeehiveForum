@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.20 2003-11-10 20:37:48 decoyduck Exp $ */
+/* $Id: pm.php,v 1.21 2003-11-16 22:10:07 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -144,7 +144,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
 
-if (isset($HTTP_GET_VARS['mid'])) {
+if (isset($HTTP_GET_VARS['mid']) && is_int($HTTP_GET_VARS['mid'])) {
 
     $pm_elements_array = array();
 
@@ -196,7 +196,7 @@ if (sizeof($listmessages_array) == 0) {
         echo "    <tr>\n";
         echo "      <td class=\"postbody\">";
 
-        if (isset($HTTP_GET_VARS['mid'])){
+        if (isset($HTTP_GET_VARS['mid']) && is_int($HTTP_GET_VARS['mid'])){
             $mid = $HTTP_GET_VARS['mid'];
         }else {
             $mid = NULL;

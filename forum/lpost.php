@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.59 2004-11-03 20:14:25 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.60 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -483,7 +483,7 @@ if ($newthread) {
 if (isset($error_html)) {
     echo $error_html . "\n";
 }
-echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"POST\">\n";
+echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
 
 if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
@@ -514,7 +514,7 @@ if ($newthread) {
 
       echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
       echo form_input_hidden("t_tid", $reply_to_tid);
-      echo form_input_hidden("t_rpid", $reply_to_pid)."</td></tr>\n";
+      echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
     }
 }
 

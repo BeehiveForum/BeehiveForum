@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.28 2004-11-03 20:14:25 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.29 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,16 +111,16 @@ $pack = "";
 $mode = "";
 
 if (isset($_GET['pack'])) {
-        $pack = $_GET['pack'];
+    $pack = $_GET['pack'];
 }
 
 if (isset($_GET['mode'])) {
-        $mode = $_GET['mode'];
+    $mode = $_GET['mode'];
 }
 
 if ($mode == "mini") {
-        echo emoticons_preview($pack);
-        exit;
+    echo emoticons_preview($pack);
+    exit;
 }
 
 html_draw_top("emoticons.js");
@@ -138,43 +138,50 @@ echo "          <td valign=\"top\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
 
-
 $emot_forum = forum_get_setting('default_emoticons');
+
 $emot_sets = emoticons_get_sets();
+
 unset($emot_sets['none']);
 unset($emot_sets['text']);
+
 $emot_sets_keys = array_keys($emot_sets);
 
 if ($pack != "user" && !in_array($pack, $emot_sets_keys)) {
-        $pack = $emot_forum;
+    $pack = $emot_forum;
 }
 
 if ($pack != "user") {
 
-        echo "                <td valign=\"top\" width=\"200\">\n";
+    echo "                <td valign=\"top\" width=\"200\">\n";
 
-        foreach ($emot_sets as $k => $v) {
-                if ($pack != $k) {
-                        echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=$k\" target=\"_self\">{$v}</a></p>\n";
-                } else {
-                        echo "                  <h2>{$v}</h2>\n";
-                }
+    foreach ($emot_sets as $pack_name => $display_name) {
+
+        if ($pack == $pack_name) {
+
+            echo "                  <h2>{$v}</h2>\n";
+
+        }else {
+
+            echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=$pack_name\" target=\"_self\">{$display_name}</a></p>\n";
         }
+    }
 
-        echo "                </td>\n";
+    echo "                </td>\n";
 }
 
 if ($pack == "user") {
+
     $pack = bh_session_get_value('EMOTICONS');
     $pack = $pack ? $pack : $emot_forum;
 }
 
 if (in_array($pack, $emot_sets_keys)) {
-        $path = "emoticons/".$pack;
-} else if (in_array($emot_forum, $emot_sets_keys)) {
-        $path = "emoticons/".$emot_forum;
-} else {
-        $path = "emoticons/".$emot_sets_keys[0];
+    $path = "emoticons/$pack";
+}else if (in_array($emot_forum, $emot_sets_keys)) {
+    $path = "emoticons/{$emot_forum}";
+}else {
+    $path = "emoticons/{$emot_sets_keys[0]}";
 }
 
 $fp = fopen("$path/style.css", "r");
@@ -186,32 +193,34 @@ for ($i = 0; $i < count($matches[1]); $i++) {
 
     if (isset($emoticon_text[$matches[1][$i]])) {
 
-        $tmp = "";
+        $string_matches = array();
 
         for ($j = 0; $j < count($emoticon_text[$matches[1][$i]]); $j++) {
 
-            $tmp.= $emoticon_text[$matches[1][$i]][$j]." &nbsp; ";
+            $string_matches[] = $emoticon_text[$matches[1][$i]][$j];
         }
 
-        $emot_match[] = $tmp;
-        $emot_text[]  = $matches[1][$i];
-        $emot_image[] = $matches[2][$i];
+        $emots_array[] = array('matches' => $string_matches,
+                               'text'    => $matches[1][$i],
+                               'img'     => $matches[2][$i]);
     }
 }
-
-array_multisort($emot_match, $emot_text, $emot_image);
 
 echo "                <td>\n";
 echo "                  <table class=\"posthead\" width=\"300\">\n";
 
-for ($i = 0; $i < count($emot_match); $i++) {
+foreach($emots_array as $emot) {
 
-        $tmp_ts = split(" ", $emot_match[$i]);
-        $tmp_ts = $tmp_ts[0];
+        echo "                    <tr onclick=\"insertEmoticon(' ", rawurlencode(str_replace("'", "\\'", $emot['matches'][0])), " ');\">\n";
+        echo "                      <td width=\"100\"><img src=\"$path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";
+        echo "                      <td>";
 
-        echo "                    <tr onclick=\"insertEmoticon(' ", rawurlencode(str_replace("'", "\\'", $tmp_ts)), " ');\">\n";
-        echo "                      <td width=\"100\"><img src=\"$path/{$emot_image[$i]}\" alt=\"{$emot_text[$i]}\" title=\"{$emot_text[$i]}\" /></td>\n";
-        echo "                      <td>{$emot_match[$i]}</td>\n";
+        foreach ($emot['matches'] as $emot_match) {
+
+            echo htmlentities($emot_match), " &nbsp; ";
+        }
+
+        echo "</td>\n";
         echo "                    </tr>\n";
 }
 

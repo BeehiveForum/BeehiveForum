@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.65 2004-08-17 10:52:22 tribalonline Exp $ */
+/* $Id: admin_prof_items.php,v 1.66 2004-11-05 18:50:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -230,13 +230,13 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>{$lang['fieldtypeexample1']}</td>\n";
+echo "      <td><p>{$lang['fieldtypeexample1']}</p></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>{$lang['fieldtypeexample2']}</td>\n";
+echo "      <td><p>{$lang['fieldtypeexample2']}</p></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

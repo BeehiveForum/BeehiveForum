@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.54 2004-11-01 23:58:42 decoyduck Exp $ */
+/* $Id: display.php,v 1.55 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -133,7 +133,14 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 // Output XHTML header
 html_draw_top("basetarget=_blank", "openprofile.js");
 
-$message = messages_get($tid, $pid, 1);
+if (!$message = messages_get($tid, $pid, 1)) {
+
+   html_draw_top();
+   echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+   html_draw_bottom();
+   exit;
+}
+
 $threaddata = thread_get($tid);
 
 $foldertitle = folder_get_title($threaddata['FID']);

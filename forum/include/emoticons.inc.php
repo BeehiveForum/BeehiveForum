@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.26 2004-11-04 09:04:47 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.27 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -167,37 +167,47 @@ function emoticons_preview ($set, $width=190, $height=100, $num = 35) {
         }
 
         if ($set != 'text' && $set != 'none') {
+
                 $path = "./emoticons/$set";
                 $fp = fopen("$path/style.css", "r");
                 $style = fread($fp, filesize("$path/style.css"));
 
                 preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 
-                for ($i=0; $i<count($matches[1]); $i++) {
-                        if (isset($emoticon_text[$matches[1][$i]])) {
-                                $emot_match[] = $emoticon_text[$matches[1][$i]];
-                                $emot_text[] = $matches[1][$i];
-                                $emot_image[] = $matches[2][$i];
+                for ($i = 0; $i < count($matches[1]); $i++) {
+
+                    if (isset($emoticon_text[$matches[1][$i]])) {
+
+                        $string_matches = array();
+
+                        for ($j = 0; $j < count($emoticon_text[$matches[1][$i]]); $j++) {
+
+                            $string_matches[] = $emoticon_text[$matches[1][$i]][$j];
                         }
+
+                        $emots_array[] = array('matches' => $string_matches,
+                                               'text'    => $matches[1][$i],
+                                               'img'     => $matches[2][$i]);
+                    }
                 }
 
-                array_multisort($emot_match, SORT_DESC, $emot_text, $emot_image);
+                $str.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">\n";
 
-                $str.= "<div style=\"width:".$width."px; height:".$height."px\" class=\"emoticon_preview\">\n";
+                foreach($emots_array as $emot) {
 
-                for ($i=0; $i<min(count($emot_match), $num); $i++) {
+                    $emot_tooltip_matches = array();
 
-                        $tmp_t = "";
+                    foreach ($emot['matches'] as $key => $emot_match) {
 
-                        for ($j=1; $j<count($emot_match[$i]); $j++) {
-                                $tmp_t.= " ".$emot_match[$i][$j];
+                        if ($key > 0) {
+
+                            $emot_tooltip_matches[] = htmlentities($emot_match);
                         }
+                    }
 
-                        $tmp_i = $emot_image[$i];
-                        $tmp_ts = $emot_match[$i][0];
+                    $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
 
-                        $str.= "<img src=\"$path/{$tmp_i}\" alt=\"{$tmp_ts}{$tmp_t}\" title=\"{$tmp_ts}{$tmp_t}\" onclick=\"add_text(' ". rawurlencode(str_replace("'", "\\'", $tmp_ts)) ." ');\" /> ";
-
+                    $str.= "<img src=\"$path/{$emot['img']}\" alt=\"{$emot['matches'][0]} {$emot_tiptext}\" title=\"{$emot['matches'][0]} {$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode(str_replace("'", "\\'", $emot['matches'][0])) ." ');\" /> ";
                 }
 
                 if ($num < count($emot_match)) {

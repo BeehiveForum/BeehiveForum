@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.60 2004-11-02 17:23:01 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.61 2004-11-05 18:50:02 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -62,7 +62,7 @@ function light_form_dropdown_array($name, $value, $label, $default = "")
     $html = "<select name=\"$name\">";
 
     for($i=0;$i<count($value);$i++){
-        $sel = ($value[$i] == $default) ? " selected" : "";
+        $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
         if($label[$i]){
             $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>";
         } else {
@@ -118,7 +118,7 @@ function light_poll_confirm_close($tid)
 
     light_poll_display($tid, $preview_message, 0, 0, false);
 
-    echo "<p><form name=\"f_delete\" action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
+    echo "<p><form name=\"f_delete\" action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"post\" target=\"_self\">";
     echo form_input_hidden('webtag', $webtag), "\n";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
@@ -146,8 +146,8 @@ function light_messages_top($foldertitle, $threadtitle, $interest_level = 0, $st
 function light_form_radio($name, $value, $text, $checked = false)
 {
     $html = "<input type=\"radio\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked";
-    return $html . " />$text</span>";
+    if($checked) $html .= " checked=\"checked\"";
+    return $html . " />$text";
 }
 
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
@@ -742,7 +742,7 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0)
 function light_form_checkbox($name, $value, $text, $checked = false)
 {
     $html = "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
-    if($checked) $html .= " checked";
+    if($checked) $html .= " checked=\"checked\"";
     return $html . " />$text";
 }
 
@@ -754,7 +754,7 @@ function light_form_field($name, $value = "", $width = 0, $maxchars = 0, $type =
     if($width) $html.= " size=\"$width\"";
     if($maxchars) $html.= " maxchars=\"$maxchars\"";
 
-    return $html.">";
+    return $html." />";
 }
 
 function light_form_input_text($name, $value = "", $width = 0, $maxchars = 0)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.18 2004-10-22 14:06:23 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.19 2004-11-05 18:50:02 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -301,7 +301,6 @@ function draw_logon_form($logon_main)
             echo "                  <td align=\"right\">{$lang['passwd']}:</td>\n";
             echo "                  <td>", form_input_password("user_password", ""), "</td>\n";
             echo "                </tr>\n";
-            echo "                </tr>\n";
 
         }else {
 
@@ -312,7 +311,6 @@ function draw_logon_form($logon_main)
             echo "                <tr>\n";
             echo "                  <td align=\"right\">{$lang['passwd']}:</td>\n";
             echo "                  <td>", form_input_password("user_password", (isset($password_array[0]) ? $password_array[0] : "")), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? $passhash_array[0] : "")), "</td>\n";
-            echo "                </tr>\n";
             echo "                </tr>\n";
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.57 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: email.php,v 1.58 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -198,7 +198,7 @@ if (!isset($subject)) $subject = "";
 if (!isset($message)) $message = "";
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"f_email\" action=\"email.php\" method=\"POST\">\n";
+echo "  <form name=\"f_email\" action=\"email.php\" method=\"post\">\n";
 echo "    ", form_input_hidden('webtag', $webtag), "\n";
 echo "    ", form_input_hidden("t_to_uid", $to_uid), "\n";
 echo "    <table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.183 2004-10-08 19:53:07 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.184 2004-11-05 18:50:05 decoyduck Exp $ */
 
 // International English language file
 
@@ -879,13 +879,13 @@ $lang['userexp_1'] = "Use the menu on the left to manage your settings.";
 $lang['userexp_2'] = "<b>User Details</b> allows you to change your name, email address and password.";
 $lang['userexp_3'] = "<b>User Profile</b> allows you to edit your user profile.";
 $lang['userexp_4'] = "<b>Change Password</b> allows you to change your password";
-$lang['userexp_5'] = "<b>Email & Privacy</b> lets you change how you can be contacted on and off the forum.";
+$lang['userexp_5'] = "<b>Email &amp; Privacy</b> lets you change how you can be contacted on and off the forum.";
 $lang['userexp_6'] = "<b>Forum Options</b> lets you change how the forum looks and works.";
 $lang['userexp_7'] = "<b>Attachments</b> allows you to edit/delete your attachments.";
 $lang['userexp_8'] = "<b>Edit Signature</b> lets you edit your signature.";
 $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
-$lang['emailandprivacy'] = "Email & Privacy";
+$lang['emailandprivacy'] = "Email &amp; Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['newrelationship'] = "New Relationship";
 $lang['editrelationships'] = "Edit Relationships";

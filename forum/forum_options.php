@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.52 2004-08-18 00:27:58 tribalonline Exp $ */
+/* $Id: forum_options.php,v 1.53 2004-09-02 21:16:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -179,10 +179,23 @@ if (isset($_POST['submit'])) {
         $user_prefs['PM_NOTIFY'] = "N";
     }
 
-        if (isset($_POST['pm_notify_global'])) {
+    if (isset($_POST['pm_notify_global'])) {
         $user_prefs_global['PM_NOTIFY'] = ($_POST['pm_notify_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['PM_NOTIFY'] = false;
+    }
+
+
+    if (isset($_POST['pm_save_sent_items']) && $_POST['pm_save_sent_items'] == "Y") {
+        $user_prefs['PM_SAVE_SENT_ITEM'] = "Y";
+    }else {
+        $user_prefs['PM_SAVE_SENT_ITEM'] = "N";
+    }
+
+    if (isset($_POST['pm_save_sent_items_global'])) {
+        $user_prefs_global['PM_SAVE_SENT_ITEM'] = ($_POST['pm_save_sent_items_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['PM_SAVE_SENT_ITEM'] = false;
     }
 
 
@@ -445,15 +458,40 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"550\">\n";
 echo "                <tr>\n";
+echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['privatemessageoptions']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_global","Y",$lang['setforallforums'],$user_prefs['PM_NOTIFY_GLOBAL']), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("pm_save_sent_items", "Y", $lang['savepminsentitems'], (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_save_sent_items_global","Y",$lang['setforallforums'],$user_prefs['PM_SAVE_SENT_ITEM_GLOBAL']), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"550\">\n";
+echo "                <tr>\n";
 echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['display']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("view_sigs", "N", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("view_sigs_global","Y",$lang['setforallforums'],$user_prefs['VIEW_SIGS_GLOBAL']), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_global","Y",$lang['setforallforums'],$user_prefs['PM_NOTIFY_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";

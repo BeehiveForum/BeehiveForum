@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.1 2004-12-03 00:29:50 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.2 2004-12-04 22:01:37 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -1098,10 +1098,11 @@ $dictionary_words = file('./install/english.dic');
 
 foreach($dictionary_words as $word) {
 
-    $word  = addslashes(trim($word));
+    $metaphone = addslashes(metaphone(trim($word)));
+    $word = addslashes(trim($word));
 
     $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-    $sql.= "VALUES ('$word', SUBSTRING(SOUNDEX('$word'), 1, 4), 0)";
+    $sql.= "VALUES ('$word', '$metaphone', 0)";
 
     if (!$result = db_query($sql, $db_install)) {
 

@@ -121,7 +121,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD, " . forum_table("USER_FOLDER") . " USER_FOLDER ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
-    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid AND USER_FOLDER.FID = THREAD.FID) ";
+    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid AND USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";

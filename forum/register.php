@@ -35,19 +35,17 @@ require_once("./include/format.inc.php");
 
 if(isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
-} else {
-    $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/";
 }
 
 if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-    
+
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
     echo form_quick_button("./index.php?$final_uri", "Continue", 0, 0, "_top");
     echo "</div>\n";
     html_draw_bottom();
-    exit;    
+    exit;
 }
 
 $valid = true;
@@ -139,76 +137,76 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           bh_session_init($new_uid);
 
-  	  // Retrieve existing cookie data
+          // Retrieve existing cookie data
 
           if (is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
 
             $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
             $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
-	    $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
+            $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
 
           }else {
 
             $username_array = array();
             $password_array = array();
-	    $passhash_array = array();
+            $passhash_array = array();
 
           }
 
-	  // Prepare Form Data
+          // Prepare Form Data
 
-	  $logon = _stripslashes($HTTP_POST_VARS['logon']);
-	  $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['pw'])));
-	  $passh = md5(_stripslashes($HTTP_POST_VARS['pw']));
+          $logon = _stripslashes($HTTP_POST_VARS['logon']);
+          $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['pw'])));
+          $passh = md5(_stripslashes($HTTP_POST_VARS['pw']));
 
-	  // Check to see if Form Data already exists in cookie
+          // Check to see if Form Data already exists in cookie
 
           if (!in_array($logon, $username_array)) {
 
             array_unshift($username_array, $logon);
 
-	    if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-	      array_unshift($password_array, $passw);
-	      array_unshift($passhash_array, $passh);
-	    }else {
-	      array_unshift($password_array, str_repeat(chr(255), 4));
-	      array_unshift($passhash_array, str_repeat(chr(255), 4));
-	    }
+            if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+              array_unshift($password_array, $passw);
+              array_unshift($passhash_array, $passh);
+            }else {
+              array_unshift($password_array, str_repeat(chr(255), 4));
+              array_unshift($passhash_array, str_repeat(chr(255), 4));
+            }
 
           }else {
 
-	    if (($key = array_search($logon, $username_array)) !== false) {
+            if (($key = array_search($logon, $username_array)) !== false) {
 
-	      $uncookie = array_splice($username_array, $key, 1);
-	      $pwcookie = array_splice($password_array, $key, 1);
-	      $phcookie = array_splice($passhash_array, $key, 1);
+              $uncookie = array_splice($username_array, $key, 1);
+              $pwcookie = array_splice($password_array, $key, 1);
+              $phcookie = array_splice($passhash_array, $key, 1);
 
               array_unshift($username_array, $uncookie[0]);
 
               if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-	        if ($pwcookie[0] == str_repeat(chr(255), 4)) {
-	          array_unshift($password_array, $passw);
-	          array_unshift($passhash_array, $passh);
-	        }else {
-  	          array_unshift($password_array, $pwcookie[0]);
-	          array_unshift($passhash_array, $phcookie[0]);
-	        }
-	      }else {
-	        array_unshift($password_array, str_repeat(chr(255), 4));
-	        array_unshift($passhash_array, str_repeat(chr(255), 4));
-	      }
+                if ($pwcookie[0] == str_repeat(chr(255), 4)) {
+                  array_unshift($password_array, $passw);
+                  array_unshift($passhash_array, $passh);
+                }else {
+                  array_unshift($password_array, $pwcookie[0]);
+                  array_unshift($passhash_array, $phcookie[0]);
+                }
+              }else {
+                array_unshift($password_array, str_repeat(chr(255), 4));
+                array_unshift($passhash_array, str_repeat(chr(255), 4));
+              }
 
-  	    }
+            }
 
-	  }
+          }
 
-	  // Set the cookies
+          // Set the cookies
 
           for ($i = 0; $i < sizeof($username_array); $i++) {
 
             setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
             setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-	    setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
           }
 
@@ -216,7 +214,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           echo "<div align=\"center\">\n";
           echo "<p>Huzzah! Your user record has been created successfully!</p>\n";
-          echo form_quick_button($final_uri, "Continue", 0, 0, "_top");
+          echo form_quick_button("./index.php?$final_uri", "Continue", 0, 0, "_top");
           echo "</div>\n";
 
           html_draw_bottom();

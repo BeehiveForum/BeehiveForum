@@ -6,7 +6,7 @@ What's new in 0.5 ("What You Have Is Enough", released 10th December 2004)
 - Notes
         - Beehive Forum 0.5 corrected a very large scale problem with
 	  stripslashes which means that content created with prior
-	  versions may be subject to erranous display once you
+	  versions may be subject to erroneous display once you
 	  upgrade to 0.5.
 
 - Brand new features
@@ -61,6 +61,8 @@ What's new in 0.5 ("What You Have Is Enough", released 10th December 2004)
 	  the emoticons preview pane and the signature textfield. You can also
 	  choose an HTML mode by default; you can choose to enable/disable
 	  emoticons in your messages by default and so on.
+        - English Language Dictionary available from the HTML Toolbar which
+	  can be configured to auto-check spelling each time you post.
 	- Guest account no longer requires cookies, so that search engines can
 	  spider Beehive forums. A robots.txt file is also included to help
 	  search engines spider the right content.

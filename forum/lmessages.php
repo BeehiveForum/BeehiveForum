@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.43 2004-08-22 17:30:29 rowan_hill Exp $ */
+/* $Id: lmessages.php,v 1.44 2004-08-26 16:53:52 rowan_hill Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -195,6 +195,8 @@ if ($last_pid < $threaddata['LENGTH']) {
 }
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
+
+echo "<p><a href=\"lpost.php?webtag=$webtag&replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p>\n";
 
 echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a></h4>";
 

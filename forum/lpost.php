@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.54 2004-08-08 23:47:10 tribalonline Exp $ */
+/* $Id: lpost.php,v 1.55 2004-08-26 16:53:52 rowan_hill Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -109,6 +109,13 @@ if (isset($_POST['cancel'])) {
     header_redirect($uri);
 
 }
+
+
+// for "REPLY ALL" form button on messages.php    ########################################################Hng
+if (isset($_POST['replyto'])) {
+        $_GET['replyto'] = $_POST['replyto'];
+}
+
 
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
@@ -470,7 +477,6 @@ if ($newthread) {
 if (isset($error_html)) {
     echo $error_html . "\n";
 }
-
 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"POST\">\n";
 
 if (!isset($t_threadtitle)) {
@@ -492,7 +498,7 @@ if ($newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
+    if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0) {
 
       echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
       html_draw_bottom();

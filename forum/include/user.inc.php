@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.108 2004-01-07 20:23:49 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.109 2004-01-07 20:24:30 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -463,7 +463,7 @@ function user_get_last_logon_time($uid)
     $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "WHERE UID = $uid";    
+    $sql.= "WHERE USER.UID = $uid";    
     
     $result = db_query($sql, $db_user_get_last_logon_time);
 

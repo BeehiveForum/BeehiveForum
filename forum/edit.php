@@ -160,9 +160,9 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $t_content.= "<div class=\"sig\">".fix_html($HTTP_POST_VARS['t_sig'])."</div>";
 
-        $t_content.= "<p><font size=\"1\">EDITED: ". date("d/m/y H:i T");
+        $t_content.= "<p style=\"font-size: 10px\">EDITED: ". date("d/m/y H:i T");
         $t_content.= " by ". user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']);
-        $t_content.= "</font></p>";
+        $t_content.= "</p>";
 
         $updated = post_update($tid, $pid, $t_content);
 

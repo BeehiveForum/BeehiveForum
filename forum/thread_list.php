@@ -162,7 +162,7 @@ echo form_submit("go","Go!"). "\n";
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
-if(isset($folder)){
+if (isset($folder)) {
     list($thread_info, $folder_order) = threads_get_folder($user, $folder, $start_from);
 } else {
     switch ($mode) {

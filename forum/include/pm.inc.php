@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.55 2004-04-07 17:33:57 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.56 2004-04-08 07:49:10 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -46,7 +46,7 @@ function pm_markasread($mid)
 
 function pm_edit_refuse()
 {
-    global $lang, $webtag;
+    global $lang;
     
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
@@ -58,7 +58,7 @@ function pm_edit_refuse()
 
 function pm_error_refuse()
 {
-    global $lang, $webtag;
+    global $lang;
     
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
@@ -285,7 +285,10 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array)
 {
-    global $HTTP_SERVER_VARS, $lang, $webtag, $forum_settings;
+    global $HTTP_SERVER_VARS, $lang;
+
+    $table_data = get_table_prefix();
+    $forum_settings = get_forum_settings();
 
     $uid = bh_session_get_value('UID');
 
@@ -299,7 +302,7 @@ function draw_pm_message($pm_elements_array)
     if (isset($pm_elements_array['FOLDER']) && $pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
         echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
         echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '{$table_data['WEBTAG']}')\" target=\"_self\">";
         echo format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']), "</a>";
         echo "</span></td>\n";
     }else {
@@ -308,11 +311,11 @@ function draw_pm_message($pm_elements_array)
 
         if (is_array($pm_elements_array['TO_UID'])) {
             for ($i = 0; $i < sizeof($pm_elements_array['TO_UID']); $i++) {
-                echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
+                echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '{$table_data['WEBTAG']}')\" target=\"_self\">";
                 echo format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]), "</a>&nbsp;";
             }
         }else {
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '{$table_data['WEBTAG']}')\" target=\"_self\">";
             echo format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']), "</a>";
         }
 
@@ -364,9 +367,9 @@ function draw_pm_message($pm_elements_array)
                 }else {
                             
                     if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                        echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
+                        echo "<a href=\"getattachment.php?webtag={$table_data['WEBTAG']}&hash=", $attachment['hash'], "\"";
                     }else {
-                        echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
+                        echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag={$table_data['WEBTAG']}\"";
                     }
 
                     if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
@@ -401,7 +404,7 @@ function draw_pm_message($pm_elements_array)
         echo "          </table>\n";
         echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
         echo "            <tr>\n";
-        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag={$table_data['WEBTAG']}&replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
         echo "            </tr>\n";
     }
 

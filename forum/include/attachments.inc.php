@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.53 2004-04-08 07:49:09 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.54 2004-04-08 07:52:50 decoyduck Exp $ */
 
 include_once("./include/perm.inc.php");
 
@@ -299,7 +299,7 @@ function get_message_link($aid)
     if (db_num_rows($result) > 0) {
 
         $tidpid = db_fetch_array($result);
-        return "./messages.php?webtag=$table_data['WEBTAG']&msg=". $tidpid['TID']. ".". $tidpid['PID'];
+        return "./messages.php?webtag={$table_data['WEBTAG']}&msg=". $tidpid['TID']. ".". $tidpid['PID'];
 
     }else{
 
@@ -309,7 +309,7 @@ function get_message_link($aid)
         if (db_num_rows($result) > 0) {
 
             $mid = db_fetch_array($result);
-            return "./pm.php?webtag=$table_data['WEBTAG']&mid=". $mid['MID'];
+            return "./pm.php?webtag={$table_data['WEBTAG']}&mid=". $mid['MID'];
         }
     }
 

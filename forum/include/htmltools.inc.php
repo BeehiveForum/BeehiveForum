@@ -52,7 +52,8 @@ class TextAreaHTML {
 	// ----------------------------------------------------
 	function toolbar ($emoticons = true, $custom_html = "") {
 		global $lang;
-		global $webtag;
+
+		$table_data = get_table_prefix();
 
 		$this->tbs++;
 
@@ -76,7 +77,7 @@ class TextAreaHTML {
 		$str.= $this->_tb_img($lang['image'], "add_image();", "image_button.png");
 		$str.= $this->_tb_img($lang['hyperlink'], "add_link();", "link_button.png");
 		if ($emoticons == true) {
-			$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
+			$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user', '{$table_data['WEBTAG']}');", "emoticons_button.png");
 		}
 		$str.= "	<br /><br />\n";
 		$str.= "	<select class=\"bhselect\" onChange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";

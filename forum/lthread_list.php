@@ -329,7 +329,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
             }
 
-        }elseif (isset($folder_info[$folder_number]['INTEREST']) && !$folder_info[$folder_number]['INTEREST']) {
+        }elseif ($folder_info[$folder_number]['INTEREST'] != -1) {
 
             echo "<p><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\">";
 

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.83 2004-08-09 01:05:52 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.84 2004-08-09 22:04:01 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -425,6 +425,7 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 		$tag_code = false;
 		$tag_quote = false;
 		$noemots = 0;
+		$spoiler = 0;
 		for($i=0; $i<count($html_parts); $i++){
 			if($i%2){
 				$tag = $html_parts[$i];
@@ -443,6 +444,12 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 						$tag_quote = true;
 					}
 
+					if ($tag == 'div class="spoiler"' || (substr($tag, 0, 3) == 'div' && $spoiler > 0)) {
+						$spoiler++;
+					} else if ($spoiler > 0 && $tag == '/div') {
+						$spoiler--;
+					}
+
 					if ($tag_code == true && $tag == '/pre') {
 						$tag_code = false;
 					} else if ($tag_quote == true && $tag == '/div') {
@@ -450,7 +457,7 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 					}
 				}
 			} else {
-				if ($emoticons == true && $tag_quote == false && $tag_code == false && $noemots == 0) {
+				if ($emoticons == true && $tag_quote == false && $tag_code == false && $noemots == 0 && $spoiler == 0) {
 					$html_parts[$i] = emoticons_convert($html_parts[$i]);
 				}
 				$ret_text .= $html_parts[$i];
@@ -657,8 +664,7 @@ function tidy_html ($html, $linebreaks = true)
 				$j = $open+1;
 			}
 
-			$html_left .= substr($html_right, $first, $j-$first)."</quote>";
-			$html_left = tidy_html($html_left);
+			$html_left .= tidy_html(substr($html_right, $first, $j-$first), $linebreaks)."</quote>";
 			$html_right = substr($html_right, $j + strlen("</div>"));
 
 		} else {
@@ -673,16 +679,16 @@ function tidy_html ($html, $linebreaks = true)
 	$html_right = $html;
 	while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"spoiler\"><b>")) > -1) {
 		$html_left .= substr($html_right, 0, $pos);
-		$matches = array();
 
 		if (preg_match("/^<div class=\"quotetext\" id=\"spoiler\"><b>.*?<\/b><\/div>\s*<div class=\"spoiler\">.*<\/div>/is",
-						substr($html_right, $pos), $matches)) {
+						substr($html_right, $pos))) {
 			$html_left .= "<spoiler>";
 
 			$search = "class=\"spoiler\"";
 			$j = strpos($html_right, $search);
 
 			$first = $j + strlen($search) + 1;
+
 			$open_num = 1;
 			while (1 != 2) {
 				$open = strpos($html_right, "<div", $j);
@@ -702,8 +708,7 @@ function tidy_html ($html, $linebreaks = true)
 				$j = $open+1;
 			}
 
-			$html_left .= substr($html_right, $first, $j-$first)."</spoiler>";
-			$html_left = tidy_html($html_left);
+			$html_left .= tidy_html(substr($html_right, $first, $j-$first), $linebreaks)."</spoiler>";
 			$html_right = substr($html_right, $j + strlen("</div>"));
 
 		} else {

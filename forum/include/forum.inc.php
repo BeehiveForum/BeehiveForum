@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.95 2004-12-12 12:40:08 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.96 2004-12-19 17:22:26 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -773,13 +773,11 @@ function forum_create($webtag, $forum_name, $access)
         // Create USER_POLL_VOTES table
 
         $sql = "CREATE TABLE {$webtag}_USER_POLL_VOTES (";
-        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PTUID VARCHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-        $sql.= "  PRIMARY KEY  (ID,TID,PTUID)";
+        $sql.= "  PRIMARY KEY  (TID, UID, OPTION_ID)";
         $sql.= ") TYPE=MYISAM;";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;

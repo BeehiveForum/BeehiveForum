@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.8 2005-01-23 23:50:55 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.9 2005-01-26 22:42:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -230,7 +230,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "INSERT INTO {$forum_webtag}_THREAD_NEW (TID, FID, ";
     $sql.= "BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, ";
     $sql.= "CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) SELECT THREAD.TID, ";
-    $sql.= "THREAD.FID, THREAD.BY_UID, THREAD.TITLE, THREAD.LENGTH, ";
+    $sql.= "THREAD.FID, POST.FROM_UID, THREAD.TITLE, THREAD.LENGTH, ";
     $sql.= "THREAD.POLL_FLAG, POST.CREATED, THREAD.MODIFIED, ";
     $sql.= "THREAD.CLOSED, THREAD.STICKY, THREAD.STICKY_UNTIL, ";
     $sql.= "THREAD.ADMIN_LOCK FROM {$forum_webtag}_THREAD THREAD ";

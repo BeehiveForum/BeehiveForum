@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.50 2003-09-03 18:00:17 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.51 2003-09-09 00:23:23 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -284,9 +284,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
       if (strlen(trim($answer_text)) > 0) {
 
           if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
-              $HTTP_POST_VARS['answers'][$key] = fix_html($answer_text);
+              $poll_answers_array[$key] = fix_html($answer_text);
           }else {
-              $HTTP_POST_VARS['answers'][$key] = make_html($answer_text);
+              $poll_answers_array[$key] = make_html($answer_text);
           }
 
           srand((double)microtime()*1000000);
@@ -305,12 +305,14 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
       }
   }
 
+  $poll_groups_array = $HTTP_POST_VARS['answer_groups'];
+
   // Construct the pollresults array that will be used to display the graph
   // Modified to handle the new Group ID.
 
-  $pollresults = array('OPTION_ID'   => array_keys($HTTP_POST_VARS['answers']),
-                       'OPTION_NAME' => $HTTP_POST_VARS['answers'],
-                       'GROUP_ID'    => $HTTP_POST_VARS['answer_groups'],
+  $pollresults = array('OPTION_ID'   => array_keys($poll_answers_array),
+                       'OPTION_NAME' => $poll_answers_array,
+                       'GROUP_ID'    => $poll_groups_array,
                        'VOTES'       => $poll_votes_array);
 
   if ($HTTP_POST_VARS['polltype'] == 1) {

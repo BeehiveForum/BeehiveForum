@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.25 2003-09-02 22:11:44 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.26 2003-09-09 00:23:23 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -120,6 +120,10 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   $pollresults = array();
 
+  $poll_answers_array = array();
+  $poll_groups_array  = array();
+  $poll_votes_array   = array();
+
   $max_value   = 0;
   $totalvotes  = 0;
   $optioncount = 0;
@@ -129,9 +133,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
       if (strlen(trim($answer_text)) > 0) {
 
           if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
-              $HTTP_POST_VARS['answers'][$key] = fix_html($answer_text);
+              $poll_answers_array[$key] = fix_html($answer_text);
           }else {
-              $HTTP_POST_VARS['answers'][$key] = make_html($answer_text);
+              $poll_answers_array[$key] = make_html($answer_text);
           }
 
           srand((double)microtime()*1000000);
@@ -150,12 +154,14 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
       }
   }
 
+  $poll_groups_array = $HTTP_POST_VARS['answer_groups'];
+
   // Construct the pollresults array that will be used to display the graph
   // Modified to handle the new Group ID.
 
-  $pollresults = array('OPTION_ID'   => array_keys($HTTP_POST_VARS['answers']),
-                       'OPTION_NAME' => $HTTP_POST_VARS['answers'],
-                       'GROUP_ID'    => $HTTP_POST_VARS['answer_groups'],
+  $pollresults = array('OPTION_ID'   => array_keys($poll_answers_array),
+                       'OPTION_NAME' => $poll_answers_array,
+                       'GROUP_ID'    => $poll_groups_array,
                        'VOTES'       => $poll_votes_array);
 
   if ($HTTP_POST_VARS['polltype'] == 1) {
@@ -223,14 +229,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   }
 
   poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
-
-  echo "<div align=\"center\">";
-  echo "<p>{$lang['editappliedtopoll']} $tid.$pid</p>";
-  echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
-  echo "</div>";
-
-  html_draw_bottom();
-  exit;
+  header_redirect("./discussion.php?msg=$tid.1");
 
 }else {
 
@@ -410,6 +409,20 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                 </tr>
                 <?php
 
+                  if (isset($HTTP_POST_VARS['t_post_html'])) {
+                    if ($HTTP_POST_VARS['t_post_html'] == "Y") {
+                      $t_post_html = true;
+                    }else {
+                      $t_post_html = false;
+                    }
+                  }else {
+                    if (strip_tags($pollresults['OPTION_NAME'][0]) != $pollresults['OPTION_NAME'][0]) {
+                      $t_post_html = true;
+                    }else {
+                      $t_post_html = false;
+                    }
+                  }
+
                   for ($i = 0; $i < $answercount; $i++) {
 
                     echo "<tr>\n";
@@ -420,7 +433,11 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                       echo form_input_text("answers[$i]", _htmlentities(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 255);
                     }else {
                       if (isset($pollresults['OPTION_NAME'][$i])) {
-                        echo form_input_text("answers[$i]", _htmlentities(_stripslashes($pollresults['OPTION_NAME'][$i])), 40, 255);
+                        if ($t_post_html) {
+                          echo form_input_text("answers[$i]", _htmlentities(_stripslashes($pollresults['OPTION_NAME'][$i])), 40, 255);
+                        }else {
+                          echo form_input_text("answers[$i]", _stripslashes($pollresults['OPTION_NAME'][$i]), 40, 255);
+                        }
                       }else {
                         echo form_input_text("answers[$i]", '', 40, 255);
                       }
@@ -442,20 +459,6 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                     echo "  <td>&nbsp;</td>\n";
                     echo "</tr>\n";
 
-                  }
-
-                  if (isset($HTTP_POST_VARS['t_post_html'])) {
-                    if ($HTTP_POST_VARS['t_post_html'] == "Y") {
-                      $t_post_html = true;
-                    }else {
-                      $t_post_html = false;
-                    }
-                  }else {
-                    if (strip_tags($pollresults['OPTION_NAME'][0]) != $pollresults['OPTION_NAME'][0]) {
-                      $t_post_html = true;
-                    }else {
-                      $t_post_html = false;
-                    }
                   }
 
                 ?>

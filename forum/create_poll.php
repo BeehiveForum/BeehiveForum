@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.46 2003-08-31 17:17:49 hodcroftcj Exp $ */
+/* $Id: create_poll.php,v 1.47 2003-09-02 19:40:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -100,6 +100,19 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $valid = false;
   }
 
+  $answer_group_check = array();
+
+  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answer_group']); $i++) {
+      if (!in_array($HTTP_POST_VARS['answer_group'][$i], $answer_group_check)) {
+          $answer_group_check[] = $HTTP_POST_VARS['answer_group'][$i];
+      }
+  }
+
+  if ($valid && (sizeof($answer_group_check) >= sizeof($HTTP_POST_VARS['answers']))) {
+    $error_html = "<h2>{$lang['groupcountmustbelessthananswercount']}</h2>";
+    $valid = false;
+  }
+
   $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
   $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
   $t_message_text = (isset($HTTP_POST_VARS['t_message_text'])) ? $HTTP_POST_VARS['t_message_text'] : "";
@@ -168,7 +181,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y', 'N');
     $pid = post_create($tid, 0, bh_session_get_value('UID'), 0, '');
 
-    poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
+    poll_create($tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_group'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
 
     if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
 
@@ -236,53 +249,41 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $totalvotes  = 0;
   $optioncount = 0;
 
-  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
+  foreach($HTTP_POST_VARS['answers'] as $key => $answer_text) {
 
-    if (isset($HTTP_POST_VARS['answers'][$i]) && strlen(trim($HTTP_POST_VARS['answers'][$i])) > 0) {
+      if (strlen(trim($answer_text)) > 0) {
 
-      if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $poll_option = fix_html($HTTP_POST_VARS['answers'][$i]);
+          if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+              $HTTP_POST_VARS['answers'][$key] = fix_html($answer_text);
+          }else {
+              $HTTP_POST_VARS['answers'][$key] = make_html($answer_text);
+          }
+
+          srand((double)microtime()*1000000);
+          $poll_vote = rand(1, 10);
+
+          if ($poll_vote > $max_value) $max_value = $poll_vote;
+
+          $poll_votes_array[] = $poll_vote;
+          $totalvotes += $poll_vote;
+          $optioncount++;
+
       }else {
-        $poll_option = make_html($HTTP_POST_VARS['answers'][$i]);
+
+          unset($HTTP_POST_VARS['answers'][$key]);
+          unset($HTTP_POST_VARS['answer_groups'][$key]);
       }
-
-      srand((double)microtime()*1000000);
-      $poll_vote = rand(1, 10);
-
-      if ($poll_vote > $max_value) $max_value = $poll_vote;
-
-      $totalvotes += $poll_vote;
-      $optioncount++;
-
-      $pollresults[$i + 1] = array('OPTION_ID' => $i + 1, 'OPTION_NAME' => $poll_option, 'VOTES' => $poll_vote);
-
-    }
   }
 
-  if ($max_value > 0) {
+  // Construct the pollresults array that will be used to display the graph
+  // Modified to handle the new Group ID.
 
-    $horizontal_bar_width = round(300 / $max_value, 2);
-    $vertical_bar_height = round(200 / $max_value, 2);
-    $vertical_bar_width = round(400 / $optioncount, 2);
+  $pollresults = array('OPTION_ID'   => array_keys($HTTP_POST_VARS['answers']),
+                       'OPTION_NAME' => $HTTP_POST_VARS['answers'],
+                       'GROUP_ID'    => $HTTP_POST_VARS['answer_groups'],
+                       'VOTES'       => $poll_votes_array);
 
-  }else {
-
-    $horizontal_bar_width = 0;
-    $vertical_bar_height = 0;
-    $vertical_bar_width = round(400 / $optioncount, 2);
-
-  }
-
-  if ($HTTP_POST_VARS['polltype'] == 0) {
-
-    $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
-
-  }else {
-
-    $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
-
-  }
-
+  $polldata['CONTENT'].= poll_preview_graph($pollresults, $HTTP_POST_VARS['polltype']);
   $polldata['CONTENT'].= "          </td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "      </table>\n";
@@ -334,7 +335,6 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
 
   }
-
 }
 
 if(isset($error_html)) echo $error_html. "\n";
@@ -399,13 +399,23 @@ if (isset($HTTP_GET_VARS['fid'])) {
           </tr>
           <tr>
             <td>
-              <table class="posthead" cellpadding="0" cellspacing="0" width="500">
+              <table border="0" class="posthead" cellpadding="0" cellspacing="5">
                 <tr>
                   <td>&nbsp;</td>
                   <td><?php echo $lang['numberanswers'].": ".form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), isset($HTTP_POST_VARS['answercount']) ? $HTTP_POST_VARS['answercount'] : 0), " ", form_submit("changecount", $lang['change'])  ?></td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
                 </tr>
                 <tr>
                   <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>Answer Text</td>
+                  <td align="center">Answer Group</td>
                   <td>&nbsp;</td>
                 </tr>
                 <?php
@@ -423,6 +433,8 @@ if (isset($HTTP_GET_VARS['fid'])) {
                     echo "<tr>\n";
                     echo "  <td>", $i + 1, ". </td>\n";
                     echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? _htmlentities(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 255), "</td>\n";
+                    echo "  <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), (isset($HTTP_POST_VARS['answer_groups'][$i])) ? $HTTP_POST_VARS['answer_groups'][$i] : 1), "</td>\n";
+                    echo "  <td>&nbsp;</td>\n";
                     echo "</tr>\n";
 
                   }
@@ -431,6 +443,8 @@ if (isset($HTTP_GET_VARS['fid'])) {
                 <tr>
                   <td>&nbsp;</td>
                   <td><?php echo form_checkbox("t_post_html", "Y", $lang['answerscontainHTML'], (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
                 </tr>
               </table>
             </td>

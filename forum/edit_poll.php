@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.23 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.24 2003-09-02 19:40:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -124,45 +124,47 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $totalvotes  = 0;
   $optioncount = 0;
 
-  for ($i = 1; $i <= sizeof($HTTP_POST_VARS['answers']); $i++) {
+  foreach($HTTP_POST_VARS['answers'] as $key => $answer_text) {
 
-    if (strlen(trim($HTTP_POST_VARS['answers'][$i])) > 0) {
+      if (strlen(trim($answer_text)) > 0) {
 
-      if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $poll_option = fix_html($HTTP_POST_VARS['answers'][$i]);
+          if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+              $HTTP_POST_VARS['answers'][$key] = fix_html($answer_text);
+          }else {
+              $HTTP_POST_VARS['answers'][$key] = make_html($answer_text);
+          }
+
+          srand((double)microtime()*1000000);
+          $poll_vote = rand(1, 10);
+
+          if ($poll_vote > $max_value) $max_value = $poll_vote;
+
+          $poll_votes_array[] = $poll_vote;
+          $totalvotes += $poll_vote;
+          $optioncount++;
+
       }else {
-        $poll_option = make_html($HTTP_POST_VARS['answers'][$i]);
+
+          unset($HTTP_POST_VARS['answers'][$key]);
+          unset($HTTP_POST_VARS['answer_groups'][$key]);
       }
-
-      srand((double)microtime()*1000000);
-      $poll_vote = rand(1, 10);
-
-      if ($poll_vote > $max_value) $max_value = $poll_vote;
-
-      $totalvotes += $poll_vote;
-      $optioncount++;
-
-      $pollresults[$i] = array('OPTION_ID' => $i, 'OPTION_NAME' => $poll_option, 'VOTES' => $poll_vote);
-
-    }
   }
 
-  if ($max_value > 0) {
+  // Construct the pollresults array that will be used to display the graph
+  // Modified to handle the new Group ID.
 
-    $horizontal_bar_width = round(300 / $max_value, 2);
-    $vertical_bar_height  = round(200 / $max_value, 2);
-    $vertical_bar_width   = round(400 / $optioncount, 2);
+  $pollresults = array('OPTION_ID'   => array_keys($HTTP_POST_VARS['answers']),
+                       'OPTION_NAME' => $HTTP_POST_VARS['answers'],
+                       'GROUP_ID'    => $HTTP_POST_VARS['answer_groups'],
+                       'VOTES'       => $poll_votes_array);
 
-  }
+  if ($HTTP_POST_VARS['polltype'] == 1) {
 
-  if ($HTTP_POST_VARS['polltype'] == 0) {
-
-    $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
+    $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
 
   }else {
 
-    $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
-
+    $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
   }
 
   $polldata['CONTENT'].= "          </td>\n";
@@ -212,7 +214,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   // Check HTML tick box, innit.
 
-  for ($i = 1; $i <= sizeof($HTTP_POST_VARS['answers']); $i++) {
+  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
     if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
       $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
     }else {
@@ -220,7 +222,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }
   }
 
-  poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
+  poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
 
   echo "<div align=\"center\">";
   echo "<p>{$lang['editappliedtopoll']} $tid.$pid</p>";
@@ -256,11 +258,11 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $totalvotes  = 0;
   $optioncount = 0;
 
-  for ($i = 1; $i <= sizeof($pollresults); $i++) {
+  for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-    if (!empty($pollresults[$i]['OPTION_NAME'])) {
+    if (strlen(trim($pollresults['OPTION_NAME'][$i])) > 0) {
 
-      if ($pollresults[$i]['VOTES'] > $max_value) $max_value = $pollresults[$i]['VOTES'];
+      if ($pollresults['VOTES'][$i] > $max_value) $max_value = $pollresults['VOTES'][$i];
       $optioncount++;
 
     }
@@ -283,14 +285,13 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   if ($polldata['SHOWRESULTS'] == 1) {
 
-    if ($polldata['POLLTYPE'] == 0) {
+    if ($polldata['POLLTYPE'] == 1) {
 
-      $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
+      $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
 
     }else {
 
-      $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
-
+      $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
     }
 
   }else {
@@ -341,7 +342,6 @@ if (isset($error_html)) echo $error_html;
 
 echo "<form name=\"f_edit_poll\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
-//echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
 echo "<p>{$lang['editpollwarning']}</p>\n";
 
 ?>
@@ -365,7 +365,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
           </tr>
           <tr>
             <td>
-              <table class="posthead" cellpadding="0" cellspacing="0" width="500">
+              <table border="0" class="posthead" cellpadding="0" cellspacing="0">
                 <?php
 
                   $available_answers = array(5, 10, 15, 20);
@@ -374,16 +374,16 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                     $answercount = $available_answers[$HTTP_POST_VARS['answercount']];
                     $answerselection = $HTTP_POST_VARS['answercount'];
                   }else {
-                    if (sizeof($pollresults) <= 5) {
+                    if (sizeof($pollresults['OPTION_ID']) <= 5) {
                       $answercount = 5;
                       $answerselection = 0;
-                    }elseif (sizeof($pollresults) > 5 && sizeof($pollresults) <= 10) {
+                    }elseif (sizeof($pollresults['OPTION_ID']) > 5 && sizeof($pollresults['OPTION_ID']) <= 10) {
                       $answercount = 10;
                       $answerselection = 1;
-                    }elseif (sizeof($pollresults) > 10 && sizeof($pollresults) <= 15) {
+                    }elseif (sizeof($pollresults['OPTION_ID']) > 10 && sizeof($pollresults['OPTION_ID']) <= 15) {
                       $answercount = 15;
                       $answerselection = 2;
-                    }elseif (sizeof($pollresults) > 15) {
+                    }elseif (sizeof($pollresults['OPTION_ID']) > 15) {
                       $answercount = 20;
                       $answerselection = 3;
                     }
@@ -393,26 +393,53 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                 <tr>
                   <td>&nbsp;</td>
                   <td><?php echo $lang['numberanswers'] ?>: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), $answerselection), " ", form_submit("changecount", $lang['change'])  ?></td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>Answer Text</td>
+                  <td align="center">Answer Group</td>
+                  <td>&nbsp;</td>
                 </tr>
                 <?php
 
-                  for ($i = 1; $i <= $answercount; $i++) {
+                  for ($i = 0; $i < $answercount; $i++) {
 
                     echo "<tr>\n";
-                    echo "  <td>", $i, ". </td>\n";
+                    echo "  <td>", ($i + 1), ". </td>\n";
                     echo "  <td>";
 
                     if (isset($HTTP_POST_VARS['answers'][$i])) {
                       echo form_input_text("answers[$i]", _htmlentities(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 255);
                     }else {
-                      if (isset($pollresults[$i]['OPTION_NAME'])) {
-                        echo form_input_text("answers[$i]", _htmlentities(_stripslashes($pollresults[$i]['OPTION_NAME'])), 40, 255);
+                      if (isset($pollresults['OPTION_NAME'][$i])) {
+                        echo form_input_text("answers[$i]", _htmlentities(_stripslashes($pollresults['OPTION_NAME'][$i])), 40, 255);
                       }else {
                         echo form_input_text("answers[$i]", '', 40, 255);
                       }
                     }
 
                     echo "  </td>\n";
+                    echo "  <td align=\"center\">";
+
+                    if (isset($HTTP_POST_VARS['answer_groups'][$i])) {
+                      echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), $HTTP_POST_VARS['answer_groups'][$i]), "</td>\n";
+                    }else {
+                      if (isset($pollresults['GROUP_ID'][$i])) {
+                        echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), $pollresults['GROUP_ID'][$i]), "</td>\n";
+                      }else {
+                        echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), 1), "</td>\n";
+                      }
+                    }
+
+                    echo "  <td>&nbsp;</td>\n";
                     echo "</tr>\n";
 
                   }
@@ -424,7 +451,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                       $t_post_html = false;
                     }
                   }else {
-                    if (strip_tags($pollresults[1]['OPTION_NAME']) != $pollresults[1]['OPTION_NAME']) {
+                    if (strip_tags($pollresults['OPTION_NAME'][0]) != $pollresults['OPTION_NAME'][0]) {
                       $t_post_html = true;
                     }else {
                       $t_post_html = false;

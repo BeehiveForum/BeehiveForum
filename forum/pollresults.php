@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.23 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.24 2003-09-02 19:40:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -83,15 +83,15 @@ $totalvotes   = 0;
 $max_value    = 0;
 $optioncount  = 0;
 
-for ($i = 1; $i <= sizeof($pollresults); $i++) {
-  $totalvotes = $totalvotes + $pollresults[$i]['VOTES'];
+for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
+    $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
 }
 
-for ($i = 1; $i <= sizeof($pollresults); $i++) {
+for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-  if (!empty($pollresults[$i]['OPTION_NAME'])) {
+  if (strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
-    if ($pollresults[$i]['VOTES'] > $max_value) $max_value = $pollresults[$i]['VOTES'];
+    if ($pollresults['VOTES'][$i] > $max_value) $max_value = $pollresults['VOTES'][$i];
     $optioncount++;
 
   }
@@ -129,7 +129,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
 
       echo "        <tr>\n";
       echo "          <td>\n";
-      echo poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
+      echo poll_horizontal_graph($tid, $horizontal_bar_width, $totalvotes);
       echo "          </td>\n";
       echo "        </tr>\n";
 
@@ -137,7 +137,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
 
       echo "        <tr>\n";
       echo "          <td>\n";
-      echo poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
+      echo poll_vertical_graph($tid, $vertical_bar_height, $vertical_bar_width, $totalvotes);
       echo "          </td>\n";
       echo "        </tr>\n";
 
@@ -147,7 +147,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
 
     echo "        <tr>\n";
     echo "          <td colspan=\"2\">\n";
-    echo poll_public_ballot($tid, $pollresults, $horizontal_bar_width, $totalvotes);
+    echo poll_public_ballot($tid, $horizontal_bar_width, $totalvotes);
     echo "          </td>\n";
     echo "        </tr>\n";
   }

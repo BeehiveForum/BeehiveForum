@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.81 2005-02-02 23:19:48 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.82 2005-02-07 21:04:14 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -86,16 +86,13 @@ function email_sendnotification($tuid, $msg, $fuid)
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+            // SF.net Bug #1040563:
+            // -------------------
+            // RFC2822 compliancy requires that the RCPT TO portion of the
+            // email headers only contain the email address in < >
+            // i.e. <someuser@abeehiveforum.net>
 
-                $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
-
-            }else {
-
-                $recipient = $to_user['EMAIL'];
-            }
-
-            if (@mail($recipient, $subject, $message, $header)) return true;
+            if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
         }
     }
 
@@ -168,16 +165,13 @@ function email_sendsubscription($tuid, $msg, $fuid)
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+            // SF.net Bug #1040563:
+            // -------------------
+            // RFC2822 compliancy requires that the RCPT TO portion of the
+            // email headers only contain the email address in < >
+            // i.e. <someuser@abeehiveforum.net>
 
-                $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
-
-            }else {
-
-                $recipient = $to_user['EMAIL'];
-            }
-
-            if (@mail($recipient, $subject, $message, $header)) return true;
+            if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
         }
     }
 
@@ -241,16 +235,13 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+            // SF.net Bug #1040563:
+            // -------------------
+            // RFC2822 compliancy requires that the RCPT TO portion of the
+            // email headers only contain the email address in < >
+            // i.e. <someuser@abeehiveforum.net>
 
-                $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
-
-            }else {
-
-                $recipient = $to_user['EMAIL'];
-            }
-
-            if (@mail($recipient, $subject, $message, $header)) return true;
+            if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
         }
     }
 
@@ -299,16 +290,13 @@ function email_send_pw_reminder($logon)
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+            // SF.net Bug #1040563:
+            // -------------------
+            // RFC2822 compliancy requires that the RCPT TO portion of the
+            // email headers only contain the email address in < >
+            // i.e. <someuser@abeehiveforum.net>
 
-                $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
-
-            }else {
-
-                $recipient = $to_user['EMAIL'];
-            }
-
-            if (@mail($recipient, $subject, $message, $header)) return true;
+            if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
         }
     }
 

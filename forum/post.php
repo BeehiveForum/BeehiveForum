@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.161 2004-03-15 21:33:31 decoyduck Exp $ */
+/* $Id: post.php,v 1.162 2004-03-17 03:57:17 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -227,12 +227,12 @@ if ($valid) {
         $old_t_content = _stripslashes($t_content);
         $t_content = fix_html($t_content);
 
-        if ($auto_linebreaks == true) {
-            $t_content = add_paragraphs($t_content);
+        if ($old_t_content != tidy_html($t_content)) {
+            $content_html_changes = true;
         }
 
-        if ($old_t_content != $t_content) {
-            $content_html_changes = true;
+        if ($auto_linebreaks == true) {
+            $t_content = add_paragraphs($t_content);
         }
     }
 
@@ -769,6 +769,7 @@ if (strtoupper($forum_settings['attachments_enabled']) == "Y") {
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
 echo tools_junk()."\n";
+$t_sig = tidy_html($t_sig, false);
 echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\" ".tools_textfield_js())."\n";
 echo tools_junk()."\n";
 echo form_input_hidden("t_sig_html", $t_sig_html)."\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.223 2005-01-30 14:10:23 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.224 2005-01-30 17:21:59 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -353,7 +353,7 @@ function user_get_prefs($uid)
                            'DOB_DISPLAY'          => 'Y',
                            'ANON_LOGON'           => 'N',
                            'SHOW_STATS'           => 'Y',
-                           'SHOW_THUMBS'          => 'N',
+                           'SHOW_THUMBS'          => '2',
                            'IMAGES_TO_LINKS'      => 'N',
                            'USE_WORD_FILTER'      => 'N',
                            'USE_ADMIN_FILTER'     => 'N',
@@ -630,9 +630,9 @@ function user_check_pref($name, $value)
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
         } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {
             return preg_match("/^(http:\/\/[a-z0-9\/.-_]+|)$/i", $value);
-        } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_AUTO_PRUNE" || $name == "ANON_LOGON" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "SHOW_THUMBS") {
+        } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_AUTO_PRUNE" || $name == "ANON_LOGON" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM") {
             return ($value == "Y" || $value == "N") ? true : false;
-        } elseif ($name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "PM_AUTO_PRUNE_LENGTH") {
+        } elseif ($name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "PM_AUTO_PRUNE_LENGTH" || $name == "SHOW_THUMBS") {
             return is_numeric($value);
         } else {
             return false;

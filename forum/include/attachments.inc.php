@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.82 2005-01-30 14:10:23 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.83 2005-01-30 17:21:57 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -39,6 +39,8 @@ function get_attachments($uid, $aid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
     $forum_settings = get_forum_settings();
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
@@ -52,19 +54,26 @@ function get_attachments($uid, $aid)
 
     while($row = db_fetch_array($result)) {
 
-        if (!is_array($user_attachments)) $user_attachments = array();
+        if (@file_exists("$attachment_dir/{$row['HASH']}")) {
 
-        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+            if (!is_array($user_attachments)) $user_attachments = array();
 
-            $user_attachments[] = array("filename"     => rawurldecode($row['FILENAME']),
-                                        "filesize"     => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
-                                        "filedate"     => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
-                                        "aid"          => $row['AID'],
-                                        "hash"         => $row['HASH'],
-                                        "mimetype"     => $row['MIMETYPE'],
-                                        "downloads"    => $row['DOWNLOADS'],
-                                        "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
-                                        "forum_webtag" => $row['WEBTAG']);
+            $user_attachment = array("filename"     => rawurldecode($row['FILENAME']),
+                                     "filesize"     => filesize("$attachment_dir/{$row['HASH']}"),
+                                     "filedate"     => filemtime("$attachment_dir/{$row['HASH']}"),
+                                     "aid"          => $row['AID'],
+                                     "hash"         => $row['HASH'],
+                                     "mimetype"     => $row['MIMETYPE'],
+                                     "downloads"    => $row['DOWNLOADS'],
+                                     "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
+                                     "forum_webtag" => $row['WEBTAG']);
+
+            if (@file_exists("$attachment_dir/{$row['HASH']}.thumb")) {
+
+                $user_attachment['filesize'] += filesize("$attachment_dir/{$row['HASH']}.thumb");
+            }
+
+            $user_attachments[] = $user_attachment;
         }
     }
 
@@ -82,6 +91,8 @@ function get_all_attachments($uid, $aid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
     $forum_settings = get_forum_settings();
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
@@ -95,19 +106,26 @@ function get_all_attachments($uid, $aid)
 
     while($row = db_fetch_array($result)) {
 
-        if (!is_array($user_attachments)) $user_attachments = array();
+        if (@file_exists("$attachment_dir/{$row['HASH']}")) {
 
-        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+            if (!is_array($user_attachments)) $user_attachments = array();
 
-            $user_attachments[] = array("filename"     => rawurldecode($row['FILENAME']),
-                                        "filesize"     => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
-                                        "filedate"     => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
-                                        "aid"          => $row['AID'],
-                                        "hash"         => $row['HASH'],
-                                        "mimetype"     => $row['MIMETYPE'],
-                                        "downloads"    => $row['DOWNLOADS'],
-                                        "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
-                                        "forum_webtag" => $row['WEBTAG']);
+            $user_attachment = array("filename"     => rawurldecode($row['FILENAME']),
+                                     "filesize"     => filesize("$attachment_dir/{$row['HASH']}"),
+                                     "filedate"     => filemtime("$attachment_dir/{$row['HASH']}"),
+                                     "aid"          => $row['AID'],
+                                     "hash"         => $row['HASH'],
+                                     "mimetype"     => $row['MIMETYPE'],
+                                     "downloads"    => $row['DOWNLOADS'],
+                                     "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
+                                     "forum_webtag" => $row['WEBTAG']);
+
+            if (@file_exists("$attachment_dir/{$row['HASH']}.thumb")) {
+
+                $user_attachment['filesize'] += filesize("$attachment_dir/{$row['HASH']}.thumb");
+            }
+
+            $user_attachments[] = $user_attachment;
         }
     }
 
@@ -122,7 +140,9 @@ function get_users_attachments($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return $user_attachments;
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $forum_settings = get_forum_settings();
 
@@ -137,19 +157,26 @@ function get_users_attachments($uid)
 
     while($row = db_fetch_array($result)) {
 
-        if (!is_array($user_attachments)) $user_attachments = array();
+        if (@file_exists("$attachment_dir/{$row['HASH']}")) {
 
-        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+            if (!is_array($user_attachments)) $user_attachments = array();
 
-            $user_attachments[] = array("filename"     => rawurldecode($row['FILENAME']),
-                                        "filesize"     => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
-                                        "filedate"     => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
-                                        "aid"          => $row['AID'],
-                                        "hash"         => $row['HASH'],
-                                        "mimetype"     => $row['MIMETYPE'],
-                                        "downloads"    => $row['DOWNLOADS'],
-                                        "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
-                                        "forum_webtag" => $row['WEBTAG']);
+            $user_attachment = array("filename"     => rawurldecode($row['FILENAME']),
+                                     "filesize"     => filesize("$attachment_dir/{$row['HASH']}"),
+                                     "filedate"     => filemtime("$attachment_dir/{$row['HASH']}"),
+                                     "aid"          => $row['AID'],
+                                     "hash"         => $row['HASH'],
+                                     "mimetype"     => $row['MIMETYPE'],
+                                     "downloads"    => $row['DOWNLOADS'],
+                                     "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
+                                     "forum_webtag" => $row['WEBTAG']);
+
+            if (@file_exists("$attachment_dir/{$row['HASH']}.thumb")) {
+
+                $user_attachment['filesize'] += filesize("$attachment_dir/{$row['HASH']}.thumb");
+            }
+
+            $user_attachments[] = $user_attachment;
         }
     }
 
@@ -494,7 +521,19 @@ function attachment_make_link($attachment, $show_thumbs = true)
 
     $lang = load_language_file();
 
-    if (bh_session_get_value('SHOW_THUMBS') == "N") $show_thumbs = false;
+    $user_show_thumbs = bh_session_get_value('SHOW_THUMBS');
+
+    if ($user_show_thumbs > 0) {
+
+        $thumbnail_size = array(1 => 50, 2 => 100, 3 => 150);
+        $thumbnail_max_size = isset($thumbnail_size[$user_show_thumbs])
+                              ? $thumbnail_size[$user_show_thumbs] : 100;
+
+    }else {
+
+        $thumbnail_max_size = 100;
+        $show_thumbs = false;
+    }
 
     $attachment_path = "$attachment_dir/";
     $attachment_path.= md5($attachment['aid']);
@@ -521,9 +560,18 @@ function attachment_make_link($attachment, $show_thumbs = true)
         $attachment['filename'].= "&hellip;";
     }
 
-    if (@$imageinfo = getimagesize("$attachment_dir/{$attachment['hash']}")) {
+    if (@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}")) {
 
-        $title.= "{$lang['dimensions']}: {$imageinfo[0]}x{$imageinfo[1]}, ";
+        $title.= "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}, ";
+
+        $thumbnail_width  = $image_info[0];
+        $thumbnail_height = $image_info[1];
+
+        while ($thumbnail_width > $thumbnail_max_size || $thumbnail_height > $thumbnail_max_size) {
+
+            $thumbnail_width--;
+            $thumbnail_height = $thumbnail_width * ($image_info[1] / $image_info[0]);
+        }
     }
 
     $title.= "{$lang['size']}: ";
@@ -543,7 +591,8 @@ function attachment_make_link($attachment, $show_thumbs = true)
 
         $attachment_link = "<span class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
         $attachment_link.= "target=\"_blank\"><img src=\"$attachment_dir/{$attachment['hash']}.thumb\"";
-        $attachment_link.= "border=\"0\" alt=\"$title\" title=\"$title\" /></a></span>";
+        $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+        $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></span>";
 
     }else {
 
@@ -577,68 +626,31 @@ function attachment_create_thumb($filepath)
             && function_exists($required_write_functions[$image_info[2]])
             && function_exists('imagecreatetruecolor')) {
 
-            switch ($image_info[2]) {
+            if ($src = $required_read_functions[$image_info[2]]($filepath)) {
 
-                case 1: // GIF
+                $target_width  = $image_info[0];
+                $target_height = $image_info[1];
 
-                    $src = imagecreatefromgif($filepath);
-                    break;
+                while ($target_width > 150 || $target_height > 150) {
 
-                case 2: // JPEG
+                    $target_width--;
+                    $target_height = $target_width * ($image_info[1] / $image_info[0]);
+                }
 
-                    $src = imagecreatefromjpeg($filepath);
-                    break;
+                $dst = imagecreatetruecolor($target_width, $target_height);
 
-                case 3: // PNG
+                if (function_exists('imagecopyresampled')) {
 
-                    $src = imagecreatefrompng($filepath);
-                    break;
+                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
+                                       $target_height, $image_info[0], $image_info[1]);
 
-                default:
+                }else {
 
-                    return false;
-            }
+                    imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
+                                     $target_height, $image_info[0], $image_info[1]);
+                }
 
-            $target_width  = $image_info[0];
-            $target_height = $image_info[1];
-
-            while ($target_width > 150 || $target_height > 150) {
-
-                $target_width--;
-                $target_height = $target_width * ($image_info[1] / $image_info[0]);
-            }
-
-            $dst = imagecreatetruecolor($target_width, $target_height);
-
-            if (function_exists('imagecopyresampled')) {
-
-                imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
-
-            }else {
-
-                imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
-            }
-
-            switch ($image_info[2]) {
-
-                case 1: // GIF
-
-                    return imagegif($dst, "$filepath.thumb");
-                    break;
-
-                case 2: // JPEG
-
-                    return imagejpeg($dst, "$filepath.thumb");
-                    break;
-
-                case 3: // PNG
-
-                    return imagepng($dst, "$filepath.thumb");
-                    break;
-
-                default:
-
-                    return false;
+                return $required_write_functions[$image_info[2]]($dst, "$filepath.thumb");
             }
         }
     }

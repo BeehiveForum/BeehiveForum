@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.65 2005-01-30 14:10:23 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.66 2005-01-30 17:21:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -212,10 +212,33 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['USE_WORD_FILTER'] = false;
     }
 
-    if (isset($_POST['show_thumbs']) && $_POST['show_thumbs'] == "Y") {
-        $user_prefs['SHOW_THUMBS'] = "Y";
+    // This is a bit hacky. Rather than have 2 columns to
+    // remember the state of the tickbox and the drop down
+    // independently the SHOW_THUMBS column stores the
+    // value of the dropdown as a negative number for
+    // disabled and positive number for enabled.
+
+    if (isset($_POST['show_thumbs_enabled']) && $_POST['show_thumbs_enabled'] == "Y") {
+
+        if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
+
+            $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'];
+
+        }else {
+
+            $user_prefs['SHOW_THUMBS'] = 2;
+        }
+
     }else {
-        $user_prefs['SHOW_THUMBS'] = "N";
+
+        if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
+
+            $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'] * -1;
+
+        }else {
+
+            $user_prefs['SHOW_THUMBS'] = -2;
+        }
     }
 
     if (isset($_POST['show_thumbs_global'])) {
@@ -489,7 +512,7 @@ echo "                  <td>", form_checkbox("images_to_links", "Y", $lang['conv
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], $user_prefs['IMAGES_TO_LINKS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_checkbox("show_thumbs", "Y", $lang['showattachmentthumbnails'], (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td>", form_checkbox("show_thumbs_enabled", "Y", array("{$lang['show']} ", form_dropdown_array("show_thumbs", array(1 => 1, 2 => 2, 3 => 3), array(1 => $lang['smallsized'], 2 => $lang['mediumsized'], 3 => $lang['largesized']), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " {$lang['thumbnailsforimageattachments']}"), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_global", "Y", $lang['setforallforums'], $user_prefs['SHOW_THUMBS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

@@ -29,6 +29,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/html.inc.php");
+require_once("./include/config.inc.php");
 
 header_no_cache();
 
@@ -37,8 +38,9 @@ html_draw_top('Nav', 'navpage');
 ?>
         <a href="start.php" target="main">Start</a>&nbsp;|&nbsp;
         <a href="discussion.php" target="main">Messages</a>&nbsp;|&nbsp;
-        <a href="links.php" target="main">Links</a>&nbsp;|&nbsp;
 <?php
+
+if ($show_links) echo "<a href=\"links.php\" target=\"main\">Links</a>&nbsp;|&nbsp;";
 
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
 

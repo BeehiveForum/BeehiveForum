@@ -23,17 +23,24 @@ USA
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
-
 require_once("./include/html.inc.php");
 require_once("./include/links.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/perm.inc.php");
+require_once("./include/config.inc.php");
 
 if(!bh_session_check()){
     $uri = "./index.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
+    exit;
+}
+
+if (!$show_links) {
+    html_draw_top();
+    echo "<h2>You may not access this section.</h2>\n";
+    html_draw_bottom();
     exit;
 }
 

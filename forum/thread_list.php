@@ -33,10 +33,10 @@ require_once("./include/threads.inc.php"); // Thread processing functions
 
 // Check that required variables are set
 // default to display all discussions if no other mode specified
-if (!isset($_GET['mode'])) { $mode = 0; } else { $mode = $_GET['mode']; }
+if (!isset($HTTP_GET_VARS['mode'])) { $mode = 0; } else { $mode = $HTTP_GET_VARS['mode']; }
 
 // default to UID 0 (nobody) if no other UID is specified
-if (!isset($_GET['user'])) { $user = 0; } else { $user = $_GET['user']; }
+if (!isset($HTTP_GET_VARS['user'])) { $user = 0; } else { $user = $HTTP_GET_VARS['user']; }
 
 // Output XHTML header
 html_draw_top();
@@ -48,7 +48,7 @@ html_draw_top();
 		<td class="thread_list_mode">
 			<?
 			// Calls the desired mode, whilst retaining the current UID
-			echo "<form method=\"GET\" action=\"".$_SERVER['PHP_SELF']."\">";
+			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
 			echo "<input type=\"hidden\" name=\"user\" value=\"$user\">";
 			echo "<select name=\"mode\" class=\"thread_list_form\">\n";
 			

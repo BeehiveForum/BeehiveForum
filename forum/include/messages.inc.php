@@ -54,7 +54,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 		$messages[$i]['created'] = $message['created'];
 		$messages[$i]['content'] = $message['content'];
 		$messages[$i]['fnick'] = $message['fnick'];
-		if($message['tnick']){
+		if(isset($message['tnick'])){
            	$messages[$i]['tnick'] = $message['tnick'];
         } else {
             $messages[$i]['tnick'] = "ALL";
@@ -88,7 +88,7 @@ function message_display($tid, $message)
     echo "<td class=\"posthead\" width=\"1%\" align=\"right\">";
     echo "<p class=\"postinfo\">Info</p></td></table>";
     echo "<table width=\"100%\" border=\"0\">";
-    echo "<tr><td align=\"right\">$tid.$pid</td></tr>";
+    echo "<tr><td align=\"right\">$tid.".$message['pid']."</td></tr>";
     echo "<tr><td class=\"postbody\">";
     echo $message['content'];
     echo "</td></tr>";

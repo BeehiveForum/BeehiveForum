@@ -35,7 +35,7 @@ function threads_get_available_folders()
 
     $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
     $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
+    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
     $result = db_query($sql,$db);
     $count = db_num_rows($result);
@@ -93,7 +93,7 @@ function threads_get_all($uid) // get "all" threads (i.e. most recent threads, i
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid in ($folders) ";
-	$sql .= "AND USER_THREAD.INTEREST != -1 ";
+	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -117,7 +117,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid in ($folders) ";
 	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
-	$sql .= "AND USER_THREAD.INTEREST != -1 ";
+	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -142,7 +142,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
 	$sql .= forum_table("POST") . " POST ";
 	$sql .= "WHERE THREAD.fid in ($folders) ";
 	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
-	$sql .= "AND USER_THREAD.INTEREST != -1 ";
+	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
@@ -168,7 +168,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid in ($folders) ";
 	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
-	$sql .= "AND USER_THREAD.INTEREST != -1 ";
+	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -239,7 +239,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 	$sql .= "WHERE THREAD.fid in ($folders) ";
 	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
 	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
-	$sql .= "AND USER_THREAD.INTEREST != -1 ";
+	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -263,7 +263,7 @@ function threads_get_folder($uid,$fid) // get messages recently seem by $uid
 	$sql .= "WHERE THREAD.fid = $fid ";
 	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
 //	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
-	$sql .= "AND USER_THREAD.INTEREST != -1 ";
+	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 

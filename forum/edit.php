@@ -178,4 +178,3 @@ echo "</form>";
 echo "<p>&nbsp;&nbsp;</p>";
 html_draw_bottom();
 ?>
-

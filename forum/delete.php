@@ -136,4 +136,3 @@ echo "&nbsp;&nbsp;<input name=\"cancel\" type=\"submit\" value=\"Cancel\"></form
 echo "<p>&nbsp;&nbsp;</p>";
 html_draw_bottom();
 ?>
-

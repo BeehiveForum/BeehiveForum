@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.68 2005-03-14 13:27:15 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.69 2005-03-20 17:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,11 +125,12 @@ if (isset($_POST['submit'])) {
                 $valid = false;
             }
 
-            if ($valid) {
+            if ($valid && (($t_new_name != $t_old_name) || ($t_new_position != $t_old_position))) {
 
                 profile_section_update($psid, $t_new_position, $t_new_name);
 
                 $log_data = array($t_old_name, $t_old_position, $t_new_name, $t_new_position);
+
                 admin_add_log_entry(CHANGE_PROFILE_SECT, $log_data);
             }
         }
@@ -173,7 +174,7 @@ if (isset($_POST['submit'])) {
 
     profile_section_delete($psid);
 
-    admin_add_log_entry(DELETE_PROFILE_ITEM, $profile_name);
+    admin_add_log_entry(DELETE_PROFILE_SECT, $profile_name);
 }
 
 // Draw the form
@@ -198,15 +199,15 @@ echo "                </tr>\n";
 
 if ($profile_sections = profile_sections_get()) {
 
-    for ($i = 0; $i < sizeof($profile_sections); $i++) {
+    foreach ($profile_sections as $profile_section) {
 
         echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_sections[$i]['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_sections[$i]['PSID']}]", $i), form_input_hidden("t_psid[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['PSID']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_sections[$i]['PSID']}'\""), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_section['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $profile_section['POSITION']), form_input_hidden("t_old_position[{$profile_section['PSID']}]", $profile_section['POSITION']), form_input_hidden("t_psid[{$profile_section['PSID']}]", $profile_section['PSID']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_section['PSID']}]", $profile_section['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_section['PSID']}]", $profile_section['NAME']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}'\""), "</td>\n";
 
-        if (!profile_items_get($profile_sections[$i]['PSID'])) {
-            echo "                  <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";
+        if (!profile_items_get($profile_section['PSID'])) {
+            echo "                  <td>", form_submit("t_delete[{$profile_section['PSID']}]", $lang['delete']), "</td>\n";
         }else{
             echo "                  <td>&nbsp;</td>\n";
         }

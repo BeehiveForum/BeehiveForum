@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.74 2005-03-14 13:27:15 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.75 2005-03-20 17:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -147,7 +147,10 @@ if (isset($_POST['submit'])) {
             if ($valid) {
 
                 profile_item_update($piid, $t_new_move, $t_new_position, $t_new_type, $t_new_name);
-                admin_add_log_entry(CHANGE_PROFILE_ITEM, array($psid, $piid));
+
+                $t_section_name = profile_section_get_name($psid);
+
+                admin_add_log_entry(CHANGE_PROFILE_ITEM, array($t_section_name, $t_new_name));
             }
         }
     }
@@ -183,7 +186,10 @@ if (isset($_POST['submit'])) {
     if ($valid) {
 
         $new_piid = profile_item_create($psid, $t_name_new, $t_position_new, $t_type_new);
-        admin_add_log_entry(ADDED_PROFILE_ITEM, array($psid, $new_piid, $t_name_new));
+
+        $t_section_name = profile_section_get_name($psid);
+
+        admin_add_log_entry(ADDED_PROFILE_ITEM, array($t_section_name, $t_name_new));
     }
 
 }elseif (isset($_POST['t_delete'])) {
@@ -191,6 +197,7 @@ if (isset($_POST['submit'])) {
     list($piid) = array_keys($_POST['t_delete']);
 
     $t_section_name = profile_section_get_name($psid);
+
     $t_item_name = isset($_POST['t_old_name'][$piid]) ? $_POST['t_old_name'][$piid] : "";
 
     profile_item_delete($piid);
@@ -224,14 +231,14 @@ echo "                </tr>\n";
 
 if ($profile_items = profile_items_get($psid)) {
 
-    for($i = 0; $i < sizeof($profile_items); $i++) {
+    foreach ($profile_items as $profile_item) {
 
         echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_items[$i]['PIID']}]", range(1, sizeof($profile_items) + 1), range(1, sizeof($profile_items) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_items[$i]['PIID']}]", $i), form_input_hidden("t_piid[{$profile_items[$i]['PIID']}]", $profile_items[$i]['PIID']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type[{$profile_items[$i]['PIID']}]", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), $profile_items[$i]['TYPE']), form_input_hidden("t_old_type[{$profile_items[$i]['PIID']}]", $profile_items[$i]['TYPE']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid, "t_move[{$profile_items[$i]['PIID']}]"), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\" width=\"100\">", form_submit("t_delete[{$profile_items[$i]['PIID']}]", $lang['delete']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_item['PIID']}]", range(1, sizeof($profile_items) + 1), range(1, sizeof($profile_items) + 1), $profile_item['POSITION']), form_input_hidden("t_old_position[{$profile_item['PIID']}]", $profile_item['POSITION']), form_input_hidden("t_piid[{$profile_item['PIID']}]", $profile_item['PIID']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_item['PIID']}]", $profile_item['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_item['PIID']}]", $profile_item['NAME']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type[{$profile_item['PIID']}]", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), $profile_item['TYPE']), form_input_hidden("t_old_type[{$profile_item['PIID']}]", $profile_item['TYPE']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid, "t_move[{$profile_item['PIID']}]"), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\" width=\"100\">", form_submit("t_delete[{$profile_item['PIID']}]", $lang['delete']), "</td>\n";
         echo "                </tr>\n";
     }
 }

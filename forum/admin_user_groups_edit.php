@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.24 2005-03-14 13:27:16 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.25 2005-03-20 17:53:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -218,6 +218,8 @@ if (isset($_POST['submit'])) {
                     perm_add_group_folder_perms($gid, $fid, $new_group_perms);
                 }
             }
+
+            admin_add_log_entry(UPDATE_USER_GROUP, $t_name);
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.135 2005-03-14 13:27:15 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.136 2005-03-20 17:53:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -136,132 +136,141 @@ echo "<h1>{$lang['admin']} : {$lang['manageuser']} : {$user['LOGON']}</h1>\n";
 
 // Do updates
 
-if (isset($_POST['del'])) {
+if (isset($_POST['delete'])) {
 
     if (isset($_POST['hash']) && is_md5($_POST['hash'])) {
 
         delete_attachment($_POST['hash']);
     }
 
-}elseif (isset($_POST['submit'])) {
+}
 
-    if (isset($_POST['t_confirm_delete_posts'])) {
+if (isset($_POST['t_confirm_delete_posts'])) {
 
-        if ($user_post_array = get_user_posts($uid)) {
+    if ($user_post_array = get_user_posts($uid)) {
 
-            foreach ($user_post_array as $user_post) {
-                post_delete($user_post['TID'], $user_post['PID']);
-            }
-
-            admin_add_log_entry(DELETE_ALL_USER_POSTS, $uid);
+        foreach ($user_post_array as $user_post) {
+            post_delete($user_post['TID'], $user_post['PID']);
         }
 
-        echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
+        $user_logon = user_get_logon($uid);
+        admin_add_log_entry(DELETE_ALL_USER_POSTS, $user_logon);
+    }
+}
 
-    }elseif (!isset($_POST['t_delete_posts']) || (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] != "Y")) {
+if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_delete_posts'] != "Y")) {
 
-        $new_user_perms = (double) 0;
+    $new_user_perms = (double) 0;
 
-        $t_admintools = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
-        $t_banned     = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
-        $t_wormed     = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
-        $t_globalmod  = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
-        $t_linksmod   = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
+    $t_admintools = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
+    $t_banned     = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
+    $t_wormed     = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
+    $t_globalmod  = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
+    $t_linksmod   = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
 
-        $new_user_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
+    $new_user_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
 
-        if (perm_has_forumtools_access()) {
+    if (perm_has_forumtools_access()) {
 
-            $new_user_perms = (double) $new_user_perms | $t_admintools;
-            $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
+        $new_user_perms = (double) $new_user_perms | $t_admintools;
+        $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
 
-        }else {
+    }else {
 
-            $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_ADMIN_TOOLS);
-            $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
-        }
+        $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_ADMIN_TOOLS);
+        $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
+    }
 
-        $user_gid = perm_update_user_permissions($uid, $new_user_perms);
+    $user_gid = perm_update_user_permissions($uid, $new_user_perms);
 
-        $user_perms = perm_get_user_permissions($uid);
+    $user_perms = perm_get_user_permissions($uid);
 
-        if (isset($user_gid) && is_numeric($user_gid)) {
+    if (isset($user_gid) && is_numeric($user_gid)) {
 
-            if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
+        if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
 
-                $t_update_perms_array = $_POST['t_update_perms_array'];
+            $t_update_perms_array = $_POST['t_update_perms_array'];
 
-                foreach ($t_update_perms_array as $fid) {
+            foreach ($t_update_perms_array as $fid) {
 
-                    $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
-                    $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
-                    $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
-                    $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
-                    $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
-                    $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
-                    $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-                    $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-                    $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
-                    $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
+                $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
+                $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
+                $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
+                $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
+                $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
+                $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
+                $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
+                $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
-                    $new_folder_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
-                    $new_folder_perms = (double) $new_folder_perms | $t_post_edit | $t_post_delete;
-                    $new_folder_perms = (double) $new_folder_perms | $t_moderator | $t_post_attach;
-                    $new_folder_perms = (double) $new_folder_perms | $t_post_html | $t_post_sig | $t_post_approval;
+                $new_folder_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
+                $new_folder_perms = (double) $new_folder_perms | $t_post_edit | $t_post_delete;
+                $new_folder_perms = (double) $new_folder_perms | $t_moderator | $t_post_attach;
+                $new_folder_perms = (double) $new_folder_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
-                    perm_update_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
-                }
-            }
-
-            if (isset($_POST['t_new_perms_array']) && is_array($_POST['t_new_perms_array'])) {
-
-                $t_new_perms_array = $_POST['t_new_perms_array'];
-
-                foreach ($t_new_perms_array as $fid) {
-
-                    $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
-                    $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
-                    $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
-                    $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
-                    $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
-                    $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
-                    $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-                    $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-                    $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
-                    $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
-
-                    $new_folder_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
-                    $new_folder_perms = (double) $new_folder_perms | $t_post_edit | $t_post_delete;
-                    $new_folder_perms = (double) $new_folder_perms | $t_moderator | $t_post_attach;
-                    $new_folder_perms = (double) $new_folder_perms | $t_post_html | $t_post_sig | $t_post_approval;
-
-                    perm_add_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
-                }
+                perm_update_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
             }
         }
 
-        // Password reset
+        if (isset($_POST['t_new_perms_array']) && is_array($_POST['t_new_perms_array'])) {
 
-        if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
-            $t_reset_password = true;
-        }else {
-            $t_reset_password = false;
+            $t_new_perms_array = $_POST['t_new_perms_array'];
+
+            foreach ($t_new_perms_array as $fid) {
+
+                $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
+                $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
+                $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
+                $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
+                $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
+                $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
+                $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
+                $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
+
+                $new_folder_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
+                $new_folder_perms = (double) $new_folder_perms | $t_post_edit | $t_post_delete;
+                $new_folder_perms = (double) $new_folder_perms | $t_moderator | $t_post_attach;
+                $new_folder_perms = (double) $new_folder_perms | $t_post_html | $t_post_sig | $t_post_approval;
+
+                perm_add_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
+            }
         }
+    }
 
-        if (isset($_POST['t_new_password']) && strlen(trim(_stripslashes($_POST['t_new_password']))) > 0) {
-            $t_new_password = trim(_stripslashes($_POST['t_new_password']));
-        }else {
-            $t_new_password = false;
-        }
+    // Password reset
 
-        if ($t_reset_password === true && strlen($t_new_password) > 0) {
+    if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
+        $t_reset_password = true;
+    }else {
+        $t_reset_password = false;
+    }
 
-            $fuid = bh_session_get_value('UID');
-            user_change_pass($uid, $t_new_password, false);
-            email_send_new_pw_notification($uid, $fuid, $t_new_password);
-        }
+    if (isset($_POST['t_new_password']) && strlen(trim(_stripslashes($_POST['t_new_password']))) > 0) {
+        $t_new_password = trim(_stripslashes($_POST['t_new_password']));
+    }else {
+        $t_new_password = false;
+    }
 
-        echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
+    echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
+
+    if ($t_reset_password === true && strlen($t_new_password) > 0) {
+
+        $fuid = bh_session_get_value('UID');
+
+        user_change_pass($uid, $t_new_password, false);
+
+        email_send_new_pw_notification($uid, $fuid, $t_new_password);
+
+        $user_logon = user_get_logon($uid);
+        admin_add_log_entry(CHANGE_USER_PASSWD, $user_logon);
+
+    }else {
+
+        $user_logon = user_get_logon($uid);
+        admin_add_log_entry(CHANGE_USER_STATUS, $user_logon);
     }
 }
 
@@ -344,7 +353,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['back']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&amp;uid=$uid"), "\n";

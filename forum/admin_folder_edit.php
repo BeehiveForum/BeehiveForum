@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.28 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.29 2005-03-20 17:53:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -188,8 +188,12 @@ if (isset($_POST['submit'])) {
             && isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
 
             if ($fid != $_POST['move']) {
+
                 folder_move_threads($fid, $_POST['move']);
-                admin_add_log_entry(MOVED_THREADS, array($fid, $_POST['t_fid'][$fid]));
+
+                $new_folder_title = folder_get_title($_POST['move']);
+
+                admin_add_log_entry(MOVED_THREADS, array($folder_data['TITLE'], $new_folder_title));
             }
         }
     }
@@ -199,7 +203,11 @@ $folder_data = folder_get($fid);
 
 if (isset($_POST['delete']) && $folder_data['THREAD_COUNT'] == 0) {
 
+    $folder_name = folder_get_title($fid);
+
     folder_delete($fid);
+
+    admin_add_log_entry(DELETE_FOLDER, $folder_name);
 
     $del_success = rawurlencode($folder_data['TITLE']);
     header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success");

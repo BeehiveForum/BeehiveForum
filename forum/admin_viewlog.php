@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.76 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.77 2005-03-20 17:53:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -171,21 +171,28 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         echo "                    <td class=\"posthead\" align=\"left\">", format_time($admin_log_entry['CREATED']), "</td>\n";
         echo "                    <td class=\"posthead\" align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), "</a></td>\n";
 
+        $entry_array = explode("\x00", $admin_log_entry['ENTRY']);
+
         switch ($admin_log_entry['ACTION']) {
 
             case CHANGE_USER_STATUS:
 
-                $action_text = "{$lang['changeduserstatus']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['changedstatusforuser'], $entry_array[0]);
                 break;
 
             case CHANGE_FORUM_ACCESS:
 
-                $action_text = "{$lang['changedfolderaccess']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['changedforumaccess'], $entry_array[1]);
                 break;
 
             case DELETE_ALL_USER_POSTS:
 
-                $action_text = "{$lang['deletedallusersposts']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedallusersposts'], $entry_array[0]);
+                break;
+
+            case CHANGE_USER_PASSWD:
+
+                $action_text = sprintf($lang['changedpasswordforuser'], $entry_array[0]);
                 break;
 
             case BANNED_IPADDRESS:
@@ -213,9 +220,14 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = "{$lang['movedthreads']}: {$admin_log_entry['ENTRY']}";
                 break;
 
-            case CREATE_NEW_FOLDER:
+            case CREATE_FOLDER:
 
                 $action_text = "{$lang['creatednewfolder']}: {$admin_log_entry['ENTRY']}";
+                break;
+
+            case DELETE_FOLDER:
+
+                $action_text = "{$lang['deletedfolder']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case CHANGE_PROFILE_SECT:
@@ -255,7 +267,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case CREATED_NEW_STYLE:
 
-                $action_text = "{$lang['savednewstyle']}";
+                $action_text = "{$lang['savednewstyle']}: {$admin_log_entry['ENTRY']}";
                 break;
 
             case MOVED_THREAD:
@@ -350,17 +362,27 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case CREATE_USER_GROUP:
 
-                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['createdusergroup'], $entry_array[0]);
                 break;
 
             case DELETE_USER_GROUP:
 
-                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedusergroup'], $entry_array[0]);
                 break;
 
             case ADD_USER_TO_GROUP:
 
-                $action_text = "{$lang['createdusergroup']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['addedusertogroup'], $entry_array[0], $entry_array[1]);
+                break;
+
+            case REMOVE_USER_FROM_GROUP:
+
+                $action_text = sprintf($lang['removeduserfromgroup'], $entry_array[0], $entry_array[1]);
+                break;
+
+            case UPDATE_USER_GROUP:
+
+                $action_text = sprintf($lang['updatedusergroup'], $entry_array[0]);
                 break;
 
             default:

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.63 2005-03-18 23:58:40 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.64 2005-03-20 17:53:31 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -323,8 +323,13 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
 
         $result = db_query($sql, $db_perm_update_group);
 
-        $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid' ";
-        $sql.= "AND FID = '0' AND FORUM = '$forum_fid'";
+        $sql = "DELETE FROM GROUP_PERMS WHERE GID = $gid ";
+        $sql.= "AND FORUM = $forum_fid";
+
+        $result = db_query($sql, $db_perm_update_group);
+
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES ($gid, $forum_fid, 0, $perm)";
 
         return db_query($sql, $db_perm_update_group);
     }
@@ -367,6 +372,24 @@ function perm_get_group($gid)
 
         $row = db_fetch_array($result);
         return $row;
+    }
+
+    return false;
+}
+
+function perm_get_group_name($gid)
+{
+    $db_perm_get_group_name = db_connect();
+
+    if (!is_numeric($gid)) return false;
+
+    $sql = "SELECT GROUP_NAME FROM GROUPS WHERE GID = '$gid' AND AUTO_GROUP = 0";
+    $result = db_query($sql, $db_perm_get_group_name);
+
+    if (db_num_rows($result) > 0) {
+
+        list($group_name) = db_fetch_array($result, DB_RESULT_NUM);
+        return $group_name;
     }
 
     return false;

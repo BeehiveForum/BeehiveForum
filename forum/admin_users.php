@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.97 2005-03-14 13:27:16 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.98 2005-03-20 17:53:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,8 +153,10 @@ if (isset($_POST['t_kick'])) {
 
     if (admin_session_end($user_uid)) {
 
-        admin_add_log_entry(END_USED_SESSION, $user_uid);
-        echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">", user_get_logon($user_uid), "</a></b></p>\n";
+        $user_logon = user_get_logon($uid);
+
+        admin_add_log_entry(END_USED_SESSION, $user_logon);
+        echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
     }
 }
 

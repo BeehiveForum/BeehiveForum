@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.66 2004-01-26 19:40:19 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.67 2004-01-26 22:26:52 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -194,6 +194,28 @@ if ($valid) {
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
   if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
+  
+     $folderdata = folder_get($HTTP_POST_VARS['t_fid']);
+     
+     if ($folderdata['ACCESS_LEVEL'] == 2 && !perm_is_moderator()) {
+        
+       html_draw_top();
+                
+       echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+       echo "<table class=\"posthead\" width=\"720\">\n";
+       echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
+       echo "<tr><td>\n";
+       echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
+       echo "</td></tr>\n";
+ 
+       echo "<tr><td align=\"center\">\n";
+       echo form_submit('cancel', $lang['cancel']);
+       echo "</td></tr>\n";
+       echo "</table></form>\n";
+ 
+       html_draw_bottom();
+       exit;
+    }  
 
     // Work out when the poll will close.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.43 2004-01-26 19:40:12 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.44 2004-01-26 22:26:52 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -140,14 +140,14 @@ if ($folder_array = folder_get_all()) {
         echo "            <td align=\"left\">". form_field("t_desc[{$folder_array[$i]['FID']}]", $folder_array[$i]['DESCRIPTION'], 32, 255). form_input_hidden("t_old_desc[{$folder_array[$i]['FID']}]", $folder_array[$i]['DESCRIPTION']). "</td>\n";
 
         // Draw the ACCESS_LEVEL dropdown
-        echo "            <td align=\"left\">".form_dropdown_array("t_access[{$folder_array[$i]['FID']}]", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder_array[$i]['ACCESS_LEVEL']);
+        echo "            <td align=\"left\">".form_dropdown_array("t_access[{$folder_array[$i]['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), $folder_array[$i]['ACCESS_LEVEL']);
         echo form_input_hidden("t_old_access[{$folder_array[$i]['FID']}]", $folder_array[$i]['ACCESS_LEVEL']). "</td>\n";
 
         echo "            <td align=\"left\">". $folder_array[$i]['THREAD_COUNT']. "</td>\n";
         echo "            <td align=\"left\">". folder_draw_dropdown($folder_array[$i]['FID'], "t_move", "[{$folder_array[$i]['FID']}]"). "</td>\n";
         echo "            <td align=\"left\">". form_dropdown_array("t_allow[{$folder_array[$i]['FID']}]", $allow_values, $allow_labels, $folder_array[$i]['ALLOWED_TYPES'] ? $folder_array[$i]['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow[{$folder_array[$i]['FID']}]", $folder_array[$i]['ALLOWED_TYPES'])."</td>\n";
 
-        if ($folder_array[$i]['ACCESS_LEVEL'] > 0) {
+        if ($folder_array[$i]['ACCESS_LEVEL'] == 1) {
             echo "            <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php?fid={$folder_array[$i]['FID']}'\""), "</td>\n";
         }else {
             echo "            <td align=\"left\">&nbsp;</td>";
@@ -162,7 +162,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\">NEW</td>\n";
 echo "            <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 25, 32). "</td>\n";
 echo "            <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
-echo "            <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
+echo "            <td align=\"left\">". form_dropdown_array("t_access_new", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked'])). "</td>\n";
 echo "            <td align=\"left\">&nbsp;</td>\n";
 echo "            <td align=\"left\">&nbsp;</td>\n";
 echo "            <td align=\"left\">".form_dropdown_array("t_allow_new", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD)."</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.43 2003-11-27 13:29:06 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.44 2004-01-26 22:26:53 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -126,7 +126,8 @@ function folder_get_available()
 
     $sql = "SELECT DISTINCT F.FID FROM ".forum_table("FOLDER")." F LEFT JOIN ";
     $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
-    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 OR ";
+    $sql.= "(F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
     $sql.= "ORDER BY F.POSITION";
 
     $result = db_query($sql, $db_folder_get_available);

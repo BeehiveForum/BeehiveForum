@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.14 2004-01-26 19:40:11 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.15 2004-01-26 22:26:52 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -76,7 +76,7 @@ $folder_array = folder_get($fid);
 
 echo "<h1>{$lang['managefolder']} : ", _stripslashes($folder_array['TITLE']), "</h1>\n";
 
-if ($folder_array['ACCESS_LEVEL'] < 1) {
+if ($folder_array['ACCESS_LEVEL'] <> 1) {
     echo "<h2>{$lang['folderisnotrestricted']}</h2>\n";
     html_draw_bottom();
     exit;
@@ -117,7 +117,7 @@ if (isset($HTTP_POST_VARS['add_recent_user'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_user\" action=\"admin_folder_access\" method=\"post\">\n";
+echo "<form name=\"f_user\" action=\"admin_folder_access.php\" method=\"post\">\n";
 echo form_input_hidden('fid', $fid), "\n";
 echo "<table width=\"50%\">\n";
 echo "  <tr>\n";

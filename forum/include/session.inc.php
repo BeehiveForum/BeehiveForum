@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.86 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.87 2004-03-19 11:58:42 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -113,12 +113,12 @@ function bh_session_check()
                             $result = db_query($sql, $db_bh_session_check);
                             
                             $sql = "DELETE FROM VISITOR_LOG WHERE UID = '{$user_sess['UID']}'";
-                            $result = db_query($sql, $db_bh_session_init);
+                            $result = db_query($sql, $db_bh_session_check);
     
                             $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
                             $sql.= "VALUES ('$uid', '{$webtag['FID']}', NOW())";
     
-                            $result = db_query($sql, $db_bh_session_init);                            
+                            $result = db_query($sql, $db_bh_session_check);                            
                         }
                     }
 

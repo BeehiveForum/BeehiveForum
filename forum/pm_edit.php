@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.61 2005-02-04 19:35:36 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.62 2005-02-06 00:38:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -405,7 +405,7 @@ echo "        <tr>\n";
 echo "          <td><h2>{$lang['subject']}:</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, "class=\"thread_title\""), "</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><h2>{$lang['to']}:</h2></td>\n";

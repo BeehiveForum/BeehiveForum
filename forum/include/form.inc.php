@@ -21,22 +21,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.67 2005-02-04 19:35:37 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.68 2005-02-06 00:38:50 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
 
 // Create a form field
 
-function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false)
+function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false, $class = "bhinputtext")
 {
     $lang = load_language_file();
 
-    if (!strstr($custom_html, "class")) {
-        $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" class=\"bhinputtext\" value=\"$value\" ";
-    }else {
-        $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" value=\"$value\" ";
-    }
+    $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" class=\"$class\" value=\"$value\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -66,16 +62,16 @@ function form_unique_id()
 
 // Creates a text input field
 
-function form_input_text($name, $value = false, $width = false, $maxchars = false, $custom_html = false)
+function form_input_text($name, $value = false, $width = false, $maxchars = false, $custom_html = false, $class = "bhinputtext")
 {
-    return form_field($name, $value, $width, $maxchars, "text", $custom_html);
+    return form_field($name, $value, $width, $maxchars, "text", $custom_html, $class);
 }
 
 // Creates a password input field
 
-function form_input_password($name, $value = false, $width = false, $maxchars = false, $custom_html = false)
+function form_input_password($name, $value = false, $width = false, $maxchars = false, $custom_html = false, $class = "bhinputtext")
 {
-    return form_field($name, $value, $width, $maxchars, "password", $custom_html);
+    return form_field($name, $value, $width, $maxchars, "password", $custom_html, $class);
 }
 
 // Creates a hidden form field
@@ -87,11 +83,11 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 
 // Create a textarea input field
 
-function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_html = false)
+function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_html = false, $class = "bhtextarea")
 {
     $lang = load_language_file();
 
-    $html = "<textarea name=\"$name\" id=\"$name\" class=\"bhtextarea\" ";
+    $html = "<textarea name=\"$name\" id=\"$name\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -114,12 +110,11 @@ function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_h
 
 // Creates a dropdown with values from array(s)
 
-function form_dropdown_array($name, $value, $label, $default = false, $custom_html = false)
+function form_dropdown_array($name, $value, $label, $default = false, $custom_html = false, $class = "bhselect")
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"$name\" id=\"$name\" class=\"bhselect\" ";
-    $html.= "dir=\"{$lang['_textdir']}\"";
+    $html = "<select name=\"$name\" id=\"$name\" class=\"$class\" ";
 
     if ($custom_html) {
 
@@ -152,11 +147,11 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 
 // Creates a checkbox field
 
-function form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
+function form_checkbox($name, $value, $text, $checked = false, $custom_html = false, $class = "bhinputcheckbox")
 {
     $id = form_unique_id();
 
-    $html = "<span class=\"bhinputcheckbox\">";
+    $html = "<span class=\"$class\">";
     $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
     if ($checked) $html.= " checked=\"checked\"";
@@ -194,11 +189,11 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
 // Create a radio field
 
-function form_radio($name, $value, $text, $checked = false, $custom_html = false)
+function form_radio($name, $value, $text, $checked = false, $custom_html = false, $class = "bhinputradio")
 {
     $id = form_unique_id();
 
-    $html = "<span class=\"bhinputradio\">";
+    $html = "<span class=\"$class\">";
     $html.= "<input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
     if ($checked) $html.= " checked=\"checked\"";
@@ -267,7 +262,8 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 
 function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false)
 {
-    $html = "<input name=\"$name\" value=\"$value\" id=\"$name\" type=\"image\" src=\"". style_image($image). "\" ";
+    $html = "<input name=\"$name\" value=\"$value\" id=\"$name\"";
+    $html.= "type=\"image\" src=\"". style_image($image). "\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.236 2005-02-04 19:35:36 decoyduck Exp $ */
+/* $Id: post.php,v 1.237 2005-02-06 00:38:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -766,7 +766,7 @@ if ($newthread) {
     echo "<h2>{$lang['folder']}:</h2>\n";
     echo "$folder_dropdown\n";
     echo "<h2>{$lang['threadtitle']}:</h2>\n";
-    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, "class=\"post_thread_title\"")."\n";
+    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, false, "post_thread_title"), "\n";
 
     echo form_input_hidden("t_newthread", "Y")."\n";
     echo "<br />\n";
@@ -794,7 +794,7 @@ echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true
 echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
 
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
-echo form_input_text("t_to_uid_others", "", 0, 0, "class=\"post_to_others\" onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br /><br />\n";
+echo form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"", "post_to_others")."<br /><br />\n";
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 

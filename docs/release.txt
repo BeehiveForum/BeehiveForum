@@ -3,7 +3,14 @@ Beehive Forum Release Notes
 What's new in 0.5 ("TBD", released 5th Never)
 =================
 
+- Notes
+        - Beehive Forum 0.5 corrected a very large scale problem with
+	  stripslashes which means that content created with prior
+	  versions may be subject to erranous display once you
+	  upgrade to 0.5.
+
 - Brand new features
+
         - Multiple Forum support. Yes, finally you can run more than one
           forum on your web space using a single Beehive installation, under
 	  a 'My Forums' linking system.
@@ -70,6 +77,7 @@ What's new in 0.5 ("TBD", released 5th Never)
 	  as well as any threads they create.
 
 - Enhanced old features
+
         - HTML toolbar is now present for post creation; post editing; poll
 	  creation; signature editing; PM creation; PM editing; start page
 	  editing. Can't get enough of that HTML toolbar.

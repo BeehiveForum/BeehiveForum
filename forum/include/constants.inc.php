@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.41 2004-11-04 18:43:37 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.42 2004-11-14 17:20:58 decoyduck Exp $ */
 
 // Beehive Version
 
-define("BEEHIVE_VERSION", "0.5-RC4");
+define("BEEHIVE_VERSION", "0.5-RC5");
 
 // Constants for date / time.
 

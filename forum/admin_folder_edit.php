@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.16 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.17 2004-08-07 22:39:40 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -166,11 +166,14 @@ if (isset($_POST['submit'])) {
     $t_post_edit     = (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
     $t_post_delete   = (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
     $t_post_attach   = (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
+	$t_post_html     = (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
+	$t_post_sig      = (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
 
     // We need a double / float here because we're storing a high bit value
 
     $folder_data['PERM'] = (double)$t_post_read | $t_post_create | $t_thread_create;
     $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_edit | $t_post_delete | $t_post_attach;
+    $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_html | $t_post_sig;
 
     if ($valid) {
 
@@ -281,6 +284,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder_data['PERM'] & USER_PERM_POST_DELETE), "</td>\n";
 echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder_data['PERM'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_post_html", USER_PERM_HTML_POSTING, $lang['postinhtml'], $folder_data['PERM'] & USER_PERM_HTML_POSTING), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_sig", USER_PERM_SIGNATURE, $lang['postasignature'], $folder_data['PERM'] & USER_PERM_SIGNATURE), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -24,7 +24,7 @@ USA
 // This is a test language file for RTL display in Beehive. It is not
 // intended for release with Beehive.
 
-/* $Id: arabic-test.inc.php,v 1.6 2004-08-02 13:40:48 tribalonline Exp $ */
+/* $Id: arabic-test.inc.php,v 1.7 2004-08-07 22:39:47 tribalonline Exp $ */
 
 // International English language file
 
@@ -1171,6 +1171,10 @@ $lang['deletethread'] = "???  ?????? ????  ";
 $lang['markasunread'] = "???  ?????? ????  ";
 $lang['makethreadsticky'] = "???  ?????? ????  ";
 $lang['threareadstatusupdated'] = "???  ?????? ????  ";
+
+
+$lang['postinhtml'] = "Post in HTML";
+$lang['postasignature'] = "Post a signature";
 
 ?>
 

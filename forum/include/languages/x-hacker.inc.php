@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.119 2004-08-07 15:23:05 rowan_hill Exp $ */
+/* $Id: x-hacker.inc.php,v 1.120 2004-08-07 22:39:47 tribalonline Exp $ */
 
 // International English language file
 
@@ -399,6 +399,8 @@ $lang['editposts'] = "3D1+ P0\$Ts";
 $lang['deleteposts'] = "DeL3+e POs+5";
 $lang['uploadattachments'] = "upLO4D 4T+4CHm3N+\$";
 $lang['moderatefolder'] = "M0D3r4+E F0ld3R";
+$lang['postinhtml'] = "Post in HTML";
+$lang['postasignature'] = "Post a signature";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

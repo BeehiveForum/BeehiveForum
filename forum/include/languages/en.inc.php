@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.155 2004-08-07 15:23:05 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.156 2004-08-07 22:39:47 tribalonline Exp $ */
 
 // International English language file
 
@@ -399,6 +399,8 @@ $lang['editposts'] = "Edit posts";
 $lang['deleteposts'] = "Delete posts";
 $lang['uploadattachments'] = "Upload attachments";
 $lang['moderatefolder'] = "Moderate folder";
+$lang['postinhtml'] = "Post in HTML";
+$lang['postasignature'] = "Post a signature";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.98 2004-08-07 15:23:05 rowan_hill Exp $ */
+/* $Id: fr.inc.php,v 1.99 2004-08-07 22:39:47 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -397,6 +397,8 @@ $lang['createnewthreads'] = "Create new threads";
 $lang['editposts'] = "Edit posts";
 $lang['uploadattachments'] = "Upload attachments";
 $lang['moderatefolder'] = "Moderate folder";
+$lang['postinhtml'] = "Post in HTML";
+$lang['postasignature'] = "Post a signature";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.55 2004-09-08 21:56:55 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.56 2004-09-09 00:47:04 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -541,7 +541,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 if ($user_prefs['POST_PAGE'] == 0) {
-        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_DISPLAY_SIGNATURE;
+        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";

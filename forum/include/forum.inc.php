@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.82 2004-08-17 21:08:09 tribalonline Exp $ */
+/* $Id: forum.inc.php,v 1.83 2004-09-09 00:47:05 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -803,6 +803,8 @@ function forum_create($webtag, $forum_name, $access)
 		$sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 		$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 		$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',"; 
+		$sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
 		$sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
 		$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
 		$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";

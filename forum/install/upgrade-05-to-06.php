@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.4 2004-12-26 12:21:30 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.5 2004-12-27 00:20:51 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -221,7 +221,76 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Lots of indexes to make things go /fast/ (maybe)
+    // Add an index to the CREATED column in POST table.
+    // POST table can be rather large so we do this
+    // by rebuilding the table because otherwise
+    // MySQL seems to fall over with the following error:
+    // (Unable to write to /tmp/[file] error)
+
+    $sql = "CREATE TABLE {$forum_webtag}_POST_NEW(";
+    $sql.= "TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "VIEWED DATETIME DEFAULT NULL,";
+    $sql.= "CREATED DATETIME DEFAULT NULL,";
+    $sql.= "STATUS TINYINT(4) DEFAULT '0',";
+    $sql.= "EDITED DATETIME DEFAULT NULL,";
+    $sql.= "EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
+    $sql.= "PRIMARY KEY (TID, PID),";
+    $sql.= "KEY TO_UID (TO_UID),";
+    $sql.= "KEY IPADDRESS (IPADDRESS),";
+    $sql.= "KEY CREATED (CREATED)";
+    $sql.= ") TYPE = MYISAM";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Transport the data from the old table into the new one.
+    // This takes a long time. Upwards of 1 minute on a forum
+    // with 300,000 messages.
+
+    $sql = "INSERT INTO {$forum_webtag}_POST_NEW (TID, PID, REPLY_TO_PID, FROM_UID, ";
+    $sql.= "TO_UID, VIEWED, CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS) ";
+    $sql.= "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, ";
+    $sql.= "CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS FROM {$forum_webtag}_POST";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Get rid of the old POST table
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_POST_NEW";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Rename our new POST table
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST_NEW RENAME {$forum_webtag}_POST";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Lots of other indexes to make things go /fast/ (maybe)
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (LAST_READ) ";
 
@@ -251,6 +320,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD INDEX (RELATIONSHIP)";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE PM ADD INDEX (TYPE)";
 
     if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.216 2004-12-26 12:21:30 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.217 2004-12-27 00:20:51 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -95,7 +95,7 @@ function user_update($uid, $nickname, $email)
     return db_query($sql, $db_user_update);
 }
 
-function user_change_pw($uid, $password, $hash = false)
+function user_change_pw($uid, $password, $hash)
 {
     $db_user_change_pw = db_connect();
 
@@ -883,7 +883,8 @@ function users_search_recent($usersearch, $offset)
 
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0";
+    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0";
 
     $result = db_query($sql, $db_users_search_recent);
     list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);

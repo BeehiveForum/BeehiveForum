@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.125 2005-03-21 15:36:06 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.126 2005-03-24 18:54:38 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -670,9 +670,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  CONTENT TEXT,";
-        $sql.= "  INDEXED MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (TID, PID),";
-        $sql.= "  KEY INDEXED (INDEXED),";
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
         $sql.= ") TYPE=MYISAM";
 

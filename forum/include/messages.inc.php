@@ -173,7 +173,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
       if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
         message_display_deleted($tid, $message['PID']);
-	return;
+        return;
       }
     }
 
@@ -197,7 +197,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if (sizeof($highlight) > 0) {
         foreach ($highlight as $word) {
             $message['CONTENT'] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $message['CONTENT']);
-	}
+        }
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
@@ -232,8 +232,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-	    if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
-	    if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
+            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
+            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
             echo format_time($message['CREATED'], 1);
         }
     }
@@ -256,9 +256,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
             echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
         }else {
-	    if (!$is_preview) {
+            if (!$is_preview) {
                 echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
-	    }
+            }
         }
 
     }else {
@@ -285,11 +285,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
         if($in_list && $msg_count > 0) {
 
-	    if ($is_preview) {
-	        echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
-	    }else {
-	        echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
-	    }
+            if ($is_preview) {
+                echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
+            }else {
+                echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
+            }
 
             if($message['PID'] > 1) {
 
@@ -299,13 +299,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
                     echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                 }else {
-		    if ($is_preview) {
+                    if ($is_preview) {
                         echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_blank\">";
                         echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
-		    }else {
+                    }else {
                         echo "<a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
                         echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
-		    }
+                    }
                 }
             }
         }
@@ -321,48 +321,58 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 $message['CONTENT'] .= $msg_split[$i];
             }
             $message['CONTENT'] .= "</div>";
-	}
-
-        echo "<tr><td class=\"postbody\">". $message['CONTENT'];
-        if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
-	      $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-              $attachments = get_attachments($message['FROM_UID'], $aid);
-              if (is_array($attachments)) {
-                  echo "<p><b>Attachments:</b><br>\n";
-                  for ($i = 0; $i < sizeof($attachments); $i++) {
-
-                      echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
-                      echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\"";
-
-                      if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
-                        echo " target=\"_blank\"";
-                      }else {
-                        echo " target=\"_self\"";
-                      }
-
-                      echo " title=\"";
-
-                      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-                        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-                      }
-
-                      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
-                      echo "Downloaded: ". $attachments[$i]['downloads'];
-
-                      if ($attachments[$i]['downloads'] == 1) {
-                        echo " time";
-                      }else {
-                        echo " times";
-                      }
-
-                      echo "\">". $attachments[$i]['filename']. "</a><br />";
-
-                  }
-                  echo "</p>\n";
-              }
         }
 
-        echo "</td></tr>\n";
+        echo "<tr><td class=\"postbody\">". $message['CONTENT']. "</td></tr>\n";
+
+        if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
+
+            echo "<tr><td>&nbsp;</td></tr>\n";
+            echo "<tr><td class=\"postbody\">\n";
+
+            $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
+            $attachments = get_attachments($message['FROM_UID'], $aid);
+
+            if (is_array($attachments)) {
+
+                echo "<p><b>Attachments:</b><br>\n";
+
+                for ($i = 0; $i < sizeof($attachments); $i++) {
+
+                    echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
+                    echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\"";
+
+                    if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                        echo " target=\"_blank\"";
+                    }else {
+                        echo " target=\"_self\"";
+                    }
+
+                    echo " title=\"";
+
+                    if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+                        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                    }
+
+                    echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
+                    echo "Downloaded: ". $attachments[$i]['downloads'];
+
+                    if ($attachments[$i]['downloads'] == 1) {
+                        echo " time";
+                    }else {
+                        echo " times";
+                    }
+
+                    echo "\">". $attachments[$i]['filename']. "</a><br />";
+
+                }
+
+                echo "</p>\n";
+
+            }
+
+            echo "</td></tr>\n";
+        }
 
         if (($in_list && $limit_text != false) || $is_poll) {
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
@@ -628,11 +638,11 @@ function messages_get_most_recent($uid)
 
         if (isset($fa['LAST_READ'])) {
 
-	    if ($fa['LAST_READ'] < $fa['LENGTH']) {
-	      $return = $fa['TID'] . ".". ($fa['LAST_READ'] + 1);
-	    }else {
+            if ($fa['LAST_READ'] < $fa['LENGTH']) {
+              $return = $fa['TID'] . ".". ($fa['LAST_READ'] + 1);
+            }else {
               $return = $fa['TID'] . "." . $fa['LAST_READ'];
-	    }
+            }
 
         } else {
             $return = $fa['TID'] . ".1";

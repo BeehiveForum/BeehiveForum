@@ -107,7 +107,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 		$opentags = array();
 		$last_tag = array();
-		$single_tags = array("br","img","hr","!--","area","embed","xmp");
+		$single_tags = array("br","img","hr","!--","area","embed","xmp","area");
 		$no_nest = array("p");
 
 		for($i=0; $i<count($html_parts); $i++){

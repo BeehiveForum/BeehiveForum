@@ -36,7 +36,8 @@ $master_lang = load_language_file("en.inc.php");
 // Slave Language Files.
 
 $slave_langs = array("fr.inc.php" => load_language_file("fr.inc.php"),
-                     "gangsta.inc.php" => load_language_file("gangsta.inc.php"));
+                     "gangsta.inc.php" => load_language_file("gangsta.inc.php"),
+		     "x-hacker.inc.php" => load_language_file("x-hacker.inc.php"));
 
 foreach ($slave_langs as $lang => $strings) {
     

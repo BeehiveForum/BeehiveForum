@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.43 2004-03-23 02:42:00 tribalonline Exp $ */
+/* $Id: gangsta.inc.php,v 1.44 2004-03-27 19:47:01 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -602,6 +602,7 @@ $lang['moveto'] = "Haul ass";
 $lang['userID'] = "Yo tag, foo'";
 $lang['alreadyloggedin'] = "already logged in.";
 $lang['loggedinsuccessfully'] = "Yo in, bro!";
+$lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "Yo username or password is wack";
 $lang['usernameandpasswdrequired'] = "Yo needs to enter a username and password, homie";
 $lang['welcometolight'] = "Welcome to wack ass Beehive!";

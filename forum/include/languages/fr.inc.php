@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.45 2004-03-23 02:42:00 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.46 2004-03-27 19:47:01 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -589,6 +589,7 @@ $lang['moveto'] = "Se transfère à";
 $lang['userID'] = "Utilisateur ID";
 $lang['alreadyloggedin'] = "a abonné déjà";
 $lang['loggedinsuccessfully'] = "Vous avez abonné avec succès.";
+$lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "Le username ou le mot de passe que vous n'avez pas fourni est valide.";
 $lang['usernameandpasswdrequired'] = "Un username et le mot de passe est exigé";
 $lang['welcometolight'] = "Bienvenu pour Suivre un régime la Ruche!";

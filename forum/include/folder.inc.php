@@ -114,4 +114,23 @@ function folder_get_available()
     return $return;
 }
 
+function user_set_folder_interest($fid, $interest = -1)
+{
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $db_user_ignore_folder = db_connect();
+
+    $sql = "delete from ". forum_table("USER_FOLDER"). " where UID = $uid and FID = $fid";
+    $result = db_query($sql, $db_user_ignore_folder);
+
+    if ($interest == -1) {
+    
+      $sql = "insert into ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
+      $sql.= "values ($uid, $fid, -1)";
+      $result = db_query($sql, $db_user_ignore_folder);
+
+    }
+
+}
+
 ?>

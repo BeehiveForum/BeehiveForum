@@ -30,6 +30,7 @@ require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/form.inc.php"); // Form drawing functions
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/folder.inc.php");
 
 if(!bh_session_check()){
 

@@ -272,8 +272,16 @@ if(!empty($error_html)) {
             }else {
               $selected_style = $default_style;
             }
+
+	    foreach ($available_styles as $key => $style) {
+	      if (strtolower($style) == strtolower($selected_style)) {
+	        break;
+	      }
+	    }
+
+	    reset($available_styles);
             
-            if (list($key) = array_keys($available_styles, $selected_style)) {
+            if (isset($key)) {
               echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]);
             }else {
               echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]);

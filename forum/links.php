@@ -71,7 +71,7 @@ if (!is_array($folders)) {
   $folders = links_folders_get(perm_is_moderator());
 }
 
-if ($HTTP_GET_VARS['fid'] && !isset($fid)) { // default to top level folder if no other valid folder specified
+if (isset($HTTP_GET_VARS['fid']) && !isset($fid)) { // default to top level folder if no other valid folder specified
     if (is_array($folders) && array_key_exists($HTTP_GET_VARS['fid'], $folders)) {
         $fid = $HTTP_GET_VARS['fid'];
     } else {

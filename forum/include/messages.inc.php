@@ -190,7 +190,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'].= "...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">View full message.</a>";
     }
 
-    if($in_list){
+    if($in_list && isset($message['PID'])){
         echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>";
     }
 
@@ -204,6 +204,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
+
+    $temp_ignore = false;
     
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
@@ -245,11 +247,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
         }
 
-        if($message['VIEWED'] > 0) {
-            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
-        } else {
-            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
-        }
+        if (isset($message['VIEWED'])) {
+        
+          if ($message['VIEWED'] > 0) {
+              echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
+          }else {
+              echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
+          }
+
+	}
+
     }else {
         echo "ALL</span>";
     }
@@ -313,7 +320,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	}
 
         echo "<tr><td class=\"postbody\">". $message['CONTENT'];
-        if (($tid <> 0 && isset($message['PID'])) || $message['AID']) {
+        if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 	      $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
               $attachments = get_attachments($message['FROM_UID'], $aid);
               if (is_array($attachments)) {

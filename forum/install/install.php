@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.7 2004-05-24 19:33:07 decoyduck Exp $ */
+/* $Id: install.php,v 1.8 2004-08-02 18:03:15 decoyduck Exp $ */
 
 if (@file_exists("../include/config.inc.php")) {
     include_once("../include/config.inc.php");
@@ -128,7 +128,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
     if ($valid) {
 
-        if ($admin_password != $admin_cpassword) {
+        if ($install_method == 0 && ($admin_password != $admin_cpassword)) {
             $error_html.= "<h2>Administrator account passwords do not match.</h2>\n";
             $valid = false;
         }
@@ -185,11 +185,11 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
                     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
                     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
-		    echo "<head>\n";
-		    echo "<title>BeehiveForum ", BEEHIVE_VERSION, " Installation</title>\n";
-		    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-		    echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
-		    echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+                    echo "<head>\n";
+                    echo "<title>BeehiveForum ", BEEHIVE_VERSION, " Installation</title>\n";
+                    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+                    echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
+                    echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
                     echo "</head>\n";
                     echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
                     echo "<br />\n";
@@ -363,24 +363,24 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
-	echo "<head>\n";
-	echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-	echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
-	echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+        echo "<head>\n";
+        echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+        echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
+        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
         echo "</head>\n";
 
         echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation (Doesn't work 100% yet!)</h2>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-	echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-	echo "  <tr>\n";
-	echo "    <td width=\"250\">\n";
-	echo "      <table class=\"box\" width=\"100%\">\n";
-	echo "        <tr>\n";
-	echo "          <td class=\"posthead\">\n";
+        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+        echo "  <tr>\n";
+        echo "    <td width=\"250\">\n";
+        echo "      <table class=\"box\" width=\"100%\">\n";
+        echo "        <tr>\n";
+        echo "          <td class=\"posthead\">\n";
         echo "            <table class=\"posthead\" width=\"100%\">\n";
         echo "              <tr>\n";
         echo "                <td class=\"subhead\">Config Download Failed</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.155 2004-08-17 23:46:33 tribalonline Exp $ */
+/* $Id: messages.php,v 1.156 2004-08-18 00:03:18 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -341,9 +341,7 @@ if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($_GET['markasre
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "  <td>";
-form_quick_button("./post.php", $lang['replyall'], "replyto", "$tid.0", "_parent");
-echo "</td>\n";
+echo "  <td><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
 
 if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
@@ -352,6 +350,9 @@ if ($last_pid < $threaddata['LENGTH']) {
     echo "</td>\n";
 }
 
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table></div>\n";
 

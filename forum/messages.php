@@ -85,10 +85,10 @@ if ($tid == '') $tid = 1;
 if ($pid == '') $pid = 1;
 
 if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
-	html_draw_top();
-	echo "<h2>The requested thread could not be found. It has either been deleted or access was denied.</h2>";
-	html_draw_bottom();
-	exit;
+        html_draw_top();
+        echo "<h2>The requested thread could not be found. It has either been deleted or access was denied.</h2>";
+        html_draw_bottom();
+        exit;
 }
 
 // Poll stuff
@@ -198,11 +198,11 @@ if($msg_count > 0) {
             $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
           }
 
-	}else {
+        }else {
 
-	  $message['CONTENT'] = message_get_content($tid, $message['PID']);
+          $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
-	}
+        }
 
         if($threaddata['POLL_FLAG'] == 'Y') {
 
@@ -247,12 +247,12 @@ if($threaddata['POLL_FLAG'] == 'Y') {
 
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 
-	messages_interest_form($tid, $pid);
-	messages_fontsize_form($tid, $pid);
+        messages_interest_form($tid, $pid);
+        messages_fontsize_form($tid, $pid);
 
-	if(perm_is_moderator()){
-		messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
-	}
+        if(perm_is_moderator()){
+                messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
+        }
 }
 
 draw_beehive_bar();

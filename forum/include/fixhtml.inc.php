@@ -94,7 +94,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
                         }
                 }
 
-                if (sizeof($html_parts) > 0) {
+                if (sizeof($html_parts) > 0 && isset($html_parts[count($html_parts)])) {
                         $html_parts[count($html_parts)] .= $html;
                 }else {
                         $html_parts[0] = $html;
@@ -227,14 +227,21 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
                                                 array_push($last_tag, $tag);
 
-                                                $opentags[$tag]++;
-
+                                                if (in_array($tag, array_keys($opentags))) {
+                                                    $opentags[$tag]++;
+                                                }else {
+                                                    $opentags[$tag] = 1;
+                                                }
 
                                                 // make sure certain tags can't nest within themselves, e.g. <p><p>
                                                 if(isset($no_nest[$tag])) {
                                                         $opencount = 0;
                                                         for ($j=0; $j<count($no_nest[$tag]); $j++) {
-                                                                $opencount += $opentags[$no_nest[$tag][$j]];
+                                                                if (in_array($no_nest[$tag][$j], array_keys($opentags))) {
+                                                                    $opencount += $opentags[$no_nest[$tag][$j]];
+                                                                }else {
+                                                                    $opencount++; //$opentags[$no_nest[$tag][$j]];
+                                                                }
                                                         }
                                                         if ($tag == "p") $opencount++;
 

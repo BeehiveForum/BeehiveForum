@@ -29,7 +29,7 @@ USA
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
-// Frameset for thread list and messages  
+// Frameset for thread list and messages
 
 //Check logged in status
 require_once("./include/session.inc.php");
@@ -39,7 +39,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/perm.inc.php");
@@ -47,8 +47,8 @@ require_once("./include/html.inc.php");
 
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
+        html_guest_error();
+        exit;
 }
 
 
@@ -90,7 +90,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 echo "<table width=\"600\" class=\"box\">\n  <tr>\n    <td class=\"posthead\">\n";
 
 
-echo "      <form name=\"f_profile\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
+echo "      <form name=\"f_profile\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 
 

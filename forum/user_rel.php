@@ -38,8 +38,8 @@ if(!bh_session_check()){
 require_once("./include/html.inc.php");
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
+        html_guest_error();
+        exit;
 }
 
 require_once("./include/user.inc.php");
@@ -52,33 +52,33 @@ $my_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
 if(isset($HTTP_POST_VARS['submit'])){
 
-	$rel = $HTTP_POST_VARS['rel'] + $HTTP_POST_VARS['sig'];
-	$sig_global = $HTTP_POST_VARS['sig_global'];
+        $rel = $HTTP_POST_VARS['rel'] + $HTTP_POST_VARS['sig'];
+        $sig_global = $HTTP_POST_VARS['sig_global'];
 
-	user_rel_update($my_uid, $HTTP_POST_VARS['uid'], $rel);
+        user_rel_update($my_uid, $HTTP_POST_VARS['uid'], $rel);
 
-	user_update_global_sig($my_uid, $sig_global);
+        user_update_global_sig($my_uid, $sig_global);
 
-	// Update the User's Session to save them having to logout and back in
-	bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+        // Update the User's Session to save them having to logout and back in
+        bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
 
-	header_redirect($HTTP_POST_VARS['ret']);
+        header_redirect($HTTP_POST_VARS['ret']);
 }
 
 if(isset($HTTP_POST_VARS['cancel'])){
-	header_redirect($HTTP_POST_VARS['ret']);
+        header_redirect($HTTP_POST_VARS['ret']);
 }
 
 if (isset($HTTP_GET_VARS['uid'])) {
-	$uid = $HTTP_GET_VARS['uid'];
-	$user = user_get($uid);
-	$uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
+        $uid = $HTTP_GET_VARS['uid'];
+        $user = user_get($uid);
+        $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
 }
 
 if (isset($HTTP_GET_VARS['ret'])) {
-	$ret = $HTTP_GET_VARS['ret'];
+        $ret = $HTTP_GET_VARS['ret'];
 } else {
-	$ret = "index.php";
+        $ret = "index.php";
 }
 
 html_draw_top_script();
@@ -89,9 +89,9 @@ echo "<h1>User Relationship: $uname</h1>\n";
 ?>
 
 <div class="postbody">
-  <form name="relationship" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST" target="_self">
-<?php echo form_input_hidden("uid", $uid)."\n".form_input_hidden("ret",$ret); ?>
-	<table class="posthead" width="500">
+  <form name="relationship" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post" target="_self">
+<?php echo "    ", form_input_hidden("uid", $uid), "\n    ", form_input_hidden("ret",$ret), "\n"; ?>
+    <table class="posthead" width="500">
 <?php if (isset($uid)) { ?>
       <tr>
         <td class="subhead" colspan="2">Relationship</td>
@@ -126,7 +126,6 @@ echo "<h1>User Relationship: $uname</h1>\n";
         <td width="130"><?php echo form_checkbox("sig_global", "Y", "Globally ignored", user_get_global_sig($HTTP_COOKIE_VARS['bh_sess_uid']) == "Y"); ?></td>
         <td width="370">: No signatures are displayed.</td>
       </tr>
-      <tr>
     </table>
     <p><?php echo form_submit("submit", "Submit")."&nbsp;".form_submit("cancel", "Cancel"); ?></p>
   </form>

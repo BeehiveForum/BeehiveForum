@@ -93,7 +93,7 @@ function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
     while($row = db_fetch_array($result)){
         $html .= "<option value=\"" . $row['PSID'] . "\"";
         if($row['PSID'] == $default_psid){
-            $html .= " selected";
+            $html .= " selected=\"selected\"";
         }
         $html .= ">" . $row['NAME'] . "</option>";
     }

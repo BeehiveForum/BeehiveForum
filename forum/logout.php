@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -33,7 +33,7 @@ require_once("./include/header.inc.php");
 if(!bh_session_check()){
 
     header_redirect("./logon.php");
-    
+
 }
 
 // Disable caching when showing logon page
@@ -46,9 +46,9 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
         $uri = "./index.php";
-	bh_session_end();
-	header_redirect($uri);
-  
+        bh_session_end();
+        header_redirect($uri);
+
 }
 
 require_once("./include/config.inc.php");
@@ -73,7 +73,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 html_draw_top();
 
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"POST\" target=\"_top\">\n";
+echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_top\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
 echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
 echo "Log out:\n";

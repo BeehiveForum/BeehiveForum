@@ -32,21 +32,21 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 if(isset($HTTP_POST_VARS['cancel'])) {
 
     $uri = "./discussion.php?msg=" . $HTTP_POST_VARS['t_back'];
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/html.inc.php");
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
+        html_guest_error();
+        exit;
 }
 
 require_once("./include/user.inc.php");
@@ -65,43 +65,43 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     $delete_msg = $HTTP_POST_VARS['t_msg'];
     list($tid, $pid) = explode(".", $delete_msg);
-    
+
 }else {
 
     if(isset($HTTP_GET_VARS['msg'])) {
-    
+
         $delete_msg = $HTTP_GET_VARS['msg'];
         list($tid, $pid) = explode(".",$delete_msg);
         $back = $HTTP_GET_VARS['back'];
-        
+
     }else {
-    
+
         $valid = false;
         $error_html = "<h2>No message specified for deleting</h2>";
-        
+
     }
-    
+
     if(isset($tid) && isset($pid)) {
-    
+
         $preview_message = messages_get($tid, $pid, 1);
-        
+
         if(count($preview_message) > 0) {
-        
+
             $preview_message['CONTENT'] = message_get_content($tid, $pid);
-            
+
             if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
                 edit_refuse();
                 exit;
             }
-            
+
             $to_uid = $preview_message['TO_UID'];
             $from_uid = $preview_message['FROM_UID'];
-            
+
         }else {
-        
+
             $valid = false;
             $error_html = "<h2>Message " . $HTTP_GET_VARS['msg'] . " was not found</h2>";
-            
+
         }
     }
 }
@@ -111,65 +111,65 @@ html_draw_top_script();
 if ($valid) {
 
     if(isset($HTTP_POST_VARS['submit'])) {
-        
+
         if (post_delete($tid, $pid)) {
-        
+
             echo "<div align=\"center\">";
             echo "<p>Post deleted successfully</p>";
             echo form_quick_button("discussion.php", "Back", "msg", $HTTP_POST_VARS['t_back']);
             echo "</div>";
             html_draw_bottom();
             exit;
-            
+
         }else {
-        
+
             $error_html = "<h2>Error deleting post</h2>";
-            
+
         }
     }
 
     echo "<h1>Delete this message</h1>";
     echo "<h2>" . thread_get_title($tid) . "</h2>";
-    
+
     if($to_uid == 0) {
-    
+
         $preview_message['TLOGON'] = "ALL";
         $preview_message['TNICK'] = "ALL";
-        
+
     }else {
-    
+
         $preview_tuser = user_get($to_uid);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-        
+
     }
-    
+
     $preview_tuser = user_get($from_uid);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
     $threaddata = thread_get($tid);
-    
+
     if (thread_is_poll($tid) && $pid == 1) {
-    
+
       poll_display($tid, $threaddata['LENGTH'], $pid, false, false, false, true, true, true);
-      
+
     }else {
 
       message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true, true);
-      
+
     }
 }
 
 if(isset($error_html)) echo $error_html;
 
-echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
+echo "<form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\" target=\"_self\">";
 echo form_input_hidden("t_msg",$delete_msg);
 echo form_input_hidden("t_back",$back);
 echo form_submit("submit","Delete");
 echo "&nbsp;".form_submit("cancel","Cancel");
 echo "</form>\n";
-echo "<p>&nbsp;&nbsp;</p>\n";
+echo "<p>&nbsp;</p>\n";
 
 html_draw_bottom();
 

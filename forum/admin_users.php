@@ -91,7 +91,8 @@ if (isset($HTTP_GET_VARS['usersearch']) && isset($HTTP_GET_VARS['submit']) && $H
 
 // Draw the form
 echo "<h1>Manage Users</h1>\n";
-echo "<p>This list shows the last 20 users to logon to the forum. To alter a user's permissions click their name.</p>\n";
+echo "<p>This list shows a selection of users who have logged on to your forum, sorted by $sort_by. To alter a user's permissions click their name.</p>\n";
+echo "<p>To see the last few users to logon, sort the list by LAST_LOGON.</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
@@ -100,33 +101,33 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&sort_dir=DESC&usersearch=$usersearch\">UID</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch\">UID</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&sort_dir=ASC&usersearch=$usersearch\">UID</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch\">UID</a></td>\n";
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&sort_dir=DESC&usersearch=$usersearch\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Logon</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&sort_dir=ASC&usersearch=$usersearch\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Logon</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&sort_dir=DESC&usersearch=$usersearch\">Status</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Status</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&sort_dir=ASC&usersearch=$usersearch\">Status</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Status</a></td>\n";
 }
 
 if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&sort_dir=DESC&usersearch=$usersearch\">Last Logon</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Last Logon</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&sort_dir=ASC&usersearch=$usersearch\">Last Logon</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Last Logon</a></td>\n";
 }
 
 if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&sort_dir=DESC&usersearch=$usersearch\">Logon From</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Logon From</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&sort_dir=ASC&usersearch=$usersearch\">Logon From</a></td>\n";
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Logon From</a></td>\n";
 }
 
 echo "        </tr>\n";

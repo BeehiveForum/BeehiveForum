@@ -165,7 +165,7 @@ if(!empty($error_html)) {
 
 ?>
 <div class="postbody">
-  <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
+  <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post">
     <table class="posthead" width="400">
       <tr>
         <td class="subhead" colspan="2">User Details</td>
@@ -238,7 +238,6 @@ if(!empty($error_html)) {
       <tr>
         <td>&nbsp;</td>
       </tr>
-      <tr>
     </table>
     <table class="posthead" width="400">
       <tr>

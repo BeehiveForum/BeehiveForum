@@ -42,7 +42,7 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
-    echo form_quick_button("./index.php?$final_uri", "Continue", 0, 0, "_top");
+    echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), "Continue", 0, 0, "_top");
     echo "</div>\n";
     html_draw_bottom();
     exit;
@@ -223,7 +223,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           echo "<div align=\"center\">\n";
           echo "<p>Huzzah! Your user record has been created successfully!</p>\n";
-          echo form_quick_button("./index.php?$final_uri", "Continue", 0, 0, "_top");
+          echo form_quick_button("./index.php". (isset($final_uri) ? "?$final_uri" : ""), "Continue", 0, 0, "_top");
           echo "</div>\n";
 
           html_draw_bottom();

@@ -308,7 +308,7 @@ if (isset($HTTP_GET_VARS['other'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"POST\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
 echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
@@ -432,10 +432,10 @@ echo "          </table>\n";
 echo "        </td>\n";
 echo "      </tr>\n";
 echo "    </table>\n";
+echo "  </form>\n";
 
 if (user_guest_enabled() && $guest_account_enabled) {
 
-  echo "  </form>\n";
   echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
   echo "    <p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
   echo "  </form>\n";
@@ -443,11 +443,11 @@ if (user_guest_enabled() && $guest_account_enabled) {
 }
 
 echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Register now.</a></p>\n";
-echo "  <hr width=\"350\">\n";
+echo "  <hr width=\"350\" />\n";
 echo "  <h2>Problems logging on?</h2>\n";
 echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Delete Cookies</a></p>\n";
 echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Forgotten your password?</a></p>\n";
-echo "  <hr width=\"350\">\n";
+echo "  <hr width=\"350\" />\n";
 echo "  <h2>Using a PDA?</h2>\n";
 echo "  <p class=\"smalltext\"><a href=\"llogon.php\" target=\"_top\">Light HTML version</a></p>\n";
 echo "</div>\n";

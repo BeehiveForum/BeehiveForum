@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -35,7 +35,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 // Disable caching when showing logon page
@@ -58,15 +58,15 @@ if (isset($HTTP_GET_VARS['msg'])) {
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<title><?php echo $forum_name ?></title>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link rel="stylesheet" href="./styles/style.css" type="text/css">
-	</head>
-        <frameset cols="250,*" border="1">
-          <frame src="./thread_list.php?msg=<?php echo $msg; ?>" name="left" border="1">
-          <frame src="./messages.php?msg=<?php echo $msg; ?>" name="right" border="1">
-        </frameset>
+<head>
+<title><?php echo $forum_name ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="./styles/style.css" type="text/css" />
+</head>
+<frameset cols="250,*" border="1">
+  <frame src="./thread_list.php?msg=<?php echo $msg; ?>" name="left" border="1">
+  <frame src="./messages.php?msg=<?php echo $msg; ?>" name="right" border="1">
+</frameset>
 </html>

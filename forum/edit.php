@@ -258,7 +258,7 @@ echo "<h1>Edit message $tid.$pid</h1>";
 
 if (isset($error_html)) echo $error_html;
 
-echo "<form name=\"f_edit\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"f_edit\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" method=\"post\" target=\"_self\">\n";
 echo "<h2>Subject: ". thread_get_title($tid). "</h2>\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo form_input_hidden("t_to_uid", $to_uid);
@@ -282,7 +282,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit', 'Apply', 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
+echo form_submit('submit', 'Apply', 'onclick="if (typeof attachwin == \'object\' and !attachwin.closed) attachwin.close();"');
 echo "&nbsp;". form_submit("preview", "Preview");
 echo "&nbsp;". form_submit("cancel",  "Cancel");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.73 2004-10-25 16:20:23 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.74 2004-10-28 19:31:33 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -503,7 +503,7 @@ function folder_search_dropdown()
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result, MYSQL_ASSOC)) {
+        while($row = db_fetch_array($result)) {
 
             if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
 

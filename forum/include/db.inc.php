@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.55 2004-07-22 19:41:56 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.56 2004-10-28 19:31:32 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -33,104 +33,214 @@ include_once("./include/constants.inc.php");
 
 function db_connect ()
 {
-        // If the PHP MySQL extension isn't loaded, we're not going anywhere
-        if (!extension_loaded("mysql")) {
-            trigger_error("The PHP MySQL extension is not loaded!", FATAL);
-        }
+    global $db_server, $db_username, $db_password, $db_database, $show_friendly_errors;
 
-        global $db_server, $db_username, $db_password, $db_database, $show_friendly_errors;
     static $connection_id = false;
 
-    if (!$connection_id) {
+    if (@extension_loaded('mysql')) {
 
-        if ($connection_id = @mysql_connect($db_server, $db_username, $db_password)) {
-            if (@mysql_select_db($db_database, $connection_id)) {
-                return $connection_id;
+        if (!$connection_id) {
+
+            if ($connection_id = mysql_connect($db_server, $db_username, $db_password)) {
+
+                if (mysql_select_db($db_database, $connection_id)) {
+
+                    return $connection_id;
+                }
+            }
+
+            if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
+
+                 trigger_error(BH_DB_CONNECT_ERROR, FATAL);
+
+            }else {
+
+                trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
             }
         }
 
-        if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
-            trigger_error(BH_DB_CONNECT_ERROR, FATAL);
-        }else {
-            trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
-        }
+        return $connection_id;
     }
 
-    return $connection_id;
-}
+    if (@extension_loaded('mysqli')) {
 
-// Disconnects from the database (PHP does this anyway when a script termintates,
-// but it's nice to be tidy). Pass the connection ID to the function
+        if (!$connection_id) {
 
-function db_disconnect ($connection_id)
-{
-    //if ($connection_id) mysql_close($connection_id);
-    return true;
+            if ($connection_id = mysqli_connect($db_server, $db_username, $db_password, $db_database)) {
+
+                return $connection_id;
+            }
+
+            if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
+
+                 trigger_error(BH_DB_CONNECT_ERROR, FATAL);
+
+            }else {
+
+                trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
+            }
+        }
+
+        return $connection_id;
+    }
+
+    trigger_error("Could not connect to the database. Please check that the PHP MySQL or MySQLi extension is correctly installed!", FATAL);
 }
 
 // Executes a query on the database and returns a resource ID
 
 function db_query ($sql, $connection_id)
 {
-    if ($resource_id = mysql_query($sql, $connection_id)) {
-        return $resource_id;
-    }else {
-        $mysql_error = mysql_error($connection_id);
-        trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
+    if (@extension_loaded('mysql')) {
+
+        if ($resource_id = mysql_query($sql, $connection_id)) {
+
+            return $resource_id;
+
+        }else {
+
+            $mysql_error = mysql_error($connection_id);
+            trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
+        }
     }
+
+    if (@extension_loaded('mysqli')) {
+
+        if ($resource_id = mysqli_query($connection_id, $sql)) {
+
+            return $resource_id;
+
+        }else {
+
+            $mysql_error = mysqli_error($connection_id);
+            trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
+        }
+    }
+
+    trigger_error("Could not perform query. Please check that the PHP MySQL or MySQLi extension is correctly installed!", FATAL);
 }
 
 // Executes a query on the database and returns a resource ID
 
 function db_unbuffered_query ($sql, $connection_id)
 {
-    if (function_exists("mysql_unbuffered_query")) {
-        if ($resource_id = mysql_unbuffered_query($sql, $connection_id)) {
-            return $resource_id;
+    if (@extension_loaded('mysql')) {
+
+        if (function_exists("mysql_unbuffered_query")) {
+
+            if ($resource_id = mysql_unbuffered_query($sql, $connection_id)) {
+
+                return $resource_id;
+
+            }else {
+
+                $mysql_error = mysql_error($connection_id);
+                trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
+            }
+
         }else {
-            $mysql_error = mysql_error($connection_id);
-            trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
+
+            $resource_id = db_query($sql, $connection_id);
+            return $resource_id;
         }
-    }else {
-        db_query($sql, $connection_id);
     }
 
-    return $resource_id;
+    if (@extension_loaded('mysqli')) {
+
+        $resource_id = db_query($sql, $connection_id);
+        return $resource_id;
+    }
+
+    trigger_error("Could not perform query. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
 }
 
 // Returns the number of rows affected by a SELECT query when passed the resource ID
 function db_num_rows ($resource_id)
 {
-    $num_rows = mysql_num_rows($resource_id);
-    return $num_rows;
+    if (@extension_loaded('mysql')) {
+
+        $num_rows = mysql_num_rows($resource_id);
+        return $num_rows;
+    }
+
+    if (@extension_loaded('mysqli')) {
+
+        $num_rows = mysqli_num_rows($resource_id);
+        return $num_rows;
+    }
+
+    trigger_error("Could not obtain row count. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
 }
 
 // Returns the number of rows affected by a query when passed the connection ID
 function db_affected_rows($connection_id)
 {
-    $results = mysql_affected_rows($connection_id);
-    return $results;
+    if (@extension_loaded('mysql')) {
+
+        $results = mysql_affected_rows($connection_id);
+        return $results;
+    }
+
+    if (@extension_loaded('mysqli')) {
+
+        $results = mysqli_affected_rows($connection_id);
+        return $results;
+    }
+
+    trigger_error("Could not obtain affected row count. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
 }
 
-// Returns a result array when passed the resource ID - this is superior to mysql_fetch_row(), and can be used in exactly the same way
-function db_fetch_array ($resource_id, $result_type = MYSQL_BOTH)
+function db_fetch_array ($resource_id)
 {
-    $results = mysql_fetch_array($resource_id, $result_type);
-    return $results;
+    if (@extension_loaded('mysql')) {
+
+        $results = mysql_fetch_array($resource_id);
+        return $results;
+    }
+
+    if (@extension_loaded('mysqli')) {
+
+       $results = mysqli_fetch_array($resource_id);
+       return $results;
+    }
+
+    trigger_error("Could not retrieve row. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
 }
 
 // Seeks to the specified row in a SELECT query (0 based)
 function db_data_seek ($resource_id, $row_number)
 {
-    $seek_result = @mysql_data_seek($resource_id, $row_number);
-    return $seek_result;
+    if (@extension_loaded('mysql')) {
+
+        $seek_result = @mysql_data_seek($resource_id, $row_number);
+        return $seek_result;
+    }
+
+    if (@extension_loaded('mysqli')) {
+
+        $seek_result = @mysqli_data_seek($resource_id, $row_number);
+        return $seek_result;
+    }
+
+    trigger_error("Could not perform row seek. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
 }
 
 // Returns the AUTO_INCREMENT ID from the last insert statement
 function db_insert_id($resource_id)
 {
-    $insert_id = mysql_insert_id($resource_id);
-    return $insert_id;
+    if (@extension_loaded('mysql')) {
+
+        $insert_id = mysql_insert_id($resource_id);
+        return $insert_id;
+    }
+
+    if (@extension_loaded('mysqli')) {
+
+        $insert_id = mysqli_insert_id($resource_id);
+        return $insert_id;
+    }
+
+    trigger_error("Could not fetch AUTO_INCREMENT ID. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
 }
 
 // Return the MySQL Server Version.

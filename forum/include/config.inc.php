@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.95 2004-09-05 17:16:23 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.96 2004-10-28 19:31:25 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -39,7 +39,7 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 
 // Error Handler -------------------------------------------------------
 
-$show_friendly_errors = true;
+$show_friendly_errors = false;
 
 // Should Beehive replace PHP's default error handler? If you have
 // problems with blank pages, etc, you should try turning this option

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.57 2004-10-27 16:43:17 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.58 2004-10-28 19:31:33 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -702,7 +702,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result, MYSQL_ASSOC)) {
+        while($row = db_fetch_array($result)) {
 
             if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
 

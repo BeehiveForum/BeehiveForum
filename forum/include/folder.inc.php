@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.81 2004-10-25 16:20:23 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.82 2004-10-28 19:31:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -61,7 +61,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result, MYSQL_ASSOC)) {
+        while($row = db_fetch_array($result)) {
 
             if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
 
@@ -117,6 +117,8 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
     $title = addslashes($title);
     $description = addslashes($description);
 
+    $new_pos = 0;
+
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
     if (!is_numeric($permissions)) $permissions = 0;
 
@@ -125,7 +127,9 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
     $sql = "SELECT MAX(POSITION) + 1 AS NEW_POS FROM {$table_data['PREFIX']}FOLDER";
     $result = db_query($sql, $db_folder_create);
 
-    list($new_pos) = db_fetch_array($result, MYSQL_NUM);
+    if ($row = db_fetch_array($result)) {
+        $new_pos = $row['NEW_POS'];
+    }
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
     $sql.= "VALUES ('$title', '$description', '$allowed_types', '$new_pos')";
@@ -287,7 +291,7 @@ function folder_get_all()
 
         $folder_list = array();
 
-        while ($row = db_fetch_array($result, MYSQL_ASSOC)) {
+        while ($row = db_fetch_array($result)) {
             $folder_list[$row['FID']] = $row;
         }
 

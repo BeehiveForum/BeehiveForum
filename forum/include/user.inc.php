@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.203 2004-10-21 21:28:19 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.204 2004-10-28 19:31:35 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -360,7 +360,7 @@ function user_get_prefs($uid)
     $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, POST_PAGE FROM USER_PREFS WHERE UID = $uid";
 
     $result = db_query($sql, $db_user_get_prefs);
-    $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, MYSQL_ASSOC) : array();
+    $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result) : array();
 
     // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
 
@@ -373,7 +373,7 @@ function user_get_prefs($uid)
         $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
 
         $result = db_query($sql, $db_user_get_prefs);
-        $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, MYSQL_ASSOC) : array();
+        $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result) : array();
     }
 
     // Prune empty values from the arrays (to stop them overwriting valid values)

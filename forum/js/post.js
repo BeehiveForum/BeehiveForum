@@ -32,7 +32,9 @@ function clearFocus() {
 	activate_tools();
 	document.f_post.t_to_uid_others.focus();
 	document.f_post.t_content.caretPos = "";
-	active_text = "";
+	active_text = function() {
+		return;
+	}
 }
 
 function checkToRadio(num) {

@@ -373,19 +373,13 @@ A		{
 
 .tools {
 		margin: 0;
-		width: 400px;
+		margin-bottom: 3px;
 		padding: 2px;
-		background: #709FCF;
-		border-top: 1px solid buttonhighlight;
-		border-left: 1px solid buttonhighlight;
-		border-bottom: 1px solid buttonshadow;
-		border-right: 1px solid buttonshadow;
 		text-align:left;
 		display: none;
 }
 
 .tools_up {
-		background: #709FCF;
 		border: 1px solid #709FCF;
 		margin: 1;
 		float:left;
@@ -396,7 +390,6 @@ A		{
 		border-left: 1px solid buttonhighlight;
 		border-bottom: 1px solid buttonshadow;
 		border-right: 1px solid buttonshadow;
-		background: #709FCF;
 		margin:1;
 		float:left;
 }
@@ -406,7 +399,6 @@ A		{
 		border-left: 1px solid buttonshadow;
 		border-bottom: 1px solid buttonhighlight;
 		border-right: 1px solid buttonhighlight;
-		background: #709FCF;
 		margin:1;
 		float:left;
 }

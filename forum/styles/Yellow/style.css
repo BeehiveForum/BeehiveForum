@@ -372,20 +372,14 @@ A		{
 
 .tools {
 		margin: 0;
-		width: 400px;
+		margin-bottom: 3px;
 		padding: 2px;
-		background: #FFC846;
-		border-top: 1px solid buttonhighlight;
-		border-left: 1px solid buttonhighlight;
-		border-bottom: 1px solid buttonshadow;
-		border-right: 1px solid buttonshadow;
 		text-align:left;
 		display: none;
 }
 
 .tools_up {
-		background: #FFC846;
-		border: 1px solid #FFC846;
+		border: 1px solid #709FCF;
 		margin: 1;
 		float:left;
 }
@@ -395,7 +389,6 @@ A		{
 		border-left: 1px solid buttonhighlight;
 		border-bottom: 1px solid buttonshadow;
 		border-right: 1px solid buttonshadow;
-		background: #FFC846;
 		margin:1;
 		float:left;
 }
@@ -405,7 +398,6 @@ A		{
 		border-left: 1px solid buttonshadow;
 		border-bottom: 1px solid buttonhighlight;
 		border-right: 1px solid buttonhighlight;
-		background: #FFC846;
 		margin:1;
 		float:left;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.45 2003-08-30 02:13:30 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.46 2003-09-01 21:31:56 tribalonline Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -168,7 +168,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 {
-    $html = "<select name=\"t_to_uid_recent\" style=\"width: 160px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
+    $html = "<select name=\"t_to_uid_recent\" style=\"width: 190px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
     if(isset($default_uid) && $default_uid != 0){
@@ -220,7 +220,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
 {
-    $html = "<select name=\"t_to_uid_in_thread\" style=\"width: 160px\" onClick=\"checkToRadio(0)\">\n";
+    $html = "<select name=\"t_to_uid_in_thread\" style=\"width: 190px\" onClick=\"checkToRadio(0)\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
     if(isset($default_uid) && $default_uid != 0){

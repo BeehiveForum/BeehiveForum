@@ -326,11 +326,19 @@ A		{
           background-color: #C8D7E6
 }
 
+.quotetext {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		font-size: 8pt;
+		margin-top: 5px;
+		margin-left: 40px;
+		margin-right: 10px;
+		padding: 3px;
+}
 .code {
 		font-family: monospace;
 		border: 1px solid #CCCCCC;
 		background-color: #EEEEEE;
-		margin-top: 10px;
+		margin-top: 0px;
 		margin-bottom: 10px;
 		margin-left: 40px;
 		margin-right: 10px;
@@ -340,7 +348,7 @@ A		{
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		border: 1px solid #CCCCCC;
 		background-color: #EEEEEE;
-		margin-top: 10px;
+		margin-top: 0px;
 		margin-bottom: 10px;
 		margin-left: 40px;
 		margin-right: 10px;
@@ -349,20 +357,14 @@ A		{
 
 .tools {
 		margin: 0;
-		width: 350px;
+		margin-bottom: 3px;
 		padding: 2px;
-		background: #C8D7E6;
-		border-top: 1px solid buttonhighlight;
-		border-left: 1px solid buttonhighlight;
-		border-bottom: 1px solid buttonshadow;
-		border-right: 1px solid buttonshadow;
 		text-align:left;
 		display: none;
 }
 
 .tools_up {
-		background: #C8D7E6;
-		border: 1px solid #C8D7E6;
+		border: 1px solid #709FCF;
 		margin: 1;
 		float:left;
 }
@@ -372,7 +374,6 @@ A		{
 		border-left: 1px solid buttonhighlight;
 		border-bottom: 1px solid buttonshadow;
 		border-right: 1px solid buttonshadow;
-		background: #C8D7E6;
 		margin:1;
 		float:left;
 }
@@ -382,7 +383,6 @@ A		{
 		border-left: 1px solid buttonshadow;
 		border-bottom: 1px solid buttonhighlight;
 		border-right: 1px solid buttonhighlight;
-		background: #C8D7E6;
 		margin:1;
 		float:left;
 }

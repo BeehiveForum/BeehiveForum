@@ -43,7 +43,7 @@ function tools_html() {
 	echo tools_button($lang['horizontalrule'], "add_tag('hr', null, null, true);", "horizontal_rule_button.png");
 	echo tools_button($lang['image'], "add_image();", "image_button.png");
 	echo tools_button($lang['hyperlink'], "add_link();", "link_button.png");
-	echo "<br /><span class=\"bhinputcheckbox\"> &nbsp;\n";
+	echo "<br /><br />\n";
 	echo "<select class=\"bhselect\" onChange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
 		echo "<option value=\"\" selected>".$lang['fontface']."</option>\n";
 		echo "<option value=\"Arial\">Arial</option>\n";
@@ -74,7 +74,7 @@ function tools_html() {
 		echo "<option value=\"#4B0082\" style=\"color: #4B0082;\">".$lang['indigo']."</option>\n";
 		echo "<option value=\"#EE82EE\" style=\"color: #EE82EE;\">".$lang['violet']."</option>\n";
 		echo "<option value=\"#FFFFFF\" style=\"color: #FFFFFF; background-color: #000000;\">".$lang['white']."</option>\n";
-	echo "</select></span></div>\n";
+	echo "</select></div>\n";
 }
 
 function tools_junk() {

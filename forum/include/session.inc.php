@@ -22,6 +22,7 @@ USA
 ======================================================================*/
 
 require_once("./include/forum.inc.php");
+require_once("./include/config.inc.php");
 
 define("BH_SESS_HASH","change this string if you like");
 
@@ -41,6 +42,7 @@ function bh_session_check()
     $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_dlsav'];
     $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_markread'];
     $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_fontsize'];
+	$check.= " " . @$HTTP_COOKIE_VARS['bh_sess_style'];
     if(isset($HTTP_SERVER_VARS['SERVER_SIGNATURE'])){
         $check.= " " . $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
     }
@@ -58,7 +60,7 @@ function bh_session_init($uid)
 {
     global $HTTP_SERVER_VARS;
 
-    $sql = "select USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE ";
+    $sql = "select USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE ";
     $sql.= "from " . forum_table("USER") . " USER ";
     $sql.= "left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
     $sql.= "where USER.UID = $uid";
@@ -83,13 +85,11 @@ function bh_session_init($uid)
         } else {
             $user_status = 0;
         }
-        
         if(isset($fa['POSTS_PER_PAGE']) && $fa['POSTS_PER_PAGE'] > 0) {
             $user_ppp = $fa['POSTS_PER_PAGE'];
         } else {
             $user_ppp = 20;
         }
-        
         if (isset($fa['TIMEZONE'])){
             $user_tz = $fa['TIMEZONE'];
         } else {
@@ -110,6 +110,11 @@ function bh_session_init($uid)
         } else {
             $user_fontsize = 10;
         }
+		if (isset($fa['STYLE'])) {
+            $user_style = $fa['STYLE'];
+        } else {
+            $user_style = $default_style;
+        }
     }
 
     $check = $uid;
@@ -119,6 +124,7 @@ function bh_session_init($uid)
     $check.= " " . $user_dlsav;
     $check.= " " . $user_markread;
     $check.= " " . $user_fontsize;
+	$check.= " " . $user_style;
     if(isset($HTTP_SERVER_VARS['SERVER_SIGNATURE'])){
         $check.= " " . $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
     }
@@ -131,6 +137,7 @@ function bh_session_init($uid)
     setcookie("bh_sess_dlsav", $user_dlsav);
     setcookie("bh_sess_markread", $user_markread);
     setcookie("bh_sess_fontsize", $user_fontsize);
+	setcookie("bh_sess_style", $user_style);
     setcookie("bh_sess_check",md5($check));
 
 }
@@ -144,6 +151,7 @@ function bh_session_end()
     setcookie("bh_sess_dlsav","",-3600);
     setcookie("bh_sess_markread","",-3600);
     setcookie("bh_sess_fontsize","",-3600);
+    setcookie("bh_sess_style","",-3600);
     setcookie("bh_sess_check","",-3600);
 }
 

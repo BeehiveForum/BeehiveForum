@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -31,6 +31,13 @@ $logged_in = bh_session_check();
 
 require_once("./include/config.inc.php");
 
+if(isset($default_style)){
+    $user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
+    $top_html = "./styles/$user_style/top.html";
+} else {
+    $top_html = "./top.html";
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -40,19 +47,20 @@ require_once("./include/config.inc.php");
 		<link rel="stylesheet" href="styles.php?<?php echo md5(uniqid(rand())); ?>" type="text/css">
 	</head>
 	<frameset rows="60,*" border="0">
-	  <frame src="./top.html" name="top" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
 <?php
 
-if(bh_session_check()){
+echo "<frame src=\"$top_html\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>";
+
+if($logged_in){
 
     if(isset($HTTP_GET_VARS['msg'])){
         echo "          <frame src=\"./discussion.php?msg=".$HTTP_GET_VARS['msg'];
     } else {
         echo "          <frame src=\"./start.php";
     }
-    
+
     echo "\" name=\"main\" border=\"1\">";
-    
+
 } else {
 
     echo "<frame src=\"./logon.php?final_uri=";

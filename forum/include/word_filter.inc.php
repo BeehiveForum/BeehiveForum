@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.1 2004-03-04 22:17:33 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.2 2004-03-09 23:00:09 decoyduck Exp $ */
 
 // Loads the user's word filter into an array.
 // Saves having to query the database every time
@@ -32,8 +32,10 @@ function load_wordfilter()
     $db_load_wordfilter = db_connect();
     
     $uid = bh_session_get_value('UID');
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT * FROM ". forum_table("FILTER_LIST"). " WHERE UID = '$uid'";
+    $sql = "SELECT * FROM {$table_prefix}FILTER_LIST WHERE UID = '$uid'";
     $result = db_query($sql, $db_load_wordfilter);
 
     $pattern_array = array();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.24 2004-03-06 13:45:49 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.25 2004-03-09 23:00:08 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -576,10 +576,10 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     if (!is_numeric($default_fid))
 
     if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
-        $sql = "SELECT FID, TITLE FROM ". forum_table("FOLDER");
+        $sql = "SELECT FID, TITLE FROM {$table_prefix}FOLDER";
     } else {
-        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM ". forum_table("FOLDER"). " F LEFT JOIN ";
-        $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$table_prefix}FOLDER F LEFT JOIN ";
+        $sql."{$table_prefix}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
         $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
     }
 

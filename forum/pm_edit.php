@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.38 2004-04-23 22:11:29 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.39 2004-04-25 12:38:26 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -217,9 +217,10 @@ if ($valid && isset($_POST['preview'])) {
         $t_content = clean_emoticons($pm_elements_array['CONTENT']);
         $t_subject = _stripslashes($pm_elements_array['SUBJECT']);
 
+		$t_content = _htmlentities_decode($t_content);
 		$post_html = 0;
-		$t_content_tmp = preg_replace("/<a href=\"(.*)\">\1<\/a>/", "\\1", $t_content);
-		if (strip_tags($t_content_tmp, '<p><br>') != $t_content) {
+		$t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
+		if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
 			$post_html = 2;
 		} else {
 			$t_content = strip_tags($t_content);

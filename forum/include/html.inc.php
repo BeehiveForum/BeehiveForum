@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.102 2004-04-20 21:18:24 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.103 2004-04-21 20:25:37 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -287,35 +287,29 @@ function bh_setcookie($name, $value, $expires = 0)
 {
     global $cookie_domain;
 
-    if (isset($_SERVER['HTTP_HOST']) && strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
+    if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0) {
 
-        $hostname = $_SERVER['HTTP_HOST'];
-        $hostpath = "/";
+        $cookie_domain = preg_replace("/^http:\/\//", "", trim($cookie_domain));
 
-        if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0) {
+        $cookie_path = preg_replace("/\\\/", "/", $cookie_domain);
+        $cookie_path = explode('/', $cookie_domain);
 
-            $cookie_domain = preg_replace("/^http:\/\//", "", trim($cookie_domain));
-            $cookie_path = explode('/', $cookie_domain);
-            $cookie_domain = $cookie_path[0]; unset($cookie_path[0]);
+        $cookie_domain = $cookie_path[0]; unset($cookie_path[0]);
 
-            $cookie_path = implode('/', $cookie_path);
+        $cookie_path = implode('/', $cookie_path);
 
-            $cookie_path = preg_replace("/[\/]+$/", "", $cookie_path);
-            $cookie_path = preg_replace("/^[\/]+/", "", $cookie_path);
+        $cookie_path = preg_replace("/[\/]+$/", "", $cookie_path);
+        $cookie_path = preg_replace("/^[\/]+/", "", $cookie_path);
 
-            if (strstr($hostname, $cookie_domain)) {
-                $hostname = $cookie_domain;
-            }
+        $cookie_path = preg_replace("/[\/]+/", "/", "/$cookie_path/");
 
-            if (strlen(trim($cookie_path)) > 0) {
-                $hostpath = "/$cookie_path/";
+        if (isset($_SERVER['HTTP_HOST']) && !strstr($_SERVER['HTTP_HOST'], 'localhost')) {
+
+            if (strstr($_SERVER['HTTP_HOST'], $cookie_domain)) {
+
+                return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, 0);
             }
         }
-
-        if (!strstr($hostname, 'localhost')) {
-
-            return setcookie($name, $value, $expires, $hostpath, $hostname, 0);
-	}
     }
 
     return setcookie($name, $value, $expires);

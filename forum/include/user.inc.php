@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.100 2003-09-21 14:48:49 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.101 2003-09-21 18:44:54 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -570,7 +570,7 @@ function users_get_recent()
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "WHERE USER_PREFS.ANON_LOGON <> 1 ";
+    $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1)";
     $sql.= "ORDER BY USER.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 10";
 

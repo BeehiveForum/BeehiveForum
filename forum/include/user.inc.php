@@ -255,7 +255,6 @@ function user_get_sig($uid, &$content, &$html)
     $db_user_get_sig = db_connect();
 
     $sql = "select content, html from " . forum_table("USER_SIG") . " where uid = $uid";
-
     $result = db_query($sql, $db_user_get_sig);
 
     if(!db_num_rows($result)){

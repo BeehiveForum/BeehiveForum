@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.18 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: install.php,v 1.19 2004-12-11 00:34:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -80,7 +80,11 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
     }else {
 
-        $forum_webtag = "";
+        if (isset($install_method) && $install_method < 2) {
+
+            $error_html.= "<h2>You must specify a forum webtag for your choosen type of installation.</h2>\n";
+            $valid = false;
+        }
     }
 
     if (isset($_POST['db_server']) && strlen(trim(_stripslashes($_POST['db_server']))) > 0) {
@@ -196,7 +200,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
                 $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
 
-                if ($fp = fopen("./include/config.inc.php", "w")) {
+                if (@$fp = fopen("./include/config.inc.php", "w")) {
 
                     fwrite($fp, $config_file);
                     fclose($fp);

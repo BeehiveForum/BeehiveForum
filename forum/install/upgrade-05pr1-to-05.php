@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.7 2004-12-10 19:51:32 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.8 2004-12-11 00:34:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -41,6 +41,8 @@ include_once("./include/db.inc.php");
 
 set_time_limit(0);
 
+$forum_webtag_array = array();
+
 // This script upgrades all forums it finds regardless of the
 // WEBTAG entered in the install form. This is imperative that
 // this happens because otherwise if you later try to upgrade
@@ -57,9 +59,15 @@ if (!$result = db_query($sql, $db_install)) {
 if (db_num_rows($result) > 0) {
 
     $sql = "SELECT WEBTAG FROM FORUMS";
-    $result = db_query($sql, $db_install);
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     while ($row = db_fetch_array($result)) {
+
         $forum_webtag_array[] = $row['WEBTAG'];
     }
 }
@@ -367,7 +375,8 @@ foreach($forum_webtag_array as $forum_webtag) {
                 $pm_mid = db_insert_id($db_install);
 
                 $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
-                $sql.= "SELECT $pm_mid, AID FROM {$forum_webtag}_PM_ATTACHMENT_IDS";
+                $sql.= "SELECT MID, AID FROM {$forum_webtag}_PM_ATTACHMENT_IDS ";
+                $sql.= "WHERE MID = $pm_mid";
 
                 if (!$result = db_query($sql, $db_install)) {
 
@@ -376,7 +385,8 @@ foreach($forum_webtag_array as $forum_webtag) {
                 }
 
                 $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-                $sql.= "SELECT $pm_mid, CONTENT FROM {$forum_webtag}_PM_CONTENT";
+                $sql.= "SELECT MID, CONTENT FROM {$forum_webtag}_PM_CONTENT ";
+                $sql.= "WHERE MID = $pm_mid";
 
                 if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.83 2005-01-30 17:27:50 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.84 2005-02-01 23:15:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -296,14 +296,14 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">\n";
 
+if (forum_get_setting('attachments_enabled', 'Y', false)) {
+
+    if (!is_md5($aid)) $aid = md5(uniqid(rand()));
+    echo "        ", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;";
+}
+
 if ($popup) {
-
-    echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
-    echo form_input_hidden('webtag', $webtag), "\n";
-
-    if (is_md5($aid)) echo form_input_hidden('aid', $aid), "\n";
-
-    echo "        ", form_submit('close', $lang['close']), "&nbsp;\n";;
+    echo "        ", form_submit('close', $lang['close']), "&nbsp;\n";
 }
 
 echo "      </td>\n";

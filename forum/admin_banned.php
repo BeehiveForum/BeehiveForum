@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.9 2005-03-20 20:35:22 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.10 2005-03-21 14:33:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -285,7 +285,7 @@ if (isset($_POST['add_email'])) {
     }
 }
 
-echo "<h1>{$lang['admin']} : {$lang['bancontrols']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['bancontrols']}</h1>\n";
 
 if (!$valid && strlen($error_html) > 0) echo $error_html;
 
@@ -300,6 +300,7 @@ if (sizeof($ban_list_array['EMAIL'])     < 1) $ban_list_array['EMAIL']     = arr
 
 // Submit handling here later, chaps.
 
+echo "<div align=\"center\">\n";
 echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("ret", $ret), "\n";
@@ -530,6 +531,7 @@ echo "      <td colspan=\"2\" align=\"center\">", form_submit("back", $lang['bac
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.246 2005-03-21 10:43:18 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.247 2005-03-21 14:33:04 decoyduck Exp $ */
 
 // International English language file
 
@@ -206,6 +206,7 @@ $lang['accessdenied'] = "Access Denied";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
 $lang['managefolders'] = "Manage Folders";
 $lang['manageforums'] = "Manage Forums";
+$lang['manageforumpermissions'] = "Manage Forum Permissions";
 $lang['managefolder'] = "Manage Folder";
 $lang['id'] = "ID";
 $lang['foldername'] = "Folder Name";
@@ -666,7 +667,7 @@ $lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify t
 $lang['forum_settings_help_33'] = "<b>Forum Access Status</b> controls how users may access your forum.";
 $lang['forum_settings_help_34'] = "<b>Open</b> will allow all users and guests access to your forum without restriction.";
 $lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, with the exception of Admins who may still access the admin panel.";
-$lang['forum_settings_help_36'] = "<b>Restrict</b> allows to set a list of users who are allowed access to your forum.";
+$lang['forum_settings_help_36'] = "<b>Restricted</b> allows to set a list of users who are allowed access to your forum.";
 $lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a password to give out to users so they can access your forum.";
 $lang['forum_settings_help_38'] = "When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
 $lang['forum_settings_help_39'] = "<b>Min search frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.11 2005-03-19 17:53:33 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.12 2005-03-21 14:33:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,7 +86,7 @@ if (!perm_has_admin_access()) {
 
 html_draw_top("robots=noindex,nofollow");
 
-echo "  <h1>{$lang['admin']}: {$lang['postingstats']}</h1>\n";
+echo "  <h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['postingstats']}</h1>\n";
 echo "  <br />\n";
 
 if (isset($_POST['update'])) {
@@ -179,6 +179,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
     echo "<br />\n";
 }
 
+echo "  <div align=\"center\">\n";
 echo "  <h2>{$lang['top20postersforperiod']} ", date("d/m/Y", $stats_start), " to ", date("d/m/Y", $stats_end), "</h2>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -253,7 +254,7 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";
-echo "  <br />\n";
+echo "  </div>\n";
 
 html_draw_bottom();
 

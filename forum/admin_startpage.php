@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.64 2005-03-14 13:27:15 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.65 2005-03-21 14:33:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -154,8 +154,8 @@ if (isset($_POST['submit'])) {
 
 html_draw_top("dictionary.js", "htmltools.js");
 
-echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
-echo "<p>{$lang['editstartpageexp']}</p>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['editstartpage']}</h1>\n";
+echo "<br />\n";
 
 $content = forum_load_start_page();
 
@@ -163,6 +163,7 @@ if (isset($status_text)) echo $status_text;
 
 $tools = new TextAreaHTML("startpage");
 
+echo "<div align=\"center\">\n";
 echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -172,6 +173,9 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['startpage']}</td>\n";
+echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", $tools->toolbar(true, form_submit('submit', $lang['save'])), "</td>\n";
 echo "                </tr>\n";
@@ -221,10 +225,9 @@ echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("upload", $lang['upload']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-
 echo "</form>\n";
-
 echo $tools->js();
+echo "</div>\n";
 
 html_draw_bottom();
 

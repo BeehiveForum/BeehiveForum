@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.32 2004-03-24 20:46:01 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.33 2004-03-28 08:48:45 decoyduck Exp $ */
 
 function light_html_draw_top ($title = false)
 {
@@ -240,15 +240,13 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
       for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
-        $totalvotes = $totalvotes + $pollresults['VOTES'][$i];
-
         if (!in_array($pollresults['GROUP_ID'][$i], $group_array)) {
             $group_array[] = $pollresults['GROUP_ID'][$i];
         }
       }
 
       $poll_group_count = sizeof($group_array);
-      $totalvotes = ceil($totalvotes / $poll_group_count);
+      $totalvotes = poll_get_total_votes($tid);
 
       $polldata['CONTENT'] .= "<p>";
 

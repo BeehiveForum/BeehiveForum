@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.237 2004-03-04 22:17:33 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.238 2004-03-09 23:00:08 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -47,22 +47,22 @@ function messages_get($tid, $pid = 1, $limit = 1)
     if(!$uid) $uid = 0;
 
     $db_message_get = db_connect();
-
-    $tbl_post = forum_table("POST");
+   
+    $table_prefix = get_table_prefix();
 
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
     $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON as EDIT_LOGON, POST.IPADDRESS, ";
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP ";
-    $sql .= "from " . forum_table("POST") . " POST ";
-    $sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
-    $sql .= "left join " . forum_table("USER_PEER") . " USER_PEER_TO ";
+    $sql .= "from {$table_prefix}POST POST ";
+    $sql .= "left join {$table_prefix}USER FUSER on (POST.from_uid = FUSER.uid) ";
+    $sql .= "left join {$table_prefix}USER TUSER on (POST.to_uid = TUSER.uid) ";
+    $sql .= "left join {$table_prefix}USER_PEER USER_PEER_TO ";
     $sql .= "on (USER_PEER_TO.uid = '$uid' and USER_PEER_TO.PEER_UID = POST.TO_UID) ";
-    $sql .= "left join " . forum_table("USER_PEER") . " USER_PEER_FROM ";
+    $sql .= "left join {$table_prefix}USER_PEER USER_PEER_FROM ";
     $sql .= "on (USER_PEER_FROM.uid = '$uid' and USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql .= "left join " . forum_table("USER") . " EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";
+    $sql .= "left join {$table_prefix}USER EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";
     $sql .= "where POST.TID = '$tid' ";
     $sql .= "and POST.PID >= '$pid' ";
     $sql .= "order by POST.PID ";
@@ -75,10 +75,10 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, POST_CONTENT.CONTENT, ";
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
     $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
-    $sql .= "from " . forum_table("POST") . " POST, " . forum_table("POST_CONTENT") . " POST_CONTENT ";
-    $sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
-    $sql .= "left join " . forum_table("USER_PEER") . " USER_PEER ";
+    $sql .= "from {$table_prefix}POST POST, {$table_prefix}POST_CONTENT POST_CONTENT ";
+    $sql .= "left join {$table_prefix}USER FUSER on (POST.from_uid = FUSER.uid) ";
+    $sql .= "left join {$table_prefix}USER TUSER on (POST.to_uid = TUSER.uid) ";
+    $sql .= "left join {$table_prefix}USER_PEER USER_PEER ";
     $sql .= "on (USER_PEER.uid = '$uid' and USER_PEER.PEER_UID = POST.FROM_UID) ";
     $sql .= "where POST.TID = '$tid' ";
     $sql .= "and POST.PID >= '$pid' ";
@@ -155,8 +155,10 @@ function message_get_content($tid, $pid)
 
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT CONTENT FROM " . forum_table('POST_CONTENT') . " WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT CONTENT FROM {$table_prefix}POST_CONTENT WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql,$db_mgc);
 
     $fa = db_fetch_array($result);
@@ -741,8 +743,10 @@ function message_get_user($tid, $pid)
 
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT FROM_UID FROM " . forum_table("POST") . " WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT FROM_UID FROM {$table_prefix}POST WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql, $db_message_get_user);
 
     if($result){
@@ -765,8 +769,10 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     if (!is_numeric($spid)) return false;
 
     // Check for existing entry in USER_THREAD
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT LAST_READ FROM ". forum_table("USER_THREAD"). " WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "SELECT LAST_READ FROM {$table_prefix}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
     $result = db_query($sql, $db_message_update_read);
 
     if (db_num_rows($result) > 0) {
@@ -779,7 +785,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
         if ($pid > $fa['LAST_READ']) {
 
-            $sql = "UPDATE LOW_PRIORITY ". forum_table("USER_THREAD");
+            $sql = "UPDATE LOW_PRIORITY {$table_prefix}USER_THREAD";
             $sql.= " SET LAST_READ = '$pid', LAST_READ_AT = NOW()";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
@@ -788,13 +794,13 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     }else {
 
-        $sql = "INSERT INTO ". forum_table("USER_THREAD"). " (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql = "INSERT INTO {$table_prefix}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
         db_query($sql, $db_message_update_read);
     }
 
     // Mark posts as Viewed...
-    $sql = "UPDATE LOW_PRIORITY ". forum_table("POST"). " SET VIEWED = NOW() WHERE TID = '$tid' ";
+    $sql = "UPDATE LOW_PRIORITY {$table_prefix}POST SET VIEWED = NOW() WHERE TID = '$tid' ";
     $sql.= "AND PID BETWEEN '$spid' AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
     db_query($sql, $db_message_update_read);
@@ -811,12 +817,14 @@ function messages_get_most_recent($uid, $fid = false)
     }
 
     if (!is_numeric($uid)) return false;
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
-    $sql.= "FROM " . forum_table("THREAD") . " THREAD ";
-    $sql.= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ";
+    $sql.= "FROM {$table_prefix}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ";
+    $sql.= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST <> -1) ";

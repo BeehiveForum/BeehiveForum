@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.38 2004-01-16 19:51:55 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.39 2004-03-09 23:00:09 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -48,12 +48,14 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;    
 
     $db_search_execute = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $searchsql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
     $searchsql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
-    $searchsql.= "FROM ". forum_table("THREAD"). " THREAD ";
-    $searchsql.= "LEFT JOIN ". forum_table("POST"). " POST ON (THREAD.TID = POST.TID) ";
-    $searchsql.= "LEFT JOIN ". forum_table("POST_CONTENT"). " POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
+    $searchsql.= "FROM {$table_prefix}THREAD THREAD ";
+    $searchsql.= "LEFT JOIN {$table_prefix}POST POST ON (THREAD.TID = POST.TID) ";
+    $searchsql.= "LEFT JOIN {$table_prefix}POST_CONTENT POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
     $searchsql.= "WHERE ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
@@ -408,9 +410,11 @@ function folder_search_dropdown()
     $db_folder_search_dropdown = db_connect();
 
     $uid = bh_session_get_value('UID');
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
-    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
+    $sql = "select DISTINCT F.FID, F.TITLE from {$table_prefix}FOLDER F left join ";
+    $sql."{$table_prefix}USER_FOLDER UF on (UF.FID = F.FID and UF.UID = '$uid') ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
     $result = db_query($sql, $db_folder_search_dropdown);
@@ -435,9 +439,11 @@ function search_draw_user_dropdown($name)
 
     $db_search_draw_user_dropdown = db_connect();
     $uid = bh_session_get_value('UID');
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM ".forum_table("USER")." U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "FROM {$table_prefix}USER U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND U.UID <> $uid ORDER BY U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.41 2004-02-22 15:24:34 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.42 2004-03-09 23:00:08 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -39,10 +39,12 @@ function email_sendnotification($tuid, $msg, $fuid)
     if (!isset($forum_name)) $forum_name = "admin@abeehiveforum.net";
 
     $db_email_sendnotification = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
-    $sql.= forum_table("USER_PREFS") . " PREFS, ";
-    $sql.= forum_table("USER") . " PROFILE ";
+    $sql.= "{$table_prefix}USER_PREFS PREFS, ";
+    $sql.= "{$table_prefix}USER PROFILE ";
     $sql.= "WHERE PROFILE.UID = '$tuid' ";
     $sql.= "AND PROFILE.UID = PREFS.UID";
 
@@ -54,7 +56,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
         if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != '') {
 
-            $sql = "SELECT LOGON, NICKNAME FROM ". forum_table("USER") . " WHERE UID = '$fuid'";
+            $sql = "SELECT LOGON, NICKNAME FROM {$table_prefix}USER WHERE UID = '$fuid'";
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
@@ -111,10 +113,12 @@ function email_sendsubscription($tuid, $msg, $fuid)
     $db_email_sendsubscription = db_connect();
 
     list($tid, $pid) = explode('.', $msg);
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER.NICKNAME, USER.EMAIL FROM ";
-    $sql.= forum_table("USER_THREAD") . " USER_THREAD, ";
-    $sql.= forum_table("USER") . " USER ";
+    $sql.= "{$table_prefix}USER_THREAD USER_THREAD, ";
+    $sql.= "{$table_prefix}USER USER ";
     $sql.= "WHERE USER_THREAD.TID = '$tid' ";
     $sql.= "AND USER_THREAD.INTEREST = 2 ";
     $sql.= "AND USER.UID = USER_THREAD.UID ";
@@ -127,7 +131,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $mailto = db_fetch_array($result);
 
-        $sql = "SELECT LOGON, NICKNAME FROM ". forum_table("USER") . " WHERE UID = '$fuid'";
+        $sql = "SELECT LOGON, NICKNAME FROM {$table_prefix}USER WHERE UID = '$fuid'";
         $resultfrom = db_query($sql, $db_email_sendsubscription);
         $mailfrom = db_fetch_array($resultfrom);
         $thread = thread_get($tid);
@@ -181,9 +185,11 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     if (!isset($forum_name)) $forum_name = "admin@abeehiveforum.net";
 
     $db_email_sendnotification = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT PREFS.PM_NOTIFY_EMAIL, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
-    $sql.= forum_table("USER_PREFS") . " PREFS, ". forum_table("USER") . " PROFILE ";
+    $sql.= "{$table_prefix}USER_PREFS PREFS, {$table_prefix}USER PROFILE ";
     $sql.= "WHERE PROFILE.UID = '$tuid' AND PROFILE.UID = PREFS.UID";
 
     $result = db_query($sql, $db_email_sendnotification);
@@ -194,7 +200,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
         if ($mailto['PM_NOTIFY_EMAIL'] == 'Y' && $mailto['EMAIL'] != '') {
 
-            $sql = "SELECT LOGON, NICKNAME FROM ". forum_table("USER") . " WHERE UID = '$fuid'";
+            $sql = "SELECT LOGON, NICKNAME FROM {$table_prefix}USER WHERE UID = '$fuid'";
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
@@ -250,8 +256,10 @@ function email_send_pw_reminder($logon)
 
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM ". forum_table("USER") ." WHERE LOGON = '$logon'";
+    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM {$table_prefix}USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);
 
     if (db_num_rows($result)) {

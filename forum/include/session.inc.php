@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.74 2004-02-27 22:00:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.75 2004-03-09 23:00:09 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -50,6 +50,8 @@ function bh_session_check()
 
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
+    
+    $table_prefix = get_table_prefix();
 
     // Current server time.
 
@@ -65,9 +67,9 @@ function bh_session_check()
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
 	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER.STATUS, ";
-	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME FROM ". forum_table("SESSIONS"). " SESSIONS ";
-	$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME FROM {$table_prefix}SESSIONS SESSIONS ";
+	$sql.= "LEFT JOIN {$table_prefix}USER USER ON (USER.UID = SESSIONS.UID) ";
+        $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
 	$result = db_query($sql, $db_bh_session_check);
@@ -109,7 +111,7 @@ function bh_session_check()
                         
                         // Update the session
                         
-                        $sql = "UPDATE ". forum_table("SESSIONS"). " ";
+                        $sql = "UPDATE {$table_prefix}SESSIONS ";
                         $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
                         $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
 
@@ -119,7 +121,7 @@ function bh_session_check()
 
                         $session_stamp = time() - $session_cutoff;  			
 
-                        $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE ";
+                        $sql = "DELETE FROM {$table_prefix}SESSIONS WHERE ";
                         $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
                         db_query($sql, $db_bh_session_check);
@@ -158,11 +160,13 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
     
+    $table_prefix = get_table_prefix();
+    
     $session_stamp = time() - $session_cutoff;
 
     // Delete expires sessions
 
-    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE ";
+    $sql = "DELETE FROM {$table_prefix}SESSIONS WHERE ";
     $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
     db_query($sql, $db_bh_session_init);
@@ -172,7 +176,7 @@ function bh_session_init($uid)
 
     $user_hash = md5(uniqid($ipaddress));
 
-    $sql = "INSERT INTO ". forum_table("SESSIONS"). " (HASH, UID, IPADDRESS, TIME) ";
+    $sql = "INSERT INTO {$table_prefix}SESSIONS (HASH, UID, IPADDRESS, TIME) ";
     $sql.= "VALUES ('$user_hash', '$uid', '$ipaddress', NOW())";
 
     $result = db_query($sql, $db_bh_session_init);
@@ -187,6 +191,8 @@ function bh_session_end()
     global $HTTP_COOKIE_VARS;
 
     $db_bh_session_end = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 
@@ -194,7 +200,7 @@ function bh_session_end()
 
         // Delete the session for the current MD5 hash
         
-        $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE HASH = '$user_hash'";
+        $sql = "DELETE FROM {$table_prefix}SESSIONS WHERE HASH = '$user_hash'";
         $result = db_query($sql, $db_bh_session_end);
     }
 

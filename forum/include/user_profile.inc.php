@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.17 2003-10-23 19:16:45 uid81631 Exp $ */
+/* $Id: user_profile.inc.php,v 1.18 2004-03-09 23:00:09 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -29,15 +29,17 @@ require_once("./include/db.inc.php");
 function user_profile_update($uid, $piid, $entry)
 {
     $db_user_profile_update = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $entry = addslashes(_htmlentities($entry));
 
-    $sql = "DELETE FROM ". forum_table("USER_PROFILE"). " ";
+    $sql = "DELETE FROM {$table_prefix}USER_PROFILE ";
     $sql.= "WHERE UID = $uid AND PIID = $piid";
 
     if (db_query($sql, $db_user_profile_update)) {
 
-        $sql = "INSERT INTO ". forum_table("USER_PROFILE"). " (UID, PIID, ENTRY) ";
+        $sql = "INSERT INTO {$table_prefix}USER_PROFILE (UID, PIID, ENTRY) ";
         $sql.= "VALUES ($uid, $piid, '$entry')";
 
         return db_query($sql, $db_user_profile_update);
@@ -49,9 +51,11 @@ function user_profile_update($uid, $piid, $entry)
 function user_get_profile_entries($uid, $psid)
 {
     $db_user_get_profile_entries = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM " . forum_table("PROFILE_ITEM") . " PI ";
-    $sql.= "LEFT JOIN " . forum_table("USER_PROFILE") . " UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
+    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM {$table_prefix}PROFILE_ITEM PI ";
+    $sql.= "LEFT JOIN {$table_prefix}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
     $sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
 
     $result = db_query($sql, $db_user_get_profile_entries);
@@ -67,8 +71,10 @@ function user_get_profile_entries($uid, $psid)
 function user_get_profile_image($uid)
 {
     $db_user_get_profile_image = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT PIC_URL from ". forum_table("USER_PREFS"). " WHERE UID = $uid";
+    $sql = "SELECT PIC_URL from {$table_prefix}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_profile_image);
 
     $row = db_fetch_array($result);

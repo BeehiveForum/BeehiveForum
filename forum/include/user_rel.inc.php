@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.7 2003-09-10 17:03:50 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.8 2004-03-09 23:00:09 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -29,12 +29,14 @@ require_once("./include/forum.inc.php");
 function user_rel_update($uid, $peer_uid, $value)
 {
     $db_user_rel_update = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "DELETE FROM ". forum_table("USER_PEER"). " WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+    $sql = "DELETE FROM {$table_prefix}USER_PEER WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     db_query($sql, $db_user_rel_update);
 
-    $sql = "INSERT INTO " . forum_table("USER_PEER") . " (UID, PEER_UID, RELATIONSHIP) ";
+    $sql = "INSERT INTO {$table_prefix}USER_PEER (UID, PEER_UID, RELATIONSHIP) ";
     $sql.= "VALUES ('$uid', '$peer_uid', '$value')";
 
     $result = db_query($sql, $db_user_rel_update);
@@ -46,9 +48,11 @@ function user_rel_get($uid, $peer_uid)
 {
 
     $db_user_rel_get = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "select RELATIONSHIP from " . forum_table("USER_PEER");
-    $sql .= " where UID = '$uid' and PEER_UID = '$peer_uid'";
+    $sql = "select RELATIONSHIP from {$table_prefix}USER_PEER ";
+    $sql.= "where UID = '$uid' and PEER_UID = '$peer_uid'";
 
     $result = db_query($sql, $db_user_rel_get);
 

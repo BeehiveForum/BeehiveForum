@@ -21,15 +21,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.5 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: forum.inc.php,v 1.6 2004-03-09 23:00:08 decoyduck Exp $ */
 
 // Forum-handling functions
 
-// This function will eventually prefix tables according to
-// the forum that they belong to.
-function forum_table($table)
+// Fetches the webtag from the GET/POST var, checks for it in the
+// database and returns a value.
+
+function get_table_prefix()
 {
-    return $table;
+    global $HTTP_GET_VARS, $HTTP_POST_VARS;
+    
+    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+        $webtag = strtoupper(trim($HTTP_GET_VARS['webtag']));
+    }elseif (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {
+        $webtag = strtoupper(trim($HTTP_POST_VARS['webtag']));
+    }
+    
+    if (isset($webtag)) {
+    
+        $db_get_table_prefix = db_connect();
+                
+        // test to see if the POST table exists with our prefix.
+        
+        $sql = "SHOW TABLES LIKE '{$webtag}_POST'"; 
+        $result = db_query($sql, $db_get_table_prefix);
+        
+        // if we found the post table with the webtag return the prefix
+    
+        if (db_num_rows($result) > 0) {
+            return "{$webtag}_";
+        }
+    }
+    
+    return "";
 }
 
 ?>

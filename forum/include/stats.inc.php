@@ -26,11 +26,13 @@ require_once("./include/config.inc.php");
 function update_stats()
 {
     $db_update_stats = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $num_sessions = get_num_sessions();
     $num_recent_posts = get_recent_post_count();
 
-    $sql = "SELECT * FROM ". forum_table("STATS");
+    $sql = "SELECT * FROM {$table_prefix}STATS";
     $result = db_query($sql, $db_update_stats);
 
     if (db_num_rows($result)) {
@@ -39,7 +41,7 @@ function update_stats()
 
         if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
 
-            $sql = "UPDATE ". forum_table("STATS"). " SET ";
+            $sql = "UPDATE {$table_prefix}STATS SET ";
             $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
 
             $result = db_query($sql, $db_update_stats);
@@ -47,7 +49,7 @@ function update_stats()
 
         if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
 
-            $sql = "UPDATE ". forum_table("STATS"). " SET ";
+            $sql = "UPDATE {$table_prefix}STATS SET ";
             $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
 
             $result = db_query($sql, $db_update_stats);
@@ -55,7 +57,7 @@ function update_stats()
 
     }else {
 
-        $sql = "INSERT INTO ". forum_table("STATS"). " (MOST_USERS_DATE, ";
+        $sql = "INSERT INTO {$table_prefix}STATS (MOST_USERS_DATE, ";
         $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
         $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
 
@@ -73,9 +75,12 @@ function get_num_sessions()
     if (!isset($active_sess_cutoff)) $active_sess_cutoff = 900;
 
     $get_num_sessions = db_connect();
+    
+    $table_prefix = get_table_prefix();
+    
     $session_stamp = time() - $active_sess_cutoff;
 
-    $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM ". forum_table("SESSIONS"). " ";
+    $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM {$table_prefix}SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp)";
     
     $result = db_query($sql, $get_num_sessions);
@@ -97,6 +102,9 @@ function get_active_users()
     if (!isset($active_sess_cutoff)) $active_sess_cutoff = 900;
 
     $db_get_active_users = db_connect();
+    
+    $table_prefix = get_table_prefix();
+    
     $session_stamp = time() - $active_sess_cutoff;
 
     $uid = bh_session_get_value('UID');
@@ -107,9 +115,9 @@ function get_active_users()
     // Current active users
 
     $sql = "SELECT DISTINCT SESSIONS.UID, SESSIONS.TIME, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PREFS.ANON_LOGON FROM ". forum_table("SESSIONS"). " SESSIONS ";
-    $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
-    $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+    $sql.= "USER_PREFS.ANON_LOGON FROM {$table_prefix}SESSIONS SESSIONS ";
+    $sql.= "LEFT JOIN {$table_prefix}USER USER ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN {$table_prefix}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
     $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
@@ -140,8 +148,10 @@ function get_active_users()
 function get_thread_count()
 {
     $db_get_thread_count = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM ". forum_table("THREAD");
+    $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_prefix}THREAD";
     $result = db_query($sql, $db_get_thread_count);
 
     if (db_num_rows($result)) {
@@ -155,8 +165,10 @@ function get_thread_count()
 function get_post_count()
 {
     $db_get_post_count = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM ". forum_table("POST");
+    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_prefix}POST";
     $result = db_query($sql, $db_get_post_count);
 
     if (db_num_rows($result)) {
@@ -170,10 +182,12 @@ function get_post_count()
 function get_recent_post_count()
 {
     $db_get_post_count = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $post_stamp = time() - HOUR_IN_SECONDS;
 
-    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM ". forum_table("POST"). " ";
+    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_prefix}POST ";
     $sql.= "WHERE CREATED >= FROM_UNIXTIME($post_stamp)";
 
     $result = db_query($sql, $db_get_post_count);
@@ -189,8 +203,10 @@ function get_recent_post_count()
 function get_longest_thread()
 {
     $db_get_longest_thread = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM ". forum_table("THREAD"). " ";
+    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_prefix}THREAD ";
     $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
 
     $result = db_query($sql, $db_get_longest_thread);
@@ -206,9 +222,11 @@ function get_longest_thread()
 function get_most_users()
 {
     $db_get_most_users = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
-    $sql.= "FROM ". forum_table("STATS");
+    $sql.= "FROM {$table_prefix}STATS";
 
     $result = db_query($sql, $db_get_most_users);
 
@@ -223,9 +241,11 @@ function get_most_users()
 function get_most_posts()
 {
     $db_get_most_posts = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
-    $sql.= "FROM ". forum_table("STATS");
+    $sql.= "FROM {$table_prefix}STATS";
 
     $result = db_query($sql, $db_get_most_posts);
 
@@ -240,6 +260,8 @@ function get_most_posts()
 function get_newest_user()
 {
     $db_get_newest_user = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE ";
     $sql.= "LOGON <> 'GUEST' AND PASSWD <> MD5('GUEST') ";

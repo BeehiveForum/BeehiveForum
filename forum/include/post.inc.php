@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.51 2004-01-27 21:34:04 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.52 2004-03-09 23:00:09 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -40,9 +40,11 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
     if (!is_numeric($reply_pid)) return -1;
     if (!is_numeric($fuid)) return -1;
     if (!is_numeric($tuid)) return -1;
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "INSERT INTO " . forum_table("POST");
-    $sql.= " (TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, IPADDRESS) ";
+    $sql = "INSERT INTO {$table_prefix}POST ";
+    $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, IPADDRESS) ";
     $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), '$ipaddress')";
 
     $result = db_query($sql,$db_post_create);
@@ -51,15 +53,15 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
         $new_pid = db_insert_id($db_post_create);
 
-        $sql = "insert into  " . forum_table("POST_CONTENT");
-        $sql.= " (TID,PID,CONTENT) ";
+        $sql = "insert into  {$table_prefix}POST_CONTENT ";
+        $sql.= "(TID,PID,CONTENT) ";
         $sql.= "values ($tid, $new_pid, '$content')";
 
         $result = db_query($sql, $db_post_create);
 
         if ($result) {
 
-            $sql = "update " . forum_table("THREAD") . " set length = $new_pid, modified = NOW() ";
+            $sql = "update {$table_prefix}THREAD set length = $new_pid, modified = NOW() ";
             $sql.= "where tid = $tid";
             $result = db_query($sql, $db_post_create);
 
@@ -83,8 +85,10 @@ function post_save_attachment_id($tid, $pid, $aid)
     if (!is_md5($aid)) return false;
 
     $db_post_save_attachment_id = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "insert into ". forum_table("POST_ATTACHMENT_IDS"). " (TID, PID, AID) values ($tid, $pid, '$aid')";
+    $sql = "insert into {$table_prefix}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
     $result = db_query($sql, $db_post_save_attachment_id);
 
     return $result;
@@ -101,10 +105,12 @@ function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = 
     $closed = $closed ? "NOW()" : "NULL";
 
     $db_post_create_thread = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "insert into " . forum_table("THREAD");
-    $sql .= " (FID,TITLE,LENGTH,POLL_FLAG,STICKY,MODIFIED,CLOSED) ";
-    $sql .= "values ($fid, '$title', 0, '$poll', '$sticky', NOW(), $closed)";
+    $sql = "insert into {$table_prefix}THREAD" ;
+    $sql.= "(FID,TITLE,LENGTH,POLL_FLAG,STICKY,MODIFIED,CLOSED) ";
+    $sql.= "values ($fid, '$title', 0, '$poll', '$sticky', NOW(), $closed)";
 
     $result = db_query($sql, $db_post_create_thread);
 
@@ -131,12 +137,14 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 {
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
     if (isset($default_uid) && $default_uid != 0){ 
 
-        $top_sql = "SELECT LOGON, NICKNAME FROM ". forum_table("USER"). " where UID = '$default_uid'";
+        $top_sql = "SELECT LOGON, NICKNAME FROM {$table_prefix}USER where UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
@@ -152,7 +160,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     }
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM ".forum_table("USER")." U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "FROM {$table_prefix}USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "ORDER by U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -188,12 +196,14 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 {
     $html = "<select name=\"t_to_uid_recent\" style=\"width: 190px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
+    
+    $table_prefix = get_table_prefix();
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
     if (isset($default_uid) && $default_uid != 0) {
 
-        $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '$default_uid'";
+        $top_sql = "select LOGON, NICKNAME from {$table_prefix}USER where UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
@@ -209,7 +219,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     }
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM ".forum_table("USER")." U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "FROM {$table_prefix}USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "ORDER by U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -248,10 +258,12 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
+    
+    $table_prefix = get_table_prefix();
 
     if (isset($default_uid) && $default_uid != 0) {
         
-        $top_sql = "SELECT LOGON, NICKNAME FROM ". forum_table("USER"). " WHERE UID = '$default_uid'";
+        $top_sql = "SELECT LOGON, NICKNAME FROM {$table_prefix}USER WHERE UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
@@ -267,8 +279,8 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
     }
 
     $sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
-    $sql.= "FROM ".forum_table("POST")." P ";
-    $sql.= "LEFT JOIN ".forum_table("USER")." U ON (P.FROM_UID = U.UID) ";
+    $sql.= "FROM {$table_prefix}POST P ";
+    $sql.= "LEFT JOIN {$table_prefix}USER U ON (P.FROM_UID = U.UID) ";
     $sql.= "WHERE P.TID = '$tid' ";
     $sql.= "LIMIT 0, 20";
 
@@ -305,8 +317,10 @@ function get_user_posts($uid)
     $db_get_user_posts = db_connect();
 
     if (!is_numeric($uid)) return false;
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
+    $sql = "SELECT TID, PID FROM {$table_prefix}POST WHERE FROM_UID = '$uid'";
     $result = db_query($sql, $db_get_user_posts);
 
     if (db_num_rows($result)) {
@@ -324,21 +338,23 @@ function check_ddkey($ddkey)
 {
     $db_check_ddkey = db_connect();
     $uid = bh_session_get_value('UID');
+    
+    $table_prefix = get_table_prefix();
 
-    $sql = "SELECT DDKEY FROM ". forum_table("DEDUPE"). " WHERE UID = '$uid'";
+    $sql = "SELECT DDKEY FROM {$table_prefix}DEDUPE WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_ddkey);
 
     if (db_num_rows($result)) {
 
         list($ddkey_check) = db_fetch_array($result);
-        $sql = "UPDATE ". forum_table("DEDUPE"). " SET DDKEY = '$ddkey' WHERE UID = '$uid'";
+        $sql = "UPDATE {$table_prefix}DEDUPE SET DDKEY = '$ddkey' WHERE UID = '$uid'";
         $result = db_query($sql, $db_check_ddkey);
 
     }else{
 
         $ddkey_check = "";
 
-        $sql = "INSERT INTO ". forum_table("DEDUPE"). " (UID, DDKEY) ";
+        $sql = "INSERT INTO {$table_prefix}DEDUPE (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', '$ddkey')";
         $result = db_query($sql, $db_check_ddkey);
     }

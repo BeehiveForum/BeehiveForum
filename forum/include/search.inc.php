@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.77 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.78 2004-12-05 19:31:47 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -67,7 +67,7 @@ function search_execute($argarray, &$urlquery, &$error)
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
         $folder_sql = "THREAD.FID = {$argarray['fid']}";
     }else{
-        $folders = threads_get_available_folders();
+        $folders = folder_get_available();
         $folder_sql = "THREAD.FID in ($folders)";
     }
 

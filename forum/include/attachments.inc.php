@@ -21,7 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.44 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.45 2004-03-12 19:08:18 decoyduck Exp $ */
+
+include_once("./include/perm.inc.php");
 
 function get_attachments($uid, $aid)
 {
@@ -193,13 +195,25 @@ function delete_attachment($uid, $hash)
 {
     global $attachment_dir;
     
+    if (!is_numeric($uid)) return false;
+    if (!is_md5($hash)) return false;
+    
     if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
     $db_delete_attachment = db_connect();
+    $table_prefix = get_webtag(true);
+    
     $hash = addslashes($hash);
     
-    if (@file_exists($attachment_dir. '/'. $hash)) {
-        return unlink($attachment_dir. '/'. $hash);
+    $sql = "SELECT * FROM {$table_prefix}POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE HASH = '$hash' AND UID = $uid";
+    
+    $result = db_query($sql, $db_delete_attachment);
+    
+    if ((db_num_rows($result) > 0) || perm_is_moderator()) {
+        if (file_exists("$attachment_dir/$hash")) {
+            return unlink("$attachment_dir/$hash");
+        }
     }    
 }
 

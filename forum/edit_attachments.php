@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.37 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.38 2004-03-12 19:08:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -108,9 +108,12 @@ if (!is_dir('attachments')) {
   chmod('attachments', 0777);
 }
 
-if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['f_aid']) && isset($HTTP_POST_VARS['userfile'])) {
+if (isset($HTTP_POST_VARS['del'])) {
 
-    delete_attachment($uid, $HTTP_POST_VARS['f_aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+    if (isset($HTTP_POST_VARS['hash']) && is_md5($HTTP_POST_VARS['hash'])) {
+
+        delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['hash']);
+    }
 
 }elseif (isset($HTTP_POST_VARS['close'])) {
 
@@ -198,16 +201,8 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";
         echo "    <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
         echo "      <form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
-        echo "        ", form_input_hidden('userfile', $attachments[$i]['filename']), "\n";
-        echo "        ", form_input_hidden('f_aid', $attachments[$i]['aid']), "\n";
-        
-        if (isset($aid)) {
-            echo "        ", form_input_hidden('aid', $aid), "\n";
-        }
-        
-        echo "        ", form_input_hidden('uid', $uid), "\n";
-        echo "        ", form_input_hidden('popup', $popup), "\n";
-        echo "        ", form_submit('delete', $lang['delete']), "\n";
+        echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
+        echo "        ", form_submit('del', $lang['del']), "\n";
 
         if (isset($aid)) echo "        ". form_input_hidden('aid', $aid), "\n";
  

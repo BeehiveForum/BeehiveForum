@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.1 2004-02-23 21:31:27 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.2 2004-02-26 21:04:58 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -51,10 +51,40 @@ require_once("./include/fixhtml.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/user_rel.inc.php");
 
 // Start output here
 
-html_draw_top();
+html_draw_top("openprofile.js", "basetarget=_blank");
+
+$uid = bh_session_get_value('UID');
+
+if (isset($HTTP_POST_VARS['submit'])) {
+    if (isset($HTTP_POST_VARS['relationship']) && is_array($HTTP_POST_VARS['relationship'])) {
+        foreach ($HTTP_POST_VARS['relationship'] as $peer_uid => $peer_rel) {
+            if (isset($HTTP_POST_VARS['signature'][$peer_uid])) {
+                $peer_rel = $peer_rel | $HTTP_POST_VARS['signature'][$peer_uid];
+            }
+            user_rel_update($uid, $peer_uid, $peer_rel);
+        }
+    }
+}
+
+if (isset($HTTP_POST_VARS['add'])) {
+    if (isset($HTTP_POST_VARS['add_user']) && is_array($HTTP_POST_VARS['add_user'])) {
+        foreach ($HTTP_POST_VARS['add_user'] as $peer_uid) {
+            if ($peer_uid != $uid) {
+                user_rel_update($uid, $peer_uid, 0);
+            }
+        }
+    }
+}
+
+if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
+    $start = $HTTP_GET_VARS['page'] * 20;
+}else {
+    $start = 0;
+}
 
 echo "<h1>{$lang['userrelationships']}</h1>\n";
 
@@ -66,34 +96,43 @@ if (!empty($error_html)) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 }
 
-$uid = bh_session_get_value('UID');
-
-// Define the options for the drop downs
-
-$update_options = array("Friend", "Ignored", "Ignored Signature");
-
-if ($user_peers = user_get_friends($uid)) {
+if ($user_peers = user_get_relationships($uid, $start)) {
 
     echo "<br />\n";
     echo "<div class=\"postbody\">\n";
     echo "  <form name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=\"_self\">\n";
-    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
-    echo "      <tr>\n";
-    echo "        <td>\n";
-    echo "          <table class=\"box\">\n";
-    echo "            <tr>\n";
-    echo "              <td class=\"posthead\">\n";
-    echo "                <table class=\"posthead\" width=\"400\">\n";
-    echo "                  <tr>\n";
-    echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['friends']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
     
-    foreach ($user_peers as $user_peer) {
-        echo "                    <td>&nbsp;<a href=\"user_rel.php?uid={$user_peer['UID']}&edit_rel=1\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
+    if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
+        echo "    ", form_input_hidden("usersearch", trim($HTTP_POST_VARS['usersearch'])), "\n";
     }
     
-    reset ($user_peers);
+    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
+    echo "      <tr>\n";
+    echo "        <td>\n";
+    echo "          <table class=\"box\" width=\"100%\">\n";
+    echo "            <tr>\n";
+    echo "              <td class=\"posthead\">\n";
+    echo "                <table class=\"posthead\" width=\"100%\">\n";
+    echo "                  <tr>\n";
+    echo "                    <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+    echo "                    <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
+    echo "                    <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";    
+    echo "                  </tr>\n";
+    
+    foreach ($user_peers as $user_peer) {
+        echo "                  <tr>\n";    
+        echo "                    <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']})\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
+        echo "                    <td>\n";
+        echo "                      &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", ($user_peer['RELATIONSHIP'] & USER_FRIEND)), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
+        echo "                      &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP'] & USER_FRIEND) && !($user_peer['RELATIONSHIP'] & USER_IGNORED)), "{$lang['normal']}\n";
+        echo "                      &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED, "", ($user_peer['RELATIONSHIP'] & USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"Ignored\" />\n";
+        echo "                    </td>\n";
+        echo "                    <td>\n";
+        echo "                      &nbsp;", form_radio("signature[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['display']}\n";
+        echo "                      &nbsp;", form_radio("signature[{$user_peer['UID']}]", USER_IGNORED_SIG, "", ($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['ignore']}\n";        
+        echo "                    </td>\n";        
+        echo "                  </tr>\n";
+    }
 
     echo "                  <tr>\n";
     echo "                    <td>&nbsp;</td>\n";
@@ -104,29 +143,72 @@ if ($user_peers = user_get_friends($uid)) {
     echo "          </table>\n";
     echo "        </td>\n";
     echo "      </tr>\n";
+
+    if (sizeof($user_peers) == 20) {
+        if ($start < 20) {
+            echo "      <tr>\n";
+            echo "        <td align=\"center\"><p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p></td>\n";
+            echo "      </tr>\n";
+        }elseif ($start >= 20) {
+            echo "      <tr>\n";
+            echo "        <td align=\"center\">\n";
+            echo "          <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+            echo "          <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
+            echo "        </td>\n";
+            echo "      </tr>\n";
+        }
+    }else {
+        if ($start >= 20) {
+            echo "      <tr>\n";
+            echo "        <td align=\"center\">\n";
+            echo "          <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a></p>\n";
+            echo "        </td>\n";
+            echo "      </td>\n";
+        }
+    }   
+    
+    echo "      <tr>\n";
+    echo "        <td align=\"center\"><p>", form_submit("submit", $lang['save']), "</p></td>\n";
+    echo "      </tr>\n";    
     echo "    </table>\n";
-    echo "    <br />\n";
+    echo "  </form>\n";    
+    echo "</div>\n";
+    echo "<br />\n";
 }
 
-if ($user_peers = user_get_ignored($uid)) {
+if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
+
+    $usersearch = trim($HTTP_POST_VARS['usersearch']);
     
-    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "<div class=\"postbody\">\n";
+    echo "  <form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
+    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "      <tr>\n";
-    echo "        <td>\n";
-    echo "          <table class=\"box\">\n";
+    echo "        <td class=\"posthead\">\n";
+    echo "          <table class=\"box\" width=\"100%\">\n";
     echo "            <tr>\n";
     echo "              <td class=\"posthead\">\n";
-    echo "                <table class=\"posthead\" width=\"300\">\n";
+    echo "                <table class=\"posthead\" width=\"100%\">\n";
     echo "                  <tr>\n";
-    echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['ignored']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
+    echo "                    <td class=\"subhead\" align=\"left\">{$lang['searchresults']}:</td>\n";
+    echo "                  </tr>\n";    
     
-    foreach ($user_peers as $user_peer) {
-        echo "                    <td>&nbsp;<a href=\"user_rel.php?uid={$user_peer['UID']}&edit_rel=1\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
-    }
+    if ($user_search_array = user_search($usersearch)) {
+    
+        foreach ($user_search_array as $user) {
+        
+            echo "                  <tr>\n";
+            echo "                    <td>", form_checkbox("add_user[]", $user['UID'], ""), "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME']), "</td>\n";
+            echo "                  </tr>\n";
+        }
 
-    echo "                  </tr>\n";
+    }else {
+    
+        echo "        <tr>\n";
+        echo "          <td class=\"posthead\" colspan=\"7\" align=\"left\">{$lang['nomatches']}</td>\n";
+        echo "        </tr>\n";
+    }
+    
     echo "                  <tr>\n";
     echo "                    <td>&nbsp;</td>\n";
     echo "                  </tr>\n";
@@ -136,41 +218,44 @@ if ($user_peers = user_get_ignored($uid)) {
     echo "          </table>\n";
     echo "        </td>\n";
     echo "      </tr>\n";
-    echo "    </table>\n";
-    echo "    <br />\n";    
-}
-
-if ($user_peers = user_get_ignored_signatures($uid)) {
-    
-    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "      <tr>\n";
-    echo "        <td>\n";
-    echo "          <table class=\"box\">\n";
-    echo "            <tr>\n";
-    echo "              <td class=\"posthead\">\n";
-    echo "                <table class=\"posthead\" width=\"300\">\n";
-    echo "                  <tr>\n";
-    echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['ignored']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
-    
-    foreach ($user_peers as $user_peer) {
-        echo "                    <td>&nbsp;<a href=\"user_rel.php?uid={$user_peer['UID']}&edit_rel=1\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
-    }
-
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
-    echo "                    <td>&nbsp;</td>\n";
-    echo "                  </tr>\n";
-    echo "                </table>\n";
-    echo "              </td>\n";
-    echo "            </tr>\n";
-    echo "          </table>\n";
-    echo "        </td>\n";
-    echo "      </tr>\n";
+    echo "        <td align=\"center\"><p>", form_submit("add", $lang['add']), "</p></td>\n";
+    echo "      </tr>\n";     
     echo "    </table>\n";
-    echo "    <br />\n";    
+    echo "  </form>\n";
+    echo "</div>\n";    
+    
 }
+
+echo "<div class=\"postbody\">\n";
+echo "  <form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
+echo "      <tr>\n";
+echo "        <td class=\"posthead\">\n";
+echo "          <table class=\"box\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td class=\"posthead\">\n";
+echo "                <table class=\"posthead\" width=\"100%\">\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" align=\"left\">{$lang['search']}:</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"posthead\" align=\"left\">\n";
+echo "                      {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? $usersearch : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
+echo "                    </td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                </table>\n";
+echo "              </td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

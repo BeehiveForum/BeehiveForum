@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.101 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: logon.php,v 1.102 2004-02-11 11:17:44 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -307,7 +307,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "<div align=\"center\">\n";
       echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
       echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
-      echo form_quick_button("./index.php", $lang['back'], 0, 0, "_top");
+
+      if (isset($final_uri)) {
+          form_quick_button("./index.php", $lang['back'], "final_uri", urlencode($final_uri), "_top");
+      }else {
+          form_quick_button("./index.php", $lang['back'], "", "", "_top");
+      }     
+
       html_draw_bottom();
       exit;
 

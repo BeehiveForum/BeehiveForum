@@ -102,7 +102,7 @@ while (list($key1, $folder) = each($folder_order)) {
 	echo "<tr>\n";
 	echo "<td class=\"threads\" style=\"border-bottom: 0;\">\n";
 	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\" class=\"folderinfo\">".$folder_msgs[$folder]." msgs</a>\n";
-	echo "<a href=\"post.php?fid=".$folder."\" class=\"folderpostnew\">Post New</a>\n";
+	echo "<a href=\"post.php?fid=".$folder."\" target=\"right\" class=\"folderpostnew\">Post New</a>\n";
 	echo "</td></tr>\n";
 	echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
 	while (list($key2, $thread) = each($thread_info)) {

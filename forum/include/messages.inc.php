@@ -28,6 +28,7 @@ require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/perm.inc.php"); // Permissions functions
 require_once("./include/forum.inc.php"); // Forum functions
+require_once("./include/user.inc.php"); // User functions
 
 function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
@@ -112,8 +113,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo format_user_name($message['TLOGON'], $message['TNICK']) . "</p></td>\n";
     echo "<td width=\"4%\" align=\"right\" nowrap>\n";
     if($in_list){
+        $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
         echo "<p class=\"postinfo\">";
-        echo format_time($message['CREATED']);
+        if ($user_prefs['DL_SAVING'] == 'Y') {
+            echo format_time(timestamp_amend_bst($message['CREATED']));
+        }else{
+            echo format_time($message['CREATED']);
+        }
         echo "<br />" . $message['PID'] . " of $msg_count</p>";
     }
     echo "</td></table>\n";

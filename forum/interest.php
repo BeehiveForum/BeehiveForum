@@ -29,18 +29,31 @@ require_once("./include/errorhandler.inc.php");
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
-
+require_once("./include/session.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/thread.inc.php");
+
+if (!bh_session_check()) {
+
+    if (isset($HTTP_GET_VARS['msg'])) {
+      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+    }else {
+      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+    }
+
+    header_redirect($uri);
+
+}
 
 if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
 
-if (isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest'])) {
+if (isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest']) && is_numeric($HTTP_POST_VARS['tid']) && is_numeric($HTTP_POST_VARS['interest']) && thread_can_view($HTTP_POST_VARS['tid'], bh_session_get_value('UID'))) {
 
     $tid = $HTTP_POST_VARS['tid'];
     $int = $HTTP_POST_VARS['interest'];

@@ -91,7 +91,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     }
 
-    if(isset($tid) && isset($pid)) {
+    if(isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
         $preview_message = messages_get($tid, $pid, 1);
 
@@ -120,7 +120,7 @@ html_draw_top_script();
 
 if ($valid) {
 
-    if(isset($HTTP_POST_VARS['submit'])) {
+    if(isset($HTTP_POST_VARS['submit']) && is_numeric($tid) && is_numeric($pid)) {
 
         if (post_delete($tid, $pid)) {
 

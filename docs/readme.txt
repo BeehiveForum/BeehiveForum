@@ -314,7 +314,7 @@ Nigel Moore / Kevin Yip / Andrew Holgate
 
 4.4 Contributions
 =================
-Mike Quigley / Frnht451 / Peter Kelly / Lots of other people
+Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Lots of other people
 
 
 4.5 Director

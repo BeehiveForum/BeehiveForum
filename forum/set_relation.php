@@ -37,6 +37,19 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/session.inc.php");
+
+if (!bh_session_check()) {
+
+    if (isset($HTTP_GET_VARS['msg'])) {
+      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+    }else {
+      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+    }
+
+    header_redirect($uri);
+
+}
 
 if(bh_session_get_value('UID') == 0) {
         html_guest_error();
@@ -47,7 +60,7 @@ require_once("./include/db.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/forum.inc.php");
 
-if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
+if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['rel'])) {
 
     $uid = $HTTP_GET_VARS['uid'];
     $rel = $HTTP_GET_VARS['rel'];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.109 2004-04-12 15:34:48 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.110 2004-04-12 21:08:11 decoyduck Exp $ */
 
 // International English language file
 
@@ -150,6 +150,7 @@ $lang['webtag'] = "Webtag";
 $lang['default'] = "Default";
 $lang['makedefault'] = "Make Default";
 $lang['unsetdefault'] = "Unset Default";
+$lang['rename'] = "Rename";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
@@ -1143,7 +1144,8 @@ $lang['adminoptions'] = "Admin Options";
 $lang['closedforposting'] = "Closed for posting";
 $lang['locktitleandfolder'] = "Lock title and folder";
 $lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
-$lang['deletethread'] = "Delete thread";
+$lang['deletethread'] = "Delete Thread";
 $lang['markasunread'] = "Mark as unread";
+$lang['makethreadsticky'] = "Make Thread Sticky";
 
 ?>

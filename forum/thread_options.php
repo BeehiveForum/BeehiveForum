@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.4 2004-04-12 20:39:03 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.5 2004-04-12 21:08:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -243,9 +243,9 @@ if (perm_is_moderator()) {
         }
     }
 
-    if (isset($HTTP_POST_VARS['deluser']) && isset($HTTP_POST_VARS['deluser_con']) && $HTTP_POST_VARS['deluser_con'] == "Y") {
+    if (isset($HTTP_POST_VARS['t_to_uid_in_thread']) && is_numeric($HTTP_POST_VARS['t_to_uid_in_thread']) && isset($HTTP_POST_VARS['deluser_con']) && $HTTP_POST_VARS['deluser_con'] == "Y") {
         
-        if ($del_uid = user_get_uid($HTTP_POST_VARS['deluser'])) {
+        if ($del_uid = $HTTP_POST_VARS['t_to_uid_in_thread']) {
 
             thread_delete_by_user($tid, $del_uid['UID']);
             admin_addlog($del_uid['UID'], 0, $tid, 0, 0, 0, 32);
@@ -257,7 +257,7 @@ if (perm_is_moderator()) {
 
         if (isset($HTTP_POST_VARS['delthread_con']) && $HTTP_POST_VARS['delthread_con'] == "Y") {
 
-            thread_delete_by_user($tid, 0);
+            thread_delete($tid);
             admin_addlog(0, 0, $tid, 0, 0, 0, 33);
             $update = true;
         }
@@ -313,7 +313,7 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
-if (perm_is_moderator() || $canedit) {
+if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
 
     echo "        <br />\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -321,7 +321,7 @@ if (perm_is_moderator() || $canedit) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['adminoptions']}</td>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['rename']} / {$lang['move']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
@@ -341,11 +341,23 @@ if (perm_is_moderator() || $canedit) {
     echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
 
     if (perm_is_moderator()) {
 
+        echo "        <br />\n";
+	echo "        <table class=\"box\" width=\"100%\">\n";
+	echo "          <tr>\n";
+	echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+	echo "                <tr>\n";
+	echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['makethreadsticky']}</td>\n";
+        echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td valign=\"top\" class=\"posthead\">{$lang['sticky']}:</td>\n";
+        echo "                  <td width=\"50%\" class=\"posthead\">{$lang['sticky']}:</td>\n";
 
         if ($threaddata['STICKY_UNTIL'] && $threaddata['STICKY'] == "Y") {
             $year = date("Y", $threaddata['STICKY_UNTIL']);
@@ -357,12 +369,8 @@ if (perm_is_moderator() || $canedit) {
             $day = 0;
         }
 
-        echo "                  <td>", form_radio("sticky", "Y", $lang['until'], $threaddata['STICKY'] == "Y"), "</td>\n";
+        echo "                  <td nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $threaddata['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($year, $month, $day, "sticky_"), "&nbsp;&nbsp;</td>\n";
         echo "                </tr>\n";
-	echo "                <tr>\n";
-	echo "                  <td>&nbsp;</td>\n";
-	echo "                  <td>", form_date_dropdowns($year, $month, $day, "sticky_"), "</td>\n";
-	echo "                </tr>\n";
 	echo "                <tr>\n";
 	echo "                  <td>&nbsp;</td>\n";
 	echo "                  <td>", form_radio("sticky", "N", $lang['no'], $threaddata['STICKY'] == "N"), "</td>\n";
@@ -370,6 +378,18 @@ if (perm_is_moderator() || $canedit) {
 	echo "                <tr>\n";
 	echo "                  <td>&nbsp;</td>\n";
 	echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+	echo "            </td>\n";
+	echo "          </tr>\n";
+	echo "        </table>\n";
+	echo "        <br />\n";
+	echo "        <table class=\"box\" width=\"100%\">\n";
+	echo "          <tr>\n";
+	echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+	echo "                <tr>\n";
+	echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['locked']} / {$lang['closed']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td class=\"posthead\">{$lang['closedforposting']}:</td>\n";
@@ -389,6 +409,18 @@ if (perm_is_moderator() || $canedit) {
 	echo "                  <td>&nbsp;</td>\n";
 	echo "                  <td>&nbsp;</td>\n";
         echo "                </tr>\n";
+        echo "              </table>\n";
+	echo "            </td>\n";
+	echo "          </tr>\n";
+	echo "        </table>\n";
+	echo "        <br />\n";
+	echo "        <table class=\"box\" width=\"100%\">\n";
+	echo "          <tr>\n";
+	echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+	echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['deletethread']} / {$lang['posts']}</td>\n";
+        echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td class=\"posthead\">{$lang['deletepostsinthreadbyuser']}:</td>\n";
         echo "                  <td class=\"posthead\">", post_draw_to_dropdown_in_thread($tid, 0, false, true), "</td>\n";
@@ -396,10 +428,6 @@ if (perm_is_moderator() || $canedit) {
         echo "                <tr>\n";
 	echo "                  <td>&nbsp;</td>\n";
         echo "                  <td class=\"posthead\">", form_checkbox("deluser_con", "Y", $lang['confirm']), "</td>\n";
-        echo "                </tr>\n";
-	echo "                <tr>\n";
-	echo "                  <td>&nbsp;</td>\n";
-	echo "                  <td>&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td class=\"posthead\">{$lang['deletethread']}:</td>\n";

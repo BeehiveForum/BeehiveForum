@@ -79,6 +79,6 @@ function edit_refuse()
     echo "<p><a href=\"discussion.php?msg=" . $msg_bits[0]. "." .$msg_bits[1];
     echo "\">Return to messages</a></p>";
     echo "</div>";
-
+}
 
 ?>

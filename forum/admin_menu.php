@@ -57,7 +57,7 @@ if(!$HTTP_COOKIE_VARS[bh_sess_ustatus] & USER_PERM_SOLDIER){
             <tr><td class="subhead">Tools</td></tr>
             <tr><td><a href="./admin_users.php" target="right">Users</td></tr>
             <tr><td><a href="./admin_folders.php" target="right">Folders</td></tr>
-            <tr><td><a href="./admin_profiles.php" target="right">Profiles</td></tr>
+            <tr><td><a href="./admin_prof_sect.php" target="right">Profiles</td></tr>
         </table>
     </body>
 </html>

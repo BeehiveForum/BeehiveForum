@@ -96,7 +96,7 @@ $result_count = db_num_rows($result);
 for($i=0;$i<$result_count;$i++){
 
     $row = db_fetch_array($result);
-    
+
     // If the thread count is 1, then it's probably 0.
     if($row['THREAD_COUNT'] == 1) $row['THREAD_COUNT'] = 0;
 
@@ -104,7 +104,7 @@ for($i=0;$i<$result_count;$i++){
     $sel = array("","","");
     $sel[$row['ACCESS_LEVEL']+1] = " selected";
 
-    echo "<td>".$row['FID']."<input type=\"hidden\" name=\"t_fid_$i\" value=\"".$row['FID']."\"></td>\n";
+    echo "<tr><td>".$row['FID']."<input type=\"hidden\" name=\"t_fid_$i\" value=\"".$row['FID']."\"></td>\n";
     echo "<td><input type=\"text\" name=\"t_title_$i\" width=\"32\" maxchars=\"32\" value=\"".$row['TITLE']."\">";
     echo "<input type=\"hidden\" name=\"t_old_title_$i\" value=\"".$row['TITLE']."\"></td>";
 
@@ -121,7 +121,7 @@ for($i=0;$i<$result_count;$i++){
 }
 
 // Draw a row for a new folder to be created
-echo "<td>NEW</td>\n";
+echo "<tr><td>NEW</td>\n";
 echo "<td><input type=\"text\" name=\"t_title_new\" width=\"32\" maxchars=\"32\" value=\"New Folder\"></td>";
 
 // Draw the ACCESS_LEVEL dropdown

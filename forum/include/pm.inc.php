@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.45 2004-03-16 19:22:50 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.46 2004-03-16 23:03:22 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -335,7 +335,7 @@ function draw_pm_message($pm_elements_array)
     echo "            <td colspan=\"3\"><span class=\"postnumber\"></span></td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td class=\"postbody\" align=\"left\">", apply_wordfilter(_stripslashes($pm_elements_array['CONTENT'])), "</td>\n";
+    echo "            <td class=\"postbody\" align=\"left\">", apply_wordfilter($pm_elements_array['CONTENT']), "</td>\n";
     echo "          </tr>\n";
 
     if (isset($pm_elements_array['AID'])) {

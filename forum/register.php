@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.69 2004-03-15 21:33:31 decoyduck Exp $ */
+/* $Id: register.php,v 1.70 2004-03-16 23:03:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -325,9 +325,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
           echo "<p>{$lang['userrecordcreated']}</p>\n";
           
           if (isset($final_uri)) {
-              form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode($final_uri), $webtag), "_top");
+              form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode($final_uri), $webtag['WEBTAG']), "_top");
           }else {
-              form_quick_button("./index.php", $lang['continue'], "webtag", $webtag, "_top");
+              form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
           }
           
           echo "</div>\n";

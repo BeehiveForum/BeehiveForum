@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.38 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: logout.php,v 1.39 2004-03-16 23:03:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -95,7 +95,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
         echo "<p>{$lang['youhaveloggedout']}</p>";
 
-        form_quick_button("./index.php", $lang['continue'], "webtag", $webtag, "_top");
+        form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
 
         echo "</div>\n";
         html_draw_bottom();

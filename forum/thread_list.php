@@ -240,7 +240,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
         
       }
       
-      if (!$threadvisible) array_unshift($thread_info, $thread);
+      if (!$threadvisible && is_array($thread_info)) array_unshift($thread_info, $thread);
       
     }
     

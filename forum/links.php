@@ -117,14 +117,30 @@ if (count($subfolders) == 0) {
     //echo "</p>\n";
 }
 
-if (isset($HTTP_GET_VARS['sort_by'])) {
-    $sort_by = $HTTP_GET_VARS['sort_by'];
+if (isset($HTTP_GET_VARS['sort_by'])) {// this seems slightly wasteful, but it's for security - just passing $HTTP_GET_VARS['sort_by'] straight to the SQL query is not a good idea (what might happen if you tried to search by "TITLE; DROP DATABASE beehive;"?)
+    if ($HTTP_GET_VARS['sort_by'] == "TITLE") {
+        $sort_by = "TITLE";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "DESCRIPTION") {
+        $sort_by = "DESCRIPTION";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "NICKNAME") {
+        $sort_by = "NICKNAME";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "CREATED") {
+        $sort_by = "CREATED";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "CLICKS") {
+        $sort_by = "CLICKS";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "RATING") {
+        $sort_by = "RATING";
+    }
 } else {
     $sort_by = "TITLE";
 }
 
 if (isset($HTTP_GET_VARS['sort_dir'])) {
-    $sort_dir = $HTTP_GET_VARS['sort_dir'];
+    if ($HTTP_GET_VARS['sort_dir'] == "DESC") {
+        $sort_dir = "DESC";
+    } else {
+        $sort_dir = "ASC";
+    }
 } else {
     $sort_dir = "ASC";
 }

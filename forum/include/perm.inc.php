@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.61 2005-03-09 23:26:53 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.62 2005-03-09 23:37:41 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -601,12 +601,13 @@ function perm_get_group_permissions($gid)
     return false;
 }
 
-function perm_get_group_folder_perms($gid, $fid)
+function perm_group_get_folders($gid)
 {
     $db_perm_get_group_folder_perms = db_connect();
 
+    $folders_array = array();
+
     if (!is_numeric($gid)) return false;
-    if (!is_numeric($fid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -614,31 +615,47 @@ function perm_get_group_folder_perms($gid, $fid)
 
     if (perm_is_group($gid)) {
 
-        $sql = "SELECT GROUP_PERMS.GID, BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS, ";
+        $sql = "SELECT FOLDER.FID, FOLDER.TITLE, BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS, ";
         $sql.= "COUNT(GROUP_PERMS.PERM) AS GROUP_PERM_COUNT, ";
         $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
         $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-        $sql.= "FROM GROUP_PERMS GROUP_PERMS ";
-        $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS  ON (FOLDER_PERMS.GID = '$gid' ";
-        $sql.= "AND FOLDER_PERMS.FID = '$fid' AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-        $sql.= "WHERE GROUP_PERMS.GID = '$gid' AND GROUP_PERMS.FID = '$fid' ";
+        $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+        $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+        $sql.= "AND GROUP_PERMS.GID = '$gid' AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
+        $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS  ON (FOLDER_PERMS.FID = FOLDER.FID ";
+        $sql.= "AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
         $sql.= "GROUP BY GROUP_PERMS.GID ";
 
         $result = db_query($sql, $db_perm_get_group_folder_perms);
 
-        $row = db_fetch_array($result);
+        if (db_num_rows($result) > 0) {
 
-        if ($row['GROUP_PERM_COUNT'] > 0) {
+            while ($row = db_fetch_array($result)) {
 
-            return array('STATUS' => $row['GROUP_PERMS']);
+                if ($row['GROUP_PERM_COUNT'] > 0) {
 
-        }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+                    $folders_array[$row['FID']] = array('FID'    => $row['FID'],
+                                                        'TITLE'  => $row['TITLE'],
+                                                        'STATUS' => $row['GROUP_PERMS']);
 
-            return array('STATUS' => $row['FOLDER_PERMS']);
+                }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+
+                    $folders_array[$row['FID']] = array('FID'    => $row['FID'],
+                                                        'TITLE'  => $row['TITLE'],
+                                                        'STATUS' => $row['FOLDER_PERMS']);
+                }else {
+
+                    $folders_array[$row['FID']] = array('FID'    => $row['FID'],
+                                                        'TITLE'  => $row['TITLE'],
+                                                        'STATUS' => 0);
+                }
+            }
+
+            return $folders_array;
         }
-    }
 
-    return false;
+        return false;
+    }
 }
 
 function perm_add_user_to_group($uid, $gid)
@@ -760,7 +777,7 @@ function perm_get_global_user_gid($uid)
 }
 
 
-function perm_user_get_user_folders($uid)
+function perm_user_get_folders($uid)
 {
     $db_perm_user_get_user_folders = db_connect();
 

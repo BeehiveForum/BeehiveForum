@@ -24,16 +24,15 @@ P	{
 		}
 
 H1		{
-		background-color: transparent;
+		background-color: #6C6F94;
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		text-decoration: none;
-		color: #000000;
-		font-size: 12pt;
+		color: #FFFFFF;
+		font-size: 10pt;
 		font-weight:bold;
-		margin-top: 00px;
-		margin-bottom: 00px;
-		margin-left: 05px;
-		margin-right: 05px;
+		margin: 0px;
+		padding: 2px;
+		width: 100%
 		}
 
 H2		{
@@ -41,11 +40,11 @@ H2		{
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		text-decoration: none;
 		color: #000000;
-		font-size: 11pt;
+		font-size: 10pt;
 		font-weight:bold;
 		margin-top: 05px;
 		margin-bottom: 05px;
-		margin-left: 05px;
+		margin-left: 0px;
 		margin-right: 05px;
 		}
 

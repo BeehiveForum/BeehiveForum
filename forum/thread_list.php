@@ -107,7 +107,7 @@ setcookie('bh_thread_mode', $mode);
 if(!isset($HTTP_GET_VARS['start_from'])) { $start_from = 0; } else { $start_from = $HTTP_GET_VARS['start_from']; }
 
 // Output XHTML header
-html_draw_pm_script();
+html_draw_top_script();
 
 // Drop out of PHP to start the HTML table
 ?>

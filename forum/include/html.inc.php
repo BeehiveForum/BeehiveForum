@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.58 2003-08-30 01:43:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.59 2003-08-31 17:01:30 hodcroftcj Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -67,16 +67,17 @@ function html_message_type_error()
 //      <script src="openprofile.js"> tag within the HTML output.
 //
 //      To retain the old functionality as well as offer all this
-//      html_draw_top also supports 4 named arguments, which
-//      you can use to alter the default page title, body class
-//      and also specify functions to be called by the browser in
-//      the body tag's onload and onunload events. These have to be
-//      called in a specific manner. For example:
+//      html_draw_top also supports 5 named arguments, which
+//      you can use to alter the default page title, body class,
+//      base target, and also specify functions to be
+//      called by the browser in the body tag's onload and onunload
+//      events. These have to be called in a specific manner.
+//      For example:
 //
-//      html_draw_top("title=Navigation", "class=nav");
+//      html_draw_top("title=Navigation", "class=nav", "basetarget=_top");
 //
 //      This will set the title of the page to "Navigation" with the
-//      body class set to "nav"
+//      body class set to "nav", and base target set to "_top".
 //
 //      For the onload event, you do the same as the title and
 //      body_class named arguments, but you can include multiple
@@ -137,6 +138,11 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
+        if (preg_match("/^basetarget=/i", $func_args)) {
+            if (!isset($base_target)) $base_target = substr($func_args, 11);
+            unset($arg_array[$key]);
+        }
+
         if (preg_match("/^onload=/i", $func_args)) {
             $onload_array[] = substr($func_args, 7);
             unset($arg_array[$key]);
@@ -150,6 +156,7 @@ function html_draw_top()
 
     if (!isset($title)) $title = $forum_name;
     if (!isset($body_class)) $body_class = false;
+    if (!isset($base_target)) $base_target = false;
 
     echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -174,6 +181,7 @@ function html_draw_top()
     }
 
     echo "<link rel=\"stylesheet\" href=\"", $stylesheet, "\" type=\"text/css\" />\n";
+    if ($base_target) echo "<base target=\"$base_target\" />\n";
 
     if (bh_session_get_value('FONT_SIZE') && bh_session_get_value('FONT_SIZE') != '10') {
         echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";

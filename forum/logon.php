@@ -237,17 +237,17 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         }
 
-        // Get Start Page
+        /*// Get Start Page
 
         $user_prefs = user_get_prefs($luid);
 
-	if (!isset($final_uri)) {
-	  if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
+        if (!isset($final_uri)) {
+          if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
             $final_uri = "./discussion.php";
           }else {
             $final_uri = "./start.php";
           }
-	}
+        }*/
 
       }
 

@@ -72,7 +72,15 @@ if (bh_session_check()) {
 
     }else {
 
-      echo "<frame src=\"./start.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+      $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+
+      if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
+        $final_uri = "./discussion.php";
+      }else {
+        $final_uri = "./start.php";
+      }
+
+      echo "<frame src=\"", $final_uri, "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }
 

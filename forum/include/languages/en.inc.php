@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.222 2005-02-08 12:43:07 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.223 2005-02-09 21:45:35 decoyduck Exp $ */
 
 // International English language file
 
@@ -457,7 +457,7 @@ $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list 
 $lang['allowguestaccess'] = "Allow Guest Access";
 
 $lang['searchenginespidering'] = "Search Engine Spidering";
-$lang['allowsearchenginespidering'] = "Allow search engines to spider post content";
+$lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
 
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
@@ -543,7 +543,7 @@ $lang['activesessioncutoffseconds'] = "Active session cut off (seconds)";
 $lang['stats'] = "stats";
 $lang['hide_stats'] = "Hide Stats";
 $lang['show_stats'] = "Show Stats";
-$lang['enablestatsdisplay'] = "Enable Stats Display at bottom of message pane";
+$lang['enablestatsdisplay'] = "Enable Stats Display";
 $lang['personalmessages'] = "Personal Messages";
 $lang['enablepersonalmessages'] = "Enable Personal Messages";
 $lang['pmusermessages'] = "PM messages per user";

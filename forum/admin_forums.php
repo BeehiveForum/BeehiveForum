@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.28 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.29 2005-02-09 21:45:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -65,10 +65,7 @@ if (!$user_sess = bh_session_check()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
-}
+$webtag = get_webtag($webtag_search);
 
 // Load language file
 
@@ -240,7 +237,7 @@ if (sizeof($forums_array) > 0) {
         echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwd']), $forum['ACCESS_LEVEL']), "</td>\n";
 
         if ($forum['ACCESS_LEVEL'] == 1) {
-            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_forum_access.php?fid={$forum['FID']}'\""), "</td>\n";
+            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_forum_access.php?webtag=$webtag&fid={$forum['FID']}'\""), "</td>\n";
         }else if ($forum['ACCESS_LEVEL'] == 2) {
             echo "                  <td align=\"left\">", form_input_password("t_password[{$forum['FID']}]", ""), "</td>\n";
         }else {

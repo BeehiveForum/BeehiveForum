@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.38 2005-02-07 17:04:48 decoyduck Exp $ */
+/* $Id: forums.php,v 1.39 2005-02-09 21:45:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -60,10 +60,7 @@ if (!$user_sess = bh_session_check()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
-}
+$webtag = get_webtag($webtag_search);
 
 // Load Language File
 

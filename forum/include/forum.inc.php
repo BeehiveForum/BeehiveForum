@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.108 2005-02-07 17:04:49 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.109 2005-02-09 21:45:34 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -506,8 +506,8 @@ function forum_create($webtag, $forum_name, $access)
 
         $sql = "CREATE TABLE {$webtag}_FILTER_LIST (";
         $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (ID,UID)";
@@ -651,7 +651,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
+        $sql.= "  PRIMARY KEY  (OPTION_ID, TID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
@@ -672,7 +672,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  EDITED DATETIME DEFAULT NULL,";
         $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-        $sql.= "  PRIMARY KEY  (TID,PID),";
+        $sql.= "  PRIMARY KEY  (PID,TID),";
         $sql.= "  KEY TO_UID (TO_UID),";
         $sql.= "  KEY IPADDRESS (IPADDRESS)";
         $sql.= ") TYPE=MYISAM";
@@ -892,11 +892,11 @@ function forum_create($webtag, $forum_name, $access)
 
         // Create default group permissions
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 0, 1792);";
+        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($uid, 0, 1792);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (1, 1, 6652);";
+        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($uid, 1, 6652);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 

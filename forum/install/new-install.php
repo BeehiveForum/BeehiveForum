@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.22 2005-02-06 13:58:53 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.23 2005-02-09 21:45:35 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -75,7 +75,7 @@ $sql.= "  IPADDRESS CHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
 $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (IP)";
+$sql.= "  PRIMARY KEY  (ID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -421,7 +421,7 @@ $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
+$sql.= "  PRIMARY KEY  (OPTION_ID, TID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -440,10 +440,12 @@ $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  VIEWED DATETIME DEFAULT NULL,";
 $sql.= "  CREATED DATETIME DEFAULT NULL,";
 $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
+$sql.= "  APPROVED DATETIME DEFAULT NULL,";
+$sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  EDITED DATETIME DEFAULT NULL,";
 $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (TID,PID),";
+$sql.= "  PRIMARY KEY  (PID, TID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS),";
 $sql.= "  KEY CREATED (CREATED)";
@@ -457,8 +459,9 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_POST ";
-$sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS) ";
-$sql.= "VALUES (1, 0, 1, 0, NULL, NOW(), 0, NULL, 0, '');";
+$sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, ";
+$sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES (1, 0, 1, 0, NULL, NOW(), ";
+$sql.= "0, NOW(), 1, NULL, 0, '');";
 
 if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.20 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.21 2005-02-09 21:45:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -65,10 +65,7 @@ if (!$user_sess = bh_session_check()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
-}
+$webtag = get_webtag($webtag_search);
 
 // Load language file
 
@@ -144,7 +141,8 @@ if ($forum_array = forum_get($fid)) {
     echo "<p>&nbsp;</p>\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
-    echo form_input_hidden('fid', $fid), "\n";
+    echo "  ", form_input_hidden('fid', $fid), "\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -310,7 +308,7 @@ if ($forum_array = forum_get($fid)) {
     echo "        <td>&nbsp;</td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_button("back", "Back", "onclick=\"document.location.href='admin_forums.php'\""), "</td>\n";
+    echo "        <td align=\"center\">", form_button("back", "Back", "onclick=\"document.location.href='admin_forums.php?webtag=$webtag'\""), "</td>\n";
     echo "      </tr>\n";
     echo "    </td>\n";
     echo "  </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.4 2003-07-30 19:53:13 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.5 2003-08-17 17:59:10 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -73,7 +73,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
 
 $folder_array = folder_get($fid);
 
-echo "<h1>{$lang['managefolder']} : {$folder_array['TITLE']}</h1>\n";
+echo "<h1>{$lang['managefolder']} : ", _stripslashes($folder_array['TITLE']), "</h1>\n";
 
 if ($folder_array['ACCESS_LEVEL'] < 1) {
     echo "<h2>{$lang['folderisnotrestricted']}</h2>\n";

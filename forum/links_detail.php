@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.19 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: links_detail.php,v 1.20 2003-08-17 17:59:10 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -62,7 +62,7 @@ if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
         $lid = $HTTP_POST_VARS['lid'];
     } elseif ($HTTP_POST_VARS['type'] == "comment") {
         if ($HTTP_POST_VARS['comment'] != "") {
-            $comment = addslashes(_htmlentities($HTTP_POST_VARS['comment']));
+            $comment = _addslashes(_htmlentities($HTTP_POST_VARS['comment']));
             links_add_comment($HTTP_POST_VARS['lid'], bh_session_get_value('UID'), $comment);
             $error = "<b>{$lang['commentadded']}</b>";
         } else {
@@ -77,7 +77,7 @@ if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
                 header_redirect("./links.php");
                 exit;
             } else {
-                links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(_htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(_htmlentities($HTTP_POST_VARS['description'])));
+                links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], _addslashes(_htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], _addslashes(_htmlentities($HTTP_POST_VARS['description'])));
                 $lid = $HTTP_POST_VARS['lid'];
             }
             if (isset($HTTP_POST_VARS['hide']) && $HTTP_POST_VARS['hide'] == "confirm") {

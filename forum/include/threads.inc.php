@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.88 2003-08-07 16:52:21 hodcroftcj Exp $ */
+/* $Id: threads.inc.php,v 1.89 2003-08-17 17:59:10 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -55,9 +55,9 @@ function threads_get_folders()
     }else {
         while($row = db_fetch_array($result)) {
             if (isset($row['INTEREST'])) {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'ALLOWED_TYPES' => !is_null($row['ALLOWED_TYPES']) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => $row['INTEREST']);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => $row['INTEREST']);
             }else {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'ALLOWED_TYPES' => !is_null($row['ALLOWED_TYPES']) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => 0);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "", 'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => 0);
             }
         }
     }

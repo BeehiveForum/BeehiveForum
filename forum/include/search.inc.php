@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.32 2003-08-02 01:30:59 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.33 2003-08-17 17:59:10 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -95,14 +95,14 @@ function search_execute($argarray, &$urlquery, &$error)
             $threadtitle = "";
             foreach($keywords as $word) {
                 if (strlen($word) >= $search_min_word_length) {
-                    $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' AND ";
+                    $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' AND ";
                 }
             }
 
             $postcontent = "";
             foreach($keywords as $word) {
                 if (strlen($word) >= $search_min_word_length) {
-                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%<div class=\"sig\">%' AND ";
+                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">%' AND ";
                 }
             }
 
@@ -147,14 +147,14 @@ function search_execute($argarray, &$urlquery, &$error)
             $threadtitle = "";
             foreach($keywords as $word) {
                 if (strlen($word) >= $search_min_word_length) {
-                    $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' OR ";
+                    $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' OR ";
                 }
             }
 
             $postcontent = "";
             foreach($keywords as $word) {
                 if (strlen($word) >= $search_min_word_length) {
-                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%<div class=\"sig\">%' OR ";
+                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">%' OR ";
                 }
             }
 
@@ -194,8 +194,8 @@ function search_execute($argarray, &$urlquery, &$error)
 
         }elseif ($argarray['method'] == 3) { // EXACT
 
-            $searchsql.= $folders. " AND INSTR(THREAD.TITLE, ' ". addslashes(trim($argarray['search_string'])). " ')";
-            $searchsql.= " OR INSTR(POST_CONTENT.CONTENT, ' ". addslashes(trim($argarray['search_string'])). " ')";
+            $searchsql.= $folders. " AND INSTR(THREAD.TITLE, ' ". _addslashes(trim($argarray['search_string'])). " ')";
+            $searchsql.= " OR INSTR(POST_CONTENT.CONTENT, ' ". _addslashes(trim($argarray['search_string'])). " ')";
             $searchsql.= $daterange;
 
             if ($argarray['me_only'] == 'Y') {

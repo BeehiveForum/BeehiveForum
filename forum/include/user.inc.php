@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.82 2003-08-10 02:18:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.83 2003-08-17 17:59:10 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -351,7 +351,7 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
 function user_update_sig($uid, $content, $html)
 {
 
-    $content = addslashes($content);
+    $content = _addslashes($content);
     $db_user_update_sig = db_connect();
 
     $sql = "delete from ". forum_table("USER_SIG"). " where UID = $uid";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.12 2003-08-05 03:11:21 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.13 2003-08-17 17:59:10 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -29,7 +29,7 @@ require_once("./include/db.inc.php");
 function user_profile_create($uid,$piid,$entry)
 {
     $db_user_profile_create = db_connect();
-    $entry = addslashes($entry);
+    $entry = _addslashes($entry);
     $sql = "insert into " . forum_table("USER_PROFILE") . " (UID,PIID,ENTRY) ";
     $sql.= "values ($uid,$piid,\"". _htmlentities($entry). "\")";
     $result = db_query($sql, $db_user_profile_create);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.28 2003-08-04 22:44:54 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.29 2003-08-17 17:59:10 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -89,15 +89,14 @@ function form_dropdown_sql($name, $sql, $default)
     $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" dir=\"". $lang['_textdir']. "\">";
 
     $db_form_dropdown_sql = db_connect();
-
     $result = db_query($sql, $db_form_dropdown_sql);
 
     while($row = db_fetch_array($result)){
         $sel = ($row[0] == $default) ? " selected=\"selected\"" : "";
-        if($row[1]){
-            $html.= "<option value=\"".$row[0]."\"$sel>".$row[1]."</option>";
-        } else {
-            $html.= "<option$sel>".$row[0]."</option>";
+        if ($row[1]) {
+            $html.= "<option value=\"". _stripslashes($row[0]). "\"$sel>". _stripslashes($row[1]). "</option>";
+        }else {
+            $html.= "<option$sel>". _stripslashes($row[0]). "</option>";
         }
     }
 

@@ -166,6 +166,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');
     
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
+    
+    if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
 
     if (strlen($t_message_text) > 0) {
 
@@ -192,6 +194,12 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 }
 
 html_draw_top();
+
+if (!isset($HTTP_POST_VARS['aid'])) {
+  $aid = md5(uniqid(rand()));
+}else{
+  $aid = $HTTP_POST_VARS['aid'];
+}
 
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
 

@@ -46,6 +46,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
   
   $db = db_connect();
   
+  $hash = $HTTP_GET_VARS['hash']; 
   $sql = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
   $result = db_query($sql, $db);
   

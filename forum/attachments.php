@@ -54,11 +54,20 @@ if (isset($HTTP_GET_VARS['filename']) && isset($HTTP_GET_VARS['owneruid'])) {
 html_draw_top();
 
 if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments')) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments', 0777);
-if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON'])) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON'], 0777);
+if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid)) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid, 0777);
 
 if ($HTTP_POST_VARS['submit'] == 'Del') {
 
-  unlink(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON']. '/'. $HTTP_POST_VARS['userfile']);
+  if (isset($HTTP_POST_VARS['old_aid'])) {
+
+    unlink(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $HTTP_POST_VARS['old_aid']. '/'. md5($HTTP_POST_VARS['old_aid']. $HTTP_POST_VARS['userfile']));
+    
+  }else{
+  
+    unlink(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid. '/'. md5($aid. $HTTP_POST_VARS['userfile']));
+    
+  }
+  
   delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['userfile']); 
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
@@ -70,7 +79,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     
   }else {
     
-    move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON']. '/'. $HTTP_POST_FILES['userfile']['name']);
+    move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid. '/'. md5($aid. $HTTP_POST_FILES['userfile']['name']));
     add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name'], $HTTP_POST_FILES['userfile']['type']);
     echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";    
   
@@ -78,7 +87,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Move') {
 
-  move_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_VARS['userfile']);
+  move_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_VARS['old_aid'], $HTTP_POST_VARS['userfile']);
   
 }elseif ($HTTP_POST_VARS['submit'] == 'Complete') {
 
@@ -133,7 +142,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?uid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&hash=". $attachments[$i]['aid']. "&filename=". $attachments[$i]['filename']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
       
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
@@ -198,7 +207,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?owneruid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&filename=". $attachments[$i]['filename']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?uid=". $HTTP_COOKIE_VARS['bh_sess_uid']. "&hash=". $attachments[$i]['aid']. "&filename=". $attachments[$i]['filename']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
       
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
@@ -211,6 +220,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
+      echo "        ". form_input_hidden('old_aid', $attachments[$i]['aid']);
       echo "        ". form_submit('submit', 'Del'). "\n";
       echo "        ". form_submit('submit', 'Move'). "\n";
       echo "      </form>\n";

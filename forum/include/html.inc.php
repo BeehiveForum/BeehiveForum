@@ -36,7 +36,7 @@ function _html_draw_top1($title)
 	echo "\t<head>\n";
 	echo "\t\t<title>$title</title>\n";
 	echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
-	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?". md5(uniqid(rand())). "&fontsize=". $HTTP_COOKIE_VARS['bh_sess_fontsize']. "\" type=\"text/css\"/>\n";
+	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?fontsize=". $HTTP_COOKIE_VARS['bh_sess_fontsize']. "\" type=\"text/css\"/>\n";
 }
 
 function _html_draw_top2()

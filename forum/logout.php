@@ -17,45 +17,42 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
 USA
 ======================================================================*/
 
-require_once("./include/html.inc.php");
-require_once("./include/user.inc.php");
-require_once("./include/constants.inc.php");
+// Frameset for thread list and messages
+
+//Check logged in status
 require_once("./include/session.inc.php");
-require_once("./include/form.inc.php");
+require_once("./include/header.inc.php");
 
-$logged_off = false;
+if(!bh_session_check()){
 
-// Where are we going after we've logged on?
-if(isset($HTTP_POST_VARS['submit'])){
-    bh_session_end();
-    $logged_off = true;
+    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $uri.= "/logon.php?final_uri=";
+    $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
+    
+    header_redirect($uri);
 }
 
-
-html_draw_top();
-
-echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"" . $HTTP_SERVER_VARS['REQUEST_URI'] . "\" method=\"POST\">\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
-echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
-echo "Log out:\n";
-echo "</td></tr></table>\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
-if($logged_off){
-    echo "<tr><td>You have logged out.</td></tr>\n";
-    echo "<tr><td>&nbsp;</td></tr>";
-} else {
-    echo "<tr><td>You are currently logged in as ".user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid'])."</td></tr>\n";
-    echo "<tr><td>&nbsp;</td></tr>";
-    echo "<tr><td align=\"center\">".form_submit("submit","Log out");
+// Disable caching when showing logon page
+require_once("./include/header.inc.php");
+if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+    header_no_cache();
 }
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
-echo "</form></div>\n";
-
-html_draw_bottom();
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>:: teh forum ::</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link rel="stylesheet" href="./styles/style.css" type="text/css">
+	</head>
+	<frameset rows="20,*" border="0">
+          <frame src="./nav.php" name="nav" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
+          <frame src="./user_logout.php" name="logout" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
+        </frameset>	
+
+</html>

@@ -38,7 +38,6 @@ if(isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest'])){
 
     db_query($sql,$db);
 
-    db_disconnect($db);
 }
 
 if(isset($HTTP_GET_VARS['ret'])){

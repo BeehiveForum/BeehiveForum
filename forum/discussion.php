@@ -50,18 +50,12 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
-<?
-    echo "<frameset cols=\"250,*\" border=\"1\">\n";
-    echo "<frame src=\"./thread_list.php";
-    if($HTTP_GET_VARS['msg']){
-        echo "?msg=".$HTTP_GET_VARS['msg'];
-    }
-    echo "\" name=\"left\" border=\"1\">\n";
-    echo "<frame src=\"./messages.php";
-    if($HTTP_GET_VARS['msg']){
-        echo "?msg=".$HTTP_GET_VARS['msg'];
-    }
-    echo "\" name=\"right\" border=\"1\">\n";
-    echo "</frameset>\n";
-?>
+	<frameset rows="20,*" border="0">
+          <frame src="./nav.php" name="nav" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
+          <frameset cols="250,*" border="1">
+            <frame src="./thread_list.php<?php if ($HTTP_GET_VARS['msg']) echo "?msg=". $HTTP_GET_VARS['msg']; ?>" name="left" border="1">
+            <frame src="./messages.php<?php if ($HTTP_GET_VARS['msg']) echo "?msg=". $HTTP_GET_VARS['msg']; ?>" name="right" border="1">
+          </frameset>
+        </frameset>	
+
 </html>

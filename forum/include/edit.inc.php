@@ -31,18 +31,16 @@ function post_update($tid,$pid,$content)
     if(!($tid && $pid)){
         return false;
     }
-    $db = db_connect();
+    $db_post_update = db_connect();
 
     $content = mysql_escape_string($content);
 
     $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = \"$content\" ";
     $sql .= "where TID = $tid and PID = $pid";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql,$db_post_update);
 
     $return = ($result) ? true : false;
-
-    db_disconnect($db);
 
     return $return;
 }
@@ -52,7 +50,7 @@ function post_delete($tid,$pid)
     if(!($tid && $pid)){
         return false;
     }
-    $db = db_connect();
+    $db_post_delete = db_connect();
 
     $content = mysql_escape_string($content);
 
@@ -61,11 +59,9 @@ function post_delete($tid,$pid)
     
     echo $sql;
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql,$db_post_delete);
 
     $return = ($result) ? true : false;
-
-    db_disconnect($db);
 
     return $return;
 }

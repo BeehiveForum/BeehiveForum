@@ -56,8 +56,8 @@ function bh_session_init($uid)
     $sql .= "left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
     $sql .= "where USER.UID = $uid";
 
-    $db = db_connect();
-    $result = db_query($sql,$db);
+    $db_bh_session_init = db_connect();
+    $result = db_query($sql, $db_bh_session_init);
 
     if(!db_num_rows($result)){
         $user_status = 0;
@@ -88,8 +88,6 @@ function bh_session_init($uid)
         }
     }
 
-    db_disconnect($db);
-
     $check = $uid;
     $check .= " " . $user_status;
     $check .= " " . $user_ppp;
@@ -103,6 +101,16 @@ function bh_session_init($uid)
     setcookie("bh_sess_tz", $user_tz);
     setcookie("bh_sess_dlsav", $user_dlsav);
     setcookie("bh_sess_check",md5($check));
+}
+
+function bh_session_end()
+{
+    setcookie("bh_sess_uid","",-3600);
+    setcookie("bh_sess_ustatus","",-3600);
+    setcookie("bh_sess_ppp","",-3600);
+    setcookie("bh_sess_tz","",-3600);
+    setcookie("bh_sess_dlsav","",-3600);
+    setcookie("bh_sess_check","",-3600);
 }
 
 ?>

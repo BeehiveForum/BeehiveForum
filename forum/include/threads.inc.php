@@ -32,13 +32,13 @@ function threads_get_available_folders()
 {
     global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    $db = db_connect();
+    $db_threads_get_available_folders = db_connect();
 
     $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
     $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_threads_get_available_folders);
     $count = db_num_rows($result);
 
     if($count==0){
@@ -52,22 +52,21 @@ function threads_get_available_folders()
         }
     }
 
-    db_disconnect($db);
-
     return $return;
 }
 
 function threads_get_folders()
 {
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+	global $HTTP_COOKIE_VARS;
+	$uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
-	$db = db_connect();
-	//$query = "select distinct FID, TITLE from " . forum_table("FOLDER") . " order by FID";
-    $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
-    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) order by F.FID";
-	$result = db_query($sql, $db);
+	$db_threads_get_folders = db_connect();
+
+	$sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
+	$sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
+	$sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) order by F.FID";
+	
+	$result = db_query($sql, $db_threads_get_folders);
 
 	if (!db_num_rows($result)) {
 		 $folder_titles = FALSE;
@@ -78,13 +77,12 @@ function threads_get_folders()
 	}
 
 	return $folder_titles;
-	db_disconnect($db);
 }
 
 function threads_get_all($uid) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
     $folders = threads_get_available_folders();
-	$db = db_connect();
+	$db_threads_get_all = db_connect();
 
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
@@ -98,17 +96,16 @@ function threads_get_all($uid) // get "all" threads (i.e. most recent threads, i
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_all);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
 function threads_get_unread($uid) // get unread messages for $uid
 {
-    $folders = threads_get_available_folders();
-	$db = db_connect();
+	$folders = threads_get_available_folders();
+	$db_threads_get_unread = db_connect();
 
 	// Formulate query
 
@@ -122,17 +119,16 @@ function threads_get_unread($uid) // get unread messages for $uid
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_unread);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
 function threads_get_unread_to_me($uid) // get unread messages to $uid
 {
-    $folders = threads_get_available_folders();
-	$db = db_connect();
+	$folders = threads_get_available_folders();
+	$db_threads_get_unread_to_me = db_connect();
 
 	// Formulate query
 
@@ -148,17 +144,16 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_unread_to_me);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
 function threads_get_by_days($uid,$days = 1) // get threads from the last $days days
 {
-    $folders = threads_get_available_folders();
-	$db = db_connect();
+    	$folders = threads_get_available_folders();
+	$db_threads_get_by_days = db_connect();
 
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
@@ -173,17 +168,16 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_by_days);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
 function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by interest (default High Interest)
 {
-    $folders = threads_get_available_folders();
-	$db = db_connect();
+    	$folders = threads_get_available_folders();
+	$db_threads_get_by_interest = db_connect();
 
 	// Formulate query
 
@@ -196,17 +190,16 @@ function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_by_interest);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
 function threads_get_unread_by_interest($uid,$interest = 1) // get unread messages for $uid by interest (default High Interest)
 {
-    $folders = threads_get_available_folders();
-	$db = db_connect();
+    	$folders = threads_get_available_folders();
+	$db_threads_get_unread_by_interest = db_connect();
 
 	// Formulate query
 
@@ -220,17 +213,16 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_unread_by_interest);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
 function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 {
-    $folders = threads_get_available_folders();
-	$db = db_connect();
+    	$folders = threads_get_available_folders();
+	$db_threads_get_recently_viewed = db_connect();
 
 	// Formulate query
 
@@ -244,17 +236,16 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_recently_viewed);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
 function threads_get_folder($uid,$fid) // get messages recently seem by $uid
 {
 //  $folders = threads_get_available_folders();
-	$db = db_connect();
+	$db_threads_get_folder = db_connect();
 
 	// Formulate query
 
@@ -268,10 +259,9 @@ function threads_get_folder($uid,$fid) // get messages recently seem by $uid
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
-	$resource_id = db_query($sql, $db);
+	$resource_id = db_query($sql, $db_threads_get_folder);
 	list($threads, $folder_order) = threads_process_list($resource_id);
 	return array($threads, $folder_order);
-	db_disconnect($db);
 
 }
 
@@ -316,15 +306,13 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
 function threads_get_folder_msgs()
 {
-	$db = db_connect();
-	//$sql = "SELECT fid, COUNT(fid) AS total FROM " . forum_table("THREAD") . " GROUP BY fid";
-    $sql = "SELECT ".forum_table("FOLDER").".fid, COUNT(".forum_table("THREAD").".fid) AS total FROM ".forum_table("FOLDER")." LEFT JOIN ".forum_table("THREAD")." ON ".forum_table("FOLDER").".fid = ".forum_table("THREAD").".fid GROUP BY ".forum_table("FOLDER").".fid";
-	$resource_id = db_query($sql, $db);
+	$db_threads_get_folder_msgs = db_connect();
+    	$sql = "SELECT ".forum_table("FOLDER").".fid, COUNT(".forum_table("THREAD").".fid) AS total FROM ".forum_table("FOLDER")." LEFT JOIN ".forum_table("THREAD")." ON ".forum_table("FOLDER").".fid = ".forum_table("THREAD").".fid GROUP BY ".forum_table("FOLDER").".fid";
+	$resource_id = db_query($sql, $db_threads_get_folder_msgs);
 	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
 		$folder = db_fetch_array($resource_id);
 		$folder_msgs[$folder['fid']] = $folder['total'];
 	}
-	db_disconnect($db);
 	return $folder_msgs;
 }
 
@@ -338,10 +326,9 @@ function threads_any_unread()
     $sql.= "where T.LENGTH > UT.LAST_READ ";
     $sql.= "limit 0,1";
     
-    $db = db_connect();
-    $result = db_query($sql,$db);
+    $db_threads_any_unread = db_connect();
+    $result = db_query($sql, $db_threads_any_unread);
     $return = (db_num_rows($result) > 0);
-    db_disconnect($db);
     
     return $return;
 }
@@ -356,8 +343,8 @@ function threads_mark_all_read()
     $sql.= "on (UT.TID = T.TID and UT.UID = $uid) ";
     $sql.= "where T.LENGTH > UT.LAST_READ";
 
-    $db = db_connect();
-    $result = db_query($sql,$db);
+    $db_threads_mark_all_read = db_connect();
+    $result = db_query($sql, $db_threads_mark_all_read);
 
     for($i=0;$row[$i] = db_fetch_array($result);$i++);
 
@@ -371,10 +358,9 @@ function threads_mark_all_read()
             $sql.= "LAST_READ_AT = NOW() ";
             $sql.= "where TID = ".$row[$j]['TID']." and UID = $uid";
         }
-        db_query($sql,$db);
+        db_query($sql, $db_threads_mark_all_read);
     }
     
-    db_disconnect($db);
 }
 
 ?>

@@ -75,8 +75,6 @@ $result = db_query($sql,$db);
 
 $user = db_fetch_array($result);
 
-db_disconnect($db);
-
 // Do updates
 if(isset($HTTP_POST_VARS['submit'])){
     $new_status = $HTTP_POST_VARS['t_worker'] | $HTTP_POST_VARS['t_worm'] | $HTTP_POST_VARS['t_wasp'] | $HTTP_POST_VARS['t_splat'];

@@ -26,36 +26,34 @@ require_once("./include/db.inc.php");
 
 function user_profile_create($uid,$piid,$entry)
 {
-    $db = db_connect();
+    $db_user_profile_create = db_connect();
     $entry = mysql_escape_string($entry);
     $sql = "insert into " . forum_table("USER_PROFILE") . " (UID,PIID,ENTRY) ";
     $sql.= "values ($uid,$piid,\"$entry\")";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_user_profile_create);
     return $result;
 }
 
 function user_profile_update($uid,$piid,$entry)
 {
-    $db = db_connect();
+    $db_user_profile_update = db_connect();
     $entry = mysql_escape_string($entry);
-    $sql = "update " . forum_table("PROFILE_ITEM") . " ";
+    $sql = "update " . forum_table("USER_PROFILE") . " ";
     $sql.= "set ENTRY = \"$entry\" ";
     $sql.= "where UID = $uid ";
     $sql.= "and PIID = $piid";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_user_profile_update);
     return $result;
 }
 
 function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
 {
     $html = "<select name=\"${field_name}${suffix}\">";
-    $db = db_connect();
+    $db_profile_section_dropdown = db_connect();
 
     $sql = "select PSID, NAME from " . forum_table("PROFILE_SECTION");
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_profile_section_dropdown);
 
     $i = 0;
     while($row = db_fetch_array($result)){
@@ -65,8 +63,6 @@ function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
         }
         $html .= ">" . $row['NAME'] . "</option>";
     }
-
-    db_disconnect($db);
 
     $html .= "</select>";
     return $html;

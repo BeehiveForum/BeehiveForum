@@ -33,8 +33,8 @@ function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 
     /* Old code
     $html = "<select name=\"${field_name}${suffix}\">";
-    $db = db_connect();
-    $result = db_query($sql,$db);
+    $db_folder_draw_dropdown = db_connect();
+    $result = db_query($sql,$db_folder_draw_dropdown);
 
     $i = 0;
     while($row = db_fetch_array($result)){
@@ -45,8 +45,6 @@ function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
         $html .= ">" . $row['TITLE'] . "</option>";
     }
 
-    db_disconnect($db);
-
     $html .= "</select>";
     return $html;
     */
@@ -54,49 +52,45 @@ function folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
 
 function folder_get_title($fid)
 {
-   $db = db_connect();
+   $db_folder_get_title = db_connect();
    $sql = "select FOLDER.TITLE from " . forum_table("FOLDER") . " where FID = $fid";
-   $resource_id = db_query($sql,$db);
+   $resource_id = db_query($sql,$db_folder_get_title);
    if(!db_num_rows($resource_id)){
      $foldertitle = "The Unknown Folder";
    } else {
      $data = db_fetch_array($resource_id);
      $foldertitle = $data['TITLE'];
    }
-   db_disconnect($db);
    return $foldertitle;
 }
 
 function folder_create($title,$access)
 {
-    $db = db_connect();
+    $db_folder_create = db_connect();
     $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL) ";
     $sql.= "values (\"$title\",$access)";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_folder_create);
     return $result;
 }
 
 function folder_update($fid,$title,$access)
 {
-    $db = db_connect();
+    $db_folder_update = db_connect();
     $sql = "update " . forum_table("FOLDER") . " ";
     $sql.= "set TITLE = \"$title\", ";
     $sql.= "ACCESS_LEVEL = $access ";
     $sql.= "where FID = $fid";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_folder_update);
     return $result;
 }
 
 function folder_move_threads($from,$to)
 {
-    $db = db_connect();
+    $db_folder_move_threads = db_connect();
     $sql = "update " . forum_table("THREAD") . " ";
     $sql.= "set FID = $to ";
     $sql.= "where FID = $from";
-    $result = db_query($sql,$db);
-    db_disconnect($db);
+    $result = db_query($sql, $db_folder_move_threads);
     return $result;
 }
 

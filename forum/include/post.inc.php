@@ -27,30 +27,28 @@ require_once("./include/forum.inc.php");
 
 function post_create($tid,$reply_pid,$fuid,$tuid,$content)
 {
-    $db = db_connect();
+    $db_post_create = db_connect();
     $content = mysql_escape_string($content);
 
     $sql = "insert into " . forum_table("POST");
     $sql .= " (TID,REPLY_TO_PID,FROM_UID,TO_UID,CREATED) ";
     $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW())";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql,$db_post_create);
 
     if($result){
-        $new_pid = db_insert_id($db);
+        $new_pid = db_insert_id($db_post_create);
         $sql = "insert into  " . forum_table("POST_CONTENT");
         $sql .= " (TID,PID,CONTENT) ";
         $sql .= "values ($tid,$new_pid,\"$content\")";
-        $result = db_query($sql,$db);
+        $result = db_query($sql, $db_post_create);
         
         $sql = "update " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
         $sql .= "where tid = $tid";
-        $result = db_query($sql,$db);
+        $result = db_query($sql, $db_post_create);
     } else {
         $new_pid = -1;
     }
-
-    db_disconnect($db);
 
     return $new_pid;
 }
@@ -59,21 +57,19 @@ function post_create_thread($fid,$title)
 {
     $title = mysql_escape_string(htmlentities($title));
 
-    $db = db_connect();
+    $db_post_create_thread = db_connect();
 
     $sql = "insert into " . forum_table("THREAD");
     $sql .= " (FID,TITLE,LENGTH,POLL_FLAG,MODIFIED) ";
     $sql .= "values ($fid,\"$title\",0,\"N\",NOW())";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_post_create_thread);
 
     if($result){
-        $new_tid = db_insert_id($db);
+        $new_tid = db_insert_id($db_post_create_thread);
     } else {
         $new_tid = -1;
     }
-
-    db_disconnect($db);
 
     return $new_tid;
 }
@@ -91,13 +87,13 @@ function make_html($text)
 function post_draw_to_dropdown($default_uid)
 {
     $html = "<select name=\"t_to_uid\">";
-    $db = db_connect();
+    $db_post_draw_to_dropdown = db_connect();
 
     $html .= "<option value=\"0\">ALL</option>";
 
     $sql = "select UID, LOGON, NICKNAME from " . forum_table("USER");
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_post_draw_to_dropdown);
 
     while($row = db_fetch_array($result)){
         if(isset($row['LOGON'])){
@@ -121,8 +117,6 @@ function post_draw_to_dropdown($default_uid)
         }
         $html .= ">$fmt_username</option>";
     }
-
-    db_disconnect($db);
 
     $html .= "</select>";
     return $html;

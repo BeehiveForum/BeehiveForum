@@ -38,7 +38,6 @@ if(isset($HTTP_POST_VARS['move'])){
 
         db_query($sql,$db);
 
-        db_disconnect($db);
     }
 } else if(isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
@@ -48,7 +47,6 @@ if(isset($HTTP_POST_VARS['move'])){
 
         db_query($sql,$db);
 
-        db_disconnect($db);
 } else if(isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
 
@@ -57,7 +55,6 @@ if(isset($HTTP_POST_VARS['move'])){
 
         db_query($sql,$db);
 
-        db_disconnect($db);
 } else if(isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
         $name = mysql_escape_string($HTTP_POST_VARS['t_name']);
@@ -67,7 +64,6 @@ if(isset($HTTP_POST_VARS['move'])){
 
         db_query($sql,$db);
 
-        db_disconnect($db);
 }
 
 if(isset($HTTP_GET_VARS['ret'])){

@@ -76,8 +76,6 @@ for($i=0;$i<$result_count;$i++){
     echo "</a></p>\n";
 }
 
-db_disconnect($db);
-
 echo "</td></tr></table>\n";
 echo "</div>\n";
 

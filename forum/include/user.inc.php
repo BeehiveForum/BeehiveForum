@@ -26,15 +26,13 @@ require_once("./include/forum.inc.php");
 
 function user_exists($logon)
 {
-    $db = db_connect();
+    $db_user_exists = db_connect();
 
     $sql = "SELECT uid FROM " . forum_table("USER") . " WHERE logon = \"$logon\"";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_user_exists);
 
     $exists = (db_num_rows($result)>0);
-
-    db_disconnect($db);
 
     return $exists;
 }
@@ -46,15 +44,13 @@ function user_create($logon,$password,$nickname,$email)
     $sql = "INSERT INTO " . forum_table("USER") . " (logon,passwd,nickname,email) ";
     $sql .= "VALUES (\"$logon\",\"$md5pass\",\"$nickname\",\"$email\")";
 
-    $db = db_connect();
-    $result = db_query($sql,$db);
+    $db_user_create = db_connect();
+    $result = db_query($sql, $db_user_create);
     if($result){
-        $new_uid = db_insert_id($db);
+        $new_uid = db_insert_id($db_user_create);
     } else {
         $new_uid = -1;
     }
-    db_disconnect($db);
-
     return $new_uid;
 }
 
@@ -69,10 +65,8 @@ function user_update($uid,$password,$nickname,$email)
     
     //echo $sql;
 
-    $db = db_connect();
-    $result = db_query($sql,$db);
-
-    db_disconnect($db);
+    $db_user_update = db_connect();
+    $result = db_query($sql, $db_user_update);
 
     return $result;
 }
@@ -84,10 +78,8 @@ function user_update_status($uid,$status)
 
     //echo $sql;
 
-    $db = db_connect();
-    $result = db_query($sql,$db);
-
-    db_disconnect($db);
+    $db_user_update_status = db_connect();
+    $result = db_query($sql, $db_user_update_status);
 
     return $result;
 }
@@ -100,29 +92,27 @@ function user_logon($logon,$password)
     $sql .= "WHERE logon = \"$logon\" ";
     $sql .= "AND passwd = \"$md5pass\"";
 
-    $db = db_connect();
-    $result = db_query($sql,$db);
+    $db_user_logon = db_connect();
+    $result = db_query($sql, $db_user_logon);
 
     if(!db_num_rows($result)){
         $uid = -1;
     } else {
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
-        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid",$db);
+        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid",$db_user_logon);
     }
-
-    db_disconnect($db);
 
     return $uid;
 }
 
 function user_get($uid)
 {
-    $db = db_connect();
+    $db_user_get = db_connect();
 
     $sql = "select * from " . forum_table("USER") . " where uid = $uid";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_user_get);
 
     if(!db_num_rows($result)){
         $fa = array();
@@ -130,18 +120,16 @@ function user_get($uid)
         $fa = db_fetch_array($result);
     }
 
-    db_disconnect($db);
-
     return $fa;
 }
 
 function user_get_logon($uid)
 {
-    $db = db_connect();
+    $db_user_get_logon = db_connect();
 
     $sql = "select LOGON from " . forum_table("USER") . " where uid = $uid";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_user_get_logon);
 
     if(!db_num_rows($result)){
         $logon = "UNKNOWN";
@@ -150,18 +138,16 @@ function user_get_logon($uid)
         $logon = $fa['LOGON'];
     }
 
-    db_disconnect($db);
-
     return $logon;
 }
 
 function user_get_sig($uid,&$content,&$html)
 {
-    $db = db_connect();
+    $db_user_get_sig = db_connect();
 
     $sql = "select content, html from " . forum_table("USER_SIG") . " where uid = $uid";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_user_get_sig);
 
     if(!db_num_rows($result)){
         $ret = false;
@@ -172,26 +158,22 @@ function user_get_sig($uid,&$content,&$html)
         $ret = true;
     }
 
-    db_disconnect($db);
-
     return $ret;
 }
 
 function user_get_prefs($uid)
 {
-    $db = db_connect();
+    $db_user_get_prefs = db_connect();
 
     $sql = "select * from " . forum_table("USER_PREFS") . " where uid = $uid";
 
-    $result = db_query($sql,$db);
+    $result = db_query($sql, $db_user_get_prefs);
 
     if(!db_num_rows($result)){
         $fa = array();
     } else {
         $fa = db_fetch_array($result);
     }
-
-    db_disconnect($db);
 
     return $fa;
 }
@@ -200,16 +182,14 @@ function user_insert_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
                         $email_notify,$timezone,$dl_saving,$mark_as_of_int,$posts_per_page)
 {
 
-    $db = db_connect();
+    $db_user_insert_prefs = db_connect();
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
     $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE)";
     $sql .= " values ($uid, \"$firstname\", \"$lastname\", \"$homepage_url\", \"$pic_url\",";
     $sql .= " \"$email_notify\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page)";
 
-    $result = db_query($sql,$db);
-
-    db_disconnect($db);
+    $result = db_query($sql, $db_user_insert_prefs);
 
     return $result;
 }
@@ -218,7 +198,7 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
                         $email_notify,$timezone,$dl_saving,$mark_as_of_int,$posts_per_page)
 {
 
-    $db = db_connect();
+    $db_user_update_prefs = db_connect();
 
     $sql = "update " . forum_table("USER_PREFS") . " set";
     $sql .= " FIRSTNAME = \"$firstname\", LASTNAME = \"$lastname\",";
@@ -227,9 +207,7 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
     $sql .= " MARK_AS_OF_INT = \"$mark_as_of_int\", POSTS_PER_PAGE = $posts_per_page";
     $sql .= " where UID = $uid";
 
-    $result = db_query($sql,$db);
-
-    db_disconnect($db);
+    $result = db_query($sql, $db_user_update_prefs);
 
     return $result;
 }
@@ -237,14 +215,12 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 function user_insert_sig($uid,$content,$html){
 
     $content = mysql_escape_string($content);
-    $db = db_connect();
+    $db_user_insert_sig = db_connect();
 
     $sql = "insert into " . forum_table("USER_SIG") . " (UID, CONTENT, HTML)";
     $sql .= " values ($uid, \"$content\", \"$html\")";
 
-    $result = db_query($sql,$db);
-
-    db_disconnect($db);
+    $result = db_query($sql, $db_user_insert_sig);
 
     return $result;
 }
@@ -252,15 +228,13 @@ function user_insert_sig($uid,$content,$html){
 function user_update_sig($uid,$content,$html){
 
     $content = mysql_escape_string($content);
-    $db = db_connect();
+    $db_user_update_sig = db_connect();
 
     $sql = "update " . forum_table("USER_SIG") . " set";
     $sql .= " CONTENT = \"$content\", HTML = \"$html\"";
     $sql .= " where UID = $uid";
 
-    $result = db_query($sql,$db);
-
-    db_disconnect($db);
+    $result = db_query($sql, $db_user_update_sig);
 
     return $result;
 }

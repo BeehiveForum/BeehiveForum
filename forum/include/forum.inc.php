@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.90 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.91 2004-11-21 17:26:06 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -41,9 +41,9 @@ function get_table_prefix()
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag'])) {
+        if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_GET['webtag']));
-        }else if (isset($_POST['webtag'])) {
+        }else if (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_POST['webtag']));
         }else {
             $webtag = false;
@@ -374,7 +374,7 @@ function forum_get_setting($setting_name, $value = false, $default = false)
                 return true;
             }
         }else {
-            return _stripslashes($forum_settings[$setting_name]);
+            return $forum_settings[$setting_name];
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.52 2004-11-06 23:43:22 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.53 2004-11-21 17:26:06 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -83,7 +83,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
             echo "<input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" />\n";
 
-            if (isset($_GET['retryerror']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
+            if (isset($_GET['retryerror']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
                 echo "<p>This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</p>\n";
                 echo "<textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea>\n";
@@ -160,7 +160,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" /></td>\n";
             echo "        </tr>\n";
 
-            if (isset($_GET['retryerror']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
+            if (isset($_GET['retryerror']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
                 echo "        <tr>\n";
                 echo "          <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.143 2004-11-21 14:08:09 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.144 2004-11-21 17:26:07 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -776,7 +776,7 @@ function threads_process_list($resource_id, $allow_ignored_completely = false)
 
                     $lst[$i]['tid'] = $thread['tid'];
                     $lst[$i]['fid'] = $thread['fid'];
-                    $lst[$i]['title'] = _stripslashes($thread['title']);
+                    $lst[$i]['title'] = $thread['title'];
                     $lst[$i]['length'] = $thread['length'];
                     $lst[$i]['poll_flag'] = $thread['poll_flag'];
 

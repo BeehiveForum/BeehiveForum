@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.153 2004-11-02 19:24:21 decoyduck Exp $ */
+/* $Id: edit.php,v 1.154 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -330,7 +330,7 @@ if ($allow_html == false) {
         }
 }
 
-if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+if (isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
@@ -347,7 +347,7 @@ if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
                 $valid = false;
         }
 }
-if (isset($_POST['t_sig']) && trim($_POST['t_sig']) != "") {
+if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
 
         $t_sig = trim(_stripslashes($_POST['t_sig']));
 
@@ -474,11 +474,14 @@ if (isset($_POST['preview'])) {
 
     if ($valid) {
 
-                if ($allow_sig == true) {
-                    $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
-                } else {
-                    $t_content_tmp = $t_content;
-                }
+        if ($allow_sig == true) {
+
+            $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
+
+        }else {
+
+            $t_content_tmp = $t_content;
+        }
 
         $updated = post_update($tid, $pid, $t_content_tmp);
 
@@ -487,12 +490,14 @@ if (isset($_POST['preview'])) {
             post_add_edit_text($tid, $pid);
 
             if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
 
-                        if ($preview_message['FROM_UID'] != bh_session_get_value('UID')) {
-                    admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
-                        }
+            if ($preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+
+                admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
+            }
 
             echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
             echo "  <!--\n";
@@ -527,17 +532,19 @@ if (isset($_POST['preview'])) {
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
-        if (isset($_POST['t_content'])) {
-                $t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
+    if (isset($_POST['t_content'])) {
+
+        $t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
         $post->setContent($t_content);
         $t_content = $post->getContent();
-        }
+    }
 
-        if (isset($_POST['t_sig'])) {
-                $t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
+    if (isset($_POST['t_sig'])) {
+
+        $t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
         $sig->setContent($t_sig);
         $t_sig = $sig->getContent();
-        }
+    }
 
     $preview_message = messages_get($tid, $pid, 1);
 
@@ -555,17 +562,17 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-        if (isset($_POST['emots_toggle_x'])) {
-                $page_prefs ^= POST_EMOTICONS_DISPLAY;
-        } else {
-                $page_prefs ^= POST_SIGNATURE_DISPLAY;
-        }
+    if (isset($_POST['emots_toggle_x'])) {
+        $page_prefs ^= POST_EMOTICONS_DISPLAY;
+    }else {
+        $page_prefs ^= POST_SIGNATURE_DISPLAY;
+    }
 
-        user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+    user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 
-        $fix_html = false;
+    $fix_html = false;
 
-} else {
+}else {
 
     $editmessage = messages_get($tid, $pid, 1);
 

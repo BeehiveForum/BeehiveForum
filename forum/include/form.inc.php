@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.59 2004-11-18 20:13:39 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.60 2004-11-21 17:26:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -325,17 +325,27 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 function form_input_hidden_array($name, $value)
 {
     if (is_array($value)) {
+
         foreach ($value as $array_key => $array_value) {
+
             if (isset($return)) {
+
                 $return.= form_input_hidden_array("{$name}[{$array_key}]", $array_value);
+
             }else {
+
                 $return = form_input_hidden_array("{$name}[{$array_key}]", $array_value);
             }
         }
+
     }else {
+
         if (isset($return)) {
+
             $return.= form_input_hidden($name, _stripslashes($value));
+
         }else {
+
             $return = form_input_hidden($name, _stripslashes($value));
         }
     }

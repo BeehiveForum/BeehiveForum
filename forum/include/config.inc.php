@@ -26,9 +26,9 @@ USA
 // Database stuff ------------------------------------------------------
 
 $db_server	= "localhost";	// the address of your MySQL server
-$db_username = "bigbeige";	// your MySQL username
-$db_password = "9826442";	// your MySQL password
-$db_database = "bigbeige_beehive";	// the name of your MySQL database
+$db_username = "beehiveforum";	// your MySQL username
+$db_password = "miffle";	// your MySQL password
+$db_database = "beehiveforum";	// the name of your MySQL database
 
 // ---------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.4 2004-06-03 08:54:45 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.5 2004-06-03 11:05:13 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -925,6 +925,16 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result_perm = mysql_query($sql, $db_install)) {
             die(mysql_error());
+        }
+
+        if (($row['STATUS'] & 32) > 0 || ($row['STATUS'] & 16) > 0 || ($row['STATUS'] & 8) > 0) {
+
+            $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
+            $sql.= "SELECT $gid, FID, 252 FROM {$forum_webtag}_FOLDER";
+
+            if (!$result_fid = mysql_query($sql, $db_install)) {
+                die(mysql_error());
+            }
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.10 2004-12-18 19:36:53 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.11 2004-12-21 22:49:45 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1388,21 +1388,26 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $dictionary_words = file('./install/english.dic');
+        if (@$fp = fopen('./install/english.dic', 'r')) {
 
-        foreach($dictionary_words as $word) {
+            while (!feof($fp)) {
 
-            $metaphone = addslashes(metaphone(trim($word)));
-            $word = addslashes(trim($word));
+                $word = fgets($fp, 100);
 
-            $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-            $sql.= "VALUES ('$word', '$metaphone', 0)";
+                $metaphone = addslashes(metaphone(trim($word)));
+                $word = addslashes(trim($word));
 
-            if (!$result = db_query($sql, $db_install)) {
+                $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+                $sql.= "VALUES ('$word', '$metaphone', 0)";
 
-                $valid = false;
-                return;
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $valid = false;
+                    return;
+                }
             }
+
+            fclose($fp);
         }
     }
 }

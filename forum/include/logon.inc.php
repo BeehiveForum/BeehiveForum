@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.12 2004-04-29 16:29:07 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.13 2004-04-29 16:53:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -62,8 +62,13 @@ function perform_logon($logon_main)
 
         if (strtoupper($_POST['user_logon']) == 'GUEST' && strtoupper($_POST['user_password']) == 'GUEST') {
 
-            bh_session_init(0);
-            return true;
+            if (user_guest_enabled()) {
+
+                bh_session_init(0);
+                return true;
+            }
+
+            return false;
         }
 
         if (preg_match("/^ +$/", _stripslashes($_POST['user_password']))) {

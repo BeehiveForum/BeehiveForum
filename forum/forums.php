@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.18 2004-04-26 11:21:08 decoyduck Exp $ */
+/* $Id: forums.php,v 1.19 2004-04-28 14:28:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -69,6 +69,14 @@ if (isset($_POST['submit'])) {
 	    user_set_forum_interest($fid, 0);
 	}
     }
+}
+
+if (isset($_GET['webtag_search']) && strlen(trim($_GET['webtag_search'])) > 0) {
+    $webtag_search = trim($_GET['webtag_search']);
+}
+
+if (isset($_GET['reset'])) {
+    $webtag_search = "";
 }
 
 if ($user_sess && bh_session_get_value('UID') <> 0) {
@@ -206,7 +214,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 	    echo "  <br />\n";
         }
 
-        if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
+        if (sizeof($forums_array['OTHER_FORUMS']) > 0 && !isset($webtag_search)) {
 
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
             echo "    <tr>\n";
@@ -285,38 +293,46 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "<h1>{$lang['availableforums']}</h1>\n";
         echo "<br>\n";
         echo "<div align=\"center\">\n";
-        echo "<table width=\"90%\" border=\"1\" class=\"box\">\n";
-        echo "  <tr>\n";
-        echo "    <td class=\"posthead\">\n";
-        echo "      <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\" class=\"posthead\">\n";
-        echo "        <tr class=\"subhead\">\n";
-        echo "          <td colspan=\"3\">{$lang['availableforums']}:</td>\n";
-        echo "          <td>&nbsp;</td>\n";
-        echo "        </tr>\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td colspan=\"3\" class=\"subhead\">&nbsp;{$lang['availableforums']}:</td>\n";
+        echo "                  <td class=\"subhead\">&nbsp;</td>\n";
+        echo "                </tr>\n";
 
         foreach ($forums_array as $forum) {
 
-            echo "        <tr>\n";
-            echo "          <td width=\"25%\">\n";
-            echo "            <a href=\"#\">[?]</a>&nbsp;";
+            echo "                <tr>\n";
+            echo "                  <td width=\"25%\">\n";
 
             if (isset($_GET['final_uri'])) {
-                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
+                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
             }else {
-                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
             }
 
-            echo "          </td>\n";
-            echo "          <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
-            echo "          <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} {$lang['messages']}</a></td>\n";
-            echo "          <td width=\"20%\">&nbsp;</td>\n";
-            echo "        </tr>\n";
+            echo "                  </td>\n";
+            echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
+            echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} {$lang['messages']}</a></td>\n";
+            echo "                  <td width=\"20%\">&nbsp;</td>\n";
+            echo "                </tr>\n";
         }
 
-        echo "      </table>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
+        echo "                <tr>\n";
+        echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
         echo "</div>\n";
 
     }else {
@@ -326,6 +342,105 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "<h2>{$lang['noforumsavailablelogin']}</h2>\n";
     }
 }
+
+if (isset($webtag_search) && strlen($webtag_search) > 0) {
+
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;{$lang['searchresults']}:</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
+    echo "                </tr>\n";
+
+    if ($forum_array = forum_search($webtag_search)) {
+
+        foreach ($forum_array as $forum) {
+
+            echo "                <tr>\n";
+            echo "                  <td width=\"20\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+            echo "                  <td width=\"25%\">\n";
+
+            if (isset($_GET['final_uri'])) {
+                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
+            }else {
+                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+            }
+
+            echo "                </td>\n";
+            echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
+            echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} {$lang['messages']}</a></td>\n";
+            echo "                  <td width=\"20%\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+        }
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td colspan=\"3\">{$lang['foundzeromatches']}:</td>\n";
+        echo "                </tr>\n";
+    }
+
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+
+    if ($forum_array) {
+
+        echo "    <tr>\n";
+        echo "      <td align=\"right\">", form_submit("submit", $lang['addtofavourites']), "</td>\n";
+        echo "    </tr>\n";
+    }
+
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+}
+
+echo "<div align=\"center\">\n";
+echo "<form action=\"forums.php\" method=\"get\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">Search Forums:</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"posthead\" align=\"left\">\n";
+echo "                    {$lang['search']}: ", form_input_text('webtag_search', (isset($webtag_search) ? $webtag_search : ''), 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"6\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.104 2004-04-26 11:21:13 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.105 2004-04-28 14:28:55 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -257,11 +257,10 @@ function bh_session_end()
 // IIS does not support the REQUEST_URI server var, so we will make one for it
 function get_request_uri()
 {
-    if (isset($_SERVER['REQUEST_URI'])) {
-        $request_uri = $_SERVER['REQUEST_URI'];
-    }else {
-        $request_uri = "{$_SERVER['PHP_SELF']}?";
-        foreach ($_GET as $key => $value) {
+    $request_uri = "{$_SERVER['PHP_SELF']}?";
+
+    foreach ($_GET as $key => $value) {
+        if (strtolower($key) != "webtag") {
             $request_uri.= "{$key}=". rawurlencode($value). "&amp;";
         }
     }

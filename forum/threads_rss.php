@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.4 2004-04-25 13:40:26 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.5 2004-04-28 14:28:54 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -42,7 +42,7 @@ include_once("./include/format.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/threads.inc.php");
 
-$webtag = get_webtag();
+$webtag = get_webtag($webtag_search);
 
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
 

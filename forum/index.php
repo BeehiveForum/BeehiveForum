@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.82 2004-04-27 19:22:30 decoyduck Exp $ */
+/* $Id: index.php,v 1.83 2004-04-28 14:28:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -68,7 +68,7 @@ if ($user_sess = bh_session_check()) {
 
     // Fetch the forum settings
 
-    $webtag = get_webtag();
+    $webtag = get_webtag($webtag_search);
 
     // Calculate how tall the nav frameset should be based on the user's fontsize.
 
@@ -177,7 +177,7 @@ if ($user_sess = bh_session_check()) {
 
         // Fetch the forum settings
 
-        $webtag = get_webtag();
+        $webtag = get_webtag($webtag_search);
 
         echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
         echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
@@ -238,7 +238,7 @@ if ($user_sess = bh_session_check()) {
 
         // Fetch the forum settings
 
-        $webtag = get_webtag();
+        $webtag = get_webtag($webtag_search);
 
         echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
         echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.68 2004-02-03 13:01:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.69 2004-02-05 21:14:19 decoyduck Exp $ */
 
 // International English language file
 
@@ -578,6 +578,8 @@ $lang['editthepoll'] = "Edit the poll";
 $lang['torenamethisthread'] = "to rename this thread";
 $lang['reopenforposting'] = "Reopen for posting";
 $lang['closeforposting'] = "Close for posting";
+$lang['preventediting'] = "Prevent editing";
+$lang['allowediting'] = "Allow editing";
 $lang['makesticky'] = "Make sticky";
 $lang['makenonsticky'] = "Make non-sticky";
 $lang['until'] = "Until 00:00 UTC";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.107 2004-01-26 19:40:42 decoyduck Exp $ */
+/* $Id: messages.php,v 1.108 2004-02-05 21:14:20 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -280,11 +280,14 @@ if (bh_session_get_value('UID') != 0) {
 
         if (perm_is_moderator()) {
         
-            messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL']);
+            messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL'], $threaddata['ADMIN_LOCK']);
             
-        }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID')) {
+        }elseif (($threaddata['FROM_UID'] == bh_session_get_value('UID')) && $threaddata['ADMIN_LOCK'] == 0) {
+                    
+            if (($allow_post_editing && $post_edit_time == 0) || ((time() - $threaddata['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS))) {
         
-            messages_edit_thread_title($tid, $pid, $threaddata['TITLE']);
+                messages_edit_thread($threaddata['FID'], $tid, $pid, $threaddata['TITLE']);
+            }
         }
 }
 

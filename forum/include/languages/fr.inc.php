@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.23 2004-02-03 13:01:28 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.24 2004-02-05 21:14:19 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -572,6 +572,8 @@ $lang['editthepoll'] = "Editer le sondage";
 $lang['torenamethisthread'] = "pour renommer ce fil";
 $lang['reopenforposting'] = "Reopen pour poster";
 $lang['closeforposting'] = "Fermer pour poster";
+$lang['preventediting'] = "Prevent editing";
+$lang['allowediting'] = "Allow editing";
 $lang['makesticky'] = "Faire collant";
 $lang['makenonsticky'] = "Faire non-collant";
 $lang['until'] = "Jusqu' à 00:00 UTC";

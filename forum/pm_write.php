@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.38 2004-01-29 18:32:33 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.39 2004-02-05 21:14:20 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -297,12 +297,12 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _stripslashes($t_subject) : "", 42), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
 echo "          <td align=\"right\">{$lang['to']}: </td>\n";
 echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 42, false, "title=\"{$lang['recipienttiptext']}\""), "&nbsp;", form_button("add", $lang['addrecipient'], "onclick=\"javascript:addRecipient()\""), "</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _stripslashes($t_subject) : "", 42), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";

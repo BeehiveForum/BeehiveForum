@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.28 2004-01-07 20:35:36 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.29 2004-02-05 21:14:20 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -48,34 +48,57 @@ if (!bh_session_check()) {
     header_redirect($uri);
 }
 
-// Check to see if we are requesting a thread rename.
+// Check to see if we are requesting a thread rename or move first.
 
 if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
 
     $tid  = $HTTP_POST_VARS['t_tid'];
     $name = $HTTP_POST_VARS['t_name'];
     
-    $threaddata = thread_get($tid);
+    $threaddata = thread_get($tid);    
     
     // Only Queens, Soldiers, Workers and thread creators can rename threads.
     
-    if (perm_is_moderator() || $threaddata['FROM_UID'] == bh_session_get_value('UID')) {
-
-        // Rename the thread
-        
+    if (perm_is_moderator()) {
+    
         thread_change_title($tid, $name);
-        
-        // Apply an edit stamp to the first post in the thread
-        
         $post_content = message_get_content($tid, 1);
         post_update($tid, 1, $post_content);
+        admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+    
+    }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID') && $threaddata['ADMIN_LOCK'] == 0) {
+
+        if (($allow_post_editing && $post_edit_time == 0) || ((time() - $threaddata['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS))) {
         
-        // If the user is a moderator log their action in the admin log.
-        
-        if (perm_is_moderator()) admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+            thread_change_title($tid, $name);
+            $post_content = message_get_content($tid, 1);
+            post_update($tid, 1, $post_content);            
+            admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+        }
     }
 
-}else {
+}elseif (isset($HTTP_POST_VARS['move']) && isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move']) && is_numeric($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_move']) && folder_is_valid($HTTP_POST_VARS['t_move'])) {
+
+    $tid = $HTTP_POST_VARS['t_tid'];
+    $fid = $HTTP_POST_VARS['t_move'];
+    
+    $threaddata = thread_get($tid);    
+    
+    if (perm_is_moderator()) {
+    
+        thread_change_folder($tid, $fid);
+        admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
+
+    }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID') && $threaddata['ADMIN_LOCK'] == 0) {
+    
+        if (($allow_post_editing && $post_edit_time == 0) || ((time() - $threaddata['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS))) {
+        
+            thread_change_folder($tid, $fid);
+            admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
+        }
+    }    
+
+ }else {
 
     // Only Queens, Soldiers and Workers can perform any other moderating duties
 
@@ -87,18 +110,7 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
         exit;
     }
 
-    if (isset($HTTP_POST_VARS['move'])) {
-
-        if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move']) && is_numeric($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_move']) && folder_is_valid($HTTP_POST_VARS['t_move'])) {
-
-            $tid = $HTTP_POST_VARS['t_tid'];
-            $fid = $HTTP_POST_VARS['t_move'];
-
-            thread_change_folder($tid, $fid);
-            admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
-        }
-
-    }else if (isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    if (isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
 
         $tid = $HTTP_POST_VARS['t_tid'];
         thread_set_closed($tid, true);
@@ -108,6 +120,18 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
 
         $tid = $HTTP_POST_VARS['t_tid'];
         thread_set_closed($tid, false);
+        admin_addlog(0, 0, $tid, 0, 0, 0, 20);
+        
+    }else if (isset($HTTP_POST_VARS['lock']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    
+        $tid = $HTTP_POST_VARS['t_tid'];
+        thread_admin_lock($tid, true);
+        admin_addlog(0, 0, $tid, 0, 0, 0, 20);
+
+    }else if (isset($HTTP_POST_VARS['unlock']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    
+        $tid = $HTTP_POST_VARS['t_tid'];
+        thread_admin_lock($tid, false);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
 
     }else if (isset($HTTP_POST_VARS['sticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {

@@ -221,7 +221,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
 
             if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($t_tid, 1, $newthread);
 
-	    if (!(user_get_status($message['FROM_UID']) & USER_PERM_WORM)) {
+	    if (!(user_get_status($HTTP_COOKIE_VARS['bh_sess_uid']) & USER_PERM_WORM)) {
 
               email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
               email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);

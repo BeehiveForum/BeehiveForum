@@ -26,6 +26,7 @@ require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/format.inc.php");
 
 // Where are we going after we've logged on?
 
@@ -62,8 +63,8 @@ if(isset($HTTP_POST_VARS['submit'])) {
         $error_html.= "<h2>Username must be a minimum of 2 characters long</h2>\n";
         $valid = false;
       }
-      if (strlen($HTTP_POST_VARS['logon']) > 10) {
-        $error_html.= "<h2>Username must be a maximum of 10 characters long</h2>\n";
+      if (strlen($HTTP_POST_VARS['logon']) > 15) {
+        $error_html.= "<h2>Username must be a maximum of 15 characters long</h2>\n";
         $valid = false;
       }
   }else {
@@ -159,26 +160,28 @@ if(isset($HTTP_POST_VARS['submit'])) {
             $passwords = array();
             
           }
-           
-          $usernames[] = $HTTP_POST_VARS['logon'];
-          $passwords[] = $HTTP_POST_VARS['password'];
 
-          for ($i = 0; $i < sizeof($usernames); $i++) {
-            setcookie("bh_remember_user[$i]", $usernames[$i], time() + YEAR_IN_SECONDS, '/');
+          if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
+            $usernames[] = $HTTP_POST_VARS['logon'];
+            $passwords[] = $HTTP_POST_VARS['password'];
           }
-
-          if(@$HTTP_POST_VARS['remember_user'] == "Y") {
-          
-            for ($i = 0; $i < sizeof($usernames); $i++) {
-              setcookie("bh_remember_password[$i]", $passwords[$i], time() + YEAR_IN_SECONDS, '/');
-            }
-            
-          }else {
         
-            setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
-          
-          } 
+          if (($key = array_search($HTTP_POST_VARS['logon'], $usernames) !== false)) {
+            $passwords[$key] = $HTTP_POST_VARS['password'];
+          }
+               
+          for ($i = 0; $i < sizeof($usernames); $i++) {
+        
+            setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
+            if(@$HTTP_POST_VARS['remember_user'] == "Y") {
+              setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            }else {
+              setcookie("bh_remember_password[$i]", str_repeat(chr(255), 4), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            }
+          
+          }
+           
           html_draw_top();
 
           echo "<div align=\"center\">\n";
@@ -220,23 +223,23 @@ if (isset($error_html)) echo $error_html;
         <table class="posthead" width="100%">
           <tr>
             <td align="right" class="posthead">Login Name&nbsp;</td>
-            <td><?php echo form_field("logon", $HTTP_POST_VARS['logon'], 32, 32); ?></td>
+            <td><?php echo form_field("logon", _stripslashes($HTTP_POST_VARS['logon']), 32, 32); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Password&nbsp;</td>
-            <td><?php echo form_field("pw", $HTTP_POST_VARS['pw'], 32, 32,"password"); ?></td>
+            <td><?php echo form_field("pw", _stripslashes($HTTP_POST_VARS['pw']), 32, 32,"password"); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Confirm&nbsp;</td>
-            <td><?php echo form_field("cpw", $HTTP_POST_VARS['cpw'], 32, 32,"password"); ?></td>
+            <td><?php echo form_field("cpw", _stripslashes($HTTP_POST_VARS['cpw']), 32, 32,"password"); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Nickname&nbsp;</td>
-            <td><?php echo form_field("nickname", $HTTP_POST_VARS['nickname'], 32, 32); ?></td>
+            <td><?php echo form_field("nickname", _stripslashes($HTTP_POST_VARS['nickname']), 32, 32); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Email&nbsp;</td>
-            <td><?php echo form_field("email", $HTTP_POST_VARS['email'], 32, 80); ?></td>
+            <td><?php echo form_field("email", _stripslashes($HTTP_POST_VARS['email']), 32, 80); ?></td>
           </tr>
           <tr>
             <td>&nbsp;</td>

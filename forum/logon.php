@@ -28,6 +28,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/beehive.inc.php");
+require_once("./include/format.inc.php");
 
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
@@ -52,7 +53,7 @@ if(bh_session_check()) {
 if (isset($HTTP_POST_VARS['logon'])) {
 
   if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
-  
+
     if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && ($HTTP_POST_VARS['submit'] == 'Logon')) {
     
       header("HTTP/1.0 500 Internal Server Error"); // Naughty naughty.
@@ -105,16 +106,16 @@ if (isset($HTTP_POST_VARS['logon'])) {
           $passwords[] = $HTTP_POST_VARS['password'];
         }
         
-        if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
+        if (($key = array_search($HTTP_POST_VARS['logon'], $usernames) !== false)) {
           $passwords[$key] = $HTTP_POST_VARS['password'];
         }
                
         for ($i = 0; $i < sizeof($usernames); $i++) {
         
-          setcookie("bh_remember_user[$i]", $usernames[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+          setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
           if(@$HTTP_POST_VARS['remember_user'] == "Y") {
-            setcookie("bh_remember_password[$i]", $passwords[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
           }else {
             setcookie("bh_remember_password[$i]", str_repeat(chr(255), 4), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
           }
@@ -222,7 +223,7 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
 
   echo "            <tr>\n";
   echo "              <td align=\"right\">User Name:</td>\n";
-  echo "              <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user']). "</td>\n";
+  echo "              <td>". form_input_text("logon", _stripslashes($HTTP_COOKIE_VARS['bh_remember_user'])). "</td>\n";
   echo "            </tr>\n";
   echo "            <tr>\n";
   echo "              <td align=\"right\">Password:</td>\n";
@@ -236,9 +237,15 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
     echo "          <tr>\n";
     echo "            <td align=\"right\">User Name:</td>\n";
     echo "            <td>";
+
+    $userkeys = array_keys($HTTP_COOKIE_VARS['bh_remember_user']);
+
+    foreach ($userkeys as $key) {
+      $usernames[$key] = _stripslashes($HTTP_COOKIE_VARS['bh_remember_user'][$key]);
+    }
     
-    echo form_dropdown_array('logonarray', $HTTP_COOKIE_VARS['bh_remember_user'], $HTTP_COOKIE_VARS['bh_remember_user'], "", "onchange='changepassword()'");
-    echo form_input_hidden('logon', $HTTP_COOKIE_VARS['bh_remember_user'][0]);
+    echo form_dropdown_array('logonarray', $usernames, $usernames, "", "onchange='changepassword()'");
+    echo form_input_hidden('logon', _stripslashes($HTTP_COOKIE_VARS['bh_remember_user'][0]));
   
     for ($i = 0; $i < sizeof($HTTP_COOKIE_VARS['bh_remember_user']); $i++) {
       if (isset($HTTP_COOKIE_VARS['bh_remember_password'][$i])) {
@@ -260,7 +267,7 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
   
     echo "          <tr>\n";
     echo "            <td align=\"right\">User Name:</td>\n";
-    echo "            <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user'][0]). "</td>\n";
+    echo "            <td>". form_input_text("logon", _stripslashes($HTTP_COOKIE_VARS['bh_remember_user'][0])). "</td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td align=\"right\">Password:</td>\n";

@@ -152,7 +152,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     }elseif ($HTTP_POST_VARS['closepoll'] == 3) {
       $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
     }elseif ($HTTP_POST_VARS['closepoll'] == 4) {
-      $poll_closes = 0;
+      $poll_closes = false;
     }
 
     // Check HTML tick box, innit.
@@ -422,7 +422,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
 
                     echo "<tr>\n";
                     echo "  <td>", $i + 1, ". </td>\n";
-                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 64), "</td>\n";
+                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 255), "</td>\n";
                     echo "</tr>\n";
 
                   }

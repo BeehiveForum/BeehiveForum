@@ -32,8 +32,14 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
 
     $db_poll_create = db_connect();
 
+    if ($closes) {
+      $closes = "from_unixtime($closes)";
+    }else {
+      $closes = 'NULL';
+    }
+
     $sql = "insert into ". forum_table("POLL"). " (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS) ";
-    $sql.= "values ('$tid', from_unixtime($closes), '$change_vote', '$poll_type', '$show_results')";
+    $sql.= "values ('$tid', $closes, '$change_vote', '$poll_type', '$show_results')";
 
     if (db_query($sql, $db_poll_create)) {
 
@@ -228,7 +234,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td colspan=\"2\"><h2>". thread_get_title($tid). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
 
     $max_value = 0;
@@ -267,7 +273,8 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           if (!empty($pollresults[$i]['OPTION_NAME'])) {
 
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\">". form_radio("pollvote", $pollresults[$i]['OPTION_ID'], '', false). "&nbsp;". $pollresults[$i]['OPTION_NAME']. "</td>\n";
+            $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\">". form_radio("pollvote", $pollresults[$i]['OPTION_ID'], '', false). "</td>\n";
+            $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\">". $pollresults[$i]['OPTION_NAME']. "</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
           }
@@ -281,7 +288,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           if ($polldata['POLLTYPE'] == 0) {
 
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\">\n";
             $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
             $polldata['CONTENT'].= "          </td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
@@ -289,7 +296,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           }else {
 
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\">\n";
             $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
             $polldata['CONTENT'].= "          </td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
@@ -303,7 +310,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             if (!empty($pollresults[$i]['OPTION_NAME'])) {
 
               $polldata['CONTENT'].= "        <tr>\n";
-              $polldata['CONTENT'].= "          <td class=\"postbody\">". $pollresults[$i]['OPTION_NAME']. "</td>\n";
+              $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">". $pollresults[$i]['OPTION_NAME']. "</td>\n";
               $polldata['CONTENT'].= "        </tr>\n";
 
             }
@@ -317,7 +324,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     }else {
 
       $polldata['CONTENT'].= "        <tr>\n";
-      $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
+      $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">\n";
       $polldata['CONTENT'].= "            <ul>\n";
 
       for ($i = 1; $i <= sizeof($pollresults); $i++) {
@@ -339,10 +346,10 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     if ($in_list) {
 
       $polldata['CONTENT'].= "        <tr>\n";
-      $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
+      $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>\n";
       $polldata['CONTENT'].= "        </tr>\n";
       $polldata['CONTENT'].= "        <tr>\n";
-      $polldata['CONTENT'].= "          <td class=\"postbody\">";
+      $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">";
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
@@ -377,19 +384,27 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       $polldata['CONTENT'].= "</td>\n";
       $polldata['CONTENT'].= "        </tr>\n";
       $polldata['CONTENT'].= "        <tr>\n";
-      $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
+      $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>\n";
       $polldata['CONTENT'].= "        </tr>\n";
 
       if (($polldata['CLOSES'] <= gmmktime()) && $polldata['CLOSES'] != 0) {
 
         $polldata['CONTENT'].= "        <tr>\n";
-        $polldata['CONTENT'].= "          <td class=\"postbody\">Poll has ended.</td>\n";
+        $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">Poll has ended.</td>\n";
         $polldata['CONTENT'].= "        </tr>\n";
 
         if (isset($userpolldata['OPTION_ID'])) {
 
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">";
+
+          if ($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'] == strip_tags($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'])) {
+            $polldata['CONTENT'].= "Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "'";
+          }else {
+            $polldata['CONTENT'].= "You voted for option #". $userpolldata['OPTION_ID'];
+          }
+
+          $polldata['CONTENT'].=  " on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
 
         }
@@ -399,13 +414,21 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         if (isset($userpolldata['OPTION_ID'])) {
 
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\" class=\"postbody\">";
+
+          if ($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'] == strip_tags($pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME'])) {
+            $polldata['CONTENT'].= "Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "'";
+          }else {
+            $polldata['CONTENT'].= "You voted for option #". $userpolldata['OPTION_ID'];
+          }
+
+          $polldata['CONTENT'].=  " on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td align=\"center\">";
+          $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || $HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
 
@@ -425,7 +448,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           if ($polldata['CHANGEVOTE'] == 1) {
 
             $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td align=\"center\">". form_submit('pollchangevote', 'Change Vote'). "</td>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', 'Change Vote'). "</td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
           }
@@ -433,10 +456,10 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         }elseif ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
 
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td align=\"center\">". form_submit('pollsubmit', 'Vote'). "</td>\n";
+          $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', 'Vote'). "</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td align=\"center\">";
+          $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">";
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || $HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.107 2005-02-09 21:56:52 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.108 2005-03-07 21:41:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -30,11 +30,14 @@ include_once("./include/html.inc.php");
 function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
 {
     $db_post_create = db_connect();
-    $content = addslashes($content);
 
-    if (!$ipaddress = get_ip_address()) {
-        $ipaddress = "";
-    }
+    include("./include/search_stopwords.inc.php");
+
+    $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
+
+    $post_content = addslashes($content);
+
+    if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
     if (!is_numeric($tid)) return -1;
     if (!is_numeric($reply_pid)) return -1;
@@ -62,25 +65,25 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
 
         $new_pid = db_insert_id($db_post_create);
 
-        $sql = "insert into  {$table_data['PREFIX']}POST_CONTENT ";
-        $sql.= "(TID,PID,CONTENT) ";
-        $sql.= "values ($tid, $new_pid, '$content')";
+        $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT, INDEXED) ";
+        $sql.= "VALUES ('$tid', '$new_pid', '$post_content', 1)";
 
         $result = db_query($sql, $db_post_create);
 
         if ($result) {
 
-            $sql = "update {$table_data['PREFIX']}THREAD set length = $new_pid, modified = NOW() ";
-            $sql.= "where tid = $tid";
+            $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = $new_pid, MODIFIED = NOW() ";
+            $sql.= "WHERE TID = $tid";
+
             $result = db_query($sql, $db_post_create);
 
         }else {
 
             $new_pid = -1;
-
         }
 
     }else {
+
         $new_pid = -1;
     }
 

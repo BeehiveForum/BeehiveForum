@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.89 2005-03-07 21:32:40 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.90 2005-03-07 21:41:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -450,7 +450,7 @@ function search_index_post()
     $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 
     $sql = "SELECT TID, PID, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
-    $sql.= "WHERE INDEXED = 0 ORDER BY TID, PID LIMIT 0, 1";
+    $sql.= "WHERE INDEXED = 0 ORDER BY TID DESC, PID DESC LIMIT 0, 1";
 
     $result = db_query($sql, $db_search_index_post);
 
@@ -473,7 +473,7 @@ function search_index_post()
 
             }else {
 
-                $value = strtolower($value);
+                $value = addslashes(strtolower($value));
                 $content_array[$key] = "('$tid', '$pid', '$value')";
             }
         }

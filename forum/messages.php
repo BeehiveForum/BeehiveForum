@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.80 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: messages.php,v 1.81 2003-08-05 21:32:04 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -157,12 +157,13 @@ $msg_count = count($messages);
 $highlight = array();
 
 if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
-    $highlight = explode(' ', $HTTP_GET_VARS['search_string']);
+    $highlight = explode(' ', rawurldecode($HTTP_GET_VARS['search_string']));
 }
 
 if (sizeof($highlight) > 0) {
     $thread_parts = preg_split('/([<|>])/', $threaddata['TITLE'], -1, PREG_SPLIT_DELIM_CAPTURE);
     foreach ($highlight as $word) {
+        $word = preg_quote($word, '/');
         for ($i = 0; $i < sizeof($thread_parts); $i++) {
             if (!($i % 4)) {
                 $thread_parts[$i] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $thread_parts[$i]);

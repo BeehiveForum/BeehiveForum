@@ -174,6 +174,8 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
 
+$highlight = array();
+
 if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
     $highlight = explode(' ', $HTTP_GET_VARS['search_string']);
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.147 2004-09-07 23:03:09 tribalonline Exp $ */
+/* $Id: edit.php,v 1.148 2004-09-08 00:49:46 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -237,12 +237,7 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 
 // Get the user's post page preferences.
-$page_prefs = bh_session_get_value('POST_PAGE');
-
-if ($page_prefs == 0) {
-        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
-}
-
+$page_prefs = bh_session_get_post_page_prefs();
 
 $valid = true;
 
@@ -760,7 +755,9 @@ if ($allow_html == true) {
 	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
 	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	}
 
 } else {
 	echo form_input_hidden("t_post_html", "disabled");
@@ -824,7 +821,9 @@ if ($allow_sig == true) {
 
 }
 
-echo $tools->js();
+if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+	echo $tools->js();
+}
 
 echo "</td></tr>\n";
 echo "</table>";

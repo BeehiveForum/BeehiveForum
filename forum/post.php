@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.220 2004-09-07 01:50:48 tribalonline Exp $ */
+/* $Id: post.php,v 1.221 2004-09-08 00:49:46 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -153,11 +153,7 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Get the user's post page preferences.
 
-$page_prefs = bh_session_get_value('POST_PAGE');
-
-if ($page_prefs == 0) {
-        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
-}
+$page_prefs = bh_session_get_post_page_prefs();
 
 // Assume everything is A-OK!
 
@@ -789,7 +785,7 @@ if (perm_is_moderator($t_fid)) {
 
     echo "<h2>".$lang['admin'].":</h2>\n";
     echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
-    echo form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br /><br />\n";
+    echo form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
     echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
     echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
 }
@@ -798,6 +794,8 @@ $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
+		echo "<br />\n";
+
         echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "  <tr>\n";
         echo "    <td class=\"subhead\">\n";
@@ -858,7 +856,9 @@ if ($allow_html == true) {
 	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
 	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+	}
 
 } else {
 
@@ -926,7 +926,9 @@ echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
 
 
-echo $tools->js();
+if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+	echo $tools->js();
+}
 
 
 if (isset($_POST['t_dedupe'])) {

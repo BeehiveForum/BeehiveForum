@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.237 2005-02-06 00:38:47 decoyduck Exp $ */
+/* $Id: post.php,v 1.238 2005-02-06 00:49:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -766,7 +766,7 @@ if ($newthread) {
     echo "<h2>{$lang['folder']}:</h2>\n";
     echo "$folder_dropdown\n";
     echo "<h2>{$lang['threadtitle']}:</h2>\n";
-    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, false, "post_thread_title"), "\n";
+    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, false, "thread_title"), "\n";
 
     echo form_input_hidden("t_newthread", "Y")."\n";
     echo "<br />\n";

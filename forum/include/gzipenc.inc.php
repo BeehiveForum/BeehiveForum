@@ -21,18 +21,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.29 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.30 2004-04-19 01:42:55 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
 function bh_check_gzip()
 {
-    $forum_settings = get_forum_settings();
+    global $default_settings;
 
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.
 
-    if (headers_sent() || forum_get_setting('gzip_compress_output', 'N', true)) {
+    if (headers_sent()) {
+        return false;
+    }
+
+    if (isset($default_settings['gzip_compress_output']) && $default_settings['gzip_compress_output'] == "N") {
         return false;
     }
 
@@ -56,15 +60,31 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    $forum_settings = get_forum_settings();
+    global $default_settings;
+
+    // check / set the compression level variable
+
+    if (isset($default_settings['gzip_compress_level'])) {
+
+        $gzip_compress_level = $default_settings['gzip_compress_level'];
+
+        if ($gzip_compress_level > 9) $gzip_compress_level = 9;
+        if ($gzip_compress_level < 1) $gzip_compress_level = 1;
+
+    }else {
+
+        $gzip_compress_level = 1;
+    }
 
     // check that the encoding is possible.
     // and fetch the client's encoding method.
+
     if ($encoding = bh_check_gzip()) {
 
         // do the compression
-        if ($gz_contents = gzcompress($contents, intval(forum_get_setting('gzip_compress_level')))) {
-            
+
+        if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
+
             // generate the error checking bits
             $size  = strlen($contents);
             $crc32 = crc32($contents);
@@ -92,7 +112,6 @@ function bh_gzhandler($contents)
 
             // compression failed so return uncompressed string
             return $contents;
-
         }
 
     }else {
@@ -101,12 +120,11 @@ function bh_gzhandler($contents)
         // doesn't support it or it has been disabled
         // in config.inc.php.
         return $contents;
-
     }
 }
 
 // Enabled the gzip handler
-@ob_end_clean();
+ob_end_clean();
 ob_start("bh_gzhandler");
 ob_implicit_flush(0);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.47 2004-03-17 23:41:47 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.48 2004-04-19 01:42:55 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -30,17 +30,22 @@ include_once("./include/constants.inc.php");
 
 function db_connect ()
 {
-    global $db_server, $db_username, $db_password, $db_database;
+    global $db_server, $db_username, $db_password, $db_database, $default_settings;
     static $connection_id = false;
 
     if (!$connection_id) {
 
         if ($connection_id = @mysql_connect($db_server, $db_username, $db_password)) {
-            mysql_select_db($db_database, $connection_id) or trigger_error(BH_DB_CONNECT_ERROR, FATAL);
-	    return $connection_id;
+            if (@mysql_select_db($db_database, $connection_id)) {
+                return $connection_id;
+            }
+        }
+
+        if (isset($default_settings['show_friendly_errors']) && $default_settings['show_friendly_errors'] == "Y") {
+	    trigger_error(BH_DB_CONNECT_ERROR, FATAL);
 	}else {
-            trigger_error(BH_DB_CONNECT_ERROR, FATAL);
-	}        
+	    trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
+        }
     }
 
     return $connection_id;

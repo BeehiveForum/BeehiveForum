@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.78 2004-04-17 20:06:59 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.79 2004-04-19 01:42:55 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "localhost";     // the address of your MySQL server
+$db_server   = "aaaa";     // the address of your MySQL server
 $db_username = "beehiveforum";  // your MySQL username
 $db_password = "password";      // your MySQL password
 $db_database = "beehiveforum";  // the name of your MySQL database
@@ -36,7 +36,7 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 
 // IMPORTANT: As of BeehiveForum 0.4.1 the additional settings in config.inc.php have
 //            been moved to a database table. The default settings below are only used
-//            if the customised ones cannot be retrieved from the database. Under 
+//            if the customised ones cannot be retrieved from the database. Under
 //            normal operation these settings will be ignored.
 
 $default_settings = array('forum_name'                => "A Beehive Forum",
@@ -44,7 +44,7 @@ $default_settings = array('forum_name'                => "A Beehive Forum",
                           'default_style'             => "default",
                           'default_emoticons'         => "default",
                           'default_language'          => "en",
-                          'show_friendly_errors'      => 'Y',
+                          'show_friendly_errors'      => "N",
                           'cookie_domain'             => "",
                           'show_stats'                => "Y",
                           'show_links'                => "Y",

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.22 2005-02-06 00:20:49 decoyduck Exp $ */
+/* $Id: install.php,v 1.23 2005-03-04 20:26:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -232,7 +232,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
                     if ($config_saved) {
 
-                        echo "<form method=\"get\" action=\"./index.php\">\n";
+                        echo "<form method=\"get\" action=\"./install.php\">\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td width=\"500\">\n";
@@ -249,6 +249,9 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
                         echo "                <tr>\n";
                         echo "                  <td>&nbsp;</td>\n";
                         echo "                </tr>\n";
+                        echo "                <tr>\n";
+                        echo "                  <td width=\"500\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"install_remove_files\" id=\"install_remove_files\" value=\"Y\" checked=\"checked\"><label for=\"install_remove_files\">Attempt automatic removal of installation files (recommended)</label></span></td>\n";
+                        echo "                </tr>\n";
                         echo "              </table>\n";
                         echo "            </td>\n";
                         echo "          </tr>\n";
@@ -256,7 +259,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
                         echo "      </td>\n";
                         echo "    </tr>\n";
                         echo "    <tr>\n";
-                        echo "      <td width=\"250\">&nbsp;</td>\n";
+                        echo "      <td>&nbsp;</td>\n";
                         echo "    </tr>\n";
                         echo "    <tr>\n";
                         echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Continue\" class=\"button\" /></td>\n";
@@ -266,59 +269,60 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
                     }else {
 
-                        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-                        echo "  <tr>\n";
-                        echo "    <td width=\"500\">\n";
-                        echo "      <table class=\"box\" width=\"100%\">\n";
-                        echo "        <tr>\n";
-                        echo "          <td class=\"posthead\">\n";
-                        echo "            <table class=\"posthead\" width=\"100%\">\n";
-                        echo "              <tr>\n";
-                        echo "                <td class=\"subhead\">Database Setup Completed</td>\n";
-                        echo "              </tr>\n";
-                        echo "              <tr>\n";
-                        echo "                <td>Your database has been succesfully setup for use with Beehive. However we were unable to apply the changes to your config.inc.php.</td>\n";
-                        echo "              <tr>\n";
-                        echo "                <td>&nbsp;</td>\n";
-                        echo "              </tr>\n";
-                        echo "              <tr>\n";
-                        echo "                <td>Don't worry this is can be perfectly normal on some systems. In order to complete the installation you will need to download the config data by clicking the 'Download Config' button below to save the config.inc.php to your hard disk drive. From there you will need to upload it to your server, into Beehive's 'include' folder. Once this is done you can click the Continue button below to start using your Beehive Forum.</td>\n";
-                        echo "              </tr>\n";
-                        echo "              <tr>\n";
-                        echo "                <td>&nbsp;</td>\n";
-                        echo "              </tr>\n";
-                        echo "            </table>\n";
-                        echo "          </td>\n";
-                        echo "        </tr>\n";
-                        echo "      </table>\n";
-                        echo "    </td>\n";
-                        echo "  </tr>\n";
-                        echo "  <tr>\n";
-                        echo "    <td width=\"500\">&nbsp;</td>\n";
-                        echo "  </tr>\n";
-                        echo "  <tr>\n";
-                        echo "    <td align=\"center\">\n";
-                        echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-                        echo "        <tr>\n";
-                        echo "          <td width=\"55%\" align=\"right\">\n";
-                        echo "            <form method=\"post\" action=\"install.php\">\n";
+                        echo "<form method=\"post\" action=\"install.php\">\n";
+                        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+                        echo "    <tr>\n";
+                        echo "      <td width=\"500\">\n";
+                        echo "        <table class=\"box\" width=\"100%\">\n";
+                        echo "          <tr>\n";
+                        echo "            <td class=\"posthead\">\n";
+                        echo "              <table class=\"posthead\" width=\"100%\">\n";
+                        echo "                <tr>\n";
+                        echo "                  <td class=\"subhead\">Database Setup Completed</td>\n";
+                        echo "                </tr>\n";
+                        echo "                <tr>\n";
+                        echo "                  <td>Your database has been succesfully setup for use with Beehive. However we were unable to apply the changes to your config.inc.php.</td>\n";
+                        echo "                <tr>\n";
+                        echo "                  <td>&nbsp;</td>\n";
+                        echo "                </tr>\n";
+                        echo "                <tr>\n";
+                        echo "                  <td>Don't worry this is can be perfectly normal on some systems. In order to complete the installation you will need to download the config data by clicking the 'Download Config' button below to save the config.inc.php to your hard disk drive. From there you will need to upload it to your server, into Beehive's 'include' folder. Once this is done you can click the Continue button below to start using your Beehive Forum.</td>\n";
+                        echo "                </tr>\n";
+                        echo "                <tr>\n";
+                        echo "                  <td>&nbsp;</td>\n";
+                        echo "                </tr>\n";
+                        echo "                <tr>\n";
+                        echo "                  <td><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"install_remove_files\" id=\"install_remove_files\" value=\"Y\" checked=\"checked\"><label for=\"install_remove_files\">Attempt automatic removal of installation files (recommended)</label></span></td>\n";
+                        echo "                </tr>\n";
+                        echo "              </table>\n";
+                        echo "            </td>\n";
+                        echo "          </tr>\n";
+                        echo "        </table>\n";
+                        echo "      </td>\n";
+                        echo "    </tr>\n";
+                        echo "    <tr>\n";
+                        echo "      <td width=\"500\">&nbsp;</td>\n";
+                        echo "    </tr>\n";
+                        echo "    <tr>\n";
+                        echo "      <td align=\"center\">\n";
+                        echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+                        echo "          <tr>\n";
+                        echo "            <td width=\"55%\" align=\"right\">\n";
                         echo "              <input type=\"hidden\" name=\"db_server\" value=\"$db_server\">\n";
                         echo "              <input type=\"hidden\" name=\"db_username\" value=\"$db_username\">\n";
                         echo "              <input type=\"hidden\" name=\"db_password\" value=\"$db_password\">\n";
                         echo "              <input type=\"hidden\" name=\"db_database\" value=\"$db_database\">\n";
                         echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
-                        echo "            </form>\n";
-                        echo "          </td>\n";
-                        echo "          <td width=\"45%\">\n";
-                        echo "            <form method=\"get\" action=\"./index.php\">\n";
+                        echo "            </td>\n";
+                        echo "            <td width=\"45%\">\n";
                         echo "              <input type=\"submit\" name=\"submit\" value=\"Continue\" class=\"button\" />\n";
-                        echo "            </form>\n";
-                        echo "          </td>\n";
-                        echo "        </tr>\n";
-                        echo "      </table>\n";
-                        echo "    </td>\n";
-                        echo "  </tr>\n";
-                        echo "</table>\n";
+                        echo "            </td>\n";
+                        echo "          </tr>\n";
+                        echo "        </table>\n";
+                        echo "      </td>\n";
+                        echo "    </tr>\n";
+                        echo "  </table>\n";
+                        echo "</form>\n";
                     }
 
                     echo "</div>\n";
@@ -490,6 +494,15 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
         $error_html.= "<h2>Could not complete installation. Error was: failed to read config.inc.php</h2>\n";
         $valid = false;
     }
+
+}elseif (isset($_POST['finish_install'])) {
+
+    if (isset($_POST['delete_install_files']) && $_POST['delete_install_files'] == 'Y') {
+
+        install_remove_files();
+    }
+
+    header_redirect('index.php');
 }
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";

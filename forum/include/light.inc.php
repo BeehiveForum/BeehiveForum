@@ -146,7 +146,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
       $totalvotes = $totalvotes + $pollresults[$i]['VOTES'];
     }
 
-    $polldata['CONTENT'].= "<form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
+    $polldata['CONTENT'] = "<form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
     $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
 
@@ -157,7 +157,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
       if (!empty($pollresults[$i]['OPTION_NAME'])) {
 
         if ($pollresults[$i]['VOTES'] > $max_value) $max_value = $pollresults[$i]['VOTES'];
-        $optioncount++;
+        if(!isset($optioncount)) { $optioncount = 1; } else { $optioncount++; }
 
       }
 
@@ -331,7 +331,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "&nbsp;(Friend) ";
-    } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
+    } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
         echo "&nbsp;(Ignored user) ";
     }
 
@@ -368,7 +368,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     echo "</p>\n";
 
 
-    echo "<p><i>Message ".$message['PID'] . " of " . $msg_count."</i></p>\n";
+    if(!$in_list) echo "<p><i>Message ".$message['PID'] . " of " . $msg_count."</i></p>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
             $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);

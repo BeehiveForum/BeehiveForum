@@ -126,11 +126,19 @@ if($msg_count > 0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
 
-        if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
-            $message['CONTENT'] = message_get_content($tid, $message['PID']);
-        } else {
-            $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
-        }
+        if (isset($message['RELATIONSHIP'])) {
+
+            if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
+                $message['CONTENT'] = message_get_content($tid, $message['PID']);
+            } else {
+                $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
+            }
+
+	    } else {
+
+        	$message['CONTENT'] = message_get_content($tid, $message['PID']);
+
+	    }
 
         if($threaddata['POLL_FLAG'] == 'Y') {
 

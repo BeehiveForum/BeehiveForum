@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.31 2004-11-04 18:43:37 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.32 2004-12-03 15:27:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -91,6 +91,10 @@ if (!$user_sess = bh_session_check()) {
 
 $lang = load_language_file();
 
+// User's UID
+
+$uid = bh_session_get_value('UID');
+
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
@@ -105,8 +109,6 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-$uid = bh_session_get_value('UID');
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
 }else {
@@ -115,13 +117,14 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (isset($_GET['show_stats']) && is_numeric($_GET['show_stats']) && $uid > 0) {
 
-    $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+    $user_prefs = user_get_prefs($uid);
     $user_prefs['SHOW_STATS'] = $_GET['show_stats'];
 
     user_update_prefs($uid, $user_prefs);
 
-    bh_session_init(bh_session_get_value('UID'));
-    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+    bh_session_init($uid, false);
+
+    header_redirect_cookie("./messages.php?webtag=$webtag&msg=$msg");
 
 }else {
 

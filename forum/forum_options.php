@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.62 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.63 2004-12-03 15:27:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -370,7 +370,7 @@ if (isset($_POST['submit'])) {
 
     // Reinitialize the User's Session to save them having to logout and back in
 
-    bh_session_init($uid);
+    bh_session_init($uid, false);
 
     // IIS bug prevents redirect at same time as setting cookies.
 

@@ -37,16 +37,14 @@ if(isset($HTTP_GET_VARS['final_uri'])) {
 }
 
 if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-
+    
     html_draw_top();
-
     echo "<div align=\"center\">\n";
-    echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>\n";
-    echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>\n";
+    echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
+    echo form_quick_button("./index.php?$final_uri", "Continue", 0, 0, "_top");
     echo "</div>\n";
-
     html_draw_bottom();
-    exit;
+    exit;    
 }
 
 $valid = true;
@@ -167,7 +165,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
             array_unshift($usernames, $HTTP_POST_VARS['logon']);
 
 	    if(isset($HTTP_POST_VARS['remember_user'])) {
-	      array_unshift($passwords, $HTTP_POST_VARS['password']);
+	      array_unshift($passwords, $HTTP_POST_VARS['pw']);
             }else {
 	      array_unshift($passwords, str_repeat(chr(255), 4));
             }
@@ -182,7 +180,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
               array_unshift($usernames, $HTTP_POST_VARS['logon']);
 
               if(isset($HTTP_POST_VARS['remember_user'])) {
-	        array_unshift($passwords, $HTTP_POST_VARS['password']);
+	        array_unshift($passwords, $HTTP_POST_VARS['pw']);
 	      }else {
 	        array_unshift($passwords, str_repeat(chr(255), 4));
 	      }
@@ -193,8 +191,8 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           for ($i = 0; $i < sizeof($usernames); $i++) {
 
-            setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
-            setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
+            setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+            setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
           }
 

@@ -132,12 +132,16 @@ function user_update_folders($uid,$folders)
 }
 
 
-function user_logon($logon, $password)
+function user_logon($logon, $password, $md5hash = false)
 {
 
     global $HTTP_SERVER_VARS;
 
-    $md5pass = md5($password);
+    if ($md5hash) {
+      $md5pass = $password;
+    }else {
+      $md5pass = md5($password);
+    }
 
     $sql = "SELECT uid, status FROM ". forum_table("USER"). " WHERE logon = '$logon' AND passwd = '$md5pass'";
 

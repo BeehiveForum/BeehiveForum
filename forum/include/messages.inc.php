@@ -251,13 +251,25 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 if (is_array($attachments)) {
                     echo "<p><b>Attachments:</b><br>\n";
                     for ($i = 0; $i < sizeof($attachments); $i++) {
+                    
                         echo "<img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\">";
-                        echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a>";
-                        echo " (". format_file_size($attachments[$i]['filesize']);
+                        echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\" title=\"";
+                        
                         if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-                          echo " - ". $imageinfo[0]. "x". $imageinfo[1];
+                          echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                         }
-                        echo ")<br />\n";
+                        
+                        echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
+                        echo "Downloaded: ". $attachments[$i]['downloads'];
+                        
+                        if ($attachments[$i]['downloads'] == 1) {
+                          echo " time";
+                        }else {
+                          echo " times";
+                        }
+                        
+                        echo "\">". $attachments[$i]['filename']. "</a><br />";
+
                     }
                     echo "</p>\n";
                 }

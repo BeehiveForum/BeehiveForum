@@ -43,11 +43,12 @@ function get_attachments($uid, $aid) {
       
         if (!is_array($userattachments)) $userattachments = array();
       
-        $userattachments[] = array("filename" => rawurldecode($row['FILENAME']),
-                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                   "aid"      => $row['AID'],
-                                   "hash"     => $row['HASH'],
-                                   "mimetype" => $row['MIMETYPE']);
+        $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                   "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                   "aid"       => $row['AID'],
+                                   "hash"      => $row['HASH'],
+                                   "mimetype"  => $row['MIMETYPE'],
+                                   "downloads" => $row['DOWNLOADS']);
       }
                                  
     }
@@ -73,11 +74,12 @@ function get_all_attachments($uid, $aid) {
       
         if (!is_array($userattachments)) $userattachments = array();
       
-        $userattachments[] = array("filename" => rawurldecode($row['FILENAME']),
-                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                   "aid"      => $row['AID'],
-                                   "hash"     => $row['HASH'],
-                                   "mimetype" => $row['MIMETYPE']);
+        $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                   "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                   "aid"       => $row['AID'],
+                                   "hash"      => $row['HASH'],
+                                   "mimetype"  => $row['MIMETYPE'],
+                                   "downloads" => $row['DOWNLOADS']);
       }
       
     }

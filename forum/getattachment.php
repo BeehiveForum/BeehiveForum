@@ -45,8 +45,11 @@ if (!$attachments_enabled) {
 if (isset($HTTP_GET_VARS['hash'])) {
   
   $db = db_connect();
-  $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash'";
   
+  $sql = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
+  $result = db_query($sql, $db);
+  
+  $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash'";
   $result = db_query($sql, $db);
   
   if (db_num_rows($result)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.42 2003-08-01 23:52:52 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.43 2003-08-02 18:42:36 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -101,7 +101,7 @@ if ($thread_array = threads_get_most_recent()) {
 }else {
 
     echo "        <tr>\n";
-    echo "          <td>{$lang['nomessages']}</td>\n";
+    echo "          <td align=\"center\"><h2>{$lang['nomessages']}</h2></td>\n";
     echo "        </tr>\n";
 
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.38 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: session.inc.php,v 1.39 2003-08-02 18:42:38 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -43,6 +43,7 @@ function bh_session_check()
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_check'];
 
         if (md5($user_sess) == $user_hash) {
+            $user_sess = unserialize(_stripslashes($HTTP_COOKIE_VARS['bh_sess_data']));
             if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
                 return true;
             }

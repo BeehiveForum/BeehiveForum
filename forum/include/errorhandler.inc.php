@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.50 2004-09-09 10:13:58 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.51 2004-09-09 10:21:29 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -41,16 +41,21 @@ if (!defined("E_STRICT")) {
 // If this is changed to include E_STRICT Beehive will probably
 // not work.
 
-error_reporting(E_STRICT);
+error_reporting(E_ALL);
 
 // Beehive Error Handler Function
 
 function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
-    // We're going to ignore any E_STRICT error messages.
-    // With error_reporting set to E_ALL this if should
-    // return 0 if the error is to do with PHP/5.0's
-    // code compatibility E_STRICT gubbins.
+    // Bad Coding Practises Alert!!
+    // We're going to ignore any E_STRICT error messages
+    // which are caused by PHP/5.x because otherwise we'd
+    // have to develop two seperate versions of Beehive
+    // one for PHP/4.x and one for PHP/5.x.
+
+    if (($errno & E_STRICT) > 0) return;
+
+    // Now we can carry on with any other errors.
 
     if (error_reporting()) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.62 2004-06-15 20:49:31 decoyduck Exp $ */
+/* $Id: links.php,v 1.63 2004-07-07 19:34:28 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,7 +155,7 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $start = 0;
 }
 
-html_draw_top();
+html_draw_top("robots=noindex,nofollow");
 
 echo "<h1>{$lang['links']}</h1>\n";
 echo "<div align=\"right\">{$lang['viewmode']}: ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.131 2004-04-12 20:31:03 decoyduck Exp $ */
+/* $Id: messages.php,v 1.132 2004-04-13 00:27:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -292,7 +292,7 @@ if ($msg_count > 0) {
 
 unset($messages, $message);
 
-if ($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0) {
+if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($HTTP_GET_VARS['mar'])) {
     messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
 }
 

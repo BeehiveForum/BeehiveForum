@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.70 2003-11-02 16:18:33 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.71 2003-11-07 20:04:18 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -236,15 +236,17 @@ function bh_setcookie($name, $value = "", $expires = 0)
     $hostname = "";
 
     if (isset($cookie_domain) && !empty($cookie_domain) && isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
-        if (strstr($HTTP_SERVER_VARS['HTTP_HOST'], $cookie_domain)) {
-	    if (substr($cookie_domain, 0, 1) != ".") {
-                $hostname = ".$cookie_domain";
+        if (!strstr($HTTP_SERVER_VARS['HTTP_HOST'], 'localhost')) {
+            if (strstr($HTTP_SERVER_VARS['HTTP_HOST'], $cookie_domain)) {
+	        if (substr($cookie_domain, 0, 1) != ".") {
+                    $hostname = ".$cookie_domain";
+                }else {
+                    $hostname = $cookie_domain;
+                }
             }else {
-                $hostname = $cookie_domain;
+                $hostname = str_replace("www", "", $HTTP_SERVER_VARS['HTTP_HOST']);
             }
-	}else {
-            $hostname = str_replace("www", "", $HTTP_SERVER_VARS['HTTP_HOST']);
-        }
+	}
     }
 
     setcookie($name, $value, $expires, '/', $hostname, 0);

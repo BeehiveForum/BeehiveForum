@@ -144,14 +144,16 @@ if ($valid) {
     $preview_tuser = user_get($from_uid);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
+
+    $threaddata = thread_get($tid);
     
     if (thread_is_poll($tid) && $pid == 1) {
     
-      poll_display($tid, $threaddata['LENGTH'], $pid, false, false, false, true, true);
+      poll_display($tid, $threaddata['LENGTH'], $pid, false, false, false, true, true, true);
       
     }else {
 
-      message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true);
+      message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, true, true);
       
     }
 }

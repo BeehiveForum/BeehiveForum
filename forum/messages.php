@@ -63,10 +63,13 @@ if (!isset($HTTP_GET_VARS['msg'])) {
 if (isset($HTTP_GET_VARS['fontsize'])) {
 
     $userprefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+
     user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $userprefs['FIRSTNAME'], $userprefs['LASTNAME'],
                       $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'], $userprefs['EMAIL_NOTIFY'],
                       $userprefs['TIMEZONE'], $userprefs['DL_SAVING'], $userprefs['MARK_AS_OF_INT'],
-                      $userprefs['POST_PER_PAGE'], $HTTP_GET_VARS['fontsize'], $userprefs['STYLE']);
+                      $userprefs['POST_PER_PAGE'], $HTTP_GET_VARS['fontsize'], $userprefs['STYLE'],
+                      $userprefs['VIEW_SIGS'], $userprefs['START_PAGE']);
+
     unset($userprefs);
 
     bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
@@ -154,10 +157,10 @@ messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTER
 
 echo "    </td>\n";
 
-if ($threaddata['POLL_FLAG'] == 'Y') {
+if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
  
   if ($userpollvote = poll_user_has_voted($tid)) {
-    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to change vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You voted: ", $userpollvote, "</td>\n";
+    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to change vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You voted for option #", $userpollvote, "</td>\n";
   }else {
     echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You have not voted</td>\n";
   }

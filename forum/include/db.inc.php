@@ -59,7 +59,7 @@ function db_connection_error()
     echo "    <td>\n";
     echo "      <table border=\"0\" width=\"100%\">\n";
     echo "        <tr>\n";
-    echo "          <td>An error occured while trying to connect to the database. Please wait a few minutes and then click the Retry button below.</td>\n";
+    echo "          <td class=\"postbody\">An error occured while trying to connect to the database. Please wait a few minutes and then click the Retry button below.</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td>";    
@@ -86,7 +86,7 @@ function db_connection_error()
       echo "          <td><hr /></td>\n";
       echo "        </tr>\n";
       echo "        <tr>\n";
-      echo "          <td>This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
+      echo "          <td class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
       echo "        </tr>\n";
       echo "        <tr>\n";
       echo "          <td>&nbsp;</td>\n";
@@ -101,7 +101,7 @@ function db_connection_error()
         echo "          <td>&nbsp;</td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td>Reply Message Number:</td>\n";
+        echo "          <td class=\"postbody\">Reply Message Number:</td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
         echo "          <td>", form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64), "</td>\n";
@@ -121,7 +121,7 @@ function db_connection_error()
     echo "          <td><h2>Error Message for developers:</h2></td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td>", __FILE__, " (Line: ", __LINE__ ,")<br />", mysql_error(), "</td>\n";
+    echo "          <td class=\"postbody\">", __FILE__, " (Line: ", __LINE__ ,")<br />", mysql_error(), "</td>\n";
     echo "        </tr>\n";
     echo "      </table>\n";
     echo "    </td>\n";

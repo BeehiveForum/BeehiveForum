@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.45 2003-09-15 17:41:47 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.46 2003-09-20 17:53:36 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -33,9 +33,24 @@ require_once("./include/ip.inc.php");
 
 function bh_session_check()
 {
+    global $HTTP_COOKIE_VARS, $session_cutoff;
+
     ip_check();
 
-    global $HTTP_COOKIE_VARS;
+    $db_bh_session_check = db_connect();
+    $ipaddress = get_ip_address();
+
+    // Tidy up all the old sessions
+
+    $session_stamp = time() - $session_cutoff;
+
+    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE TIME < $session_stamp";
+    $result = db_query($sql, $db_bh_session_check);
+
+    // Check the current user's cookie data. This is the main session
+    // data that Beehive relies on. We only store something in the
+    // SESSIONS table in the database for user tracking purposes, e.g:
+    // Active User list, etc.
 
     if (isset($HTTP_COOKIE_VARS['bh_sess_data']) && isset($HTTP_COOKIE_VARS['bh_sess_check'])) {
 
@@ -43,9 +58,20 @@ function bh_session_check()
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_check'];
 
         if (md5($user_sess) == $user_hash) {
+
             $user_sess = unserialize(_stripslashes($HTTP_COOKIE_VARS['bh_sess_data']));
+
             if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
-                return true;
+
+                // Everything checks out OK, update the user's SESSION entry
+                // in the database.
+
+                $sql = "UPDATE ". forum_table("SESSIONS"). " ";
+                $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() WHERE UID = {$user_sess['UID']}";
+
+                if (db_query($sql, $db_bh_session_check)) {
+                    return true;
+                }
             }
         }
     }
@@ -75,13 +101,32 @@ function bh_session_init($uid)
 {
     global $HTTP_SERVER_VARS, $default_style, $default_language;
 
+    $db_bh_session_init = db_connect();
+    $ipaddress = get_ip_address();
+
+    $sql = "SELECT * FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
+    $result = db_query($sql, $db_bh_session_init);
+
+    if (db_num_rows($result)) {
+
+        $sql = "UPDATE ". forum_table("SESSIONS"). " ";
+        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() WHERE UID = $uid";
+
+    }else {
+
+        $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
+        $sql.= "VALUES ('$uid', '$ipaddress', NOW())";
+    }
+
+    $result = db_query($sql, $db_bh_session_init);
+
     $sql = "select USER.UID, USER.LOGON, USER.PASSWD, USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, ";
     $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, ";
     $sql.= "USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY ";
     $sql.= "from " . forum_table("USER") . " USER left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
     $sql.= "where USER.UID = $uid";
 
-    $db_bh_session_init = db_connect();
+
     $result = db_query($sql, $db_bh_session_init);
 
     if (db_num_rows($result) && $uid > 0) {
@@ -118,6 +163,14 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
+    // Session data in database
+
+    $db_bh_session_end = db_connect();
+    $uid = bh_session_get_value('UID');
+
+    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
+    $result = db_query($sql, $db_bh_session_end);
+
     // Session cookies
 
     bh_setcookie("bh_sess_data", "", time() - YEAR_IN_SECONDS);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.41 2003-09-18 12:52:05 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.42 2003-09-20 17:53:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -579,7 +579,10 @@ $lang['logout'] = "Logout";
 $lang['privatemessages'] = "Private Messages";
 $lang['addrecipient'] = "Add Recipient";
 $lang['recipienttiptext'] = "Seperate recipients by semi-colon or comma";
-$lang['maximumtenrecipientspermessage'] = "There is a maximum of 10 recipients per message. Please ammend your recipient list.";
+$lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per message. Please ammend your recipient list.";
+$lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
+$lang['usernotfound1'] = "User";
+$lang['usernotfound2'] = "Not found.";
 $lang['sendnewpm'] = "Send New PM";
 $lang['savemessage'] = "Save Message";
 $lang['sentby'] = "Sent By";

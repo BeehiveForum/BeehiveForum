@@ -142,11 +142,17 @@ $attachment_dir = 'attachments';
 // ---------------------------------------------------------------------
 
 
-// Guest Account -------------------------------------------------------
+// User Accounts -------------------------------------------------------
 
 $guest_account_enabled = true;  // Enable the use of forum guest account
                                 // Requires the creation of a GUEST user
                                 // with the password also set as GUEST.
+
+$session_cutoff = 3600;         // Time before user becomes inactive in
+                                // seconds. User will not be logged out
+                                // when this timeout occurs, they will
+                                // meerly be removed from the active user
+                                // list.
 
 // ---------------------------------------------------------------------
 

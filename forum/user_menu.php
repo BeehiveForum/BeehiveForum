@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.1 2004-01-24 16:43:14 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.2 2004-01-25 12:46:05 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -60,7 +60,7 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"./edit_profile.php\" target=\"right\">{$lang['userprofile']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./edit_profile.php\" target=\"right\">{$lang['changepassword']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./edit_password.php\" target=\"right\">{$lang['changepassword']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><hr /></td>\n";
@@ -75,7 +75,7 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"./edit_attachments.php\" target=\"right\">{$lang['attachments']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"./signature.php\" target=\"right\">{$lang['signature']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"./edit_signature.php\" target=\"right\">{$lang['signature']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.1 2004-01-24 16:42:45 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.2 2004-01-25 12:45:56 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -60,7 +60,7 @@ html_draw_top();
 echo "<h1>{$lang['emailandprivacy']}</h1>\n";
 echo "<br />\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"prefs\" action=\"./prefs.php\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"prefs\" action=\"./edit_email.php\" method=\"post\" target=\"_self\">\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";

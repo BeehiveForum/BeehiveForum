@@ -258,7 +258,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
     echo "<h3><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">". $folder_info[$folder_number]['TITLE'] . "</a></h3>";
 
-    if (is_array($thread_info) && sizeof($thread_info) > 0) {
+    if (is_array($thread_info) && ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number))) {
 
         echo "<p>";
 

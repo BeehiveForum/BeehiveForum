@@ -21,15 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.156 2003-12-16 21:12:51 decoyduck Exp $ */
-
-// Enable the error handler
-require_once("./include/errorhandler.inc.php");
-
-// THREAD LIST DISPLAY
+/* $Id: thread_list.php,v 1.157 2003-12-22 22:41:22 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+require_once("./include/errorhandler.inc.php");
 
 // Require functions
 require_once("./include/html.inc.php"); // HTML functions

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.270 2004-04-15 20:46:39 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.271 2004-04-15 21:02:27 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -231,7 +231,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 			} else {
 				$up_arrow.= "#a" . $tid . "_" . ($message['PID'] - 1);
 			}
-			$up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" height=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
+			$up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" width=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
 		}
 		if ($message['PID'] != $msg_count) {
 			$down_arrow = "<a href=\"";
@@ -240,7 +240,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 			} else {
 				$down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);
 			}
-			$down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" height=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
+			$down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
 		}
 	}
 

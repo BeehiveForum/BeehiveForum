@@ -47,7 +47,7 @@ function TinyMCE() {
 
     $str.= "    directionality : \"{$lang['_textdir']}\",\n";
 
-//  $str.= "    content_css : \"style.css\",\n";
+    $str.= "    content_css : \"tiny_mce/tiny_mce_style.css\",\n";
 
 //  $str.= "    auto_focus : \"mce_editor_0\",\n";
 

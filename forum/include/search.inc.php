@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.93 2005-03-08 17:09:37 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.94 2005-03-08 17:16:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -510,7 +510,7 @@ function search_index_post()
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT SET INDEXED = 1 ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-        //$result = db_query($sql, $db_search_index_post);
+        $result = db_query($sql, $db_search_index_post);
 
         // Tidy the content up (remove URLs, new lines and HTML)
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.9 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: admin_wordfilter.php,v 1.10 2003-08-01 21:06:03 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -61,44 +61,20 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 
 html_draw_top();
 
-$db = db_connect();
-
 if (isset($HTTP_POST_VARS['save'])) {
 
-    $sql = "DELETE FROM ". forum_table("FILTER_LIST");
-    $result = db_query($sql, $db);
-
-    $filter_array = array();
-
     if (isset($HTTP_POST_VARS['wordlist']) && strlen($HTTP_POST_VARS['wordlist']) > 0) {
-        $filter_array = explode("\n", $HTTP_POST_VARS['wordlist']);
-        for ($i = 0; $i < sizeof($filter_array); $i++) {
-           if (substr($filter_array[$i], 0, 1) == '/' && substr($filter_array[$i], -1) == '/') {
-               $filter_array[$i] = substr($filter_array[$i], 1, -1);
-           }
-           $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (FILTER) ";
-           $sql.= "VALUES ('". $filter_array[$i]. "')";
-           $result = db_query($sql, $db);
-        }
+        admin_save_word_filter($HTTP_POST_VARS['wordlist']);
+    }else {
+        admin_clear_word_filter();
     }
 
     $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
     admin_addlog(0, 0, 0, 0, 0, 0, 24);
-
-}else{
-
-    $sql = "SELECT FILTER FROM ". forum_table("FILTER_LIST");
-    $result = db_query($sql, $db);
-
-    $filter_array = array();
-
-    while($row = db_fetch_array($result)) {
-      $filter_array[] = $row['FILTER'];
-    }
-
 }
 
-$wordlist = implode("\n", $filter_array);
+$word_filter_array = admin_get_word_filter();
+$wordlist = implode("\n", $word_filter_array);
 
 echo "<form name=\"startpage\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
 echo "<h1>{$lang['editwordfilter']}</h1>\n";

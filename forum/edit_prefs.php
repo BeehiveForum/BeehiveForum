@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.37 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.38 2004-12-03 15:27:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -226,7 +226,7 @@ if (isset($_POST['submit'])) {
 
         // Reinitialize the User's Session to save them having to logout and back in
 
-        bh_session_init($uid);
+        bh_session_init($uid, false);
 
         // IIS bug prevents redirect at same time as setting cookies.
         header_redirect_cookie("./edit_prefs.php?webtag=$webtag&updated=true");

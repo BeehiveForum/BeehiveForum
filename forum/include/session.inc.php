@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.144 2004-12-01 09:25:47 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.145 2004-12-03 15:27:10 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -279,7 +279,7 @@ function bh_update_visitor_log($uid)
 
 // Initialises the session
 
-function bh_session_init($uid)
+function bh_session_init($uid, $update_visitor_log = true)
 {
     $db_bh_session_init = db_connect();
 
@@ -331,7 +331,7 @@ function bh_session_init($uid)
         $result = db_query($sql, $db_bh_session_init);
     }
 
-    bh_update_visitor_log($uid);
+    if ($update_visitor_log) bh_update_visitor_log($uid);
 
     bh_setcookie('bh_sess_hash', $user_hash);
 }

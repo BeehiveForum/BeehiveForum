@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.58 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.59 2004-12-03 15:27:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -95,6 +95,10 @@ if (!$user_sess = bh_session_check()) {
 
 $lang = load_language_file();
 
+// User's UID
+
+$uid = bh_session_get_value('UID');
+
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
@@ -109,7 +113,7 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
+if ($uid == 0) {
     html_guest_error();
     exit;
 }
@@ -119,7 +123,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }elseif (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     $msg = $_POST['msg'];
 }else {
-    $msg = messages_get_most_recent(bh_session_get_value('UID'));
+    $msg = messages_get_most_recent($uid);
 }
 
 if (isset($_GET['edit_rel']) && is_numeric($_GET['edit_rel'])) {
@@ -130,29 +134,54 @@ if (isset($_GET['edit_rel']) && is_numeric($_GET['edit_rel'])) {
     $edit_rel = false;
 }
 
-$my_uid = bh_session_get_value('UID');
-
 if (isset($_POST['submit'])) {
 
-    $rel = isset($_POST['rel']) ? $_POST['rel'] : 0;
-    $rel+= isset($_POST['sig']) ? $_POST['sig'] : 0;
+    $valid = true;
 
-    $view_sigs = isset($_POST['view_sigs']) ? $_POST['view_sigs'] : '';
-
-    $view_sigs_global = false;
-
-    if (isset($_POST['view_sigs_global'])) {
-
-        $view_sigs_global = ($_POST['view_sigs_global'] == "Y") ? true : false;
+    if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+        $peer_uid = $_POST['uid'];
+    }else {
+        $valid = false;
     }
 
-    user_rel_update($my_uid, $_POST['uid'], $rel);
+    if (isset($_POST['rel']) && is_numeric($_POST['rel'])) {
+        $t_rel = $_POST['rel'];
+    }else {
+        $t_rel = 0;
+    }
 
-    user_update_global_sig($my_uid, $view_sigs, $view_sigs_global);
+    if (isset($_POST['sig']) && is_numeric($_POST['sig'])) {
+        $t_sig = $_POST['rel'];
+    }else {
+        $t_sig = 0;
+    }
 
-    // Update the User's Session to save them having to logout and back in
-    bh_session_init(bh_session_get_value('UID'));
-    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+    if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "N") {
+        $t_sig = "N";
+    }else {
+        $t_sig = "";
+    }
+
+    if (isset($_POST['view_sigs_global'])) {
+        $view_sigs_global = ($_POST['view_sigs_global'] == "Y") ? true : false;
+    }else {
+        $view_sigs_global = false;
+    }
+
+    if ($valid) {
+
+        user_rel_update($uid, $peer_uid, $rel);
+
+        user_update_global_sig($uid, $view_sigs, $view_sigs_global);
+
+        // Update the User's Session to save them having to logout and back in
+
+        bh_session_init($uid, false);
+
+        // IIS bug prevents redirect at same time as setting cookies.
+
+        header_redirect_cookie("./messages.php?webtag=$webtag&msg=$msg");
+    }
 }
 
 if (isset($_POST['cancel'])) {
@@ -165,16 +194,20 @@ if (isset($_POST['cancel'])) {
 }
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-    $uid = $_GET['uid'];
-    if (!$user = user_get($uid)) {
+
+    $peer_uid = $_GET['uid'];
+
+    if (!$user = user_get($peer_uid)) {
+
         html_draw_top();
         echo "<h1>{$lang['invalidop']}:</h1>";
         echo "<h2>{$lang['invalidusername']}</h2>";
         html_draw_bottom();
         exit;
     }
-    $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile($uid, '$webtag')\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
+
 }else {
+
     html_draw_top();
     echo "<h1>{$lang['invalidop']}:</h1>";
     echo "<h2>{$lang['nouserspecified']}</h2>";
@@ -184,19 +217,19 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 html_draw_top("openprofile.js");
 
-$rel = user_rel_get($my_uid, $uid);
+$rel = user_rel_get($uid, $peer_uid);
 
-$user_prefs = user_get_prefs($my_uid);
+$user_prefs = user_get_prefs($uid);
 
-echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
+echo "<h1>{$lang['userrelationship']}: <a href=\"javascript:void(0);\" onclick=\"openProfile($peer_uid, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></h1>\n";
 echo "<br />\n";
 echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("uid", $uid), "\n";
+echo "  ", form_input_hidden("uid", $peer_uid), "\n";
 echo "  ", form_input_hidden("msg", $msg), "\n";
 echo "  ", form_input_hidden("edit_rel", $edit_rel), "\n";
 
-if (isset($uid)) {
+if (isset($peer_uid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
@@ -248,7 +281,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['signature']}</td>\n";
 echo "                </tr>\n";
 
-if (isset($uid)) {
+if (isset($peer_uid)) {
 
     echo "                <tr>\n";
     echo "                  <td width=\"200\">", form_radio("sig", "0", $lang['display'], $rel ^ USER_IGNORED_SIG ? true : false), "</td>\n";

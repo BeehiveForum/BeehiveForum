@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.8 2004-05-20 22:17:48 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.9 2004-05-25 14:11:24 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -214,16 +214,16 @@ echo "                <tr>\n";
 echo "                  <td>\n";
 echo "                    <table class=\"posthead\" width=\"80%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, "Read Posts", false), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, "Reply to threads", false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, $lang['readposts'], false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, $lang['replytothreads'], false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, "Create new threads", false), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, "Edit Posts", false), "</td>\n";
+echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, $lang['editposts'], false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, "Delete Posts", false), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, "Upload Attachments", false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, $lang['deleteposts'], false), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], false), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

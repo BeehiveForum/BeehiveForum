@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.82 2004-05-22 21:04:58 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.83 2004-05-25 14:11:24 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -375,6 +375,24 @@ $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder
 $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
 $lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
 $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
+$lang['useringroups'] = "This user is a member of the following groups";
+$lang['usernotinanygroups'] = "This user is not in any user groups";
+$lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
+
+$lang['usercanaccessadmintools'] = "User can access admin tools";
+$lang['userisbanned'] = "User is banned";
+$lang['useriswormed'] = "User is wormed";
+
+$lang['groupcanaccessadmintools'] = "Group can access admin tools";
+$lang['groupisbanned'] = "Group is banned";
+$lang['groupiswormed'] = "Group is wormed";
+
+$lang['readposts'] = "Read Posts";
+$lang['replytothreads'] = "Reply to threads";
+$lang['createnewthreads'] = "Create new threads";
+$lang['editposts'] = "Edit posts";
+$lang['uploadattachments'] = "Upload attachments";
+$lang['moderatefolder'] = "Moderate folder";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

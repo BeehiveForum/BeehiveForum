@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.55 2003-08-05 03:11:21 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.56 2003-08-10 02:18:32 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -131,7 +131,8 @@ function poll_get($tid)
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
     $sql.= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
     $sql.= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP, ";
-    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, UNIX_TIMESTAMP(POLL.CLOSES) as CLOSES ";
+    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, ";
+    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) as CLOSES ";
     $sql.= "from ". forum_table("POST"). " POST ";
     $sql.= "left join ". forum_table("USER"). " FUSER on (POST.FROM_UID = FUSER.UID) ";
     $sql.= "left join ". forum_table("USER"). " TUSER on (POST.TO_UID = TUSER.UID) ";
@@ -174,6 +175,22 @@ function poll_get_votes($tid)
 
     return $pollresults;
 
+}
+
+function poll_get_user_votes($tid)
+{
+    $db_poll_get_user_vote_hashes = db_connect();
+
+    $sql = "select PTUID, OPTION_ID from ". forum_table("USER_POLL_VOTES"). " where TID = $tid";
+    $result = db_query($sql, $db_poll_get_user_vote_hashes);
+
+    $poll_get_user_votes = array();
+
+    while($row = db_fetch_array($result)) {
+      $poll_get_user_votes[$row['PTUID']] = $row['OPTION_ID'];
+    }
+
+    return $poll_get_user_votes;
 }
 
 function poll_get_user_vote($tid)
@@ -291,11 +308,19 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             $polldata['CONTENT'].= "          </td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
-          }else {
+          }elseif ($polldata['POLLTYPE'] == 1) {
 
             $polldata['CONTENT'].= "        <tr>\n";
             $polldata['CONTENT'].= "          <td colspan=\"2\">\n";
             $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
+            $polldata['CONTENT'].= "          </td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
+
+          }else {
+
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\">\n";
+            $polldata['CONTENT'].= poll_public_ballot($tid, $pollresults, $horizontal_bar_width, $totalvotes);
             $polldata['CONTENT'].= "          </td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
 
@@ -474,6 +499,17 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
 
+          if ($polldata['POLLTYPE'] == 2) {
+
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">{$lang['polltypewarning']}</td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
+
+          }
+
         }
 
       }
@@ -538,7 +574,6 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
         $polldisplay.= "              <tr>\n";
         $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
         $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['VOTES']. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
-
         $polldisplay.= "              </tr>\n";
 
       }
@@ -619,9 +654,79 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
 
 }
 
+function poll_public_ballot($tid, $pollresults, $bar_width, $totalvotes)
+{
+    global $lang;
+
+    $user_votes = poll_get_user_votes($tid);
+    $user_count = user_count();
+
+    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    $polldisplay.= "              <tr>\n";
+
+    $bar_color = 1;
+
+    for ($i = 1; $i <= sizeof($pollresults); $i++) {
+
+      if (isset($pollresults[$i]['OPTION_NAME']) && strlen($pollresults[$i]['OPTION_NAME']) > 0) {
+
+        $polldisplay.= "              <tr>\n";
+        $polldisplay.= "                <td width=\"150\" class=\"postbody\" style=\"border-bottom: 1px solid\"><h2>". $pollresults[$i]['OPTION_NAME']. "</h2></td>\n";
+
+        if ($pollresults[$i]['VOTES'] > 0) {
+
+          if ($totalvotes > 0) {
+            $vote_percent = round((100 / $totalvotes) * $pollresults[$i]['VOTES'], 2);
+          }else {
+            $vote_percent = 0;
+          }
+
+          $polldisplay.= "                <td class=\"postbody\" style=\"border-bottom: 1px solid\">". $pollresults[$i]['VOTES']. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
+          $polldisplay.= "              </tr>\n";
+
+          reset($user_votes);
+
+          foreach($user_votes as $ptuid => $option_id) {
+
+            for ($j = 1; $j <= $user_count; $j++) {
+
+              if ((md5("$tid.$j") == $ptuid) && ($option_id == $pollresults[$i]['OPTION_ID'])) {
+
+                $user = user_get($j);
+
+                $polldisplay.= "              <tr>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"postbody\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$j})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                $polldisplay.= "              </tr>\n";
+
+              }
+            }
+          }
+
+        }else {
+
+          $polldisplay.= "                <td class=\"postbody\" style=\"border-bottom: 1px solid\">0 {$lang['votes']} (0%)</td>\n";
+          $polldisplay.= "              </tr>\n";
+          $polldisplay.= "              <tr>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
+          $polldisplay.= "              </tr>\n";
+
+        }
+      }
+
+      $bar_color++;
+      if ($bar_color > 5) $bar_color = 1;
+
+    }
+
+    $polldisplay.= "            </table>\n";
+
+    return $polldisplay;
+}
+
 function poll_confirm_close($tid)
 {
-
     global $HTTP_SERVER_VARS, $lang;
 
     $preview_message = messages_get($tid, 1, 1);

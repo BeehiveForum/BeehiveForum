@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.29 2003-08-07 16:06:14 hodcroftcj Exp $ */
+/* $Id: en.inc.php,v 1.30 2003-08-10 02:18:32 decoyduck Exp $ */
 
 // International English language file
 
@@ -615,8 +615,15 @@ $lang['votechangingexp'] = "Can a person change his or her vote?";
 $lang['allowmultiplevotes'] = "Allow Multiple Votes";
 $lang['pollresults'] = "Poll Results";
 $lang['pollresultsexp'] = "How would you like to display the results of your poll?";
-$lang['horizgraph'] = "Horizontal Bar graph";
-$lang['vertgraph'] = "Vertical Bar graph";
+$lang['pollvotetype'] = "Poll Voting Type";
+$lang['pollvotesexp'] = "How should the poll be conducted?";
+$lang['pollvoteanon'] = "Anonymously";
+$lang['pollvotepub'] = "Publicly viewable votes";
+$lang['pollresultnote'] = "<b>Note:</b> Choosing '{$lang['pollvotepub']}' will overide the poll result type.";
+$lang['horizgraph'] = "Horizontal graph";
+$lang['vertgraph'] = "Vertical graph";
+$lang['publicviewable'] = "Public ballot";
+$lang['polltypewarning'] = "<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for.";
 $lang['expiration'] = "Expiration";
 $lang['showresultswhileopen'] = "Do you want to show results while the poll is open?";
 $lang['whenlikepollclose'] = "When would you like your poll to automatically close?";

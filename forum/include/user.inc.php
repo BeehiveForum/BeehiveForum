@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.81 2003-08-05 03:11:21 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.82 2003-08-10 02:18:32 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -29,6 +29,17 @@ require_once("./include/constants.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/ip.inc.php");
+
+function user_count()
+{
+   $db_user_count = db_connect();
+
+   $sql = "select COUNT(UID) AS COUNT FROM ". forum_table("USER");
+   $result = db_query($sql, $db_user_count);
+
+   $user_count = db_fetch_array($result);
+   return $user_count['COUNT'];
+}
 
 function user_exists($logon)
 {

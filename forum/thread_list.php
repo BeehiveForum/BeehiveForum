@@ -241,7 +241,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
 // Seperate them by INTEREST level
 
 while (list($fid, $folder) = each($folder_info)) {
-  if (!$folder['INTEREST']) {
+  if (!$folder['INTEREST'] || ($HTTP_GET_VARS['folder'] == $fid)) {
     if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
   }else {
     $ignored_folders[] = $fid;
@@ -290,7 +290,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2)) {
+	if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || ($HTTP_GET_VARS['folder'] == $folder_number)) {
 
             if (is_array($thread_info)) {
 

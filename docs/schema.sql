@@ -107,6 +107,7 @@ CREATE TABLE POST_ATTACHMENT_FILES (
   FILENAME varchar(255) NOT NULL default '',
   MIMETYPE varchar(255) NOT NULL default '',
   HASH varchar(32) NOT NULL default '',
+  DOWNLOADS mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (ID),
   KEY AID (AID),
   KEY HASH (HASH)

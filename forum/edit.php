@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.113 2004-04-14 15:26:31 tribalonline Exp $ */
+/* $Id: edit.php,v 1.114 2004-04-15 18:31:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -232,6 +232,10 @@ if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) !=
 	$post->setContent($t_content);
 	$t_content = $post->getContent();
 
+	if (strlen($t_content) >= 65535) {
+		$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+		$valid = false;
+	}
 }
 if (isset($HTTP_POST_VARS['t_sig']) && trim($HTTP_POST_VARS['t_sig']) != "") {
 	$t_sig = $HTTP_POST_VARS['t_sig'];
@@ -243,6 +247,11 @@ if (isset($HTTP_POST_VARS['t_sig']) && trim($HTTP_POST_VARS['t_sig']) != "") {
 
 	$sig->setContent($t_sig);
 	$t_sig = $sig->getContent();
+
+	if (strlen($t_sig) >= 65535) {
+		$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+		$valid = false;
+	}
 }
 
 if (isset($HTTP_POST_VARS['preview'])) {

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.179 2004-04-14 21:04:04 decoyduck Exp $ */
+/* $Id: post.php,v 1.180 2004-04-15 18:31:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -189,9 +189,6 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
 	$valid = false;
 }
 
-$content_html_changes = false;
-$sig_html_changes = false;
-
 $post_html = 0;
 $sig_html = 0;
 
@@ -236,6 +233,15 @@ $sig = new MessageText($sig_html, $t_sig);
 
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();
+
+if (strlen($t_content) >= 65535) {
+	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+	$valid = false;
+}
+if (strlen($t_sig) >= 65535) {
+	$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+	$valid = false;
+}
 
 
 if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.61 2004-04-14 15:26:31 tribalonline Exp $ */
+/* $Id: pm_write.php,v 1.62 2004-04-15 18:31:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -237,6 +237,11 @@ if (isset($HTTP_POST_VARS['t_post_html'])) {
 // Process the data based on what we know.
 $post = new MessageText($post_html, $t_content);
 $t_content = $post->getContent();
+
+if (strlen($t_content) >= 65535) {
+	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+	$valid = false;
+}
 
 // Send the PM
 

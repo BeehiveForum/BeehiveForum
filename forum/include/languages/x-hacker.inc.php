@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.89 2004-04-15 11:43:06 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.90 2004-04-15 18:32:00 tribalonline Exp $ */
 
 // International English language file
 
@@ -688,6 +688,8 @@ $lang['fixhtmlexplanation'] = "THIs f0rUM uS3\$ h+ML f1LT3r1ng. your \$uBm1tT3d 
 $lang['messageoptions'] = "M3\$s4G3 0ptiONS";
 $lang['notallowedembedattachmentpost'] = "j00 4Re n0+ 4llOW3D +O eMb3d 4T+AcHM3n+\$ IN y0UR posTs.";
 $lang['notallowedembedattachmentsignature'] = "J00 @re nOt ALL0W3D To 3m83d 4++4Chm3Nt\$ 1n Y0UR s1Gna+UR3.";
+$lang['reducemessagelength'] = "Message length must be under 65,535 characters (currently: ";
+$lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently: ";
 
 // Message display (messages.php) --------------------------------------
 

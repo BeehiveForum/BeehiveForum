@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.93 2004-04-14 18:56:36 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.94 2004-04-15 18:31:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -194,6 +194,11 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 	$post->setContent($t_message_text);
 	$t_message_text = $post->getContent();
 
+	if (strlen($t_message_text) >= 65535) {
+		$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
+		$valid = false;
+	}
+
     if (attachment_embed_check($t_message_text) && $t_message_html == "Y") {
         $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
         $valid = false;
@@ -204,6 +209,11 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $t_sig = trim($HTTP_POST_VARS['t_sig']);
 	$sig->setContent($t_sig);
 	$t_sig = $sig->getContent();
+
+	if (strlen($t_sig) >= 65535) {
+		$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+		$valid = false;
+	}
 
     if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
         $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";

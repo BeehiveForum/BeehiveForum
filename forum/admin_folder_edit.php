@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.2 2004-05-05 19:21:30 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.3 2004-05-05 20:04:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,11 +127,18 @@ if (isset($_POST['permissions'])) {
 
 if (!$folder_data = folder_get($fid)) {
     echo "<h1>{$lang['invalidop']}</h1>\n";
-    echo "<p>{$lang['invalidfolderid']}</p>\n";
+    echo "<h2>{$lang['invalidfolderid']}</h2>\n";
     html_draw_bottom();
     exit;
 }
 
+if (isset($_POST['delete']) && $folder_data['THREAD_COUNT'] == 0) {
+
+    folder_delete($fid);
+
+    $del_success = rawurlencode($folder_data['TITLE']);
+    header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success");
+}
 
 if (isset($_POST['submit'])) {
 
@@ -266,9 +273,20 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), " &nbsp;", form_submit("back", $lang['back']), "</td>\n";
-echo "    </tr>\n";
+
+if ($folder_data['THREAD_COUNT'] > 0) {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+
+}else {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "  </table>\n";
 echo "  </form>\n";
 echo "</div>\n";

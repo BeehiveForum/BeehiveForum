@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.74 2004-05-05 19:21:30 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.75 2004-05-05 20:04:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -143,6 +143,15 @@ if (isset($_POST['submit'])) {
 
 // Draw the form
 echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";
+
+if (isset($_GET['add_success'])) {
+    echo "<h2>{$lang['successfullyaddedfolder']}: {$_GET['add_success']}</h2>\n";
+}
+
+if (isset($_GET['del_success'])) {
+    echo "<h2>{$lang['successfullydeletedfolder']}: {$_GET['del_success']}</h2>\n";
+}
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";

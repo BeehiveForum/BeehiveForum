@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.59 2004-05-04 23:04:22 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.60 2004-05-05 20:04:30 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -69,7 +69,7 @@ function folder_get_title($fid)
    return $foldertitle;
 }
 
-function folder_create($title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $position)
+function folder_create($title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_create = db_connect();
 
@@ -81,8 +81,13 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
 
     if (!$table_data = get_table_prefix()) return 0;
 
+    $sql = "SELECT MAX(POSITION) + 1 AS NEW_POS FROM {$table_data['PREFIX']}FOLDER";
+    $result = db_query($sql, $db_folder_create);
+
+    list($new_pos) = db_fetch_array($result, MYSQL_NUM);
+
     $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
-    $sql.= "VALUES ('$title', $access, '$description', $allowed_types, $position)";
+    $sql.= "VALUES ('$title', $access, '$description', $allowed_types, $new_pos)";
 
     $result = db_query($sql, $db_folder_create);
 
@@ -93,6 +98,20 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
     }
 
     return $new_fid;
+}
+
+function folder_delete($fid)
+{
+    $db_folder_delete = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "DELETE FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
+    $result = db_query($sql, $db_folder_delete);
+
+    return $result;
 }
 
 function folder_update($fid, $folder_data)
@@ -202,7 +221,7 @@ function folder_get($fid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, COUNT(*) AS THREAD_COUNT ";
+    $sql.= "FOLDER.ALLOWED_TYPES, COUNT(THREAD.FID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.FID = FOLDER.FID) ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";

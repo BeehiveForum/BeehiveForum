@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.199 2004-05-26 11:27:46 decoyduck Exp $ */
+/* $Id: post.php,v 1.200 2004-06-03 09:02:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -570,7 +570,7 @@ if ($valid && isset($_POST['preview'])) {
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-    $preview_message['CONTENT'] = $post->getTidyContent();
+    $preview_message['CONTENT'] = $post->getContent();
 
     if (trim($t_sig) != "") {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";

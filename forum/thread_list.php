@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.196 2004-04-23 22:11:52 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.197 2004-04-24 17:44:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -110,7 +110,7 @@ if (bh_session_get_value('UID') == 0) {
             $mode = 0;
         }
     }else {
-        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode']) && !isset($_GET['msg'])) {
+        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode'])) {
             $mode = $_COOKIE['bh_thread_mode'];
         }else{
             $mode = 0;
@@ -135,7 +135,7 @@ if (bh_session_get_value('UID') == 0) {
     if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
         $mode = $_GET['mode'];
     }else {
-        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode']) && !isset($_GET['msg'])) {
+        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode'])) {
             $mode = $_COOKIE['bh_thread_mode'];
         }else{
             if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any

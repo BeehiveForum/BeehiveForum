@@ -35,7 +35,7 @@ function folder_draw_dropdown($default_fid)
     $i = 0;
     while($row = db_fetch_array($result)){
         $html .= "<option value=\"" . $row['FID'] . "\"";
-        if($row['FID'] = $default_fid){
+        if($row['FID'] == $default_fid){
             $html .= " selected";
         }
         $html .= ">" . $row['TITLE'] . "</option>";

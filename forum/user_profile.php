@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.30 2003-08-26 18:30:48 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.31 2003-08-26 18:40:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -193,7 +193,7 @@ if (bh_session_get_value('UID') <> 0) {
     echo "                  <td><a href=\"email.php?uid=$uid\">{$lang['sendemail']}</a></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td><a href=\"pm_write.php?uid=$uid&f_profile=1\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
+    echo "                  <td><a href=\"./index.php?final_uri=", rawurlencode("./pm_write.php?uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
     echo "                </tr>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.154 2005-03-24 00:23:14 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.155 2005-03-24 21:03:23 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -660,6 +660,9 @@ function html_get_path($path_only = false)
     if ($path_only === true) {
 
         $uri_array['path'] = dirname($uri_array['path']);
+        $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
+        $uri_array['path'] = preg_replace("/\/+/", "/", $uri_array['path']);
+        $uri_array['path'] = preg_replace("/^\/$/", "", $uri_array['path']);
     }
 
     $server_uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.42 2004-09-13 15:59:21 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.43 2004-09-14 17:45:36 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -157,6 +157,7 @@ $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
 $lang['top'] = "Top";
 $lang['free'] = "Free";
+$lang['days'] = "days";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -382,6 +383,7 @@ $lang['showdeletedattachments'] = "Show Deleted Attachments in messages";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments in messages / signatures";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
+$lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every:";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -952,6 +954,9 @@ $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebre
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
 $lang['privatemessageoptions'] = "Private Message Options";
 $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
+$lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
+$lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\nyour \'Saved Items\' folder so that they are not deleted.";
+$lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

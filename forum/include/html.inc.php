@@ -51,7 +51,7 @@ function _html_draw_top_script()
     echo "<!--\n";
     echo "function openProfile(uid)\n";
     echo "{\n";
-    echo "window.open('user_profile.php?uid=' + uid,'bh_profile','width=400,height=400,toolbars=no');\n";
+    echo "window.open('user_profile.php?uid=' + uid, uid,'width=400, height=400, toolbars=no');\n";
     echo "}\n";
     echo "-->\n";
     echo "</script>\n";

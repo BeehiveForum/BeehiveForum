@@ -158,11 +158,11 @@ function user_logon($logon, $password, $md5hash = false)
             $uid = -2;
         }
 
-	if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
-	  $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
-	}else {
-	  $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
-	}
+        if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
+          $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+        }else {
+          $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+        }
 
         db_query("update ".forum_table("USER")." set LAST_LOGON = NOW(), LOGON_FROM = '$ipaddress' where UID = $uid", $db_user_logon);
     }
@@ -186,11 +186,11 @@ function user_check_logon($uid, $logon, $md5pass)
 
           list($status) = db_fetch_array($result);
 
-	  if ($status & USER_PERM_SPLAT) {
-	    return false;
-	  }else {
+          if ($status & USER_PERM_SPLAT) {
+            return false;
+          }else {
             return true;
-	  }
+          }
       }
 
     }else {
@@ -265,7 +265,7 @@ function user_get_sig($uid, &$content, &$html)
         $ret = false;
     } else {
         $fa = db_fetch_array($result);
-        $content = _stripslashes($fa['content']);
+        $content = $fa['content'];
         $html = $fa['html'];
         $ret = true;
     }
@@ -285,7 +285,7 @@ function user_get_prefs($uid)
         $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'HOMEPAGE_URL' => '',
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
                     'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
-		    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '');
+                    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '');
     } else {
         $fa = db_fetch_array($result);
     }
@@ -306,7 +306,7 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
     if (empty($timezone)) $timezone = 0;
     if (empty($posts_per_page)) $posts_per_page = 0;
     if (empty($font_size)) $font_size = 0;
-	if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
+        if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
     $sql.= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE)";
@@ -322,7 +322,7 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 
 function user_update_sig($uid,$content,$html){
 
-    $content = mysql_escape_string($content);
+    $content = addslashes($content);
     $db_user_update_sig = db_connect();
 
     $sql = "delete from ". forum_table("USER_SIG"). " where UID = $uid";
@@ -340,8 +340,8 @@ function user_update_global_sig($uid,$value){
 
     $db_user_update_global_sig = db_connect();
 
-	$sql = "update " . forum_table("USER_PREFS") . " set ";
-	$sql .= "VIEW_SIGS = '$value' where UID = $uid";
+        $sql = "update " . forum_table("USER_PREFS") . " set ";
+        $sql .= "VIEW_SIGS = '$value' where UID = $uid";
 
     $result = db_query($sql, $db_user_update_global_sig);
 
@@ -352,7 +352,7 @@ function user_get_global_sig($uid){
 
     $db_user_update_global_sig = db_connect();
 
-	$sql = "select VIEW_SIGS from " . forum_table("USER_PREFS") . " where uid = $uid";
+        $sql = "select VIEW_SIGS from " . forum_table("USER_PREFS") . " where uid = $uid";
 
     $result = db_query($sql, $db_user_update_global_sig);
 
@@ -361,7 +361,7 @@ function user_get_global_sig($uid){
         return $fa['VIEW_SIGS'];
     }
 
-	return "";
+        return "";
 }
 
 function user_get_post_count($uid)
@@ -398,16 +398,16 @@ function user_guest_enabled()
          $sql = "SELECT UID, STATUS FROM ". forum_table("USER"). " WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
          $result = db_query($sql, $db_user_guest_account);
 
-	 if (db_num_rows($result)) {
-	   $fa = db_fetch_array($result);
+         if (db_num_rows($result)) {
+           $fa = db_fetch_array($result);
            if ($fa['STATUS'] & USER_PERM_SPLAT) {
-	     return false;
-	   }else {
-	     return true;
-	   }
-	 }
+             return false;
+           }else {
+             return true;
+           }
+         }
 
-	 return false;
+         return false;
 
 }
 

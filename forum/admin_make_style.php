@@ -58,7 +58,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     chmod("./styles/$stylename", 0777);
 
                     $fp = fopen("./styles/$stylename/desc.txt", "w");
-                    fwrite($fp, isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : $stylename);
+                    fwrite($fp, (isset($HTTP_POST_VARS['styledesc']) && strlen($HTTP_POST_VARS['styledesc']) > 0) ? $HTTP_POST_VARS['styledesc'] : $stylename);
                     fclose($fp);
 
                     $stylesheet = implode('', file('./styles/make_style.css'));
@@ -419,7 +419,7 @@ echo "</div>\n";
             <div align="center">
               <table width="96%" border="0">
                 <tr>
-                  <td><p><img src="./images/folder.png" />&nbsp;General: Welcome&nbsp;<img src="./images/high_interest.png" height="15" ></p></td>
+                  <td style="color: #<?php echo contrastFont($elements[body]); ?>"><p style="color: #<?php echo contrastFont($elements[body]); ?>"><img src="./images/folder.png" />&nbsp;General: Welcome&nbsp;<img src="./images/high_interest.png" height="15" ></p></td>
                 </tr>
               </table>
             </div>
@@ -437,7 +437,7 @@ echo "</div>\n";
                       <tr>
                         <td width="1%" align="right" nowrap="nowrap"><span class="posttofromlabel" style="color: #<?php echo contrastFont($elements[threads]); ?>">&nbsp;To:&nbsp;</span></td>
                         <td nowrap="nowrap" width="98%"><span class="posttofrom" style="color: #<?php echo contrastFont($elements[threads]); ?>">ALL</span></td>
-                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements[threads]); ?>">1 of 1&nbsp;</span></td>
+                        <td align="right" nowrap="nowrap"><span class="postinfo" style="color: #<?php echo contrastFont($elements[threads]); ?>">1 of 2&nbsp;</span></td>
                       </tr>
                     </table>
                   </td>
@@ -446,10 +446,10 @@ echo "</div>\n";
                   <td>
                     <table width="100%">
                       <tr align="right">
-                        <td colspan="3"><span class="postnumber"><a href="http://mattbeale.plus.com/forum/?msg=1.2" target="_top">1.2</a> in reply to <a href="/forum/messages.php?msg=1.1" target="_self">1.1</a>&nbsp;</span></td>
+                        <td colspan="3"><span class="postnumber" style="color: #<?php echo contrastFont($elements[box]); ?>"><a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">1.1</a> in reply to <a href="#" style="color: #<?php echo contrastFont($elements[box]); ?>">1.2</a>&nbsp;</span></td>
                       </tr>
                       <tr>
-                        <td class="postbody">Message Preview</td>
+                        <td class="postbody" style="color: #<?php echo contrastFont($elements[box]); ?>">Message Preview</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
@@ -460,10 +460,10 @@ echo "</div>\n";
                       <tr>
                         <td align="center">
                           <span class="postresponse">
-                            <img src="./images/post.png" height="15" border="0" />&nbsp;<a href="#">Reply</a>&nbsp;&nbsp;
-                            <img src="./images/delete.png" height="15" border="0" />&nbsp;<a href="#">Delete</a>&nbsp;&nbsp;
-                            <img src="./images/edit.png" height="15" border="0" />&nbsp;<a href="#">Edit</a>&nbsp;&nbsp;
-                            <img src="./images/admintool.png" height="15" border="0" />&nbsp;<a href="#">Privileges</a>
+                            <img src="./images/post.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Reply</a>&nbsp;&nbsp;
+                            <img src="./images/delete.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Delete</a>&nbsp;&nbsp;
+                            <img src="./images/edit.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Edit</a>&nbsp;&nbsp;
+                            <img src="./images/admintool.png" height="15" border="0" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">Privileges</a>
                           </span>
                         </td>
                       </tr>
@@ -477,7 +477,7 @@ echo "</div>\n";
             <table width="96%" class="messagefoot" style="background-color: #<?php echo $elements[threads]; ?>; color: #<?php echo contrastFont($elements[threads]); ?>">
               <tr>
                 <td align="center">
-                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements[threads]); ?>">Show messages: &nbsp;1-20 &nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">21-22</a></p>
+                  <p align="center" class="smalltext" style="color: #<?php echo contrastFont($elements[threads]); ?>">Show messages: &nbsp;1 &nbsp;<a href="#" style="color: #<?php echo contrastFont($elements[threads]); ?>">2</a></p>
                   <p align="center"></p>
                   <form name="rate_interest" target="_self" action="" method="POST">
                     Rate my interest:

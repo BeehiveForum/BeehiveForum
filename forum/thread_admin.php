@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.31 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.32 2004-02-29 09:10:28 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -65,8 +65,7 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
     if (perm_is_moderator()) {
     
         thread_change_title($tid, $name);
-        $post_content = message_get_content($tid, 1);
-        post_update($tid, 1, $post_content);
+        post_add_edit_text($tid, 1);
         admin_addlog(0, 0, $tid, 0, 0, 0, 21);
     
     }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID') && $threaddata['ADMIN_LOCK'] == 0) {
@@ -74,8 +73,7 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
         if (($allow_post_editing && $post_edit_time == 0) || ((time() - $threaddata['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS))) {
         
             thread_change_title($tid, $name);
-            $post_content = message_get_content($tid, 1);
-            post_update($tid, 1, $post_content);            
+            post_add_edit_text($tid, 1);
             admin_addlog(0, 0, $tid, 0, 0, 0, 21);
         }
     }

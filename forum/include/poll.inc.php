@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.86 2004-02-27 00:24:13 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.87 2004-02-29 09:10:29 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -141,13 +141,6 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
       }
 
     }
-    
-    // Flag the edit in the POST table
-    
-    $sql = "UPDATE ". forum_table("POST"). " SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
-    $sql.= "WHERE TID = '$tid' AND PID = 1";
-
-    $result = db_query($sql, $db_poll_edit);
 }
 
 function poll_get($tid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.83 2004-02-27 00:24:11 decoyduck Exp $ */
+/* $Id: edit.php,v 1.84 2004-02-29 09:10:28 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -379,6 +379,8 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         if ($updated) {
         
+            post_add_edit_text($tid, $pid);
+            
             if (isset($HTTP_POST_VARS['aid']) && isset($attachments_enabled) && $attachments_enabled) {
                 if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
             }

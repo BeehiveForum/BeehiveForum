@@ -38,6 +38,12 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
       $folders = "THREAD.FID in (". threads_get_available_folders(). ")";
   }
 
+  // Default to 3 for minimum word length
+
+  if (!isset($search_min_word_length)) {
+      $search_min_word_length = 3;
+  }
+
   $daterange = search_date_range($argarray['date_from'], $argarray['date_to']);
   $fromtouser = "";
 

@@ -21,8 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.67 2005-03-28 23:45:07 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.68 2005-04-03 16:08:58 rowan_hill Exp $ */
 
+/**
+* Displays and handles the Forum Settings page
+* 
+* Generates the forms relating to the local forum settings, and handles their sumbission.
+* For global options see admin_default_forum_settings.php
+*
+* @see admin_default_forum_settings.php
+*/
+
+/**
+*/
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 

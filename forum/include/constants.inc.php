@@ -21,10 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.60 2005-04-01 13:17:12 rowan_hill Exp $ */
+/* $Id: constants.inc.php,v 1.61 2005-04-03 16:09:00 rowan_hill Exp $ */
 
 /**
-* Constants used throughout Beehive. It may well be easier to view the actual file - the layout's better.
+* Constants used throughout Beehive.
+*
+* It may well be easier to view the actual file - the layout's better.
 */
 
 /**
@@ -65,6 +67,7 @@ define("USER_PERM_GUEST_ACCESS", 8192);
 define("USER_PERM_POST_APPROVAL", 16384);
 define("USER_PERM_LINKS_MODERATE", 32768);
 define("USER_PERM_EMAIL_CONFIRM", 65536);
+define("USER_PERM_CAN_IGNORE_ADMIN", 131072);
 
 // OLD VALUES - PRE-BH-0.5 - DO NOT USE!
 

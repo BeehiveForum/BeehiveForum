@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.254 2005-04-01 13:17:12 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.255 2005-04-03 16:09:00 rowan_hill Exp $ */
 
 // International English language file
 
@@ -422,6 +422,8 @@ $lang['usercanmoderatelinkssection'] = "User can moderate Links section";
 
 $lang['userisbanned'] = "User is banned";
 $lang['useriswormed'] = "User is wormed";
+
+$lang['usercanignoreadmin'] = "User can ignore administrators";
 
 $lang['groupcanaccessadmintools'] = "Group can access admin tools";
 $lang['groupisbanned'] = "Group is banned";
@@ -1365,6 +1367,7 @@ $lang['displaysig_exp'] = "User's signature is displayed on their posts.";
 $lang['hidesig_exp'] = "User's signature is hidden on their posts.";
 $lang['globallyignored'] = "Globally ignored";
 $lang['globallyignoredsig_exp'] = "No signatures are displayed.";
+$lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator.";
 
 // Search (search.php) -------------------------------------------------
 

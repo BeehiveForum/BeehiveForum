@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.70 2005-03-29 21:48:44 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.71 2005-04-03 16:09:00 rowan_hill Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -489,6 +489,13 @@ function perm_get_global_user_permissions($uid)
     return $global_user_perm;
 }
 
+/**
+* Counts the number of users with global access to admin and forum management tools
+*
+* @return integer
+* @see perm_get_admin_tools_perm_count()
+* @see perm_get_forum_tools_perm_count()
+*/
 function perm_get_global_permissions_count()
 {
     $db_perm_get_global_permissions = db_connect();
@@ -512,6 +519,13 @@ function perm_get_global_permissions_count()
     return $global_perm_count;
 }
 
+/**
+* Counts the number of users with global access to admin tools
+*
+* @return integer
+* @see perm_get_global_permissions_count()
+* @see perm_get_forum_tools_perm_count()
+*/
 function perm_get_admin_tools_perm_count()
 {
     $db_perm_get_global_permissions = db_connect();
@@ -533,6 +547,13 @@ function perm_get_admin_tools_perm_count()
     return $global_perm_count;
 }
 
+/**
+* Counts the number of users with global access to forum management tools
+*
+* @return integer
+* @see perm_get_global_permissions_count()
+* @see perm_get_admin_tools_perm_count()
+*/
 function perm_get_forum_tools_perm_count()
 {
     $db_perm_get_global_permissions = db_connect();
@@ -759,6 +780,16 @@ function perm_remove_user_from_group($uid, $gid)
     return false;
 }
 
+/**
+* Fetches a user's permissions
+*
+* Retrieves the permissions of the user with UID = $uid, stored using bitwise logic in 
+* a 32-bit integer. See config.inc.php for the user permissions constants
+*
+* @see config.inc.php
+* @return integer
+* @param integer $uid UID of user to retrieve permissions for.
+*/
 function perm_get_user_permissions($uid)
 {
     $db_perm_get_user_permissions = db_connect();
@@ -1098,25 +1129,25 @@ function perm_user_apply_email_confirmation($uid)
         $sql = "UPDATE GROUP_PERMS SET PERM = PERM & $perm ";
         $sql.= "WHERE GID = $gid";
 
-        return db_query($sql, $db_perm_user_cancel_email_confirmation);
+        return db_query($sql, $db_perm_user_apply_email_confirmation);
 
     }else {
 
         $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES (0, 1)";
 
-        if ($result = db_query($sql, $db_perm_update_user_permissions)) {
+        if ($result = db_query($sql, $db_perm_user_apply_email_confirmation)) {
 
-            $new_gid = db_insert_id($db_perm_update_user_permissions);
+            $new_gid = db_insert_id($db_perm_user_apply_email_confirmation);
 
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
             $sql.= "VALUES ('$new_gid', 0, '$perm', '0')";
 
-            $result = db_query($sql, $db_perm_update_user_permissions);
+            $result = db_query($sql, $db_perm_user_apply_email_confirmation);
 
             $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$new_gid', '$uid')";
 
-            $result = db_query($sql, $db_perm_update_user_permissions);
+            $result = db_query($sql, $db_perm_user_apply_email_confirmation);
 
             return true;
         }

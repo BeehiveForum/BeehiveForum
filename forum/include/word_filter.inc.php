@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.17 2004-06-10 16:35:33 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.18 2004-06-12 12:15:52 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -32,8 +32,6 @@ include_once("./include/session.inc.php");
 
 function load_wordfilter()
 {
-    if (bh_session_get_value('USE_WORD_FILTER') != "Y") return array();
-
     $db_load_wordfilter = db_connect();
 
     $uid = bh_session_get_value('UID');
@@ -44,9 +42,11 @@ function load_wordfilter()
 
     // Should we include the admin filters?
 
-    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('admin_force_word_filter', 'Y', false)) {
+    if ((bh_session_get_value('USE_ADMIN_FILTER') == 'Y' && bh_session_get_value('USE_WORD_FILTER') != "Y") || forum_get_setting('admin_force_word_filter', 'Y', false)) {
 
-        $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
+        $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
+        $sql.= "WHERE UID = 0 LIMIT 0, 20";
+
         $result = db_query($sql, $db_load_wordfilter);
 
         while ($row = db_fetch_array($result)) {

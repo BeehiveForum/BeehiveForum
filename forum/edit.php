@@ -102,10 +102,10 @@ html_draw_top_script();
 
 if (isset($HTTP_POST_VARS['preview'])) {
 
-    $to_uid = $HTTP_POST_VARS['t_to_uid'];
-    $from_uid = $HTTP_POST_VARS['t_from_uid'];
+    $to_uid    = $HTTP_POST_VARS['t_to_uid'];
+    $from_uid  = $HTTP_POST_VARS['t_from_uid'];
 
-    $edit_msg = $HTTP_POST_VARS['t_msg'];
+    $edit_msg  = $HTTP_POST_VARS['t_msg'];
     $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
 
     $preview_message = messages_get($tid, $pid, 1);
@@ -127,7 +127,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
 
-        $preview_message['CONTENT'] .= "<div class=\"sig\">".$t_sig."</div>";
+        $preview_message['CONTENT'].= "<div class=\"sig\">".$t_sig."</div>";
 
         if ($to_uid == 0) {
 
@@ -175,7 +175,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         if ($updated) {
 
-            admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
+            if (perm_is_moderator()) admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
 
             echo "<div align=\"center\">";
             echo "<p>Edit Applied to Message $tid.$pid</p>";

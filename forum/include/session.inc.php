@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.128 2004-10-06 20:21:53 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.129 2004-10-07 18:18:42 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -118,7 +118,7 @@ function bh_session_check($add_guest_sess = true)
 
                 if ($user_sess['FID'] != $fid) {
 
-                    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash' ";
+                    $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE HASH = '$user_hash' ";
                     $sql.= "AND FID = '$fid'";
 
                     $result = db_query($sql, $db_bh_session_check);
@@ -136,7 +136,7 @@ function bh_session_check($add_guest_sess = true)
 
                     if (db_num_rows($result) > 0) {
 
-                        $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
+                        $sql = "UPDATE LOW_PRIORITY VISITOR_LOG SET LAST_LOGON = NOW() ";
                         $sql.= "WHERE UID = {$user_sess['UID']} AND FID = '$fid'";
 
                         $result = db_query($sql, $db_bh_session_check);
@@ -157,7 +157,7 @@ function bh_session_check($add_guest_sess = true)
 
                     // Update the session for the current forum
 
-                    $sql = "UPDATE SESSIONS SET IPADDRESS = '$ipaddress', ";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
                     $sql.= "TIME = NOW() WHERE HASH = '$user_hash' ";
                     $sql.= "AND FID = '$fid'";
 
@@ -173,7 +173,7 @@ function bh_session_check($add_guest_sess = true)
 
                     // Update the main user session
 
-                    $sql = "UPDATE SESSIONS SET IPADDRESS = '$ipaddress', ";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
                     $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
 
                     $result = db_query($sql, $db_bh_session_check);
@@ -182,9 +182,7 @@ function bh_session_check($add_guest_sess = true)
 
             // Delete expires sessions
 
-            $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
-
-            $sql = "DELETE FROM SESSIONS WHERE ";
+            $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
             $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
             db_query($sql, $db_bh_session_check);
@@ -241,13 +239,13 @@ function bh_session_check($add_guest_sess = true)
 
                 if (isset($fid) && is_numeric($fid)) {
 
-                    $sql = "UPDATE SESSIONS SET TIME = NOW() ";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW() ";
                     $sql.= "WHERE IPADDRESS = '$ipaddress' ";
                     $sql.= "AND FID = '$fid'";
 
                 }else {
 
-                    $sql = "UPDATE SESSIONS SET TIME = NOW() ";
+                    $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW() ";
                     $sql.= "WHERE IPADDRESS = '$ipaddress'";
                 }
 
@@ -315,7 +313,7 @@ function bh_session_init($uid)
 
     // Delete expires sessions
 
-    $sql = "DELETE FROM SESSIONS WHERE ";
+    $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
     $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
     db_query($sql, $db_bh_session_init);
@@ -338,7 +336,7 @@ function bh_session_init($uid)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
+        $sql = "UPDATE LOW_PRIORITY VISITOR_LOG SET LAST_LOGON = NOW() ";
         $sql.= "WHERE UID = $uid AND FID = '$fid'";
 
         $result = db_query($sql, $db_bh_session_init);

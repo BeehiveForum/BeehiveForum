@@ -510,7 +510,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
 
     unset($navbits);
 
-    echo "<p align=\"center\" class=\"smalltext\">" . $html . "</p>\n";
+    echo "<p align=\"center\" class=\"messagefoot\">" . $html . "</p>\n";
 }
 
 function mess_nav_range($from,$to)
@@ -530,7 +530,7 @@ function messages_interest_form($tid,$pid)
     $chk[$interest+1] = " checked";
     global $HTTP_SERVER_VARS;
 
-    echo "<p align=\"center\">\n";
+    echo "<p align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
@@ -546,7 +546,7 @@ function messages_admin_form($tid, $pid, $title, $closed = false)
 {
     global $HTTP_SERVER_VARS;
 
-    echo "<p align=\"center\">\n";
+    echo "<p align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.72 2004-04-28 14:48:22 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.73 2004-04-28 18:36:15 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -1033,7 +1033,7 @@ $lang['forthcomingbirthdays'] = "Prochains Anniversaires";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
-$lang['mustusebh401startmain'] = "You must be using the BeehiveForum start_main.php in order to edit your start page here";
+$lang['uploadstartpage'] = "Upload Start Page (*.txt, *.php, *.htm)";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.3 2004-04-28 14:48:22 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.4 2004-04-28 18:36:15 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -1046,7 +1046,7 @@ $lang['forthcomingbirthdays'] = "Fizorthcizoming Bizirthdizays";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
-$lang['mustusebh401startmain'] = "You must be using the BeehiveForum start_main.php in order to edit your start page here";
+$lang['uploadstartpage'] = "Upload Start Page (*.txt, *.php, *.htm)";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

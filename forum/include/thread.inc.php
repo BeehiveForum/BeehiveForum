@@ -82,17 +82,24 @@ function thread_get_interest($tid)
 	return $return;
 }
 
-function thread_set_interest($tid,$interest,$new = false)
+function thread_set_interest($tid, $interest, $new = false)
 {
     global $HTTP_COOKIE_VARS;
+    
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    
     if($new){
-    	$sql = "insert into USER_THREAD (UID,TID,INTEREST) values ($uid,$tid,$interest)";
+    
+    	$sql = "insert into ". forum_table("USER_THREAD"). " (UID, TID, INTEREST) values ($uid, $tid, $interest)";
+    	
     } else {
-        $sql = "update USER_THREAD set INTEREST = $interest where UID = $uid and TID = $tid";
+    
+        $sql = "update ". forum_table("USER_THREAD"). " set INTEREST = $interest where UID = $uid and TID = $tid";
+        
     }
-	$db_thread_set_interest = db_connect();
-	db_query($sql, $db_thread_set_interest);
+    
+    $db_thread_set_interest = db_connect();
+    db_query($sql, $db_thread_set_interest);
 
 }
 

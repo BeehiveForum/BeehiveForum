@@ -29,6 +29,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
 
 if(isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest'])){
+
     $tid = $HTTP_POST_VARS['tid'];
     $interest = $HTTP_POST_VARS['interest'];
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];

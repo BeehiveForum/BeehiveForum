@@ -70,7 +70,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
   if ($HTTP_POST_VARS['submit'] == 'Del') {
 
-    unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
+    @unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
     delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
     
   }elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
@@ -117,7 +117,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 ?>
 <h1>Upload a file for attachment to the message</h1>
-<form enctype="multipart/form-data" method="post" action="attachments.php?aid=<?php echo $HTTP_GET_VARS['aid']; ?>">
+<form name="f_attach" enctype="multipart/form-data" method="post" action="attachments.php?aid=<?php echo $HTTP_GET_VARS['aid']; ?>">
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
     <td width="300" class="postbody" valign="top">1. Enter filename to upload :</td>
@@ -128,7 +128,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody">2. Now press <?php echo form_submit('submit', 'Upload'); ?></td>
+    <td class="postbody">2. Now press <?php echo form_submit('submit', 'Upload', 'onclick="this.value = \'wait..\'"'); ?></td>
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>

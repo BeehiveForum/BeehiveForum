@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.13 2003-11-02 16:18:33 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.14 2003-11-04 19:11:26 decoyduck Exp $ */
 
 // header.inc.php:
 // Functions for manipulating the HTTP header
@@ -34,7 +34,7 @@ function header_no_cache()
 
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
-    //header("Content-Type: text/html; charset={$lang['_charset']}"); // Internet Explorer Bug
+    header("Content-Type: text/html; charset={$lang['_charset']}"); // Internet Explorer Bug
     header("Cache-Control: no-store, no-cache, must-revalidate");   // HTTP/1.1
     header("Cache-Control: post-check=0, pre-check=0", false);
     header("Pragma: no-cache");

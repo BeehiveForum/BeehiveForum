@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.9 2004-11-28 22:57:03 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.10 2004-11-28 23:52:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,43 +111,6 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-// Form content
-
-if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
-
-    $t_content = trim(_stripslashes($_POST['content']));
-
-}else if (isset($_GET['content']) && strlen(trim(_stripslashes($_GET['content']))) > 0) {
-
-    $t_content = trim(_stripslashes($_GET['content']));
-
-}else {
-
-    html_draw_top();
-
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>No text specified to spell check</h2>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
-// Ignored words
-
-if (isset($_POST['ignored_words']) && strlen(trim(_stripslashes($_POST['ignored_words']))) > 0) {
-    $t_ignored_words = trim(_stripslashes($_POST['ignored_words']));
-}else {
-    $t_ignored_words = "";
-}
-
-// Fetch the current word
-
-if (isset($_POST['current_word']) && is_numeric($_POST['current_word'])) {
-    $current_word = $_POST['current_word'];
-}else {
-    $current_word = -1;
-}
-
 // Form Object ID
 
 if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0) {
@@ -169,6 +132,48 @@ if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0
     exit;
 }
 
+// Form content
+
+if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
+
+    $t_content = trim(_stripslashes($_POST['content']));
+
+}else {
+
+    // Apache has a limit on the length an URL query can be so we need to
+    // send the content to be checked via POST or Javascript.
+
+    html_draw_top('dictionary.js', "onload=initialise_dictionary('$obj_id')");
+
+    echo "<h1>Dictionary</h1>\n";
+    echo "<h2>Initialising...</h2>\n";
+
+    echo "<form id=\"dictionary\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('obj_id', $obj_id), "\n";
+    echo "  ", form_input_hidden('content', ""), "\n";
+    echo "</form>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
+// Ignored words
+
+if (isset($_POST['ignored_words']) && strlen(trim(_stripslashes($_POST['ignored_words']))) > 0) {
+    $t_ignored_words = trim(_stripslashes($_POST['ignored_words']));
+}else {
+    $t_ignored_words = "";
+}
+
+// Fetch the current word
+
+if (isset($_POST['current_word']) && is_numeric($_POST['current_word'])) {
+    $current_word = $_POST['current_word'];
+}else {
+    $current_word = -1;
+}
+
 // Intialise the dictionary
 
 $dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_id);
@@ -177,7 +182,7 @@ $dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_i
 
 if (isset($_POST['cancel'])) {
 
-    html_draw_top('dictionary.js');
+    html_draw_top();
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -191,11 +196,11 @@ if (isset($_POST['cancel'])) {
 
 if (isset($_POST['ok'])) {
 
-    html_draw_top('dictionary.js');
+    html_draw_top();
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "  if (window.opener.updateFormObj) {\n";
-    echo "    window.opener.updateFormObj('$obj_id', '", rawurlencode($dictionary->get_content()), "');\n";
+    echo "  if (window.opener.updateContent) {\n";
+    echo "    window.opener.updateContent('$obj_id', '", rawurlencode($dictionary->get_content()), "');\n";
     echo "  }\n";
     echo "  window.close();\n";
     echo "</script>\n";
@@ -299,7 +304,7 @@ echo "                <tr>\n";
 echo "                  <td>\n";
 echo "                    <table border=\"0\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"spellcheckbodytext\" valign=\"top\">", $dictionary->pretty_print_content(), "</td>\n";
+echo "                        <td class=\"spellcheckbodytext\" valign=\"top\"><div id=\"pretty_content\" style=\"height: 200px; overflow: auto\">", $dictionary->pretty_print_content(), "</div></td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

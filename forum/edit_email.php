@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.39 2005-01-19 21:49:28 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.40 2005-01-30 14:10:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -136,9 +136,9 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['anon_logon']) && $_POST['anon_logon'] == "Y") {
-        $user_prefs['ANON_LOGON'] = 1;
+        $user_prefs['ANON_LOGON'] = "Y";
     }else {
-        $user_prefs['ANON_LOGON'] = 0;
+        $user_prefs['ANON_LOGON'] = "N";
     }
 
     if (isset($_POST['anon_logon_global'])) {
@@ -258,7 +258,7 @@ echo "                  <td colspan=\"2\">", form_checkbox("allow_pm", "Y", $lan
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_pm_global","Y",$lang['setforallforums'],$user_prefs['ALLOW_PM_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
+echo "                  <td colspan=\"2\">", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("anon_logon_global","Y",$lang['setforallforums'],$user_prefs['ANON_LOGON_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.101 2005-01-26 21:33:17 decoyduck Exp $ */
+/* $Id: register.php,v 1.102 2005-01-30 14:10:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -383,8 +383,8 @@ if (isset($_POST['submit'])) {
     $new_user['VIEW_SIGS'] = "Y";
     $new_user['START_PAGE'] = 0;
     $new_user['DOB_DISPLAY'] = 2;
-    $new_user['ANON_LOGON'] = 0;
-    $new_user['SHOW_STATS'] = 1;
+    $new_user['ANON_LOGON'] = "N";
+    $new_user['SHOW_STATS'] = "Y";
     $new_user['IMAGES_TO_LINKS'] = "N";
     $new_user['USE_WORD_FILTER'] = "N";
     $new_user['USE_ADMIN_FILTER'] = "N";

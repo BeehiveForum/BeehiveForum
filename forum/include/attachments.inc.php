@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.81 2005-01-30 01:17:22 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.82 2005-01-30 14:10:23 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -477,10 +477,10 @@ function attachment_embed_check($content)
     return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/ ", $content_check);
 }
 
-function attachment_make_link($attachment, $show_thumb = true)
+function attachment_make_link($attachment, $show_thumbs = true)
 {
     if (!is_array($attachment)) return false;
-    if (!is_bool($show_thumb)) $show_thumb = true;
+    if (!is_bool($show_thumbs)) $show_thumbs = true;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -493,6 +493,8 @@ function attachment_make_link($attachment, $show_thumb = true)
     $webtag = get_webtag($webtag_search);
 
     $lang = load_language_file();
+
+    if (bh_session_get_value('SHOW_THUMBS') == "N") $show_thumbs = false;
 
     $attachment_path = "$attachment_dir/";
     $attachment_path.= md5($attachment['aid']);
@@ -537,11 +539,11 @@ function attachment_make_link($attachment, $show_thumb = true)
         $title.= "{$lang['downloaded']}: {$attachment['downloads']} {$lang['times']}";
     }
 
-    if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumb) {
+    if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
 
-        $attachment_link = "<a href=\"$href\" title=\"$title\" ";
+        $attachment_link = "<span class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
         $attachment_link.= "target=\"_blank\"><img src=\"$attachment_dir/{$attachment['hash']}.thumb\"";
-        $attachment_link.= "border=\"0\" alt=\"$title\" title=\"$title\" /></a>";
+        $attachment_link.= "border=\"0\" alt=\"$title\" title=\"$title\" /></a></span>";
 
     }else {
 
@@ -569,7 +571,7 @@ function attachment_create_thumb($filepath)
                                       2 => 'imagejpeg',
                                       3 => 'imagepng');
 
-    if (@$image_info = getimagesize($filepath)) {
+    if (file_exists($filepath) && @$image_info = getimagesize($filepath)) {
 
         if (function_exists($required_read_functions[$image_info[2]])
             && function_exists($required_write_functions[$image_info[2]])

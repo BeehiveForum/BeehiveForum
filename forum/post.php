@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.178 2004-04-14 15:26:31 tribalonline Exp $ */
+/* $Id: post.php,v 1.179 2004-04-14 21:04:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -273,17 +273,19 @@ if (!$newthread) {
 
     if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
 
-        html_draw_top();
+        /*html_draw_top();
 
         echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
         echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
 
         echo "<table class=\"posthead\" width=\"720\">\n";
         echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
-        echo "<tr><td>\n";
+        echo "<tr><td>\n"; */
 
-        echo "<h2>".$lang['messagehasbeendeleted']."</h2>\n";
-        echo "</td></tr>\n";
+        $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
+	$valid = false;
+
+        /*echo "</td></tr>\n";
 
         echo "<tr><td align=\"center\">\n";
         echo form_submit('cancel', $lang['cancel']);
@@ -291,8 +293,7 @@ if (!$newthread) {
         echo "</table></form>\n";
 
         html_draw_bottom();
-        exit;
-
+        exit; */
     }
 }
 

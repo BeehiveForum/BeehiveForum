@@ -39,7 +39,7 @@ require_once("./include/user.inc.php");
 require_once("./include/perm.inc.php");
 require_once("./include/poll.inc.php");
 
-if(!bh_session_check()){
+if (!bh_session_check()) {
 
     if (isset($HTTP_GET_VARS['msg'])) {
       $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
@@ -53,15 +53,14 @@ if(!bh_session_check()){
 
 // Check that required variables are set
 // default to display most recent discussion for user
-if (!isset($HTTP_GET_VARS['msg'])) {
-    if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-        $last_read = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
-	$msg = $last_read[0];
-    } else {
+if (isset($HTTP_GET_VARS['msg'])) {
+    $msg = $HTTP_GET_VARS['msg'];
+}else {
+    if (isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
+        $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    }else {
         $msg = "1.1";
     }
-} else {
-    $msg = $HTTP_GET_VARS['msg'];
 }
 
 if (isset($HTTP_GET_VARS['fontsize'])) {

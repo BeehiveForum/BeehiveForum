@@ -40,11 +40,9 @@ if(isset($HTTP_GET_VARS['final_uri'])){
 
 if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
     $final_uri = './discussion.php';
-}else {
-    $final_uri = '';
 }
 
-if(bh_session_check()) {
+if (bh_session_check()) {
 
     html_draw_top();
     echo "<div align=\"center\">\n";
@@ -403,7 +401,7 @@ if (user_guest_enabled() && $guest_account_enabled) {
 
 }
 
-echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php?final_uri=" . urlencode($final_uri). "\" target=\"_self\">Register now.</a></p>\n";
+echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Register now.</a></p>\n";
 echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php\" target=\"_self\">Forgotten your password?</a></p>\n";
 echo "</div>\n";
 

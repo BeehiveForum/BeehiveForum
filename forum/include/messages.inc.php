@@ -637,7 +637,7 @@ function messages_get_most_recent($uid)
         }
     }
 
-    return array($return, $fa);
+    return $return;
 }
 
 function messages_fontsize_form($tid, $pid)

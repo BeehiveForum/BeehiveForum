@@ -46,6 +46,8 @@ require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/edit.inc.php");
+require_once("./include/ip.inc.php");
 
 if(isset($HTTP_POST_VARS['cancel'])){
 	header_redirect($HTTP_POST_VARS['ret']);
@@ -94,7 +96,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
   }else {
 
-    $new_status = 0;
+    $new_status = $user['STATUS'];
 
     if (isset($HTTP_POST_VARS['t_worker'])) {
       $new_status = $HTTP_POST_VARS['t_worker'];
@@ -151,26 +153,25 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
     
-      $sql = "select TID, PID from ". forum_table("POST"). " where FROM_UID = '$uid'";
+      $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
       $result = db_query($sql, $db);
       
-      if (db_num_rows($result)) {
-      
-        while(list($tid, $pid) = db_fetch_array($result)) {
-               
-          $sql = "update low_priority ". forum_table("POST_CONTENT"). " set CONTENT = NULL ";
-          $sql.= "where POST_CONTENT.TID = '$tid' and POST_CONTENT.PID = '$pid'";
-                  
-          $result2 = db_query($sql, $db);
-          
-          if (thread_is_poll($tid) && $pid == 1) {
-  
-            $sql = "update " . forum_table("THREAD") . " set POLL_FLAG = 'N' where TID = $tid";
-            $result2 = db_query($sql, $db);
+      while (list($tid, $pid) = db_fetch_array($result)) {
 
-          }
-        }       
+        post_delete($tid, $pid);
+
       }
+
+    }
+
+    if (isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
+
+      ban_ip($HTTP_POST_VARS['t_ip_address']);
+
+    }elseif (isset($HTTP_POST_VARS['t_ip_banned']) && !isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
+
+      unban_ip($HTTP_POST_VARS['t_ip_address']);
+
     }
   }
 }
@@ -190,6 +191,15 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "<tr><td><h2>WARNING</h2></td></tr>\n";
   echo "<tr><td>Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.</td></tr>\n";
   echo "<tr><td>", form_checkbox("t_confirm_delete_posts", 1, "Confirm", false), "</td></tr>\n";
+  echo "</table>\n";
+  echo form_input_hidden("uid", $uid);
+  echo form_input_hidden("ret", $ret);
+  echo "</td></tr></table>\n";
+
+}else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
+
+  echo "<td class=\"subhead\">User Status: ".$user['LOGON']."</td></tr>\n";
+  echo "<tr><td>Posts were successfully deleted.</td></tr>\n";
   echo "</table>\n";
   echo form_input_hidden("uid", $uid);
   echo form_input_hidden("ret", $ret);
@@ -232,7 +242,13 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   }
 
   echo "<tr><td>&nbsp;</td></tr>\n";
-  echo "<tr><td class=\"subhead\">Possible Aliases:</td></tr>\n";
+  echo "<tr><td class=\"subhead\">Possible Aliases";
+  
+  if (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
+    echo "(IP: ", $user['LOGON_FROM'], ") ";
+  }
+
+  echo ":</td></tr>\n";
 
   $sql = "select UID, LOGON from ". forum_table("USER"). " where LOGON_FROM <> '' and LOGON_FROM = '". $user['LOGON_FROM']. "' and LOGON <> '". $user['LOGON']. "'";
   $result = db_query($sql, $db);
@@ -245,6 +261,26 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
   }else {
     echo "<tr><td>No matches</td></tr>\n";
+  }
+
+  echo "<tr><td>&nbsp;</td></tr>\n";
+
+  if (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
+
+    echo "<tr><td>";
+    echo form_checkbox("t_ban_ipaddress", 1, "Ban this IP address", ip_is_banned($user['LOGON_FROM']));
+    echo form_input_hidden("t_ip_address", $user['LOGON_FROM']);
+
+    if (ip_is_banned($user['LOGON_FROM'])) {
+      echo form_input_hidden("t_ip_banned", 1);
+    }
+
+    echo "</td></tr>\n";
+
+  }else {
+
+    echo "<tr><td class=\"smalltext\">There is no IP address record for this account. User cannot be banned by IP.</td></tr>\n";
+
   }
 
   echo "<tr><td>&nbsp;</td></tr>\n";
@@ -328,7 +364,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 echo "<p>", form_submit("submit", "Submit"), "&nbsp;", form_submit("cancel", "Cancel"), "</p>\n";
 echo "</form>\n";
 
-if (!isset($HTTP_POST_VARS['t_delete_posts'])) {
+if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
   echo "<p>&nbsp;</p>";
   echo "<table width=\"50%\" border=\"0\"><tr><td>";

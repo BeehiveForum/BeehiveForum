@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.140 2004-05-25 15:40:11 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.141 2004-05-25 22:09:12 decoyduck Exp $ */
 
 // International English language file
 
@@ -375,6 +375,9 @@ $lang['deletegroups'] = "Delete Groups";
 $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";
 $lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
+
+$lang['successfullyaddedgroup'] = "Successfully added group";
+$lang['successfullydeletedgroup'] = "Successfully deleted group";
 
 $lang['usercanaccessadmintools'] = "User can access admin tools";
 $lang['userisbanned'] = "User is banned";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.32 2004-05-25 13:49:52 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.33 2004-05-25 22:09:11 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -358,28 +358,35 @@ function perm_get_group_folder_perms($gid, $fid)
 
     if (perm_is_group($gid)) {
 
-        $sql = "SELECT GID, BIT_OR(PERM) FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-        $sql.= "WHERE GID = '$gid' AND FID = '$fid'";
+        $sql = "SELECT GROUP_PERMS.GID, BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS, ";
+        $sql.= "COUNT(GROUP_PERMS.PERM) AS GROUP_PERM_COUNT, ";
+        $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
+        $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+        $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+        $sql.= "ON (FOLDER_PERMS.GID = '$gid' AND FOLDER_PERMS.FID = '$fid') ";
+        $sql.= "WHERE GROUP_PERMS.GID = '$gid' AND GROUP_PERMS.FID = '$fid' ";
+        $sql.= "GROUP BY GROUP_PERMS.GID ";
 
         $result = db_query($sql, $db_perm_get_group_folder_perms);
 
-        if (db_num_rows($result) > 0) {
+        $row = db_fetch_array($result);
 
-            $row = db_fetch_array($result);
-            if (!is_null($row['PERM'])) return array('GID' => $row['GID'], 'STATUS' => $row['PERM']);
-        }
+        if ($row['GROUP_PERM_COUNT'] > 0) {
 
-        $sql = "SELECT PERM FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-        $result = db_query($sql, $db_perm_get_group_folder_perms);
+            return array('GID' => $row['GID'], 'STATUS' => $row['GROUP_PERMS']);
 
-        if (db_num_rows($result) > 0) {
+        }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
-            $row = db_fetch_array($result);
-            if (!is_null($row['PERM'])) return array('STATUS' => $row['PERM']);
+            return array('STATUS' => $row['FOLDER_PERMS']);
         }
     }
 
-    return array('STATUS' => 0);
+    $status = (double)USER_PERM_POST_READ | USER_PERM_POST_CREATE;
+    $status = (double)$status | USER_PERM_THREAD_CREATE | USER_PERM_POST_EDIT;
+    $status = (double)$status | USER_PERM_POST_DELETE | USER_PERM_POST_ATTACHMENTS;
+
+    return array('STATUS' => $status);
 }
 
 function perm_add_user_to_group($uid, $gid)

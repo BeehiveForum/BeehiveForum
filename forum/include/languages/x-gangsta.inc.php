@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.15 2004-05-25 15:40:12 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.16 2004-05-25 22:09:12 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -293,6 +293,9 @@ $lang['addremoveusers'] = "Add/Remove Users";
 $lang['addtogroup'] = "Add to group";
 $lang['nousersingroup'] = "There are no users in this group";
 $lang['deletegroups'] = "Delete Groups";
+
+$lang['successfullyaddedgroup'] = "Successfully added group";
+$lang['successfullydeletedgroup'] = "Successfully deleted group";
 
 $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";

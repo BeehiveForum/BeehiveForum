@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.12 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: lthread_list.php,v 1.13 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -318,6 +318,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     if ($thread['interest'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                     if ($thread['interest'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                     if ($thread['poll_flag'] == 'Y') echo "(P) ";
+                    if ($thread['sticky'] == 'Y') echo "(St) ";
                     if ($thread['relationship'] & USER_FRIEND) echo "(Fr) ";
                     echo $number." ";
                     echo $thread_time." ";

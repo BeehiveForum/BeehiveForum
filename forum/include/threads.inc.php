@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.81 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: threads.inc.php,v 1.82 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -74,7 +74,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
 
-    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
@@ -95,7 +95,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_all);
@@ -112,7 +112,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
@@ -135,7 +135,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
@@ -152,7 +152,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
@@ -173,7 +173,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "AND POST2.pid = 1 ";
     $sql .= "AND POST.tid = THREAD.tid AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread_to_me);
@@ -191,7 +191,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
     // for threads with unread messages, so the UID needs to be passed to the function
 
-    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
@@ -213,7 +213,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_by_days);
@@ -230,7 +230,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
 
     // Formulate query
 
-    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
@@ -251,7 +251,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_by_interest);
@@ -268,7 +268,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 
     // Formulate query
 
-    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
@@ -290,7 +290,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread_by_interest);
@@ -346,7 +346,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
 
     // Formulate query
 
-    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
@@ -368,7 +368,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_all);
@@ -385,7 +385,7 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
 
     // Formulate query
 
-    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
@@ -409,7 +409,7 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
@@ -425,7 +425,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 
     // Formulate query
 
-    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
@@ -440,7 +440,7 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_folder);
@@ -497,6 +497,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
             $lst[$i]['nickname'] = $thread['nickname'];
             $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
             $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
+            $lst[$i]['sticky'] = $thread['sticky'];
 
         }
 

@@ -354,6 +354,7 @@ CREATE TABLE THREAD (
   POLL_FLAG char(1) default NULL,
   MODIFIED datetime default NULL,
   CLOSED datetime default NULL,
+  STICKY varchar(1) default NULL,
   PRIMARY KEY  (TID),
   KEY ix_thread_fid (FID),
   KEY BY_UID (BY_UID)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.40 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: start_left.php,v 1.41 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -67,7 +67,7 @@ $fidlist = folder_get_available();
 $db = db_connect();
 
 // Get most recent threads
-$sql  = "SELECT T.TID, T.TITLE, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
+$sql  = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
 $sql .= "FROM ".forum_table("THREAD")." T ";
 $sql .= "LEFT JOIN ".forum_table("USER_THREAD")." UT ";
 $sql .= "ON (T.TID = UT.TID and UT.UID = $uid) ";
@@ -117,6 +117,7 @@ while($row = db_fetch_array($result)){
 
     if (isset($row['INTEREST']) && $row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
     if (isset($row['INTEREST']) && $row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
+    if (isset($row['STICKY']) && $row['STICKY'] == "Y") echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" align=\"middle\" />";
 
     echo "          </td>\n";
     echo "        </tr>\n";

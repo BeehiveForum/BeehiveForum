@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.103 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: post.php,v 1.104 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -193,8 +193,12 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
 
         if ($newthread) {
-
-            $t_tid = post_create_thread($t_fid, _stripslashes($t_threadtitle));
+            if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
+                $t_closed = isset($HTTP_POST_VARS['t_closed']) && $HTTP_POST_VARS['t_closed'] == "Y" ? true : false;
+                $t_sticky = isset($HTTP_POST_VARS['t_sticky']) && $HTTP_POST_VARS['t_sticky'] == "Y" ? "Y" : "N";
+            }
+               
+            $t_tid = post_create_thread($t_fid, _stripslashes($t_threadtitle), "N", $t_sticky, $t_closed);
             $t_rpid = 0;
 
         }else{
@@ -512,6 +516,11 @@ if ($attachments_enabled) {
 }
 
 echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML']);
+if ($newthread && (bh_session_get_value("STATUS") & PERM_CHECK_WORKER)) {
+    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_closed", "Y", $lang['closeforposting']);
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_checkbox("t_sticky", "Y", $lang['makesticky'])."</p>\n";
+}
+
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);

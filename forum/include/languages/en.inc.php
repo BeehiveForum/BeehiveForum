@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.21 2003-07-29 16:26:44 hodcroftcj Exp $ */
+/* $Id: en.inc.php,v 1.22 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // International English language file
 
@@ -125,6 +125,7 @@ $lang['or'] = "or";
 $lang['hours'] = "Hours";
 $lang['type'] = "Type";
 $lang['print'] = "Print";
+$lang['sticky'] = "Sticky";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -284,6 +285,8 @@ $lang['dropdown'] = "Drop Down";
 $lang['threadcount'] = "Thread Count";
 $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to seperate the fieldname and the values with a colon and each value should be seperated by semi-colons.";
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
+$lang['madethreadsticky'] = "Made Thread Sticky";
+$lang['madethreadnonsticky'] = "Made Thread Non-sticky";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 
@@ -513,6 +516,8 @@ $lang['editthepoll'] = "Edit the poll";
 $lang['torenamethisthread'] = "to rename this thread";
 $lang['reopenforposting'] = "Reopen for posting";
 $lang['closeforposting'] = "Close for posting";
+$lang['makesticky'] = "Make sticky";
+$lang['makenonsticky'] = "Make non-sticky";
 
 // Navigation strip (nav.php) ------------------------------------------
 

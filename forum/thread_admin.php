@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.17 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: thread_admin.php,v 1.18 2003-08-01 19:20:37 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -32,6 +32,8 @@ require_once("./include/header.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/thread.inc.php");
+require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 if (!bh_session_check()) {
 
@@ -43,6 +45,14 @@ if (!bh_session_check()) {
 
     header_redirect($uri);
 
+}
+
+if(!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER)){
+    html_draw_top();
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
+    exit;
 }
 
 if(isset($HTTP_POST_VARS['move'])){
@@ -89,6 +99,14 @@ if(isset($HTTP_POST_VARS['move'])){
 
         admin_addlog(0, 0, $tid, 0, 0, 0, 21);
 
+} else if(isset($HTTP_POST_VARS['sticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){
+        thread_set_sticky($HTTP_POST_VARS['t_tid'], true);
+        admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 25);
+        
+} else if(isset($HTTP_POST_VARS['nonsticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))){
+        thread_set_sticky($HTTP_POST_VARS['t_tid'], false);
+        admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 26);
+        
 }
 
 if(isset($HTTP_GET_VARS['ret'])){

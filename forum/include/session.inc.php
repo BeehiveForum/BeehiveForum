@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.60 2003-11-27 21:51:50 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.61 2003-11-29 11:37:09 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -55,7 +55,7 @@ function bh_session_check()
     // SESSIONS table in the database for user tracking purposes, e.g:
     // Active User list, etc.
 
-    if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
+    if (isset($HTTP_COOKIE_VARS['bh_sess_hash']) && is_md5($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
@@ -120,7 +120,7 @@ function bh_load_session()
 
     $db_bh_session_get_value = db_connect();
 
-    if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
+    if (isset($HTTP_COOKIE_VARS['bh_sess_hash']) && is_md5($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
@@ -190,7 +190,7 @@ function bh_session_init($uid)
     bh_setcookie('bh_sess_hash', $user_hash);
 }
 
-// Ends the session by deleting the cookie data and scrambling the MD5 check.
+// Ends the session by deleting the session data and and the cookie hash.
 
 function bh_session_end()
 {

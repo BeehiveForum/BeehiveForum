@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.16 2003-09-15 17:02:43 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.17 2003-09-15 17:41:47 decoyduck Exp $ */
 
 // Compresses the output of the PHP scripts to save bandwidth.
 
@@ -111,17 +111,21 @@ function bh_gzhandler($contents)
 
     // Change the comments to their literal string values
 
-    $new_contents = str_replace("<!-- bh_query_count //-->", $query_count, $contents);
-    $new_contents = str_replace("<!-- bh_script_time //-->", $script_time, $new_contents);
+    /* -- Removed due to problems
+
+    $contents = str_replace("<!-- bh_query_count //-->", $query_count, $contents);
+    $contents = str_replace("<!-- bh_script_time //-->", $script_time, $contents);
+
+    */
 
     // check that the encoding is possible.
     // and fetch the client's encoding method.
     if ($encoding = bh_check_gzip()) {
 
-        $new_contents = str_replace("<!-- bh_content_encoding //-->", "GZIP&nbsp;Enabled", $new_contents);
+        //$contents = str_replace("<!-- bh_content_encoding //-->", "GZIP&nbsp;Enabled", $contents);
 
         // do the compression
-        if ($gz_contents = gzcompress($new_contents, $gzip_compress_level)) {
+        if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
 
             // generate the error checking bits
             $size  = strlen($contents);
@@ -149,18 +153,18 @@ function bh_gzhandler($contents)
         }else {
 
             // compression failed so return uncompressed string
-            return $new_contents;
+            return $contents;
 
         }
 
     }else {
 
-        $new_contents = str_replace("<!-- bh_content_encoding //-->", "GZIP&nbsp;Disabled", $new_contents);
+        // $contents = str_replace("<!-- bh_content_encoding //-->", "GZIP&nbsp;Disabled", $contents);
 
         // return the text uncompressed as the client
         // doesn't support it or it has been disabled
         // in config.inc.php.
-        return $new_contents;
+        return $contents;
 
     }
 }

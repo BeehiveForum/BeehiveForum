@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.89 2003-09-03 18:00:18 decoyduck Exp $ */
+/* $Id: messages.php,v 1.90 2003-09-15 17:41:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -180,7 +180,7 @@ echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">";
 
-messages_top($foldertitle,_stripslashes($threaddata['TITLE']),$threaddata['INTEREST'],$threaddata['STICKY']);
+messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY']);
 
 echo "    </td>\n";
 

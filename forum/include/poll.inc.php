@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.129 2004-08-08 20:25:24 rowan_hill Exp $ */
+/* $Id: poll.inc.php,v 1.130 2004-08-08 21:41:27 rowan_hill Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -1363,13 +1363,13 @@ function poll_table_graph($tid)
     $group1_keys = array_keys($pollresults['GROUP_ID'], $groups[$group_keys[0]]);
     $group2_keys = array_keys($pollresults['GROUP_ID'], $groups[$group_keys[1]]);
 
-    $group1 = array();
+    $group1 = array();  //group1 contains the /values/ of every option in group 1
 
     for ($i = 0; $i < sizeof($group1_keys); $i++) {
         $group1[] = $pollresults['OPTION_ID'][$group1_keys[$i]];
     }
 
-    $group2 = array();
+    $group2 = array();  //group2 contains the /values/ of every option in group 2
 
     for ($i = 0; $i < sizeof($group2_keys); $i++) {
         $group2[] = $pollresults['OPTION_ID'][$group2_keys[$i]];
@@ -1377,7 +1377,7 @@ function poll_table_graph($tid)
 
     for ($rows = 0; $rows < sizeof($group1); $rows++) {
         for ($cols = 0; $cols < sizeof($group2); $cols++) {
-          $table[$rows][$cols] = 0;
+          $table[$rows][$cols] = 0;  //table is the tabular output in array form. Each bottom-layer element is a cell.
         }
     }
 
@@ -1389,26 +1389,38 @@ function poll_table_graph($tid)
 
           $uid_keys = array_keys($polltableresults['UID'], $polltableresults['UID'][$i]);
 
-          if (count($uid_keys) == 2) {
+          if (count($uid_keys) == 2) {  //"If voter cast two votes [i.e. one in each group]"
 
+
+	//$polltableresults['OPTION_ID'] contains the /values/ of the votes cast by users.
+	
               if (in_array($polltableresults['OPTION_ID'][$uid_keys[0]], $group1)) {
-                  $vote_group1 = $polltableresults['OPTION_ID'][$uid_keys[0]]-1;
-                  $vote_group2 = $polltableresults['OPTION_ID'][$uid_keys[1]]-1-sizeof($group1);
+              
+                  $vote_group1 = array_search($polltableresults['OPTION_ID'][$uid_keys[0]], $group1);  //$vote_groupX are the column/row reference to
+                  $vote_group2 = array_search($polltableresults['OPTION_ID'][$uid_keys[1]], $group2);  //a user's vote in each group
+                  
               } else {
-                  $vote_group1 = $polltableresults['OPTION_ID'][$uid_keys[1]]-1;
-                  $vote_group2 = $polltableresults['OPTION_ID'][$uid_keys[0]]-1-sizeof($group1);
+              
+                  $vote_group1 = array_search($polltableresults['OPTION_ID'][$uid_keys[1]], $group1);
+                  $vote_group2 = array_search($polltableresults['OPTION_ID'][$uid_keys[0]], $group2);
+                  
               }
 
               // vote_group1 now has user's vote's option_id in group1.
               // vote_group2 has user's vote's option_id in group2.
               // Shocking.
 
-              $table[$vote_group1][$vote_group2]++;
+              $table[$vote_group1][$vote_group2]++;  //add 1 to the cell voted for
           }
       }
 
       $poll_previous_uid = $polltableresults['UID'][$i];
     }
+    
+    echo "<pre>\n";
+    echo $polltableresults['OPTION_ID'][$uid_keys[0]];
+    print_r($group1);
+    echo "</pre>\n";
 
     unset($poll_previous_uid);
 

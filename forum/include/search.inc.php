@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.35 2003-09-04 15:53:43 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.36 2003-09-30 21:05:12 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -102,7 +102,7 @@ function search_execute($argarray, &$urlquery, &$error)
             $postcontent = "";
             foreach($keywords as $word) {
                 if (strlen($word) >= $search_min_word_length) {
-                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%<div class=\"sig\">%' AND ";
+                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' AND ";
                 }
             }
 
@@ -154,7 +154,7 @@ function search_execute($argarray, &$urlquery, &$error)
             $postcontent = "";
             foreach($keywords as $word) {
                 if (strlen($word) >= $search_min_word_length) {
-                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%<div class=\"sig\">%' OR ";
+                    $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' OR ";
                 }
             }
 
@@ -229,6 +229,7 @@ function search_execute($argarray, &$urlquery, &$error)
     }
 
     $searchsql.= " LIMIT ". $argarray['sstart']. ", 50";
+
     $result = db_query($searchsql, $db_search_execute);
 
     $urlquery = "&fid=". $argarray['fid']. "&date_from=". $argarray['date_from']. "&date_to=". $argarray['date_to'];

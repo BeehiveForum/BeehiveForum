@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.105 2004-04-08 07:49:10 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.106 2004-04-08 13:17:21 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -253,7 +253,7 @@ function poll_get_total_votes($tid)
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(ID) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE TID = '$tid' GROUP BY OPTION_ID";
+    $sql.= "WHERE TID = '$tid' GROUP BY UID";
 
     $result_get_total_votes = db_query($sql, $db_poll_get_total_votes);
     $total_votes = db_fetch_array($result_get_total_votes);
@@ -333,7 +333,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 {
     global $HTTP_SERVER_VARS, $lang;
 
-    $table_data = get_table_prefix();
+    $webtag = get_webtag();
     
     $uid = bh_session_get_value('UID');
 
@@ -350,7 +350,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "    <td>\n";
 
     $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
-    $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $table_data['WEBTAG']). "\n";
+    $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $webtag). "\n";
     $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "      <table width=\"450\" align=\"center\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
@@ -606,11 +606,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag={$table_data['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }else {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag={$table_data['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }
           }
@@ -655,11 +655,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag={$table_data['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }else {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag={$table_data['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }
 
@@ -1154,7 +1154,7 @@ function poll_public_ballot($tid, $viewstyle)
 
                   $polldisplay.= "              <tr>\n";
                   $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '{$table_data['WEBTAG']}')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '$webtag')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
                   $polldisplay.= "              </tr>\n";
                 }
               }
@@ -1192,7 +1192,7 @@ function poll_public_ballot($tid, $viewstyle)
 
           $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
           $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '{$table_data['WEBTAG']}')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '$webtag')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
           $polldisplay.= "              </tr>\n";
 
           for ($i = 0; $i < sizeof($optionid_array); $i++) {
@@ -1217,7 +1217,7 @@ function poll_confirm_close($tid)
 {
     global $HTTP_SERVER_VARS, $lang;
 
-    $table_data = get_table_prefix();
+    $webtag = get_webtag();
 
     $preview_message = messages_get($tid, 1, 1);
 
@@ -1254,7 +1254,7 @@ function poll_confirm_close($tid)
     poll_display($tid, $threaddata['LENGTH'], 1, false, false, false, true, $show_sigs, true);
 
     echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_self\">";
-    echo form_input_hidden("webtag", $table_data['WEBTAG']);
+    echo form_input_hidden("webtag", $webtag);
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
     echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";

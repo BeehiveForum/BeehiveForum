@@ -148,39 +148,39 @@ if (db_num_rows($result)) {
             $user = "Unknown User";
         }
 
-        if ($row['FID'] > 0) {
+        if (isset($row['FID']) && $row['FID'] > 0) {
             $title = $row['FID'];
         }else {
             $title = "Unknown Folder";
         }
 
-        if ($row['TID'] > 0) {
+        if (isset($row['TID']) && $row['TID'] > 0) {
             $tid = $row['TID'];
         }
 
-        if ($row['PID'] > 0) {
+        if (isset($row['PID']) && $row['PID'] > 0) {
             $pid = $row['PID'];
         }
 
-        if (!empty($row['FOLDER_TITLE'])) {
+        if (isset($row['FOLDER_TITLE']) && !empty($row['FOLDER_TITLE'])) {
             $folder_title = $row['FOLDER_TITLE'];
         }else {
             $folder_title = $row['FID'];
         }
 
-        if (!empty($row['THREAD_TITLE'])) {
+        if (isset($row['THREAD_TITLE']) && !empty($row['THREAD_TITLE'])) {
             $thread_title = $row['THREAD_TITLE'];
         }else {
-            $thread_title = $row['THREAD_TITLE'];
+            $thread_title = $row['TID'];
         }
 
-        if (!empty($row['PS_NAME'])) {
+        if (isset($row['PS_NAME']) && !empty($row['PS_NAME'])) {
             $ps_name = $row['PS_NAME'];
         }else {
             $ps_name = $row['PSID'];
         }
 
-        if (!empty($row['PI_NAME'])) {
+        if (isset($row['PI_NAME']) && !empty($row['PI_NAME'])) {
             $pi_name = $row['PI_NAME'];
         }else {
             $pi_name = $row['PIID'];
@@ -191,7 +191,7 @@ if (db_num_rows($result)) {
                 $action_text = "Changed User Status for User: $user";
                 break;
             case 2:
-                $action_text = "Changed User Folder Access Privs for User: $user_link and Folder: '$folder_title'";
+                $action_text = "Changed User Folder Access Privs for User: $user";
                 break;
             case 3:
                 $action_text = "Deleted All Posts for User: $user";

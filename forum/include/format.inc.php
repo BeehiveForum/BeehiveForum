@@ -26,9 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 function format_user_name($u_logon,$u_nickname)
 {
     if($u_nickname != ""){
@@ -63,16 +60,16 @@ function format_file_size($size)
 
 function format_url2link($html)
 {
-	$html = " ".$html;
-	// URL:
-	$html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:?[^@\s]+@)?([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i",
-		"$1<a href=\"$2\">$2</a>", $html);
-	$html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i",
-		"$1<a href=\"http://$2\">$2</a>", $html);
-	// MAIL:
-	$html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i",
-		"$1<a href=\"mailto:$3\">$2$3</a>", $html);
-	return substr($html, 1);
+        $html = " ".$html;
+        // URL:
+        $html = preg_replace("/(\s|[()[\]{}])(\w+:\/\/([^:\s]+:?[^@\s]+@)?([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i",
+                "$1<a href=\"$2\">$2</a>", $html);
+        $html = preg_replace("/(\s|[()[\]{}])(www\.([-\w]+\.)*[-\w]+(:\d+)?([\/?#]\S*)?\w+\/?)/i",
+                "$1<a href=\"http://$2\">$2</a>", $html);
+        // MAIL:
+        $html = preg_replace("/(\s|[()[\]{}])(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]+|:\d+))/i",
+                "$1<a href=\"mailto:$3\">$2$3</a>", $html);
+        return substr($html, 1);
 }
 
 

@@ -264,8 +264,13 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   if ($max_value > 0) {
 
     $horizontal_bar_width = floor((300 / $max_value));
-
     $vertical_bar_height = floor((200 / $max_value));
+    $vertical_bar_width = floor((400 / $optioncount));
+
+  }else {
+
+    $horizontal_bar_width = 0;
+    $vertical_bar_height = 0;
     $vertical_bar_width = floor((400 / $optioncount));
 
   }
@@ -373,7 +378,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
       <td><h2>Poll Question</h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?></td>
+      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? htmlspecialchars(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?>&nbsp;<?php echo form_submit("submit", "Post"); ?></td>
     </tr>
     <tr>
       <td>&nbsp;</td>

@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 // Author: Matt Beale
 
 require_once('./include/messages.inc.php');
@@ -124,6 +121,11 @@ function poll_get($tid)
 
     $result = db_query($sql, $db_poll_get);
     $polldata = db_fetch_array($result);
+
+    if (!isset($polldata['TNICK'])) {
+        $polldata['TNICK']  = "ALL";
+        $polldata['TLOGON'] = "ALL";
+    }
 
     return $polldata;
 
@@ -245,8 +247,13 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     if ($max_value > 0) {
 
       $horizontal_bar_width = floor((300 / $max_value));
-
       $vertical_bar_height = floor((200 / $max_value));
+      $vertical_bar_width = floor((400 / $optioncount));
+
+    }else {
+
+      $horizontal_bar_width = 0;
+      $vertical_bar_height = 0;
       $vertical_bar_width = floor((400 / $optioncount));
 
     }

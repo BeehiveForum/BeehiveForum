@@ -21,15 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// redefine the user error constants - PHP 4 only
-define ("FATAL",E_USER_ERROR);
-define ("ERROR",E_USER_WARNING);
-define ("WARNING",E_USER_NOTICE);
-
-// set the error reporting level for this script
-error_reporting (FATAL | ERROR | WARNING);
-
-set_error_handler('error_handler');
+// Error Handler
 
 function error_handler($errno, $errstr, $errfile, $errline)
 {
@@ -45,20 +37,6 @@ function error_handler($errno, $errstr, $errfile, $errline)
 
     if (!isset($HTTP_GET_VARS['retryerror'])) {
       $getvars.= "&retryerror=yes";
-    }
-
-    // Clear the output buffer
-    ob_end_clean();
-
-    // Restart the output buffer again.
-    if ($gzip_compress_output) {
-        if (isset($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING']) && strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-            ob_start("ob_gzhandler");
-        }else{
-            ob_start();
-        }
-    }else {
-        ob_start();
     }
 
     html_draw_top();
@@ -138,19 +116,19 @@ function error_handler($errno, $errstr, $errfile, $errline)
 
         case FATAL:
             echo "<p><b>FATAL</b> [$errno] $errstr</p>\n";
-            echo "<p>Fatal error in line $errline of file $errfile</p>\n";
+            echo "<p>Fatal error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
         case ERROR:
             echo "<b>ERROR</b> [$errno] $errstr<br />\n";
-            echo "<p>Error in line $errline of file $errfile</p>\n";
+            echo "<p>Error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
         case WARNING:
             echo "<b>WARNING</b> [$errno] $errstr<br />\n";
-            echo "<p>Warning in line $errline of file $errfile</p>\n";
+            echo "<p>Warning in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
         default:
             echo "<b>Unknown error</b> [$errno] $errstr<br />\n";
-            echo "<p>Unknown error in line $errline of file $errfile</p>\n";
+            echo "<p>Unknown error in line $errline of file ", basename($HTTP_SERVER_VARS['PHP_SELF']), " (", basename($errfile), ")</p>\n";
             break;
     }
 
@@ -168,5 +146,12 @@ function error_handler($errno, $errstr, $errfile, $errline)
     exit;
 
 }
+
+define ("FATAL", E_USER_ERROR);
+define ("ERROR", E_USER_WARNING);
+define ("WARNING", E_USER_NOTICE);
+
+error_reporting (FATAL | ERROR | WARNING);
+set_error_handler('error_handler');
 
 ?>

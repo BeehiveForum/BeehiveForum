@@ -17,12 +17,9 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
-
-// Compress the output
-require_once("./include/gzipenc.inc.php");
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -70,7 +67,7 @@ function bh_session_check()
     }
 
     @ip_check();
-        
+
     return true;
 
 }
@@ -82,16 +79,16 @@ function bh_session_init($uid)
     if ($uid == 0) {
 
         $user_logon = "GUEST";
-	$user_passwd = md5("GUEST");
+        $user_passwd = md5("GUEST");
         $user_status = 0;
         $user_ppp = 5;
         $user_tz = 0;
         $user_dlsav = 0;
         $user_markread = 0;
         $user_fontsize = 10;
-	$user_style = $default_style;
-	$user_sig = 0;
-	$user_sp = 0;
+        $user_style = $default_style;
+        $user_sig = 0;
+        $user_sp = 0;
 
     }else {
 
@@ -106,16 +103,16 @@ function bh_session_init($uid)
         if(!db_num_rows($result)) {
 
             $user_logon = "GUEST";
-	    $user_passwd = md5("GUEST");
+            $user_passwd = md5("GUEST");
             $user_status = 0;
             $user_ppp = 5;
             $user_tz = 0;
             $user_dlsav = 0;
             $user_markread = 0;
             $user_fontsize = 10;
-	    $user_style = $default_style;
-	    $user_sig = 0;
-	    $user_sp = 0;
+            $user_style = $default_style;
+            $user_sig = 0;
+            $user_sp = 0;
 
         }else {
 
@@ -168,7 +165,7 @@ function bh_session_init($uid)
             } else {
                 $user_fontsize = 10;
             }
-    
+
             if (isset($fa['STYLE'])) {
                 $user_style = $fa['STYLE'];
             } else {
@@ -181,11 +178,11 @@ function bh_session_init($uid)
                 $user_sig = 0;
             }
 
-	    if (isset($fa['START_PAGE'])) {
-	        $user_sp = $fa['START_PAGE'];
-	    } else {
-	        $user_sp = 0;
-	    }
+            if (isset($fa['START_PAGE'])) {
+                $user_sp = $fa['START_PAGE'];
+            } else {
+                $user_sp = 0;
+            }
 
         }
 
@@ -261,7 +258,7 @@ function get_request_uri()
             $return .= "$key=".rawurlencode($value)."&";
         }
     }
-    
+
     return $return;
 }
 

@@ -24,7 +24,6 @@ USA
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
 
-
 // Function to convert decimal RGB values to their Hex equivelent.
 
 function decToHex ($r, $g, $b)

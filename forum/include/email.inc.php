@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/config.inc.php"); // Formatting functions
@@ -43,11 +40,11 @@ function email_sendnotification($tuid, $msg, $fuid)
 
     $result = db_query($sql, $db_email_sendnotification);
 
-    if(db_num_rows($result)){
+    if (db_num_rows($result)) {
 
         $mailto = db_fetch_array($result);
 
-        if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != ''){
+        if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != '') {
 
             $sql = "select LOGON from ". forum_table("USER") . " where UID = $fuid";
             $resultfrom = db_query($sql, $db_email_sendnotification);
@@ -75,10 +72,12 @@ function email_sendnotification($tuid, $msg, $fuid)
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            mail($mailto['EMAIL'], "Message Notification from $forum_name", $message), $header);
+            mail($mailto['EMAIL'], "Message Notification from $forum_name", $message, $header);
 
         }
     }
+
+    return true;
 
 }
 
@@ -132,9 +131,11 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "X-Mailer: PHP/". phpversion();
 
-        mail($mailto['EMAIL'], "Subscription Notification from $forum_name", $message), $header);
+        mail($mailto['EMAIL'], "Subscription Notification from $forum_name", $message, $header);
 
     }
+
+    return true;
 
 }
 

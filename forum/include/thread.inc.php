@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 // Included functions for displaying threads in the left frameset.
 
 require_once("./include/db.inc.php");
@@ -72,30 +69,35 @@ function thread_get($tid)
    $sql.= "GROUP BY THREAD.tid ";
 
    $resource_id = db_query($sql, $db_thread_get);
-   if(!db_num_rows($resource_id)){
+
+   if (!db_num_rows($resource_id)) {
      $threaddata = false;
-   } else {
+   }else {
+
      $threaddata = db_fetch_array($resource_id);
+
+     if (!isset($threaddata['INTEREST'])) {
+       $threaddata['INTEREST'] = 0;
+     }
+
+     if (!isset($threaddata['LAST_READ'])) {
+       $threaddata['LAST_READ'] = 0;
+     }
+
    }
 
-   if(!isset($threaddata['INTEREST'])){
-       $threaddata['INTEREST'] = 0;
-   }
-   if(!isset($threaddata['LAST_READ'])){
-       $threaddata['LAST_READ'] = 0;
-   }
    return $threaddata;
 }
 
 function thread_get_author($tid)
 {
- 	$db_thread_get_author = db_connect();
+        $db_thread_get_author = db_connect();
 
-	$sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
-	$sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
+        $sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
+        $sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
 
-	$result = db_query($sql, $db_thread_get_author);
-	$author = db_fetch_array($result);
+        $result = db_query($sql, $db_thread_get_author);
+        $author = db_fetch_array($result);
 
         return format_user_name($author['LOGON'], $author['NICKNAME']);
 
@@ -103,14 +105,14 @@ function thread_get_author($tid)
 
 function thread_get_interest($tid)
 {
-	global $HTTP_COOKIE_VARS;
-	$uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-	$db_thread_get_interest = db_connect();
-	$sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
-	$resource_id = db_query($sql, $db_thread_get_interest);
-	$fa = db_fetch_array($resource_id);
-	$return = isset($fa['INTEREST']) ? $fa['INTEREST'] : 0;
-	return $return;
+        global $HTTP_COOKIE_VARS;
+        $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+        $db_thread_get_interest = db_connect();
+        $sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
+        $resource_id = db_query($sql, $db_thread_get_interest);
+        $fa = db_fetch_array($resource_id);
+        $return = isset($fa['INTEREST']) ? $fa['INTEREST'] : 0;
+        return $return;
 }
 
 function thread_set_interest($tid, $interest, $new = false)
@@ -121,7 +123,7 @@ function thread_set_interest($tid, $interest, $new = false)
 
     if($new){
 
-    	$sql = "insert into ". forum_table("USER_THREAD"). " (UID, TID, INTEREST) values ($uid, $tid, $interest)";
+        $sql = "insert into ". forum_table("USER_THREAD"). " (UID, TID, INTEREST) values ($uid, $tid, $interest)";
 
     } else {
 
@@ -136,16 +138,16 @@ function thread_set_interest($tid, $interest, $new = false)
 
 function thread_can_view($tid = 0, $uid = 0)
 {
-	$fidlist = folder_get_available();
+        $fidlist = folder_get_available();
 
-	$db_thread_can_view = db_connect();
+        $db_thread_can_view = db_connect();
 
-	$sql = "select * from ".forum_table("THREAD")." where TID = '$tid' and FID in ($fidlist)";
+        $sql = "select * from ".forum_table("THREAD")." where TID = '$tid' and FID in ($fidlist)";
 
-	$result = db_query($sql,$db_thread_can_view);
-	$count = db_num_rows($result);
+        $result = db_query($sql,$db_thread_can_view);
+        $count = db_num_rows($result);
 
-	return ($count > 0);
+        return ($count > 0);
 }
 
 ?>

@@ -222,7 +222,7 @@ if (sizeof($links) > 0 ) {
       echo "    <td class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
       echo "    <td class=\"postbody\" valign=\"top\">", $link['CLICKS'], "</td>\n";
       echo "    <td class=\"postbody\" valign=\"top\">";
-      if ($link['RATING'] != "") echo round($link['RATING'], 1);
+      if (isset($link['RATING']) && $link['RATING'] != "") echo round($link['RATING'], 1);
       echo "</td>\n";
       if (perm_is_moderator()) {
           echo "    <td class=\"threadtime\" valign=\"top\">";

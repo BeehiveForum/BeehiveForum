@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/form.inc.php");
@@ -36,7 +33,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
     $ustatus = $HTTP_COOKIE_VARS['bh_sess_ustatus'];
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
-    if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+    if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER) {
         $sql = "select FID, TITLE from ".forum_table("FOLDER");
     } else {
         $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
@@ -51,7 +48,7 @@ function folder_get_title($fid)
 {
    $db_folder_get_title = db_connect();
    $sql = "select FOLDER.TITLE from " . forum_table("FOLDER") . " FOLDER where FID = $fid";
-   $resource_id = db_query($sql,$db_folder_get_title);
+   $resource_id = db_query($sql, $db_folder_get_title);
    if(!db_num_rows($resource_id)){
      $foldertitle = "The Unknown Folder";
    } else {

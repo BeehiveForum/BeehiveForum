@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.121 2004-08-08 20:53:29 tribalonline Exp $ */
+/* $Id: x-hacker.inc.php,v 1.122 2004-08-14 15:11:45 hodcroftcj Exp $ */
 
 // International English language file
 
@@ -935,6 +935,8 @@ $lang['disableemoticonsinpostsbydefault'] = "D15@8L3 eMOt1ConS 1N pOstS 8Y d3pH@
 $lang['postinplaintextbydefault'] = "p0S+ 1n PL41N +3X+ BY d3f@uLt";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "PO5T In HtML wIth 4uTo-l1n3bR34Ks bY dEf4uL+";
 $lang['postinhtmlbydefault'] = "poST iN hTml 8y Def4uL+";
+$lang['setforallforums'] = "Set for all forums?";
+$lang['containsinvalidchars'] = "contained invalid characters!";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

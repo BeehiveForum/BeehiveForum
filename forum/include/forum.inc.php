@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.76 2004-08-08 22:41:02 rowan_hill Exp $ */
+/* $Id: forum.inc.php,v 1.77 2004-08-14 15:11:44 hodcroftcj Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -774,36 +774,32 @@ function forum_create($webtag, $forum_name, $access)
 
         // Create USER_PREFS table
 
-        $sql = "CREATE TABLE {$webtag}_USER_PREFS (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  FIRSTNAME VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  LASTNAME VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  DOB DATE DEFAULT '0000-00-00',";
-        $sql.= "  HOMEPAGE_URL VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  PIC_URL VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  EMAIL_NOTIFY CHAR(1) DEFAULT NULL,";
-        $sql.= "  TIMEZONE DECIMAL(2,1) DEFAULT NULL,";
-        $sql.= "  DL_SAVING CHAR(1) DEFAULT NULL,";
-        $sql.= "  MARK_AS_OF_INT CHAR(1) DEFAULT NULL,";
-        $sql.= "  POSTS_PER_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,";
-        $sql.= "  FONT_SIZE TINYINT(3) UNSIGNED DEFAULT NULL,";
-        $sql.= "  STYLE VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  EMOTICONS VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  VIEW_SIGS CHAR(1) DEFAULT NULL,";
-        $sql.= "  START_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,";
-        $sql.= "  LANGUAGE VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  PM_NOTIFY CHAR(1) DEFAULT NULL,";
-        $sql.= "  PM_NOTIFY_EMAIL CHAR(1) DEFAULT NULL,";
-        $sql.= "  DOB_DISPLAY TINYINT(3) UNSIGNED DEFAULT NULL,";
-        $sql.= "  ANON_LOGON TINYINT(3) UNSIGNED DEFAULT NULL,";
-        $sql.= "  SHOW_STATS TINYINT(3) UNSIGNED DEFAULT NULL,";
-        $sql.= "  IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,";
-        $sql.= "  USE_WORD_FILTER CHAR(1) DEFAULT NULL,";
-        $sql.= "  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,";
-        $sql.= "  ALLOW_EMAIL CHAR(1) DEFAULT NULL,";
-        $sql.= "  ALLOW_PM CHAR(1) DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY  (UID,UID)";
-        $sql.= ") TYPE=MYISAM;";
+		$sql = "CREATE TABLE {$webtag}_USER_PREFS (";
+		$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+		$sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
+		$sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+		$sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
+		$sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
+		$sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
+		$sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
+		$sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
+		$sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
+		$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
+		$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+		$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+		$sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
+		$sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+		$sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+		$sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
+		$sql.= "  PRIMARY KEY  (UID)";
+		$sql.= ")";
+
 
         $result = db_query($sql, $db_forum_create);
 
@@ -1174,6 +1170,21 @@ function forum_search($search_string)
         return $forum_search_array;
     }
 
+    return false;
+}
+
+function forum_get_all_webtags()
+{
+
+	$db_forum_get_all_webtags = db_connect();
+	$sql = "SELECT FID, WEBTAG FROM FORUMS";
+	$result = db_query($sql, $db_forum_get_all_webtags);
+	if (db_num_rows($result) > 0) {
+	    while ($row = db_fetch_array($result)) {
+	        $webtags[$row['FID']] = $row['WEBTAG'];
+	    }
+	    return $webtags;
+    }
     return false;
 }
 

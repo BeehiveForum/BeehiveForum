@@ -49,12 +49,15 @@ $show_friendly_errors = true; // Should Beehive replace PHP's default
                               // turning this option off to see if it
                               // goes away.
 
-$show_page_info = true;       // Includes a small line of text at the
-                              // bottom of the main pages which shows
-                              // the amount of time taken to execute
-                              // the PHP script, the number of queries
-                              // used by the script and the status
-                              // of the gzip compression.
+$debug_level = 1;             // Specifies the level of debugging info
+                              // that is shown at the bottom of each page.
+                              // A value of 0 (default) turns off the debug
+                              // output. 1 shows a basic report including
+                              // time taken to process the script, number
+                              // of queries used and the status of the gzip
+                              // compression. A level of 2 includes the basic
+                              // report as well as a list of all the queries
+                              // used to generate the current page.
 
 // ---------------------------------------------------------------------
 

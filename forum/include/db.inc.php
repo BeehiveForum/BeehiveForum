@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.38 2003-09-15 18:34:48 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.39 2003-09-16 14:45:02 decoyduck Exp $ */
 
 // PROVIDES BASIC DATABASE FUNCTIONALITY
 // This is desgined to be be referenced in an include() or require() statement
@@ -30,7 +30,7 @@ USA
 
 // Connects to the database and returns the connection ID
 
-$bh_query_count = 0;
+$bh_query_array = array();
 
 function db_connect ()
 {
@@ -57,17 +57,17 @@ function db_disconnect ($connection_id)
 // Executes a query on the database and returns a resource ID
 function db_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS, $bh_query_count, $query_strs;
+    global $HTTP_SERVER_VARS, $bh_query_array;
 
     $resource_id = mysql_query($sql, $connection_id) or trigger_error("Invalid query:$sql<br />\nMySQL Said: ". mysql_error(), FATAL);
-    $bh_query_count++;
+    $bh_query_array[] = $sql;
     return $resource_id;
 }
 
 // Executes a query on the database and returns a resource ID
 function db_unbuffered_query ($sql, $connection_id)
 {
-    global $HTTP_SERVER_VARS, $bh_query_count, $query_strs;
+    global $HTTP_SERVER_VARS, $bh_query_array;
 
     if (function_exists("mysql_unbuffered_query")) {
         $resource_id = mysql_unbuffered_query($sql, $connection_id) or trigger_error("Invalid query:$sql<br />\nMySQL Said: ". mysql_error(), FATAL);
@@ -75,7 +75,7 @@ function db_unbuffered_query ($sql, $connection_id)
         $resource_id = mysql_query($sql, $connection_id) or trigger_error("Invalid query:$sql<br />\nMySQL Said: ". mysql_error(), FATAL);
     }
 
-    $bh_query_count++;
+    $bh_query_array[] = $sql;
     return $resource_id;
 }
 

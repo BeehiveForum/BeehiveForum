@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.18 2003-09-15 18:34:48 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.19 2003-09-16 14:45:02 decoyduck Exp $ */
 
 // Compresses the output of the PHP scripts to save bandwidth.
 
@@ -82,7 +82,7 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $gzip_compress_level, $bh_query_count, $bh_script_time, $bh_gz_status;
+    global $gzip_compress_level, $bh_query_array, $bh_script_time, $bh_gz_status;
 
     // check the compression level variable
     if (!isset($gzip_compress_level)) $gzip_compress_level = 1;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.63 2003-09-15 18:34:48 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.64 2003-09-16 14:45:02 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -211,14 +211,28 @@ function html_draw_top()
 
 function html_draw_bottom ()
 {
-    global $HTTP_SERVER_VARS, $show_page_info, $bh_query_count, $bh_script_time, $bh_gz_status;
+    global $HTTP_SERVER_VARS, $debug_level, $bh_query_array, $bh_script_time, $bh_gz_status;
 
     $html = "";
 
-    if (basename($HTTP_SERVER_VARS['PHP_SELF']) != "nav.php" && $show_page_info) {
+    if (basename($HTTP_SERVER_VARS['PHP_SELF']) != "nav.php" && isset($debug_level) && $debug_level > 0) {
+
         $html.= "<p class=\"info-text\">[&nbsp;Script Execution time:&nbsp;$bh_script_time&nbsp;]   ";
-        $html.= "[&nbsp;$bh_query_count&nbsp;queries&nbsp;used&nbsp;]  ";
+        $html.= "[&nbsp;". sizeof($bh_query_array). "&nbsp;queries&nbsp;used&nbsp;]  ";
         $html.= "[&nbsp;$bh_gz_status&nbsp;]</p>\n";
+
+        if ($debug_level > 1) {
+
+            foreach($bh_query_array as $bh_query) {
+                $bh_query = preg_replace("/^SELECT/i" , "<span style=\"color:red; font-weight:bold\">SELECT</span>", $bh_query);
+                $bh_query = preg_replace("/^UPDATE/i" , "<font style=\"color:blue; font-weight:bold\">UPDATE</font>", $bh_query);
+                $bh_query = preg_replace("/^DELETE/i" , "<font style=\"color:orange; font-weight:bold\">DELETE</font>", $bh_query);
+                $bh_query = preg_replace("/^INSERT/i" , "<font style=\"color:green; font-weight:bold\">INSERT</font>", $bh_query);
+                $bh_query = str_replace( "LEFT JOIN", "<font style=\"color:red; font-weight:bold\">LEFT JOIN</font>", $bh_query);
+
+                $html.= "<p class=\"info-text\" style=\"text-align: left\">$bh_query</p>\n";
+            }
+        }
     }
 
     $html.= "</body>\n";

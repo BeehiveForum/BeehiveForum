@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.36 2003-10-01 07:06:53 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.37 2003-11-27 13:52:23 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -32,74 +32,80 @@ require_once("./include/folder.inc.php");
 
 function thread_get_title($tid)
 {
-   $db_thread_get_title = db_connect();
-   $sql = "SELECT thread.title FROM " . forum_table("THREAD") . " thread WHERE tid = $tid";
-   $resource_id = db_query($sql, $db_thread_get_title);
+    $db_thread_get_title = db_connect();
 
-   if (!db_num_rows($resource_id)) {
-     $threadtitle = "The Unknown Thread";
-   }else {
-     $data = db_fetch_array($resource_id);
-     $threadtitle = _stripslashes($data['title']);
-   }
+    if (!is_numeric($tid)) return "The Unknown Thread";
 
-   return $threadtitle;
+    $sql = "SELECT TITLE FROM " . forum_table("THREAD") . " WHERE TID = '$tid'";
+    $resource_id = db_query($sql, $db_thread_get_title);
+
+    if (!db_num_rows($resource_id)) {
+        $threadtitle = "The Unknown Thread";
+    }else {
+        $data = db_fetch_array($resource_id);
+        $threadtitle = _stripslashes($data['TITLE']);
+    }
+
+    return $threadtitle;
 }
 
 function thread_get($tid)
 {
-   $db_thread_get = db_connect();
+    $db_thread_get = db_connect();
+  
+    $uid = bh_session_get_value('UID');
 
-   $uid = bh_session_get_value('UID');
+    if (!is_numeric($tid)) return false;
 
-	$sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
-	$sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
-	$sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
-	$sql.= "FROM ". forum_table("THREAD"). " THREAD ";
-	$sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
-	$sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)";
-	$sql.= "JOIN " . forum_table("USER") . " USER ";
-	$sql.= "JOIN " . forum_table("POST") . " POST ";
-	$sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
-	$sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
-	$sql.= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
-	$sql.= "(AT.TID = THREAD.TID) ";
-	$sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON ";
-	$sql.= "(FOLDER.FID = THREAD.FID) ";
-	$sql.= "WHERE USER.UID = POST.FROM_UID ";
-	$sql.= "AND POST.TID = THREAD.TID ";
-	$sql.= "AND POST.PID = 1 ";
-	$sql.= "AND THREAD.TID = $tid ";
-	$sql.= "GROUP BY THREAD.tid";
+    $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
+    $sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
+    $sql.= "FROM ". forum_table("THREAD"). " THREAD ";
+    $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)";
+    $sql.= "JOIN " . forum_table("USER") . " USER ";
+    $sql.= "JOIN " . forum_table("POST") . " POST ";
+    $sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
+    $sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
+    $sql.= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql.= "(AT.TID = THREAD.TID) ";
+    $sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON ";
+    $sql.= "(FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE USER.UID = POST.FROM_UID ";
+    $sql.= "AND POST.TID = THREAD.TID ";
+    $sql.= "AND POST.PID = 1 ";
+    $sql.= "AND THREAD.TID = $tid ";
+    $sql.= "GROUP BY THREAD.tid";
 
-   $resource_id = db_query($sql, $db_thread_get);
+    $resource_id = db_query($sql, $db_thread_get);
 
-   if (!db_num_rows($resource_id)) {
-     $threaddata = false;
-   }else {
+    if (!db_num_rows($resource_id)) {
+        $threaddata = false;
+    }else {
 
-     $threaddata = db_fetch_array($resource_id);
+        $threaddata = db_fetch_array($resource_id);
 
-     if (!isset($threaddata['INTEREST'])) {
-        $threaddata['INTEREST'] = 0;
-     }
+        if (!isset($threaddata['INTEREST'])) {
+            $threaddata['INTEREST'] = 0;
+        }
 
-     if (!isset($threaddata['LAST_READ'])) {
-        $threaddata['LAST_READ'] = 0;
-     }
+        if (!isset($threaddata['LAST_READ'])) {
+            $threaddata['LAST_READ'] = 0;
+        }
 
-     if (!isset($threaddata['STICKY_UNTIL'])) {
-        $threaddata['STICKY_UNTIL'] = 0;
-     }
+        if (!isset($threaddata['STICKY_UNTIL'])) {
+            $threaddata['STICKY_UNTIL'] = 0;
+        }
+    }
 
-   }
-
-   return $threaddata;
+    return $threaddata;
 }
 
 function thread_get_author($tid)
 {
     $db_thread_get_author = db_connect();
+
+    if (!is_numeric($tid)) return false;
 
     $sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
     $sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
@@ -115,6 +121,8 @@ function thread_get_interest($tid)
     $uid = bh_session_get_value('UID');
     $db_thread_get_interest = db_connect();
 
+    if (!is_numeric($tid)) return false;
+
     $sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
     $result = db_query($sql, $db_thread_get_interest);
 
@@ -129,6 +137,9 @@ function thread_get_interest($tid)
 function thread_set_interest($tid, $interest, $new = false)
 {
     $uid = bh_session_get_value('UID');
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($interest)) return false;
 
     if ($new) {
         $sql = "insert into ". forum_table("USER_THREAD"). " (UID, TID, INTEREST) ";
@@ -147,17 +158,20 @@ function thread_can_view($tid = 0, $uid = 0)
     $fidlist = folder_get_available();
     $db_thread_can_view = db_connect();
 
-    $sql = "select * from ".forum_table("THREAD")." where TID = '$tid' and FID in ($fidlist)";
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($uid)) return false;
 
+    $sql = "SELECT * FROM ".forum_table("THREAD")." WHERE TID = '$tid' AND FID IN ($fidlist)";
     $result = db_query($sql,$db_thread_can_view);
-    $count = db_num_rows($result);
 
-    return ($count > 0);
+    return (db_num_rows($result) > 0);
 }
 
 function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 {
     $db_thread_set_sticky = db_connect();
+
+    if (!is_numeric($tid)) return false;
 
     if ($sticky) {
         $sql  = "UPDATE ".forum_table("THREAD")." SET STICKY = 'Y' ";
@@ -171,14 +185,14 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
         $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = 'N' WHERE TID = $tid";
     }
 
-    $result = db_query($sql,$db_thread_set_sticky);
-
-    return $result;
+    return db_query($sql,$db_thread_set_sticky);
 }
 
 function thread_set_closed($tid, $closed = true)
 {
     $db_thread_set_closed = db_connect();
+
+    if (!is_numeric($tid)) return false;
 
     if ($closed) {
         $sql = "UPDATE ".forum_table("THREAD")." SET CLOSED = NOW() WHERE TID = $tid";
@@ -186,19 +200,18 @@ function thread_set_closed($tid, $closed = true)
         $sql = "UPDATE ".forum_table("THREAD")." SET CLOSED = NULL WHERE TID = $tid";
     }
 
-    $result = db_query($sql,$db_thread_set_closed);
-
-    return $result;
+    return db_query($sql,$db_thread_set_closed);
 }
 
 function thread_change_folder($tid, $new_fid)
 {
     $db_thread_set_closed = db_connect();
 
-    $sql = "UPDATE ". forum_table("THREAD"). " SET FID = $new_fid WHERE TID = $tid";
-    $result = db_query($sql, $db_thread_set_closed);
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($new_fid)) return false;
 
-    return $result;
+    $sql = "UPDATE ". forum_table("THREAD"). " SET FID = $new_fid WHERE TID = $tid";
+    return db_query($sql, $db_thread_set_closed);
 }
 
 function thread_change_title($tid, $new_title)
@@ -206,10 +219,10 @@ function thread_change_title($tid, $new_title)
     $db_thread_change_title = db_connect();
     $new_title = addslashes(_htmlentities($new_title));
 
-    $sql = "UPDATE ". forum_table("THREAD"). " SET TITLE = '$new_title' WHERE TID = $tid";
-    $result = db_query($sql, $db_thread_change_title);
+    if (!is_numeric($tid)) return false;
 
-    return $result;
+    $sql = "UPDATE ". forum_table("THREAD"). " SET TITLE = '$new_title' WHERE TID = $tid";
+    return db_query($sql, $db_thread_change_title);
 }
 
 ?>

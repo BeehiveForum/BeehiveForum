@@ -335,19 +335,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
-            echo "<tr><td>&nbsp;</td></tr>\n";
-            echo "<tr><td class=\"postbody\">\n";
-
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
             $attachments = get_attachments($message['FROM_UID'], $aid);
 
             if (is_array($attachments)) {
 
+                echo "<tr><td>&nbsp;</td></tr>\n";
+                echo "<tr><td class=\"postbody\">\n";
                 echo "<b>Attachments:</b><br />\n";
 
                 for ($i = 0; $i < sizeof($attachments); $i++) {
 
-                    echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
+                    echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"attachment\" />";
                     echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\"";
 
                     if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
@@ -374,9 +373,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "\">". $attachments[$i]['filename']. "</a><br />";
 
                 }
+
+                echo "</td></tr>\n";
+
             }
 
-            echo "</td></tr>\n";
         }
 
         if (($in_list && $limit_text != false) || $is_poll) {

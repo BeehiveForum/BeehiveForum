@@ -59,11 +59,15 @@ if (isset($HTTP_POST_VARS['save'])) {
     $content = _stripslashes($HTTP_POST_VARS['content']);
     $content = str_replace(chr(13), '', $content);
 
+    if (substr($content, 0, 58) != "<?php require_once(\"./include/gzipenc.inc.php\"); ?>") {
+      $content = "<?php require_once(\"./include/gzipenc.inc.php\"); ?>\n". $content;
+    }
+
     $fp = fopen('./start_main.php', 'w');
     fwrite($fp, $content);
     fclose($fp);
 
-    $status_text = "<b>Start page updated</b> <a href=\"./start_main.php\" target=\"_blank\">View Updated Start Page</a><br /><br />";
+    $status_text = "<p><b>Start page updated</b> <a href=\"./start_main.php\" target=\"_blank\">View Updated Start Page</a></p>";
 
 }else{
 

@@ -81,7 +81,7 @@ function threads_get_folders()
          $folder_info = FALSE;
     } else {
         while($query_data = db_fetch_array($result)) {
-	    //$folder_info[$query_data['FID']] = $query_data['TITLE'];
+            //$folder_info[$query_data['FID']] = $query_data['TITLE'];
             $folder_info[$query_data['FID']] = array('TITLE' => $query_data['TITLE'], 'INTEREST' => $query_data['INTEREST']);
         }
     }
@@ -520,7 +520,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
             $lst[$i]['logon'] = $thread['logon'];
             $lst[$i]['nickname'] = $thread['nickname'];
             $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
-	    $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
+            $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
 
         }
 
@@ -535,12 +535,17 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
 function threads_get_folder_msgs()
 {
+
+    $folder_msgs = array();
     $db_threads_get_folder_msgs = db_connect();
+
     $sql = 'SELECT FID, COUNT(*) AS TOTAL FROM '.forum_table('THREAD').' GROUP BY FID';
     $resource_id = db_query($sql, $db_threads_get_folder_msgs);
+
     while($folder = db_fetch_array($resource_id)){
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
+
     return $folder_msgs;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.15 2004-04-10 21:45:32 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.16 2004-04-11 13:53:49 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
@@ -132,42 +132,32 @@ function get_my_forums()
 	            $forum_data['INTEREST'] = 0;
 	        }
 
-                // Get any new messages since last visit
+                // Get any unread messages
 
-	        $folders = threads_get_available_folders();
+		$folders = threads_get_available_folders();
 
-                $sql = "SELECT COUNT(*) AS NEW_MESSAGES ";
-                $sql.= "FROM {$forum_data['WEBTAG']}_POST POST ";
-	        $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON (POST.TID = THREAD.TID) ";
-	        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (VISITOR_LOG.UID = $uid) ";
-	        $sql.= "WHERE THREAD.FID IN ($folders) AND POST.CREATED > VISITOR_LOG.LAST_LOGON";
+                $sql = "SELECT COUNT(*) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_POST POST ";
+		$sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON (THREAD.TID = POST.TID) ";
+		$sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
+                $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+                $sql.= "WHERE THREAD.FID IN ($folders) ";
+                $sql.= "AND (USER_THREAD.LAST_READ < POST.PID OR USER_THREAD.LAST_READ IS NULL) ";
 
                 $result = db_query($sql, $db_get_my_forums);
 
-	        $forum_data['NEW_MESSAGES'] = 0;
+		$row = db_fetch_array($result);
+	        $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
         
-                if (db_num_rows($result)) {
-	            $row = db_fetch_array($result);
-		    $forum_data['NEW_MESSAGES'] = $row['NEW_MESSAGES'];
-	        }
-
                 // Get unread to me message count
         
-                $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+                $sql = "SELECT COUNT(*) AS UNREAD_TO_ME FROM {$forum_data['WEBTAG']}_POST POST ";
                 $sql.= "WHERE TO_UID = '$uid' AND VIEWED IS NULL";
 
                 $result = db_query($sql, $db_get_my_forums);
-        
-                if (db_num_rows($result)) {
-        
-                    $row = db_fetch_array($result);
-                    $forum_data['UNREAD_TO_ME'] = $row['POST_COUNT'];
-        
-                }else {
-        
-                    $forum_data['UNREAD_TO_ME'] = 0;
-                }
 
+		$row = db_fetch_array($result);
+	        $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
+        
                 // Get Last Visited
         
                 $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";

@@ -69,3 +69,5 @@ function html_draw_bottom ()
 	echo "</body>\n";
 	echo "</html>\n";
 }
+
+?>

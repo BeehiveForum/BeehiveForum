@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.15 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.16 2003-11-16 22:10:08 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -42,13 +42,13 @@ if (!bh_session_check()) {
     header_redirect($uri);
 }
 
-if (isset($HTTP_GET_VARS['page'])) {
+if (isset($HTTP_GET_VARS['page']) && is_int($HTTP_GET_VARS['page'])) {
     $start = ($HTTP_GET_VARS['page'] * 20);
 }else {
     $start = 0;
 }
 
-if (isset($HTTP_GET_VARS['usersearch']) && trim($HTTP_GET_VARS['usersearch']) != "") {
+if (isset($HTTP_GET_VARS['usersearch']) && strlen(trim($HTTP_GET_VARS['usersearch'])) > 0) {
     $usersearch = $HTTP_GET_VARS['usersearch'];
 }else {
     $usersearch = "";

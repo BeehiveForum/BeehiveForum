@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.29 2003-11-09 13:42:36 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.30 2003-11-16 22:10:08 decoyduck Exp $ */
 
 // Error Handler
 
@@ -81,7 +81,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 echo "<p>{$lang['multipleerroronpost']}</p>\n";
                 echo form_textarea("t_content", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85);
 
-                if (isset($HTTP_GET_VARS['replyto'])) {
+                if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
 
                     echo "<p>{$lang['replymsgnumber']}:</p>\n";
                     echo form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64);
@@ -162,7 +162,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 echo "          <td>", form_textarea("t_content", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85), "</td>\n";
                 echo "        </tr>\n";
 
-                if (isset($HTTP_GET_VARS['replyto'])) {
+                if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
 
                     echo "        <tr>\n";
                     echo "          <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.142 2004-05-12 23:51:08 decoyduck Exp $ */
+/* $Id: logon.php,v 1.143 2004-08-18 10:07:18 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -187,7 +187,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         exit;
     }
 
-}elseif (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
+}elseif (isset($_POST['user_logon']) && isset($_POST['user_password']) && (isset($_POST['user_passhash']) || isset($_GET['other']))) {
 
     if (perform_logon(true)) {
 

@@ -60,12 +60,14 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	$sql .= "order by POST.PID ";
 	$sql .= "limit 0, " . $limit;
 
-	$resource_id = db_query($sql, $db_message_get);
+	$resource_id = db_unbuffered_query($sql, $db_message_get);
 
 	// Loop through the results and construct an array to return
-	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
+//	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
 
-		$message = db_fetch_array($resource_id);
+//		$message = db_fetch_array($resource_id);
+
+	for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
 
 		$messages[$i]['PID'] = $message['PID'];
 		$messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];

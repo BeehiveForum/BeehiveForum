@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.6 2004-04-11 22:49:26 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.7 2004-04-11 23:41:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -112,10 +112,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
     }
 
-    if (isset($HTTP_POST_VARS['t_default_forum']) && is_numeric($HTTP_POST_VARS['t_default_forum'])) {
-        forum_set_default($HTTP_POST_VARS['t_default_forum']);
-    }
-
     if (isset($HTTP_POST_VARS['t_webtag_new']) && strlen(trim($HTTP_POST_VARS['t_webtag_new'])) > 0) {
 	       
         $new_webtag = strtoupper(trim(_stripslashes($HTTP_POST_VARS['t_webtag_new'])));
@@ -146,7 +142,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 	}
     }
 
-}elseif (isset($HTTP_POST_VARS['t_delete'])) {
+}elseif (isset($HTTP_POST_VARS['t_delete']) && is_array($HTTP_POST_VARS['t_delete'])) {
 
     list($fid) = array_keys($HTTP_POST_VARS['t_delete']);
     
@@ -196,6 +192,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
     list($fid) = array_keys($HTTP_POST_VARS['t_confirm_delete']);
     forum_delete($fid);
+
+}elseif (isset($HTTP_POST_VARS['t_default']) && is_array($HTTP_POST_VARS['t_default'])) {
+
+    list($fid) = array_keys($HTTP_POST_VARS['t_default']);
+    forum_update_default($fid);
 }
 
 echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
@@ -207,12 +208,12 @@ if (isset($message_html) && strlen($message_html) > 0) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
 
 $forums_array = admin_get_forum_list();
 
 if (sizeof($forums_array) > 0) {
 
+    echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -247,7 +248,13 @@ if (sizeof($forums_array) > 0) {
         }
 
         echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", $lang['deleteforum']), "</td>\n";
-	echo "                  <td align=\"center\">", form_radio("t_default_forum", $forum['FID'], "", ($forum['DEFAULT_FORUM'] == 1)), "</td>\n";
+
+	if ($forum['DEFAULT_FORUM'] == 1) {
+  	    echo "                  <td align=\"left\">", form_submit("t_default[0]", $lang['unsetdefault']), "</td>\n";
+	}else {
+  	    echo "                  <td align=\"left\">", form_submit("t_default[{$forum['FID']}]", $lang['makedefault']), "</td>\n";
+	}
+
         echo "                </tr>\n";
     }
 
@@ -267,9 +274,11 @@ if (sizeof($forums_array) > 0) {
     echo "      <td align=\"center\">", form_submit("submit", $lang['savechanges']), "</td>\n";
     echo "    </tr>\n";  
     echo "  </table>\n";
+    echo "  </form>\n";
     echo "  <br />\n";
 }
 
+echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -307,7 +316,7 @@ echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "</td>\n";
 echo "    </tr>\n";  
 echo "  </table>\n";
-echo "</form>\n";;
+echo "  </form>\n";;
 echo "</div>\n";
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.48 2004-04-11 22:49:26 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.49 2004-04-11 23:41:09 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -882,7 +882,7 @@ function forum_get_permissions($fid)
     return false;
 }
 
-function forum_set_default($fid)
+function forum_update_default($fid)
 {
     if (!is_numeric($fid)) return false;
 
@@ -890,8 +890,14 @@ function forum_set_default($fid)
 
         $db_forum_get_permissions = db_connect();
 
-        $sql = "UPDATE FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
+        $sql = "UPDATE FORUMS SET DEFAULT_FORUM = 0 WHERE DEFAULT_FORUM = 1";
 	$result = db_query($sql, $db_forum_get_permissions);
+
+	if ($fid > 0) {
+
+            $sql = "UPDATE FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
+	    $result = db_query($sql, $db_forum_get_permissions);
+	}
 
         return $result;
     }

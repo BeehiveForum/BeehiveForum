@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.104 2004-04-11 22:49:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.105 2004-04-11 23:41:09 decoyduck Exp $ */
 
 // International English language file
 
@@ -148,6 +148,8 @@ $lang['options'] = "Options";
 $lang['emoticons'] = "Emoticons";
 $lang['webtag'] = "Webtag";
 $lang['default'] = "Default";
+$lang['makedefault'] = "Make Default";
+$lang['unsetdefault'] = "Unset Default";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.56 2004-04-11 22:49:26 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.57 2004-04-11 23:41:09 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -148,6 +148,8 @@ $lang['emoticons'] = "Emoticons";
 $lang['savechanges'] = "Save Changes";
 $lang['webtag'] = "Webtag";
 $lang['default'] = "default";
+$lang['makedefault'] = "Make Default";
+$lang['unsetdefault'] = "Unset Default";
 
 // Admin interface (admin*.php) ----------------------------------------
 

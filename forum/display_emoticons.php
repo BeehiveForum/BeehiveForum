@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.2 2004-03-23 03:49:57 tribalonline Exp $ */
+/* $Id: display_emoticons.php,v 1.3 2004-03-23 03:54:06 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -110,7 +110,8 @@ if (in_array($pack, $available_emots)) {
 	$path = "emoticons/".$available_emots[0];
 }
 
-$style = file_get_contents("$path/style.css");
+$fp = fopen("$path/style.css", "r");
+$style = fread($fp, filesize("$path/style.css"));
 
 preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 

@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.48 2003-09-02 19:49:20 decoyduck Exp $
+# $Id: schema.sql,v 1.49 2003-09-08 01:08:29 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -371,7 +371,7 @@ CREATE TABLE THREAD (
 # Dumping data for table `THREAD`
 #
 
-INSERT INTO THREAD (TID, FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED) VALUES (1, 1, 1, 'Welcome', 1, 'N', '2003-01-19 23:28:06', NULL);
+INSERT INTO THREAD (TID, FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY) VALUES (1, 1, 1, 'Welcome', 1, 'N', '2003-01-19 23:28:06', NULL, 'N');
 # --------------------------------------------------------
 
 #

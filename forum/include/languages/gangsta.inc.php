@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.61 2004-04-13 14:04:04 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.62 2004-04-15 11:43:06 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -530,6 +530,8 @@ $lang['pmnotification_5'] = "posted to you, fuck you. And";
 $lang['pmnotification_6'] = "click";
 $lang['pmnotification_7'] = "on Prizeferizences, unselect tha PM Eizmail Nizotification shit and press Aight.";
 $lang['pmnotification_subject'] = "PM Nizotificatizion from";
+$lang['hasoptedoutofemail'] = "has opted out of email contact";
+$lang['hasinvalidemailaddress'] = "has an invalid email address";
 
 // Error handler (errorhandler.inc.php) --------------------------------
 
@@ -966,6 +968,7 @@ $lang['popuponnewprivatemessage'] = "Pizop up on new P to the M";
 $lang['automatichighinterestonpost'] = "Automizatic down wit that shit on pizost";
 $lang['itemsmarkedwithaasterixarerequired'] = "Items tagged with a * are important shizit, yo";
 $lang['confirmpassword'] = "Confizirm yo Pizasswizord";
+$lang['invalidemailaddressformat'] = "Invalid email address format";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.45 2004-04-12 15:34:48 decoyduck Exp $ */
+/* $Id: email.php,v 1.46 2004-04-15 11:43:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -138,8 +138,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 
     if (!user_allow_email($to_user['UID'])) {
-        $error = "<h2>User {$to_user['LOGON']} has opted out of email contact</h2>\n";
+        $error = "<h2>{$lang['user']} {$to_user['LOGON']} {$lang['hasoptedoutofemail']}</h2>\n";
 	$valid = false;
+    }
+
+    if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) {
+        $error = "<h2>{$lang['user']} {$to_user['LOGON']} {$lang['hasinvalidemailaddress']}</h2>\n";
+        $valid = false;
     }
 
     if ($valid) {

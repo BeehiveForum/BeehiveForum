@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.52 2004-03-03 22:43:25 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.53 2004-03-04 11:54:02 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -107,19 +107,26 @@ if (isset($HTTP_POST_VARS['upload'])) {
                 if ($users_free_space < $HTTP_POST_FILES['userfile']['size'][$i]) {
 
                     echo "<p>{$lang['attachmentnospace']}</p>";
-                    unlink($HTTP_POST_FILES['userfile']['tmp_name']);
+
+                    if (@file_exists($HTTP_POST_FILES['userfile']['tmp_name'][$i])) {
+                        unlink($HTTP_POST_FILES['userfile']['tmp_name'][$i]);
+                    }
 
                 }else {
-                
+                    
                     $uniqfileid = md5(uniqid(rand()));
 
                     if (@move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'][$i], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. $uniqfileid. _stripslashes($HTTP_POST_FILES['userfile']['name'][$i])))) {
 
                         add_attachment(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'], $uniqfileid, rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'][$i])), $HTTP_POST_FILES['userfile']['type'][$i]);
+                        $users_free_space -= $HTTP_POST_FILES['userfile']['size'][$i];
 
                     }else {
 
-                        unlink($HTTP_POST_FILES['userfile']['tmp_name'][$i]);
+                        if (@file_exists($HTTP_POST_FILES['userfile']['tmp_name'][$i])) {
+                            unlink($HTTP_POST_FILES['userfile']['tmp_name'][$i]);
+                        }
+                        
                         echo "<p>{$lang['uploadfailed']}.</p>";
                     }
                 }

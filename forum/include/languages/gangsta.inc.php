@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.33 2004-03-13 00:20:39 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.34 2004-03-14 19:44:12 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -248,6 +248,9 @@ $lang['aliasdesc'] = "<b>Pizossible Aliziases</b> is a lizist of other crackaz w
 $lang['manageusersexp_1'] = "This here lizist is a lizoad of homiez who have logged tha fuck on to yo forizum, sorted by";
 $lang['manageusersexp_2'] = "To fuck wit a homiez permizissions click their tag, foo'.";
 $lang['manageusersexp_3'] = "To peep at tha last few homiez to log tha fuck on, sizort tha list by LAST_LOGON.";
+$lang['matchedtext'] = "Matched Text";
+$lang['replacementtext'] = "Replacement Text";
+$lang['preg'] = "PREG";
 
 $lang['lastlogon'] = "Lizast Lizogon";
 $lang['logonfrom'] = "Lizogon Frizom";

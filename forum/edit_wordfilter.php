@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.13 2004-03-14 19:38:31 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.14 2004-03-14 19:44:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -134,9 +134,9 @@ echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;Matched Text</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;Replacement Text</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;PREG</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['matchedtext']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['replacementtext']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['preg']}</td>\n";
 echo "                  <td class=\"subhead\" width=\"75\">&nbsp;</td>\n";
 echo "                </tr>\n";
 

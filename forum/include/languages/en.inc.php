@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.80 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.81 2004-03-14 19:44:12 decoyduck Exp $ */
 
 // International English language file
 
@@ -317,6 +317,9 @@ $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
 $lang['madethreadsticky'] = "Made Thread Sticky";
 $lang['madethreadnonsticky'] = "Made Thread Non-sticky";
+$lang['matchedtext'] = "Matched Text";
+$lang['replacementtext'] = "Replacement Text";
+$lang['preg'] = "PREG";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 

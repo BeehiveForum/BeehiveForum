@@ -165,17 +165,17 @@ class TextAreaHTML {
 
     // ----------------------------------------------------
     // Preloads the images needed by the toolbars
-        // CALL THIS FUNCTION TOWARDS THE BEGINNING OF THE PAGE
-        // ----------------------------------------------------
+    // CALL THIS FUNCTION TOWARDS THE BEGINNING OF THE PAGE
+    // ----------------------------------------------------
 
     function preload () {
 
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
-                $str.= "    _tb_image_main = new Image();\n";
-                $str.= "    _tb_image_main.src = \"./images/html_toolbar.png\";\n";
-                $str.= "    _tb_image_blank = new Image();\n";
-                $str.= "    _tb_image_blank.src = \"./images/blank.png\";\n";
+        $str.= "    _tb_image_main = new Image();\n";
+        $str.= "    _tb_image_main.src = \"". style_image('html_toolbar.png'). "\";\n";
+        $str.= "    _tb_image_blank = new Image();\n";
+        $str.= "    _tb_image_blank.src = \"". style_image('blank.png'). "\";\n";
         $str.= "  //-->\n";
         $str.= "</script>\n";
 

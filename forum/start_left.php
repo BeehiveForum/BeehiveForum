@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.89 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.90 2004-11-06 21:10:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -153,7 +153,7 @@ if ($thread_array = threads_get_most_recent()) {
         if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
         if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
         if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
-        if (thread_has_attachments($thread['tid'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+        if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
         echo "          </td>\n";
         echo "        </tr>\n";

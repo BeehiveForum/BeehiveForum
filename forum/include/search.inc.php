@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.39 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.40 2004-03-10 20:21:05 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -443,7 +443,7 @@ function search_draw_user_dropdown($name)
     $table_prefix = get_table_prefix();
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM {$table_prefix}USER U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "FROM USER U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND U.UID <> $uid ORDER BY U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 

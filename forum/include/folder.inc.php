@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.46 2004-03-09 23:00:08 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.47 2004-03-10 20:21:04 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -213,7 +213,7 @@ function folder_get_permissions($fid)
     $table_prefix = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM ";
-    $sql.= "{$table_prefix}USER USER, {$table_prefix}FOLDER FOLDER ";
+    $sql.= "USER USER, {$table_prefix}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_FOLDER UF ON (UF.UID = USER.UID AND UF.FID = FOLDER.FID) ";
     $sql.= "WHERE FOLDER.FID = '$fid' AND UF.ALLOWED = 1";
 

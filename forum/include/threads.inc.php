@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.100 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.101 2004-03-10 20:21:05 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -98,7 +98,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -140,7 +140,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -179,7 +179,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
     $sql ."{$table_prefix}POST POST ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST2 ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -224,7 +224,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -264,7 +264,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$table_prefix}THREAD THREAD, ";
     $sql ."{$table_prefix}USER_THREAD USER_THREAD ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -306,7 +306,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$table_prefix}THREAD THREAD, ";
     $sql ."{$table_prefix}USER_THREAD USER_THREAD ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -348,7 +348,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM {$table_prefix}THREAD THREAD, ";
     $sql ."{$table_prefix}USER_THREAD USER_THREAD ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -393,7 +393,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -436,7 +436,7 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -480,7 +480,7 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -524,7 +524,7 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -568,7 +568,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -609,7 +609,7 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "JOIN {$table_prefix}USER USER ";
+    $sql .= "JOIN USER USER ";
     $sql .= "JOIN {$table_prefix}POST POST ";
     $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
@@ -644,7 +644,7 @@ function threads_get_most_recent()
     $sql.= "FROM {$table_prefix}THREAD T ";
     $sql.= "LEFT JOIN {$table_prefix}USER_THREAD UT ";
     $sql.= "ON (T.TID = UT.TID and UT.UID = '$uid') ";
-    $sql.= "JOIN {$table_prefix}USER U ";
+    $sql.= "JOIN USER U ";
     $sql.= "JOIN {$table_prefix}POST P ";
     $sql.= "LEFT JOIN {$table_prefix}USER_FOLDER UF ON ";
     $sql.= "(UF.FID = T.FID AND UF.UID = '$uid') ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.89 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.90 2004-03-10 20:21:05 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -165,10 +165,10 @@ function poll_get($tid)
     $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) as CLOSES, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON as EDIT_LOGON, POST.IPADDRESS ";
     $sql.= "from {$table_prefix}POST POST ";
-    $sql.= "left join {$table_prefix}USER FUSER on (POST.FROM_UID = FUSER.UID) ";
-    $sql.= "left join {$table_prefix}USER TUSER on (POST.TO_UID = TUSER.UID) ";
+    $sql.= "left join USER FUSER on (POST.FROM_UID = FUSER.UID) ";
+    $sql.= "left join USER TUSER on (POST.TO_UID = TUSER.UID) ";
     $sql.= "left join {$table_prefix}POLL POLL on (POST.TID = POLL.TID) ";
-    $sql.= "left join {$table_prefix}USER EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";    
+    $sql.= "left join USER EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";    
     $sql.= "left join {$table_prefix}USER_PEER USER_PEER ";
     $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";   
     $sql.= "where POST.TID = '$tid' and POST.PID = 1";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.41 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.42 2004-03-10 20:21:05 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -69,7 +69,7 @@ function thread_get($tid)
     $sql.= "FROM {$table_prefix}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "JOIN {$table_prefix}USER USER ";
+    $sql.= "JOIN USER USER ";
     $sql.= "JOIN {$table_prefix}POST POST ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
     $sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
@@ -123,7 +123,7 @@ function thread_get_author($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT U.LOGON, U.NICKNAME FROM {$table_prefix}USER U, {$table_prefix}POST P ";
+    $sql = "SELECT U.LOGON, U.NICKNAME FROM USER U, {$table_prefix}POST P ";
     $sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
 
     $result = db_query($sql, $db_thread_get_author);

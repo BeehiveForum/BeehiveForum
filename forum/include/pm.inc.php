@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.37 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.38 2004-03-10 20:21:05 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -150,8 +150,8 @@ function pm_list_get($folder)
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
     $sql.= "FROM {$table_prefix}PM PM ";
-    $sql.= "LEFT JOIN {$table_prefix}USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN {$table_prefix}USER TUSER ON (PM.TO_UID = TUSER.UID) ";
+    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "LEFT JOIN {$table_prefix}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
 
     if (($folder == PM_FOLDER_INBOX)) {
@@ -181,7 +181,7 @@ function pm_get_user($mid)
     
     $table_prefix = get_table_prefix();
 
-    $sql = "SELECT LOGON FROM {$table_prefix}USER USER ";
+    $sql = "SELECT LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}PM PM ON (PM.FROM_UID = USER.UID) ";
     $sql.= "WHERE PM.MID = '$mid'";
 
@@ -216,7 +216,7 @@ function pm_draw_to_dropdown($default_uid)
     $table_prefix = get_table_prefix();
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM {$table_prefix}USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
+    $sql.= "FROM USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND U.UID <> '$default_uid' ORDER BY U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -250,8 +250,8 @@ function pm_single_get($mid, $folder, $uid = false)
     $sql = "SELECT PM.MID, PM.TYPE, PM.TO_UID, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "PM_CONTENT.CONTENT, AT.AID FROM {$table_prefix}PM PM ";
-    $sql.= "LEFT JOIN {$table_prefix}USER TUSER ON (TUSER.UID = PM.TO_UID) ";
-    $sql.= "LEFT JOIN {$table_prefix}USER FUSER ON (FUSER.UID = PM.FROM_UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (TUSER.UID = PM.TO_UID) ";
+    $sql.= "LEFT JOIN USER FUSER ON (FUSER.UID = PM.FROM_UID) ";
     $sql.= "LEFT JOIN {$table_prefix}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN {$table_prefix}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' ";

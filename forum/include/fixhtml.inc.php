@@ -20,13 +20,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.77 2004-05-20 10:34:27 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.78 2004-06-21 12:04:26 tribalonline Exp $ */
 
 include_once("./include/emoticons.inc.php");
 include_once("./include/html.inc.php");
 
 $fix_html_code_text = 'code:';
 $fix_html_quote_text = 'quote:';
+$fix_html_spoiler_text = 'spoiler:';
 
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
@@ -38,13 +39,14 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 
 	global $fix_html_code_text;
 	global $fix_html_quote_text;
+	global $fix_html_spoiler_text;
 
 	$ret_text = '';
 
 	if (!empty($html)) {
 		$html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noemots", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
+		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noemots", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "spoiler", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
 
 		$htmltags = array_diff($htmltags, $bad_tags);
 		$bad_tags = array();
@@ -57,7 +59,7 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 				// BH tag <code> replace
 				// <code><b>Text</b></code>
 				// with
-				// <pre>&amp;lt;b&gt;Text&amp;lt;b&gt;</pre>
+				// <pre>&lt;b&gt;Text&lt;b&gt;</pre>
 				$tag = explode(" ", $html_parts[$i]);
 				if (substr($tag[0], 0, 1) == "/") {
 					$close = true;
@@ -100,7 +102,7 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 							array_splice($html_parts, $i+1, 0, array("", "/pre"));
 							$i += 2;
 						}
-						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", $fix_html_code_text, "/b", "", "/div", ""));
+						array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code\"", "", "b", $fix_html_code_text, "/b", "", "/div", ""));
 						$i += 8;
 
 					} else if ($tag == "quote" && $close == true) {
@@ -159,20 +161,27 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 								$source_name = $url_name;
 							}
 							$html_parts[$i] = "div class=\"quote\"";
-							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "$fix_html_quote_text ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
+							array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", "", "b", "$fix_html_quote_text ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
 							$i += 12;
 						} else {
 							$html_parts[$i] = "div class=\"quote\"";
-							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "$fix_html_quote_text ", "/b", $source_name, "/div", ""));
+							array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"quote\"", "", "b", "$fix_html_quote_text ", "/b", $source_name, "/div", ""));
 							$i += 8;
 						}
+
+					} else if ($tag == "spoiler" && $close == true) {
+						$html_parts[$i] = "/div";
+					} else if ($tag == "spoiler") {
+						$html_parts[$i] = "div class=\"spoiler\"";
+						array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"spoiler\"", "", "b", "$fix_html_spoiler_text ", "/b", "", "/div", ""));
+						$i += 8;
 					}
 				} else {
-					$html_parts[$i-1].= "&amp;lt;".$html_parts[$i]."&gt;";
+					$html_parts[$i-1].= "&lt;".$html_parts[$i]."&gt;";
 					$html_parts[$i] = "";
 				}
 			} else {
-				$html_parts[$i] = str_replace("<", "&amp;lt;", $html_parts[$i]);
+				$html_parts[$i] = str_replace("<", "&lt;", $html_parts[$i]);
 				$html_parts[$i] = str_replace(">", "&gt;", $html_parts[$i]);
 			}
 		}
@@ -590,16 +599,16 @@ function tidy_html ($html, $linebreaks = true)
 	}
 
 	// make <code>..</code> tag, and html_entity_decode
-	$html = preg_replace_callback("/<div class=\"quotetext\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/i", "tidy_html_callback", $html);
+	$html = preg_replace_callback("/<div class=\"quotetext\" id=\"code\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/i", "tidy_html_callback", $html);
 
 	// make <quote source=".." url="..">..</quote> tag
 	$html_left = "";
 	$html_right = $html;
-	while (($pos = strpos($html_right, "<div class=\"quotetext\"><b>")) > -1) {
+	while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"quote\"><b>")) > -1) {
 		$html_left .= substr($html_right, 0, $pos);
 		$matches = array();
 
-		if (preg_match("/^<div class=\"quotetext\"><b>.*?<\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is",
+		if (preg_match("/^<div class=\"quotetext\" id=\"quote\"><b>.*?<\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is",
 						substr($html_right, $pos), $matches)) {
 			$html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
 
@@ -627,6 +636,51 @@ function tidy_html ($html, $linebreaks = true)
 			}
 
 			$html_left .= substr($html_right, $first, $j-$first)."</quote>";
+			$html_left = tidy_html($html_left);
+			$html_right = substr($html_right, $j + strlen("</div>"));
+
+		} else {
+			$html_left .= substr($html_right, $pos, 1);
+			$html_right = substr($html_right, $pos + 1);
+		}
+	}
+	$html = $html_left.$html_right;
+
+	// make <spoiler>..</spoiler> tag
+	$html_left = "";
+	$html_right = $html;
+	while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"spoiler\"><b>")) > -1) {
+		$html_left .= substr($html_right, 0, $pos);
+		$matches = array();
+
+		if (preg_match("/^<div class=\"quotetext\" id=\"spoiler\"><b>.*?<\/b><\/div>\s*<div class=\"spoiler\">.*<\/div>/is",
+						substr($html_right, $pos), $matches)) {
+			$html_left .= "<spoiler>";
+
+			$search = "class=\"spoiler\"";
+			$j = strpos($html_right, $search);
+
+			$first = $j + strlen($search) + 1;
+			$open_num = 1;
+			while (1 != 2) {
+				$open = strpos($html_right, "<div", $j);
+				$close = strpos($html_right, "</div>", $j);
+				if (!is_integer($open)) {
+					$open = $close+1;
+				}
+				if ($close < $open && $open_num == 1) {
+					$j = $close;
+					break;
+				} else if ($close < $open) {
+					$open_num--;
+					$open = $close;
+				} else {
+					$open_num++;
+				}
+				$j = $open+1;
+			}
+
+			$html_left .= substr($html_right, $first, $j-$first)."</spoiler>";
 			$html_left = tidy_html($html_left);
 			$html_right = substr($html_right, $j + strlen("</div>"));
 

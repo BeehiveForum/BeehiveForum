@@ -153,6 +153,10 @@ A                   { background-color: transparent; color: #$text_colour[body];
 .quote              { font-family: Verdana, Arial, Helvetica, sans-serif; border: 1px solid #CCCCCC; background-color: #EEEEEE;
                       margin-top: 0px; margin-bottom: 10px; margin-left: 40px; margin-right: 10px; padding: 3px; }
 
+.spoiler			{ font-family: Verdana, Arial, Helvetica, sans-serif; border: 1px solid #CCCCCC; color: #EEEEEE; 
+					  background-color: #EEEEEE; margin-top: 0px; margin-bottom: 10px; margin-left: 40px; margin-right: 10px;
+					  padding: 3px; }
+
 .tools              { margin: 0; margin-bottom: 3px; padding: 2px; text-align:left; display: none; }
 
 .tools_up           { border: 1px solid #$elements[threads]; margin: 1; float:left; width:18px; height:18px; }

@@ -76,6 +76,7 @@ class TextAreaHTML {
         $str.= $this->_tb_img($lang['indenttext'], "add_tag('blockquote', null, null, true);", "block_quote_button.png");
         $str.= $this->_tb_img($lang['code'], "add_tag('code', null, null, true);", "code_button.png");
         $str.= $this->_tb_img($lang['quote'], "add_tag('quote', 'source', '', true);", "quote_button.png");
+        $str.= $this->_tb_img($lang['spoiler'], "add_tag('spoiler', null, null, true);", "spoiler_button.png");
         $str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);", "horizontal_rule_button.png");
         $str.= $this->_tb_img($lang['image'], "add_image();", "image_button.png");
         $str.= $this->_tb_img($lang['hyperlink'], "add_link();", "link_button.png");
@@ -136,9 +137,9 @@ class TextAreaHTML {
 
         $this->tas[] = $name;
 
-        $custom_html.= " onKeyPress=\"active_text(this);\" onKeyDown=\"active_text(this);\" onKeyUp=\"active_text(this);\" onClick=\"active_text(this);\" onChange=\"active_text(this);\" onSelect=\"active_text(this);\"";
+        $custom_html.= " onKeyPress=\"active_text(this);\" onKeyDown=\"active_text(this);\" onKeyUp=\"active_text(this);\" onClick=\"active_text(this);\" onChange=\"active_text(this);\" onSelect=\"active_text(this);\" onDblClick=\"active_text(this, true);\"";
 
-        $str = "<div style=\"display: none\">&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;&amp;#9999;</div>";
+        $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
         $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html);
 
         return $str;

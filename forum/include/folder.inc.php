@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.67 2004-05-20 22:17:49 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.68 2004-05-23 12:33:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -88,24 +88,10 @@ function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_
 
     list($new_pos) = db_fetch_array($result, MYSQL_NUM);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
-    $sql.= "VALUES ('$title', '$description', $allowed_types, $new_pos)";
+    $sql = "INSERT INTO {$table_data['PREFIX']}FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION, PERM) ";
+    $sql.= "VALUES ('$title', '$description', '$allowed_types', '$new_pos', '$permissions')";
 
-    $result = db_query($sql, $db_folder_create);
-
-    if ($result) {
-
-        $new_fid = db_insert_id($db_folder_create);
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
-        $sql.= "VALUES (0, '$new_fid', $permissions)";
-
-        $result = db_query($sql, $db_folder_create);
-
-        return $new_fid;
-    }
-
-    return false;
+    return db_query($sql, $db_folder_create);
 }
 
 function folder_delete($fid)
@@ -177,12 +163,15 @@ function folder_get_available()
 
     $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = FOLDER.FID) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 OR GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "ORDER BY FOLDER.FID ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_USERS.GID = GROUP_PERMS.GID) ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 AND GROUP_PERMS.PERM IS NOT NULL) ";
+    $sql.= "OR (FOLDER.PERM & $access_allowed > 0 AND FOLDER.PERM IS NOT NULL AND GROUP_PERMS.PERM IS NULL) ";
+    $sql.= "OR (FOLDER.PERM IS NULL AND GROUP_PERMS.PERM IS NULL) ";
+    $sql.= "GROUP BY GROUP_PERMS.PERM, FOLDER.PERM, FOLDER.FID ";
+    $sql.= "ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_folder_get_available);
 

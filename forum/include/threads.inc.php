@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.119 2004-05-20 16:14:09 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.120 2004-05-23 12:33:55 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -101,7 +101,6 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
 
 function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
-
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
 
@@ -124,12 +123,9 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -169,12 +165,9 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -212,12 +205,9 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql .= "JOIN {$table_data['PREFIX']}POST POST2 ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND USER.uid = POST2.from_uid ";
@@ -260,12 +250,9 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -303,14 +290,11 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -348,14 +332,11 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -393,14 +374,11 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -441,12 +419,9 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -487,12 +462,9 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -534,12 +506,9 @@ function threads_get_polls($uid, $start = 0)
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND THREAD.poll_flag = 'Y' ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -581,12 +550,9 @@ function threads_get_sticky($uid, $start = 0)
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -628,12 +594,9 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
-    $sql .= "AND GROUP_PERMS.FID IN (0, $folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
@@ -672,8 +635,6 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "JOIN {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($fid) ";
@@ -752,6 +713,7 @@ function threads_process_list($resource_id)
     // Default to returning no threads.
 
     $lst = 0;
+    $folder = 0;
     $folder_order = 0;
 
     // Check that the set of threads returned is not empty
@@ -762,6 +724,7 @@ function threads_process_list($resource_id)
         // that folder to be first in the list
 
         if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+            $folder = $_GET['folder'];
             $folder_order = array($_GET['folder']);
         }
 
@@ -773,22 +736,22 @@ function threads_process_list($resource_id)
 
             if (!isset($thread['relationship'])) $thread['relationship'] = 0;
 
-            // If this folder ID has not been encountered before,
-            // make it the next folder in the order to be displayed
-
-            if (!is_array($folder_order)) {
-                $folder_order = array($thread['fid']);
-            }else{
-                if (!in_array($thread['fid'], $folder_order)) {
-                    $folder_order[] = $thread['fid'];
-                }
-            }
-
             // If the thread has been started by someone in our ignore list
             // and there are currently no replies (length of 1) then we don't
             // want to display it.
 
-            if (!($thread['relationship'] & USER_IGNORED) || $thread['length'] > 1) {
+            if (!($thread['relationship'] & USER_IGNORED) || $thread['length'] > 1 || $thread['fid'] == $folder) {
+
+                // If this folder ID has not been encountered before,
+                // make it the next folder in the order to be displayed
+
+                if (!is_array($folder_order)) {
+                    $folder_order = array($thread['fid']);
+                }else{
+                    if (!in_array($thread['fid'], $folder_order)) {
+                        $folder_order[] = $thread['fid'];
+                    }
+                }
 
                 if (!is_array($lst)) $lst = array();
 

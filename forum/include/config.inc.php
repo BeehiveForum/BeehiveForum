@@ -66,4 +66,16 @@ $attachment_dir = 'attachments';
 
 // ---------------------------------------------------------------------
 
+
+// GZIP Output Compression ---------------------------------------------
+
+// This compresses the output of the PHP scripts using GZIP encoding.
+// Compressing the output of the scripts can save you considerable
+// amounts of bandwidth, but can also increase the CPU load on the
+// server
+
+// To disable GZIP compression change the variable below to false
+
+$gzip_compress_output = true;
+
 ?>

@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 // header.inc.php:
 // Functions for manipulating the HTTP header
 // These must be called BEFORE anything is output to the page - including blank lines outside PHP

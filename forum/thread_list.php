@@ -23,6 +23,9 @@ USA
 
 // THREAD LIST DISPLAY
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 // Require functions
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions

@@ -26,6 +26,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING

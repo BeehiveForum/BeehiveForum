@@ -23,6 +23,9 @@ USA
 
 // Frameset for thread list and messages
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");

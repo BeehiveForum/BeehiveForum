@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.29 2005-03-20 17:53:30 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.30 2005-03-20 21:46:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -259,7 +259,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if ($folder_dropdown = folder_draw_dropdown($folder_data['FID'], "move")) {
+if ($folder_dropdown = folder_draw_dropdown($folder_data['FID'], "move", "", FOLDER_ALLOW_ALL_THREAD, "", "post_folder_dropdown")) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";

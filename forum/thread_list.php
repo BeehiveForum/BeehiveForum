@@ -204,32 +204,35 @@ if (isset($HTTP_GET_VARS['msg'])) {
     $threadvisible = false;
 
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+
+    if(thread_can_view($tid,$HTTP_COOKIE_VARS['bh_sess_uid'])){
     
-    list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'],
-         $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
-    
-    $thread['title'] = _stripslashes($thread['title']);
-    
-    if ($thread['tid'] == $tid) {
-    
-      if (in_array($thread['fid'], $folder_order)) {
-        array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
-      }
-      
-      array_unshift($folder_order, $thread['fid']);
-      
-      for ($i = 0; $i < sizeof($thread_info); $i++) {
-      
-        if ($thread_info[$i]['tid'] == $tid) {
-          $thread_info = array_merge(array_splice($thread_info, $i, 1), $thread_info);
-          $threadvisible = true;
-        }
-        
-      }
-            
-      if (!$threadvisible && is_array($thread_info)) array_unshift($thread_info, $thread);
-      
-    }
+		list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'],
+			 $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
+		
+		$thread['title'] = _stripslashes($thread['title']);
+		
+		if ($thread['tid'] == $tid) {
+		
+		  if (in_array($thread['fid'], $folder_order)) {
+			array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
+		  }
+		  
+		  array_unshift($folder_order, $thread['fid']);
+		  
+		  for ($i = 0; $i < sizeof($thread_info); $i++) {
+		  
+			if ($thread_info[$i]['tid'] == $tid) {
+			  $thread_info = array_merge(array_splice($thread_info, $i, 1), $thread_info);
+			  $threadvisible = true;
+			}
+			
+		  }
+				
+		  if (!$threadvisible && is_array($thread_info)) array_unshift($thread_info, $thread);
+		  
+		}
+	}
     
 }
 

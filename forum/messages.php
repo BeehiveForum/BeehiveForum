@@ -63,7 +63,15 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
 }
 
 list($tid, $pid) = explode('.', $msg);
+if ($tid == '') $tid = 1;
 if ($pid == '') $pid = 1;
+
+if(!thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])){
+	html_draw_top();
+	echo "<h2>Access denied</h2>";
+	html_draw_bottom();
+	exit;
+}
 
 // Poll stuff
 

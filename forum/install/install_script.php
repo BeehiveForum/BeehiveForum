@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.19 2004-08-17 21:08:09 tribalonline Exp $ */
+/* $Id: install_script.php,v 1.20 2004-08-22 10:30:10 rowan_hill Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -634,21 +634,21 @@ if(!$result = mysql_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, '{$forum_webtag}_style', 'default');";
+$sql.= "VALUES (1, 'default_style', 'default');";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, '{$forum_webtag}_emoticon', 'default');";
+$sql.= "VALUES (1, 'default_emoticon', 'default');";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;
 }
 
 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-$sql.= "VALUES (1, '{$forum_webtag}_language', 'en');";
+$sql.= "VALUES (1, 'default_language', 'en');";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.224 2005-02-09 23:50:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.225 2005-02-14 16:03:58 decoyduck Exp $ */
 
 // International English language file
 
@@ -885,6 +885,7 @@ $lang['larger'] = "Larger";
 $lang['faq'] = "FAQ";
 $lang['docs'] = "Docs";
 $lang['support'] = "Support";
+$lang['donateexcmark'] = "Donate!";
 $lang['threadcouldnotbefound'] = "The requested thread could not be found or access was denied.";
 $lang['mustselectpolloption'] = "You must select an option to vote for!";
 $lang['mustvoteforallgroups'] = "You must vote in every group.";
@@ -920,6 +921,7 @@ $lang['approvalrequired'] = "Approval Required";
 $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['approvepost'] = "Approve post for display";
+$lang['approvedpost'] = "Approved post";
 $lang['approvedcaps'] = "APPROVED";
 
 // Navigation strip (nav.php) ------------------------------------------

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.86 2005-02-14 13:21:58 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.87 2005-02-14 16:03:58 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -642,6 +642,111 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     return $attachment_link;
 }
 
+// Based function is based on code listed at:
+// http://uk.php.net/manual/en/function.gd-info.php
+
+function attachments_get_gd_info()
+{
+    $get_gd_info = array('GD Version'         => "", 'FreeType Support' => 0,
+                         'FreeType Support'   => 0,  'FreeType Linkage' => "",
+                         'T1Lib Support'      => 0,  'GIF Read Support' => 0,
+                         'GIF Create Support' => 0,  'JPG Support' => 0,
+                         'PNG Support'        => 0,  'WBMP Support' => 0,
+                         'XBM Support'        => 0);
+    $gif_support = 0;
+
+    ob_start();
+    eval("phpinfo();");
+    $php_info = ob_get_contents();
+    ob_end_clean();
+
+    foreach (explode("\n", $php_info) as $line) {
+
+        if (strpos($line, "GD Version") !== false) {
+            $get_gd_info["GD Version"] = preg_replace("/[^0-9|\.]/", "", trim(str_replace("GD Version", "", strip_tags($line))));
+        }
+
+        if (strpos($line, "FreeType Support") !== false) {
+            $get_gd_info["FreeType Support"] = trim(str_replace("FreeType Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "FreeType Linkage") !== false) {
+            $get_gd_info["FreeType Linkage"] = trim(str_replace("FreeType Linkage", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "T1Lib Support") !== false) {
+            $get_gd_info["T1Lib Support"] = trim(str_replace("T1Lib Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "GIF Read Support") !== false) {
+            $get_gd_info["GIF Read Support"] = trim(str_replace("GIF Read Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "GIF Create Support") !== false) {
+            $get_gd_info["GIF Create Support"] = trim(str_replace("GIF Create Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "GIF Support") !== false) {
+            $gif_support = trim(str_replace("GIF Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "JPG Support") !== false) {
+            $get_gd_info["JPG Support"] = trim(str_replace("JPG Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "PNG Support") !== false) {
+            $get_gd_info["PNG Support"] = trim(str_replace("PNG Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "WBMP Support") !== false) {
+            $get_gd_info["WBMP Support"] = trim(str_replace("WBMP Support", "", strip_tags($line)));
+        }
+
+        if (strpos($line, "XBM Support") !== false) {
+            $get_gd_info["XBM Support"] = trim(str_replace("XBM Support", "", strip_tags($line)));
+        }
+    }
+
+    if ($gif_support === "enabled") {
+        $get_gd_info["GIF Read Support"]  = 1;
+        $get_gd_info["GIF Create Support"] = 1;
+    }
+
+    if ($get_gd_info["FreeType Support"] === "enabled") {
+        $get_gd_info["FreeType Support"] = 1;
+    }
+
+    if ($get_gd_info["T1Lib Support"] === "enabled") {
+        $get_gd_info["T1Lib Support"] = 1;
+    }
+
+    if ($get_gd_info["GIF Read Support"] === "enabled") {
+        $get_gd_info["GIF Read Support"] = 1;
+    }
+
+    if ($get_gd_info["GIF Create Support"] === "enabled") {
+        $get_gd_info["GIF Create Support"] = 1;
+    }
+
+    if ($get_gd_info["JPG Support"] === "enabled") {
+        $get_gd_info["JPG Support"] = 1;
+    }
+
+    if ($get_gd_info["PNG Support"] === "enabled") {
+        $get_gd_info["PNG Support"] = 1;
+    }
+
+    if ($get_gd_info["WBMP Support"] === "enabled") {
+        $get_gd_info["WBMP Support"] = 1;
+    }
+
+    if ($get_gd_info["XBM Support"] === "enabled") {
+        $get_gd_info["XBM Support"] = 1;
+    }
+
+   return $get_gd_info;
+}
+
 function attachment_create_thumb($filepath)
 {
     // We're only going to support GIF, JPEG and PNG
@@ -654,37 +759,51 @@ function attachment_create_thumb($filepath)
                                       2 => 'imagejpeg',
                                       3 => 'imagepng');
 
+    $required_read_support    = array(1 => 'GIF Read Support',
+                                      2 => 'JPG Support',
+                                      3 => 'PNG Support');
+
+    $required_write_support   = array(1 => 'GIF Create Support',
+                                      2 => 'JPG Support',
+                                      3 => 'PNG Support');
+
     if (file_exists($filepath) && @$image_info = getimagesize($filepath)) {
 
-        if (function_exists($required_read_functions[$image_info[2]])
-            && function_exists($required_write_functions[$image_info[2]])
-            && function_exists('imagecreatetruecolor')) {
+        if ($attachment_gd_info = attachments_get_gd_info()) {
 
-            if ($src = $required_read_functions[$image_info[2]]($filepath)) {
+            if ($attachment_gd_info[$required_read_support[$image_info[2]]] == 1
+                && $attachment_gd_info[$required_write_support[$image_info[2]]] == 1
+                && function_exists($required_read_functions[$image_info[2]])
+                && function_exists($required_write_functions[$image_info[2]])) {
 
-                $target_width  = $image_info[0];
-                $target_height = $image_info[1];
+                if ($src = $required_read_functions[$image_info[2]]($filepath)) {
 
-                while ($target_width > 150 || $target_height > 150) {
+                    $target_width  = $image_info[0];
+                    $target_height = $image_info[1];
 
-                    $target_width--;
-                    $target_height = $target_width * ($image_info[1] / $image_info[0]);
+                    while ($target_width > 150 || $target_height > 150) {
+
+                        $target_width--;
+                        $target_height = $target_width * ($image_info[1] / $image_info[0]);
+                    }
+
+                    if (strcmp($attachment_gd_info['GD Version'], '2.0') > -1) {
+
+                        $dst = imagecreatetruecolor($target_width, $target_height);
+
+                        imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
+                                           $target_height, $image_info[0], $image_info[1]);
+
+                    }else {
+
+                        $dst = imagecreate($target_width, $target_height);
+
+                        imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
+                                         $target_height, $image_info[0], $image_info[1]);
+                    }
+
+                    return $required_write_functions[$image_info[2]]($dst, "$filepath.thumb");
                 }
-
-                $dst = imagecreatetruecolor($target_width, $target_height);
-
-                if (function_exists('imagecopyresampled')) {
-
-                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
-                                       $target_height, $image_info[0], $image_info[1]);
-
-                }else {
-
-                    imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
-                                     $target_height, $image_info[0], $image_info[1]);
-                }
-
-                return $required_write_functions[$image_info[2]]($dst, "$filepath.thumb");
             }
         }
     }

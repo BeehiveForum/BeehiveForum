@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.149 2004-12-06 23:56:01 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.150 2004-12-07 23:34:00 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -38,10 +38,21 @@ function threads_get_folders()
     if (!$table_data = get_table_prefix()) return false;
     if (!is_numeric($access_allowed)) return false;
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "USER_FOLDER.INTEREST FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID, USER_FOLDER.INTEREST DESC";
 
     $result = db_query($sql, $db_threads_get_folders);
@@ -50,29 +61,42 @@ function threads_get_folders()
 
         $folder_info = array();
 
-        while ($folder_data = db_fetch_array($result)) {
+        while($row = db_fetch_array($result)) {
 
-            if (!isset($folder_data['INTEREST'])) $folder_data['INTEREST'] = 0;
-            if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
-            if (!isset($folder_data['ALLOWED_TYPES']) || is_null($folder_data['ALLOWED_TYPES'])) $folder_data['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
+            if ($row['USER_PERM_COUNT'] > 0) {
 
-            if ($folder_status = perm_get_user_folder_perms($uid, $folder_data['FID'])) {
+                $status = $row['USER_STATUS'];
 
-                $folder_data['STATUS'] = $folder_status['STATUS'];
+            }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+
+                $status = $row['FOLDER_PERMS'];
 
             }else {
 
-                $folder_data['STATUS'] = (double)USER_PERM_POST_READ | USER_PERM_POST_CREATE;
-                $folder_data['STATUS'] = (double)$folder_data['STATUS'] | USER_PERM_THREAD_CREATE | USER_PERM_POST_EDIT;
-                $folder_data['STATUS'] = (double)$folder_data['STATUS'] | USER_PERM_POST_DELETE | USER_PERM_POST_ATTACHMENTS;
-                $folder_data['STATUS'] = (double)$folder_data['STATUS'] | USER_PERM_GUEST_ACCESS;
+                $status = (double)USER_PERM_POST_READ | USER_PERM_POST_CREATE;
+                $status = (double)$status | USER_PERM_THREAD_CREATE | USER_PERM_POST_EDIT;
+                $status = (double)$status | USER_PERM_POST_DELETE | USER_PERM_POST_ATTACHMENTS;
             }
 
-            if (($folder_data['STATUS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
+            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
 
-                if (($folder_data['STATUS'] & $access_allowed) > 0) {
+                if (($status & $access_allowed) > 0) {
 
-                    $folder_info[$folder_data['FID']] = $folder_data;
+                    if (isset($row['INTEREST'])) {
+
+                        $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
+                                                          'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                          'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                          'INTEREST'      => $row['INTEREST'],
+                                                          'STATUS'        => $status);
+                    }else {
+
+                        $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
+                                                          'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
+                                                          'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
+                                                          'INTEREST'      => 0,
+                                                          'STATUS'        => $status);
+                    }
                 }
             }
         }

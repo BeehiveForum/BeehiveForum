@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.73 2004-02-22 15:24:39 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.74 2004-02-27 22:00:32 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -78,21 +78,22 @@ function bh_session_check()
 
 	    if (isset($user_sess['UID']) && $user_sess['UID'] == 0) {
 
-                $guest_user_sess = array('UID'            => 0,
-                                         'LOGON'          => 'GUEST',
-                                         'PASSWD'         => md5('GUEST'),
-                                         'STATUS'         => 0,
-                                         'POSTS_PER_PAGE' => 5,
-                                         'TIMEZONE'       => 0,
-                                         'DL_SAVING'      => 0,
-                                         'MARK_AS_OF_INT' => 0,
-                                         'FONT_SIZE'      => 10,
-                                         'STYLE'          => $default_style,
-                                         'VIEW_SIGS'      => 0,
-                                         'START_PAGE'     => 0,
-                                         'LANGUAGE'       => $default_language,
-                                         'PM_NOTIFY'      => 'N',
-                                         'SHOW_STATS'     => 1);
+                $guest_user_sess = array('UID'             => 0,
+                                         'LOGON'           => 'GUEST',
+                                         'PASSWD'          => md5('GUEST'),
+                                         'STATUS'          => 0,
+                                         'POSTS_PER_PAGE'  => 5,
+                                         'TIMEZONE'        => 0,
+                                         'DL_SAVING'       => 0,
+                                         'MARK_AS_OF_INT'  => 0,
+                                         'FONT_SIZE'       => 10,
+                                         'STYLE'           => $default_style,
+                                         'VIEW_SIGS'       => 0,
+                                         'START_PAGE'      => 0,
+                                         'LANGUAGE'        => $default_language,
+                                         'PM_NOTIFY'       => 'N',
+                                         'SHOW_STATS'      => 1,
+                                         'IMAGES_TO_LINKS' => 'N');
 
 		$user_sess = array_merge($user_sess, $guest_user_sess);
 	    }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.4 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.5 2004-02-27 22:00:13 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -135,6 +135,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }else {
         $user_prefs['MARK_AS_OF_INT'] = "";
     }
+    
+    if (isset($HTTP_POST_VARS['images_to_links']) && $HTTP_POST_VARS['images_to_links'] == "Y") {
+        $user_prefs['IMAGES_TO_LINKS'] = "Y";
+    }else {
+        $user_prefs['IMAGES_TO_LINKS'] = "";
+    }    
 
     if (isset($HTTP_POST_VARS['show_stats']) && $HTTP_POST_VARS['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = 1;
@@ -326,6 +332,9 @@ echo "                    <td>", form_checkbox("pm_notify", "Y", $lang['notifyof
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td>", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>", form_checkbox("images_to_links", "Y", $lang['convertimagestolinks'], (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1) ? true : false), "</td>\n";

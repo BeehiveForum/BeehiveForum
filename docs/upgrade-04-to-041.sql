@@ -4,7 +4,7 @@
 #
 # Generation Time: Nov 09, 2003 at 03:58 PM
 #
-# $Id: upgrade-04-to-041.sql,v 1.1 2004-02-13 01:14:12 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.2 2004-02-27 22:00:13 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -13,3 +13,6 @@ UPDATE THREAD SET ADMIN_LOCK = 0 WHERE 1;
 
 ALTER TABLE PM ADD NOTIFIED TINYINT UNSIGNED DEFAULT '0' NOT NULL;
 UPDATE PM SET NOTIFIED = 1 WHERE TYPE > 1;
+
+ALTER TABLE POLL_VOTES DROP VOTES;
+ALTER TABLE USER_PREFS ADD IMAGES_TO_LINKS CHAR(1);

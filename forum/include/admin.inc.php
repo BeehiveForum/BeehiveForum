@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.6 2003-08-01 20:53:00 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.7 2003-08-01 21:06:03 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -74,6 +74,51 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
 	return $admin_log_array;
     }else {
         return false;
+    }
+}
+
+function admin_get_word_filter()
+{
+    $db_admin_get_word_filter = db_connect();
+
+    $sql = "SELECT FILTER FROM ". forum_table("FILTER_LIST");
+    $result = db_query($sql, $db_admin_get_word_filter);
+
+    $filter_array = array();
+
+    while($row = db_fetch_array($result)) {
+      $filter_array[] = $row['FILTER'];
+    }
+
+    return $filter_array;
+}
+
+function admin_clear_word_filter()
+{
+    $db_admin_clear_word_filter = db_connect();
+
+    $sql = "DELETE FROM ". forum_table("FILTER_LIST");
+    return db_query($sql, $db_admin_clear_word_filter);
+}
+
+function admin_save_word_filter($filter)
+{
+    admin_clear_word_filter();
+
+    $db_admin_save_word_filter = db_connect();
+
+    $filter_array = explode("\n", $filter);
+
+    for ($i = 0; $i < sizeof($filter_array); $i++) {
+
+       if (substr($filter_array[$i], 0, 1) == '/' && substr($filter_array[$i], -1) == '/') {
+           $filter_array[$i] = substr($filter_array[$i], 1, -1);
+       }
+
+       $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (FILTER) ";
+       $sql.= "VALUES ('". $filter_array[$i]. "')";
+
+       $result = db_query($sql, $db_admin_save_word_filter);
     }
 }
 

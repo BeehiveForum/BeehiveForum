@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.61 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.62 2004-04-20 10:01:24 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/perm.inc.php");
@@ -34,9 +34,9 @@ function get_attachments($uid, $aid)
 
     if (!is_numeric($uid)) return false;
     if (!is_md5($aid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
@@ -47,7 +47,7 @@ function get_attachments($uid, $aid)
     while($row = db_fetch_array($result)) {
 
         if (!is_array($userattachments)) $userattachments = array();
-        
+
         if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
@@ -71,9 +71,9 @@ function get_all_attachments($uid, $aid)
 
     if (!is_numeric($uid)) return false;
     if (!is_md5($aid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
@@ -107,9 +107,9 @@ function get_users_attachments($uid)
     $db_get_users_attachments = db_connect();
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return $userattachments;
-    
+
     $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
@@ -120,7 +120,7 @@ function get_users_attachments($uid)
     while($row = db_fetch_array($result)) {
 
         if (!is_array($userattachments)) $userattachments = array();
-        
+
         if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
@@ -148,14 +148,14 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
 
     $filename = addslashes($filename);
     $mimetype = addslashes($mimetype);
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $sql = "INSERT INTO {$table_data['PREFIX']}POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
 
     $result = db_query($sql, $db_add_attachment);
-        
+
     return $result;
 }
 
@@ -167,9 +167,9 @@ function delete_attachment($uid, $hash)
     $db_delete_attachment = db_connect();
 
     if(!$table_data = get_table_prefix()) return false;
-    
+
     $forum_settings = get_forum_settings();
-   
+
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     // Fetch the attachment to make sure the user
@@ -178,17 +178,23 @@ function delete_attachment($uid, $hash)
     $sql = "SELECT PAF.AID, PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
     $sql.= "ON (PAI.AID = PAF.AID) WHERE PAF.HASH = '$hash' AND PAF.UID = '$uid'";
-    
+
     $result = db_query($sql, $db_delete_attachment);
-    
+
     if (db_num_rows($result) > 0 || perm_is_moderator()) {
 
         $row = db_fetch_array($result);
 
 	// Mark the related post as edited
-	
+
 	if (isset($row['TID']) && isset($row['PID'])) {
+
 	    post_add_edit_text($row['TID'], $row['PID']);
+
+	    if (perm_is_moderator()) {
+
+	        admin_addlog(0, 0, $row['TID'], $row['TID'], 0, 0, 34);
+	    }
 	}
 
 	// Delete the attachment record from the database
@@ -219,7 +225,7 @@ function delete_attachment($uid, $hash)
 	// Finally delete the file
 
         @unlink("$attachment_dir/$hash");
-    }    
+    }
 }
 
 function get_free_attachment_space($uid)
@@ -229,9 +235,9 @@ function get_free_attachment_space($uid)
     $db_get_free_attachment_space = db_connect();
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return 0;
-    
+
     $forum_settings = get_forum_settings();
 
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
@@ -245,7 +251,7 @@ function get_free_attachment_space($uid)
             $used_attachment_space += filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']);
         }
     }
-    
+
     if (($max_attachment_space - $used_attachment_space) < 0) return 0;
     return $max_attachment_space - $used_attachment_space;
 }
@@ -256,7 +262,7 @@ function get_attachment_id($tid, $pid)
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS WHERE TID = '$tid' AND PID = '$pid'";
@@ -278,7 +284,7 @@ function get_pm_attachment_id($mid)
     $db_get_pm_attachment_id = db_connect();
 
     if (!is_numeric($mid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT AID FROM {$table_data['PREFIX']}PM_ATTACHMENT_IDS WHERE MID = '$mid'";
@@ -300,7 +306,7 @@ function get_message_link($aid)
     $db_get_message_link = db_connect();
 
     if (!is_md5($aid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $webtag = get_webtag();
@@ -333,7 +339,7 @@ function get_num_attachments($aid)
     $db_get_num_attachments = db_connect();
 
     if (!is_md5($aid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE AID = '$aid'";
@@ -347,7 +353,7 @@ function get_attachment_by_hash($hash)
     $db_get_attachment_by_hash = db_connect();
 
     if (!is_md5($hash)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
@@ -365,7 +371,7 @@ function attachment_inc_dload_count($hash)
     $db_attachment_inc_dload_count = db_connect();
 
     if (!is_md5($hash)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
@@ -381,11 +387,11 @@ function attachment_embed_check($content)
 {
     if (forum_get_setting('attachments_allow_embed', 'Y', false)) return false;
     $content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
-    
+
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $content_check)) {
         return true;
     }
-    
+
     return false;
 }
 

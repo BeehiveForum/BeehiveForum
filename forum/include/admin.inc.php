@@ -21,28 +21,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.34 2004-04-17 17:39:28 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.35 2004-04-20 10:01:23 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
     $db_admin_addlog = db_connect();
     $admin_uid = bh_session_get_value('UID');
 
-    $uid    = addslashes($uid);
-    $tid    = addslashes($tid);
-    $pid    = addslashes($pid);
-    $psid   = addslashes($psid);
-    $piid   = addslashes($piid);
-    $action = addslashes($action);
-    
-    if (!$table_data = get_table_prefix()) return false;
+    if (perm_is_moderator()) {
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
-    $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
+        $uid    = addslashes($uid);
+        $tid    = addslashes($tid);
+        $pid    = addslashes($pid);
+        $psid   = addslashes($psid);
+        $piid   = addslashes($piid);
+        $action = addslashes($action);
 
-    $result = db_query($sql, $db_admin_addlog);
+        if (!$table_data = get_table_prefix()) return false;
 
-    return $result;
+        $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
+        $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
+
+        $result = db_query($sql, $db_admin_addlog);
+
+        return $result;
+    }
 }
 
 function admin_clearlog()
@@ -52,7 +55,7 @@ function admin_clearlog()
     if ((bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 
         if (!$table_data = get_table_prefix()) return false;
-        
+
         $sql = "DELETE FROM {$table_data['PREFIX']}ADMIN_LOG";
 	$result = db_query($sql, $db_admin_clearlog);
     }
@@ -64,12 +67,12 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
 
     $sort_array = array('ADMIN_LOG.LOG_TIME', 'ADMIN_LOG.ADMIN_UID', 'ADMIN_LOG.ACTION');
 
-    $admin_log_array = array();                                         
+    $admin_log_array = array();
 
     if (!is_numeric($offset)) $offset = 0;
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
-    
+
     if (!$table_data = get_table_prefix()) return array('admin_log_count' => 0,
                                                         'admin_log_array' => array());
 
@@ -106,7 +109,7 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
 function admin_get_word_filter()
 {
     $db_admin_get_word_filter = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return array();
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
@@ -126,19 +129,19 @@ function admin_delete_word_filter($id)
     if (!is_numeric($id)) return false;
 
     $db_user_delete_word_filter = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE ID = '$id' AND UID = 0";
-    
+
     $result = db_query($sql, $db_user_delete_word_filter);
 }
 
 function admin_clear_word_filter()
 {
     $db_admin_clear_word_filter = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
@@ -151,8 +154,8 @@ function admin_add_word_filter($match, $replace, $filter_option)
     $replace = addslashes($replace);
 
     $db_admin_add_word_filter = db_connect();
-    $uid = bh_session_get_value('UID');    
-    
+    $uid = bh_session_get_value('UID');
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
@@ -165,9 +168,9 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
 {
     $db_user_search = db_connect();
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 
+    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS',
                         'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
-    
+
     $usersearch = addslashes($usersearch);
 
     if (!is_numeric($offset)) $offset = 0;
@@ -180,7 +183,7 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
 
     $result = db_query($sql, $db_user_search);
     $user_search_count = db_num_rows($result);
-    
+
     if ($table_data = get_table_prefix()) {
 
         $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
@@ -221,7 +224,7 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 
+    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS',
                         'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
 
     if (!is_numeric($offset)) $offset = 0;
@@ -233,7 +236,7 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
 
     $result = db_query($sql, $db_user_get_all);
     $user_get_all_count = db_num_rows($result);
-    
+
     if ($table_data = get_table_prefix()) {
 
         $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
@@ -270,11 +273,11 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
 function admin_session_end($uid)
 {
     $db_admin_session_end = db_connect();
-    
+
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $sql = "DELETE FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '{$table_data['FID']}'";
 
@@ -288,16 +291,16 @@ function admin_get_users_attachments($uid)
     $db_get_users_attachments = db_connect();
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return $userattachments;
-    
+
     $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);
 
     while($row = db_fetch_array($result)) {
-        
+
         if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
 
             if (!is_array($userattachments)) $userattachments = array();
@@ -321,12 +324,12 @@ function admin_get_forum_list()
     $get_forum_list_array = array();
 
     $sql = "SELECT * FROM FORUMS ORDER BY FID";
-    $result_forums = db_query($sql, $db_get_forum_list); 
+    $result_forums = db_query($sql, $db_get_forum_list);
 
-    while ($forum_data = db_fetch_array($result_forums)) {  
+    while ($forum_data = db_fetch_array($result_forums)) {
 
         // Get the Forum Name
-        
+
         $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
 	$sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
 
@@ -336,14 +339,14 @@ function admin_get_forum_list()
 
 	    $row = db_fetch_array($result_forum_name);
 	    $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
-	
+
 	}else {
 
 	    $forum_data['FORUM_NAME'] = "Unnamed Forum";
 	}
 
 	// Get the Description
-        
+
         $sql = "SELECT SVALUE AS DESCRIPTION FROM FORUM_SETTINGS WHERE ";
         $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
         $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
@@ -351,27 +354,27 @@ function admin_get_forum_list()
         $result_description = db_query($sql, $db_get_forum_list);
 
         if (db_num_rows($result_description)) {
-            
+
             $row = db_fetch_array($result_description);
             $forum_data['DESCRIPTION'] = $row['DESCRIPTION'];
-            
+
         }else{
-            
+
             $forum_data['DESCRIPTION'] = "";
         }
 
     	// Get number of messages on forum
-        
+
         $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
         $result_post_count = db_query($sql, $db_get_forum_list);
-        
+
         if (db_num_rows($result_post_count)) {
-        
+
             $row = db_fetch_array($result_post_count);
             $forum_data['MESSAGES'] = $row['POST_COUNT'];
-        
+
         }else {
-        
+
             $forum_data['MESSAGES'] = 0;
         }
 

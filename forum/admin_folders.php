@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.64 2004-04-17 18:40:59 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.65 2004-04-20 10:01:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,9 +51,9 @@ include_once("./include/session.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -71,7 +71,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -106,7 +106,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['t_fid'])) {
 
         foreach($_POST['t_fid'] as $fid => $value) {
-                
+
             $new_title  = trim(_stripslashes($_POST['t_title'][$fid]));
             $new_desc   = trim(_stripslashes($_POST['t_desc'][$fid]));
 
@@ -131,7 +131,7 @@ if (isset($_POST['submit'])) {
         $new_access = (is_numeric($_POST['t_access_new'])) ? $_POST['t_access_new'] : 0;
 	$new_allow  = (is_numeric($_POST['t_allow_new'])) ? $_POST['t_allow_new'] : 0;
 	$new_pos    = (isset($_POST['t_fid'])) ? sizeof($_POST['t_fid']) : 1;
-        
+
         $new_fid = folder_create($new_title, $new_access, $new_desc, $new_allow, $new_pos );
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
 
@@ -149,7 +149,7 @@ echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
-echo "              <table width=\"100%\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['position']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['foldername']}</td>\n";
@@ -203,7 +203,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\">{$lang['newcaps']}</td>\n";
 echo "                  <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 25, 32). "</td>\n";
 echo "                  <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
-echo "                  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked'])). "</td>\n";
+echo "                  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), 0). "</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                  <td align=\"left\">".form_dropdown_array("t_allow_new", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD)."</td>\n";
@@ -223,7 +223,7 @@ echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
-echo "    </tr>\n";  
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";;
 echo "</div>\n";

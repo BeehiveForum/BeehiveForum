@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.51 2004-04-17 18:41:00 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.52 2004-04-20 10:01:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,9 +49,9 @@ include_once("./include/session.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -69,7 +69,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -157,7 +157,7 @@ if ($sort_by == 'ADMIN_LOG.LOG_TIME' && $sort_dir == 'ASC') {
 
 if ($sort_by == 'ADMIN_LOG.ADMIN_UID' && $sort_dir == 'ASC') {
     echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&sort_by=ADMIN_UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
-}else {                                                                
+}else {
     echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&sort_by=ADMIN_UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
 }
 
@@ -183,7 +183,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
             $user = "<a href=\"admin_user.php?webtag=$webtag&uid=". $admin_log_entry['UID']. "\">";
             $user.= format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']). "</a>";
         }else {
-            $user = "{$lang['unknownuser']} (UID: ". $admin_log_entry['UID']. ")";
+            $user = "{$lang['unknownuser']} (UID: {$admin_log_entry['UID']})";
         }
 
         if (isset($admin_log_entry['FID']) && $admin_log_entry['FID'] > 0) {
@@ -203,25 +203,25 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         if (isset($admin_log_entry['FOLDER_TITLE']) && !empty($admin_log_entry['FOLDER_TITLE'])) {
             $folder_title = _stripslashes($admin_log_entry['FOLDER_TITLE']);
         }else {
-            $folder_title = "{$lang['unknown']} (FID: ". $admin_log_entry['FID']. ")";
+            $folder_title = "{$lang['unknown']} (FID: {$admin_log_entry['FID']})";
         }
 
         if (isset($admin_log_entry['THREAD_TITLE']) && !empty($admin_log_entry['THREAD_TITLE'])) {
             $thread_title = _stripslashes($admin_log_entry['THREAD_TITLE']);
         }else {
-            $thread_title = "{$lang['unknown']} (TID: ". $admin_log_entry['TID']. ")";
+            $thread_title = "{$lang['unknown']} (TID: {$admin_log_entry['TID']})";
         }
 
         if (isset($admin_log_entry['PS_NAME']) && !empty($admin_log_entry['PS_NAME'])) {
             $ps_name = _stripslashes($admin_log_entry['PS_NAME']);
         }else {
-            $ps_name = "{$lang['unknown']} (PSID: ". $admin_log_entry['PSID']. ")";
+            $ps_name = "{$lang['unknown']} (PSID: {$admin_log_entry['PSID']})";
         }
 
         if (isset($admin_log_entry['PI_NAME']) && !empty($admin_log_entry['PI_NAME'])) {
             $pi_name = _stripslashes($admin_log_entry['PI_NAME']);
         }else {
-            $pi_name = "{$lang['unknown']} (PIID: ". $admin_log_entry['PIID']. ")";
+            $pi_name = "{$lang['unknown']} (PIID: {$admin_log_entry['PIID']})";
         }
 
         switch ($admin_log_entry['ACTION']) {
@@ -324,6 +324,9 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
             case 33:
                 $action_text = "{$lang['threaddeleted']}: '$thread_title'";
                 break;
+            case 34:
+                $action_text = "{$lang['deleteduserattachmentfrompost']}: $tid.$pid";
+                break;
             default:
                 $action_text = "{$lang['unknown']}";
                 break;
@@ -355,10 +358,10 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">Pages: ";
+echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ";
 
 $page_count = ceil($admin_log_array['admin_log_count'] / 10);
-    
+
 if ($page_count > 1) {
 
     for ($page = 1; $page <= $page_count; $page++) {
@@ -384,7 +387,7 @@ if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && $admin_log_array) {
     echo "          ", form_submit('clear',$lang['clearlog']), "\n";
     echo "        </form>\n";
     echo "      </td>";
-    echo "    </tr>\n";    
+    echo "    </tr>\n";
 }
 
 echo "  </table>\n";

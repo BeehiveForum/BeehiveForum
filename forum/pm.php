@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.47 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: pm.php,v 1.48 2004-04-20 10:01:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,9 +50,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -70,7 +70,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -128,7 +128,7 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $folder = PM_FOLDER_INBOX;
 
 if (isset($_GET['folder'])) {
-        
+
     if ($_GET['folder'] == PM_FOLDER_SENT) {
         $folder = PM_FOLDER_SENT;
     }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
@@ -232,7 +232,7 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
     echo "    </tr>\n";
 
     foreach($pm_messages_array['message_array'] as $message) {
-        
+
         echo "    <tr>\n";
         echo "      <td class=\"postbody\">";
 
@@ -308,7 +308,7 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
     echo "    </tr>\n";
 
     // Fetch the free PM space and calculate it as a percentage.
-    
+
     $pm_free_space = pm_get_free_space();
     $max_pm_space = forum_get_setting('pm_max_user_space', false, 102400);
 
@@ -339,10 +339,10 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>";
-    echo "            <td align=\"center\">Pages: ";
+    echo "            <td class=\"postbody\" align=\"center\">{$lang['pages']}: ";
 
     $page_count = ceil($pm_messages_array['message_count'] / 10);
-    
+
     if ($page_count > 1) {
 
         for ($page = 1; $page <= $page_count; $page++) {

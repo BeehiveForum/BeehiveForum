@@ -1,7 +1,8 @@
 <?php
 
 /*======================================================================
-Copyright Ben Sekulowicz <me@beseku.com> 2002
+Copyright Ben Sekulowicz <me@beseku.com>, Chris Hodcroft
+<chris@hodcroft.net> 2002
 
 This file is part of Beehive.
 
@@ -23,7 +24,7 @@ USA
 
 // Included functions for displaying threads in the left frameset.
 
-include("include/db.inc.php");
+include("./include/db.inc.php");
 
 function threads_get_folders()
 {
@@ -32,11 +33,10 @@ function threads_get_folders()
 	$result = db_query($query, $db);
 
 	if (!db_num_rows($result)) {
-		 $row = 0;
+		 $folder_titles = FALSE;
 	} else {
 		while($query_data = db_fetch_array($result)) {
-			$fid = $query_data['FID'];
-			$folder_titles[$fid] = $query_data['TITLE'];
+			$folder_titles[$query_data['FID']] = $query_data['TITLE'];
 		}
 	}
 	
@@ -44,49 +44,113 @@ function threads_get_folders()
 	db_disconnect($db);
 }
 
-function threads_get_all($fid)
+function threads_get_all($uid) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
 	$db = db_connect();
-	$query = "SELECT TID, FID, TITLE, LENGTH, POLL_FLAG FROM THREAD WHERE FID = '$fid'";
-	$result = db_query($query, $db);
-
-	if (!db_num_rows($result)) {
-		 $row = 0;
-	} else {
-		 $row = 0;
-		while($query_data = db_fetch_array($result)) {
-			$tid[$row] = $query_data['TID'];
-			$thread_titles[$row] = $query_data['TITLE'];
-			$thread_length[$row] = $query_data['LENGTH'];
-			$is_poll[$row] = $query_data['POLL_FLAG'];
-			$row++;
-		}
-	}
 	
-	return array($tid, $thread_titles, $thread_length, $is_poll, $row);
+	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
+	// for threads with unread messages, so the UID needs to be passed to the function
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, THREAD.modified ";
+	$sql .= "FROM FOLDER, THREAD ";
+	$sql .= "LEFT JOIN USER_THREAD ON ";
+	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+	
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
 	db_disconnect($db);
 	
 }
 
-function threads_check_read($user, $check)
+function threads_get_unread($uid) // get unread messages for $uid
 {
 	$db = db_connect();
-
-	$query = "SELECT DISTINCT UID, TID, LAST_READ FROM USER_THREAD WHERE UID = '$user' AND TID = '$check'";
-	$result = db_query($query, $db);
-
-	if (!db_num_rows($result)) {
-		$seen = 0;
-		$last_read = 0;
-	} else {
-		$seen = 1;
-		while($query_data = db_fetch_array($result)) {
-			$last_read = $query_data['LAST_READ'];
-		}
-	}
 	
-	return array($seen, $last_read);
+	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
+	// for threads with unread messages, so the UID needs to be passed to the function
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, THREAD.modified ";
+	$sql .= "FROM FOLDER, THREAD ";
+	$sql .= "LEFT JOIN USER_THREAD ON ";
+	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+	
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
 	db_disconnect($db);
+	
+}
+
+function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
+{
+	// Loop through the results and construct an array to return
+	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
+		$thread = db_fetch_array($resource_id);
+
+		// If this folder ID has not been encountered before, make it the next folder in the order to be displayed
+		if (!isset($folder_order)) {
+			$folder_order[] = $thread['fid'];
+		} else {
+			if (!in_array($thread['fid'], $folder_order)) $folder_order[] = $thread['fid'];
+		}
+
+		$lst[$i]['tid'] = $thread['tid'];
+		$lst[$i]['fid'] = $thread['fid'];
+		$lst[$i]['title'] = $thread['title'];
+		$lst[$i]['length'] = $thread['length'];
+
+		if (isset($thread['last_read'])) { // special case - last_read may be NULL, in which case PHP will complain that the array index doesn't exist if we don't do this
+			$lst[$i]['last_read'] = $thread['last_read'];
+		} else {
+			$lst[$i]['last_read'] = 0;
+		}
+
+		$lst[$i]['modified'] = $thread['modified'];
+	}
+	return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
+}
+
+function threads_display_list($thread_info, $folder_order) // Displays the thread list when given an array of thread information and an array containing the desired order of folders
+{
+	// Get folder FIDs and titles
+	$folder_info = threads_get_folders();
+	if (!$folder_info) die ("Could not retrieve folder information");
+	
+	// Iterate through the information we've just got and display it in the right order
+	while (list($key1, $folder) = each($folder_order)) {
+		echo "<tr>\n";
+		echo "<td class=\"foldername\">\n";
+		echo "<img src=\"./images/folder.png\" alt=\"folder\" />\n";
+		echo $folder_info[$folder];
+		echo "</td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td class=\"threadname\">\n";
+		echo "<ul>\n";
+		while (list($key2, $thread) = each($thread_info)) {
+			if ($thread['fid'] == $folder) {
+				if ($thread['length'] == $thread['last_read']) {
+					$number = "[".$thread['length']."]";
+				} elseif ($thread['last_read'] == 0) {
+					$number = "[".$thread['length']." new]";
+				} else {
+					$new_posts = $thread['length'] - $thread['last_read'];
+					$number = "[".$new_posts." new of ".$thread['length']."]";
+				}
+				echo "<li>".$thread['title']." $number</li>\n";
+			}
+		}
+		reset($thread_info);
+		echo "</ul>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
 }
 	
 ?>

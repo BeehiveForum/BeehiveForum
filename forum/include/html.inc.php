@@ -30,7 +30,7 @@ function html_draw_top ()
 		<head>
 			<title>Project Beehive</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-			<link rel="stylesheet" href="./styles/style.css" type="text/css"/>
+			<link rel="stylesheet" href="./styles/master.css" type="text/css"/>
 		</head>
 		<body>
 <?

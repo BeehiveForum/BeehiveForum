@@ -29,7 +29,7 @@ USA
 // Connects to the database and returns the connection ID
 function db_connect ()
 {
-	require ("include/config.inc.php"); // requires database information
+	require ("./include/config.inc.php"); // requires database information
 	$connection_id = mysql_connect($db_server, $db_username, $db_password) or die(mysql_error());
 	mysql_select_db($db_database, $connection_id) or die(mysql_error());
 	return $connection_id;
@@ -45,8 +45,7 @@ function db_disconnect ($connection_id)
 // Executes a query on the database and returns a resource ID
 function db_query ($sql, $connection_id)
 {
-	$resource_id = mysql_query($sql, $connection_id)
-		or die("Invalid query:" . $sql);
+	$resource_id = mysql_query($sql, $connection_id) or die("Invalid query:" . $sql);
 	return $resource_id;
 }
 

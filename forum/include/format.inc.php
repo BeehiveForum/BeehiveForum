@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.58 2003-11-30 19:26:00 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.59 2003-12-01 21:37:54 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -169,11 +169,19 @@ function _htmlentities($text)
 {
     global $lang;
 
-    if (phpversion() >= "4.1.0") {
+    return htmlspecialchars($text);
+
+    // This bit below doesn't appear to work with
+    // all PHP versions (?) and causes strangeness
+    // with some character sets and non-alphanumeric
+    // characters including the euro and pound (£)
+    // sign.
+
+    /*if (phpversion() >= "4.1.0") {
         return htmlentities($text, ENT_COMPAT, strtoupper($lang['_charset']));
     }else {
         return htmlentities($text, ENT_COMPAT);
-    }
+    }*/
 }
 
 // Lazy reversal of _htmlentities

@@ -90,9 +90,12 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	return $messages;
 }
 
-function messages_top($foldertitle, $threadtitle)
+function messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
-    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle</p>";
+    echo "<p><img src=\"./images/folder.png\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"./images/high_interest.png\" alt=\"High Interest\" align=\"middle\">";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"./images/subscribe.png\" alt=\"Subscribed\" align=\"middle\">";
+    echo "</p>";
     // To be expanded later
 }
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.52 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.53 2004-08-08 14:36:03 tribalonline Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -112,6 +112,14 @@ if (isset($_POST['cancel'])) {
 
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
+// Get the user's post page preferences.
+
+$page_prefs = bh_session_get_value('POST_PAGE');
+
+if ($page_prefs == 0) {
+        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+}
+
 $valid = true;
 
 $newthread = false;
@@ -146,24 +154,6 @@ if (isset($_POST['t_newthread'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
-        $t_post_html = "Y";
-    }else {
-        $t_post_html = "N";
-    }
-
-    if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
-        $t_sig = _stripslashes($_POST['t_sig']);
-    }else {
-        $t_sig = "";
-    }
-
-    if (isset($_POST['t_sig_html']) && $_POST['t_sig_html'] == "Y") {
-        $t_sig_html = "Y";
-    }else {
-        $t_sig_html = "N";
-    }
-
 }else {
 
     if (isset($_POST['t_tid'])) {
@@ -175,54 +165,77 @@ if (isset($_POST['t_newthread'])) {
             $valid = false;
         }
 
-        if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
-            $t_post_html = "Y";
-        }else {
-            $t_post_html = "N";
-        }
-
-        if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
-            $t_sig = _stripslashes($_POST['t_sig']);
-        }else {
-            $t_sig = "";
-        }
-
-        if (isset($_POST['t_sig_html']) && $_POST['t_sig_html'] == "Y") {
-            $t_sig_html = "Y";
-        }else {
-            $t_sig_html = "N";
-        }
-
     }else {
 
         $valid = false;
     }
 }
 
-if ($valid) {
+if (isset($_POST['t_post_html'])) {
 
-    if (isset($t_post_html) && $t_post_html == "Y") {
-        $t_content = fix_html($t_content);
-    }
+	$t_post_html = $_POST['t_post_html'];
 
-    if (isset($t_sig)) {
-        if ($t_sig_html == "Y") {
-          $t_sig = fix_html($t_sig);
-        }
-    }
-
-}else {
-
-    if (isset($t_post_html) && $t_post_html == "Y") {
-        $t_content = _stripslashes($t_content);
-    }
-
-    if (isset($t_sig)) {
-        if ($t_sig_html == "Y") {
-            $t_sig = _stripslashes($t_sig);
-        }
-    }
+	if ($t_post_html == "enabled_auto") {
+		$post_html = 1;
+	} else if ($t_post_html == "enabled") {
+		$post_html = 2;
+	} else {
+		$post_html = 0;
+	}
 }
+
+if (isset($_POST['t_sig_html'])) {
+
+	$t_sig_html = $_POST['t_sig_html'];
+
+	if ($t_sig_html != "N") {
+		$sig_html = 2;
+	}
+
+	$fetched_sig = false;
+
+	if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+		$t_sig = _stripslashes($_POST['t_sig']);
+	}else {
+		$t_sig = "";
+	}
+
+} else {
+	// Fetch the current user's sig
+	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+
+	if ($t_sig_html != "N") {
+		$sig_html = 2;
+	}
+
+	$t_sig = tidy_html($t_sig, true);
+
+	$fetched_sig = true;
+}
+
+if (!isset($sig_html)) $sig_html = 0;
+
+if (!isset($post_html)) {
+        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+                $post_html = 1;
+        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
+}
+
+if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+
+if (!isset($t_content)) $t_content = "";
+if (!isset($t_sig)) $t_sig = "";
+
+$post = new MessageText($post_html, $t_content, $emots_enabled);
+$sig = new MessageText($sig_html, $t_sig);
+
+$t_content = $post->getContent();
+$t_sig = $sig->getContent();
+
 
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
@@ -302,6 +315,29 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }
 }
 
+
+$allow_html = true;
+$allow_sig = true;
+
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+	$allow_html = false;
+}
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+	$allow_sig = false;
+}
+
+if ($allow_html == false) {
+	if ($post->getHTML() > 0) {
+		$post->setHTML(false);
+		$t_content = $post->getContent();
+	}
+	if ($sig->getHTML() > 0) {
+		$sig->setHTML(false);
+		$t_sig = $sig->getContent();
+	}
+}
+
+
 if ($valid && isset($_POST['submit'])) {
 
     if (check_ddkey($_POST['t_dedupe'])) {
@@ -320,14 +356,9 @@ if ($valid && isset($_POST['submit'])) {
 
         if ($t_tid > 0) {
 
-            if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-                $t_content = make_html($t_content);
-            }
+            if ($allow_sig == true && trim($t_sig) != "") {
+                $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
 
-            if ($t_sig) {
-
-                if ($t_sig_html != "Y") $t_sig = make_html($t_sig);
-                $t_content.= "\n<div class=\"sig\">$t_sig</div>";
             }
 
             $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $_POST['t_to_uid'], $t_content);
@@ -409,35 +440,12 @@ if ($valid && isset($_POST['preview'])) {
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
+    $preview_message['CONTENT'] = $t_content;
 
-      $preview_message['CONTENT'] = make_html($t_content);
-
-    }else {
-
-      $preview_message['CONTENT'] = $t_content;
-
+    if ($allow_sig == true && trim($t_sig) != "") {
+        $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-    if ($t_sig) {
-
-      if ($t_sig_html != "Y") {
-
-        $preview_sig = make_html($t_sig);
-
-      }else {
-
-        $preview_sig = $t_sig;
-
-      }
-
-      $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $preview_sig. "</div>";
-
-    }else {
-
-      $t_sig = " ";
-
-    }
 
     light_message_display(0, $preview_message, 0, 0, false, false, false);
     echo "<br />\n";
@@ -451,12 +459,6 @@ if (!$newthread) {
     }else {
         $t_to_uid = $_POST['t_to_uid'];
     }
-}
-
-if (!isset($t_sig) || !$t_sig) {
-    $has_sig = user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
-}else {
-    $has_sig = true;
 }
 
 if ($newthread) {
@@ -507,9 +509,27 @@ if ($newthread) {
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "&nbsp;", light_form_submit("submit",$lang['post']), "</p>\n";
-echo "<p>", light_form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 60), "</p>\n";
-echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", _htmlentities($t_sig), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
-echo "<p>", light_form_checkbox("t_post_html", "Y", "{$lang['messagecontainsHTML']} {$lang['notincludingsignature']}", (isset($t_post_html) && $t_post_html == "Y")), "</p>\n";
+echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
+
+if ($allow_sig == true) {
+	echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
+}
+
+if ($allow_html == true) {
+
+	$tph_radio = $post->getHTML();
+
+	echo "<p>{$lang['htmlinmessage']}:<br />\n";
+	echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0)." \n";
+	echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+	echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+	echo "</p>";
+
+} else {
+
+	echo form_input_hidden("t_post_html", "disabled");
+}
+
 echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_submit("preview",$lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
 echo "</p>";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.99 2005-01-24 22:19:51 decoyduck Exp $ */
+/* $Id: register.php,v 1.100 2005-01-25 12:51:13 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -85,6 +85,17 @@ $lang = load_language_file();
 // Make sure we have a webtag
 
 $webtag = get_webtag($webtag_search);
+
+// check to see if user registration is available
+
+if (forum_get_setting('allow_new_registrations', 'N', false)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['newuserregistrationsarenotpermitted']}</h2>\n";
+    html_draw_bottom();
+    exit;
+}
 
 $available_styles = array();
 $style_names = array();

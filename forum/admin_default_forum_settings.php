@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.9 2005-01-21 21:25:50 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.10 2005-01-25 12:51:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,6 +121,12 @@ if (isset($_POST['submit'])) {
     }else {
 
         $new_forum_settings['active_sess_cutoff'] = 900;
+    }
+
+    if (isset($_POST['allow_new_registrations']) && $_POST['allow_new_registrations'] == "Y") {
+        $new_forum_settings['allow_new_registrations'] = "Y";
+    }else {
+        $new_forum_settings['allow_new_registrations'] = "N";
     }
 
     if (isset($_POST['show_pms']) && $_POST['show_pms'] == "Y") {
@@ -367,6 +373,43 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['newuserregistrations']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("allow_new_registrations", "Y", $lang['allownewuserregistrations'], (isset($default_forum_settings['allow_new_registrations'])) ? ($default_forum_settings['allow_new_registrations'] == 'Y') : false), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                  <td class=\"smalltext\">\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_28']}</p>\n";
+echo "                  </td>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['personalmessages']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -429,7 +472,7 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("allow_search_spidering", "Y", $lang['allowsearchenginespidering'], (isset($default_forum_settings['allowsearchenginespidering'])) ? ($default_forum_settings['allowsearchenginespidering'] == 'Y') : false), "&nbsp;</td>\n";
+echo "                        <td>", form_checkbox("allow_search_spidering", "Y", $lang['allowsearchenginespidering'], (isset($default_forum_settings['allow_search_spidering'])) ? ($default_forum_settings['allow_search_spidering'] == 'Y') : false), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

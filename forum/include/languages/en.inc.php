@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.210 2005-01-24 23:00:42 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.211 2005-01-25 12:51:13 decoyduck Exp $ */
 
 // International English language file
 
@@ -428,6 +428,9 @@ $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow search engines to spider post content";
 
+$lang['newuserregistrations'] = "New User Registrations";
+$lang['allownewuserregistrations'] = "Allow new user registrations";
+
 $lang['top10postersforthismonth'] = "Top 10 posters for this month";
 $lang['top10postersforthisweek'] = "Top 10 posters for this week";
 $lang['top10postersfortoday'] = "Top 10 posters for today";
@@ -495,6 +498,9 @@ $lang['cookiedomain'] = "Cookie Domain";
 $lang['postoptions'] = "Post Options";
 $lang['allowpostoptions'] = "Allow Post Editing";
 $lang['postedittimeout'] = "Post Edit Timeout";
+$lang['wikiintegration'] = "Wiki Integration";
+$lang['enablewikiintegration'] = "Enable WikiWiki Integration";
+$lang['wikiintegrationuri'] = "WikiWiki Location";
 $lang['maximumpostlength'] = "Maximum Post Length";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['searchoptions'] = "Search Options";
@@ -551,6 +557,9 @@ $lang['forum_settings_help_24'] = "<b>Attachment Space Per User</b> is the maxim
 $lang['forum_settings_help_25'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_26'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
 $lang['forum_settings_help_27'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
+$lang['forum_settings_help_28'] = "If you don't want any new user signups you can change this option. Doing so will make the registration form unavailable.";
+$lang['forum_settings_help_29'] = "Enable this option to provide WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your choosen Wiki.";
+$lang['forum_settings_help_30'] = "When entering your Wiki URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1121,6 +1130,7 @@ $lang['editmyattachments'] = "Edit My Attachments";
 
 // Registration (register.php) -----------------------------------------
 
+$lang['newuserregistrationsarenotpermitted'] = "Sorry, new user registrations are not allowed right now. Please check back later.";
 $lang['usernamemustnotcontainHTML'] = "Username must not contain HTML tags";
 $lang['usernameinvalidchars'] = "Username can only contain a-z, 0-9, _ - characters";
 $lang['usernametooshort'] = "Username must be a minimum of 2 characters long";

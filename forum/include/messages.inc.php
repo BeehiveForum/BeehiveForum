@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.314 2005-01-24 23:13:23 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.315 2005-01-25 12:51:13 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -152,6 +152,22 @@ function message_get_content($tid, $pid)
     return isset($fa['CONTENT']) ? $fa['CONTENT'] : "";
 }
 
+function message_apply_wikilinks($content)
+{
+    if (forum_get_setting('enable_wiki_integration', 'Y', false)) {
+
+        $wiki_location = forum_get_setting('wiki_integration_uri', '', '');
+
+        if (strlen($wiki_location) > 0) {
+
+            $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
+            $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content);
+        }
+    }
+
+    return $content;
+}
+
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     $lang = load_language_file();
@@ -208,6 +224,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
 
+    // Convert any WikiWords to hyperlinks -------------------------------------
+
+    $message['CONTENT'] = message_apply_wikilinks($message['CONTENT']);
+
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
@@ -220,7 +240,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
-    if($in_list && isset($message['PID'])){
+    if ($in_list && isset($message['PID'])){
         echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>\n";
     }
 

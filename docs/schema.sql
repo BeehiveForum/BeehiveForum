@@ -36,10 +36,10 @@ INSERT INTO FOLDER VALUES (1, 'General', 0);
 # --------------------------------------------------------
 
 #
-# Table structure for table `POLL`
+# Table structure for table `poll`
 #
 
-CREATE TABLE POLL (
+CREATE TABLE poll (
   TID mediumint(8) unsigned NOT NULL default '0',
   O1 varchar(255) default NULL,
   O1_VOTES mediumint(8) unsigned default '0',
@@ -52,6 +52,9 @@ CREATE TABLE POLL (
   O5 varchar(255) default NULL,
   O5_VOTES mediumint(8) unsigned default '0',
   CLOSES datetime default NULL,
+  CHANGEVOTE tinyint(1) NOT NULL default '1',
+  POLLTYPE tinyint(1) NOT NULL default '0',
+  SHOWRESULTS tinyint(1) NOT NULL default '1',
   KEY TID (TID)
 ) TYPE=MyISAM;
 
@@ -220,8 +223,8 @@ INSERT INTO THREAD VALUES (1, 1, 1, 'Welcome', 1, 'N', NOW(), NULL);
 # Table structure for table `USER`
 #
 
-CREATE TABLE USER (
-  UID mediumint(8) unsigned NOT NULL auto_increment,
+CREATE TABLE USER (  
+  UID mediumint(8) NOT NULL auto_increment,  
   LOGON varchar(32) default NULL,
   PASSWD varchar(32) default NULL,
   NICKNAME varchar(32) default NULL,
@@ -236,6 +239,7 @@ CREATE TABLE USER (
 #
 
 INSERT INTO USER VALUES (0, 'GUEST', '084e0343a0486ff05530df6c705c8bb4', 'Guest', 'guest@email.com', 1, NOW());
+UPDATE USER SET UID = 0 WHERE LOGON = 'GUEST' AND PASSWD = '084e0343a0486ff05530df6c705c8bb4';
 INSERT INTO USER VALUES (1, 'ADMIN', 'b60eb83bf533eecf1bde65940925a981', 'Administrator', 'your@email.com', 56, NOW());
 # --------------------------------------------------------
 

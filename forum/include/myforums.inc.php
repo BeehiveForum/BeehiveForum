@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.18 2004-04-11 21:13:16 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.19 2004-04-11 22:16:03 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
@@ -33,7 +33,8 @@ function get_forum_list()
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT FORUMS.* FROM FORUMS FORUMS LEFT JOIN USER_FORUM USER_FORUM ON ";
+    $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
     $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
     $sql.= "WHERE FORUMS.ACCESS_LEVEL = 0 OR (FORUMS.ACCESS_LEVEL = 1 ";
     $sql.= "AND USER_FORUM.ALLOWED = 1) ";
@@ -110,7 +111,8 @@ function get_my_forums()
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT FORUMS.* FROM FORUMS FORUMS LEFT JOIN USER_FORUM USER_FORUM ON ";
+    $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
     $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
     $sql.= "WHERE FORUMS.ACCESS_LEVEL = 0 OR (FORUMS.ACCESS_LEVEL = 1 ";
     $sql.= "AND USER_FORUM.ALLOWED = 1) ";
@@ -236,7 +238,7 @@ function user_set_forum_interest($fid, $interest)
 
     $result = db_query($sql, $db_user_set_forum_interest);
 
-    if (!db_affected_rows($db_user_set_forum_interest)) {
+    if (db_affected_rows($db_user_set_forum_interest) < 0) {
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
 	$sql.= "VALUES ('$uid', '$fid', 1)";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.11 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.12 2003-09-15 08:20:07 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -63,9 +63,9 @@ html_draw_top("openprofile.js");
 echo "<h1>{$lang['recentvisitors']}</h1><br />\n";
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
-    $user_array = user_search($usersearch, "LAST_LOGON", "DESC", $start);
+    $user_search_array = user_search($usersearch, "LAST_LOGON", "DESC", $start);
 }else {
-    $user_array = user_get_all("LAST_LOGON", "DESC", $start);
+    $user_search_array = user_get_all("LAST_LOGON", "DESC", $start);
 }
 
 echo "<div align=\"center\">\n";
@@ -73,15 +73,28 @@ echo "<table width=\"65%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n"
 echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
-echo "          <td class=\"subhead\" align=\"right\" width=\"200\">{$lang['lastvisit']}</td>\n";
-echo "        </tr>\n";
 
-foreach ($user_array as $user_entry) {
+if ($user_search_array) {
+
     echo "        <tr>\n";
-    echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $user_entry['UID'], ")\">", format_user_name($user_entry['LOGON'], $user_entry['NICKNAME']), "</a></td>\n";
-    echo "          <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_entry['LAST_LOGON']), "</td>\n";
+    echo "          <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
+    echo "          <td class=\"subhead\" align=\"right\" width=\"200\">{$lang['lastvisit']}</td>\n";
+    echo "        </tr>\n";
+
+    foreach ($user_search_array as $user_search) {
+        echo "        <tr>\n";
+        echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $user_search['UID'], ")\">", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</a></td>\n";
+        echo "          <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_search['LAST_LOGON']), "</td>\n";
+        echo "        </tr>\n";
+    }
+
+}else {
+
+    echo "        <tr>\n";
+    echo "          <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td class=\"postbody\" align=\"left\">{$lang['yoursearchdidnotreturnanymatches']}</td>\n";
     echo "        </tr>\n";
 }
 
@@ -90,7 +103,7 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-if ((sizeof($user_array) == 20)) {
+if ((sizeof($user_search_array) == 20)) {
   if ($start < 20) {
     echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"visitor_log.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {

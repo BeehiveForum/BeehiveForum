@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.38 2003-09-04 15:53:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.39 2003-09-15 08:20:07 decoyduck Exp $ */
 
 // International English language file
 
@@ -751,6 +751,7 @@ $lang['confirmpassword'] = "Confirm Password";
 
 $lang['member'] = "Member";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
+$lang['yoursearchdidnotreturnanymatches'] = "Your search did not return any matches. Try simplifying your search parameters and try again."
 
 // Relationships (user_rel.php) ----------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.66 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.67 2004-04-04 21:03:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -124,7 +124,7 @@ if ($thread_array = threads_get_most_recent()) {
         }
 
         echo "&nbsp;</td>\n";
-        echo "          <td><a href=\"discussion.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">";
+        echo "          <td><a href=\"discussion.php?webtag=$webtag&msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">";
         echo _stripslashes($thread['TITLE'])."</a>&nbsp;";
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
@@ -173,10 +173,10 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
@@ -199,7 +199,7 @@ if ($users_array = users_get_recent()) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$resent_user['UID']}, '{$webtag['WEBTAG']}')\">", $resent_user['NICKNAME'], "</a></td>\n";
+        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$resent_user['UID']}, '$webtag')\">", $resent_user['NICKNAME'], "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($resent_user['LAST_LOGON']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }
@@ -213,7 +213,7 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['showmorevisitors']}</a>&nbsp;</td>\n";
+echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"right\">{$lang['showmorevisitors']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
@@ -232,7 +232,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '{$webtag['WEBTAG']}')\">", $row['NICKNAME'], "</a></td>\n";
+        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", $row['NICKNAME'], "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }
@@ -257,7 +257,7 @@ echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0
 echo "        <tr>\n";
 echo "          <td>\n";
 echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
-echo "              ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
+echo "              ", form_input_hidden("webtag", $webtag), "\n";
 echo "              ", form_input_text('msg', '1.1', 10). "\n";
 echo "              ", form_submit("go",$lang['goexcmark']). "\n";
 echo "            </form>\n";

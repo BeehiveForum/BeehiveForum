@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.48 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.49 2004-04-04 21:03:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -150,7 +150,7 @@ html_draw_top();
 echo "<h1>{$lang['admin']} : {$lang['manageprofileitems']}<br />{$lang['section']}: ". profile_section_get_name($psid). "</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_sections\" action=\"admin_prof_items.php?webtag={$webtag['WEBTAG']}\" method=\"post\">\n";
+echo "<form name=\"f_sections\" action=\"admin_prof_items.php?webtag=$webtag\" method=\"post\">\n";
 echo "  ", form_input_hidden("t_psid", $psid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";

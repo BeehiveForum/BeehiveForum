@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.53 2004-03-22 12:51:02 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.54 2004-04-04 21:03:40 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
@@ -33,10 +33,10 @@ function email_sendnotification($tuid, $msg, $fuid)
 
     $db_email_sendnotification = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
-    $sql.= "{$webtag['PREFIX']}USER_PREFS PREFS, ";
+    $sql.= "{$table_data['PREFIX']}USER_PREFS PREFS, ";
     $sql.= "USER PROFILE ";
     $sql.= "WHERE PROFILE.UID = '$tuid' ";
     $sql.= "AND PROFILE.UID = PREFS.UID";
@@ -74,7 +74,7 @@ function email_sendnotification($tuid, $msg, $fuid)
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/?webtag={$webtag['WEBTAG']}&msg=$msg\n\n";
+            $message.= "/?webtag=$webtag&msg=$msg\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['msgnotificationemail_4']}\n";
             $message.= "{$lang['msgnotificationemail_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['msgnotificationemail_6']}\n";
@@ -110,10 +110,10 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
     list($tid, $pid) = explode('.', $msg);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER.NICKNAME, USER.EMAIL FROM ";
-    $sql.= "{$webtag['PREFIX']}USER_THREAD USER_THREAD, ";
+    $sql.= "{$table_data['PREFIX']}USER_THREAD USER_THREAD, ";
     $sql.= "USER USER ";
     $sql.= "WHERE USER_THREAD.TID = '$tid' ";
     $sql.= "AND USER_THREAD.INTEREST = 2 ";
@@ -151,7 +151,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
           $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
         }
 
-        $message.= "/?webtag={$webtag['WEBTAG']}&msg=$msg\n\n";
+        $message.= "/?webtag=$webtag&msg=$msg\n\n";
         $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $message.= "{$lang['subnotification_5']}\n";
         $message.= "{$lang['subnotification_6']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";
@@ -184,10 +184,10 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     
     $db_email_sendnotification = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT PREFS.PM_NOTIFY_EMAIL, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
-    $sql.= "{$webtag['PREFIX']}USER_PREFS PREFS, USER PROFILE ";
+    $sql.= "{$table_data['PREFIX']}USER_PREFS PREFS, USER PROFILE ";
     $sql.= "WHERE PROFILE.UID = '$tuid' AND PROFILE.UID = PREFS.UID";
 
     $result = db_query($sql, $db_email_sendnotification);
@@ -222,7 +222,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/?webtag={$webtag['WEBTAG']}&pmid=$mid\n\n";
+            $message.= "/?webtag=$webtag&pmid=$mid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['pmnotification_4']}\n";
             $message.= "{$lang['pmnotification_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['pmnotification_6']}\n";
@@ -257,7 +257,7 @@ function email_send_pw_reminder($logon)
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);
@@ -284,7 +284,7 @@ function email_send_pw_reminder($logon)
                 $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/change_pw.php?webtag={$webtag['WEBTAG']}&u={$mailto['UID']}&h={$mailto['PASSWD']}";
+            $message.= "/change_pw.php?webtag=$webtag&u={$mailto['UID']}&h={$mailto['PASSWD']}";
 
             $header = "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";

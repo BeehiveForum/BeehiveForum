@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.22 2004-04-01 16:39:05 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.23 2004-04-04 21:03:40 decoyduck Exp $ */
 
 function ip_check()
 {
@@ -31,9 +31,9 @@ function ip_check()
 
     if ($ipaddress = get_ip_address()) {
     
-        $webtag = get_webtag();
+        if (!$table_data = get_table_prefix()) return false;
 
-        $sql = "SELECT IP FROM {$webtag['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
+        $sql = "SELECT IP FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
         $result = db_query($sql, $db_ip_banned);
 
         if (db_num_rows($result) > 0) {
@@ -54,11 +54,11 @@ function ban_ip($ipaddress)
 
    $ipaddress = addslashes($ipaddress);
    
-   $webtag = get_webtag();
+   $table_data = get_table_prefix();
 
    if (!ip_is_banned($ipaddress)) {
 
-       $sql = "INSERT INTO {$webtag['PREFIX']}BANNED_IP (IP) VALUES ('$ipaddress')";
+       $sql = "INSERT INTO {$table_data['PREFIX']}BANNED_IP (IP) VALUES ('$ipaddress')";
        $result = db_query($sql, $db_ban_ip);
 
        return $result;
@@ -73,9 +73,9 @@ function unban_ip($ipaddress)
 
    $ipaddress = addslashes($ipaddress);
    
-   $webtag = get_webtag();
+   $table_data = get_table_prefix();
 
-   $sql = "DELETE FROM {$webtag['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
+   $sql = "DELETE FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
    $result = db_query($sql, $db_ban_ip);
 
    return $result;
@@ -87,9 +87,9 @@ function ip_is_banned($ipaddress)
 
    $ipaddress = addslashes($ipaddress);
    
-   $webtag = get_webtag();
+   $table_data = get_table_prefix();
 
-   $sql = "SELECT IP FROM {$webtag['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
+   $sql = "SELECT IP FROM {$table_data['PREFIX']}BANNED_IP WHERE IP = '$ipaddress'";
    $result = db_query($sql, $db_ip_is_banned);
 
    return (db_num_rows($result) > 0);

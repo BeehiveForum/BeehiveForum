@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.36 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.37 2004-04-04 21:03:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -106,7 +106,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     save_start_page($content);
     
     $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
-    $status_text.= "<a href=\"start_main.php?webtag={$webtag['WEBTAG']}\" target=\"_blank\">";
+    $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
     $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
     
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
@@ -122,7 +122,7 @@ echo "<p>{$lang['mustusebh401startmain']}</p>";
 
 if (isset($status_text)) echo $status_text;
 
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag={$webtag['WEBTAG']}\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag=$webtag\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.1 2004-03-27 19:50:55 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.2 2004-04-04 21:03:40 decoyduck Exp $ */
 
 function perform_logon($logon_main)
 {
@@ -169,11 +169,11 @@ function perform_logon($logon_main)
 
                 if (isset($final_uri)) {
                     $final_uri = rawurlencode($final_uri);
-                    echo "<p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes&final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-                    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+                    echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&deletecookie=yes&final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+                    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
                 }else {
-                    echo "<p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-                    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+                    echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+                    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
                 }
 	    
 	    }else {
@@ -371,24 +371,24 @@ function draw_logon_form($logon_main)
 
         $final_uri = rawurlencode($final_uri);
 
-        echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri\" target=\"_self\">Register now.</a></p>\n";
+        echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag=$webtag&final_uri=$final_uri\" target=\"_self\">Register now.</a></p>\n";
         echo "  <hr width=\"350\" />\n";
         echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
-        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes&final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&deletecookie=yes&final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
 
     }else {
 
-        echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">Register now.</a></p>\n";
+        echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag=$webtag\" target=\"_self\">Register now.</a></p>\n";
         echo "  <hr width=\"350\" />\n";
         echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
-        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
     }
 
     echo "  <hr width=\"350\" />\n";
     echo "  <h2>{$lang['usingaPDA']}</h2>\n";
-    echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag={$webtag['WEBTAG']}\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
+    echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag=$webtag\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
     echo "</div>\n";
 }
 

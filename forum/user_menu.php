@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.17 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.18 2004-04-04 21:03:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,34 +96,34 @@ echo "  <tr>\n";
 echo "    <td class=\"subhead\">{$lang['menu']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_prefs.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['userdetails']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_prefs.php?webtag=$webtag\" target=\"right\">{$lang['userdetails']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_profile.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['userprofile']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_profile.php?webtag=$webtag\" target=\"right\">{$lang['userprofile']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_password.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['changepassword']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_password.php?webtag=$webtag\" target=\"right\">{$lang['changepassword']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><hr /></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_email.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['emailandprivacy']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_email.php?webtag=$webtag\" target=\"right\">{$lang['emailandprivacy']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"forum_options.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"forum_options.php?webtag=$webtag\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_attachments.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['editattachments']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_attachments.php?webtag=$webtag\" target=\"right\">{$lang['editattachments']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_signature.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['editsignature']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_signature.php?webtag=$webtag\" target=\"right\">{$lang['editsignature']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_relations.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['editrelationships']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_relations.php?webtag=$webtag\" target=\"right\">{$lang['editrelationships']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_wordfilter.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['editwordfilter']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_wordfilter.php?webtag=$webtag\" target=\"right\">{$lang['editwordfilter']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

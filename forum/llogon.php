@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.26 2004-03-22 12:21:16 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.27 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -53,7 +53,7 @@ include_once("./include/user.inc.php");
 if (isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
 }else {
-    $final_uri = "./lthread_list.php?webtag={$webtag['WEBTAG']}";
+    $final_uri = "./lthread_list.php?webtag=$webtag";
 }
 
 if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
@@ -94,7 +94,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
-          header_redirect("./lthread_list.php?webtag={$webtag['WEBTAG']}");
+          header_redirect("./lthread_list.php?webtag=$webtag");
 
       }else { // IIS bug prevents redirect at same time as setting cookies.
 

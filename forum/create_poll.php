@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.87 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.88 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,7 +119,7 @@ $valid = true;
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-  $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
+  $uri = "./discussion.php?webtag=$webtag";
   header_redirect($uri);
 
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
@@ -243,7 +243,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         
        html_draw_top();
                 
-       echo "<form name=\"f_post\" action=\"./create_poll.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+       echo "<form name=\"f_post\" action=\"./create_poll.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
        echo "<table class=\"posthead\" width=\"720\">\n";
        echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
        echo "<tr><td>\n";
@@ -317,11 +317,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
   if (isset($t_tid) && $t_tid > 0) {
 
-    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=$t_tid.1";
+    $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
 
   }else {
 
-    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
+    $uri = "./discussion.php?webtag=$webtag";
   }
 
   header_redirect($uri);
@@ -468,7 +468,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 if (isset($error_html)) echo $error_html. "\n";
 
-echo "<form name=\"f_poll\" action=\"create_poll.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"f_poll\" action=\"create_poll.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
@@ -691,7 +691,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
     if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-      echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '{$webtag['WEBTAG']}')\"");
+      echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
       echo form_input_hidden("aid", $aid);
 
     }

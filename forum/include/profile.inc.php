@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.24 2004-04-01 16:39:05 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.25 2004-04-04 21:03:41 decoyduck Exp $ */
 
 function profile_section_get_name($psid)
 {
@@ -29,9 +29,9 @@ function profile_section_get_name($psid)
 
    if (!is_numeric($psid)) return "The Unknown Section";
    
-   $webtag = get_webtag();
+   $table_data = get_table_prefix();
 
-   $sql = "SELECT PS.NAME FROM {$webtag['PREFIX']}PROFILE_SECTION PS WHERE PS.PSID = $psid";
+   $sql = "SELECT PS.NAME FROM {$table_data['PREFIX']}PROFILE_SECTION PS WHERE PS.PSID = $psid";
    $resource_id = db_query($sql, $db_profile_section_get_name);
 
    if (!db_num_rows($resource_id)) {
@@ -52,9 +52,9 @@ function profile_section_create($name, $position)
 
     $name = addslashes($name);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}PROFILE_SECTION (NAME, POSITION) ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_SECTION (NAME, POSITION) ";
     $sql.= "VALUES ('$name', '$position')";
 
     $result = db_query($sql, $db_profile_section_create);
@@ -77,9 +77,9 @@ function profile_section_update($psid, $position, $name)
 
     $name = addslashes($name);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "UPDATE {$webtag['PREFIX']}PROFILE_SECTION ";
+    $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "SET NAME = '$name', POSITION = '$position' ";
     $sql.= "WHERE PSID = '$psid'";
 
@@ -92,10 +92,10 @@ function profile_sections_get()
 {
     $db_profile_section_get = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
-    $sql.= "FROM {$webtag['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID";
 
     $result = db_query($sql, $db_profile_section_get);
@@ -117,10 +117,10 @@ function profile_items_get($psid)
 
     if (!is_numeric($psid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, PROFILE_ITEM.TYPE ";
-    $sql.= "FROM {$webtag['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
     $sql.= "WHERE PROFILE_ITEM.PSID = $psid ";
     $sql.= "ORDER BY PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
@@ -147,9 +147,9 @@ function profile_item_create($psid, $name, $position, $type)
 
     $name = addslashes($name);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "insert into {$webtag['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
+    $sql = "insert into {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
     $sql.= "values ($psid, '$name', $type, $position)";
 
     $result = db_query($sql, $db_profile_item_create);
@@ -175,9 +175,9 @@ function profile_item_update($piid, $psid, $position, $type, $name)
 
     $name = addslashes($name);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "UPDATE {$webtag['PREFIX']}PROFILE_ITEM ";
+    $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "SET PSID = $psid, POSITION = $position, ";
     $sql.= "TYPE = $type, NAME = '$name' WHERE PIID = $piid";
 
@@ -192,9 +192,9 @@ function profile_section_delete($psid)
 
     if (!is_numeric($psid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
+    $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_SECTION WHERE PSID = '$psid'";
     return db_query($sql, $db_profile_section_delete);
 }
 
@@ -204,9 +204,9 @@ function profile_item_delete($piid)
 
     if (!is_numeric($piid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
+    $sql = "DELETE FROM {$table_data['PREFIX']}PROFILE_ITEM WHERE PIID = '$piid'";
     return db_query($sql, $db_profile_item_delete);
 }
 
@@ -215,9 +215,9 @@ function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="
     $html = "<select name=\"${field_name}${suffix}\">";
     $db_profile_section_dropdown = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT PSID, NAME FROM {$webtag['PREFIX']}PROFILE_SECTION";
+    $sql = "SELECT PSID, NAME FROM {$table_data['PREFIX']}PROFILE_SECTION";
     $result = db_query($sql, $db_profile_section_dropdown);
 
     while ($row = db_fetch_array($result)) {
@@ -241,14 +241,14 @@ function profile_get_user_values($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";
     $sql.= "USER_PROFILE.PIID AS CHECK_PIID, USER_PROFILE.ENTRY ";
-    $sql.= "FROM {$webtag['PREFIX']}PROFILE_SECTION PROFILE_SECTION, ";
-    $sql.= "{$webtag['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PROFILE USER_PROFILE ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION, ";
+    $sql.= "{$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PROFILE USER_PROFILE ";
     $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid') ";
     $sql.= "WHERE PROFILE_ITEM.PSID = PROFILE_SECTION.PSID ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID, ";

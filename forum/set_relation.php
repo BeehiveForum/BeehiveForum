@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.35 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.36 2004-04-04 21:03:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,9 +122,9 @@ if (isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($
 
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
-    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg");
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 }else {
-    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}");
+    header_redirect("./messages.php?webtag=$webtag");
 }
 
 ?>

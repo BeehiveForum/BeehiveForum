@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.72 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.73 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -234,7 +234,7 @@ if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failur
 }
 
 echo "<h1>{$lang['uploadattachment']}</h1>\n";
-echo "<form name=\"f_attach\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php?webtag={$webtag['WEBTAG']}&aid={$HTTP_GET_VARS['aid']}\">\n";
+echo "<form name=\"f_attach\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php?webtag=$webtag&aid={$HTTP_GET_VARS['aid']}\">\n";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
 echo "  <tr>\n";
 echo "    <td width=\"220\" class=\"postbody\" valign=\"top\">1. {$lang['enterfilenamestoupload']} :</td>\n";
@@ -284,9 +284,9 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
+                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
             }
 
             if (strlen($attachments[$i]['filename']) > 16) {
@@ -316,7 +316,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
 
             echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
             echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
-            echo "      <form method=\"post\" action=\"attachments.php?webtag={$webtag['WEBTAG']}&aid=". $HTTP_GET_VARS['aid']. "\">\n";
+            echo "      <form method=\"post\" action=\"attachments.php?webtag=$webtag&aid=". $HTTP_GET_VARS['aid']. "\">\n";
             echo "        ", form_input_hidden('filecount', $filecount), "\n";
             echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
             echo "        ", form_submit('del', $lang['del']), "\n";
@@ -377,9 +377,9 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
+                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
             }
 
             if (strlen($attachments[$i]['filename']) > 16) {
@@ -415,7 +415,7 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
 
             echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
             echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
-            echo "      <form method=\"post\" action=\"attachments.php?webtag={$webtag['WEBTAG']}&aid=". $HTTP_GET_VARS['aid']. "\">\n";
+            echo "      <form method=\"post\" action=\"attachments.php?webtag=$webtag&aid=". $HTTP_GET_VARS['aid']. "\">\n";
             echo "        ". form_input_hidden('hash', $attachments[$i]['hash']);
             echo "        ". form_submit('del', $lang['del']). "\n";
             echo "      </form>\n";

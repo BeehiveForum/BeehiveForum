@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.45 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.46 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -97,20 +97,20 @@ if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder']) && f
     $fid = $HTTP_GET_VARS['folder'];
     $msg = messages_get_most_recent(bh_session_get_value('UID'), $fid);
 
-    echo "  <frame src=\"./thread_list.php?webtag={$webtag['WEBTAG']}&mode=0&amp;folder=$fid\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-    echo "  <frame src=\"./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./thread_list.php?webtag=$webtag&mode=0&amp;folder=$fid\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./messages.php?webtag=$webtag&msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 
 }elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
-    echo "  <frame src=\"./thread_list.php?webtag={$webtag['WEBTAG']}&msg={$HTTP_GET_VARS['msg']}\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-    echo "  <frame src=\"./messages.php?webtag={$webtag['WEBTAG']}&msg={$HTTP_GET_VARS['msg']}\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./thread_list.php?webtag=$webtag&msg={$HTTP_GET_VARS['msg']}\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./messages.php?webtag=$webtag&msg={$HTTP_GET_VARS['msg']}\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 
 }else {
     
     $msg = messages_get_most_recent(bh_session_get_value('UID'));
 
-    echo "  <frame src=\"./thread_list.php?webtag={$webtag['WEBTAG']}&msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-    echo "  <frame src=\"./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./thread_list.php?webtag=$webtag&msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./messages.php?webtag=$webtag&msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 }
 
 echo "</frameset>\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.170 2004-04-03 14:12:02 tribalonline Exp $ */
+/* $Id: post.php,v 1.171 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,7 +111,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
+    $uri = "./discussion.php?webtag=$webtag";
 
     if (isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid']) && is_numeric($HTTP_POST_VARS['t_rpid']) ) {
         $uri.= "&msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
@@ -485,11 +485,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($t_tid > 0 && $t_rpid > 0) {
 
-          $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=$t_tid.$t_rpid";
+          $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
 
         }else{
 
-          $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
+          $uri = "./discussion.php?webtag=$webtag";
 
         }
 
@@ -513,7 +513,7 @@ if (!isset($HTTP_POST_VARS['aid'])) {
 }
 
 echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
-echo "<br /><form name=\"f_post\" action=\"post.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+echo "<br /><form name=\"f_post\" action=\"post.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 
 if (!$newthread) {
 
@@ -700,7 +700,7 @@ echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : (
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
 echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br />\n";
 
-echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openEmoticons('user','{$webtag['WEBTAG']}')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
+echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openEmoticons('user','$webtag')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
 
 if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
 
@@ -786,7 +786,7 @@ echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="clos
 
 if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '{$webtag['WEBTAG']}')\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);
 }
 

@@ -21,17 +21,54 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.26 2004-04-01 16:39:04 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.27 2004-04-04 21:03:40 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
+include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 
+function get_table_prefix()
+{
+    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $lang;
+    
+    $db_get_table_prefix = db_connect();    
+    
+    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+        $webtag = trim($HTTP_GET_VARS['webtag']);
+    }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
+        $webtag = trim($HTTP_POST_VARS['webtag']);
+    }else {
+        $webtag = "";
+    }
+    
+    $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+    $result = db_query($sql, $db_get_table_prefix);
+        
+    // if we found the post table return the table prefix
+    // (same as the webtag with a underscore after it)
+    
+    if (db_num_rows($result) > 0) {
+        
+        $forum_data = db_fetch_array($result);
+
+	if (strlen(trim($webtag)) > 0) {
+            $forum_data['PREFIX'] = "{$webtag}_";
+	}else {
+	    $forum_data['PREFIX'] = "";
+	}
+
+	return $forum_data;
+    }
+
+    return false;
+}
+
 function get_webtag()
 {
-    global $HTTP_GET_VARS, $HTTP_POST_VARS, $lang;
+    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $lang;
     
     $db_get_table_prefix = db_connect();    
     
@@ -49,44 +86,8 @@ function get_webtag()
     // if we found the post table return the webtag
     
     if (db_num_rows($result) > 0) {
-        
-        $forum_data = db_fetch_array($result);
-        
-        if (strlen(trim($webtag)) > 0) {
-            $forum_data['WEBTAG'] = $webtag;
-            $forum_data['PREFIX'] = "{$webtag}_";
-        }else {
-            $forum_data['WEBTAG'] = "";
-            $forum_data['PREFIX'] = "";
-        }
-            
-        return $forum_data;
+        return $webtag;
     }
-    
-    html_draw_top();    
-    
-    $sql = "SELECT COUNT(FID) AS FID_COUNT FROM FORUMS";
-    $result = db_query($sql, $db_get_table_prefix);
-    
-    $forum_data = db_fetch_array($result);
-    
-    if ($forum_data['FID_COUNT'] > 0) {
-
-        echo "<div align=\"center\">\n";
-        echo "<h2>Unknown Forum Tag.</h2>\n";
-        form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-        echo "</div>\n";
-
-    }else {
-    
-        echo "<div align=\"center\">\n";
-        echo "<h2>You do not have any forums setup.</h2>\n";
-        form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-        echo "</div>\n";
-    }
-    
-    html_draw_bottom();
-    exit;
 }
 
 function get_forum_settings()
@@ -95,9 +96,9 @@ function get_forum_settings()
     
     $db_get_forum_settings = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
-    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$webtag['FID']}'";
+    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_get_forum_settings);
     
     while ($row = db_fetch_array($result)) {
@@ -114,7 +115,7 @@ function save_forum_settings($forum_settings_array)
     
     $db_save_forum_settings = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
        
     foreach ($forum_settings_array as $sname => $svalue) {
     
@@ -122,14 +123,14 @@ function save_forum_settings($forum_settings_array)
         $svalue = addslashes($svalue);
 
 	$sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' ";
-	$sql.= "WHERE SNAME = '$sname' AND FID = '{$webtag['FID']}'";
+	$sql.= "WHERE SNAME = '$sname' AND FID = '{$table_data['FID']}'";
 
 	$result = db_query($sql, $db_save_forum_settings);
 
 	if (!db_affected_rows($db_save_forum_settings)) {
         
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ('{$webtag['FID']}', '$sname', '$svalue')";
+            $sql.= "VALUES ('{$table_data['FID']}', '$sname', '$svalue')";
         
             $result = db_query($sql, $db_save_forum_settings);
 	}
@@ -159,9 +160,9 @@ function draw_start_page()
     
     $db_draw_start_page = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
-    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$webtag['FID']}'";
+    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_draw_start_page);
     
     if (db_num_rows($result)) {
@@ -191,9 +192,9 @@ function load_start_page()
 {
     $db_load_start_page = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
-    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$webtag['FID']}'";
+    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_load_start_page);
     
     if (db_num_rows($result)) {
@@ -209,18 +210,18 @@ function save_start_page($content)
 {
     $db_save_start_page = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     $content = addslashes($content);
 
     $sql = "UPDATE START_MAIN SET HTML = '$content' ";
-    $sql.= "WHERE FID = '{$webtag['FID']}'";
+    $sql.= "WHERE FID = '{$table_data['FID']}'";
     
     $result = db_query($sql, $db_save_start_page);
 
     if (!db_affected_rows($db_save_start_page)) {
     
         $sql = "INSERT INTO START_MAIN (FID, HTML) ";
-        $sql.= "VALUES('{$webtag['FID']}', '$content')";
+        $sql.= "VALUES('{$table_data['FID']}', '$content')";
 
 	$result = db_query($sql, $db_save_start_page);
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.255 2004-04-01 16:39:05 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.256 2004-04-04 21:03:40 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -35,19 +35,19 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $db_message_get = db_connect();
    
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
     $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
     $sql .= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP ";
-    $sql .= "FROM {$webtag['PREFIX']}POST POST ";
+    $sql .= "FROM {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql .= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
-    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER_TO ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
     $sql .= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
-    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER_FROM ";
+    $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
     $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql .= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
     $sql .= "WHERE POST.TID = '$tid' ";
@@ -124,9 +124,9 @@ function message_get_content($tid, $pid)
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT CONTENT FROM {$webtag['PREFIX']}POST_CONTENT WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}POST_CONTENT WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql,$db_mgc);
 
     $fa = db_fetch_array($result);
@@ -189,7 +189,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 		$cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
 		$cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
         $message['CONTENT'] = fix_html($cut_msg, false);
-        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag={$webtag['WEBTAG']}&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
@@ -226,7 +226,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if ($message['FROM_UID'] > -1) {
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
         echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
     }else {
         echo format_user_name($message['FLOGON'], $message['FNICK']) . "</span>";
@@ -265,7 +265,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
@@ -290,11 +290,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
-        echo "<a href=\"set_relation.php?webtag={$webtag['WEBTAG']}&uid=".$message['FROM_UID']."&rel=0&exists=1&msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;";
-        echo "<a href=\"display.php?webtag={$webtag['WEBTAG']}&msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
+        echo "<a href=\"set_relation.php?webtag=$webtag&uid=".$message['FROM_UID']."&rel=0&exists=1&msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;";
+        echo "<a href=\"display.php?webtag=$webtag&msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
     }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
-          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag={$webtag['WEBTAG']}&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\"></a> {$lang['poll']} ";
+          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\"></a> {$lang['poll']} ";
         }
         echo $message['PID'] . " {$lang['of']} " . $msg_count;
     }
@@ -309,9 +309,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if($in_list && $msg_count > 0) {
 
             if ($is_preview) {
-                echo "<a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"messages.php?webtag=$webtag&msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
             }else {
-                echo "<a href=\"index.php?webtag={$webtag['WEBTAG']}&msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"index.php?webtag=$webtag&msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             }
 
             if ($message['PID'] > 1) {
@@ -323,10 +323,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                 }else {
                     if ($is_preview) {
-                        echo "<a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_blank\">";
+                        echo "<a href=\"messages.php?webtag=$webtag&msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_blank\">";
                         echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                     }else {
-                        echo "<a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
+                        echo "<a href=\"messages.php?webtag=$webtag&msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
                         echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                     }
                 }
@@ -353,80 +353,59 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
             
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
-            $attachments = get_attachments($message['FROM_UID'], $aid);
+            $attachments_array = get_attachments($message['FROM_UID'], $aid);
 
-            if (is_array($attachments)) {
-
-                // If attachment file has been deleted don't show it, unless
-                // $attachments_show_deleted has been set to TRUE
-                
-                $visible_attachments = array();
-                
-                for ($i = 0; $i < sizeof($attachments); $i++) {
-                    if (isset($attachments[$i]['deleted']) && !$attachments[$i]['deleted']) {
-                        $visible_attachments[] = $attachments[$i];
-                    }elseif (forum_get_setting('attachments_show_deleted', 'Y', false)) {
-                        $visible_attachments[] = $attachments[$i];
-                    }
-                }
-                
-                // Now we go through the visible attachment list and echo
-                // out the links to them at the bottom of the message.
-                
-                if (is_array($visible_attachments) && sizeof($visible_attachments) > 0) {
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
                     
-                    // Draw the attachment header at the bottom of the post
+                // Draw the attachment header at the bottom of the post
                 
-                    echo "<tr><td>&nbsp;</td></tr>\n";
-                    echo "<tr><td class=\"postbody\" align=\"left\">\n";
-                    echo "<b>{$lang['attachments']}:</b><br />\n";                
+                echo "<tr><td>&nbsp;</td></tr>\n";
+                echo "<tr><td class=\"postbody\" align=\"left\">\n";
+                echo "<b>{$lang['attachments']}:</b><br />\n";                
                 
-                    for ($i = 0; $i < sizeof($visible_attachments); $i++) {
+                foreach($attachments_array as $attachment) {
                     
-                        echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";                    
+                    echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";                    
 
-                        // If the attachment has been deleted then we don't include a link to it.
+                    // If the attachment has been deleted then we don't include a link to it.
                         
-                        if (isset($visible_attachments[$i]['deleted']) && $visible_attachments[$i]['deleted']) {
+                    if (isset($attachment['deleted']) && $attachment['deleted']) {
                         
-                            echo "{$visible_attachments[$i]['filename']} - <b>{$lang['deleted']}</b><br />";
+                        echo "{$attachment['filename']} - <b>{$lang['deleted']}</b><br />";
                            
-                        }else {
+                    }else {
                             
-                            if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                                echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $visible_attachments[$i]['hash'], "\"";
-                            }else {
-                                echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\"";
-                            }
-
-                            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
-                                echo " target=\"_blank\"";
-                            }else {
-                                echo " target=\"_self\"";
-                            }
-
-                            echo " title=\"";
-
-                            if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
-                                echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-                            }
- 
-                            echo "{$lang['size']}: ". format_file_size($visible_attachments[$i]['filesize']). ", ";
-                            echo "{$lang['downloaded']}: ". $visible_attachments[$i]['downloads'];
-
-                            if ($visible_attachments[$i]['downloads'] == 1) {
-                                echo " {$lang['time']}";
-                            }else {
-                                echo " {$lang['times']}";
-                            }
-
-                            echo "\">{$visible_attachments[$i]['filename']}</a><br />";
-
+                        if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+                            echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
+                        }else {
+                            echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                         }
-                    }
 
-                    echo "</td></tr>\n";
+                        if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                            echo " target=\"_blank\"";
+                        }else {
+                            echo " target=\"_self\"";
+                        }
+
+                        echo " title=\"";
+
+                        if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
+                            echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                        }
+ 
+                        echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
+                        echo "{$lang['downloaded']}: ". $attachment['downloads'];
+
+                        if ($attachment['downloads'] == 1) {
+                            echo " {$lang['time']}";
+                        }else {
+                            echo " {$lang['times']}";
+                        }
+
+                        echo "\">{$attachment['filename']}</a><br />";
+                    }
                 }
+                echo "</td></tr>\n";
             }
         }
 
@@ -442,24 +421,24 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP)) || (bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
-                echo "&nbsp;<a href=\"post.php?webtag={$webtag['WEBTAG']}&replyto=$tid.".$message['PID']."\" target=\"_parent\">{$lang['reply']}</a>";
+                echo "&nbsp;<a href=\"post.php?webtag=$webtag&replyto=$tid.".$message['PID']."\" target=\"_parent\">{$lang['reply']}</a>";
 
             }
             if(bh_session_get_value('UID') == $message['FROM_UID'] || perm_is_moderator()){
                 echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
-                echo "&nbsp;<a href=\"delete.php?webtag={$webtag['WEBTAG']}&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
+                echo "&nbsp;<a href=\"delete.php?webtag=$webtag&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS)) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) {
                     if ($is_poll && $message['PID'] == 1) {
                         if (!poll_is_closed($tid) || perm_is_moderator()) {
 
                             echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
-                            echo "&nbsp;<a href=\"edit_poll.php?webtag={$webtag['WEBTAG']}&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
+                            echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
                         }
                     }else {
 
                       echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
-                      echo "&nbsp;<a href=\"edit.php?webtag={$webtag['WEBTAG']}&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
+                      echo "&nbsp;<a href=\"edit.php?webtag=$webtag&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
 
                     }
                 }
@@ -468,15 +447,15 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "</td>\n";
 	    echo "<td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
-            echo "<a href=\"display.php?webtag={$webtag['WEBTAG']}&msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['print']}\" align=\"middle\" /></a>&nbsp;";
+            echo "<a href=\"display.php?webtag=$webtag&msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['print']}\" align=\"middle\" /></a>&nbsp;";
 
             if (bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "<a href=\"user_rel.php?webtag={$webtag['WEBTAG']}&uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"user_rel.php?webtag=$webtag&uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" align=\"middle\" /></a>&nbsp;";
             }
 
             if (perm_is_soldier()){
 
-                echo "<a href=\"admin_user.php?webtag={$webtag['WEBTAG']}&uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"admin_user.php?webtag=$webtag&uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" align=\"middle\" /></a>&nbsp;";
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
 	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
@@ -539,7 +518,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     // The first section, 1-x
     if ($spid > 1) {
         if($pid > 1){
-            $navbits[0] = "<a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid-1). "</a>";
+            $navbits[0] = "<a href=\"messages.php?webtag=$webtag&msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid-1). "</a>";
         } else {
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
@@ -555,7 +534,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.". ($spid == 0 ? 1 : $spid). "\" target=\"_self\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
+            $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&msg=$tid.". ($spid == 0 ? 1 : $spid). "\" target=\"_self\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
         }
         $spid += $ppp;
         $i++;
@@ -567,7 +546,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid,$length) . "</a>";
+            $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid,$length) . "</a>";
         }
     }
 
@@ -576,7 +555,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     $html = "{$lang['showmessages']}:";
 
     if ($length <= $ppp) {
-        $html .= " <a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.1\" target=\"_self\">{$lang['all']}</a>\n";
+        $html .= " <a href=\"messages.php?webtag=$webtag&msg=$tid.1\" target=\"_self\">{$lang['all']}</a>\n";
     }
 
     for ($i = 0; $i <= $max; $i++) {
@@ -619,7 +598,7 @@ function messages_interest_form($tid,$pid)
     $chk[$interest+1] = " checked";
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?webtag={$webtag['WEBTAG']}&ret=", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?webtag=$webtag&ret=", get_request_uri(), "\" method=\"post\">\n";
     echo "<p>{$lang['ratemyinterest']}: \n";
     echo form_radio_array("interest",array(-1,0,1,2),array("{$lang['ignore']} ","{$lang['normal']} ","{$lang['interested']} ","{$lang['subscribe']} "),$interest);
     echo form_input_hidden("tid",$tid);
@@ -634,10 +613,10 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     global $HTTP_SERVER_VARS, $lang, $webtag;
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid\" method=\"post\">\n";
+    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?webtag=$webtag&msg=$tid.$pid\" method=\"post\">\n";
 
     if (thread_is_poll($tid)) {
-        echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
+        echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?webtag=$webtag&msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
     }else {
         echo "<p>{$lang['renamethread']}: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", $lang['apply']). "</p>\n";
     }
@@ -689,10 +668,10 @@ function messages_edit_thread($fid, $tid, $pid, $title)
     global $HTTP_SERVER_VARS, $lang, $webtag;
     
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid\" method=\"post\">\n";
+    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?webtag=$webtag&msg=$tid.$pid\" method=\"post\">\n";
 
     if (thread_is_poll($tid)) {
-        echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
+        echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?webtag=$webtag&msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
     }else {
         echo "<p>{$lang['renamethread']}: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", $lang['apply']). "</p>\n";
     }
@@ -712,9 +691,9 @@ function message_get_user($tid, $pid)
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT FROM_UID FROM {$webtag['PREFIX']}POST WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql, $db_message_get_user);
 
     if($result){
@@ -738,9 +717,9 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     // Check for existing entry in USER_THREAD
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT LAST_READ FROM {$webtag['PREFIX']}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
     $result = db_query($sql, $db_message_update_read);
 
     if (db_num_rows($result) > 0) {
@@ -753,7 +732,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
         if ($pid > $fa['LAST_READ']) {
 
-            $sql = "UPDATE LOW_PRIORITY {$webtag['PREFIX']}USER_THREAD";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD";
             $sql.= " SET LAST_READ = '$pid', LAST_READ_AT = NOW()";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
@@ -762,13 +741,13 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     }else {
 
-        $sql = "INSERT INTO {$webtag['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
         db_query($sql, $db_message_update_read);
     }
 
     // Mark posts as Viewed...
-    $sql = "UPDATE LOW_PRIORITY {$webtag['PREFIX']}POST SET VIEWED = NOW() WHERE TID = '$tid' ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() WHERE TID = '$tid' ";
     $sql.= "AND PID BETWEEN '$spid' AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
     db_query($sql, $db_message_update_read);
@@ -786,13 +765,13 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!is_numeric($uid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
-    $sql.= "FROM {$webtag['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST <> -1) ";
@@ -836,26 +815,26 @@ function messages_fontsize_form($tid, $pid)
         if ($fontsmaller < 5) $fontsmaller = 5;
         if ($fontlarger > 15) $fontlarger = 15;
 
-        $fontstrip.= "<a href=\"user_font.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">{$lang['smaller']}</a> ";
-        $fontstrip.= bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']}</a></p>\n";
+        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">{$lang['smaller']}</a> ";
+        $fontstrip.= bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?webtag=$webtag&msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']}</a></p>\n";
 
     }elseif (bh_session_get_value('FONT_SIZE') == 5) {
 
         $fontlarger = bh_session_get_value('FONT_SIZE') + 1;
-        $fontstrip.= "{$lang['smaller']} ". bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid&amp;fontsize=6\" target=\"_self\">{$lang['larger']}</a></p>\n";
+        $fontstrip.= "{$lang['smaller']} ". bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?webtag=$webtag&msg=$tid.$pid&amp;fontsize=6\" target=\"_self\">{$lang['larger']}</a></p>\n";
 
     }elseif (bh_session_get_value('FONT_SIZE') == 15) {
 
         $fontsmaller = bh_session_get_value('FONT_SIZE') - 1;
-        $fontstrip.= "<a href=\"user_font.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">{$lang['smaller']}</a> ". bh_session_get_value('FONT_SIZE'). " {$lang['larger']}</p>\n";
+        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">{$lang['smaller']}</a> ". bh_session_get_value('FONT_SIZE'). " {$lang['larger']}</p>\n";
 
     }else {
 
         $fontsmaller = bh_session_get_value('FONT_SIZE') - 1;
         $fontlarger = bh_session_get_value('FONT_SIZE') + 1;
 
-        $fontstrip.= "<a href=\"user_font.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid&amp;fontsize=9\" target=\"_self\">{$lang['smaller']}</a> ";
-        $fontstrip.= "10 <a href=\"user_font.php?webtag={$webtag['WEBTAG']}&msg=$tid.$pid&amp;fontsize=11\" target=\"_self\">{$lang['larger']}</a></p>\n";
+        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&msg=$tid.$pid&amp;fontsize=9\" target=\"_self\">{$lang['smaller']}</a> ";
+        $fontstrip.= "10 <a href=\"user_font.php?webtag=$webtag&msg=$tid.$pid&amp;fontsize=11\" target=\"_self\">{$lang['larger']}</a></p>\n";
 
     }
 
@@ -885,7 +864,7 @@ function messages_forum_stats($tid, $pid)
         if ($user_show_stats == 1 || $uid == 0) {
 
             if ($uid != 0) {
-                echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag={$webtag['WEBTAG']}&show_stats=0&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\"></a></td>\n";
+                echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&show_stats=0&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\"></a></td>\n";
             }else {
                 echo "      <td class=\"subhead\">&nbsp;</td>\n";
             }
@@ -908,7 +887,7 @@ function messages_forum_stats($tid, $pid)
                 echo "              <b>{$user_stats['GUESTS']}</b> {$lang['guests']}\n";
                 echo "              <b>{$user_stats['NUSERS']}</b> {$lang['members']}\n";
                 echo "              <b>{$user_stats['AUSERS']}</b> {$lang['anonymousmembers']}\n";
-                echo "              [ <a href=\"start.php?webtag={$webtag['WEBTAG']}&show=visitors\" target=\"main\">{$lang['viewcompletelist']}</a> ]\n";
+                echo "              [ <a href=\"start.php?webtag=$webtag&show=visitors\" target=\"main\">{$lang['viewcompletelist']}</a> ]\n";
                 echo "            </td>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
@@ -926,7 +905,7 @@ function messages_forum_stats($tid, $pid)
 
                     for ($i = 0; $i < sizeof($user_stats['USERS']); $i++) {
             
-                        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">";
+                        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']}, '$webtag')\" target=\"_self\">";
                         echo str_replace(" ", "&nbsp;", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME'])), "</a>";
                         if ($i < (sizeof($user_stats['USERS']) - 1)) echo ", ";
                     }
@@ -1007,7 +986,7 @@ function messages_forum_stats($tid, $pid)
 
             if ($newest_member = get_newest_user()) {
 
-                echo "              {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">", format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), "</a>.\n";
+                echo "              {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']}, '$webtag')\" target=\"_self\">", format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), "</a>.\n";
             }
 
             echo "            </td>\n";
@@ -1047,7 +1026,7 @@ function messages_forum_stats($tid, $pid)
 
         }else {
 
-            echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag={$webtag['WEBTAG']}&show_stats=1&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\"></a></td>\n";
+            echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&show_stats=1&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\"></a></td>\n";
         }
 
         echo "    </tr>\n";

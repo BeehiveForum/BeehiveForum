@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.33 2004-03-28 08:48:45 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.34 2004-04-04 21:03:40 decoyduck Exp $ */
 
 function light_html_draw_top ($title = false)
 {
@@ -370,7 +370,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
-        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag={$webtag['WEBTAG']}&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list){
@@ -458,7 +458,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
-                echo "<a href=\"lpost.php?webtag={$webtag['WEBTAG']}&replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
+                echo "<a href=\"lpost.php?webtag=$webtag&replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
 
             }
         }
@@ -490,7 +490,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     // The first section, 1-x
     if($spid > 1){
         if($pid > 1){
-            $navbits[0] = "<a href=\"lmessages.php?webtag={$webtag['WEBTAG']}&msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
+            $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&msg=$tid.1\">" . mess_nav_range(1,$spid-1) . "</a>";
         } else {
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
@@ -506,7 +506,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"lmessages.php?webtag={$webtag['WEBTAG']}&msg=$tid.$spid\">" . mess_nav_range($spid==0 ? 1 : $spid,$spid+($ppp - 1)) . "</a>";
+            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&msg=$tid.$spid\">" . mess_nav_range($spid==0 ? 1 : $spid,$spid+($ppp - 1)) . "</a>";
         }
         $spid += $ppp;
         $i++;
@@ -518,7 +518,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"lmessages.php?webtag={$webtag['WEBTAG']}&msg=$tid.$spid\">" . mess_nav_range($spid,$length) . "</a>";
+            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&msg=$tid.$spid\">" . mess_nav_range($spid,$length) . "</a>";
         }
     }
     $max = $i;
@@ -526,7 +526,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
     $html = "{$lang['showmessages']}:";
 
     if($length <= $ppp){
-        $html .= " <a href=\"lmessages.php?webtag={$webtag['WEBTAG']}&msg=$tid.1\">{$lang['all']}</a>\n";
+        $html .= " <a href=\"lmessages.php?webtag=$webtag&msg=$tid.1\">{$lang['all']}</a>\n";
     }
 
     for($i=0;$i<=$max;$i++) {
@@ -563,10 +563,10 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     if (!is_numeric($default_fid))
 
     if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
-        $sql = "SELECT FID, TITLE FROM {$webtag['PREFIX']}FOLDER";
+        $sql = "SELECT FID, TITLE FROM {$table_data['PREFIX']}FOLDER";
     } else {
-        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$webtag['PREFIX']}FOLDER F LEFT JOIN ";
-        $sql."{$webtag['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
+        $sql."{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
         $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
     }
 

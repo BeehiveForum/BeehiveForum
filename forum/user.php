@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.16 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: user.php,v 1.17 2004-04-04 21:03:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -99,8 +99,8 @@ echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\">\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"180,*\" border=\"1\">\n";
-echo "<frame src=\"./user_menu.php?webtag={$webtag['WEBTAG']}\" name=\"left\" border=\"1\">\n";
-echo "<frame src=\"./user_main.php?webtag={$webtag['WEBTAG']}\" name=\"right\" border=\"1\">\n";
+echo "<frame src=\"./user_menu.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
+echo "<frame src=\"./user_main.php?webtag=$webtag\" name=\"right\" border=\"1\">\n";
 echo "</frameset>\n";
 echo "</html>\n";
 

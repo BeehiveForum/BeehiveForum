@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.40 2004-03-22 13:04:20 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.41 2004-04-04 21:03:40 decoyduck Exp $ */
 
 function post_update($tid, $pid, $content)
 {
@@ -31,9 +31,9 @@ function post_update($tid, $pid, $content)
 
     $content  = addslashes($content);
    
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "UPDATE {$webtag['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
+    $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
     return db_query($sql, $db_post_update);
@@ -46,9 +46,9 @@ function post_add_edit_text($tid, $pid)
     $db_post_add_edit_text = db_connect();
     $edit_uid = bh_session_get_value('UID');
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
-    $sql = "UPDATE {$webtag['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
+    $sql = "UPDATE {$table_data['PREFIX']}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     return db_query($sql, $db_post_add_edit_text);
@@ -61,16 +61,16 @@ function post_delete($tid, $pid)
     $db_post_delete = db_connect();
 
     if (thread_is_poll($tid) && $pid == 1) {
-        $sql = "UPDATE {$webtag['PREFIX']}THREAD SET POLL_FLAG = 'N' WHERE TID = '$tid'";
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET POLL_FLAG = 'N' WHERE TID = '$tid'";
         $result = db_query($sql, $db_post_delete);
     }
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}THREAD WHERE TID = '$tid' AND LENGTH = 1";
+    $sql = "DELETE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid' AND LENGTH = 1";
     $result = db_query($sql, $db_post_delete);
 
-    $sql = "UPDATE {$webtag['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
+    $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
     $result = db_query($sql, $db_post_delete);

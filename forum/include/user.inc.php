@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.147 2004-04-03 14:12:03 tribalonline Exp $ */
+/* $Id: user.inc.php,v 1.148 2004-04-04 21:03:41 decoyduck Exp $ */
 
 function user_count()
 {
    $db_user_count = db_connect();
    
-   $webtag = get_webtag();
+   $table_data = get_table_prefix();
 
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER ";
    $sql.= "WHERE USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')";
@@ -42,7 +42,7 @@ function user_exists($logon)
 {
     $db_user_exists = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $logon = addslashes($logon);
 
@@ -65,7 +65,7 @@ function user_create($logon, $password, $nickname, $email)
         $ipaddress = "";
     }
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email')";
@@ -86,7 +86,7 @@ function user_update($uid, $nickname, $email)
 {
     $db_user_update = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $nickname = addslashes(_htmlentities($nickname));
     $email = addslashes(_htmlentities($email));
@@ -102,7 +102,7 @@ function user_change_pw($uid, $password, $hash = false)
     $db_user_change_pw = db_connect();
     $password = md5($password);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "UPDATE USER SET PASSWD = '$password' WHERE UID = $uid ";
 
@@ -120,10 +120,10 @@ function user_get_status($uid)
 {
     if (!is_numeric($uid)) return 0;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT STATUS FROM USER_STATUS WHERE UID = $uid ";
-    $sql.= "AND FID = '{$webtag['FID']}'";
+    $sql.= "AND FID = '{$table_data['FID']}'";
     
     $db_user_get_status = db_connect();
 
@@ -138,20 +138,20 @@ function user_update_status($uid, $status)
 {
     $db_user_update_status = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($status)) return false;
 
     $sql = "UPDATE USER_STATUS SET STATUS = '$status' ";
-    $sql.= "WHERE UID = '$uid' AND FID = '{$webtag['FID']}'";
+    $sql.= "WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
 
     $result = db_query($sql, $db_user_update_status);
 
     if (!db_affected_rows($db_user_update_status)) {
     
         $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) ";
-        $sql.= "VALUES ('$uid', '{$webtag['FID']}', '$status')";
+        $sql.= "VALUES ('$uid', '{$table_data['FID']}', '$status')";
     
         $result = db_query($sql, $db_user_update_status);
     }
@@ -163,31 +163,31 @@ function user_update_folders($uid, $folders)
 {
     $db_user_update_folders = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     if (!is_numeric($uid)) return false;
     if (!is_array($folders)) return false;
 
-    $sql = "UPDATE {$webtag['PREFIX']}USER_FOLDER SET ALLOWED = 0 ";
+    $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = 0 ";
     $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_user_update_folders);
 
     for ($i = 0; $i < sizeof($folders); $i++) {
 
-        $sql = "SELECT ALLOWED FROM {$webtag['PREFIX']}USER_FOLDER ";
+        $sql = "SELECT ALLOWED FROM {$table_data['PREFIX']}USER_FOLDER ";
         $sql.= "WHERE UID = $uid AND FID = {$folders[$i]['fid']}";
 
         $result = db_query($sql, $db_user_update_folders);
 
         if (db_num_rows($result)) {
 
-            $sql = "UPDATE {$webtag['PREFIX']}USER_FOLDER SET ALLOWED = {$folders[$i]['allowed']} ";
+            $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = {$folders[$i]['allowed']} ";
             $sql.= "WHERE UID = $uid AND FID = {$folders[$i]['fid']}";
 
         }else {
 
-            $sql = "INSERT INTO {$webtag['PREFIX']}USER_FOLDER (UID, FID, ALLOWED) ";
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, ALLOWED) ";
             $sql.= "VALUES ($uid, {$folders[$i]['fid']}, {$folders[$i]['allowed']})";
         }
 
@@ -207,11 +207,11 @@ function user_logon($logon, $password, $md5hash = false)
 
     $logon = addslashes($logon);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
 
     $db_user_logon = db_connect();
@@ -246,11 +246,11 @@ function user_check_logon($uid, $logon, $md5pass)
         
         $db_user_check_logon = db_connect();
         
-        $webtag = get_webtag();
+        $table_data = get_table_prefix();
 
         $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
         $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-        $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+        $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
         $sql.= "WHERE USER.UID = '$uid' AND USER.LOGON = '$logon' ";
         $sql.= "AND USER.PASSWD = '$md5pass'";
         
@@ -280,7 +280,7 @@ function user_get($uid, $hash = false)
 
     if (!is_numeric($uid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER.*, USER_STATUS.STATUS FROM USER USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID) ";
@@ -307,7 +307,7 @@ function user_get_logon($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT LOGON FROM USER WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_logon);
@@ -328,7 +328,7 @@ function user_get_uid($logon)
 
     $logon = addslashes($logon);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
@@ -347,9 +347,9 @@ function user_get_sig($uid, &$content, &$html)
 
     if (!is_numeric($uid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT CONTENT, HTML FROM {$webtag['PREFIX']}USER_SIG WHERE UID = $uid";
+    $sql = "SELECT CONTENT, HTML FROM {$table_data['PREFIX']}USER_SIG WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_sig);
 
     if(!db_num_rows($result)){
@@ -370,9 +370,9 @@ function user_get_prefs($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}USER_PREFS WHERE UID = $uid";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_prefs);
     
     $prefs_array = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
@@ -399,7 +399,7 @@ function user_update_prefs($uid, $prefs_array)
 
     $db_user_update_prefs = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     // Get the current prefs and merge them with the new ones.   
 
@@ -407,7 +407,7 @@ function user_update_prefs($uid, $prefs_array)
     
     // Now delete the old preferences
     
-    $sql = "DELETE FROM {$webtag['PREFIX']}USER_PREFS WHERE UID = $uid";
+    $sql = "DELETE FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_update_prefs);
     
     if (empty($prefs_array['TIMEZONE']))       $prefs_array['TIMEZONE']       = 0;   
@@ -417,7 +417,7 @@ function user_update_prefs($uid, $prefs_array)
     if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = forum_get_setting('default_style');
     if (!ereg("([[:alnum:]]+)", $prefs_array['EMOTICONS'])) $prefs_array['EMOTICONS'] = forum_get_setting('default_emoticons');
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
     $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, ";
     $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS) ";
@@ -442,16 +442,16 @@ function user_update_sig($uid, $content, $html)
     $content = addslashes($content);
     $db_user_update_sig = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "UPDATE {$webtag['PREFIX']}USER_SIG SET CONTENT = '$content', ";
+    $sql = "UPDATE {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
     $sql.= "HTML = '$html' WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_user_update_sig);
 
     if (!db_affected_rows($db_user_update_sig)) {
 
-        $sql = "INSERT INTO {$webtag['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
         $sql.= "VALUES ('$uid', '$content', '$html')";
 
         $result = db_query($sql, $db_user_update_sig);
@@ -466,9 +466,9 @@ function user_update_global_sig($uid, $value)
 
     $db_user_update_global_sig = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "update {$webtag['PREFIX']}USER_PREFS set ";
+    $sql = "update {$table_data['PREFIX']}USER_PREFS set ";
     $sql .= "VIEW_SIGS = '$value' where UID = $uid";
 
     $result = db_query($sql, $db_user_update_global_sig);
@@ -482,9 +482,9 @@ function user_get_global_sig($uid)
 
     $db_user_update_global_sig = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT VIEW_SIGS FROM {$webtag['PREFIX']}USER_PREFS WHERE UID = $uid";
+    $sql = "SELECT VIEW_SIGS FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_update_global_sig);
 
     if (db_num_rows($result)) {
@@ -501,10 +501,10 @@ function user_get_post_count($uid)
 
     $db_user_get_count = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM {$webtag['PREFIX']}POST POST ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}POST_CONTENT POST_CONTENT ";
+    $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
     $sql.= "ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
     $sql.= "WHERE POST.FROM_UID = '$uid' AND POST_CONTENT.CONTENT IS NOT NULL";
     
@@ -523,11 +523,11 @@ function user_get_last_logon_time($uid, $verbose = true)
 
     $db_user_get_last_logon_time = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE USER.UID = $uid AND VISITOR_LOG.LAST_LOGON IS NOT NULL";    
     
@@ -555,11 +555,11 @@ function user_guest_enabled()
 
     $db_user_guest_account = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "WHERE USER.LOGON = 'GUEST' AND USER.PASSWD = MD5('guest')";
     $result = db_query($sql, $db_user_guest_account);
 
@@ -605,11 +605,11 @@ function user_get_forthcoming_birthdays()
 {
     $db_user_get_forthcoming_birthdays = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) ";
     $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
-    $sql .= "FROM USER U, {$webtag['PREFIX']}USER_PREFS UP ";
+    $sql .= "FROM USER U, {$table_data['PREFIX']}USER_PREFS UP ";
     $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
     $sql .= "AND MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW())+ 365, 365) > 0 "; 
     $sql .= "ORDER BY DAYS_TO_BIRTHDAY ASC ";
@@ -632,7 +632,7 @@ function user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir
 {
     $db_user_search = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 'VISITOR_LOG.LAST_LOGON');
 
@@ -644,8 +644,8 @@ function user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER_STATUS.STATUS FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
@@ -670,7 +670,7 @@ function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $o
 {
     $db_user_get_all = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $user_get_all_array = array();
 
@@ -682,8 +682,8 @@ function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $o
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER_STATUS.STATUS FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
@@ -702,7 +702,7 @@ function user_get_aliases($uid)
 {
     $db_user_get_aliases = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     if (!is_numeric($uid)) return false;
     
@@ -713,7 +713,7 @@ function user_get_aliases($uid)
     
     // Fetch the last 20 IP addresses from the POST table
 
-    $sql = "SELECT DISTINCT IPADDRESS FROM {$webtag['PREFIX']}POST ";
+    $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 20";
     
     $result = db_query($sql, $db_user_get_aliases);
@@ -730,7 +730,7 @@ function user_get_aliases($uid)
     
     $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);    
     
-    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, POST.IPADDRESS FROM {$webtag['PREFIX']}POST POST ";
+    $sql = "SELECT DISTINCT USER.UID, USER.LOGON, POST.IPADDRESS FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
     $sql.= "ORDER BY POST.TID DESC LIMIT 0, 10";
@@ -750,11 +750,11 @@ function users_get_recent()
 {
     $db_users_get_recent = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
@@ -777,10 +777,10 @@ function user_get_friends($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 1";
 
     $result = db_query($sql, $db_user_get_peers);
@@ -800,10 +800,10 @@ function user_get_ignored($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 2";
 
     $result = db_query($sql, $db_user_get_peers);
@@ -823,10 +823,10 @@ function user_get_ignored_signatures($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 3";
 
     $result = db_query($sql, $db_user_get_peers);
@@ -846,12 +846,12 @@ function user_get_relationships($uid, $offset = 0)
 {
     $db_user_get_relationships = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     if (!is_numeric($offset)) $offset = 0;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP <> 0 ORDER BY USER.LOGON ASC ";    
     $sql.= "LIMIT $offset, 20";
 
@@ -872,11 +872,11 @@ function user_get_word_filter($incadminfilter = false)
 {
     $db_user_get_word_filter = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $uid = bh_session_get_value('UID');    
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = '$uid' ";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid' ";
     if ($incadminfilter) $sql.= "OR UID = 0 ";
     $sql.= "ORDER BY ID";
     
@@ -895,11 +895,11 @@ function user_clear_word_filter()
 {
     $db_user_clear_word_filter = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $uid = bh_session_get_value('UID');
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
+    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
     return db_query($sql, $db_user_clear_word_filter);
 }
 
@@ -910,11 +910,11 @@ function user_add_word_filter($match, $replace, $filter_option)
 
     $db_user_save_word_filter = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $uid = bh_session_get_value('UID');
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}FILTER_LIST (UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$uid', '$match', '$replace', '$filter_option')";
 
     $result = db_query($sql, $db_user_save_word_filter);
@@ -926,11 +926,11 @@ function user_delete_word_filter($id)
 
     $db_user_delete_word_filter = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $uid = bh_session_get_value('UID');
     
-    $sql = "DELETE FROM {$webtag['PREFIX']}FILTER_LIST ";
+    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE ID = '$id' AND UID = '$uid'";
     
     $result = db_query($sql, $db_user_delete_word_filter);

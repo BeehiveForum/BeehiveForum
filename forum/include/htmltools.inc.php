@@ -75,7 +75,7 @@ class TextAreaHTML {
 		$str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);", "horizontal_rule_button.png");
 		$str.= $this->_tb_img($lang['image'], "add_image();", "image_button.png");
 		$str.= $this->_tb_img($lang['hyperlink'], "add_link();", "link_button.png");
-		$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','{$webtag['WEBTAG']}');", "emoticons_button.png");
+		$str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
 		$str.= "	<br /><br />\n";
 		$str.= "	<select class=\"bhselect\" onChange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
 		$str.= "		<option value=\"\" selected>".$lang['fontface']."</option>\n";

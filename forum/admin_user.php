@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.73 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.74 2004-04-04 21:03:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -100,7 +100,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 }elseif (isset($HTTP_POST_VARS['ret'])) {
     $ret = $HTTP_POST_VARS['ret'];
 }else {
-    $ret = "admin_users.php?webtag={$webtag['WEBTAG']}";
+    $ret = "admin_users.php?webtag=$webtag";
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
@@ -254,7 +254,7 @@ if (isset($HTTP_POST_VARS['del'])) {
 
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_user\" action=\"admin_user.php?webtag={$webtag['WEBTAG']}\" method=\"post\">\n";
+echo "<form name=\"f_user\" action=\"admin_user.php?webtag=$webtag\" method=\"post\">\n";
 echo "  ", form_input_hidden("uid", $uid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -291,7 +291,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";     
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag={$webtag['WEBTAG']}&uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
@@ -311,7 +311,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
     echo "    </tr>\n";     
     echo "  </table>\n";
-    echo "  ", form_input_hidden("ret", "admin_user.php?webtag={$webtag['WEBTAG']}&uid=$uid"), "\n";
+    echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
 
 }else {
 
@@ -413,7 +413,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
             foreach ($user_alias_array as $user_alias) {
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
-                echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag={$webtag['WEBTAG']}&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+                echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
                 echo "                              <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
             
                 if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
@@ -503,9 +503,9 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
             echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
             
             if ($attachment_use_old_method) {
-                echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
+                echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
             }           
 
             if (strlen($attachments[$i]['filename']) > 16) {

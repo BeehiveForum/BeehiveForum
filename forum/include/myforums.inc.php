@@ -84,13 +84,17 @@ function get_forum_list()
 function get_my_forums()
 {
     $db_get_my_forums = db_connect();
-    $get_my_forums_array = array();
+
+    $get_my_forums_array = array('FAVOURITES' => array(),
+                                 'FORUMS'     => array());
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUM_SETTINGS.SVALUE AS FORUM_NAME ";
-    $sql.= "FROM FORUMS FORUMS LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON ";
-    $sql.= "(FORUMS.FID = FORUM_SETTINGS.FID AND FORUM_SETTINGS.SNAME = 'forum_name')";
+    $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, USER_FORUM.INTEREST, ";
+    $sql.= "FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID)";
+    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON ";
+    $sql.= "(FORUMS.FID = FORUM_SETTINGS.FID AND FORUM_SETTINGS.SNAME = 'forum_name') ";
 
     $result = db_query($sql, $db_get_my_forums); 
 
@@ -98,8 +102,16 @@ function get_my_forums()
 
         if (isset($forum_data['WEBTAG']) && isset($forum_data['FID'])) {
 
+	    // Make sure the Forum Name is set
+
 	    if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) == 0) {
 	        $forum_data['FORUM_NAME'] = "Unnamed Forum";
+	    }
+
+	    // Make sure the Forum Interest Level is set.
+
+	    if (!isset($forum_data['INTEREST'])) {
+	        $forum_data['INTEREST'] = 0;
 	    }
 
             // Get any new messages since last visit
@@ -140,7 +152,10 @@ function get_my_forums()
 
             // Get Last Visited
         
-            $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE FID = {$forum_data['FID']} AND UID = '$uid'";
+            $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
+            $sql.= "FROM VISITOR_LOG WHERE FID = {$forum_data['FID']} ";
+            $sql.= "AND UID = '$uid'";
+
             $result = db_query($sql, $db_get_my_forums);
          
             if (db_num_rows($result)) {
@@ -171,11 +186,40 @@ function get_my_forums()
                 $forum_data['DESCRIPTION'] = "";
             }
 
-	    $get_my_forums_array[] = $forum_data;
+	    if ($forum_data['INTEREST'] == 1) {
+  	        $get_my_forums_array['FAVOURITES'][] = $forum_data;
+	    }else {
+  	        $get_my_forums_array['FORUMS'][] = $forum_data;
+	    }
 	}
     }
 
     return $get_my_forums_array;
+}
+
+function user_set_forum_interest($fid, $interest)
+{
+    $db_user_set_forum_interest = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($interest)) return false;
+
+    $sql = "UPDATE USER_FORUM SET INTEREST = '$interest' ";
+    $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+
+    $result = db_query($sql, $db_user_set_forum_interest);
+
+    if (!db_affected_rows($db_user_set_forum_interest)) {
+
+        $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
+	$sql.= "VALUES ('$uid', '$fid', 1)";
+
+	$result = db_query($sql, $db_user_set_forum_interest);
+    }
+
+    return $result;
 }
 
 ?>

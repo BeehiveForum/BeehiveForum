@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.56 2005-03-13 20:15:52 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.57 2005-03-13 20:18:18 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -41,7 +41,7 @@ function admin_add_log_entry($action, $data = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (CREATED, UID, ACTION, DATA) ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (CREATED, UID, ACTION, ENTRY) ";
     $sql.= "VALUES (NOW(), '$uid', '$action', '$data')";
 
     if (!$result = db_query($sql, $db_admin_add_log_entry)) return false;

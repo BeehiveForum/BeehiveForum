@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.36 2004-04-10 10:27:05 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.37 2004-04-10 10:39:28 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -256,494 +256,515 @@ function save_start_page($content)
 
 function forum_create($webtag, $forum_name, $access)
 {
-    $db_forum_create = db_connect();
+    // Only the queen can create forums!!
     
-    $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
-    $result = db_query($sql, $db_forum_create);
+    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+
+        $uid = bh_session_get_value('UID');
+
+        $db_forum_create = db_connect();
         
-    if (db_num_rows($result) > 0) {
-        return false;
+        $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+        $result = db_query($sql, $db_forum_create);
+                
+        if (db_num_rows($result) > 0) {
+                return false;
+        }
+
+        $webtag = preg_replace("/[^A-Z0-9-_]/", "", strtoupper($webtag));
+        $forum_name = addslashes($forum_name);
+
+        if (!is_numeric($access)) $access = 0;
+
+        // Create ADMIN_LOG table
+
+        $sql = "CREATE TABLE {$webtag}_ADMIN_LOG (";
+        $sql.= "  LOG_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  LOG_TIME DATETIME DEFAULT NULL,";
+        $sql.= "  ADMIN_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (LOG_ID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create BANNED_IP table
+
+        $sql = "CREATE TABLE {$webtag}_BANNED_IP (";
+        $sql.= "  IP CHAR(15) NOT NULL DEFAULT '',";
+        $sql.= "  PRIMARY KEY  (IP)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create DEDUPE table
+
+        $sql = "CREATE TABLE {$webtag}_DEDUPE (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  DDKEY CHAR(32) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create FILTER_LIST table
+
+        $sql = "CREATE TABLE {$webtag}_FILTER_LIST (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (ID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create FOLDER table
+
+        $sql = "CREATE TABLE {$webtag}_FOLDER (";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  ACCESS_LEVEL TINYINT(4) DEFAULT '0',";
+        $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
+        $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (FID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create LINKS table
+
+        $sql = "CREATE TABLE {$webtag}_LINKS (";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  URI VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  TITLE VARCHAR(64) NOT NULL DEFAULT '',";
+        $sql.= "  DESCRIPTION TEXT NOT NULL,";
+        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (LID),";
+        $sql.= "  KEY FID (FID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create LINKS_COMMENT table
+
+        $sql = "CREATE TABLE {$webtag}_LINKS_COMMENT (";
+        $sql.= "  CID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  COMMENT TEXT NOT NULL,";
+        $sql.= "  PRIMARY KEY  (CID),";
+        $sql.= "  KEY LID (LID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create LINKS_FOLDERS table
+
+        $sql = "CREATE TABLE {$webtag}_LINKS_FOLDERS (";
+        $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT '1',";
+        $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
+        $sql.= "  PRIMARY KEY  (FID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create LINKS_VOTE table
+
+        $sql = "CREATE TABLE {$webtag}_LINKS_VOTE (";
+        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  PRIMARY KEY  (LID,UID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create PM table
+
+        $sql = "CREATE TABLE {$webtag}_PM (";
+        $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
+        $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (MID),";
+        $sql.= "  KEY TO_UID (TO_UID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create PM_ATTACHMENT_IDS table
+
+        $sql = "CREATE TABLE {$webtag}_PM_ATTACHMENT_IDS (";
+        $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  PRIMARY KEY  (MID),";
+        $sql.= "  KEY AID (AID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create PM_CONTENT table
+
+        $sql = "CREATE TABLE {$webtag}_PM_CONTENT (";
+        $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CONTENT TEXT,";
+        $sql.= "  PRIMARY KEY  (MID),";
+        $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create POLL table
+
+        $sql = "CREATE TABLE {$webtag}_POLL (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CLOSES DATETIME DEFAULT NULL,";
+        $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
+        $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
+        $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
+        $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (TID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create POLL_VOTES table
+
+        $sql = "CREATE TABLE {$webtag}_POLL_VOTES (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create POST table
+
+        $sql = "CREATE TABLE {$webtag}_POST (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  VIEWED DATETIME DEFAULT NULL,";
+        $sql.= "  CREATED DATETIME DEFAULT NULL,";
+        $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
+        $sql.= "  EDITED DATETIME DEFAULT NULL,";
+        $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
+        $sql.= "  PRIMARY KEY  (TID,PID),";
+        $sql.= "  KEY TO_UID (TO_UID),";
+        $sql.= "  KEY IPADDRESS (IPADDRESS)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create POST_ATTACHMENT_FILES table
+
+        $sql = "CREATE TABLE {$webtag}_POST_ATTACHMENT_FILES (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (ID),";
+        $sql.= "  KEY AID (AID),";
+        $sql.= "  KEY HASH (HASH)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create POST_ATTACHMENT_IDS table
+
+        $sql = "CREATE TABLE {$webtag}_POST_ATTACHMENT_IDS (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  PRIMARY KEY  (TID,PID),";
+        $sql.= "  KEY AID (AID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create POST_CONTENT table
+
+        $sql = "CREATE TABLE {$webtag}_POST_CONTENT (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CONTENT TEXT,";
+        $sql.= "  PRIMARY KEY  (TID,PID),";
+        $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create PROFILE_ITEM table
+
+        $sql = "CREATE TABLE {$webtag}_PROFILE_ITEM (";
+        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  PSID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (PIID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create PROFILE_SECTION table
+
+        $sql = "CREATE TABLE {$webtag}_PROFILE_SECTION (";
+        $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (PSID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create STATS table
+
+        $sql = "CREATE TABLE {$webtag}_STATS (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  MOST_USERS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (ID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create THREAD table
+
+        $sql = "CREATE TABLE {$webtag}_THREAD (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
+        $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
+        $sql.= "  MODIFIED DATETIME DEFAULT NULL,";
+        $sql.= "  CLOSED DATETIME DEFAULT NULL,";
+        $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
+        $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
+        $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (TID),";
+        $sql.= "  KEY IX_THREAD_FID (FID),";
+        $sql.= "  KEY BY_UID (BY_UID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create USER_FOLDER table
+
+        $sql = "CREATE TABLE {$webtag}_USER_FOLDER (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
+        $sql.= "  ALLOWED TINYINT(4) DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (UID,FID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create USER_PEER table
+
+        $sql = "CREATE TABLE {$webtag}_USER_PEER (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create USER_POLL_VOTES table
+
+        $sql = "CREATE TABLE {$webtag}_USER_POLL_VOTES (";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PTUID VARCHAR(32) NOT NULL DEFAULT '',";
+        $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  PRIMARY KEY  (ID,TID,PTUID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create USER_PREFS table
+
+        $sql = "CREATE TABLE {$webtag}_USER_PREFS (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  FIRSTNAME VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  LASTNAME VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  DOB DATE DEFAULT '0000-00-00',";
+        $sql.= "  HOMEPAGE_URL VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  PIC_URL VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  EMAIL_NOTIFY CHAR(1) DEFAULT NULL,";
+        $sql.= "  TIMEZONE DECIMAL(2,1) DEFAULT NULL,";
+        $sql.= "  DL_SAVING CHAR(1) DEFAULT NULL,";
+        $sql.= "  MARK_AS_OF_INT CHAR(1) DEFAULT NULL,";
+        $sql.= "  POSTS_PER_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,";
+        $sql.= "  FONT_SIZE TINYINT(3) UNSIGNED DEFAULT NULL,";
+        $sql.= "  STYLE VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  EMOTICONS VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  VIEW_SIGS CHAR(1) DEFAULT NULL,";
+        $sql.= "  START_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,";
+        $sql.= "  LANGUAGE VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  PM_NOTIFY CHAR(1) DEFAULT NULL,";
+        $sql.= "  PM_NOTIFY_EMAIL CHAR(1) DEFAULT NULL,";
+        $sql.= "  DOB_DISPLAY TINYINT(3) UNSIGNED DEFAULT NULL,";
+        $sql.= "  ANON_LOGON TINYINT(3) UNSIGNED DEFAULT NULL,";
+        $sql.= "  SHOW_STATS TINYINT(3) UNSIGNED DEFAULT NULL,";
+        $sql.= "  IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,";
+        $sql.= "  USE_WORD_FILTER CHAR(1) DEFAULT NULL,";
+        $sql.= "  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID,UID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create USER_PROFILE table
+
+        $sql = "CREATE TABLE {$webtag}_USER_PROFILE (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID,PIID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create USER_SIG table
+
+        $sql = "CREATE TABLE {$webtag}_USER_SIG (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CONTENT TEXT,";
+        $sql.= "  HTML CHAR(1) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create USER_THREAD table
+
+        $sql = "CREATE TABLE {$webtag}_USER_THREAD (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
+        $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID,TID)";
+        $sql.= ") TYPE=MYISAM;";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create General Folder
+
+        $sql = "INSERT INTO {$webtag}_FOLDER (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
+        $sql.= "VALUES ('General', 0, NULL, NULL, 0)";
+
+        $result = db_query($sql, $db_forum_create);
+
+        // Create Top Level Links Folder
+
+        $sql = "INSERT INTO {$webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
+        $result = db_query($sql, $db_forum_create);
+
+        // Save Webtag
+
+        $sql = "INSERT INTO FORUMS (WEBTAG) VALUES ('$webtag')";
+        $result = db_query($sql, $db_forum_create);
+
+        // Get the new FID so we can save the settings
+
+        $new_fid = db_insert_id($db_forum_create);
+
+        // Store Forum Name
+
+        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$new_fid', 'forum_name', '$forum_name')";
+        $result = db_query($sql, $db_forum_create);
+
+        // Make sure the current user is a Queen on their forum
+
+        $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES ('$uid', '$new_fid', 56)";
+        $result = db_query($sql, $db_forum_create);
+
+        return $new_fid;
     }
 
-    $webtag = preg_replace("/[^A-Z0-9-_]/", "", strtoupper($webtag));
-    $forum_name = addslashes($forum_name);
-
-    if (!is_numeric($access)) $access = 0;
-
-    // Create ADMIN_LOG table
-
-    $sql = "CREATE TABLE {$webtag}_ADMIN_LOG (";
-    $sql.= "  LOG_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  LOG_TIME DATETIME DEFAULT NULL,";
-    $sql.= "  ADMIN_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (LOG_ID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create BANNED_IP table
-
-    $sql = "CREATE TABLE {$webtag}_BANNED_IP (";
-    $sql.= "  IP CHAR(15) NOT NULL DEFAULT '',";
-    $sql.= "  PRIMARY KEY  (IP)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create DEDUPE table
-
-    $sql = "CREATE TABLE {$webtag}_DEDUPE (";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  DDKEY CHAR(32) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (UID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create FILTER_LIST table
-
-    $sql = "CREATE TABLE {$webtag}_FILTER_LIST (";
-    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
-    $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (ID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create FOLDER table
-
-    $sql = "CREATE TABLE {$webtag}_FOLDER (";
-    $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
-    $sql.= "  ACCESS_LEVEL TINYINT(4) DEFAULT '0',";
-    $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
-    $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (FID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create LINKS table
-
-    $sql = "CREATE TABLE {$webtag}_LINKS (";
-    $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  URI VARCHAR(255) NOT NULL DEFAULT '',";
-    $sql.= "  TITLE VARCHAR(64) NOT NULL DEFAULT '',";
-    $sql.= "  DESCRIPTION TEXT NOT NULL,";
-    $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
-    $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (LID),";
-    $sql.= "  KEY FID (FID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create LINKS_COMMENT table
-
-    $sql = "CREATE TABLE {$webtag}_LINKS_COMMENT (";
-    $sql.= "  CID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  COMMENT TEXT NOT NULL,";
-    $sql.= "  PRIMARY KEY  (CID),";
-    $sql.= "  KEY LID (LID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create LINKS_FOLDERS table
-
-    $sql = "CREATE TABLE {$webtag}_LINKS_FOLDERS (";
-    $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT '1',";
-    $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '',";
-    $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
-    $sql.= "  PRIMARY KEY  (FID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create LINKS_VOTE table
-
-    $sql = "CREATE TABLE {$webtag}_LINKS_VOTE (";
-    $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  PRIMARY KEY  (LID,UID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create PM table
-
-    $sql = "CREATE TABLE {$webtag}_PM (";
-    $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
-    $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (MID),";
-    $sql.= "  KEY TO_UID (TO_UID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create PM_ATTACHMENT_IDS table
-
-    $sql = "CREATE TABLE {$webtag}_PM_ATTACHMENT_IDS (";
-    $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-    $sql.= "  PRIMARY KEY  (MID),";
-    $sql.= "  KEY AID (AID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create PM_CONTENT table
-
-    $sql = "CREATE TABLE {$webtag}_PM_CONTENT (";
-    $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  CONTENT TEXT,";
-    $sql.= "  PRIMARY KEY  (MID),";
-    $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create POLL table
-
-    $sql = "CREATE TABLE {$webtag}_POLL (";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  CLOSES DATETIME DEFAULT NULL,";
-    $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
-    $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
-    $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
-    $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (TID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create POLL_VOTES table
-
-    $sql = "CREATE TABLE {$webtag}_POLL_VOTES (";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
-    $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create POST table
-
-    $sql = "CREATE TABLE {$webtag}_POST (";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  VIEWED DATETIME DEFAULT NULL,";
-    $sql.= "  CREATED DATETIME DEFAULT NULL,";
-    $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
-    $sql.= "  EDITED DATETIME DEFAULT NULL,";
-    $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-    $sql.= "  PRIMARY KEY  (TID,PID),";
-    $sql.= "  KEY TO_UID (TO_UID),";
-    $sql.= "  KEY IPADDRESS (IPADDRESS)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create POST_ATTACHMENT_FILES table
-
-    $sql = "CREATE TABLE {$webtag}_POST_ATTACHMENT_FILES (";
-    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
-    $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
-    $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
-    $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (ID),";
-    $sql.= "  KEY AID (AID),";
-    $sql.= "  KEY HASH (HASH)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create POST_ATTACHMENT_IDS table
-
-    $sql = "CREATE TABLE {$webtag}_POST_ATTACHMENT_IDS (";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-    $sql.= "  PRIMARY KEY  (TID,PID),";
-    $sql.= "  KEY AID (AID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create POST_CONTENT table
-
-    $sql = "CREATE TABLE {$webtag}_POST_CONTENT (";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  CONTENT TEXT,";
-    $sql.= "  PRIMARY KEY  (TID,PID),";
-    $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create PROFILE_ITEM table
-
-    $sql = "CREATE TABLE {$webtag}_PROFILE_ITEM (";
-    $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  PSID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
-    $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
-    $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (PIID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create PROFILE_SECTION table
-
-    $sql = "CREATE TABLE {$webtag}_PROFILE_SECTION (";
-    $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
-    $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (PSID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create STATS table
-
-    $sql = "CREATE TABLE {$webtag}_STATS (";
-    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  MOST_USERS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (ID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create THREAD table
-
-    $sql = "CREATE TABLE {$webtag}_THREAD (";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
-    $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
-    $sql.= "  MODIFIED DATETIME DEFAULT NULL,";
-    $sql.= "  CLOSED DATETIME DEFAULT NULL,";
-    $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
-    $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
-    $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (TID),";
-    $sql.= "  KEY IX_THREAD_FID (FID),";
-    $sql.= "  KEY BY_UID (BY_UID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create USER_FOLDER table
-
-    $sql = "CREATE TABLE {$webtag}_USER_FOLDER (";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
-    $sql.= "  ALLOWED TINYINT(4) DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (UID,FID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create USER_PEER table
-
-    $sql = "CREATE TABLE {$webtag}_USER_PEER (";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create USER_POLL_VOTES table
-
-    $sql = "CREATE TABLE {$webtag}_USER_POLL_VOTES (";
-    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PTUID VARCHAR(32) NOT NULL DEFAULT '',";
-    $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  PRIMARY KEY  (ID,TID,PTUID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create USER_PREFS table
-
-    $sql = "CREATE TABLE {$webtag}_USER_PREFS (";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  FIRSTNAME VARCHAR(32) DEFAULT NULL,";
-    $sql.= "  LASTNAME VARCHAR(32) DEFAULT NULL,";
-    $sql.= "  DOB DATE DEFAULT '0000-00-00',";
-    $sql.= "  HOMEPAGE_URL VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  PIC_URL VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  EMAIL_NOTIFY CHAR(1) DEFAULT NULL,";
-    $sql.= "  TIMEZONE DECIMAL(2,1) DEFAULT NULL,";
-    $sql.= "  DL_SAVING CHAR(1) DEFAULT NULL,";
-    $sql.= "  MARK_AS_OF_INT CHAR(1) DEFAULT NULL,";
-    $sql.= "  POSTS_PER_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,";
-    $sql.= "  FONT_SIZE TINYINT(3) UNSIGNED DEFAULT NULL,";
-    $sql.= "  STYLE VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  EMOTICONS VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  VIEW_SIGS CHAR(1) DEFAULT NULL,";
-    $sql.= "  START_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,";
-    $sql.= "  LANGUAGE VARCHAR(32) DEFAULT NULL,";
-    $sql.= "  PM_NOTIFY CHAR(1) DEFAULT NULL,";
-    $sql.= "  PM_NOTIFY_EMAIL CHAR(1) DEFAULT NULL,";
-    $sql.= "  DOB_DISPLAY TINYINT(3) UNSIGNED DEFAULT NULL,";
-    $sql.= "  ANON_LOGON TINYINT(3) UNSIGNED DEFAULT NULL,";
-    $sql.= "  SHOW_STATS TINYINT(3) UNSIGNED DEFAULT NULL,";
-    $sql.= "  IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,";
-    $sql.= "  USE_WORD_FILTER CHAR(1) DEFAULT NULL,";
-    $sql.= "  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (UID,UID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create USER_PROFILE table
-
-    $sql = "CREATE TABLE {$webtag}_USER_PROFILE (";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (UID,PIID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create USER_SIG table
-
-    $sql = "CREATE TABLE {$webtag}_USER_SIG (";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  CONTENT TEXT,";
-    $sql.= "  HTML CHAR(1) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (UID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create USER_THREAD table
-
-    $sql = "CREATE TABLE {$webtag}_USER_THREAD (";
-    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
-    $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (UID,TID)";
-    $sql.= ") TYPE=MYISAM;";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create General Folder
-
-    $sql = "INSERT INTO {$webtag}_FOLDER (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
-    $sql.= "VALUES ('General', 0, NULL, NULL, 0)";
-
-    $result = db_query($sql, $db_forum_create);
-
-    // Create Top Level Links Folder
-
-    $sql = "INSERT INTO {$webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
-    $result = db_query($sql, $db_forum_create);
-
-    // Save Webtag
-
-    $sql = "INSERT INTO FORUMS (WEBTAG) VALUES ('$webtag')";
-    $result = db_query($sql, $db_forum_create);
-
-    // Get the new FID so we can save the settings
-
-    $new_fid = db_insert_id($db_forum_create);
-
-    // Store Forum Name
-
-    $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$new_fid', 'forum_name', '$forum_name')";
-    $result = db_query($sql, $db_forum_create);
-
-    return $new_fid;
+    return false;
 }
 
 function forum_delete($fid)
 {
-    $db_forum_delete = db_connect();
-
-    if (!is_numeric($fid)) return false;
+    // Only the queen can create forums!!
     
-    $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid'"; 
-    $result = db_query($sql, $db_forum_delete);
+    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+
+        $db_forum_delete = db_connect();
+
+        if (!is_numeric($fid)) return false;
+    
+        $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid'"; 
+        $result = db_query($sql, $db_forum_delete);
         
-    if (db_num_rows($result) > 0) {
+        if (db_num_rows($result) > 0) {
 
-        $forum_data = db_fetch_array($result);
+            $forum_data = db_fetch_array($result);
 
-	$sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$fid'";
-	$result = db_query($sql, $db_forum_delete);
+	    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
 
-	$sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
-	$result = db_query($sql, $db_forum_delete);
-
-	$table_array = array('ADMIN_LOG', 'BANNED_IP', 'DEDUPE',
-	                     'FILTER_LIST', 'FOLDER', 'LINKS',
-	                     'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
-	                     'PM', 'PM_ATTACHMENT_IDS', 'PM_CONTENT',
-	                     'POLL', 'POLL_VOTES', 'POST',
-	                     'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
-	                     'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
-	                     'STATS', 'THREAD', 'USER_FOLDER',
-	                     'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
-	                     'USER_PROFILE', 'USER_SIG', 'USER_THREAD');
-
-        foreach ($table_array as $table_name) {
-        
-            $sql = "DROP TABLE IF EXISTS {$forum_data['WEBTAG']}_{$table_name}";
+  	    $sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
 	    $result = db_query($sql, $db_forum_delete);
-	}
+
+	    $table_array = array('ADMIN_LOG', 'BANNED_IP', 'DEDUPE',
+	                         'FILTER_LIST', 'FOLDER', 'LINKS',
+	                         'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
+	                         'PM', 'PM_ATTACHMENT_IDS', 'PM_CONTENT',
+	                         'POLL', 'POLL_VOTES', 'POST',
+	                         'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
+	                         'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
+                                 'STATS', 'THREAD', 'USER_FOLDER',
+                                 'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
+                                 'USER_PROFILE', 'USER_SIG', 'USER_THREAD');
+
+            foreach ($table_array as $table_name) {
+        
+                $sql = "DROP TABLE IF EXISTS {$forum_data['WEBTAG']}_{$table_name}";
+	        $result = db_query($sql, $db_forum_delete);
+	    }
+        }
     }
+
+    return false;
 }
 
 ?>

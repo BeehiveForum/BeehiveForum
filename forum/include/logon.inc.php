@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.15 2004-05-05 22:07:13 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.16 2004-05-06 14:40:19 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -323,20 +323,13 @@ function draw_logon_form($logon_main)
     echo "                    <td>", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false)), "</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
-    echo "                    <td>&nbsp;</td>\n";
-    echo "                    <td>&nbsp;</td>\n";
+    echo "                    <td align=\"center\" colspan=\"2\">", form_submit(md5(uniqid(rand())), $lang['logon'], 'onclick="has_clicked = true"'), "</td>\n";
     echo "                  </tr>\n";
     echo "                </table>\n";
     echo "              </td>\n";
     echo "            </tr>\n";
     echo "          </table>\n";
     echo "        </td>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "        <td>&nbsp;</td>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_submit(md5(uniqid(rand())), $lang['logon'], 'onclick="has_clicked = true"'), "</td>\n";
     echo "      </tr>\n";
     echo "    </table>\n";
     echo "  </form>\n";

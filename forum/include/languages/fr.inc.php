@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.78 2004-05-05 22:08:41 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.79 2004-05-06 14:40:19 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -622,6 +622,8 @@ $lang['editname'] = "Editer le nom";
 $lang['editaddress'] = "Editer l'adresse";
 $lang['editdescription'] = "Editer la description";
 $lang['moveto'] = "Se transfère à";
+$lang['linkdetails'] = "Link Details";
+$lang['addcomment'] = "Add Comment";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 

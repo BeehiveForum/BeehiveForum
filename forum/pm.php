@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.10 2003-07-28 20:58:22 decoyduck Exp $ */
+/* $Id: pm.php,v 1.11 2003-08-01 02:58:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -115,6 +115,22 @@ if (isset($HTTP_GET_VARS['folder'])) {
 
 html_draw_top_script();
 
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n";
+echo "function pm_toggle_all() {\n";
+echo "    for (var i = 0; i < document.pm.elements.length; i++) {\n";
+echo "        if (document.pm.elements[i].type == 'checkbox') {\n";
+echo "            if (document.pm.toggle_all.checked == true) {\n";
+echo "                document.pm.elements[i].checked = true;\n";
+echo "            }else {\n";
+echo "                document.pm.elements[i].checked = false;\n";
+echo "            }\n";
+echo "        }\n";
+echo "    }\n";
+echo "}\n";
+echo "//-->\n";
+echo "</script>\n";
+
 echo "<h1>{$lang['privatemessages']}: ";
 
 if ($folder == 0) {
@@ -146,7 +162,7 @@ if (isset($HTTP_GET_VARS['mid'])) {
 // get message list
 $listmessages_array = pm_list_get($folder_bitwise);
 
-echo "<form action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"pm\" action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
 echo "  <table width=\"95%\" align=\"center\" border=\"0\">\n";
 echo "    <tr>\n";
@@ -163,16 +179,19 @@ if ($folder == 1 || $folder == 2) {
 }
 
 echo "      <td class=\"posthead\">&nbsp;{$lang['timesent']}</td>\n";
-echo "      <td class=\"posthead\" width=\"20\">&nbsp;</td>\n";
-echo "    </tr>\n";
 
 if (sizeof($listmessages_array) == 0) {
 
+    echo "      <td class=\"posthead\" width=\"20\">&nbsp;</td>\n";
+    echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td class=\"postbody\"></td><td class=\"postbody\">{$lang['nomessages']}</td>\n";
     echo "    </tr>\n";
 
 }else {
+
+    echo "      <td class=\"posthead\" width=\"25\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
+    echo "    </tr>\n";
 
     for ($i = 0; $i < sizeof($listmessages_array); $i++) {
 
@@ -239,7 +258,7 @@ if (sizeof($listmessages_array) == 0) {
         }
 
         echo "      <td class=\"postbody\">", format_time($listmessages_array[$i]['CREATED']), "</td>\n";
-        echo "      <td class=\"postbody\">", form_checkbox('process[]', $listmessages_array[$i]['MID'], ''), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $listmessages_array[$i]['MID'], ''), "</td>\n";
         echo "    </tr>\n";
     }
 

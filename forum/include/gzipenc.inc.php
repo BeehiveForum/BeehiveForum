@@ -39,8 +39,8 @@ function bh_check_gzip()
     // Only enable gzip compression for HTTP/1.1 and
     // browsers that aren't coming via a proxy server.
 
-    //if (isset($HTTP_SERVER_VARS['HTTP_VIA'])) return false;
-    //if (strpos($HTTP_SERVER_VARS['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
+    if (isset($HTTP_SERVER_VARS['HTTP_VIA'])) return false;
+    if (strpos($HTTP_SERVER_VARS['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
 
     // determine which gzip encoding the client asked for
     // (x-gzip = IE; gzip = everything else).
@@ -91,9 +91,9 @@ function bh_gzhandler($contents)
             // sends the headers to the client while making
             // sure they are only sent once.
             if (!$bh_headers_sent) {
-                header("Content-Encoding: $encoding");
-                header("Vary: Accept-Encoding");
-                header("Content-Length: $length");
+                header("Content-Encoding: $encoding", true);
+                header("Vary: Accept-Encoding", true);
+                header("Content-Length: $length", true);
                 $bh_headers_sent = true;
             }
 

@@ -170,7 +170,7 @@ function htmlspecialchars_reverse($text)
 function _stripslashes($string)
 {
 
-  if (get_magic_quotes_gpc()) {
+  if (get_magic_quotes_gpc() == 1) {
     return stripslashes($string);
   }else {
     return $string;

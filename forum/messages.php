@@ -55,7 +55,8 @@ if(!bh_session_check()){
 // default to display most recent discussion for user
 if (!isset($HTTP_GET_VARS['msg'])) {
     if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-        $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+        $last_read = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+	$msg = $last_read[0];
     } else {
         $msg = "1.1";
     }

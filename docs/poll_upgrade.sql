@@ -2,7 +2,7 @@
 # Version 0.2 to 0.3 Poll Upgrade Script
 # http://beehiveforum.sourceforge.net/
 #
-# Generation Time: Nov 21, 2002 at 11:04 PM
+# Generation Time: Jan 14, 2003 at 10:56 PM
 # --------------------------------------------------------#
 
 CREATE TABLE POLL_02_BACKUP (
@@ -36,13 +36,15 @@ CREATE TABLE POLL_VOTES_02_BACKUP (
 INSERT INTO POLL_VOTES_02_BACKUP SELECT * FROM POLL_VOTES;
 
 CREATE TABLE USER_POLL_VOTES (
+  ID mediumint(8) unsigned NOT NULL auto_increment,
   TID mediumint(8) unsigned NOT NULL default '0',
-  UID mediumint(8) unsigned NOT NULL default '0',
+  PTUID varchar(32) NOT NULL default '',
   OPTION_ID mediumint(8) unsigned NOT NULL default '0',
-  TSTAMP timestamp(14) NOT NULL
+  TSTAMP timestamp(14) NOT NULL,
+  PRIMARY KEY (ID, TID, PTUID)
 ) TYPE=MyISAM;
 
-INSERT INTO USER_POLL_VOTES SELECT TID, UID, VOTE + 1, TSTAMP FROM POLL_VOTES;
+INSERT INTO USER_POLL_VOTES (TID, PTUID, OPTION_ID, TSTAMP) SELECT TID, MD5(TID.UID), VOTE + 1, TSTAMP FROM POLL_VOTES;
 DROP TABLE POLL_VOTES; 
 
 CREATE TABLE POLL_VOTES (

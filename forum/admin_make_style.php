@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.49 2004-04-28 14:28:51 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.50 2004-04-28 17:04:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -138,20 +138,20 @@ if (isset($_POST['submit'])) {
 
         // Save the style sheet
 
-        if (!@file_exists("./styles/$stylename/style.css")) {
+        if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
 
-            /*if (@mkdir("./styles/$stylename", 0755)) {
+            if (@mkdir("./forums/$webtag/styles/$stylename", 0755)) {
 
-                @chmod("./styles/$stylename", 0777);
+                @chmod("./sforums/$webtag/styles/$stylename", 0777);
 
                 // Save the style desc
 
-                if (@$fp = fopen("./styles/$stylename/desc.txt", "w")) {
+                if (@$fp = fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
 
                     fwrite($fp, $styledesc);
                     fclose($fp);
 
-                    if (@$fp = fopen("./styles/$stylename/style.css", "w")) {
+                    if (@$fp = fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
 
                         fwrite($fp, $stylesheet);
                         fclose($fp);
@@ -162,7 +162,7 @@ if (isset($_POST['submit'])) {
                         echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
                     }
                 }
-            }*/
+            }
 
             // We failed to save the style locally, so send it to the user
             // so they can then upload it to the server via FTP.

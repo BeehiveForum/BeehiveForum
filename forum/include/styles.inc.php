@@ -21,13 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.3 2004-04-17 20:06:59 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.4 2004-04-28 17:04:03 decoyduck Exp $ */
 
-function style_get_styles() {
+function style_get_styles()
+{
+    $webtag = get_webtag();
 
     $styles = array();
 
-    if ($dir = @opendir("styles")) {
+    if ($dir = @opendir("./styles")) {
 
         while (($file = readdir($dir)) !== false) {
 
@@ -53,14 +55,40 @@ function style_get_styles() {
         closedir($dir);
     }
 
+    if ($dir = @opendir("./forums/$webtag/styles")) {
+
+        while (($file = readdir($dir)) !== false) {
+
+            if (is_dir("./forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
+
+                if (@file_exists("./forums/$webtag/styles/$file/style.css")) {
+
+                    if ($fp = fopen("./forums/$webtag/styles/$file/desc.txt", "r")) {
+
+                        $content = fread($fp, filesize("./forums/$webtag/styles/$file/desc.txt"));
+                        $content = split("\n", $content);
+                        $styles[$file] = _htmlentities($content[0]);
+                        fclose($fp);
+
+                    }else {
+
+                        $styles[$file] = _htmlentities($file);
+                    }
+                }
+            }
+        }
+
+        closedir($dir);
+    }
+
     asort($styles);
     reset($styles);
 
     return $styles;
 }
 
-function style_exists ($style) {
-
+function style_exists ($style)
+{
     if (@file_exists("./styles/$style/style.css")) {
         return true;
     }

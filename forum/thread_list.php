@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.216 2004-08-04 23:46:35 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.217 2004-08-09 00:49:35 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -219,21 +219,7 @@ echo "    <td colspan=\"2\">\n";
 echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
 echo "        ", form_input_hidden("webtag", $webtag), "\n";
 
-if (bh_session_get_value('UID') == 0) {
-
-  $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
-  echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
-
-}else {
-
-  $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
-                    $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
-                    $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                    $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['unreadtoday']);
-
-  echo form_dropdown_array("mode",range(0,16),$labels,$mode,"onchange=\"submit()\""). "\n        ";
-
-}
+threads_draw_discussions_dropdown($mode);
 
 echo form_submit("go",$lang['goexcmark']). "\n";
 

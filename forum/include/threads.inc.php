@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.135 2004-08-09 00:49:35 rowan_hill Exp $ */
+/* $Id: threads.inc.php,v 1.136 2004-08-09 00:51:38 rowan_hill Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -959,7 +959,7 @@ function threads_mark_read($tidarray)
 function threads_draw_discussions_dropdown($mode)
 {
 
-    $lang = load_language_file();
+    global $lang;
 
     if (bh_session_get_value('UID') == 0) {
 

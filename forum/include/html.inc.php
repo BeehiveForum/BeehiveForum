@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.52 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: html.inc.php,v 1.53 2003-08-24 16:39:45 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -53,12 +53,77 @@ function html_message_type_error()
     html_draw_bottom();
 }
 
-function _html_draw_top1($title = false)
+// Draws the top of the HTML page including DOCTYPE, head and body tags
+//
+// Usage:
+//
+//      html_draw_top() supports an unlimited argument count, which
+//      allows you to load .js support files from Beehive's /js/
+//      folder. For example:
+//
+//      html_draw_top("openprofile.js")
+//
+//      This will include openprofile.js as a
+//      <script src="openprofile.js"> tag within the HTML output.
+//
+//      To retain the old functionality as well as offer all this
+//      html_draw_top also supports 3 named arguments, which
+//      you can use to alter the default page title, body class
+//      and also specify functions to be called by the browser in
+//      the body tag's onload event. These have to be called in a
+//      specific manner. For example:
+//
+//      html_draw_top("title=Navigation", "class=nav");
+//
+//      This will set the title of the page to "Navigation" with the body
+//      class set to "nav"
+//
+//      For the onload event, you do the same as the title and
+//      body_class named arguments, but you can include multiple
+//      arguments which will all then be loaded for you. For example:
+//
+//      html_draw_top("onload=pm_notification", "onload=openprofile(1)");
+//
+//      You can also mix and match all of these arguments in any order
+//      for example:
+//
+//      html_draw_top("onload=pm_notification();", "title=pm_example");
+//
+//      or
+//
+//      html_draw_top("class=nav", "openprofile.js", "title=Navigation");
+//
+//      Easy, eh?
+//
+//      Any questions ask Matt.
+
+function html_draw_top()
 {
+    global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_name, $default_style, $lang;
 
-    global $HTTP_GET_VARS, $forum_name, $default_style, $lang;
+    $onload_array = array();
+    $arg_array = func_get_args();
 
-    if (!$title) $title = $forum_name;
+    foreach($arg_array as $key => $func_args) {
+
+        if (preg_match("/^title=/", $func_args)) {
+            $title = substr($func_args, 6);
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match("/^class=/", $func_args)) {
+            $body_class = substr($func_args, 6);
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match("/^onload=/", $func_args)) {
+            $onload_array[] = substr($func_args, 7);
+            unset($arg_array[$key]);
+        }
+    }
+
+    if (!isset($title)) $title = $forum_name;
+    if (!isset($body_class)) $body_class = false;
 
     echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -88,83 +153,23 @@ function _html_draw_top1($title = false)
         echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";
     }
 
-}
-
-function _html_draw_top2($body_class = false)
-{
-    echo "</head>\n\n";
-    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", " onload=\"pm_notification();\">\n";
-
-}
-
-function _html_draw_top_script()
-{
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n\n";
-    echo "function openProfile(uid) {\n";
-    echo "  window.open('user_profile.php?uid=' + uid, uid,'width=500, height=450, toolbars=no');\n";
-    echo "}\n\n";
-    echo "-->\n";
-    echo "</script>\n";
-    echo "<base target=\"_blank\" />\n";
-}
-
-function _html_draw_pm_script()
-{
-    global $HTTP_SERVER_VARS;
-
-    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n";
-    echo "function pm_notification() {\n";
-
     if (basename($HTTP_SERVER_VARS['PHP_SELF']) != 'pm.php') {
         if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
-            echo "    if (window.confirm('You have a new PM. Would you like to go to your Inbox now?')) {\n";
-            echo "        top.frames['main'].location.replace('pm.php');\n";
-            echo "    }\n";
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/pm_notification.js\" />\n";
+            if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
         }
     }
 
-    echo "    return true;\n";
-    echo "}\n";
-    echo "//-->\n";
-    echo "</script>\n";
-}
+    reset($arg_array);
 
-function _html_draw_pm_top2()
-{
-    echo "</head>\n";
-    echo "<body onload=\"pm_notification();\">\n";
-}
+    foreach($arg_array as $func_args) {
+        if (is_dir("./js/") && file_exists("./js/$func_args")) {
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\" />\n";
+        }
+    }
 
-function _html_draw_post_top2()
-{
-    echo "</head>\n";
-    echo "<body onload=\"document.f_post.t_content.focus(); pm_notification();\">\n";
-}
-
-
-function html_draw_top($title = false, $body_class = false)
-{
-    _html_draw_top1($title);
-    _html_draw_pm_script();
-    _html_draw_top2($body_class);
-}
-
-function html_draw_top_script($title = false)
-{
-    _html_draw_top1($title);
-    _html_draw_top_script();
-    _html_draw_pm_script();
-    _html_draw_top2();
-}
-
-function html_draw_top_post_script($title = false)
-{
-    _html_draw_top1($title);
-    _html_draw_top_script();
-    _html_draw_pm_script();
-    _html_draw_post_top2();
+    echo "</head>\n\n";
+    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", " onload=\"", implode(";", $onload_array), "\">\n";
 }
 
 function html_draw_bottom ()

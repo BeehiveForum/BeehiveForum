@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.59 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: edit.php,v 1.60 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -104,7 +104,7 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-html_draw_top_script();
+html_draw_top("openprofile.js");
 
 if (isset($HTTP_POST_VARS['preview'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.17 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: email.php,v 1.18 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -91,7 +91,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $message = wordwrap($message . "\n\n{$lang['msgsentfrombeehiveforumby']} ".$from_user['LOGON']);
         $from = "From: ".$from_user['EMAIL'];
 
-        html_draw_top($lang['emailresult']);
+        html_draw_top("title={$lang['emailresult']}");
 
         echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
         echo "<div align=\"center\">\n";

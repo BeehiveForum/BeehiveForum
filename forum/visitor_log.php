@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.10 2003-08-18 14:38:22 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.11 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -58,7 +58,7 @@ if (isset($HTTP_GET_VARS['reset'])) {
     $usersearch = "";
 }
 
-html_draw_top_script();
+html_draw_top("openprofile.js");
 
 echo "<h1>{$lang['recentvisitors']}</h1><br />\n";
 

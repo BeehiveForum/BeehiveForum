@@ -62,6 +62,8 @@ if($row_count == 0){
 }
 
 echo "<table width=\"100%\" class=\"subhead\" border=\"0\"><tr>\n";
+echo "<tr><td colspan=\"4\">Total number of posts: <b>" . user_get_post_count($uid). "</td></tr>";
+echo "<tr>";
 
 for ($i = 0; $i < $row_count; $i++) {
     $row = db_fetch_array($result);

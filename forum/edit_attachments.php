@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.44 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.45 2004-03-17 23:41:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -164,7 +164,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         echo "  <tr>\n";
         echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
         
-        if ($attachment_use_old_method) {
+        if (strtoupper($forum_settings['attachment_use_old_method']) == "Y") {
             echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
         }else {
             echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
@@ -208,6 +208,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
         echo "      <form method=\"post\" action=\"edit_attachments.php?webtag={$webtag['WEBTAG']}\">\n";
         echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
         echo "        ", form_submit('del', $lang['del']), "\n";
+        echo "        ", form_input_hidden('popup', $popup), "\n";
 
         if (isset($aid)) echo "        ". form_input_hidden('aid', $aid), "\n";
  
@@ -280,7 +281,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
       if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";
 
       echo form_input_hidden('uid', $uid), "\n";
-      echo form_input_hidden('popup', $popup), "\n";
+      echo form_input_hidden('popup', '1'), "\n";
       echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
       echo "  <tr>\n";
       echo "    <td class=\"postbody\" align=\"center\">", form_submit('close', $lang['close']), "</td>\n";

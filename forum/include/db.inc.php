@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.46 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.47 2004-03-17 23:41:47 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -63,7 +63,7 @@ function db_query ($sql, $connection_id)
         return $resource_id;
     }else {
         $mysql_error = mysql_error($connection_id);
-        trigger_error("<p>MySQL Said: $mysql_error</p>", FATAL);
+        trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
     }
 }
 
@@ -76,7 +76,7 @@ function db_unbuffered_query ($sql, $connection_id)
             return $resource_id;
         }else {
             $mysql_error = mysql_error($connection_id);
-            trigger_error("<p>MySQL Said: $mysql_error</p>", FATAL);
+            trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", FATAL);
 	}
     }else {
         db_query($sql, $connection_id);

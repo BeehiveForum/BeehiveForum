@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.58 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.59 2004-03-17 23:41:47 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -61,7 +61,7 @@ if (strtoupper($forum_settings['attachments_enabled']) == "N") {
     exit;
 }
 
-if ($attachment_use_old_method) {
+if (strtoupper($forum_settings['attachment_use_old_method']) == "Y") {
     if (isset($HTTP_GET_VARS['hash'])) {
         $hash = $HTTP_GET_VARS['hash'];
     }

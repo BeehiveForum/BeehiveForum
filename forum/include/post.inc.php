@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.61 2004-03-17 17:28:30 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.62 2004-03-17 23:41:47 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -85,8 +85,11 @@ function post_save_attachment_id($tid, $pid, $aid)
     $db_post_save_attachment_id = db_connect();
     
     $webtag = get_webtag();
+    
+    $sql = "DELETE FROM {$webtag['PREFIX']}POST_ATTACHMENT_IDS WHERE TID = $tid AND PID = $pid";
+    $result = db_query($sql, $db_post_save_attachment_id);
 
-    $sql = "insert into {$webtag['PREFIX']}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
+    $sql = "INSERT INTO {$webtag['PREFIX']}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
     $result = db_query($sql, $db_post_save_attachment_id);
 
     return $result;

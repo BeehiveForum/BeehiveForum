@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.2 2004-11-22 22:10:16 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.3 2004-11-22 22:44:51 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
@@ -110,9 +110,23 @@ class dictionary {
         return db_query($sql, $db_dictionary_add_custom_word);
     }
 
-    function change_current_word($change_to)
+    function correct_current_word($change_to)
     {
         $this->content_array[$this->current_word] = $change_to;
+    }
+
+    function correct_all_word_matches($change_to)
+    {
+        $current_word = $this->content_array[$this->current_word];
+
+        foreach($this->content_array as $key => $word) {
+
+            if (strtolower($word) == strtolower($current_word)) {
+                $this->content_array[$key] = $change_to;
+            }else {
+                $this->content_array[$key] = $word;
+            }
+        }
     }
 
     function add_ignored_word($word)

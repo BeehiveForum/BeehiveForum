@@ -73,12 +73,127 @@ function threads_get_unread($uid) // get unread messages for $uid
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";	
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
+	db_disconnect($db);
+
+}
+
+function threads_get_unread_to_me($uid) // get unread messages for $uid
+{
+	$db = db_connect();
+
+	// Formulate query
+
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, ";
+	$sql .= forum_table("THREAD") . " THREAD ";
+	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
+	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
+	$sql .= forum_table("POST") . " POST ";
+	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
+	$sql .= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
+	db_disconnect($db);
+
+}
+
+function threads_get_by_days($uid,$days = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+{
+	$db = db_connect();
+
+	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
+	// for threads with unread messages, so the UID needs to be passed to the function
+
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD ";
+	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
+	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
+	db_disconnect($db);
+
+}
+
+function threads_get_by_interest($uid,$interest = 3) // get unread messages for $uid (default High Interest)
+{
+	$db = db_connect();
+
+	// Formulate query
+
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD, ";
+	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
+	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
+	$sql .= "AND USER_THREAD.INTEREST = $interest ";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
+	db_disconnect($db);
+
+}
+
+function threads_get_unread_by_interest($uid,$interest = 3) // get unread messages for $uid (default High Interest)
+{
+	$db = db_connect();
+
+	// Formulate query
+
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD, ";
+	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
+	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
+	$sql .= "AND USER_THREAD.last_read < THREAD.length ";
+	$sql .= "AND USER_THREAD.INTEREST = $interest ";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
+	db_disconnect($db);
+
+}
+
+function threads_get_recently_viewed($uid) // get unread messages for $uid (default High Interest)
+{
+	$db = db_connect();
+
+	// Formulate query
+
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("FOLDER") . " FOLDER, " . forum_table("THREAD") . " THREAD, ";
+	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
+	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
+	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT <= 1 ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 

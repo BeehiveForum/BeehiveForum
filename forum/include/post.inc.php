@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.100 2004-12-18 19:36:51 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.101 2004-12-22 19:27:53 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -88,7 +88,7 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT TID FROM POST_ATTACHMENT_IDS ";
+    $sql = "SELECT TID FROM {$table_data['FID']}POST_ATTACHMENT_IDS ";
     $sql.= "WHERE FID = '{$table_data['FID']}' ";
     $sql.= "AND TID = '$tid' AND PID = '$pid'";
 
@@ -96,12 +96,12 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE POST_ATTACHMENT_IDS SET AID = '$aid' ";
+        $sql = "UPDATE {$table_data['FID']}POST_ATTACHMENT_IDS SET AID = '$aid' ";
         $sql.= "WHERE FID = '{$table_data['FID']}' AND TID = '$tid' AND PID = '$pid'";
 
     }else {
 
-        $sql = "INSERT INTO POST_ATTACHMENT_IDS ";
+        $sql = "INSERT INTO {$table_data['FID']}POST_ATTACHMENT_IDS ";
         $sql.= "(FID, TID, PID, AID) VALUES ('{$table_data['FID']}', '$tid', '$pid', '$aid')";
     }
 

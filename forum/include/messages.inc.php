@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.310 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.311 2004-12-22 19:27:51 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -367,7 +367,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if ($is_poll) {
 
-            echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
+            echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
         }
 
         echo $message['PID'] . " {$lang['of']} " . $msg_count;
@@ -469,9 +469,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "                  <img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
                     if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                        echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
+                        echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
                     }else {
-                        echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
+                        echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                     }
 
                     if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'post.php') {

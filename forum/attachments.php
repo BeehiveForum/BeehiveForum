@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.95 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.96 2004-12-22 19:27:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -304,9 +304,9 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $_GET['aid'])) {
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";
+                echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
+                echo "<a href=\"get_attachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
             }
 
             if (strlen($attachments[$i]['filename']) > 16) {
@@ -398,9 +398,9 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $_GET['aid']
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";
+                echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
+                echo "<a href=\"get_attachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
             }
 
             if (strlen($attachments[$i]['filename']) > 16) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.200 2004-12-19 13:20:32 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.201 2004-12-22 19:27:54 decoyduck Exp $ */
 
 // International English language file
 
@@ -533,7 +533,7 @@ $lang['forum_settings_help_25'] = "<b>Allow embedding of attachments in messages
 $lang['forum_settings_help_26'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
 $lang['forum_settings_help_27'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
 
-// Attachments (attachments.php, getattachment.php) ---------------------------------------
+// Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
 $lang['aidnotspecified'] = "AID not specified.";
 $lang['upload'] = "Upload";
@@ -1005,7 +1005,7 @@ $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items fol
 $lang['includepminreply'] = "Include message body when replying to PM";
 $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 
-// Polls (create_poll.php, pollresults.php) ---------------------------------------------
+// Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "You must enter a poll question";
 $lang['mustprovideanswergroups'] = "You must provide some answer groups";

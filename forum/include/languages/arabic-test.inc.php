@@ -24,7 +24,7 @@ USA
 // This is a test language file for RTL display in Beehive. It is not
 // intended for release with Beehive.
 
-/* $Id: arabic-test.inc.php,v 1.7 2004-08-07 22:39:47 tribalonline Exp $ */
+/* $Id: arabic-test.inc.php,v 1.8 2004-12-22 19:27:53 decoyduck Exp $ */
 
 // International English language file
 
@@ -442,7 +442,7 @@ $lang['forum_settings_help_25'] = "???  ?????? ????  ";
 $lang['forum_settings_help_26'] = "???  ?????? ????  ";
 $lang['forum_settings_help_27'] = "???  ?????? ????  ";
 
-// Attachments (attachments.php, getattachment.php) ---------------------------------------
+// Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
 $lang['aidnotspecified'] = "???  ?????? ????  ";
 $lang['upload'] = "???  ?????? ????  ";
@@ -871,7 +871,7 @@ $lang['postinplaintextbydefault'] = "???  ?????? ????  ";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "???  ?????? ????  ";
 $lang['postinhtmlbydefault'] = "???  ?????? ????  ";
 
-// Polls (create_poll.php, pollresults.php) ---------------------------------------------
+// Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "???  ?????? ????  ";
 $lang['groupcountmustbelessthananswercount'] = "???  ?????? ????  ";

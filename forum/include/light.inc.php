@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.64 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.65 2004-12-22 19:27:51 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -522,9 +522,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
                 foreach($attachments_array as $attachment) {
 
                     if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                        echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
+                        echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
                     }else {
-                        echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
+                        echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                     }
 
                     if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'lpost.php') {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.62 2004-12-19 13:20:33 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.63 2004-12-22 19:27:54 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -528,7 +528,7 @@ $lang['sessionsuccessfullyended'] = "Session successfully ended for user";
 $lang['endedsessionforuser'] = "Ended session for user";
 
 
-// Attachments (attachments.php, getattachment.php) ---------------------------------------
+// Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
 $lang['aidnotspecified'] = "muthafuckin' AID not spizecified.";
 $lang['upload'] = "Uplizoad";
@@ -997,7 +997,7 @@ $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
 $lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\nyour \'Saved Items\' folder so that they are not deleted.";
 $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 
-// Polls (create_poll.php, pollresults.php) ---------------------------------------------
+// Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "Gotta enter a polla question, G";
 $lang['mustprovideanswergroups'] = "You must provide some answer groups";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.131 2004-12-19 13:20:32 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.132 2004-12-22 19:27:54 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -526,7 +526,7 @@ $lang['forum_settings_help_25'] = "<b>Allow embedding of attachments in messages
 $lang['forum_settings_help_26'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
 $lang['forum_settings_help_27'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
 
-// Attachments (attachments.php, getattachment.php) ---------------------------------------
+// Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
 $lang['aidnotspecified'] = "AID pas spécifié.";
 $lang['upload'] = "Télécharger";
@@ -991,7 +991,7 @@ $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
 $lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\nyour \'Saved Items\' folder so that they are not deleted.";
 $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 
-// Polls (create_poll.php, pollresults.php) ---------------------------------------------
+// Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "Vous devez entrer une question de sondage";
 $lang['mustprovideanswergroups'] = "You must provide some answer groups";

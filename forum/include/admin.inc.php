@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.40 2004-06-25 14:33:57 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.41 2004-06-25 22:14:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -34,6 +34,7 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
     if (perm_is_moderator($fid)) {
 
         $uid    = addslashes($uid);
+	$fid    = addslashes($fid);
         $tid    = addslashes($tid);
         $pid    = addslashes($pid);
         $psid   = addslashes($psid);
@@ -61,17 +62,19 @@ function admin_clearlog()
     $result = db_query($sql, $db_admin_clearlog);
 }
 
-function admin_get_log_entries($offset, $sort_by, $sort_dir)
+function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_dir = 'DESC')
 {
     $db_admin_get_log_entries = db_connect();
 
-    $sort_array = array('ADMIN_LOG.LOG_TIME', 'ADMIN_LOG.ADMIN_UID', 'ADMIN_LOG.ACTION');
+    $sort_by_array  = array('ADMIN_LOG.LOG_TIME', 'ADMIN_LOG.ADMIN_UID', 'ADMIN_LOG.ACTION');
+    $sort_dir_array = array('ASC', 'DESC');
 
     $admin_log_array = array();
 
     if (!is_numeric($offset)) $offset = 0;
-    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (!$table_data = get_table_prefix()) return array('admin_log_count' => 0,
                                                         'admin_log_array' => array());
@@ -153,6 +156,8 @@ function admin_add_word_filter($match, $replace, $filter_option)
     $match = addslashes($match);
     $replace = addslashes($replace);
 
+    if (!is_numeric($filter_option)) $filter_option = 0;
+
     $db_admin_add_word_filter = db_connect();
     $uid = bh_session_get_value('UID');
 
@@ -164,16 +169,19 @@ function admin_add_word_filter($match, $replace, $filter_option)
     $result = db_query($sql, $db_admin_add_word_filter);
 }
 
-function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "DESC", $offset = 0)
+function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $offset = 0)
 {
     $db_user_search = db_connect();
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
+    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
+    $sort_dir_array = array('ASC', 'DESC');
 
     $usersearch = addslashes($usersearch);
 
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
     if (!is_numeric($offset)) $offset = 0;
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
 
     $user_search_array = array();
 
@@ -218,15 +226,18 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
                  'user_array' => $user_search_array);
 }
 
-function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
+function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'ASC', $offset = 0)
 {
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
+    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.SESSID');
+    $sort_dir_array = array('ASC', 'DESC');
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'LAST_LOGON';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
 
     $user_get_all_array = array();
 

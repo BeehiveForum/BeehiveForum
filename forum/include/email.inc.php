@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.66 2004-04-29 11:59:53 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.67 2004-06-25 22:14:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -30,7 +30,9 @@ function email_sendnotification($tuid, $msg, $fuid)
 {
     if (!check_mail_variables()) return false;
 
-    if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
+    if (!is_numeric($tuid)) return false;
+    if (!validate_msg($msg)) return false;
+    if (!is_numeric($fuid)) return false;
 
     $db_email_sendnotification = db_connect();
 
@@ -110,7 +112,9 @@ function email_sendsubscription($tuid, $msg, $fuid)
 {
     if (!check_mail_variables()) return false;
 
-    if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
+    if (!is_numeric($tuid)) return false;
+    if (!validate_msg($msg)) return false;
+    if (!is_numeric($fuid)) return false;
 
     $db_email_sendsubscription = db_connect();
 
@@ -191,7 +195,9 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 {
     if (!check_mail_variables()) return false;
 
-    if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
+    if (!is_numeric($tuid)) return false;
+    if (!validate_msg($msg)) return false;
+    if (!is_numeric($fuid)) return false;
 
     $db_email_sendnotification = db_connect();
 
@@ -271,6 +277,7 @@ function email_send_pw_reminder($logon)
     if (!check_mail_variables()) return false;
 
     $db_email_send_pw_reminder = db_connect();
+
     $logon = addslashes($logon);
 
     if (!$table_data = get_table_prefix()) return false;

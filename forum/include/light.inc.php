@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.51 2004-06-25 14:33:57 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.52 2004-06-25 22:14:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -80,6 +80,8 @@ function light_form_submit($name = "submit", $value = "Submit")
 function light_poll_confirm_close($tid)
 {
     $lang = load_language_file();
+
+    if (!is_numeric($tid)) return;
 
     if (!$t_fid = thread_get_folder($tid, 1)) {
         echo "<h1>{$lang['error']}</h1>\n";

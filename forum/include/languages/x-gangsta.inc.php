@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.19 2004-06-21 12:04:26 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.20 2004-06-25 22:14:07 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -304,10 +304,12 @@ $lang['usergroupwarning'] = "Note: This user may be inheriting additional permis
 $lang['usercanaccessadmintools'] = "User can access admin tools";
 $lang['userisbanned'] = "User is banned";
 $lang['useriswormed'] = "User is wormed";
+$lang['userisglobalmod'] = "User is global moderator";
 
 $lang['groupcanaccessadmintools'] = "Group can access admin tools";
 $lang['groupisbanned'] = "Group is banned";
 $lang['groupiswormed'] = "Group is wormed";
+$lang['groupisglobalmod'] = "Group is global moderator";
 
 $lang['readposts'] = "Read Posts";
 $lang['replytothreads'] = "Reply to threads";

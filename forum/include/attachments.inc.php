@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.38 2004-03-03 22:43:25 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.39 2004-03-04 20:50:27 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -171,6 +171,7 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
     $db_add_attachment = db_connect();
 
     $hash = md5("$aid$fileid$filename");
+    $filename = rawurlencode($filename);
 
     $uid      = addslashes($uid);
     $aid      = addslashes($aid);

@@ -29,6 +29,7 @@ require_once("./include/gzipenc.inc.php");
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/messages.inc.php");
 
 if(!bh_session_check()){
 
@@ -39,22 +40,33 @@ if(!bh_session_check()){
 
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
+
 if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     header_no_cache();
 }
 
 require_once("./include/config.inc.php");
 
+if (isset($HTTP_GET_VARS['msg'])) {
+    $msg = $HTTP_GET_VARS['msg'];
+}else {
+    if (isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
+        $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+    }else {
+        $msg = "1.1";
+    }
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title><?= $forum_name ?></title>
+		<title><?php echo $forum_name ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
         <frameset cols="250,*" border="1">
-          <frame src="./thread_list.php<?php if (isset($HTTP_GET_VARS['msg'])) echo "?msg=". $HTTP_GET_VARS['msg']; ?>" name="left" border="1">
-          <frame src="./messages.php<?php if (isset($HTTP_GET_VARS['msg'])) echo "?msg=". $HTTP_GET_VARS['msg']; ?>" name="right" border="1">
+          <frame src="./thread_list.php?msg=<?php echo $msg; ?>" name="left" border="1">
+          <frame src="./messages.php?msg=<?php echo $msg; ?>" name="right" border="1">
         </frameset>
 </html>

@@ -49,7 +49,7 @@ function _html_draw_top1($title = false)
     if(!$title) $title = $forum_name;
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+    echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
@@ -72,7 +72,7 @@ function _html_draw_top1($title = false)
     echo "<link rel=\"stylesheet\" href=\"", $stylesheet, "\" type=\"text/css\" />\n";
 
     if (!empty($HTTP_COOKIE_VARS['bh_sess_fontsize']) && $HTTP_COOKIE_VARS['bh_sess_fontsize'] != '10') {
-        echo "<link rel=\"stylesheet\" href=\"fontsize.php\" type=\"text/css\" />\n";
+        echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n"; 
     }
 
 }

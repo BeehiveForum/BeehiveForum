@@ -41,4 +41,40 @@ function ip_check()
     }
 }
 
+function ban_ip($ipaddress)
+{
+
+   $db_ban_ip = db_connect();
+
+   $sql = "INSERT INTO " . forum_table("BANNED_IP") . " (IP) VALUES ('$ipaddress')";
+   $result = db_query($sql, $db_ban_ip);
+
+   return $result;
+
+}
+
+function unban_ip($ipaddress)
+{
+
+   $db_ban_ip = db_connect();
+
+   $sql = "DELETE FROM " . forum_table("BANNED_IP") . " WHERE IP = '$ipaddress'";
+   $result = db_query($sql, $db_ban_ip);
+
+   return $result;
+
+}
+
+function ip_is_banned($ipaddress)
+{
+
+   $db_ip_is_banned = db_connect();
+
+   $sql = "SELECT IP FROM " . forum_table("BANNED_IP") . " WHERE IP = '$ipaddress'";
+   $result = db_query($sql, $db_ip_is_banned);
+
+   return (db_num_rows($result) > 0);
+
+}
+
 ?>

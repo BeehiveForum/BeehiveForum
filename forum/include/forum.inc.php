@@ -21,15 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.120 2005-03-13 22:17:20 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.121 2005-03-14 13:27:24 decoyduck Exp $ */
 
-include_once("./include/constants.inc.php");
-include_once("./include/db.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/header.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/session.inc.php");
+include_once(BH_INCLUDE_PATH. "/constants.inc.php");
+include_once(BH_INCLUDE_PATH. "/db.inc.php");
+include_once(BH_INCLUDE_PATH. "/form.inc.php");
+include_once(BH_INCLUDE_PATH. "/header.inc.php");
+include_once(BH_INCLUDE_PATH. "/html.inc.php");
+include_once(BH_INCLUDE_PATH. "/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "/session.inc.php");
 
 function get_table_prefix()
 {

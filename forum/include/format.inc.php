@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.78 2005-03-13 20:18:45 tribalonline Exp $ */
+/* $Id: format.inc.php,v 1.79 2005-03-14 13:27:24 decoyduck Exp $ */
 
-include_once("./include/lang.inc.php");
-include_once("./include/word_filter.inc.php");
+include_once(BH_INCLUDE_PATH. "/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "/word_filter.inc.php");
 
 function format_user_name($u_logon, $u_nickname)
 {

@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.64 2005-02-19 16:10:31 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.65 2005-03-14 13:27:24 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
-    include_once("./include/config.inc.php");
+    include_once(BH_INCLUDE_PATH. "/config.inc.php");
 }
 
-include_once("./include/constants.inc.php");
+include_once(BH_INCLUDE_PATH. "/constants.inc.php");
 
 // Define PHP 5.0's new E_STRICT constant here if it's not defined.
 // This will be meaningless to PHP versions below 5.0 but it saves

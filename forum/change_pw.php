@@ -21,22 +21,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.47 2005-03-13 20:15:24 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.48 2005-03-14 13:27:17 decoyduck Exp $ */
+
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
-include_once("./include/gzipenc.inc.php");
+include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-include_once("./include/errorhandler.inc.php");
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-include_once("./include/install.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
 
 // Multiple forum support
-include_once("./include/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch the forum settings
 $forum_settings = forum_get_settings();
@@ -49,13 +52,13 @@ $lang = load_language_file();
 
 $webtag = get_webtag($webtag_search);
 
-include_once("./include/constants.inc.php");
-include_once("./include/db.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/html.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/logon.inc.php");
-include_once("./include/user.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 if (isset($_POST['submit'])) {
 

@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.141 2005-01-17 17:12:30 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.142 2005-03-14 13:27:26 decoyduck Exp $ */
 
-include_once("./include/forum.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/user_rel.inc.php");
+include_once(BH_INCLUDE_PATH. "/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "/user_rel.inc.php");
 
 function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type)
 {

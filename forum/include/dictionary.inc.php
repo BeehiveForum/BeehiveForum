@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.16 2005-02-25 14:40:47 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.17 2005-03-14 13:27:24 decoyduck Exp $ */
 
-include_once("./include/db.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/session.inc.php");
+include_once(BH_INCLUDE_PATH. "/db.inc.php");
+include_once(BH_INCLUDE_PATH. "/format.inc.php");
+include_once(BH_INCLUDE_PATH. "/session.inc.php");
 
 class dictionary {
 

@@ -23,9 +23,9 @@ USA
 
 // htmltools.inc.php : wysiwyg toolbar functions
 
-include_once("./include/form.inc.php");
-include_once("./include/forum.inc.php");
-include_once("./include/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "/form.inc.php");
+include_once(BH_INCLUDE_PATH. "/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "/lang.inc.php");
 
 // WARNING: Remember to declare onUnload="clearFocus()" in your <body> tag
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.37 2005-03-13 20:18:18 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.38 2005-03-14 13:27:27 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -37,8 +37,8 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     exit;
 }
 
-include_once("./include/constants.inc.php");
-include_once("./include/db.inc.php");
+include_once(BH_INCLUDE_PATH. "/constants.inc.php");
+include_once(BH_INCLUDE_PATH. "/db.inc.php");
 
 set_time_limit(0);
 

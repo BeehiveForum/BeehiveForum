@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.69 2005-02-08 12:43:07 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.70 2005-03-14 13:27:24 decoyduck Exp $ */
 
-include_once("./include/forum.inc.php");
-include_once("./include/lang.inc.php");
+include_once(BH_INCLUDE_PATH. "/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "/lang.inc.php");
 
 // Create a form field
 

@@ -21,32 +21,35 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.74 2005-03-13 20:15:25 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.75 2005-03-14 13:27:17 decoyduck Exp $ */
+
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
-include_once("./include/gzipenc.inc.php");
+include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
 
 // Enable the error handler
-include_once("./include/errorhandler.inc.php");
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
-include_once("./include/install.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();
 
 // Multiple forum support
-include_once("./include/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 // Fetch the forum settings
 $forum_settings = forum_get_settings();
 
-include_once("./include/header.inc.php");
-include_once("./include/lang.inc.php");
-include_once("./include/logon.inc.php");
-include_once("./include/messages.inc.php");
-include_once("./include/session.inc.php");
-include_once("./include/threads.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
 
 // Check we're logged in correctly
 

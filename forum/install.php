@@ -21,20 +21,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.28 2005-03-14 13:11:21 decoyduck Exp $ */
+/* $Id: install.php,v 1.29 2005-03-14 13:27:20 decoyduck Exp $ */
+
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./include/");
 
 // Installation checking functions
-include_once("./include/install.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 // Multiple forum support
-include_once("./include/forum.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 if (@file_exists("./include/config.inc.php")) {
-    include_once("./include/config.inc.php");
+    include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
-include_once("./include/constants.inc.php");
-include_once("./include/db.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
 
 if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 

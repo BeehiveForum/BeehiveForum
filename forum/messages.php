@@ -64,7 +64,7 @@ if($msg_count>0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
         message_display($tid,$message,$threaddata['LENGTH'],$first_msg);
-        $last_pid = $message[PID];
+        $last_pid = $message['PID'];
     }
 }
 

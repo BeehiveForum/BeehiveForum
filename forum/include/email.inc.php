@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.58 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.59 2004-04-15 11:28:31 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
@@ -48,6 +48,10 @@ function email_sendnotification($tuid, $msg, $fuid)
     if (db_num_rows($result)) {
 
         $mailto = db_fetch_array($result);
+
+	// Validate the email address before we continue.
+	
+	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
         if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != '') {
 
@@ -131,6 +135,10 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $mailto = db_fetch_array($result);
 
+	// Validate the email address before we continue.
+	
+	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
+
         $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
         $resultfrom = db_query($sql, $db_email_sendsubscription);
         $mailfrom = db_fetch_array($resultfrom);
@@ -201,6 +209,10 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     if (db_num_rows($result)) {
 
         $mailto = db_fetch_array($result);
+
+	// Validate the email address before we continue.
+	
+	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
         if ($mailto['PM_NOTIFY_EMAIL'] == 'Y' && $mailto['EMAIL'] != '') {
 
@@ -273,6 +285,10 @@ function email_send_pw_reminder($logon)
     if (db_num_rows($result)) {
 
         $mailto = db_fetch_array($result);
+
+	// Validate the email address before we continue.
+	
+	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
 	if (isset($mailto['UID']) && isset($mailto['EMAIL']) && isset($mailto['PASSWD'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.57 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.58 2004-04-10 10:27:05 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -488,7 +488,7 @@ function pm_send_message($tuid, $subject, $content)
       $sql = "INSERT INTO {$table_data['PREFIX']}PM_CONTENT (MID, CONTENT) ";
       $sql.= "VALUES ('$new_mid', '$content')";
 
-      if (db_query($sql, $db_pm_send_message)) {
+      if (db_query($sql, $db_pm_send_message, __FUNCTION__)) {
           return  $new_mid;
       }
 

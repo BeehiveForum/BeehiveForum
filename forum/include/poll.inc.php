@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.107 2004-04-08 20:38:51 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.108 2004-04-10 10:27:05 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -48,7 +48,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
     $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type')";
 
-    if (db_query($sql, $db_poll_create)) {
+    if (db_query($sql, $db_poll_create, __FUNCTION__)) {
 
       for ($i = 0; $i <= sizeof($poll_options); $i++) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.25 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.26 2004-04-10 10:27:05 decoyduck Exp $ */
 
 include_once("./include/profile.inc.php");
 
@@ -36,7 +36,7 @@ function user_profile_update($uid, $piid, $entry)
     $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE ";
     $sql.= "WHERE UID = $uid AND PIID = $piid";
 
-    if (db_query($sql, $db_user_profile_update)) {
+    if (db_query($sql, $db_user_profile_update, __FUNCTION__)) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY) ";
         $sql.= "VALUES ($uid, $piid, '$entry')";

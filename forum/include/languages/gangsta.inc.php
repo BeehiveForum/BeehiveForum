@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.46 2004-04-06 21:06:31 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.47 2004-04-10 10:27:05 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -145,6 +145,8 @@ $lang['disabled'] = "Dizisabled";
 $lang['with'] = "wit";
 $lang['options'] = "Options";
 $lang['emoticons'] = "Emoticons";
+$lang['savechanges'] = "Save Changes";
+$lang['webtag'] = "Webtag";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
@@ -198,6 +200,8 @@ $lang['messagepreview'] = "Mizessage Prizeview";
 $lang['h1tag'] = "Big-ass (H1) Tag";
 $lang['subhead'] = "Subhizead";
 $lang['users'] = "Homies";
+$lang['manageforums'] = "Manage Forums";
+$lang['forumsettings'] = "Forum Settings";
 $lang['profiles'] = "Profiziles";
 $lang['startpage'] = "Crib";
 $lang['forumstyle'] = "Forum Stizyle";
@@ -256,6 +260,8 @@ $lang['wholeword'] = "Whole Word";
 $lang['word_filter_help_1'] = "<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument.";
 $lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument.";
 $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
+$lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9, _ - characters";
+$lang['warningnoforums'] = "WARNING: You have no forums set up.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

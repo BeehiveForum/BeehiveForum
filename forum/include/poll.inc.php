@@ -394,17 +394,26 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $pollresults[$userpolldata['OPTION_ID']]['OPTION_NAME']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
+          $polldata['CONTENT'].= "        <tr>\n";
+          $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
+          $polldata['CONTENT'].= "        </tr>\n";
+          $polldata['CONTENT'].= "        <tr>\n";
+          $polldata['CONTENT'].= "          <td align=\"center\">";
+
+          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || $HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
+
+            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+
+          }
 
           if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
 
-            $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
-            $polldata['CONTENT'].= "        </tr>\n";
-            $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td align=\"center\">\n". form_submit('pollclose', 'End Poll'). "</td>\n";
-            $polldata['CONTENT'].= "        </tr>\n";
+            $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', 'End Poll'). "</td>\n";
 
           }
+
+          $polldata['CONTENT'].= "</td>\n";
+          $polldata['CONTENT'].= "        </tr>\n";
 
           if ($polldata['CHANGEVOTE'] == 1) {
 
@@ -422,13 +431,13 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td align=\"center\">";
 
-          if ($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) {
+          if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || $HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
 
             $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
 
           }
 
-          if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
+          if ($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
 
             $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', 'End Poll');
 

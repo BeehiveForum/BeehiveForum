@@ -31,6 +31,7 @@ require_once("./include/forum.inc.php"); // Forum functions
 require_once("./include/form.inc.php"); // Form functions
 require_once("./include/user.inc.php"); // User functions
 require_once("./include/folder.inc.php");
+require_once("./include/fixhtml.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
@@ -100,14 +101,20 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = 6226)
 {
+
+    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
+
     if(!isset($message['CONTENT']) || $message['CONTENT'] == ""){
         message_display_deleted($tid,$message['PID']);
         return;
     }
 
-    global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
+    $content_length = strlen($message['CONTENT']);
+    if($content_length > $limit_text && is_integer($limit_text)){
+      $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $limit_text)). "...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">View full message.</a>";
+    }
 
     if($in_list){
         echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a>";
@@ -140,7 +147,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
     echo "</td></table>\n";
 
-    if($message['RELATIONSHIP'] < 0){
+    if($message['RELATIONSHIP'] < 0 && $limit_text){
         echo "<table width=\"100%\" border=\"0\"><tr><td>\n";
         echo "Ignored.</td></tr></table>";
     } else {
@@ -164,7 +171,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<tr><td class=\"postbody\">\n";
         echo $message['CONTENT'] . "\n";
         echo "</td></tr>\n";
-        if($in_list){
+        if($in_list && $limit_text != false){
             echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))){
                 echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a>";

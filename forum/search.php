@@ -100,7 +100,7 @@ if (isset($searchsql)) {
   html_draw_top();
   
   echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
-  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"#\">Create Poll</a><br />\n";
+  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
   echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";  
   
   echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n        ";
@@ -191,7 +191,7 @@ html_draw_top();
 ?>
 <h1>Search Messages</h1>
 <form method="post" action="search.php" target="left">
-<table border="0" width="500" align="center">
+<table border="0" width="550" align="center">
   <tr>
     <td class="postbody" colspan="2">Search Discussions...</td>
   </tr>
@@ -219,11 +219,11 @@ html_draw_top();
   </tr>
   <tr>
     <td align="right" class="postbody">Posted From:</td>
-    <td><?php echo form_dropdown_array("date_from", range(1, 12), array("Today", "Yesterday", "Day before yesterday", "1 week", "2 weeks", "3 weeks", "1 month", "2 months", "3 months", "6 months", "1 year", "Beginning of time"), 1); ?></td>
+    <td><?php echo form_dropdown_array("date_from", range(1, 12), array("Today", "Yesterday", "Day before yesterday", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago", "2 months ago", "3 months ago", "6 months ago", "1 year ago", "Beginning of time"), 7); ?></td>
   </tr>
   <tr>
     <td align="right" class="postbody">Posted To:</td>
-    <td><?php echo form_dropdown_array("date_to", range(1, 12), array("Now", "Today", "Yesterday", "Day before yesterday", "1 week", "2 weeks", "3 weeks", "1 month", "2 months", "3 months", "6 months", "1 year"), 2); ?></td>
+    <td><?php echo form_dropdown_array("date_to", range(1, 12), array("Now", "Today", "Yesterday", "Day before yesterday", "1 week ago", "2 weeks ago", "3 weeks ago", "1 month ago", "2 months ago", "3 months ago", "6 months ago", "1 year ago"), 2); ?></td>
   </tr>
   <tr>
     <td align="right" class="postbody">Order by:</td>

@@ -1,14 +1,11 @@
-# phpMyAdmin MySQL-Dump
-# version 2.2.5
-# http://phpwizard.net/phpMyAdmin/
-# http://phpmyadmin.sourceforge.net/ (download page)
+# Beehive Forum Database Creation
+# version 0.2
+# http://beehiveforum.sourceforge.net/
 #
-# Host: mysql.sourceforge.net
-# Generation Time: Aug 10, 2002 at 09:08 AM
-# Server version: 3.23.36
-# PHP Version: 4.1.2
-# Database : `beehiveforum` 
-# --------------------------------------------------------
+# Schema generated using phpMyAdmin
+# (http://phpmyadmin.sourceforge.net)
+# Generation Time: Aug 10, 2002 at 09:19 AM
+# --------------------------------------------------------#
 
 #
 # Table structure for table `DEDUPE`
@@ -31,6 +28,12 @@ CREATE TABLE FOLDER (
   ACCESS_LEVEL tinyint(4) default '0',
   PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
+
+#
+# Dumping data for table `FOLDER`
+#
+
+INSERT INTO FOLDER VALUES (1, 'General', 0);
 # --------------------------------------------------------
 
 #
@@ -85,6 +88,12 @@ CREATE TABLE POST (
   PRIMARY KEY  (TID,PID),
   KEY TO_UID (TO_UID)
 ) TYPE=MyISAM;
+
+#
+# Dumping data for table `POST`
+#
+
+INSERT INTO POST VALUES (1, 1, 0, 1, 0, NULL, NOW(), 0);
 # --------------------------------------------------------
 
 #
@@ -128,6 +137,12 @@ CREATE TABLE POST_CONTENT (
   PRIMARY KEY  (TID,PID),
   FULLTEXT KEY CONTENT (CONTENT)
 ) TYPE=MyISAM;
+
+#
+# Dumping data for table `POST_CONTENT`
+#
+
+INSERT INTO POST_CONTENT VALUES (1, 1, 'Welcome to your new Beehive Forum');
 # --------------------------------------------------------
 
 #
@@ -140,6 +155,17 @@ CREATE TABLE PROFILE_ITEM (
   NAME varchar(64) default NULL,
   PRIMARY KEY  (PIID)
 ) TYPE=MyISAM;
+
+#
+# Dumping data for table `PROFILE_ITEM`
+#
+
+INSERT INTO PROFILE_ITEM VALUES (1, 1, 'Location');
+INSERT INTO PROFILE_ITEM VALUES (2, 1, 'Age');
+INSERT INTO PROFILE_ITEM VALUES (3, 1, 'Gender');
+INSERT INTO PROFILE_ITEM VALUES (4, 1, 'Quote');
+INSERT INTO PROFILE_ITEM VALUES (5, 1, 'Occupation');
+INSERT INTO PROFILE_ITEM VALUES (6, 1, 'Birthday (DD/MM)');
 # --------------------------------------------------------
 
 #
@@ -151,6 +177,12 @@ CREATE TABLE PROFILE_SECTION (
   NAME varchar(64) default NULL,
   PRIMARY KEY  (PSID)
 ) TYPE=MyISAM;
+
+#
+# Dumping data for table `PROFILE_SECTION`
+#
+
+INSERT INTO PROFILE_SECTION VALUES (1, 'Personal');
 # --------------------------------------------------------
 
 #
@@ -170,6 +202,12 @@ CREATE TABLE THREAD (
   KEY ix_thread_fid (FID),
   KEY BY_UID (BY_UID)
 ) TYPE=MyISAM;
+
+#
+# Dumping data for table `THREAD`
+#
+
+INSERT INTO THREAD VALUES (1, 1, 1, 'Welcome', 1, 'N', NOW(), NULL);
 # --------------------------------------------------------
 
 #
@@ -186,6 +224,13 @@ CREATE TABLE USER (
   LAST_LOGON timestamp(14) NOT NULL,
   PRIMARY KEY  (UID)
 ) TYPE=MyISAM;
+
+#
+# Dumping data for table `USER`
+#
+
+INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('GUEST', MD5('guest'), 'Guest', 'guest@email.com', 0, NOW());
+INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('ADMIN', MD5('honey'), 'Administrator', 'your@email.com', 56, NOW());
 # --------------------------------------------------------
 
 #

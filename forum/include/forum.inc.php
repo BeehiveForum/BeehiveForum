@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.34 2004-04-09 21:19:01 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.35 2004-04-09 21:32:32 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -685,15 +685,21 @@ function forum_create($webtag, $forum_name, $access)
     $sql = "INSERT INTO {$webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
     $result = db_query($sql, $db_forum_create);
 
-    // Store Forum Name
-
-    $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_name', '$forum_name')";
-    $result = db_query($sql, $db_forum_create);
-
     // Save Webtag
 
     $sql = "INSERT INTO FORUMS (WEBTAG) VALUES ('$webtag')";
     $result = db_query($sql, $db_forum_create);
+
+    // Get the new FID so we can save the settings
+
+    $new_fid = db_insert_id($db_forum_create);
+
+    // Store Forum Name
+
+    $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$new_fid', 'forum_name', '$forum_name')";
+    $result = db_query($sql, $db_forum_create);
+
+    return $new_fid;
 }
 
 function forum_delete($fid)

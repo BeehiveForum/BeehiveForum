@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.72 2004-05-09 00:57:47 decoyduck Exp $ */
+/* $Id: delete.php,v 1.73 2004-05-09 20:58:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -190,18 +190,18 @@ if ($valid) {
 
             if ($thread_length < 1) {
 
-                if (threads_any_unread()) {
+                if (threads_any_unread() && $msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
-                    $msg = messages_get_most_recent_unread(bh_session_get_value('UID'));
+                    form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
 
                 }else {
 
                     bh_setcookie('bh_thread_mode', 0);
                     $msg = messages_get_most_recent(bh_session_get_value('UID'));
+                    form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
                 }
             }
 
-            form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
             echo "</div>";
             html_draw_bottom();
             exit;

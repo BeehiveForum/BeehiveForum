@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.207 2004-05-09 00:57:49 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.208 2004-05-09 20:58:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -347,16 +347,14 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 		if (!is_array($thread_info)) $thread_info = array();
 
-                for ($i = 0; $i < sizeof($thread_info); $i++) {
-
-                    if ($thread_info[$i]['tid'] == $tid) {
-                        $thread_info = array_merge(array_splice($thread_info, $i, 1), $thread_info);
-			$threadvisible = true;
+                foreach ($thread_info as $key => $thread_data) {
+                    if ($thread_data['tid'] == $tid) {
+                        unset($thread_info[$key]);
 			break;
                     }
                 }
 
-		if (!$threadvisible) array_unshift($thread_info, $thread);
+		array_unshift($thread_info, $thread);
             }
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.68 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin.php,v 1.69 2005-03-24 00:22:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -81,7 +81,9 @@ $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-echo "<!DOCTYPE html SYSTEM \"dtd/beehive-frameset.dtd\">\n";
+$dtdpath = html_get_path(true);
+
+echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehive-frameset.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
 echo "<head>\n";
 echo "<title>$forum_name</title>\n";

@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.42 2005-03-19 17:53:34 decoyduck Exp $ */
+/* $Id: beehive.inc.php,v 1.43 2005-03-24 00:23:12 decoyduck Exp $ */
 
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
 function draw_beehive_bar()

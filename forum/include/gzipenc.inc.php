@@ -21,9 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.31 2004-04-19 02:02:11 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.32 2004-05-10 15:56:49 decoyduck Exp $ */
 
-include_once("./include/config.inc.php");
+if (@file_exists("./include/config.inc.php")) {
+    include_once("./include/config.inc.php");
+}
 
 function bh_check_gzip()
 {

@@ -386,14 +386,28 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 		}
 		// reconstruct the HTML
 		$tag = "";
+		$tag_code = false;
+		$tag_quote = false;
 		for($i=0; $i<count($html_parts); $i++){
 			if($i%2){
-				if ($html_parts[$i] != "" && $html_parts[$i] != "/") {
-					$tag = $html_parts[$i];
-					$ret_text .= "<".$html_parts[$i].">";
+				$tag = $html_parts[$i];
+				if ($tag != "" && $tag != "/") {
+					$ret_text .= "<".$tag.">";
+
+					if ($tag == 'pre class="code"') {
+						$tag_code = true;
+					} else if ($tag == 'div class="quotetext"') {
+						$tag_quote = true;
+					}
+
+					if ($tag_code == true && $tag == '/pre') {
+						$tag_code = false;
+					} else if ($tag_quote == true && $tag == '/div') {
+						$tag_quote = false;
+					}
 				}
 			} else {
-				if ($emoticons == true && $tag != "pre class=\"code\"") {
+				if ($emoticons == true && $tag_quote == false && $tag_code == false) {
 					$html_parts[$i] = emoticons_convert($html_parts[$i]);
 				}
 				$ret_text .= $html_parts[$i];

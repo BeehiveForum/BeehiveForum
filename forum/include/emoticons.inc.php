@@ -73,11 +73,11 @@ function emoticons_convert ($content) {
 		//$end = ""; //"(?!<\/span><\/span>)";
 
 		if ($k != $k3) {
-			$pattern_array[] = "/". preg_quote($k3, "/") ."/i";
+			$pattern_array[] = "/(?<!http)". preg_quote($k3, "/") ."/i";
 			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
 		}
 
-		$pattern_array[] = "/". preg_quote($k, "/") ."/i";
+		$pattern_array[] = "/(?<!http)". preg_quote($k, "/") ."/i";
 		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
 	}
 

@@ -23,20 +23,20 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.162 2004-03-17 03:57:17 tribalonline Exp $ */
+/* $Id: post.php,v 1.163 2004-03-17 22:21:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-//Multiple forum support
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
+
+// Multiple forum support
 include_once("./include/forum.inc.php");
 
 // Fetch the forum webtag and settings
 $webtag = get_webtag();
 $forum_settings = get_forum_settings();
-
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");

@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.11 2004-03-16 23:03:22 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.12 2004-03-17 22:21:37 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
+include_once("./include/session.inc.php");
 
 if (!isset($forum_settings['default_language']) || strlen(trim($forum_settings['default_language'])) == 0) {
     $forum_settings['default_language'] = "en";

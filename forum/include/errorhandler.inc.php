@@ -21,11 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.39 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.40 2004-03-17 22:21:37 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
-include_once("./include/form.inc.php");
-include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 
 define("FATAL", E_USER_ERROR);
@@ -40,7 +38,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
     if (error_reporting()) {
 
-        global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS, $lang;
+        global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS, $lang, $forum_settings;
 
         srand((double)microtime()*1000000);
 
@@ -49,26 +47,32 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
         if (defined("BEEHIVEMODE_LIGHT")) {
 
-            light_html_draw_top();
-
+            echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+            echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+            echo "<head>\n";
+            echo "<title>{$forum_settings['forum_name']} - Error Handler</title>\n";
+            echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
+            echo "</head>\n";
+            echo "<body>\n";
             echo "<p>{$lang['errorpleasewaitandretry']}</p>\n";
             echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                form_input_hidden_array($key, $value);
+                echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$value}\">\n";
             }
 
-            echo form_submit(md5(uniqid(rand())), $lang['retry']);
+            echo "<input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"{$lang['retry']}\" />\n";
 
             if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
 
                 echo "<p>{$lang['multipleerroronpost']}</p>\n";
-                echo form_textarea("t_content", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85);
+                echo "<textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), "</textarea>\n";
 
                 if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
 
                     echo "<p>{$lang['replymsgnumber']}:</p>\n";
-                    echo form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64);
+                    echo "<input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$HTTP_GET_VARS['replyto']}\">\n";
 
                 }
 
@@ -98,14 +102,23 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
             echo "<p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
             echo "</form>\n";
-
-            light_html_draw_bottom();
+            echo "</body>\n";
+            echo "</html>\n";
+            
             die;
 
         }else {
 
-            html_draw_top();
-
+            echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+            echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
+            echo "<head>\n";
+            echo "<title>{$forum_settings['forum_name']} - Error Handler</title>\n";
+            echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+            echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+            echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
+            echo "</head>\n";
+            echo "<body>\n";
             echo "<div align=\"center\">\n";
             echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
             echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
@@ -119,13 +132,13 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td>\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                    echo "            ", form_input_hidden_array($key, $value), "\n";
+                echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$value}\">\n";
             }
 
             echo "          </td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td align=\"center\">", form_submit(md5(uniqid(rand())), $lang['retry']), "</td>\n";
+            echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"{$lang['retry']}\" /></td>\n";
             echo "        </tr>\n";
 
             if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
@@ -143,7 +156,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 echo "          <td>&nbsp;</td>\n";
                 echo "        </tr>\n";
                 echo "        <tr>\n";
-                echo "          <td>", form_textarea("t_content", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85), "</td>\n";
+                echo "          <td><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), "</textarea></td>\n";
                 echo "        </tr>\n";
 
                 if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
@@ -155,7 +168,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                     echo "          <td class=\"postbody\">{$lang['replymsgnumber']}:</td>\n";
                     echo "        </tr>\n";
                     echo "        <tr>\n";
-                    echo "          <td>", form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64), "</td>\n";
+                    echo "          <td><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$HTTP_GET_VARS['replyto']}\"></td>\n";
                     echo "        </tr>\n";
 
                 }
@@ -214,18 +227,16 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "</table>\n";
             echo "</form>\n";
             echo "</div>\n";
-
-            html_draw_bottom();
+            echo "</body>\n";
+            echo "</html>\n";
+            
             die;
-
         }
     }
 }
 
-// set to the user defined error handler
-
-$forum_settings = get_forum_settings();
-
-if ($forum_settings['show_friendly_errors']) set_error_handler("bh_error_handler");
+if (strtoupper($forum_settings['show_friendly_errors']) == "Y") {
+    set_error_handler("bh_error_handler");
+}
 
 ?>

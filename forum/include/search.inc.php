@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.68 2004-06-13 22:52:00 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.69 2004-06-13 22:59:15 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -36,12 +36,9 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;
     if (!isset($argarray['sstart'])) $argarray['sstart'] = 0;
     if (!isset($argarray['fid'])) $argarray['fid'] = 0;
-    if (!isset($argarray['to_other'])) $argarray['to_other'] = "";
-    if (!isset($argarray['from_other'])) $argarray['from_other'] = "";
-    if (!isset($argarray['to_uid'])) $argarray['to_uid'] = 0;
-    if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;
     if (!isset($argarray['me_only'])) $argarray['me_only'] = "N";
     if (!isset($argarray['include'])) $argarray['include'] = 2;
+    if (!isset($argarray['username'])) $argarray['username'] = "";
     if (!isset($argarray['user_include'])) $argarray['user_include'] = 1;
 
     $db_search_execute = db_connect();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.129 2004-12-12 12:40:08 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.130 2004-12-12 12:50:43 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -525,7 +525,7 @@ $lang['enterfilenamestoupload'] = "Entrer le nom(s) de fichier pour télécharger"
 $lang['nowpress'] = "Maintenant la presse";
 $lang['ifdoneattachingfiles'] = "Si vous êtes fait de fichier attachant, la presse";
 $lang['attachmentsforthismessage'] = "Les attachements pour ce message";
-$lang['otherattachmentsincludingpm'] = "Les autres Attachements (y compris PM les Messages)";
+$lang['otherattachmentsincludingpm'] = "Other Attachments (including PM Messages and other forums)";
 $lang['totalsize'] = "Taille totale";
 $lang['freespace'] = "Espace libre";
 $lang['attachmentproblem'] = "Il y avait un problème téléchargeant cet attachement. S'il vous plaît essayer encore plus tard.";

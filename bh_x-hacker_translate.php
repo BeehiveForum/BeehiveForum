@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.7 2004-11-06 20:26:24 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.8 2004-12-12 12:50:43 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -177,12 +177,12 @@ if ($langfile = file('./forum/include/languages/en.inc.php')) {
             }
         }
         fclose($fp);
-        echo "<p>Translation of ./forum/include/languages/en.inc.php completed successfully.</p>\n";
+        echo "Translation of en.inc.php into x-hacker.inc.php has completed successfully.\n";
     }else {
-        echo "<p>Could not open ./forum/include/languages/x-hacker.inc.php for writing.</p>\n";
+        echo "Could not open x-hacker.inc.php for writing.\n";
     }
 }else {
-    echo "<p>Could not open ./forum/include/languages/en.inc.php for reading.</p>\n";
+    echo "Could not open en.inc.php for reading.\n";
 }
 
 ?>

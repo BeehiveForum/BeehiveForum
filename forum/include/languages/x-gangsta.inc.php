@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.60 2004-12-12 12:40:08 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.61 2004-12-12 12:50:43 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -526,7 +526,7 @@ $lang['enterfilenamestoupload'] = "Enter fizilename(s) to upload";
 $lang['nowpress'] = "Nizow press";
 $lang['ifdoneattachingfiles'] = "If yo ass be done attaching fizile(s), press";
 $lang['attachmentsforthismessage'] = "Attachments fo' this message";
-$lang['otherattachmentsincludingpm'] = "Other Attizachments (incizluding fuckin' PM Messages)";
+$lang['otherattachmentsincludingpm'] = "Other Attizachments (incizluding fuckin' PM Messages and Fizorizum)";
 $lang['totalsize'] = "Total Sizize";
 $lang['freespace'] = "Free Spizace";
 $lang['attachmentproblem'] = "There was a prizoblem dizownloading this piece of shit. Please try again later.";

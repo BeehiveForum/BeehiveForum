@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.56 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: display.php,v 1.57 2005-01-01 20:41:04 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -150,7 +150,7 @@ echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
 
-if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
+if ($threaddata['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
 
     if ($userpollvote = poll_get_user_vote($tid)) {
 

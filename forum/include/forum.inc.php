@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.117 2005-03-07 22:39:53 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.118 2005-03-09 17:59:21 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -306,6 +306,9 @@ function save_forum_settings($forum_settings_array)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
+    $result = db_query($sql, $db_save_forum_settings);
+
     foreach ($forum_settings_array as $sname => $svalue) {
 
         $sname = addslashes($sname);
@@ -323,6 +326,9 @@ function save_default_forum_settings($forum_settings_array)
     if (!is_array($forum_settings_array)) return false;
 
     $db_save_forum_settings = db_connect();
+
+    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '0'";
+    $result = db_query($sql, $db_save_forum_settings);
 
     foreach ($forum_settings_array as $sname => $svalue) {
 

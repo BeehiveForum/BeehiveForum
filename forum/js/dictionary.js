@@ -76,3 +76,9 @@ function updateContent(obj_id, content) {
 
     form_obj.value = content;
 }
+
+function show_current_word() {
+
+    var highlighted_word = getFormObj('highlighted_word');
+    highlighted_word.scrollIntoView(false);
+}

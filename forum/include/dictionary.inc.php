@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.12 2004-12-12 12:40:07 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.13 2005-02-02 23:19:48 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -44,7 +44,7 @@ class dictionary {
         $this->ignored_words_array = array();
         $this->suggestions_array = array();
 
-        preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $content, $content_array);
+        preg_match_all("/([\w]+)|(.)/i", $content, $content_array);
         $this->content_array = $content_array[0];
 
         $this->ignored_words_array = explode(" ", $ignored_words);
@@ -97,7 +97,7 @@ class dictionary {
         foreach($this->content_array as $key => $word) {
 
             if ($key == $this->current_word) {
-                echo "<span class=\"highlight\">", nl2br(_htmlentities($word)), "</span>";
+                echo "<span class=\"highlight\" id=\"highlighted_word\">", nl2br(_htmlentities($word)), "</span>";
             }else {
                 echo nl2br(_htmlentities($word));
             }
@@ -148,7 +148,17 @@ class dictionary {
 
     function word_is_valid()
     {
-        return (preg_match("/([abcdefghijklmnopqrstuvwxyz']+)/i", $this->get_current_word()) > 0);
+        $current_word = $this->get_current_word();
+
+        if (preg_match("/([\w']+)/i", $current_word) > 0) {
+
+            if (preg_match("/([0-9]+)/", $current_word) < 1) {
+
+                if (strlen($current_word) > 1 && strtoupper($current_word) != $current_word) return true;
+            }
+        }
+
+        return false;
     }
 
     function word_is_ignored()

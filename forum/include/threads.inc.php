@@ -115,6 +115,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -154,6 +155,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -191,6 +193,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
     $sql .= "AND POST2.tid = THREAD.tid ";
     $sql .= "AND POST2.pid = 1 ";
     $sql .= "AND POST.tid = THREAD.tid AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -230,6 +233,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -264,6 +268,7 @@ function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -299,6 +304,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND USER_THREAD.last_read < THREAD.length ";
     $sql .= "AND USER_THREAD.INTEREST = $interest ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -334,6 +340,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
@@ -367,9 +374,10 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
-    $sql .= "AND (UP.relationship && " . USER_FRIEND . " = 1)";
+    $sql .= "AND (UP.relationship & $relationship = $relationship)";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 
@@ -406,10 +414,11 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
-    $sql .= "AND (UP.relationship && " . USER_FRIEND . " = 1)";
+    $sql .= "AND (UP.relationship & $relationship = $relationship)";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 

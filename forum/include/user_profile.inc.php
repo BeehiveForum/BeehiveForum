@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.26 2004-04-10 10:27:05 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.27 2004-04-24 17:00:15 decoyduck Exp $ */
 
 include_once("./include/profile.inc.php");
 
 function user_profile_update($uid, $piid, $entry)
 {
     $db_user_profile_update = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $entry = addslashes(_htmlentities($entry));
@@ -36,7 +36,7 @@ function user_profile_update($uid, $piid, $entry)
     $sql = "DELETE FROM {$table_data['PREFIX']}USER_PROFILE ";
     $sql.= "WHERE UID = $uid AND PIID = $piid";
 
-    if (db_query($sql, $db_user_profile_update, __FUNCTION__)) {
+    if (db_query($sql, $db_user_profile_update)) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_PROFILE (UID, PIID, ENTRY) ";
         $sql.= "VALUES ($uid, $piid, '$entry')";
@@ -50,7 +50,7 @@ function user_profile_update($uid, $piid, $entry)
 function user_get_profile_entries($uid, $psid)
 {
     $db_user_get_profile_entries = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
@@ -70,7 +70,7 @@ function user_get_profile_entries($uid, $psid)
 function user_get_profile_image($uid)
 {
     $db_user_get_profile_image = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PIC_URL from {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";

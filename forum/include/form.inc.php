@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.29 2003-08-17 17:59:10 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.30 2003-08-18 13:44:07 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -58,7 +58,7 @@ function form_input_password($name, $value = "", $width = 0, $maxchars = 0)
 // create a <input type="hidden"> field
 function form_input_hidden($name, $value = "")
 {
-    return form_field($name,$value,0,0,"hidden");
+    return form_field($name, $value, 0, 0, "hidden");
 }
 
 // create a <textarea> field
@@ -220,11 +220,13 @@ function form_input_hidden_array($name, $value)
 {
     if (is_array($value)) {
         foreach ($value as $array_key => $array_value) {
-            form_input_hidden_array($name, $array_value);
+            form_input_hidden_array("$name[$array_key]", $array_value);
         }
     }else {
-        form_input_hidden($name, $value);
+        $return.= form_input_hidden($name, _stripslashes($value));
     }
+
+    return $return;
 }
 
 ?>

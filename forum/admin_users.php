@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.32 2003-08-07 16:06:12 hodcroftcj Exp $ */
+/* $Id: admin_users.php,v 1.33 2003-08-18 13:44:01 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -143,8 +143,6 @@ if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
 }
 
 echo "        </tr>\n";
-
-$db = db_connect();
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
     $user_array = user_search($usersearch);

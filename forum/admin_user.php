@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.44 2003-08-01 20:00:50 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.45 2003-08-18 13:44:01 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -86,8 +86,6 @@ if (isset($HTTP_GET_VARS['uid'])) {
     html_draw_bottom();
     exit;
 }
-
-$db = db_connect();
 
 $user = user_get($uid);
 

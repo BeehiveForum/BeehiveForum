@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.250 2005-04-04 17:29:07 decoyduck Exp $ */
+/* $Id: post.php,v 1.251 2005-04-05 02:16:56 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -913,10 +913,20 @@ if ($post->isDiff() && $fix_html) {
 
     echo $tools->compare_original("t_content", $post->getOriginalContent());
 
-    echo "<br /><br />\n";
+    if ($tools->getTinyMCE()) {
+        echo "<br />\n";
+    } else {
+        echo "<br /><br />\n";
+    }
 }
 
 if ($allow_html == true) {
+
+    if ($tools->getTinyMCE()) {
+
+        echo form_input_hidden("t_post_html", "enabled");
+
+    } else {
 
         echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
@@ -929,6 +939,7 @@ if ($allow_html == true) {
         if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
                 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
         }
+    }
 
 } else {
 
@@ -937,7 +948,11 @@ if ($allow_html == true) {
 
 // SUBMIT BUTTONS
 
-echo "<br /><br />\n";
+if ($tools->getTinyMCE()) {
+    echo "<br />\n";
+} else {
+    echo "<br /><br />\n";
+}
 echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");

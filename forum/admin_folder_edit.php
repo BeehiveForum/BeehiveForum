@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.1 2004-05-04 23:04:22 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.2 2004-05-05 19:21:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -99,7 +99,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -121,11 +121,48 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
     exit;
 }
 
+if (isset($_POST['permissions'])) {
+    header_redirect("./admin_folder_access.php?webtag=$webtag&fid=$fid");
+}
+
 if (!$folder_data = folder_get($fid)) {
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<p>{$lang['invalidfolderid']}</p>\n";
     html_draw_bottom();
     exit;
+}
+
+
+if (isset($_POST['submit'])) {
+
+    $valid = true;
+
+    if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
+        $folder_data['TITLE'] = trim($_POST['name']);
+    }
+
+    if (isset($_POST['description']) && strlen(trim($_POST['description'])) > 0) {
+        $folder_data['DESCRIPTION'] = trim($_POST['description']);
+    }
+
+    if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
+        $folder_data['ACCESS_LEVEL'] = trim($_POST['access_level']);
+    }
+
+    if (isset($_POST['allowed_types']) && is_numeric($_POST['allowed_types'])) {
+        $folder_data['ALLOWED_TYPES'] = trim($_POST['allowed_types']);
+    }
+
+    folder_update($fid, $folder_data);
+    admin_addlog(0, $fid, 0, 0, 0, 0, 7);
+
+    if (isset($_POST['move']) && is_numeric($_POST['move'])) {
+
+        if ($fid != $_POST['move']) {
+            folder_move_threads($fid, $_POST['move']);
+            admin_addlog(0, $_POST['t_fid'][$fid], 0, 0, 0, 0, 8);
+        }
+    }
 }
 
 // Make the arrays for the allow post types dropdown
@@ -137,6 +174,7 @@ echo "<h1>{$lang['admin']} : {$lang['managefolders']} : {$folder_data['TITLE']}<
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('fid', $fid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -149,7 +187,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['name']} / {$
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                  <td>".form_input_text("rename", _stripslashes($folder_data['TITLE']), 30, 64)."</td>\n";
+echo "                  <td>".form_input_text("name", _stripslashes($folder_data['TITLE']), 30, 64)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
@@ -189,11 +227,31 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['accesslevel']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"200\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
+echo "                  <td>", form_dropdown_array("access_level", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), $folder_data['ACCESS_LEVEL']), "&nbsp;", ($folder_data['ACCESS_LEVEL'] > 0) ? form_submit("permissions", $lang['permissions']) : "", "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "        <br />\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['allow']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
-echo "                  <td>", form_dropdown_array("allow", $allow_values, $allow_labels, $folder_data['ALLOWED_TYPES'] ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), "</td>\n";
+echo "                  <td>", form_dropdown_array("allowed_types", $allow_values, $allow_labels, $folder_data['ALLOWED_TYPES'] ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

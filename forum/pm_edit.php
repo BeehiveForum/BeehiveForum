@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.14 2004-01-07 20:57:03 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.15 2004-02-06 17:33:02 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -111,7 +111,6 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
             $t_content = make_html($t_content);
             $pm_elements_array['CONTENT'] = $t_content;
             $t_content = strip_tags($t_content);
-            $t_content = ereg_replace("\n+", "\n", $t_content);
         }
 
         $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
@@ -166,7 +165,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
         if (!isset($HTTP_POST_VARS['b_edit_html'])) {
             $t_content = str_replace("\n", "", $t_content);
             $t_content = str_replace("\r", "", $t_content);
-            $t_content = str_replace("<p>", "\n\n<p>", $t_content);
+            $t_content = str_replace("<p>", "\n<p>", $t_content);
             $t_content = str_replace("</p>", "</p>\n", $t_content);
             $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
             $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);

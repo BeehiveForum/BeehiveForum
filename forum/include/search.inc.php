@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.80 2004-12-21 23:56:56 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.81 2005-01-20 18:49:09 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -54,11 +54,14 @@ function search_execute($argarray, &$urlquery, &$error)
     $search_sql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, ";
     $search_sql.= "POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
     $search_sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ";
-    $search_sql.= "ON (THREAD.TID = POST.TID) ";
+    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+    $search_sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (THREAD.TID = POST.TID) ";
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
     $search_sql.= "ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
-    $search_sql.= "WHERE ";
+    $search_sql.= "WHERE (USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. " = 0 ";
+    $search_sql.= "OR USER_PEER.RELATIONSHIP & ". USER_IGNORED. " = 0 ";
+    $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
         $folder_sql = "THREAD.FID = {$argarray['fid']}";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.9 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.10 2004-08-07 22:39:47 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -215,10 +215,13 @@ if (isset($_POST['submit'])) {
                     $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
                     $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
+					$t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+					$t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
 
                     $new_group_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
                     $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete;
                     $new_group_perms = (double)$new_group_perms | $t_moderator | $t_post_attach;
+                    $new_group_perms = (double)$new_group_perms | $t_post_html | $t_post_sig;
 
                     perm_update_group_folder_perms($gid, $fid, $new_group_perms);
                 }
@@ -237,10 +240,13 @@ if (isset($_POST['submit'])) {
                     $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
                     $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
+					$t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+					$t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
 
                     $new_group_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
-                    $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete | $t_post_attach;
+                    $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete;
                     $new_group_perms = (double)$new_group_perms | $t_moderator | $t_post_attach;
+                    $new_group_perms = (double)$new_group_perms | $t_post_html | $t_post_sig;
 
                     perm_add_group_folder_perms($gid, $fid, $new_group_perms);
                 }
@@ -355,7 +361,7 @@ if ($folder_array = folder_get_all()) {
             echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td rowspan=\"4\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
+            echo "                                      <td rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $group_folder_permissions['STATUS'] & USER_PERM_POST_READ), "</td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $group_folder_permissions['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
             echo "                                    </tr>\n";
@@ -367,6 +373,10 @@ if ($folder_array = folder_get_all()) {
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $group_folder_permissions['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $group_folder_permissions['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
             echo "                                    </tr>\n";
+			echo "                                    <tr>\n";
+			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $group_folder_permissions['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
+			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $group_folder_permissions['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
+			echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $group_folder_permissions['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
             echo "                                    </tr>\n";
@@ -380,7 +390,7 @@ if ($folder_array = folder_get_all()) {
             echo "                                  ", form_input_hidden("t_new_perms_array[]", $folder['FID']), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td rowspan=\"4\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
+            echo "                                      <td rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], true), "</td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], true), "</td>\n";
             echo "                                    </tr>\n";
@@ -392,6 +402,10 @@ if ($folder_array = folder_get_all()) {
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], true), "</td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], true), "</td>\n";
             echo "                                    </tr>\n";
+			echo "                                    <tr>\n";
+			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], true), "</td>\n";
+			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], true), "</td>\n";
+			echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], false), "</td>\n";
             echo "                                    </tr>\n";

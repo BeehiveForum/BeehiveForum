@@ -34,12 +34,12 @@ if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
-
-    html_draw_top();
-    echo "<p>You are not logged in.</p>";
-    html_draw_bottom();
-    exit;
+if(!bh_session_check()) {
+	$uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+	$uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+	$uri.= "/logon.php?final_uri=";
+	$uri.= urlencode(get_request_uri());
+	header_redirect($uri);
 }
 
 if(isset($HTTP_POST_VARS['cancel'])){
@@ -64,8 +64,8 @@ $from_user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 
 if(isset($HTTP_POST_VARS['submit'])){
     $valid = true;
-    $subject = $HTTP_POST_VARS['t_subject'];
-    $message = $HTTP_POST_VARS['t_message'];
+    $subject = stripslashes($HTTP_POST_VARS['t_subject']);
+    $message = stripslashes($HTTP_POST_VARS['t_message']);
     if(!$subject){
         $error = "<p>Enter a subject for the message:</p>";
         $valid = false;

@@ -240,9 +240,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
         }
         echo "&nbsp;</span></td></tr>\n";
-    }
 
-    if(!($message['RELATIONSHIP'] < 0 && $limit_text)) {
         echo "<tr><td class=\"postbody\">". $message['CONTENT'];
         if ($tid <> 0 && isset($message['PID'])) {
             $aid = get_attachment_id($tid, $message['PID']);
@@ -272,13 +270,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;&nbsp;<img src=\"./images/poll.png\" border=\"0\" />";
                 echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
             }
+			if(perm_is_moderator()){
+                echo "&nbsp;&nbsp;<img src=\"./images/subscribe.png\" border=\"0\" />";
+				echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."\" target=\"_self\">Privileges</a>";
+			}
             echo "</span></td></tr>";
         }
         echo "</table>\n";
     }
     
     echo "</td></tr></table></div>\n";
-    
 }
 
 function message_display_deleted($tid,$pid)
@@ -321,26 +322,25 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
         }
+		$i = 1;
     } else {
-        $navbits[0] = "<a href=\"messages.php?msg=$tid.1\" target=\"_self\">" . mess_nav_range(1,abs($spid-1)) . "</a>";
-    }
+		$i = 0;
+	}
 
     // The middle section(s)
-    $i = 0;
     while($spid + ($ppp - 1) <= $length){
-        $i++;
         if($spid == $pid){
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$spid+($ppp - 1)); // Don't add <a> tag for current section
         } else {
-            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid,$spid+($ppp - 1)) . "</a>";
+            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\" target=\"_self\">" . mess_nav_range($spid==0 ? 1 : $spid,$spid+($ppp - 1)) . "</a>";
         }
         $spid += $ppp;
+        $i++;
     }
 
     // The final section, x-n
     if($spid <= $length){
-        $i++;
         if($spid == $pid){
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
@@ -369,6 +369,16 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     unset($navbits);
 
     echo "<p align=\"center\" class=\"smalltext\">" . $html . "</p>\n";
+}
+
+function mess_nav_range($from,$to)
+{
+    if($from == $to){
+        $range = sprintf("%d", $from);
+    } else {
+        $range = sprintf("%d-%d", $from, $to);
+    }
+    return $range;
 }
 
 function messages_interest_form($tid,$pid)
@@ -410,16 +420,6 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
     echo form_input_hidden("t_pid",$pid);
     echo "</form>\n";
     echo "</p>\n";
-}
-
-function mess_nav_range($from,$to)
-{
-    if($from == $to){
-        $range = sprintf("%d", $from);
-    } else {
-        $range = sprintf("%d-%d", $from, $to);
-    }
-    return $range;
 }
 
 function message_get_user($tid,$pid)

@@ -134,7 +134,7 @@ function user_get($uid)
 {
     $db_user_get = db_connect();
 
-    $sql = "select * from " . forum_table("USER") . " where uid = $uid and uid > 0";
+    $sql = "select * from " . forum_table("USER") . " where uid = $uid";
 
     $result = db_query($sql, $db_user_get);
 
@@ -151,7 +151,7 @@ function user_get_logon($uid)
 {
     $db_user_get_logon = db_connect();
 
-    $sql = "select LOGON from " . forum_table("USER") . " where uid = $uid and uid > 0";
+    $sql = "select LOGON from " . forum_table("USER") . " where uid = $uid";
 
     $result = db_query($sql, $db_user_get_logon);
 

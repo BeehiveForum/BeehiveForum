@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.337 2005-03-20 11:15:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.338 2005-03-22 21:47:43 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -300,10 +300,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
 
-    // Check for emoticons bug in Safari
+    // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
 
-    if (isset($_SERVER['HTTP_USER_AGENT']) && (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari"))) {
-        $message['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1&nbsp;</span>", $message['CONTENT']);
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+
+        if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
+
+            $message['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1&nbsp;</span>", $message['CONTENT']);
+
+        }elseif (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
+
+            $message['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1</span> ", $message['CONTENT']);
+        }
     }
 
     // Convert any WikiWords to hyperlinks -------------------------------------

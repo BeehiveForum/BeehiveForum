@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.115 2005-03-19 17:53:34 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.116 2005-03-22 21:47:44 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -530,7 +530,7 @@ function pm_get_content($mid)
     return isset($pm_content['CONTENT']) ? $pm_content['CONTENT'] : "";
 }
 
-function draw_pm_message($pm_elements_array)
+function pm_display($pm_elements_array)
 {
     $lang = load_language_file();
 
@@ -574,10 +574,29 @@ function draw_pm_message($pm_elements_array)
         echo "</span></td>\n";
     }
 
+    // Check for words that should be filtered ---------------------------------
+
+    $pm_elements_array['CONTENT'] = apply_wordfilter($pm_elements_array['CONTENT']);
+    $pm_elements_array['SUBJECT'] = apply_wordfilter($pm_elements_array['SUBJECT']);
+
+    // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
+
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+
+        if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
+
+            $pm_elements_array['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1&nbsp;</span>", $pm_elements_array['CONTENT']);
+
+        }elseif (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
+
+            $pm_elements_array['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1</span> ", $pm_elements_array['CONTENT']);
+        }
+    }
+
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", apply_wordfilter($pm_elements_array['SUBJECT']), "</span></td>\n";
+    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">{$pm_elements_array['SUBJECT']}</span></td>\n";
     echo "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_elements_array['CREATED']), "&nbsp;</span></td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
@@ -590,7 +609,7 @@ function draw_pm_message($pm_elements_array)
     echo "            <td colspan=\"3\">&nbsp;</td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td class=\"postbody\" align=\"left\">", apply_wordfilter($pm_elements_array['CONTENT']), "</td>\n";
+    echo "            <td class=\"postbody\" align=\"left\">{$pm_elements_array['CONTENT']}</td>\n";
     echo "          </tr>\n";
 
     if (isset($pm_elements_array['AID'])) {

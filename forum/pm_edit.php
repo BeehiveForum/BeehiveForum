@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.65 2005-03-14 13:27:21 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.66 2005-03-22 21:47:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -389,7 +389,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "    <td class=\"subhead\">{$lang['messagepreview']}</td>\n";
     echo "  </tr>";
     echo "  <tr>\n";
-    echo "    <td><br />", draw_pm_message($pm_elements_array), "</td>\n";
+    echo "    <td><br />", pm_display($pm_elements_array), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"2\">&nbsp;</td>\n";

@@ -7,7 +7,7 @@
 # Generation Time: Aug 10, 2002 at 09:08 AM
 # Server version: 3.23.36
 # PHP Version: 4.1.2
-# Database : `beehiveforum`
+# Database : `beehiveforum` 
 # --------------------------------------------------------
 
 #

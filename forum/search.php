@@ -48,7 +48,7 @@ require_once("./include/fixhtml.inc.php");
 
 // Base Query - The same for all searches
   
-$basesql = "SELECT THREAD.FID, THREAD.TID, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
+$basesql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
 $basesql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST_CONTENT.CONTENT ";
 $basesql.= "FROM ". forum_table("THREAD"). " THREAD ";
 $basesql.= "LEFT JOIN ". forum_table("POST"). " ON (THREAD.TID = POST.TID) ";
@@ -66,6 +66,7 @@ if (isset($searchsql)) {
   
   echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
   echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"#\">Create Poll</a><br />\n";
+  echo "<img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">New Search</a><br />\n";  
   
   $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
                   "2 Days Back","7 Days Back","High Interest","Unread High Interest",
@@ -80,7 +81,7 @@ if (isset($searchsql)) {
 
   $db  = db_connect();
   $sql = $basesql.$searchsql;
-
+  
   if (isset($HTTP_GET_VARS['sstart'])) {
     $sstart = $HTTP_GET_VARS['sstart'];
   }else {

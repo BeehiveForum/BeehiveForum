@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.108 2004-03-05 21:29:29 decoyduck Exp $ */
+/* $Id: logon.php,v 1.109 2004-03-06 16:03:50 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -386,8 +386,8 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
     echo "          <tr>\n";
     echo "            <td align=\"right\">{$lang['passwd']}:</td>\n";
     
-    if (isset($password_array[$i]) && strlen($password_array[$i]) > 0) {
-        if (isset($passhash_array[$i]) && is_md5($passhash_array[$i])) {
+    if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
+        if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
             echo "            <td>", form_input_password("password", $password_array[0]), form_input_hidden("passhash", $passhash_array[0]), "</td>\n";
         }else {
             echo "            <td>", form_input_password("password", ""), form_input_hidden("passhash", ""), "</td>\n";
@@ -400,22 +400,37 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
 }else {
 
-    echo "          <tr>\n";
-    echo "            <td align=\"right\">{$lang['username']}:</td>\n";
-    echo "            <td>", form_input_text('logon', (isset($username_array[0]) && $otherlogon == false) ? $username_array[0] : ""), "</td>\n";
-    echo "          </tr>\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"right\">{$lang['passwd']}:</td>\n";
-    echo "            <td>", form_input_password('password', (isset($password_array[0])) ? $password_array[0] : ""), form_input_hidden('passhash', (isset($passhash_array[0])) ? $passhash_array[0] : ""), "</td>\n";
-    echo "          </tr>\n";
-    echo "          </tr>\n";
+    if ($otherlogon) {
+    
+        echo "          <tr>\n";
+        echo "            <td align=\"right\">{$lang['username']}:</td>\n";
+        echo "            <td>", form_input_text('logon', ""), "</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"right\">{$lang['passwd']}:</td>\n";
+        echo "            <td>", form_input_password('password', ""), "</td>\n";
+        echo "          </tr>\n";
+        echo "          </tr>\n";
+        
+    }else {
+
+        echo "          <tr>\n";
+        echo "            <td align=\"right\">{$lang['username']}:</td>\n";
+        echo "            <td>", form_input_text('logon', (isset($username_array[0]) ? $username_array[0] : "")), "</td>\n";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"right\">{$lang['passwd']}:</td>\n";
+        echo "            <td>", form_input_password('password', (isset($password_array[0]) ? $password_array[0] : "")), form_input_hidden('passhash', (isset($passhash_array[0]) ? $passhash_array[0] : "")), "</td>\n";
+        echo "          </tr>\n";
+        echo "          </tr>\n";
+    }
 }
 
 echo "            <tr>\n";
 echo "              <td>&nbsp;</td>\n";
 echo "              <td>";
 
-echo form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && $password_array[0] != str_repeat(chr(255), 4)) && strlen($password_array[0]) > 0 && $otherlogon == false);
+echo form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false));
 
 echo "</td>\n";
 echo "            </tr>\n";

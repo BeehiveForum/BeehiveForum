@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.41 2004-06-25 22:14:06 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.42 2004-08-01 13:31:23 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -34,7 +34,7 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
     if (perm_is_moderator($fid)) {
 
         $uid    = addslashes($uid);
-	$fid    = addslashes($fid);
+        $fid    = addslashes($fid);
         $tid    = addslashes($tid);
         $pid    = addslashes($pid);
         $psid   = addslashes($psid);
@@ -100,9 +100,9 @@ function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_d
     $result = db_query($sql, $db_admin_get_log_entries);
 
     if (db_num_rows($result)) {
-	while ($row = db_fetch_array($result)) {
-	    $admin_log_array[] = $row;
-	}
+        while ($row = db_fetch_array($result)) {
+            $admin_log_array[] = $row;
+        }
     }
 
     return array('admin_log_count' => $admin_log_count,
@@ -196,8 +196,8 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
         $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
         $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM USER USER ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
         $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
         $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
@@ -218,7 +218,7 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
         while ($row = db_fetch_array($result)) {
             if (!isset($user_search_array[$row['UID']])) {
                 $user_search_array[$row['UID']] = $row;
-	    }
+            }
         }
     }
 
@@ -251,8 +251,8 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
         $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
         $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, SESSIONS.SESSID FROM USER USER ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-	$sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
         $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
         $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
@@ -272,7 +272,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
         while ($row = db_fetch_array($result)) {
             if (!isset($user_get_all_array[$row['UID']])) {
                 $user_get_all_array[$row['UID']] = $row;
-	    }
+            }
         }
     }
 
@@ -341,21 +341,21 @@ function admin_get_forum_list()
         // Get the Forum Name
 
         $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
-	$sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
+        $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
 
-	$result_forum_name = db_query($sql, $db_get_forum_list);
+        $result_forum_name = db_query($sql, $db_get_forum_list);
 
-	if (db_num_rows($result_forum_name)) {
+        if (db_num_rows($result_forum_name)) {
 
-	    $row = db_fetch_array($result_forum_name);
-	    $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
+            $row = db_fetch_array($result_forum_name);
+            $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
 
-	}else {
+        }else {
 
-	    $forum_data['FORUM_NAME'] = "Unnamed Forum";
-	}
+            $forum_data['FORUM_NAME'] = "Unnamed Forum";
+        }
 
-	// Get the Description
+        // Get the Description
 
         $sql = "SELECT SVALUE AS DESCRIPTION FROM FORUM_SETTINGS WHERE ";
         $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
@@ -373,7 +373,7 @@ function admin_get_forum_list()
             $forum_data['DESCRIPTION'] = "";
         }
 
-    	// Get number of messages on forum
+        // Get number of messages on forum
 
         $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
         $result_post_count = db_query($sql, $db_get_forum_list);

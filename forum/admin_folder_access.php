@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.49 2004-05-17 15:56:59 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.50 2004-08-01 13:31:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -152,7 +152,7 @@ if (isset($_POST['add_recent_user'])) {
     $uf[0]['fid'] = $fid;
     $uf[0]['allowed'] = 1;
     user_update_folders($_POST['t_to_uid'], $uf);
-    admin_addlog($_POST['add_recent_user'], 0, 0, 0, 0, 0, 2);
+    admin_addlog($_POST['add_recent_user'], $fid, 0, 0, 0, 0, 2);
 
 }elseif (isset($_POST['add_searched_user'])) {
 
@@ -160,7 +160,7 @@ if (isset($_POST['add_recent_user'])) {
         $uf[0]['fid'] = $fid;
         $uf[0]['allowed'] = 1;
         user_update_folders($_POST['user_add'][$i], $uf);
-        admin_addlog($_POST['user_add'][$i], 0, 0, 0, 0, 0, 2);
+        admin_addlog($_POST['user_add'][$i], $fid, 0, 0, 0, 0, 2);
     }
 
 }elseif (isset($_POST['remove_user']) && isset($_POST['user_remove']) && is_array($_POST['user_remove'])) {
@@ -169,7 +169,7 @@ if (isset($_POST['add_recent_user'])) {
         $uf[0]['fid'] = $fid;
         $uf[0]['allowed'] = 0;
         user_update_folders($_POST['user_remove'][$i], $uf);
-        admin_addlog($_POST['user_remove'][$i], 0, 0, 0, 0, 0, 2);
+        admin_addlog($_POST['user_remove'][$i], $fid, 0, 0, 0, 0, 2);
     }
 }
 

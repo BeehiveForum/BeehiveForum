@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.78 2004-06-28 21:51:03 decoyduck Exp $ */
+/* $Id: delete.php,v 1.79 2004-08-01 13:31:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -181,14 +181,14 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
         if ((strlen(trim($preview_message['CONTENT'])) == 0) && !thread_is_poll($tid)) {
             html_draw_top();
             edit_refuse($tid, $pid);
-	    html_draw_bottom();
+            html_draw_bottom();
             exit;
         }
 
         if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator($t_fid)) {
             html_draw_top();
             edit_refuse($tid, $pid);
-	    html_draw_bottom();
+            html_draw_bottom();
             exit;
         }
 
@@ -210,7 +210,7 @@ if ($valid) {
 
         if (post_delete($tid, $pid)) {
 
-            if (perm_is_moderator($t_fid)) admin_addlog(0, 0, $tid, $pid, 0, 0, 22);
+            admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 22);
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['postdelsuccessfully']}</p>";

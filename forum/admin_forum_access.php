@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.15 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.16 2004-08-01 13:31:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,7 +155,7 @@ if ($forum_array = forum_get($fid)) {
                 $uf[0]['fid'] = $fid;
                 $uf[0]['allowed'] = 1;
                 user_update_forums($_POST['user_add'][$i], $uf);
-	    }
+            }
         }
     }elseif (isset($_POST['remove_user'])) {
         if (isset($_POST['user_remove']) && is_array($_POST['user_remove'])) {
@@ -163,8 +163,8 @@ if ($forum_array = forum_get($fid)) {
                 $uf[0]['fid'] = $fid;
                 $uf[0]['allowed'] = 0;
                 user_update_forums($_POST['user_remove'][$i], $uf);
-                admin_addlog($_POST['user_remove'][$i], 0, 0, 0, 0, 0, 2);
-	    }
+                admin_addlog($_POST['user_remove'][$i], $fid, 0, 0, 0, 0, 2);
+            }
         }
     }
 
@@ -214,7 +214,7 @@ if ($forum_array = forum_get($fid)) {
 
         $user_search_array = admin_user_search($usersearch);
 
-	if (sizeof($user_search_array['user_array']) > 0) {
+        if (sizeof($user_search_array['user_array']) > 0) {
 
             foreach ($user_search_array['user_array'] as $user_search) {
                 echo "        <tr>\n";

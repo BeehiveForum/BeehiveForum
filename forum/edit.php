@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.135 2004-07-07 17:21:05 tribalonline Exp $ */
+/* $Id: edit.php,v 1.136 2004-08-01 13:31:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -243,19 +243,19 @@ if (isset($_POST['t_post_html'])) {
     $t_post_html = $_POST['t_post_html'];
 
     if ($t_post_html == "enabled_auto") {
-		$post_html = 1;
+                $post_html = 1;
     } else if ($t_post_html == "enabled") {
-		$post_html = 2;
+                $post_html = 2;
     }
 }
 
 if (isset($_POST['t_sig_html'])) {
 
-	$t_sig_html = $_POST['t_sig_html'];
+        $t_sig_html = $_POST['t_sig_html'];
 
-	if ($t_sig_html != "N") {
-		$sig_html = 1;
-	}
+        if ($t_sig_html != "N") {
+                $sig_html = 1;
+        }
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -269,37 +269,37 @@ $sig = new MessageText($sig_html);
 
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
 
-	$t_content = trim(_stripslashes($_POST['t_content']));
+        $t_content = trim(_stripslashes($_POST['t_content']));
 
-	if ($post_html && attachment_embed_check($t_content)) {
-		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-		$valid = false;
-	}
+        if ($post_html && attachment_embed_check($t_content)) {
+                $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+                $valid = false;
+        }
 
-	$post->setContent($t_content);
-	$t_content = $post->getContent();
+        $post->setContent($t_content);
+        $t_content = $post->getContent();
 
-	if (strlen($t_content) >= 65535) {
-		$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-		$valid = false;
-	}
+        if (strlen($t_content) >= 65535) {
+                $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+                $valid = false;
+        }
 }
 if (isset($_POST['t_sig']) && trim($_POST['t_sig']) != "") {
 
-	$t_sig = trim(_stripslashes($_POST['t_sig']));
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
 
-	if (attachment_embed_check($t_sig)) {
-		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-		$valid = false;
-	}
+        if (attachment_embed_check($t_sig)) {
+                $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+                $valid = false;
+        }
 
-	$sig->setContent($t_sig);
-	$t_sig = $sig->getContent();
+        $sig->setContent($t_sig);
+        $t_sig = $sig->getContent();
 
-	if (strlen($t_sig) >= 65535) {
-		$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-		$valid = false;
-	}
+        if (strlen($t_sig) >= 65535) {
+                $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+                $valid = false;
+        }
 }
 
 if (isset($_POST['preview'])) {
@@ -420,17 +420,15 @@ if (isset($_POST['preview'])) {
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
 
-            if (perm_is_moderator($t_fid) && ($_POST['t_from_uid'] != bh_session_get_value('UID'))) {
-                admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
-            }
+            admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
 
-			echo "<script language=\"Javascript\">\n";
-			echo "  <!--\n";
-			echo "    function clearFocus() {\n";
-			echo "      return;\n";
-			echo "    }\n";
-			echo "  //-->\n";
-			echo "</script>\n";
+            echo "<script language=\"Javascript\">\n";
+            echo "  <!--\n";
+            echo "    function clearFocus() {\n";
+            echo "      return;\n";
+            echo "    }\n";
+            echo "  //-->\n";
+            echo "</script>\n";
 
             echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
             echo "<br />\n";
@@ -519,24 +517,24 @@ if (isset($_POST['preview'])) {
             }
         }
 
-	$t_content = _htmlentities_decode($t_content);
-	$post_html = 0;
-	$t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
+        $t_content = _htmlentities_decode($t_content);
+        $post_html = 0;
+        $t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
 
-	if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
-	    $post_html = 2;
-		if (add_paragraphs($t_content) == $t_content) {
-			$post_html = 1;
-		}
-	} else {
-	    $t_content = strip_tags($t_content);
-	}
+        if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
+            $post_html = 2;
+                if (add_paragraphs($t_content) == $t_content) {
+                        $post_html = 1;
+                }
+        } else {
+            $t_content = strip_tags($t_content);
+        }
 
-	$post = new MessageText($post_html, $t_content);
-	$sig = new MessageText($sig_html, $t_sig);
+        $post = new MessageText($post_html, $t_content);
+        $sig = new MessageText($sig_html, $t_sig);
 
-	$t_content = $post->getContent();
-	$t_sig = $sig->getContent();
+        $t_content = $post->getContent();
+        $t_sig = $sig->getContent();
 
     }else{
 
@@ -608,8 +606,8 @@ echo "</a><br /><br />\n";
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 if ($emot_prev != "") {
-	echo "<h2>".$lang['emoticons'].":</h2>\n";
-	echo $emot_prev."<br />\n";
+        echo "<h2>".$lang['emoticons'].":</h2>\n";
+        echo $emot_prev."<br />\n";
 }
 
 echo "</td></tr>\n";
@@ -635,9 +633,9 @@ echo $tools->textarea("t_content", $post->getTidyContent(), 20, 0, "virtual", "s
 
 if ($post->isDiff()) {
 
-	echo $tools->compare_original("t_content", $post->getOriginalContent());
+        echo $tools->compare_original("t_content", $post->getOriginalContent());
 
-	echo "<br /><br />\n";
+        echo "<br /><br />\n";
 }
 
 echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
@@ -679,7 +677,7 @@ echo $tools->js();
 
 if ($sig->isDiff()) {
 
-	echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+        echo $tools->compare_original("t_sig", $sig->getOriginalContent());
 }
 
 echo "</td></tr>\n";

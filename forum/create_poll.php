@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.43 2003-08-10 02:18:32 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.44 2003-08-10 17:30:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -447,8 +447,8 @@ if (isset($HTTP_GET_VARS['fid'])) {
             <td>
               <table border="0" width="500">
                 <tr>
-                  <td><?php echo form_radio('changevote', '1', $lang['yes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : true); ?></td>
-                  <td><?php echo form_radio('changevote', '0', $lang['no'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : false); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '1', $lang['yes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : true); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '0', $lang['no'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : false); ?></td>
                   <td><?php echo form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : false); ?></td>
                 </tr>
               </table>
@@ -467,9 +467,27 @@ if (isset($HTTP_GET_VARS['fid'])) {
             <td>
               <table border="0" width="400">
                 <tr>
-                  <td><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : true); ?></td>
-                  <td><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : false); ?></td>
-                  <td><?php echo form_radio('polltype', '2', $lang['publicviewable'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 2 : false); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : true); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : false); ?></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><h2><?php echo $lang['pollvotetype']; ?></h2></td>
+          </tr>
+          <tr>
+            <td><?php echo $lang['pollvotesexp']; ?></td>
+          </tr>
+          <tr>
+            <td>
+              <table border="0" width="400">
+                <tr>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 0 : true); ?></td>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 1 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -485,10 +503,10 @@ if (isset($HTTP_GET_VARS['fid'])) {
           </tr>
           <tr>
             <td>
-              <table border="0" width="300">
+              <table border="0" width="400">
                 <tr>
-                  <td><?php echo form_radio('showresults', '1', $lang['yes'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : true); ?></td>
-                  <td><?php echo form_radio('showresults', '0', $lang['no'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : false); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '1', $lang['yes'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : true); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '0', $lang['no'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : false); ?></td>
                 </tr>
               </table>
             </td>

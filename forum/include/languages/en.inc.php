@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.148 2004-07-08 00:54:52 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.149 2004-07-25 20:04:30 rowan_hill Exp $ */
 
 // International English language file
 
@@ -544,7 +544,9 @@ $lang['errorupdatingpost'] = "Error updating post";
 $lang['editmessage'] = "Edit message";
 $lang['edittext'] = "Edit text";
 $lang['editHTML'] = "Edit HTML";
-$lang['editpollwarning'] = "<b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again.";
+$lang['editpollwarning'] = "<b>Note</b>: Editing certain aspects of a poll will void all the current votes and allow people to vote again.";
+$lang['hardedit'] = "Hard edit options (votes will be reset):";
+$lang['softedit'] = "Soft edit options (votes will be retained):";
 $lang['changewhenpollcloses'] = "Change when the poll closes?";
 $lang['nochange'] = "No change";
 $lang['emailresult'] = "Email result";

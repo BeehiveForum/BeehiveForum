@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.22 2004-07-08 00:54:53 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.23 2004-07-25 20:04:30 rowan_hill Exp $ */
 
 // Gangsta language file
 
@@ -541,7 +541,9 @@ $lang['editmessage'] = "Edit this shit";
 $lang['edittext'] = "Izedit text";
 
 $lang['editHTML'] = "Izedit H to tha T to tha M to tha muthafuckin' L";
-$lang['editpollwarning'] = "<b>Note</b>: Editing any aspect of a poll will void all tha current votes and allow motherfuckers to vote again.";
+$lang['editpollwarning'] = "<b>Note</b>: Editing certain aspect of a poll will void all tha current votes and allow motherfuckers to vote again.";
+$lang['hardedit'] = "Hard edit options (votes will be reset):";
+$lang['softedit'] = "Soft edit options (votes will be retained):";
 $lang['changewhenpollcloses'] = "Change when tha poll clizoses?";
 $lang['nochange'] = "No chizange";
 $lang['emailresult'] = "Emizail result";

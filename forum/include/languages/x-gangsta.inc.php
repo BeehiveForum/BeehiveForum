@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.48 2004-10-08 19:53:08 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.49 2004-10-29 20:42:49 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -52,7 +52,7 @@ $lang['from'] = "Frizom";
 $lang['to'] = "Tizo";
 $lang['all_caps'] = "IZALL";
 $lang['of'] = "izof";
-$lang['reply'] = "Ay yo, trip...";
+$lang['reply'] = "Ay yo, trip&hellip;";
 $lang['replyall'] = "This goes out t' all o' y'all";
 $lang['pm_reply'] = "Reply as PM";
 $lang['delete'] = "Delizete";
@@ -505,7 +505,7 @@ $lang['aidnotspecified'] = "muthafuckin' AID not spizecified.";
 $lang['upload'] = "Uplizoad";
 $lang['failedtoupload'] = "Da' shit failed to uplizoad:";
 $lang['uploadnewattachment'] = "Uplizoad New Attachment";
-$lang['waitdotdot'] = "Aight, hold up muthafucka...";
+$lang['waitdotdot'] = "Aight, hold up muthafucka&hellip;";
 $lang['attachmentnospace'] = "Fuck that shit, homes. Yo ass needs mo' space fo' fiziles";
 $lang['successfullyuploaded'] = "Hell yeah, that shit gone up good";
 $lang['uploadfailed'] = "That shit failed";

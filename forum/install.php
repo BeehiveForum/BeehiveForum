@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.4 2004-10-29 19:54:17 decoyduck Exp $ */
+/* $Id: install.php,v 1.5 2004-10-29 20:42:48 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -196,7 +196,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
                 if ($config_saved) {
 
-                    echo "<form method=\"post\" action=\"./index.php\">\n";
+                    echo "<form method=\"get\" action=\"./index.php\">\n";
                     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                     echo "    <tr>\n";
                     echo "      <td width=\"500\">\n";
@@ -208,7 +208,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                     echo "                  <td class=\"subhead\">Installation Complete.</td>\n";
                     echo "                </tr>\n";
                     echo "                <tr>\n";
-                    echo "                  <td>Installation of your Beehive Forum has completed successfully, but before you can use it you must delete this install folder and the files it contains. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
+                    echo "                  <td>Installation of your Beehive Forum has completed successfully, but before you can use it you must delete both the install folder and install.php. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
                     echo "                </tr>\n";
                     echo "                <tr>\n";
                     echo "                  <td>&nbsp;</td>\n";
@@ -274,7 +274,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                     echo "            </form>\n";
                     echo "          </td>\n";
                     echo "          <td width=\"45%\">\n";
-                    echo "            <form method=\"post\" action=\"./index.php\">\n";
+                    echo "            <form method=\"get\" action=\"./index.php\">\n";
                     echo "              <input type=\"submit\" name=\"submit\" value=\"Continue\" autocomplete=\"off\" class=\"button\" />\n";
                     echo "            </form>\n";
                     echo "          </td>\n";

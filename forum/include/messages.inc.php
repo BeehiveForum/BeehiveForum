@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.300 2004-10-29 19:54:16 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.301 2004-10-29 20:42:48 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -201,7 +201,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
         $cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
         $message['CONTENT'] = fix_html($cut_msg, false);
-        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list && isset($message['PID'])){
@@ -624,7 +624,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
             if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
                 $html .= "\n&nbsp;" . $navbits[$i];
             } else if(abs($c - $i) == 4) {
-                $html .= "\n&nbsp;...";
+                $html .= "\n&nbsp;&hellip;";
             }
 
         }

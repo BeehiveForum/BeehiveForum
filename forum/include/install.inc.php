@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.21 2005-01-26 21:33:24 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.22 2005-03-03 22:35:46 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -43,6 +43,10 @@ function check_install()
 {
     if (!defined("BEEHIVE_INSTALLED")) {
         header_redirect("./install.php");
+    }
+
+    if (!defined("BEEHIVE_INSTALL_NOWARN")) {
+        install_remove_files();
     }
 
     if ((@dir_exists('install') || @file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
@@ -97,6 +101,35 @@ function check_install()
         echo "</html>\n";
         exit;
     }
+}
+
+function install_remove_files()
+{
+    rmdir_recursive('install');
+
+    if (@file_exists('install.php')) return @unlink('install.php');
+}
+
+function rmdir_recursive($path)
+{
+   if (@$dir = opendir($path)) {
+
+       while(($file = readdir($dir)) !== false) {
+
+           if (is_file("$path/$file") && !is_link("$path/$file")) {
+
+               unlink("$path/$file");
+
+           }elseif (is_dir("$path/$file") && $file != '.' && $file != '..') {
+
+               rmdir_recursive("$path/$file");
+           }
+       }
+
+       closedir($dir);
+   }
+
+   rmdir($path);
 }
 
 function install_incomplete()

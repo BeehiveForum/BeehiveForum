@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.80 2005-01-26 21:33:17 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.81 2005-02-02 23:19:48 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -95,11 +95,11 @@ function email_sendnotification($tuid, $msg, $fuid)
                 $recipient = $to_user['EMAIL'];
             }
 
-            mail($recipient, $subject, $message, $header);
+            if (@mail($recipient, $subject, $message, $header)) return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 function email_sendsubscription($tuid, $msg, $fuid)
@@ -177,11 +177,11 @@ function email_sendsubscription($tuid, $msg, $fuid)
                 $recipient = $to_user['EMAIL'];
             }
 
-            mail($recipient, $subject, $message, $header);
+            if (@mail($recipient, $subject, $message, $header)) return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 function email_send_pm_notification($tuid, $mid, $fuid)
@@ -250,11 +250,11 @@ function email_send_pm_notification($tuid, $mid, $fuid)
                 $recipient = $to_user['EMAIL'];
             }
 
-            mail($recipient, $subject, $message, $header);
+            if (@mail($recipient, $subject, $message, $header)) return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 // Sends a password reminder email. Returns true on success, false on fail.
@@ -308,7 +308,7 @@ function email_send_pw_reminder($logon)
                 $recipient = $to_user['EMAIL'];
             }
 
-            return mail($recipient, $subject, $message);
+            if (@mail($recipient, $subject, $message, $header)) return true;
         }
     }
 

@@ -178,7 +178,9 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         if ($updated) {
 
-            if (perm_is_moderator()) admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
+            if (perm_is_moderator() && ($HTTP_POST_VARS['t_from_uid'] != bh_session_get_value('UID'))) {
+                admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
+	    }
 
             echo "<div align=\"center\">";
             echo "<p>Edit Applied to Message $tid.$pid</p>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.3 2004-11-14 16:11:31 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.4 2004-12-09 18:17:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -807,7 +807,6 @@ echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_23'
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_24']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_25']}</p>\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_26']}</p>\n";
-echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

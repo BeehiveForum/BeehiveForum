@@ -36,6 +36,7 @@ if(!bh_session_check()){
 require_once("./include/html.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/post.inc.php");
+require_once("./include/edit.inc.php");
 
 if (isset($HTTP_GET_VARS['msg'])) {
 
@@ -77,6 +78,8 @@ if (isset($HTTP_POST_VARS['cancel'])) {
   }
 
 }
+
+html_draw_top_script();
 
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
@@ -157,7 +160,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   
   // Check HTML tick box, innit.  
   
-  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
+  for ($i = 1; $i <= sizeof($HTTP_POST_VARS['answers']); $i++) {
     if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
       $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
     }else {
@@ -167,8 +170,13 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   
   poll_edit($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
   
-  $uri = "./discussion.php?msg=$tid.1";
-  header_redirect($uri);
+  echo "<div align=\"center\">";
+  echo "<p>Edit Applied to Poll $tid.$pid</p>";
+  echo form_quick_button("discussion.php", "Continue", "msg", "$tid.$pid");
+  echo "</div>";
+            
+  html_draw_bottom();
+  exit;
   
 }else {
 
@@ -223,22 +231,31 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "</table>\n";
   $polldata['CONTENT'].= "<br><br>\n";
   
+  if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $editmessage['FROM_UID'] && !perm_is_moderator()) {
+    edit_refuse($tid, $pid);
+    exit;
+  }  
+  
 }
-
-html_draw_top_script();
 
 if (isset($error_html)) echo $error_html;
 
 echo "<form name=\"f_edit_poll\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
-echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</p>\n";
+//echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</p>\n";
 
 ?>
   <table class="box" cellpadding="0" cellspacing="0" width="500">
     <tr>
       <td>
         <table border="0" class="posthead" width="500">        
+          <tr>
+            <td><b>Note</b>: Editing any aspect of a poll will void all the current votes and allow people to vote again, regardless or not of the poll's ability to let them.</td>
+          </tr>
+          <tr>
+            <td><hr /></td>
+          </tr>          
           <tr>
             <td><h2>Answers</h2></td>
           </tr>          
@@ -288,7 +305,11 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
                     if (isset($HTTP_POST_VARS['answers'][$i])) {
                       echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 64);
                     }else {
-                      echo form_input_text("answers[$i]", htmlspecialchars($pollresults[$i]['OPTION_NAME']), 40, 64);
+                      if (strip_tags($pollresults[$i]['OPTION_NAME']) != $pollresults[$i]['OPTION_NAME']) {
+                        echo form_input_text("answers[$i]", htmlspecialchars($pollresults[$i]['OPTION_NAME']), 40, 64);
+                      }else {
+                        echo form_input_text("answers[$i]", $pollresults[$i]['OPTION_NAME'], 40, 64);
+                      }
                     }
                     
                     echo "  </td>\n";

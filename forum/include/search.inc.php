@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.112 2005-03-23 20:34:12 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.113 2005-03-24 18:54:39 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -550,6 +550,8 @@ function search_index_old_post()
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $sql = "SELECT THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, ";
     $sql.= "POST.TO_UID, POST_CONTENT.CONTENT, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
     $sql.= "FROM {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
@@ -557,18 +559,18 @@ function search_index_old_post()
     $sql.= "ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ON (THREAD.TID = POST_CONTENT.TID) ";
-    $sql.= "WHERE POST_CONTENT.INDEXED = 0 LIMIT 0, 1";
+    $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ";
+    $sql.= "ON (SEARCH_POSTS.TID = POST.TID AND SEARCH_POSTS.PID = POST.PID ";
+    $sql.= "AND SEARCH_POSTS.FORUM = $forum_fid) ";
+    $sql.= "WHERE SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
+    $sql.= "AND POST_CONTENT.CONTENT IS NOT NULL ";
+    $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_search_index_old_post);
 
     if (db_num_rows($result) > 0) {
 
         list($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $created) = db_fetch_array($result, DB_RESULT_NUM);
-
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_CONTENT SET INDEXED = 1 ";
-        $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
-
-        $result = db_query($sql, $db_search_index_old_post);
 
         search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $created);
     }

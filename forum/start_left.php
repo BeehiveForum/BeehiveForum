@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.82 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.83 2004-05-10 17:40:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,7 +139,7 @@ if ($thread_array = threads_get_most_recent()) {
 
         echo "&nbsp;</td>\n";
         echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">";
-        echo _stripslashes($thread['TITLE'])."</a>&nbsp;";
+        echo  apply_wordfilter(_stripslashes($thread['TITLE'])), "</a>&nbsp;";
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
@@ -216,7 +216,7 @@ if (sizeof($users_array['user_array']) > 0) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$resent_user['UID']}, '$webtag')\">", $resent_user['NICKNAME'], "</a></td>\n";
+        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$resent_user['UID']}, '$webtag')\">", apply_wordfilter($resent_user['NICKNAME']), "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($resent_user['LAST_LOGON']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }
@@ -249,7 +249,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", $row['NICKNAME'], "</a></td>\n";
+        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", apply_wordfilter($row['NICKNAME']), "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }

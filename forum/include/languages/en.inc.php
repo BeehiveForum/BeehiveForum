@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.105 2004-04-11 23:41:09 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.106 2004-04-12 03:11:36 tribalonline Exp $ */
 
 // International English language file
 
@@ -1122,5 +1122,19 @@ $lang['wehave'] = "We have";
 $lang['registeredmembers'] = "registered members";
 $lang['thenewestmemberis'] = "The newest member is";
 $lang['mostuserseveronlinewas'] = "Most users ever online was";
+
+// Thread Options (thread_options.php) ---------------------------------
+
+$lang['updatesmade'] = "Updates Made";
+$lang['useroptions'] = "User Options";
+$lang['markedasread'] = "Marked as read";
+$lang['postsoutof'] = "posts out of";
+$lang['interest'] = "Interest";
+$lang['adminoptions'] = "Admin Options";
+$lang['closedforposting'] = "Closed for posting";
+$lang['locktitleandfolder'] = "Lock title and folder";
+$lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
+$lang['deletethread'] = "Delete thread";
+$lang['markasunread'] = "Mark as unread";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.192 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.193 2004-04-12 03:11:38 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -500,6 +500,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
                         echo "        <tr>\n";
                         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
 
+						echo "<a href=\"thread_options.php?webtag=$webtag&tid={$thread['tid']}\" target=\"right\">";
+
                         if ($thread['last_read'] == 0) {
 
                             if ($thread['length'] > 0) {
@@ -512,9 +514,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
-                                echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
+                                echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }else {
-                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
+                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }
 
                         }elseif ($thread['last_read'] < $thread['length']) {
@@ -525,9 +527,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
-                                echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
+                                echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }else {
-                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
+                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }
 
                         }else {
@@ -542,12 +544,14 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
                                 $first_thread = $thread['tid'];
-                                echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
+                                echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             } else {
-                                echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
+                                echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }
 
                         }
+
+						echo "</a>";
 
                         // work out how long ago the thread was posted and format the time to display
                         $thread_time = format_time($thread['modified']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.192 2004-08-22 15:58:56 tribalonline Exp $ */
+/* $Id: user.inc.php,v 1.193 2004-08-29 18:06:20 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -272,7 +272,7 @@ function user_get_uid($logon)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE LOGON = '$logon'";
+    $sql = "SELECT * FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
 
     if (!db_num_rows($result)) {
@@ -315,7 +315,7 @@ function user_get_prefs($uid)
 
         // There are three sources of preferences:
         // 1. The defaults, set here:
-	    $default_prefs = array('FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
+            $default_prefs = array('FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
                            'PIC_URL' => '', 'EMAIL_NOTIFY' => 'Y', 'TIMEZONE' => '0', 'DL_SAVING' => 'N',
                            'MARK_AS_OF_INT' => 'Y', 'POSTS_PER_PAGE' => '20', 'FONT_SIZE' => '10',
                            'STYLE' => '', 'VIEW_SIGS' => 'Y', 'START_PAGE' => '0', 'LANGUAGE' => '',
@@ -323,14 +323,14 @@ function user_get_prefs($uid)
                            'SHOW_STATS' => 'Y',  'IMAGES_TO_LINKS' => 'N', 'USE_WORD_FILTER' => 'N',
                            'USE_ADMIN_FILTER' => 'N', 'EMOTICONS' => '', 'ALLOW_EMAIL' => 'Y', 'ALLOW_PM' => 'Y', 'POST_PAGE' => '0');
 
-	    // 2. The user's global prefs, in USER_PREFS:
+            // 2. The user's global prefs, in USER_PREFS:
         $sql  = "SELECT FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, ";
         $sql .= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, ";
         $sql .= "PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
         $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, POST_PAGE FROM USER_PREFS WHERE UID = $uid";
 
-		$result = db_query($sql, $db_user_get_prefs);
-		$global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, MYSQL_ASSOC) : array();
+                $result = db_query($sql, $db_user_get_prefs);
+                $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, MYSQL_ASSOC) : array();
 
         // 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
         if ($table_data = get_table_prefix()) {
@@ -360,7 +360,7 @@ function user_get_prefs($uid)
         // Merge them all together, with forum prefs overriding global prefs overriding default prefs
         $prefs_array = array_merge($default_prefs, $global_prefs, $forum_prefs);
 
-		return $prefs_array;
+                return $prefs_array;
 }
 
 function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = false)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.23 2003-11-27 16:06:39 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.24 2003-11-27 19:36:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -104,12 +104,9 @@ if (!is_dir('attachments')) {
   chmod('attachments', 0777);
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['f_aid']) && isset($HTTP_POST_VARS['userfile'])) {
 
-    if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['aid']) && isset($HTTP_POST_VARS['userfile'])) {
-
-        delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
-    }
+    delete_attachment($uid, $HTTP_POST_VARS['f_aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
 
 }elseif (isset($HTTP_POST_VARS['close'])) {
 
@@ -176,10 +173,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
-      echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
-      echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "        ". form_input_hidden('uid', $uid);
+      echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']), "\n";
+      echo "        ". form_input_hidden('f_aid', $attachments[$i]['aid']), "\n";
+      echo "        ". form_input_hidden('uid', $uid), "\n";
       echo "        ". form_submit('delete', $lang['delete']). "\n";
+
+      if (isset($aid)) echo "        ". form_input_hidden('aid', $aid), "\n";
+
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";

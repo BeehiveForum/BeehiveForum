@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.106 2003-11-27 14:04:25 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.107 2003-11-27 19:36:06 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -147,6 +147,11 @@ function user_update_folders($uid, $folders)
 
     if (!is_numeric($uid)) return false;
     if (!is_array($folders)) return false;
+
+    $sql = "UPDATE ". forum_table("USER_FOLDER"). " SET ALLOWED = 0 ";
+    $sql.= "WHERE UID = '$uid'";
+
+    $result = db_query($sql, $db_user_update_folders);
 
     for ($i = 0; $i < sizeof($folders); $i++) {
 

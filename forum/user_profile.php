@@ -26,6 +26,8 @@ require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/user.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
+require_once("./include/user_rel.inc.php");
+require_once("./include/constants.inc.php");
 
 $uid = $HTTP_GET_VARS['uid'];
 $psid = @$HTTP_GET_VARS['psid'];
@@ -39,6 +41,7 @@ if(!$uid){
 }
 
 $user = user_get($uid);
+$your_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
 html_draw_top(format_user_name($user['LOGON'],$user['NICKNAME']));
 
@@ -59,6 +62,12 @@ if($row_count == 0){
     echo "<p>Profiles not set up</p>";
     html_draw_bottom();
     exit;
+}
+
+if (isset($HTTP_GET_VARS['setrel']) && ($uid != $your_uid)) { // user has chosen to modify their relationship
+    $relationship = user_rel_get($your_uid, $uid);
+    $relationship = ($relationship & (~ (USER_FRIEND | USER_IGNORED)) | $HTTP_GET_VARS['setrel']);
+    user_rel_update($your_uid,$uid,$relationship);
 }
 
 echo "<table width=\"100%\" class=\"subhead\" border=\"0\"><tr>\n";
@@ -109,6 +118,30 @@ echo "</table></td>\n";
 echo "<td valign=\"top\"><table width=\"100%\" class=\"subhead\">";
 echo "<tr><td><a href=\"email.php?uid=$uid\">Send email</a></td></tr>\n";
 
+if ($uid != $your_uid) {
+    $relationship = user_rel_get($your_uid, $uid);
+    
+    if ($relationship & USER_FRIEND) {
+        $setrel = 0;
+        $text = "Remove from friends";
+    } else {
+        $setrel = USER_FRIEND;
+        $text = "Add to friends";
+    }
+    
+    echo "<tr><td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td></tr>";
+    
+    if ($relationship & USER_IGNORED) {
+        $setrel = 0;
+        $text = "Stop ignoring user";
+    } else {
+        $setrel = USER_IGNORED;
+        $text = "Ignore this user";
+    }
+    
+    echo "<tr><td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td></tr>";
+}
+/*
 $sql = "select RELATIONSHIP from " . forum_table("USER_PEER") . " USER_PEER ";
 $sql.= "where UID = '" . $HTTP_COOKIE_VARS['bh_sess_uid'] . "' ";
 $sql.= "and PEER_UID = '$uid'";
@@ -139,7 +172,9 @@ if($row['RELATIONSHIP'] != -1){
 echo "<tr><td><a href=\"./set_relation.php?uid=$uid&rel=$setrel&ret=";
 echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?uid=$uid&psid=$psid";
 echo "\">$text</a></td></tr>\n";
+*/
 
+echo "</table>";
 html_draw_bottom();
 
 ?>

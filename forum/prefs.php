@@ -48,12 +48,27 @@ require_once("./include/header.inc.php");
 $error_html = "";
 
 if ($style_dir = @opendir("styles")) {
+	$style_names = array();
+	$available_styles = array();
+	$i = 0;
 	while ($style_file = readdir($style_dir)) {
 		if (is_dir("styles/$style_file") && $style_file != "." && $style_file != "..") {
-			$available_styles[count($available_styles)] = $style_file;
+			$available_styles[$i] = $style_file;
+			$style_desc_file = "styles/$style_file/desc.txt";
+			$style_desc_text = "";
+			if (file_exists($style_desc_file)) {
+				$style_desc = fopen ("styles/$style_file/desc.txt", "r");
+				$style_desc_text = htmlspecialchars(fread ($style_desc, filesize ($style_desc_file)));
+				fclose ($style_desc);
+			} else {
+				$style_desc_text = $style_file;
+			}
+			$style_names[$i] = $style_desc_text;
+			$i++;
 		}
 	}
 	closedir($style_dir);
+	array_multisort($style_names, $available_styles);
 }
 
 if(isset($HTTP_POST_VARS['submit'])){
@@ -247,7 +262,7 @@ if(!empty($error_html)) {
       <tr>
         <td>Forum Style</td>
         <td>
-			<?php echo form_dropdown_array("style", $available_styles, $available_styles, $user_prefs['STYLE']); ?>
+			<?php echo form_dropdown_array("style", $available_styles, $style_names, $HTTP_COOKIE_VARS['bh_sess_style']); ?>
 		</td>
       </tr>
       <tr>

@@ -209,7 +209,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
 
         }
 
-        if($t_tid > 0) {
+        if ($t_tid > 0) {
 
             if($t_post_html != "Y") $t_content = make_html($t_content);
 
@@ -268,7 +268,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
 
     }else{
 
-        $error_html = "<h2>Error creating post</h2>";
+        $error_html = "<h2>Error creating post. Please try again in a few minutes.</h2>";
 
     }
 

@@ -56,9 +56,18 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
             $sql.= "where tid = $tid";
             $result = db_query($sql, $db_post_create);
 
+        }else {
+
+            // Not sure about removing the post.
+
+            //$sql = "delete " . forum_table("POST") . " where tid = $tid and pid = $new_pid";
+            //$result = db_query($sql, $db_post_create);
+
+            $new_pid = -1;
+
         }
 
-    } else {
+    }else {
         $new_pid = -1;
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.76 2005-03-10 21:17:51 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.77 2005-03-12 13:26:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -68,7 +68,7 @@ function light_draw_logon_form()
     $lang = load_language_file();
 
     echo "<p>{$lang['welcometolight']}</p>\n";
-    echo "<form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"post\">\n";
+    echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
 
     echo "<p>{$lang['username']}: ";
     echo light_form_input_text("logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
@@ -79,8 +79,6 @@ function light_draw_logon_form()
     echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
 
     echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
-
-    echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 
     echo "</form>\n";
 }

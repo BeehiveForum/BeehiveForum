@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.2 2005-02-28 00:24:40 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.3 2005-03-12 13:26:54 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -139,6 +139,9 @@ if ($threaddata['POLL_FLAG'] == 'Y') {
 }
 
 echo "<a href=\"lmessages.php?msg=$msg\">{$lang['back']}</a>\n";
+
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
+
 light_html_draw_bottom();
 
 ?>

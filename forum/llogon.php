@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.40 2005-03-05 22:36:43 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.41 2005-03-12 13:26:54 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -162,6 +162,8 @@ light_html_draw_top();
 if (isset($error_html)) echo $error_html;
 
 light_draw_logon_form();
+
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 
 light_html_draw_bottom();
 

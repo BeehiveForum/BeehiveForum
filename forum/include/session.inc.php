@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.158 2005-02-28 00:24:41 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.159 2005-03-02 19:22:16 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -137,8 +137,6 @@ function bh_session_check($show_session_fail = true)
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
                 $sql.= "FID = '$fid', IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
-
-                echo $sql; exit;
 
                 $result = db_query($sql, $db_bh_session_check);
 

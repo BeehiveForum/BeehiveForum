@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.47 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.48 2003-09-16 12:34:43 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -168,11 +168,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             // Prevent the Queen / Soldiers from banning their own IP address
 
-            $ipaddress = get_ip_address();
-
-            if (($HTTP_POST_VARS['t_ip_address'] != $ipaddress) && !($user['STATUS'] & PERM_CHECK_SOLDIER)) {
-                ban_ip($HTTP_POST_VARS['t_ip_address']);
-                admin_addlog($uid, 0, 0, 0, 0, 0, 4);
+            if ($ipaddress = get_ip_address()) {
+                if (($HTTP_POST_VARS['t_ip_address'] != $ipaddress) && !($user['STATUS'] & PERM_CHECK_SOLDIER)) {
+                    ban_ip($HTTP_POST_VARS['t_ip_address']);
+                    admin_addlog($uid, 0, 0, 0, 0, 0, 4);
+                }
             }
 
         }elseif (isset($HTTP_POST_VARS['t_ip_banned']) && !isset($HTTP_POST_VARS['t_ban_ipaddress'])) {

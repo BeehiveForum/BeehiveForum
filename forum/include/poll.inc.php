@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.134 2004-11-05 18:50:04 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.135 2004-11-05 20:52:49 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -689,8 +689,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
                 if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($polldata['FID'])) {
 
-                    $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']). "</td>\n";
-
+                    $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
                 }
 
                 $polldata['CONTENT'].= "</td>\n";

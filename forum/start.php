@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start.php,v 1.48 2004-09-14 20:18:11 decoyduck Exp $ */
+/* $Id: start.php,v 1.49 2004-11-05 20:52:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -110,29 +110,29 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"DTD/xhtml1-
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
 echo "<head>\n";
 echo "<title>$forum_name</title>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
-echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\">\n";
-echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\">\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\" />\n";
 echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
 
 if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
 
-    echo "<frame src=\"./thread_list.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
+    echo "<frame src=\"./thread_list.php?webtag=$webtag\" name=\"left\" border=\"1\" />\n";
 
 }else {
 
-    echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
+    echo "<frame src=\"./start_left.php?webtag=$webtag\" name=\"left\" border=\"1\" />\n";
 }
 
 if (isset($_GET['show']) && $_GET['show'] == "visitors") {
 
-    echo "<frame src=\"./visitor_log.php?webtag=$webtag\" name=\"right\" border=\"1\">\n";
+    echo "<frame src=\"./visitor_log.php?webtag=$webtag\" name=\"right\" border=\"1\" />\n";
 
 }else {
 
-    echo "<frame src=\"./start_main.php?webtag=$webtag\" name=\"right\" border=\"1\">\n";
+    echo "<frame src=\"./start_main.php?webtag=$webtag\" name=\"right\" border=\"1\" />\n";
 }
 
 echo "</frameset>\n";

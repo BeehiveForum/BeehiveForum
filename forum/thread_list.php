@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.219 2004-11-03 17:32:38 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.220 2004-11-05 20:52:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -210,7 +210,6 @@ if ($pm_new_count = pm_get_unread_count() && bh_session_get_value('UID') != 0) {
     echo "  </tr>\n";
 }
 
-echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td colspan=\"2\">&nbsp;</td>\n";
 echo "  </tr>\n";

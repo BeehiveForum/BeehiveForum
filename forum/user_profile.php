@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.79 2004-10-08 10:35:42 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.80 2004-11-05 20:52:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -269,13 +269,13 @@ echo "              </table>\n";
 echo "            </td>\n";
 echo "            <td valign=\"top\">\n";
 echo "              <table width=\"100%\" class=\"subhead\">\n";
-echo "                <tr>\n";
 
 if (isset($user_profile['PIC_URL'])) {
-    echo "                  <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" /></td>\n";
-}
 
-echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" /></td>\n";
+    echo "                </tr>\n";
+}
 
 if ($uid == bh_session_get_value('UID')) {
 

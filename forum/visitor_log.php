@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.55 2004-09-14 08:28:59 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.56 2004-11-05 20:52:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -187,36 +187,34 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "</form>\n";
-
-echo "<form action=\"visitor_log.php\" method=\"get\">\n";
-echo "  ", form_input_hidden("webtag", $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"6\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
+echo "  <form action=\"visitor_log.php\" method=\"get\">\n";
+echo "    ", form_input_hidden("webtag", $webtag), "\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table class=\"box\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td class=\"posthead\">\n";
+echo "                <table width=\"100%\">\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"posthead\" align=\"left\">\n";
+echo "                      {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
+echo "                    </td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"6\">&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                </table>\n";
+echo "              </td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

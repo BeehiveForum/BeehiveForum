@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.54 2004-04-29 21:01:05 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.55 2004-05-01 22:23:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -424,7 +424,7 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" align=\"center\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\">\n";
 echo "        <tr>\n";
-echo "          <td colspan=\"3\" height=\"20\" style=\"background-color: #{$elements['navpage']}; color: #", contrastFont($elements['navpage']), "; font-size: 10px; font-weight: bold; text-decoration: none\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;&nbsp;</bdo>\n";
+echo "          <td colspan=\"3\" height=\"20\" style=\"background-color: #{$elements['navpage']}; color: #", contrastFont($elements['navpage']), "; font-size: 10px; font-weight: bold; text-decoration: none\">&nbsp;&nbsp;\n";
 echo "            <a href=\"#\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"#\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"#\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
@@ -591,9 +591,9 @@ echo "                    </table>\n";
 echo "                    <table width=\"100%\" class=\"postresponse\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\" cellspacing=\"1\" cellpadding=\"0\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
-echo "                            <img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"#\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['reply']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;&nbsp;</bdo>\n";
-echo "                            <img src=\"./images/delete.png\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />&nbsp;<a href=\"#\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['delete']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;&nbsp;</bdo>\n";
-echo "                            <img src=\"./images/edit.png\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />&nbsp;<a href=\"#\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['edit']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;&nbsp;</bdo>\n";
+echo "                            <img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"#\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['reply']}</a>&nbsp;&nbsp;\n";
+echo "                            <img src=\"./images/delete.png\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />&nbsp;<a href=\"#\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['delete']}</a>&nbsp;&nbsp;\n";
+echo "                            <img src=\"./images/edit.png\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />&nbsp;<a href=\"#\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['edit']}</a>&nbsp;&nbsp;\n";
 echo "                            <img src=\"./images/admintool.png\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" />&nbsp;<a href=\"#\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['privileges']}</a>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

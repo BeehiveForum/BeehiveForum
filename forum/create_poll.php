@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.107 2004-04-29 21:01:07 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.108 2004-05-01 22:23:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -675,11 +675,11 @@ echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
 
-echo form_submit("submit", $lang['post']). "&nbsp;</bdo>". form_submit("preview", $lang['preview']). "&nbsp;</bdo>". form_submit("cancel", $lang['cancel']);
+echo form_submit("submit", $lang['post']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-    echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);
 }
 

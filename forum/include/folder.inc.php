@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.83 2004-11-03 23:31:54 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.84 2004-11-29 22:09:53 decoyduck Exp $ */
 
-include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
+include_once("./include/forum.inc.php");
+include_once("./include/user.inc.php");
 
 function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "")
 {
@@ -65,20 +66,23 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
             if (!in_array($row['FID'], $folders['FIDS'])) {
 
-                if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
+                if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
 
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
+                    if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
 
-                }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) == $access_allowed)) {
+                        $folders['FIDS'][] = $row['FID'];
+                        $folders['TITLES'][] = $row['TITLE'];
 
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
+                    }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
 
-                }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+                        $folders['FIDS'][] = $row['FID'];
+                        $folders['TITLES'][] = $row['TITLE'];
 
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
+                    }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+
+                        $folders['FIDS'][] = $row['FID'];
+                        $folders['TITLES'][] = $row['TITLE'];
+                    }
                 }
             }
         }
@@ -248,13 +252,13 @@ function folder_get_available()
 
         while ($row = db_fetch_array($result)) {
 
-            if (!in_array($row['FID'], $folder_list)) {
+            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
 
-                if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
+                if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
 
                     $folder_list[] = $row['FID'];
 
-                }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) == $access_allowed)) {
+                }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
 
                     $folder_list[] = $row['FID'];
 
@@ -265,7 +269,7 @@ function folder_get_available()
             }
         }
 
-        return implode(',', $folder_list);
+        if (sizeof($folder_list) > 0) return implode(',', $folder_list);
     }
 
     return '0';

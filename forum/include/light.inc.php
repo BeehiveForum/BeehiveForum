@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.62 2004-11-06 23:43:23 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.63 2004-11-29 22:09:53 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/user.inc.php");
 include_once("./include/word_filter.inc.php");
 
 function light_html_draw_top ($title = false)
@@ -703,20 +704,23 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
         while($row = db_fetch_array($result)) {
 
-            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
+            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
 
-                $folders['FIDS'][] = $row['FID'];
-                $folders['TITLES'][] = $row['TITLE'];
+                if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
 
-            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) == $access_allowed)) {
+                    $folders['FIDS'][] = $row['FID'];
+                    $folders['TITLES'][] = $row['TITLE'];
 
-                $folders['FIDS'][] = $row['FID'];
-                $folders['TITLES'][] = $row['TITLE'];
+                }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
 
-            }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+                    $folders['FIDS'][] = $row['FID'];
+                    $folders['TITLES'][] = $row['TITLE'];
 
-                $folders['FIDS'][] = $row['FID'];
-                $folders['TITLES'][] = $row['TITLE'];
+                }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+
+                    $folders['FIDS'][] = $row['FID'];
+                    $folders['TITLES'][] = $row['TITLE'];
+                }
             }
         }
 
@@ -725,6 +729,8 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
             return light_form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid);
         }
     }
+
+    return false;
 }
 
 function light_form_textarea($name, $value = "", $rows = 0, $cols = 0)

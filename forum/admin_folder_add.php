@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.14 2004-11-14 16:11:31 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.15 2004-11-29 22:09:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -154,12 +154,13 @@ if (isset($_POST['submit'])) {
     $t_post_attach   = (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
     $t_post_html     = (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
     $t_post_sig      = (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
+    $t_guest_access  = (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
 
     // We need a double / float here because we're storing a high bit value
 
     $t_permissions = (double)$t_post_read | $t_post_create | $t_thread_create;
     $t_permissions = (double)$t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
-    $t_permissions = (double)$t_permissions | $t_post_html | $t_post_sig;
+    $t_permissions = (double)$t_permissions | $t_post_html | $t_post_sig | $t_guest_access;
 
     if ($valid) {
 
@@ -239,6 +240,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>", form_checkbox("t_post_html", USER_PERM_HTML_POSTING, $lang['postinhtml'], false), "</td>\n";
 echo "                        <td>", form_checkbox("t_post_sig", USER_PERM_SIGNATURE, $lang['postasignature'], false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_guest_access", USER_PERM_GUEST_ACCESS, $lang['allowguestaccess'], false), "</td>\n";
+echo "                        <td>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.210 2004-11-29 20:32:22 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.211 2004-11-29 22:09:58 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/session.inc.php");
 
 function user_count()
 {
@@ -1166,6 +1167,12 @@ function user_allow_email($uid)
 {
     $prefs = user_get_prefs($uid);
     return $prefs['ALLOW_EMAIL'] == "Y" ? true : false;
+}
+
+function user_is_guest()
+{
+    $uid = bh_session_get_value('UID');
+    return ($uid == 0);
 }
 
 ?>

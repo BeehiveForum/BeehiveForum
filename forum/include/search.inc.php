@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.75 2004-10-29 19:54:17 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.76 2004-11-29 22:09:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/user.inc.php");
 
 function search_execute($argarray, &$urlquery, &$error)
 {
@@ -477,6 +478,9 @@ function folder_search_dropdown()
 
     if (!$table_data = get_table_prefix()) return "";
 
+    $folders['FIDS'] = array();
+    $folders['TITLES'] = array();
+
     $access_allowed = USER_PERM_POST_READ;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, ";
@@ -496,32 +500,40 @@ function folder_search_dropdown()
 
     $result = db_query($sql, $db_folder_search_dropdown);
 
-    $fid_array = array(0);
-    $title_array = array($lang['all_caps']);
-
     if (db_num_rows($result) > 0) {
 
         while($row = db_fetch_array($result)) {
 
-            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
+            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
 
-                $fid_array[] = $row['FID'];
-                $title_array[] = $row['TITLE'];
+                if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
 
-            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) == $access_allowed)) {
+                    $folders['FIDS'][] = $row['FID'];
+                    $folders['TITLES'][] = $row['TITLE'];
 
-                $fid_array[] = $row['FID'];
-                $title_array[] = $row['TITLE'];
+                }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
 
-            }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+                    $folders['FIDS'][] = $row['FID'];
+                    $folders['TITLES'][] = $row['TITLE'];
 
-                $fid_array[] = $row['FID'];
-                $title_array[] = $row['TITLE'];
+                }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+
+                    $folders['FIDS'][] = $row['FID'];
+                    $folders['TITLES'][] = $row['TITLE'];
+                }
             }
+        }
+
+        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+
+            array_unshift($folders['FIDS'], 0);
+            array_unshift($folders['TITLES'], $lang['all_caps']);
+
+            return form_dropdown_array("fid", $folders['FIDS'], $folders['TITLES'], 0, "style=\"width: 175px\"");
         }
     }
 
-    return form_dropdown_array("fid", $fid_array, $title_array, 0, "style=\"width: 175px\"");
+    return false;
 }
 
 function search_draw_user_dropdown($name)

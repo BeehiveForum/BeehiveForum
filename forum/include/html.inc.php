@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.64 2003-09-16 14:45:02 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.65 2003-09-16 14:48:43 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -225,10 +225,10 @@ function html_draw_bottom ()
 
             foreach($bh_query_array as $bh_query) {
                 $bh_query = preg_replace("/^SELECT/i" , "<span style=\"color:red; font-weight:bold\">SELECT</span>", $bh_query);
-                $bh_query = preg_replace("/^UPDATE/i" , "<font style=\"color:blue; font-weight:bold\">UPDATE</font>", $bh_query);
-                $bh_query = preg_replace("/^DELETE/i" , "<font style=\"color:orange; font-weight:bold\">DELETE</font>", $bh_query);
-                $bh_query = preg_replace("/^INSERT/i" , "<font style=\"color:green; font-weight:bold\">INSERT</font>", $bh_query);
-                $bh_query = str_replace( "LEFT JOIN", "<font style=\"color:red; font-weight:bold\">LEFT JOIN</font>", $bh_query);
+                $bh_query = preg_replace("/^UPDATE/i" , "<span style=\"color:blue; font-weight:bold\">UPDATE</span>", $bh_query);
+                $bh_query = preg_replace("/^DELETE/i" , "<span style=\"color:orange; font-weight:bold\">DELETE</span>", $bh_query);
+                $bh_query = preg_replace("/^INSERT/i" , "<span style=\"color:green; font-weight:bold\">INSERT</span>", $bh_query);
+                $bh_query = str_replace( "LEFT JOIN", "<span style=\"color:red; font-weight:bold\">LEFT JOIN</span>", $bh_query);
 
                 $html.= "<p class=\"info-text\" style=\"text-align: left\">$bh_query</p>\n";
             }

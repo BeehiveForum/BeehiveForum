@@ -42,16 +42,17 @@ if(!bh_session_check()){
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
 
-if(!bh_session_get_value('UID')){
+if (!bh_session_get_value('UID')) {
     header_no_cache();
 }
 
+// User was a guest that now wants to logon
+
 if (bh_session_get_value('UID') == 0) {
-
-        $uri = "./index.php";
-        bh_session_end();
-        header_redirect($uri);
-
+    $uri = "./index.php";
+    bh_session_end();
+    setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
+    header_redirect($uri);
 }
 
 require_once("./include/config.inc.php");

@@ -39,7 +39,7 @@ $top_html   = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('
 $stylesheet = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
 
 if (!file_exists($top_html)) {
-        $top_html = "./top.html";
+    $top_html = "./top.html";
 }
 
 ?>
@@ -53,6 +53,8 @@ if (!file_exists($top_html)) {
 <?php
 
 if (bh_session_check()) {
+
+    // User is actually logged in. Show them the relevant frameset.
 
     echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
@@ -84,25 +86,38 @@ if (bh_session_check()) {
 
     }
 
-} else {
+}else {
 
-    echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
-    echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+    // Check to see if the user has visited before and logged in.
 
-    if (isset($HTTP_GET_VARS['final_uri'])) {
+    if (!isset($HTTP_COOKIE_VARS['bh_logon']) && $auto_logon) {
 
-        echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        bh_session_init(0); // auto login as guest
 
-    }elseif(isset($HTTP_GET_VARS['msg'])) {
-
-        echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
+        echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+        echo "<frame src=\"./nav.php\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+        echo "<frame src=\"./start.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else {
 
-        echo "<frame src=\"./logon.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
+        echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
+        if (isset($HTTP_GET_VARS['final_uri'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }elseif(isset($HTTP_GET_VARS['msg'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else {
+
+            echo "<frame src=\"./logon.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }
     }
-
 }
 
 ?>

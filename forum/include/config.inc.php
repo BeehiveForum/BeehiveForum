@@ -35,15 +35,18 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 
 // Forum-specific ------------------------------------------------------
 
-$forum_name  = "A Beehive Forum"; // the name of your forum
-$forum_email = "admin@abeehiveforum.net"; // admin email
+$forum_name    = "A Beehive Forum"; // the name of your forum
+$forum_email   = "admin@abeehiveforum.net"; // admin email
 $default_style = "default"; // the default forum style directory name
 
 // ---------------------------------------------------------------------
 
 // Forum options -------------------------------------------------------
 
-$show_links = true; // Show the links section
+$show_links = true;             // Show the links section
+$auto_logon = true;             // Automatically logs on the user as a
+                                // guest unless they have previously
+                                // visited the logon page.
 
 // ---------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.33 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.34 2004-04-14 15:26:31 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,6 +41,7 @@ include_once("./include/fixhtml.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
+include_once("./include/htmltools.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/pm.inc.php");
@@ -117,13 +118,26 @@ if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
 // User clicked cancel
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    header_redirect("./pm.php?webtag=$webtag&folder=2");
+    header_redirect("./pm.php?webtag=$webtag&folder=3");
 }
 
 $valid = true;
 
-if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
+$t_content = "";
+$post_html = 0;
 
+if (isset($HTTP_POST_VARS['t_post_html'])) {
+    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+    if ($t_post_html == "enabled_auto") {
+		$post_html = 1;
+    } else if ($t_post_html == "enabled") {
+		$post_html = 2;
+    }
+}
+
+$post = new MessageText($post_html);
+
+if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
     if (isset($HTTP_POST_VARS['t_subject']) && trim($HTTP_POST_VARS['t_subject']) != "") {
         $t_subject = trim($HTTP_POST_VARS['t_subject']);
     }else {
@@ -133,11 +147,12 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
     if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
         $t_content = $HTTP_POST_VARS['t_content'];
+		$post->setContent($t_content);
+		$t_content = $post->getContent();
     }else {
         $error_html = "<h2>{$lang['entercontentformessage']}</h2>";
         $valid = false;
     }
-
 }
 
 // Update the PM
@@ -147,16 +162,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
 
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
-
-        if ($HTTP_POST_VARS['t_post_html'] == "Y") {
-            $t_content = fix_html($t_content);
-            $pm_elements_array['CONTENT'] = $t_content;
-            $t_content = str_replace("&", "&amp;", $t_content);
-        }else{
-            $t_content = make_html($t_content);
-            $pm_elements_array['CONTENT'] = $t_content;
-            $t_content = strip_tags($t_content);
-        }
+        $pm_elements_array['CONTENT'] = $t_content;
 
         $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
         $pm_elements_array['FOLDER'] = PM_FOLDER_OUTBOX;
@@ -173,17 +179,13 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
 
         $t_subject = _htmlentities($t_subject);
-
-        if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-            $t_content = make_html($t_content);
-        }
                 
         if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
             if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) pm_save_attachment_id($mid, $HTTP_POST_VARS['aid']);
         }         
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
-            header_redirect("pm.php?webtag=$webtag&folder=2");
+            header_redirect("pm.php?webtag=$webtag&folder=3");
         }else {
             $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
             $valid = false;
@@ -207,21 +209,19 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
             exit;
         }
 
-        $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
-        $t_content = $pm_elements_array['CONTENT'];
-        $t_subject = $pm_elements_array['SUBJECT'];
+        $t_content = clean_emoticons($pm_elements_array['CONTENT']);
+        $t_subject = _stripslashes($pm_elements_array['SUBJECT']);
 
-        if (!isset($HTTP_POST_VARS['b_edit_html'])) {
-            $t_content = str_replace("\n", "", $t_content);
-            $t_content = str_replace("\r", "", $t_content);
-            $t_content = str_replace("<p>", "\n<p>", $t_content);
-            $t_content = str_replace("</p>", "</p>\n", $t_content);
-            $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
-            $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
-            $t_content = strip_tags($t_content);
-        }else{
-            $t_content = _htmlentities($t_content);
-        }
+		$post_html = 0;
+		$t_content_tmp = preg_replace("/<a href=\"(.*)\">\1<\/a>/", "\\1", $t_content);
+		if (strip_tags($t_content_tmp, '<p><br>') != $t_content) {
+			$post_html = 2;
+		} else {
+			$t_content = strip_tags($t_content);
+		}
+
+		$post = new MessageText($post_html, $t_content);
+		$t_content = $post->getContent();
 
     }else {
         html_draw_top();
@@ -231,7 +231,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }
 }
 
-html_draw_top("openprofile.js", "edit.js", "basetarget=_blank");
+html_draw_top("openprofile.js", "edit.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
 
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
@@ -246,20 +246,42 @@ if ($valid == false) {
     echo $error_html;
 }
 
+$tools = new TextAreaHTML("f_post");
+
 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
 echo form_input_hidden('mid', $mid), "\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "<table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
 echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-echo "          <td>", form_field("t_subject", isset($t_subject) ? _htmlentities(_stripslashes($t_subject)) : "", 32), "</td>\n";
+echo "          <td>", form_field("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 32), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
-echo "      <table border=\"0\" class=\"posthead\">\n";
+echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td>".form_textarea("t_content", isset($t_content) ? $t_content : "", 15, 85). "</td>\n";
+echo "          <td>".$tools->toolbar();
+echo $tools->textarea("t_content", $post->getTidyContent(), 15, 72). "</td>\n";
+echo "        </tr>\n";
+if ($post->isDiff()) {
+	echo "        <tr>\n";
+	echo "          <td>\n";
+	echo "            ".$tools->compare_original("t_content", $post->getOriginalContent());
+	echo "          </td>\n";
+	echo "        </tr>\n";
+}
+echo "        <tr>\n";
+echo "          <td>\n";
+echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+$tph_radio = $post->getHTML();
+
+echo "            ".form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+echo "            ".form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+echo "            ".form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+
+echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+echo "          </td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
@@ -267,15 +289,6 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo form_submit('submit', $lang['apply']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
 echo form_submit('cancel', $lang['cancel']);
-
-if ($edit_html) {
-    echo "&nbsp;".form_submit("b_edit_text", $lang['edittext']);
-    echo form_input_hidden("t_post_html", "Y");
-
-} else {
-    echo "&nbsp;".form_submit("b_edit_html", $lang['editHTML']);
-    echo form_input_hidden("t_post_html", "N");
-}
 
 if ($aid = get_pm_attachment_id($mid)) {
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
@@ -285,6 +298,8 @@ if ($aid = get_pm_attachment_id($mid)) {
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);
 }
+
+echo $tools->js();
 
 echo "</form>\n";
 

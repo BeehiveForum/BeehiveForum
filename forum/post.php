@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.177 2004-04-13 09:31:55 tribalonline Exp $ */
+/* $Id: post.php,v 1.178 2004-04-14 15:26:31 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -135,19 +135,6 @@ $valid = true;
 
 $newthread = false;
 
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    $t_post_html = $HTTP_POST_VARS['t_post_html'];
-    if ($t_post_html == "enabled_auto") {
-        $t_post_html = true;
-        $auto_linebreaks = true;
-    } else if ($t_post_html == "enabled") {
-        $t_post_html = true;
-        $auto_linebreaks = false;
-    } else {
-        $t_post_html = false;
-    }
-}
-
 $t_to_uid_others = "";
 
 if (isset($HTTP_POST_VARS['to_radio'])) {
@@ -177,7 +164,6 @@ if (isset($HTTP_POST_VARS['to_radio'])) {
 }
 
 if (isset($HTTP_POST_VARS['t_newthread'])) {
-
     $newthread = true;
 
     if (isset($HTTP_POST_VARS['t_threadtitle']) && trim($HTTP_POST_VARS['t_threadtitle']) != "") {
@@ -199,101 +185,58 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
-
-        $t_content = $HTTP_POST_VARS['t_content'];
-
-        if (attachment_embed_check($t_content) && isset($t_post_html) && $t_post_html) {
-            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-            $valid = false;
-        }
-
-    }else{
-        $t_content = "";
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-        $valid = false;
-    }
-
-    $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-    $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
-
-    if (attachment_embed_check($t_sig) && isset($t_sig_html) && $t_sig_html != "N") {
-        $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
-        $valid = false;
-    }
-
-}else{
-
-    if (isset($HTTP_POST_VARS['t_tid'])) {
-
-        if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
-
-            $t_content = $HTTP_POST_VARS['t_content'];
-
-            if (attachment_embed_check($t_content) && isset($t_post_html) && $t_post_html) {
-                $error_html = "<h2>You are not allowed to embed attachments in your posts.</h2>\n";
-                $valid = false;
-            }
-
-        }else{
-            $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-            $valid = false;
-        }
-
-        $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-        $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
-
-        if (attachment_embed_check($t_sig) && isset($t_sig_html) && $t_sig_html != "N") {
-            $error_html = "<h2>You are not allowed to embed attachments in your signature.</h2>\n";
-            $valid = false;
-        }
-
-    }else{
-
-        $valid = false;
-
-    }
+} else if (!isset($HTTP_POST_VARS['t_tid'])) {
+	$valid = false;
 }
 
 $content_html_changes = false;
 $sig_html_changes = false;
 
-if ($valid) {
+$post_html = 0;
+$sig_html = 0;
 
-    if (isset($t_post_html) && $t_post_html == "Y") {
-        $old_t_content = _stripslashes($t_content);
-        $t_content = fix_html($t_content);
-
-        if ($old_t_content != tidy_html($t_content)) {
-            $content_html_changes = true;
-        }
-
-        if ($auto_linebreaks == true) {
-            $t_content = add_paragraphs($t_content);
-        }
-    }
-
-    if (isset($t_sig) && $t_sig_html == "Y") {
-        $old_t_sig = _stripslashes($t_sig);
-        $t_sig = fix_html($t_sig);
-
-        if ($old_t_sig != $t_sig) {
-            $sig_html_changes = true;
-        }
-    }
-
-}else {
-
-    if (isset($t_post_html) && $t_post_html == "Y") {
-        $t_content = isset($t_content) ? _stripslashes($t_content) : "";
-    }
-
-    if (isset($t_sig)) {
-        if ($t_sig_html == "Y") {
-            $t_sig = _stripslashes($t_sig);
-        }
+if (isset($HTTP_POST_VARS['t_post_html'])) {
+    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+    if ($t_post_html == "enabled_auto") {
+		$post_html = 1;
+    } else if ($t_post_html == "enabled") {
+		$post_html = 2;
     }
 }
+if (isset($HTTP_POST_VARS['t_sig_html'])) {
+	$t_sig_html = $HTTP_POST_VARS['t_sig_html'];
+	if ($t_sig_html != "N") {
+		$sig_html = 1;
+	}
+}
+
+$t_content = "";
+$t_sig = "";
+if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
+	$t_content = $HTTP_POST_VARS['t_content'];
+
+	if ($post_html && attachment_embed_check($t_content)) {
+		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+		$valid = false;
+	}
+}else if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])){
+	$error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+	$valid = false;
+}
+if (isset($HTTP_POST_VARS['t_sig'])) {
+	$t_sig = $HTTP_POST_VARS['t_sig'];
+	if ($sig_html && attachment_embed_check($t_sig)) {
+		$error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
+		$valid = false;
+	}
+}
+
+$post = new MessageText($post_html, $t_content);
+$sig = new MessageText($sig_html, $t_sig);
+
+$t_content = $post->getContent();
+$t_sig = $sig->getContent();
+
 
 if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
 
@@ -414,8 +357,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 echo "</td></tr>\n";
 
                 echo "<tr><td align=\"center\">\n";
-		echo form_input_hidden('t_tid', $t_tid);
-		echo form_input_hidden('t_rpid', $t_rpid);
+				echo form_input_hidden('t_tid', $t_tid);
+				echo form_input_hidden('t_rpid', $t_rpid);
                 echo form_submit('cancel', $lang['cancel']);
                 echo "</td></tr>\n";
                 echo "</table></form>\n";
@@ -446,14 +389,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($t_tid > 0) {
 
-            if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-                $t_content = make_html($t_content);
-            }
-
-            if (isset($t_sig) && trim($t_sig) != "") {
-
-                if ($t_sig_html != "Y") $t_sig = make_html($t_sig);
-                $t_content.= "\n<div class=\"sig\">". $t_sig. "</div>";
+            if (trim($t_sig) != "") {
+                $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
 
             }
 
@@ -572,34 +509,10 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
+    $preview_message['CONTENT'] = $t_content;
 
-        $preview_message['CONTENT'] = make_html($t_content);
-
-    }else{
-
-        $preview_message['CONTENT'] = $t_content;
-
-    }
-
-    if (isset($t_sig) && trim($t_sig) != "") {
-
-        if ($t_sig_html != "Y") {
-
-            $preview_sig = make_html($t_sig);
-
-        }else{
-
-            $preview_sig = $t_sig;
-
-        }
-
-        $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $preview_sig. "</div>";
-
-    }else{
-
-        $t_sig = " ";
-
+    if (trim($t_sig) != "") {
+        $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
     $preview_message['CREATED'] = mktime();
@@ -611,12 +524,6 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     echo "<tr><td>&nbsp;</td></tr>\n";
     echo "</table>\n";
-}
-
-if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
-
-    $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
-    $t_post_html = "Y";
 }
 
 if (!$newthread) {
@@ -738,11 +645,6 @@ echo "<td valign=\"top\" width=\"500\">\n";
 echo "<table class=\"posthead\" width=\"500\">\n";
 echo "<tr><td>\n";
 
-if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-    $t_content = isset($t_content) ? _stripslashes($t_content) : "";
-}
-
-$t_sig = _stripslashes($t_sig);
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<h2>". $lang['message'] .":</h2>\n";
@@ -751,41 +653,25 @@ $tools = new TextAreaHTML("f_post");
 
 echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 
-if (isset($t_content)) {
-	if (isset($HTTP_POST_VARS['preview']) && isset($HTTP_POST_VARS['t_post_html']) && $t_post_html) {
-		$t_content = tidy_html($t_content, $auto_linebreaks);
-	}
-	$t_content = _htmlentities($t_content);
-} else {
-	$t_content = "";
-}
+$t_content = $post->getTidyContent();
 echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
 
 
-if ($content_html_changes == true) {
+if ($post->isDiff()) {
 
-	echo $tools->compare_original("t_content", $old_t_content);
+	echo $tools->compare_original("t_content", $post->getOriginalContent());
 
     echo "<br /><br />\n";
 }
 
 echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-$tph_radio = 1;
+$tph_radio = $post->getHTML();
 
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    if ($t_post_html) {
-        $tph_radio = 3;
-        if ($auto_linebreaks == true) {
-            $tph_radio = 2;
-        }
-    }
-}
-
-echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
-echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
-echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
+echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
 
@@ -805,15 +691,15 @@ if (forum_get_setting('attachments_enabled', 'Y', false)) {
 // ---- SIGNATURE ----
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-$t_sig = tidy_html($t_sig, false);
+$t_sig = $sig->getTidyContent();
 
-echo $tools->textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-echo form_input_hidden("t_sig_html", $t_sig_html)."\n";
+echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-if ($sig_html_changes == true) {
+if ($sig->isDiff()) {
 
-	echo $tools->compare_original("t_sig", $old_t_sig);
+	echo $tools->compare_original("t_sig", $sig->getOriginalContent());
 
 }
 

@@ -91,6 +91,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         }
 
+	if (!is_array($usernames)) $usernames = array();
+	if (!is_array($passwords)) $passwords = array();
+
         if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
 
           array_unshift($usernames, $HTTP_POST_VARS['logon']);

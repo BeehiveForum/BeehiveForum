@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.7 2004-03-13 20:04:37 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.8 2004-03-14 19:38:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -40,7 +40,8 @@ function load_wordfilter()
     
     $webtag = get_webtag();    
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
+    $sql = "SELECT * FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = '$uid' ";
+    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y') $sql.= "OR UID = 0";
     $result = db_query($sql, $db_load_wordfilter);
 
     $pattern_array = array();

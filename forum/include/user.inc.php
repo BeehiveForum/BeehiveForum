@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.135 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.136 2004-03-14 19:38:32 decoyduck Exp $ */
 
 function user_count()
 {
@@ -850,7 +850,7 @@ function user_get_word_filter($incadminfilter = false)
     $filter_array = array();
 
     while($row = db_fetch_array($result)) {
-        $filter_array[] = $row;
+        $filter_array[$row['ID']] = $row;
     }
 
     return $filter_array;
@@ -885,4 +885,20 @@ function user_add_word_filter($match, $replace, $preg_expr)
     $result = db_query($sql, $db_user_save_word_filter);
 }
 
+function user_delete_word_filter($id)
+{
+    if (!is_numeric($id)) return false;
+
+    $db_user_delete_word_filter = db_connect();
+    
+    $webtag = get_webtag();
+    
+    $uid = bh_session_get_value('UID');
+    
+    $sql = "DELETE FROM {$webtag['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE ID = '$id' AND UID = '$uid'";
+    
+    $result = db_query($sql, $db_user_delete_word_filter);
+}
+    
 ?>

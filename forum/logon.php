@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.98 2003-11-17 16:01:42 decoyduck Exp $ */
+/* $Id: logon.php,v 1.99 2003-11-28 18:45:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -332,16 +332,15 @@ echo "  document.logonform.logon.value = document.logonform.logonarray.options[i
 echo "  if (s == false) {\n";
 echo "    document.logonform.password.value = '';\n";
 echo "    document.logonform.remember_user.checked = false;\n";
-echo "    document.logonform.savepass.value = false\n";
 echo "  }else {\n";
 echo "    document.logonform.password.value = p;\n";
 echo "    document.logonform.remember_user.checked = true;\n";
-echo "    document.logonform.savepass.value = true\n";
 echo "  }\n\n";
 echo "}\n\n";
 echo "var has_clicked = false;\n\n";
 echo "//-->\n";
 echo "</script>\n";
+
 
 if (isset($error_html)) echo $error_html;
 
@@ -384,19 +383,19 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
       if ($password_array[$i] == $passhash_array[$i]) {
 
         echo form_input_hidden('password'. $i, '');
-        echo form_input_hidden('savepass'. $i, false);
+        echo form_input_hidden('savepass'. $i, '0');
 
       }else {
 
         echo form_input_hidden('password'. $i, $password_array[$i]);
-        echo form_input_hidden('savepass'. $i, true);
+        echo form_input_hidden('savepass'. $i, '1');
 
       }
 
     }else {
 
       echo form_input_hidden('password'. $i, '');
-      echo form_input_hidden('savepass'. $i, false);
+      echo form_input_hidden('savepass'. $i, '0');
 
     }
 
@@ -426,13 +425,14 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
     }else {
 
       echo form_input_password('password', $password_array[0]);
-      echo form_input_hidden('savepass', true);
+      echo form_input_hidden('savepass', '1');
 
     }
 
   }else {
 
     echo form_input_password('password'. $i, '');
+    echo form_input_hidden('savepass', '0');
 
   }
 
@@ -458,13 +458,14 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
     }else {
 
       echo form_input_password('password', $password_array[0]);
-      echo form_input_hidden('savepass', true);
+      echo form_input_hidden('savepass', '1');
 
     }
 
   }else {
 
     echo form_input_password('password', '');
+    echo form_input_hidden('savepass', '0');
 
   }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.38 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.39 2003-11-28 18:45:58 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -168,15 +168,15 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 
 function form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $checked = ($checked) ? "checked=\"checked\"" : "";
-
     $html = "<span class=\"bhinputcheckbox\">";
-    $html.= "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
-    $html.= "autocomplete=\"off\" $checked ";
+    $html.= "<input type=\"checkbox\" name=\"$name\" value=\"$value\" ";
+    $html.= "autocomplete=\"off\"";
+    
+    if ($checked) $html.= " checked=\"checked\"";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+        $html.= " $custom_html ";
     }
 
     $html.= "/>$text</span>";
@@ -187,15 +187,15 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
 function form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $checked = ($checked) ? "checked=\"checked\"" : "";
-
     $html = "<span class=\"bhinputradio\">";
-    $html.= "<input type=\"radio\" name=\"$name\" value=\"$value\"";
-    $html.= "autocomplete=\"off\" $checked ";
+    $html.= "<input type=\"radio\" name=\"$name\" value=\"$value\" ";
+    $html.= "autocomplete=\"off\"";
+
+    if ($checked) $html.= " checked=\"checked\"";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
+        $html.= " $custom_html ";
     }
 
     $html.= "/>$text</span>";

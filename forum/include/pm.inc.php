@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.75 2004-04-28 20:38:58 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.76 2004-05-01 22:23:51 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -768,7 +768,7 @@ function pm_archive_message($mid)
     $result = db_query($sql, $db_pm_archive_message);
     $db_pm_archive_message_row = db_fetch_array($result);
 
-    if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
+    if (($db_pm_archive_message_row['TO_UID'] == $uid) && (($db_pm_archive_message_row['TYPE'] == PM_NEW) || ($db_pm_archive_message_row['TYPE'] == PM_UNREAD))) {
         pm_markasread($mid);
         pm_add_sentitem($mid);
     }

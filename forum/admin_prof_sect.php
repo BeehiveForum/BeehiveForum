@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.55 2004-04-29 21:01:06 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.56 2004-05-01 22:23:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -156,7 +156,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['position']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['items']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deletesection']}</bdo></td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deletesection']}</td>\n";
 echo "                </tr>\n";
 
 if ($profile_sections = profile_sections_get()) {

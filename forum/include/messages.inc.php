@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.280 2004-04-30 15:50:34 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.281 2004-05-01 22:23:51 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -272,9 +272,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
+        echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
     } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
-        echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+        echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
     }
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
@@ -300,16 +300,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
         } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
-            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
         }
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
-            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span>";
+            echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span>";
         }else {
             if ($is_preview == false) {
-                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;<span class=\"smalltext\">{$lang['unread']}</span>";
+                echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">{$lang['unread']}</span>";
             }
         }
 
@@ -321,7 +321,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
-        echo "<a href=\"set_relation.php?webtag=$webtag&amp;uid=".$message['FROM_UID']."&amp;rel=0&amp;exists=1&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>&nbsp;";
+        echo "<a href=\"set_relation.php?webtag=$webtag&amp;uid=".$message['FROM_UID']."&amp;rel=0&amp;exists=1&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
     }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
@@ -447,19 +447,19 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             }
             if(bh_session_get_value('UID') == $message['FROM_UID'] || perm_is_moderator()){
-                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS)) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) {
                     if ($is_poll && $message['PID'] == 1) {
                         if (!poll_is_closed($tid) || perm_is_moderator()) {
 
-                            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
+                            echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
                             echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
                         }
                     }else {
 
-                      echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
+                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
                       echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
 
                     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.66 2005-03-28 19:43:27 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.67 2005-03-28 23:45:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -333,7 +333,7 @@ if (isset($_POST['changepermissions'])) {
 html_draw_top("emoticons.js");
 
 if ($webtag) {
-    echo "<h1>{$lang['admin']} : {$lang['forumsettings']} : ", (isset($current_forum_settings['forum_name']) ? $current_forum_settings['forum_name'] : 'Unknown Forum'), "</h1>\n";
+    echo "<h1>{$lang['admin']} : {$lang['forumsettings']} : ", (isset($current_forum_settings['forum_name']) ? $current_forum_settings['forum_name'] : 'A Beehive Forum'), "</h1>\n";
 }else {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";

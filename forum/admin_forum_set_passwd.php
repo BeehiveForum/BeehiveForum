@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.1 2005-03-23 20:34:30 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.2 2005-03-28 23:45:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -83,7 +83,7 @@ if (!perm_has_admin_access()) {
     exit;
 }
 
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['changepassword']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['changepassword']}</h1>\n";
 
 if (isset($_POST['submit'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.101 2005-03-28 23:11:05 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.102 2005-03-28 23:45:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -145,7 +145,7 @@ if (isset($_GET['reset'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['manageusers']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['manageusers']}</h1>\n";
 
 if (isset($_POST['t_kick'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.18 2005-03-21 14:33:03 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.19 2005-03-28 23:45:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,7 +183,7 @@ if (isset($_POST['remove'])) {
 
 $group = perm_get_group($gid);
 
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['manageusergroups']} : {$group['GROUP_NAME']} : {$lang['addremoveusers']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['manageusergroups']} : {$group['GROUP_NAME']} : {$lang['addremoveusers']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";

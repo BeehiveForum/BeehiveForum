@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.33 2005-03-21 10:43:16 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.34 2005-03-28 23:45:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -128,9 +128,9 @@ if (isset($_POST['submit'])) {
         }
     }
 
-}elseif (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
+}elseif (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
-    list($fid) = array_keys($_POST['t_delete']);
+    $fid = $_GET['delete'];
 
     echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
     echo "<br />\n";
@@ -183,9 +183,9 @@ if (isset($_POST['submit'])) {
     list($fid) = array_keys($_POST['t_confirm_delete']);
     forum_delete($fid);
 
-}elseif (isset($_POST['t_default']) && is_array($_POST['t_default'])) {
+}elseif (isset($_GET['default']) && is_numeric($_GET['default'])) {
 
-    list($fid) = array_keys($_POST['t_default']);
+    $fid = $_GET['default'];
     forum_update_default($fid);
 }
 
@@ -205,7 +205,7 @@ if (sizeof($forums_array) > 0) {
 
     echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -218,8 +218,7 @@ if (sizeof($forums_array) > 0) {
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['name']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['messages']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['access']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['delete']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['defaultforum']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
     foreach ($forums_array as $forum) {
@@ -230,12 +229,11 @@ if (sizeof($forums_array) > 0) {
         echo "                  <td align=\"left\">{$forum['FORUM_NAME']}</td>\n";
         echo "                  <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
         echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), $forum['ACCESS_LEVEL']), "</td>\n";
-        echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", $lang['deleteforum']), "</td>\n";
 
-        if ($forum['DEFAULT_FORUM'] == 1) {
-            echo "                  <td align=\"left\">", form_submit("t_default[0]", $lang['unsetdefault']), "</td>\n";
+        if (isset($forum['DEFAULT_FORUM']) && $forum['DEFAULT_FORUM'] == 1) {
+            echo "                  <td align=\"left\"><a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\"/></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\"/></td>\n";
         }else {
-            echo "                  <td align=\"left\">", form_submit("t_default[{$forum['FID']}]", $lang['makedefault']), "</td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\"/></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default={$forum['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\"/></td>\n";
         }
 
         echo "                </tr>\n";
@@ -263,7 +261,7 @@ if (sizeof($forums_array) > 0) {
 
 echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

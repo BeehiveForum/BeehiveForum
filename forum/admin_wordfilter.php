@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.63 2005-03-28 19:43:28 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.64 2005-03-28 23:45:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -172,7 +172,7 @@ if (isset($_POST['submit'])) {
 
 $word_filter_array = admin_get_word_filter();
 
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['editwordfilter']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['editwordfilter']}</h1>\n";
 
 if (isset($_GET['updated'])) {
     echo "<h2>{$lang['wordfilterupdated']}</h2>\n";

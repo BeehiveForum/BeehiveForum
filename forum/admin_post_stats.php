@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.12 2005-03-21 14:33:02 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.13 2005-03-28 23:45:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,7 +86,7 @@ if (!perm_has_admin_access()) {
 
 html_draw_top("robots=noindex,nofollow");
 
-echo "  <h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['postingstats']}</h1>\n";
+echo "  <h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['postingstats']}</h1>\n";
 echo "  <br />\n";
 
 if (isset($_POST['update'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.52 2003-11-09 13:56:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.53 2003-11-09 14:19:47 decoyduck Exp $ */
 
 // International English language file
 
@@ -321,6 +321,7 @@ $lang['otherattachmentsincludingpm'] = "Other Attachments (including PM Messages
 $lang['totalsize'] = "Total Size";
 $lang['freespace'] = "Free Space";
 $lang['attachmentproblem'] = "There was a problem downloading this attachment. Please try again later.";
+$lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
@@ -710,6 +711,7 @@ $lang['editpoll'] = "Edit Poll";
 $lang['results'] = "Results";
 $lang['resultdetails'] = "Result Details";
 $lang['changevote'] = "Change vote";
+$lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
 
 // Profiles (profile.php) ----------------------------------------------
 

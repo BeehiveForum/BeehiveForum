@@ -266,7 +266,9 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
 
   if (isset($HTTP_GET_VARS['msg'])) {
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
-    list(,$selectedfolder) = thread_get($tid);
+    if (thread_can_view($tid, $HTTP_COOKIE_VARS['bh_sess_uid'])) {
+      list(,$selectedfolder) = thread_get($tid);
+    }
   }elseif (isset($HTTP_GET_VARS['folder'])) {
     $selectedfolder = $HTTP_GET_VARS['folder'];
   }else {
@@ -276,7 +278,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
   $ignored_folders = array();
 
   while (list($fid, $folder_data) = each($folder_info)) {
-    if (!$folder_data['INTEREST'] || ($selectedfolder == $fid)) {
+    if (!$folder_data['INTEREST'] || (isset($selectedfolder) && $selectedfolder == $fid)) {
       if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
     }else {
       if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -340,7 +342,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "</td>\n";
     echo "</tr>\n";
 
-    if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || ($selectedfolder == $folder_number)) {
+    if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
         if (is_array($thread_info)) {
 

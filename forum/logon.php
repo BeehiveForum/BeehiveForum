@@ -94,7 +94,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     }
 
-    if ($luid > -1) {
+    if (isset($luid) && $luid > -1) {
 
       setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
@@ -206,7 +206,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       }
 
-    }else if($luid == -2){ // User is banned - everybody hide
+    }else if(isset($luid) && $luid == -2){ // User is banned - everybody hide
 
         header("HTTP/1.0 500 Internal Server Error");
         exit;

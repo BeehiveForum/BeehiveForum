@@ -17,30 +17,28 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
+require_once("./include/db.inc.php");
+require_once("./include/forum.inc.php");
+require_once("./include/constants.inc.php");
 
-function draw_beehive_bar()
+function ip_check()
 {
-?>
-<div align="center"><table width="96%" class="posthead"><tr>
-<td width="60%" class="smalltext">
-Beehive Forum 0.3ish
-&nbsp;|&nbsp;
-<a href="http://beehiveforum.net/faq" target="_blank">FAQ</a>
-&nbsp;|&nbsp;
-<a href="http://sourceforge.net/docman/?group_id=50772" target="_blank">Docs</a>
-&nbsp;|&nbsp;
-<a href="http://sourceforge.net/tracker/?group_id=50772&atid=460926" target="_blank">Support</a>
-</td>
-<td width="40%" align="right" class="smalltext">&copy;2002
-<a href="http://beehiveforum.net/" target="_blank">Project BeehiveForum</a>
-</td></tr></table></div>
-<?php
+    global $HTTP_SERVER_VARS;
+
+    $db_ip_banned = db_connect();
+
+    $sql = "SELECT IP FROM " . forum_table("BANNED_IP") . " WHERE IP = \"" . $HTTP_SERVER_VARS['REMOTE_ADDR'] . "\"";
+
+    $result = db_query($sql, $db_ip_banned);
+
+    if(db_num_rows($result)>0){
+        header("HTTP/1.0 403 Forbidden");
+        exit();
+    }
 }
 
 ?>

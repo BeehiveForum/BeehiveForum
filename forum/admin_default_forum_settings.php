@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.26 2005-04-04 00:59:26 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.27 2005-04-06 21:03:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -54,6 +54,7 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
+include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Check we're logged in correctly
@@ -90,6 +91,10 @@ $available_langs = lang_get_available(); // get list of available languages
 // Default Forum Settings
 
 $default_forum_settings = forum_get_default_settings();
+
+// Text captcha class
+
+$text_captcha = new captcha(6, 15, 25, 9, 30);
 
 if (isset($_POST['submit'])) {
 
@@ -160,25 +165,25 @@ if (isset($_POST['submit'])) {
 
         if (!@is_dir("{$new_forum_settings['text_captcha_dir']}")) {
 
-            @mkdir("$text_captcha_dir", 0755);
-            @chdir("$text_captcha_dir", 0777);
+            @mkdir("{$new_forum_settings['text_captcha_dir']}", 0755);
+            @chmod("{$new_forum_settings['text_captcha_dir']}", 0777);
         }
 
         if (!@is_dir("{$new_forum_settings['text_captcha_dir']}/fonts")) {
 
             @mkdir("{$new_forum_settings['text_captcha_dir']}/fonts", 0755);
-            @chdir("{$new_forum_settings['text_captcha_dir']}/fonts", 0777);
+            @chmod("{$new_forum_settings['text_captcha_dir']}/fonts", 0777);
         }
 
         if (!@is_dir("{$new_forum_settings['text_captcha_dir']}/images")) {
 
             @mkdir("{$new_forum_settings['text_captcha_dir']}/images", 0755);
-            @chdir("{$new_forum_settings['text_captcha_dir']}/images", 0777);
+            @chmod("{$new_forum_settings['text_captcha_dir']}/images", 0777);
         }
 
         if (@is_dir("{$new_forum_settings['text_captcha_dir']}/fonts") && @is_dir("{$new_forum_settings['text_captcha_dir']}/images")) {
 
-            if (!is_writable("{$new_forum_settings['text_captcha_dir']}/fonts") || !is_writable("{$new_forum_settings['text_captcha_dir']}/images")) {
+            if (!@is_writable("{$new_forum_settings['text_captcha_dir']}/fonts") || !@is_writable("{$new_forum_settings['text_captcha_dir']}/images")) {
 
                 $error_html.= "<h2>{$lang['textcaptchadirsnotwritable']}</h2>\n";
                 $valid = false;
@@ -503,17 +508,55 @@ echo "                        <td>", form_input_text("text_captcha_dir", (isset(
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['textcaptchakey']}:</td>\n";
-echo "                        <td>", form_input_text("text_captcha_key", (isset($default_forum_settings['text_captcha_key'])) ? $default_forum_settings['text_captcha_key'] : "BeehiveForum06TextCaptchaKey", 35, 255), "</td>\n";
+echo "                        <td>", form_input_text("text_captcha_key", (isset($default_forum_settings['text_captcha_key'])) ? $default_forum_settings['text_captcha_key'] : md5(uniqid(rand())), 35, 255), "</td>\n";
 echo "                      </tr>\n";
+
+if ($default_forum_settings['text_captcha_enabled'] == "Y") {
+
+    if ($text_captcha->generate_keys() && !$text_captcha->make_image()) {
+
+        if ($errno = $text_captcha->get_error()) {
+
+            echo "                      <tr>\n";
+            echo "                        <td colspan=\"2\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td colspan=\"2\" align=\"center\">\n";
+            echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
+
+            switch ($errno) {
+
+                case TEXT_CAPTCHA_NO_FONTS:
+
+                    echo "                            <tr>\n";
+                    echo "                              <td width=\"30\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+                    echo "                              <td>{$lang['textcaptchafonterror_1']} <b>", $text_captcha->get_font_path(), "</b> {$lang['textcaptchafonterror_2']}</td>\n";                    echo "                            </tr>\n";
+                    break;
+
+                case TEXT_CAPTCHA_DIR_ERROR:
+
+                    echo "                            <tr>\n";
+                    echo "                              <td width=\"30\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+                    echo "                              <td>{$lang['textcaptchadirerror']}</td>\n";
+                    break;
+            }
+
+            echo "                          </table>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+        }
+    }
+}
+
 echo "                      <tr>\n";
-echo "                       <td colspan=\"2\" >\n";
-echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
-echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
-echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_43']}</p>\n";
-echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
-echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_45']}</p>\n";
-echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_46']}</p>\n";
-echo "                       </td>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_43']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_45']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_46']}</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

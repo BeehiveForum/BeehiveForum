@@ -838,3 +838,11 @@ a {
     width: 180px;
 }
 
+.text_captcha_error {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-style: dashed;
+}
+

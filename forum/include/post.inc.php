@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.119 2005-04-03 01:27:15 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.120 2005-04-03 15:34:53 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -520,7 +520,8 @@ class MessageText {
         } else if ($this->html > 0) {
             $text = fix_html($text, $this->emoticons, $this->links);
 
-            if (trim($this->original_text) != trim(tidy_html($text, ($this->html == 1) ? true : false))) {
+            // <code></code> blocks are removed as the code highlighter often trips up this comparison
+            if (trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', $this->original_text)) != trim(preg_replace("/<code[^>]*>.*<\/code>/s", '', tidy_html($text, ($this->html == 1) ? true : false)))) {
                 $this->diff = true;
             }
 

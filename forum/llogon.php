@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.13 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.14 2003-12-03 20:17:16 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -46,7 +46,7 @@ if(isset($HTTP_GET_VARS['final_uri'])){
 if(bh_session_check() && bh_session_get_value('UID') != 0) {
 
     light_html_draw_top();
-    echo "<p>{$lang['userID']} ", bh_session_get_value('UID'), " {$lang['alreadyloggedin']}.</p>\n";
+    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
     echo form_quick_button("./lthread_list.php", $lang['continue'], 0, 0, "_top");
     light_html_draw_bottom();
     exit;

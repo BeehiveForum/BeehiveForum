@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.99 2003-11-28 18:45:58 decoyduck Exp $ */
+/* $Id: logon.php,v 1.100 2003-12-03 20:17:16 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -67,7 +67,7 @@ if (bh_session_check()) {
 
     html_draw_top();
     echo "<div align=\"center\">\n";
-    echo "<p>{$lang['userID']} ", bh_session_get_value('UID'), " {$lang['alreadyloggedin']}.</p>\n";
+    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
 
     if (isset($final_uri)) {
         form_quick_button("./index.php", $lang['continue'], "final_uri", urlencode($final_uri), "_top");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.70 2004-01-15 19:42:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.71 2004-01-15 20:22:53 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -114,7 +114,7 @@ function bh_session_check()
   			// Delete expires sessions
 
                         $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE ";
-                        $sql.= "TIME < FROM_UNIXTIME($session_stamp) AND UID = 0";
+                        $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
                         db_query($sql, $db_bh_session_check);
 
@@ -141,73 +141,23 @@ function bh_session_get_value($session_key)
     return false;
 }
 
-/*function bh_session_get_value($session_key)
-{
-    global $HTTP_COOKIE_VARS, $default_style, $default_language;
-
-    if (isset($HTTP_COOKIE_VARS['bh_sess_hash']) && is_md5($HTTP_COOKIE_VARS['bh_sess_hash'])) {
-
-        $db_bh_session_get_value = db_connect();
-
-        $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
-
-        $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER.STATUS, SESSIONS.UID ";
-        $sql.= "FROM ". forum_table("SESSIONS"). " SESSIONS ";
-	$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-        $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
-
-        $result = db_query($sql, $db_bh_session_get_value);
-
-        if (db_num_rows($result) > 0) {
-
-            $user_sess_get = db_fetch_array($result, MYSQL_ASSOC);
-
-	    if (isset($user_sess_get['UID']) && $user_sess_get['UID'] == 0) {
-
-                $guest_user_sess = array('UID'            => 0,
-                                         'LOGON'          => 'GUEST',
-                                         'PASSWD'         => md5('GUEST'),
-                                         'STATUS'         => 0,
-                                         'POSTS_PER_PAGE' => 5,
-                                         'TIMEZONE'       => 0,
-                                         'DL_SAVING'      => 0,
-                                         'MARK_AS_OF_INT' => 0,
-                                         'FONT_SIZE'      => 10,
-                                         'STYLE'          => $default_style,
-                                         'VIEW_SIGS'      => 0,
-                                         'START_PAGE'     => 0,
-                                         'LANGUAGE'       => $default_language,
-                                         'PM_NOTIFY'      => 'N',
-                                         'SHOW_STATS'     => 1);
-
-		$user_sess_get = array_merge($user_sess_get, $guest_user_sess);
-	    }
-
-            if (isset($user_sess_get[$session_key])) return $user_sess_get[$session_key];
-        }
-    }
-
-    return false;
-} */
-
 // Initialises the session
 
 function bh_session_init($uid)
 {
-    global $HTTP_COOKIE_VARS;
+    global $HTTP_COOKIE_VARS, $session_cutoff;
 
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
+    
+    $session_stamp = time() - $session_cutoff;
 
-    /*if ($uid > 0) {
+    // Delete expires sessions
 
-        // If we're not logging in as a guest we should delete any
-	// stale sessions for this UID.
+    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE ";
+    $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
-        $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
-	$result = db_query($sql, $db_bh_session_init);
-    } */
+    db_query($sql, $db_bh_session_init);
 
     // Generate a unique random MD5 hash for the user's cookie
     // from their IP Address.
@@ -231,17 +181,6 @@ function bh_session_end()
     $db_bh_session_end = db_connect();
 
     if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
-
-        /*$uid = bh_session_get_value('UID'); 
-
-        if ($uid > 0) {
-
-            // If we're not logged in as a guest we should delete any
-	    // stale sessions for this UID.
-
-            $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
-	    $result = db_query($sql, $db_bh_session_end);
-        } */
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
@@ -279,7 +218,7 @@ function get_request_uri()
     // Any suggestions are welcome on how to handle this better.
     
     $request_uri = preg_replace("/\/\/+/", "/", $request_uri);
-    return ".$request_uri";
+    return $request_uri;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.164 2004-01-26 22:26:53 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.165 2004-02-01 17:44:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -410,7 +410,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             echo "&nbsp;{$lang['threads']}</a></td>\n";
             echo "    <td class=\"threads\" style=\"", ($visible_threads ? "border-bottom: 0px; " : ""), ($lang['_textdir'] == "ltr") ? "border-left: 0px" : "border-right: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
             
-            if ($folder_info[$folder_number]['ACCESS_LEVEL'] < 2 || perm_is_moderator()) {
+            if ($folder_info[$folder_number]['ACCESS_LEVEL'] < 2 || folder_is_accessible($folder_number) || perm_is_moderator()) {
             
                 echo "<a href=\"";
                 echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "./post.php" : "./create_poll.php";

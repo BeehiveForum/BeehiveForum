@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.44 2004-01-26 22:26:53 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.45 2004-02-01 17:44:21 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -42,8 +42,8 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     } else {
         $sql = "SELECT DISTINCT F.FID, F.TITLE FROM ".forum_table("FOLDER")." F LEFT JOIN ";
         $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-        $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
-        $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
+        $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR ((F.ACCESS_LEVEL = 1 OR F.ACCESS_LEVEL = 2) ";
+        $sql.= "AND UF.ALLOWED <=> 1)) AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
     }
 
     return form_dropdown_sql($field_name.$suffix, $sql, $default_fid, $custom_html);
@@ -241,8 +241,8 @@ function folder_is_accessible($fid)
 
     $sql = "SELECT DISTINCT F.FID FROM ".forum_table("FOLDER")." F LEFT JOIN ";
     $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
-    $sql.= "and F.FID = '$fid'";
+    $sql.= "where (F.ACCESS_LEVEL = 0 or ((F.ACCESS_LEVEL = 1 OR F.ACCESS_LEVEL = 2) ";
+    $sql.= "AND UF.ALLOWED <=> 1)) and F.FID = '$fid'";
 
     $result = db_query($sql, $db_folder_get_available);
 

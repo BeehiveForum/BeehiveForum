@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.44 2004-01-26 22:26:52 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.45 2004-02-01 17:44:21 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -147,7 +147,7 @@ if ($folder_array = folder_get_all()) {
         echo "            <td align=\"left\">". folder_draw_dropdown($folder_array[$i]['FID'], "t_move", "[{$folder_array[$i]['FID']}]"). "</td>\n";
         echo "            <td align=\"left\">". form_dropdown_array("t_allow[{$folder_array[$i]['FID']}]", $allow_values, $allow_labels, $folder_array[$i]['ALLOWED_TYPES'] ? $folder_array[$i]['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow[{$folder_array[$i]['FID']}]", $folder_array[$i]['ALLOWED_TYPES'])."</td>\n";
 
-        if ($folder_array[$i]['ACCESS_LEVEL'] == 1) {
+        if ($folder_array[$i]['ACCESS_LEVEL'] > 0) {
             echo "            <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php?fid={$folder_array[$i]['FID']}'\""), "</td>\n";
         }else {
             echo "            <td align=\"left\">&nbsp;</td>";

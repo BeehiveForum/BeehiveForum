@@ -21,37 +21,51 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: styles.inc.php,v 1.2 2004-04-10 21:45:32 decoyduck Exp $ */
+
 function style_get_styles() {
-	$styles = array();
-	if ($dir = @opendir('styles')) {
-		while (($file = readdir($dir)) !== false) {
-			if (is_dir("styles/$file") && $file != '.' && $file != '..') {
-				if (@file_exists("./styles/$file/style.css")) {
-					if ($fp = fopen("./styles/$file/desc.txt", "r")) {
-						$content = fread($fp, filesize("./styles/$file/desc.txt"));
-						$content = split("\n", $content);
-						$styles[$file] = _htmlentities($content[0]);
-						fclose($fp);
-					}else {
-						$styles[$file] = _htmlentities($file);
-					}
-				}
-			}
-		}
-		closedir($dir);
-	}
 
-	asort($styles);
-	reset($styles);
+    $styles = array();
 
-	return $styles;
+    if ($dir = @opendir("styles")) {
+
+        while (($file = readdir($dir)) !== false) {
+
+            if (is_dir("styles/$file") && $file != '.' && $file != '..') {
+
+                if (@file_exists("./styles/$file/style.css")) {
+
+                    if ($fp = fopen("./styles/$file/desc.txt", "r")) {
+
+                        $content = fread($fp, filesize("./styles/$file/desc.txt"));
+                        $content = split("\n", $content);
+                        $styles[$file] = _htmlentities($content[0]);
+                        fclose($fp);
+
+                    }else {
+
+                        $styles[$file] = _htmlentities($file);
+                    }
+                }
+            }
+        }
+
+        closedir($dir);
+    }
+
+    asort($styles);
+    reset($styles);
+
+    return $styles;
 }
 
 function style_exists ($style) {
-	if (file_exists('./styles/'.$style.'/style.css')) {
-		return true;
-	}
-	return false;
+
+    if (file_exists("./styles/$style/style.css")) {
+        return true;
+    }
+
+    return false;
 }
 
 ?>

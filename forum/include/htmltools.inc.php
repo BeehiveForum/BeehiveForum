@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: htmltools.inc.php,v 1.11 2004-04-10 21:45:32 decoyduck Exp $ */
+
 // htmltools.inc.php : wysiwyg toolbar functions
 
 include_once("./include/form.inc.php");

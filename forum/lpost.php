@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.15 2003-08-07 16:06:12 hodcroftcj Exp $ */
+/* $Id: lpost.php,v 1.16 2003-09-09 11:07:57 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -451,11 +451,11 @@ if (!$newthread) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      light_poll_display($reply_to_tid,$reply_message,0,true,false,false);
+      light_poll_display($reply_to_tid,$threaddata['LENGTH'],0,false,false,false);
 
     }else {
 
-      light_message_display(0,$reply_message,0,0,true,false,false,false,false);
+      light_message_display(0,$threaddata['LENGTH'],0,0,true,false,false,false,false);
 
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.60 2004-04-05 21:55:45 decoyduck Exp $ */
+/* $Id: nav.php,v 1.61 2004-04-08 16:47:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -112,9 +112,9 @@ if ((bh_session_get_value('STATUS') & USER_PERM_SOLDIER) && $webtag) {
 }
 
 if (bh_session_get_value('UID') == 0) {
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"_top\">{$lang['login']}</a>\n";
+    echo "<a href=\"logout.php\" target=\"_top\">{$lang['login']}</a>\n";
 }else {
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"main\">{$lang['logout']}</a>\n";
+    echo "<a href=\"logout.php\" target=\"main\">{$lang['logout']}</a>\n";
 }
 
 html_draw_bottom();

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.173 2004-04-08 00:29:29 tribalonline Exp $ */
+/* $Id: post.php,v 1.174 2004-04-08 16:47:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -34,8 +34,15 @@ include_once("./include/errorhandler.inc.php");
 // Multiple forum support
 include_once("./include/forum.inc.php");
 
-// Fetch the forum webtag and settings
-$webtag = get_webtag();
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?final_uri=$request_uri");
+}
+
+// We got this far we should now read the forum settings
+
 $forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");

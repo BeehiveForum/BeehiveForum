@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.32 2004-04-07 17:47:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.33 2004-04-08 16:47:17 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -36,9 +36,7 @@ function get_table_prefix()
     
     $db_get_table_prefix = db_connect();    
     
-    if (isset($HTTP_COOKIE_VARS['webtag']) && strlen(trim($HTTP_COOKIE_VARS['webtag'])) > 0) {
-        $webtag = trim($HTTP_COOKIE_VARS['webtag']);
-    }else if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
         $webtag = trim($HTTP_GET_VARS['webtag']);
     }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
         $webtag = trim($HTTP_POST_VARS['webtag']);
@@ -74,9 +72,7 @@ function get_webtag()
     
     $db_get_table_prefix = db_connect();    
     
-    if (isset($HTTP_COOKIE_VARS['webtag']) && strlen(trim($HTTP_COOKIE_VARS['webtag'])) > 0) {
-        $webtag = trim($HTTP_COOKIE_VARS['webtag']);
-    }else if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
         $webtag = trim($HTTP_GET_VARS['webtag']);
     }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
         $webtag = trim($HTTP_POST_VARS['webtag']);
@@ -94,21 +90,11 @@ function get_webtag()
         return $webtag;
     }
 
-    // Don't like this, but I can't think of a better way
-    // of doing it at the moment and by doing it this way
-    // it will give me inspiration to make it better.
-    // (I hope).
+    // If we got this far then the webtag wasn't found.
+    // We should now return false and let the calling
+    // page do what it wants to.
 
-    $pagename = basename($HTTP_SERVER_VARS['PHP_SELF']);
-    $page_array = array('index.php', 'logon.php', 'nav.php', 'forgot_pw.php', 'register.php');
-
-    if (in_array($pagename, $page_array)) {
-        return false;
-    }else {
-        $request_uri = rawurlencode(get_request_uri());
-        header_redirect("./forums.php?final_uri=$request_uri");
-	exit;
-    }
+    return false;
 }
 
 function get_forum_settings()

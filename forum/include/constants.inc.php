@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.47 2004-12-09 18:31:36 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.48 2005-01-28 23:50:30 decoyduck Exp $ */
 
 // Beehive Version
 
@@ -56,6 +56,7 @@ define("USER_PERM_FORUM_TOOLS", 1024);
 define("USER_PERM_HTML_POSTING", 2048);
 define("USER_PERM_SIGNATURE", 4096);
 define("USER_PERM_GUEST_ACCESS", 8192);
+define("USER_PERM_POST_APPROVAL", 16384);
 
 // OLD VALUES - PRE-BH-0.5
 

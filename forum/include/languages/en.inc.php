@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.25 2003-08-01 23:52:54 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.26 2003-08-02 01:30:59 decoyduck Exp $ */
 
 // International English language file
 
@@ -718,6 +718,7 @@ $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
 $lang['notexttosearchfor_1'] = "You did not specify any words to search for or the words were under";
 $lang['notexttosearchfor_2'] = "characters long";
+$lang['foundzeromatches'] = "Found: 0 matches";
 $lang['found'] = "Found";
 $lang['matches'] = "matches";
 $lang['prevpage'] = "Previous page";
@@ -748,6 +749,7 @@ $lang['relevance'] = "Relevance";
 $lang['newestfirst'] = "Newest first";
 $lang['oldestfirst'] = "Oldest first";
 $lang['onlyshowmessagestoorfromme'] = "Only show messages to or from me";
+$lang['groupsresultsbythread'] = "Group results by thread";
 
 // Start page (start_left.php) -----------------------------------------
 

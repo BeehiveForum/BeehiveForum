@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.35 2005-03-15 21:30:04 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.36 2005-03-31 19:30:58 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -154,13 +154,22 @@ function get_my_forums()
 
             $folders = folder_get_available();
 
+            $user_ignored = USER_IGNORED;
+            $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
             $sql = "SELECT SUM(THREAD.LENGTH - USER_THREAD.LAST_READ) AS UNREAD_MESSAGES FROM ";
             $sql.= "{$forum_data['WEBTAG']}_THREAD THREAD ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
             $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ON ";
             $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_PEER USER_PEER ON ";
+            $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
+            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
+            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
+            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
             $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
             $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
             $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
@@ -174,7 +183,13 @@ function get_my_forums()
 
             $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM ";
             $sql.= "{$forum_data['WEBTAG']}_POST POST ";
-            $sql.= "WHERE POST.TO_UID = '$uid' AND POST.VIEWED IS NULL";
+            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_PEER USER_PEER ON ";
+            $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+            $sql.= "WHERE POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
+            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
+            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
+            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
             $result_unread_to_me = db_query($sql, $db_get_my_forums);
 

@@ -1,44 +1,53 @@
-<!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<title>Project Beehive</title>
-<style type="text/css">
-<!--
+<?php
 
-.bodytext    { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;
-               font-style: normal; line-height: 13px; font-weight: normal; color: #666666;
-               background-color: #EAEFF4 }
+/*======================================================================
+Copyright Project BeehiveForum 2002
 
-.title       { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 18px;
-               font-style: normal; font-weight: bold; color: #ffffff; background-color: #A6BED7 }
+This file is part of BeehiveForum.
 
-a            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;
-               line-height: 13px; font-weight: normal; color: #333399;
-               text-decoration: underline }
+BeehiveForum is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
--->
-</style>
-</head>
+BeehiveForum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-<body class="bodytext">
-<table width="100%" border="0" cellspacing="0" cellpadding="8">
-  <tr>
-    <td class="title">Welcome to your new Beehive Forum!</td>
-  </tr>
-  <tr>
-    <td class="bodytext"><a href="http://sourceforge.net/projects/beehiveforum/" target="_blank">Home</a> | <a href="http://beehiveforum.net/faq">FAQ</a> | <a href="http://sourceforge.net/docman/?group_id=50772" target="_blank">Docs</a> | <a href="http://sourceforge.net/project/showfiles.php?group_id=50772" target="_blank"> Download</a> | <a href="../forums.php">Live Forums</a></td>
-  </tr>
-  <tr>
-    <td height="1" class="title"></td>
-  </tr>
-  <tr>
-    <td valign="top" class="bodytext">
-      <p>You can modify this start page from the admin interface.</p>
-    </td>
-  </tr>
-  <tr>
-    <td height="1" class="title"> </td>
-  </tr>
-</table>
-</body>
-</html>
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+======================================================================*/
+
+/* $Id: start_main.php,v 1.17 2004-03-15 19:25:16 decoyduck Exp $ */
+
+// Compress the output
+include_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
+
+//Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/format.inc.php");
+include_once("./include/header.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
+
+// Fetch the forum webtag
+
+$webtag = get_webtag();
+
+if (!$user_sess = bh_session_check()) {
+
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". rawurlencode(get_request_uri());
+    header_redirect($uri);
+}
+
+draw_start_page();
+
+?>

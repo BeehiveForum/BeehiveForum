@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.11 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.12 2004-03-15 19:25:16 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/lang.inc.php");
 
-function get_webtag($prefix = false)
+function get_webtag()
 {
     global $HTTP_GET_VARS, $lang;
     
@@ -53,13 +53,54 @@ function get_webtag($prefix = false)
         html_draw_top();
         echo "<div align=\"center\">\n";
         echo "<h2>Unknown Forum Tag.</h2>\n";
-        form_quick_button("./index.php", $lang['continue']);
+        form_quick_button("./index.php", $lang['continue'], 0, 0, "_top");
         echo "</div>\n";
         html_draw_bottom();
         exit;
     }
 }
 
-$webtag = get_webtag();
+function get_forum_settings()
+{
+    global $default_settings;
+    
+    $db_get_forum_settings = db_connect();
+    
+    $webtag = get_webtag();
+    
+    $sql = "SELECT * FROM FORUM_SETTINGS WHERE FID = '{$webtag['FID']}'";
+    $result = db_query($sql, $db_get_forum_settings);
+    
+    $forum_settings_array = $default_settings;
+    
+    while ($row = db_fetch_array($result)) {
+        
+        $forum_settings_array[$row['SETTING_NAME']] = $row['SETTING_VALUE'];
+    }
+    
+    return $forum_settings_array;
+}
+
+function draw_start_page()
+{
+    global $default_start_main;
+    
+    $db_draw_start_page = db_connect();
+    
+    $webtag = get_webtag();
+    
+    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$webtag['FID']}'";
+    $result = db_query($sql, $db_draw_start_page);
+    
+    if (db_num_rows($result)) {
+    
+        $row = db_fetch_array($result);
+        echo $row['HTML'];
+
+    }else {
+    
+        echo $default_start_main;
+    }
+}
 
 ?>

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.159 2004-03-14 18:33:42 decoyduck Exp $ */
+/* $Id: post.php,v 1.160 2004-03-15 19:25:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -53,6 +53,10 @@ include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/user.inc.php");
 
+// Fetch the forum webtag
+
+$webtag = get_webtag();
+
 if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". rawurlencode(get_request_uri());
@@ -79,9 +83,9 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
 
     if (isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid']) && is_numeric($HTTP_POST_VARS['t_rpid']) ) {
-        $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
+        $uri.= "&msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
     }elseif (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_POST_VARS['replyto'])) {
-        $uri.= "?msg={$HTTP_GET_VARS['replyto']}";
+        $uri.= "&msg={$HTTP_GET_VARS['replyto']}";
     }
 
     header_redirect($uri);

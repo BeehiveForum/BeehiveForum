@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.257 2005-04-04 00:59:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.258 2005-04-04 11:28:10 rowan_hill Exp $ */
 
 // International English language file
 
@@ -1011,7 +1011,7 @@ $lang['postfrequencytoogreat_1'] = "You can only post once every";
 $lang['postfrequencytoogreat_2'] = "seconds. Please try again later.";
 $lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post!";
 
-// Message display (messages.php) --------------------------------------
+// Message display (messages.php & messages.inc.php) --------------------------------------
 
 $lang['inreplyto'] = "In reply to";
 $lang['showmessages'] = "Show messages";
@@ -1059,6 +1059,10 @@ $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['approvepost'] = "Approve post for display";
 $lang['approvedcaps'] = "APPROVED";
+
+$lang['linktothread'] = "Permanent link to this thread";
+$lang['linktopost'] = "Link to post";
+$lang['linktothispost'] = "Link to this post";
 
 // Navigation strip (nav.php) ------------------------------------------
 

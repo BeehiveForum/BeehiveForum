@@ -112,16 +112,16 @@ for($i=0;$i<$result_count;$i++){
         $last_psid = $row['PSID'];
     }
 
-    echo "<tr><td>".$row['ITEM_NAME']."<input type=\"hidden\" name=\"t_piid_$i\" value=\"".$row['PIID']."\"></td>\n";
-    echo "<td><input type=\"text\" name=\"t_entry_$i\" width=\"80\" maxchars=\"255\" value=\"".$row['ENTRY']."\">";
-    echo "<input type=\"hidden\" name=\"t_old_entry_$i\" value=\"".$row['ENTRY']."\">";
-    echo "<input type=\"hidden\" name=\"t_new_$i\" value=\"$new\"></td></tr>";
+    echo "<tr><td>".$row['ITEM_NAME'].form_input_hidden("t_piid_$i",$row['PIID'])."</td>\n";
+    echo "<td>".form_field("t_entry_$i",$row['ENTRY'],80,255);
+    echo form_input_hidden("t_old_entry_$i",$row['ENTRY']);
+    echo form_input_hidden("t_new_$i",$new)."</td></tr>";
 }
 
 echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 echo "<tr><td colspan=\"2\" align=\"right\">\n";
-echo "<input type=\"hidden\" name=\"t_count\" value=\"$result_count\">\n";
-echo "<input type=\"submit\" name=\"submit\" value=\"Submit\" class=\"button\">\n";
+echo form_input_hidden("t_count",$result_count);
+echo form_submit("submit","Submit");
 echo "</td></tr></table>\n";
 echo "</form>\n";
 echo "</td></tr></table>\n";

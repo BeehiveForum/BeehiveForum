@@ -28,6 +28,7 @@ require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/perm.inc.php"); // Permissions functions
 require_once("./include/forum.inc.php"); // Forum functions
+require_once("./include/form.inc.php"); // Form functions
 require_once("./include/user.inc.php"); // User functions
 require_once("./include/folder.inc.php");
 
@@ -262,7 +263,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
         $i++;
     }
 
-    echo "<p align=\"center\">" . $html . "</p>\n";
+    echo "<p align=\"center\" class=\"smalltext\">" . $html . "</p>\n";
 }
 
 function messages_interest_form($tid,$pid)
@@ -277,12 +278,9 @@ function messages_interest_form($tid,$pid)
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
     echo "Rate my interest: \n";
-    echo "<input type=\"radio\" name=\"interest\" value=\"-1\"". $chk[0] . "> Ignore \n";
-    echo "<input type=\"radio\" name=\"interest\" value=\"0\"". $chk[1] . "> Normal \n";
-    echo "<input type=\"radio\" name=\"interest\" value=\"1\"". $chk[2] . "> Interested \n";
-    echo "<input type=\"radio\" name=\"interest\" value=\"2\"". $chk[3] . "> Subscribe \n";
-    echo "<input type=\"submit\" class=\"button\" value=\"Apply\" name=\"submit\">\n";
-    echo "<input type=\"hidden\" name=\"tid\" value=\"$tid\">\n";
+    echo form_radio_array("interest",array(-1,0,1,2),array("Ignore ","Normal ","Interested ","Subscribe "),$interest);
+    echo form_input_hidden("tid",$tid);
+    echo form_submit("submit","Apply","smallbutton");
     echo "</form>\n";
     echo "</p>\n";
 }
@@ -294,17 +292,17 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
     echo "<form name=\"thread_admin\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
-    echo "Rename thread:<input type=\"text\" name=\"t_name\" value=\"$title\" width=\"64\" maxchars=\"64\">&nbsp;";
-    echo "<input class=\"button\" type=\"submit\" name=\"rename\" value=\"Apply\">";
+    echo "Rename thread:".form_input_text("t_name",$title,64,64)."&nbsp;";
+    echo form_submit("rename","Apply");
     echo "<br />Move thread:" . folder_draw_dropdown(0,"t_move");
-    echo "&nbsp;<input class=\"button\" type=\"submit\" name=\"move\" value=\"Move\">\n";
+    echo "&nbsp;".form_submit("move","Move");
     if($closed){
-        echo "&nbsp;&nbsp;<input class=\"button\" type=\"submit\" name=\"reopen\" value=\"Reopen for posting\">\n";
+        echo "&nbsp;&nbsp;".form_submit("reopen","Reopen for posting");
     } else {
-        echo "&nbsp;&nbsp;<input class=\"button\" type=\"submit\" name=\"close\" value=\"Close for posting\">\n";
+        echo "&nbsp;&nbsp;".form_submit("close","Close for posting");
     }
-    echo "<input type=\"hidden\" name=\"t_tid\" value=\"$tid\">\n";
-    echo "<input type=\"hidden\" name=\"t_pid\" value=\"$pid\">\n";
+    echo form_input_hidden("t_tid",$tid);
+    echo form_input_hidden("t_pid",$pid);
     echo "</p>\n";
     echo "</form>\n";
 }

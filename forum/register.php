@@ -132,17 +132,18 @@ if($valid){
     echo "<form name=\"register\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
     echo "<table>";
     echo "<tr><td align=\"right\">Login Name</td>";
-    echo "<td><input type=\"text\" name=\"logon\" value=\"" . $logon . "\"></td>";
+    echo "<td>".form_field("logon",$logon,32,32)."</td>";
     echo "</tr><tr><td align=\"right\">Password</td>";
-    echo "<td><input type=\"password\" name=\"pw\" value=\"" . $password . "\"></td>";
+    echo "<td>".form_field("pw",$password,32,32,"password")."</td>";
     echo "</tr><tr><td align=\"right\">Confirm</td>";
-    echo "<td><input type=\"password\" name=\"cpw\" value=\"" . $cpassword . "\"></td>";
+    echo "<td>".form_field("cpw",$cpassword,32,32,"password")."</td>";
     echo "</tr><tr><td align=\"right\">Nickname</td>";
-    echo "<td><input type=\"text\" name=\"nickname\" value=\"" . $nickname . "\"></td>";
+    echo "<td>".form_field("nickname",$nickname,32,32)."</td>";
     echo "</tr><tr><td align=\"right\">Email</td>";
-    echo "<td><input type=\"text\" name=\"email\" value=\"" . $email . "\"></td>";
+    echo "<td>".form_field("email",$email,40,80)."</td>";
     echo "</tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></table>";
-    echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
+    echo form_submit();
+    echo "</form>";
 }
 
 html_draw_bottom();

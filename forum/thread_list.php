@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.170 2004-02-29 20:29:51 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.171 2004-03-04 22:17:33 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -41,6 +41,7 @@ require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
+require_once("./include/word_filter.inc.php");
 
 if(!bh_session_check()){
 
@@ -372,7 +373,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
         echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
     }
     
-    echo "            <a href=\"thread_list.php?mode=0&amp;folder=$folder_number\" title=\"", message_filter(_htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))), "\">", message_filter(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
+    echo "            <a href=\"thread_list.php?mode=0&amp;folder=$folder_number\" title=\"", apply_wordfilter(_htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))), "\">", apply_wordfilter(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
     echo "          </td>\n";
 
     if (bh_session_get_value('UID') > 0) {
@@ -507,7 +508,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                         echo "&nbsp;</td>\n";
                         echo "          <td valign=\"top\">";
-                        echo "<a href=\"messages.php?msg={$thread['tid']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['tid']}');\" title=\"#{$thread['tid']} {$lang['startedby']} ", format_user_name($thread['logon'], $thread['nickname']), "\">", message_filter($thread['title']), "</a> ";
+                        echo "<a href=\"messages.php?msg={$thread['tid']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['tid']}');\" title=\"#{$thread['tid']} {$lang['startedby']} ", format_user_name($thread['logon'], $thread['nickname']), "\">", apply_wordfilter($thread['title']), "</a> ";
                         if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
                         if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
                         if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";

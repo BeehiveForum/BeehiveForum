@@ -78,12 +78,6 @@ if (bh_session_check()) {
 
 }
 
-// Remove the cookie that makes this page show.
-
-if (!isset($HTTP_COOKIE_VARS['bh_remember_username'])) {
-    setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
-}
-
 // Retrieve existing cookie data if any
 
 // Username array
@@ -158,7 +152,7 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-  if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
+  if (isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
 
     if (isset($HTTP_POST_VARS['savepass']) && ($HTTP_POST_VARS['savepass'] == true)) {
 
@@ -220,26 +214,26 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
           if (($key = array_search($logon, $username_array)) !== false) {
 
-            $uncookie = array_splice($username_array, $key, 1);
-            $pwcookie = array_splice($password_array, $key, 1);
-            $phcookie = array_splice($passhash_array, $key, 1);
+            // Remove the existing values
 
-            if (isset($uncookie[0]) && isset($pwcookie[0]) && isset($phcookie[0])) {
+            array_splice($username_array, $key, 1);
+            array_splice($password_array, $key, 1);
+            array_splice($passhash_array, $key, 1);
 
-              array_unshift($username_array, $uncookie[0]);
+            // Push the username to the top of the array
 
-              if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-                if (isset($pwcookie[0]) && $pwcookie[0] == str_repeat(chr(255), 4)) {
-                  array_unshift($password_array, $passw);
-                  array_unshift($passhash_array, $passh);
-                }else {
-                  array_unshift($password_array, $pwcookie[0]);
-                  array_unshift($passhash_array, $phcookie[0]);
-                }
-              }else {
-                array_unshift($password_array, str_repeat(chr(255), 4));
-                array_unshift($passhash_array, str_repeat(chr(255), 4));
-              }
+            array_unshift($username_array, $logon);
+
+            // Check to see if the password box was ticked
+            // and push the password and passhash on to
+            // their arrays if applicable.
+
+            if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+              array_unshift($password_array, $passw);
+              array_unshift($passhash_array, $passh);
+            }else {
+              array_unshift($password_array, str_repeat(chr(255), 4));
+              array_unshift($passhash_array, str_repeat(chr(255), 4));
             }
           }
         }
@@ -299,6 +293,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
         exit;
 
     }else {
+
+      setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
 
       html_draw_top();
       echo "<div align=\"center\">\n";

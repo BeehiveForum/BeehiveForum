@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.122 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.123 2004-11-14 17:29:48 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -687,6 +687,7 @@ $lang['editdescription'] = "Editer la description";
 $lang['moveto'] = "Se transfère à";
 $lang['linkdetails'] = "Link Details";
 $lang['addcomment'] = "Add Comment";
+$lang['voterecorded'] = "Your vote has been recorded";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
@@ -966,6 +967,12 @@ $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "Vous devez entrer une question de sondage";
+$lang['mustprovideanswergroups'] = "You must provide some answer groups";
+$lang['mustprovidepolltype'] = "You must provide a poll type";
+$lang['mustprovidepollresultsdisplaytype'] = "You must provide results display type";
+$lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
+$lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
+$lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
 $lang['groupcountmustbelessthananswercount'] = "Le numéro de groupes de réponse doit être le numéro moins que total de réponses";
 $lang['pleaseselectfolder'] = "S'il vous plaît choisir un dossier";
 $lang['mustspecifyvalues1and2'] = "Vous devez spécifier des valeurs pour les réponses 1 et 2";

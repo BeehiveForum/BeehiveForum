@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.52 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.53 2004-11-14 17:29:48 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -691,6 +691,7 @@ $lang['editdescription'] = "Change yo description";
 $lang['moveto'] = "Haul ass";
 $lang['linkdetails'] = "Link Details";
 $lang['addcomment'] = "Add Comment";
+$lang['voterecorded'] = "Your vote has been recorded";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
@@ -972,6 +973,12 @@ $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "Gotta enter a polla question, G";
+$lang['mustprovideanswergroups'] = "You must provide some answer groups";
+$lang['mustprovidepolltype'] = "You must provide a poll type";
+$lang['mustprovidepollresultsdisplaytype'] = "You must provide results display type";
+$lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
+$lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
+$lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
 $lang['groupcountmustbelessthananswercount'] = "Nizumber of anizswizer grizoups gotta be less than the number of polla quizestizions, homie";
 $lang['pleaseselectfolder'] = "Select a fo'da, yo";
 $lang['mustspecifyvalues1and2'] = "Gotta specify values fo' answers 1 and 2, yo";

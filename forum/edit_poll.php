@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.85 2004-11-14 17:20:58 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.86 2004-11-14 17:29:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -248,21 +248,21 @@ if (isset($_POST['preview']) || isset($_POST['submit'])) {
     if (isset($_POST['poll_vote_type']) && is_numeric($_POST['poll_vote_type'])) {
         $t_poll_vote_type = $_POST['poll_vote_type'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepoll_vote_type']}</h2>\n";
+        $error_html = "<h2>{$lang['mustprovidepollvotetype']}</h2>\n";
         $valid = false;
     }
 
     if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
         $t_option_type = $_POST['option_type'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepolloption_type']}</h2>\n";
+        $error_html = "<h2>{$lang['mustprovidepolloptiontype']}</h2>\n";
         $valid = false;
     }
 
     if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
         $t_change_vote = $_POST['change_vote'];
     }else {
-        $error_html = "<h2>{$lang['mustprovidepoll_vote_type']}</h2>\n";
+        $error_html = "<h2>{$lang['mustprovidepollchangevotetype']}</h2>\n";
         $valid = false;
     }
 

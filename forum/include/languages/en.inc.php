@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.188 2004-11-14 00:45:32 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.189 2004-11-14 17:29:48 decoyduck Exp $ */
 
 // International English language file
 
@@ -981,6 +981,12 @@ $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 
 $lang['mustenterpollquestion'] = "You must enter a poll question";
+$lang['mustprovideanswergroups'] = "You must provide some answer groups";
+$lang['mustprovidepolltype'] = "You must provide a poll type";
+$lang['mustprovidepollresultsdisplaytype'] = "You must provide results display type";
+$lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
+$lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
+$lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
 $lang['groupcountmustbelessthananswercount'] = "Number of answer groups must be less than total number of answers";
 $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";

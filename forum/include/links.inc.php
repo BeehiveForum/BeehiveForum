@@ -40,11 +40,12 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
     $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
     $sql .= "AVG(LINKS_VOTE.RATING) AS RATING ";
-    $sql .= "FROM " . forum_table("LINKS") . " LINKS JOIN " . forum_table("USER") . " USER ";
+    $sql .= "FROM " . forum_table("LINKS") . " LINKS ";
     $sql .= "LEFT JOIN " . forum_table("LINKS_VOTE") . " LINKS_VOTE ";
     $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "WHERE LINKS.UID = USER.UID ";
-    $sql .= "AND LINKS.FID = $fid ";
+    $sql .= "LEFT JOIN " . forum_table("USER") . " USER ";
+    $sql .= "ON (LINKS.UID = USER.UID) ";
+    $sql .= "WHERE LINKS.FID = $fid ";
     if (!$invisible) $sql .= "AND LINKS.VISIBLE = 'Y' ";
     $sql .= "GROUP BY LINKS.LID ";
     $sql .= "ORDER BY $sort_by $sort_dir";
@@ -179,10 +180,12 @@ function links_get_single($lid)
     $db_links_get_single = db_connect();
     $sql  = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, ";
     $sql .= "LINKS.VISIBLE, LINKS.CLICKS, USER.LOGON, USER.NICKNAME, AVG(LINKS_VOTE.RATING) AS RATING, COUNT(LINKS_VOTE.RATING) AS VOTES ";
-    $sql .= "FROM " . forum_table("LINKS") . " LINKS JOIN " . forum_table("USER") . " USER ";
+    $sql .= "FROM " . forum_table("LINKS") . " LINKS ";
+    $sql .= "LEFT JOIN " . forum_table("USER") . " USER ";
+    $sql .= "ON (LINKS.UID = USER.UID) ";
     $sql .= "LEFT JOIN " . forum_table("LINKS_VOTE") . " LINKS_VOTE ";
     $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "WHERE USER.UID = LINKS.UID AND LINKS.LID = $lid ";
+    $sql .= "WHERE LINKS.LID = $lid ";
     $sql .= "GROUP BY LINKS_VOTE.LID";
     $result_id = db_query($sql, $db_links_get_single);
     if ($result_id) {
@@ -191,6 +194,34 @@ function links_get_single($lid)
     } else {
         return false;
     }
+}
+
+function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC")
+{
+    $links = array();
+
+    $db_links_get_in_folder = db_connect();
+
+    $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+    $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
+    $sql .= "AVG(LINKS_VOTE.RATING) AS RATING ";
+    $sql .= "FROM " . forum_table("LINKS") . " LINKS ";
+    $sql .= "LEFT JOIN " . forum_table("LINKS_VOTE") . " LINKS_VOTE ";
+    $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
+    $sql .= "LEFT JOIN " . forum_table("USER") . " USER ";
+    $sql .= "ON (LINKS.UID = USER.UID) ";
+    if (!$invisible) $sql .= "WHERE LINKS.VISIBLE = 'Y' ";
+    $sql .= "GROUP BY LINKS.LID ";
+    $sql .= "ORDER BY $sort_by $sort_dir ";
+    $sql .= "LIMIT 0, 30";
+
+    $result_id = db_query($sql, $db_links_get_in_folder);
+
+    while ($row = db_fetch_array($result_id)) {
+        $links[$row['LID']] = $row;
+    }
+
+    return $links;
 }
 
 function links_folder_change_visibility($fid, $visible = true)
@@ -253,8 +284,10 @@ function links_get_comments($lid)
 
     $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
     $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT ";
-    $sql .= "FROM " . forum_table("LINKS_COMMENT") . " LINKS_COMMENT JOIN " . forum_table("USER") . " USER ";
-    $sql .= "WHERE USER.UID = LINKS_COMMENT.UID AND LINKS_COMMENT.LID = $lid ORDER BY CREATED ASC";
+    $sql .= "FROM " . forum_table("LINKS_COMMENT") . " LINKS_COMMENT ";
+    $sql .= "LEFT JOIN " . forum_table("USER") . " USER ";
+    $sql .= "ON (LINKS_COMMENT.UID = USER.UID) ";
+    $sql .= "WHERE LINKS_COMMENT.LID = $lid ORDER BY CREATED ASC";
 
     $result_id = db_query($sql, $db_links_get_comments);
 

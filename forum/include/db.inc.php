@@ -38,7 +38,7 @@ function db_connect ()
 
     if (!$connection_id) {
         require ("./include/config.inc.php"); // requires database information
-        $connection_id = @mysql_connect($db_server, $db_username, $db_password); // or trigger_error("An error has occured while connecting to the database.", FATAL);
+        $connection_id = @mysql_connect($db_server, $db_username, $db_password) or trigger_error("An error has occured while connecting to the database.", FATAL);
 
         mysql_select_db($db_database, $connection_id) or die(mysql_error());
     }
@@ -59,7 +59,7 @@ function db_query ($sql, $connection_id)
 {
 
     global $HTTP_SERVER_VARS;
-    $resource_id = mysql_query($sql, $connection_id); // or trigger_error("Invalid query:". $sql. "<br />\nMySQL Said: ". mysql_error(), FATAL);
+    $resource_id = mysql_query($sql, $connection_id) or trigger_error("Invalid query:". $sql. "<br />\nMySQL Said: ". mysql_error(), FATAL);
     return $resource_id;
 }
 
@@ -70,9 +70,9 @@ function db_unbuffered_query ($sql, $connection_id)
     global $HTTP_SERVER_VARS;
 
     if (function_exists("mysql_unbuffered_query")) {
-        $resource_id = mysql_unbuffered_query($sql, $connection_id); // or trigger_error("Invalid query:". $sql. "<br />\nMySQL Said: ". mysql_error(), FATAL);
+        $resource_id = mysql_unbuffered_query($sql, $connection_id) or trigger_error("Invalid query:". $sql. "<br />\nMySQL Said: ". mysql_error(), FATAL);
     }else {
-        $resource_id = mysql_query($sql, $connection_id); // or trigger_error("Invalid query:". $sql. "<br />\nMySQL Said: ". mysql_error(), FATAL);
+        $resource_id = mysql_query($sql, $connection_id) or trigger_error("Invalid query:". $sql. "<br />\nMySQL Said: ". mysql_error(), FATAL);
     }
 
     return $resource_id;

@@ -28,72 +28,72 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/format.inc.php");
-
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
-}
-
 require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
-
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+}
+
+if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+    html_guest_error();
+    exit;
 }
 
 if(isset($HTTP_POST_VARS['cancel'])){
-
     $uri = "./user_profile.php?uid=". $HTTP_POST_VARS['t_to_uid'];
     header_redirect($uri);
-    
 }
 
 require_once("./include/user.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
 
-if(isset($HTTP_GET_VARS['uid'])){
+if (isset($HTTP_GET_VARS['uid'])) {
     $to_uid = $HTTP_GET_VARS['uid'];
 } else if(isset($HTTP_POST_VARS['t_to_uid'])){
     $to_uid = $HTTP_POST_VARS['t_to_uid'];
 }
 
-//echo "UID: $to_uid";
 $to_user = user_get($to_uid);
 $from_user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 
-if(isset($HTTP_POST_VARS['submit'])){
+if (isset($HTTP_POST_VARS['submit'])) {
+
     $valid = true;
     $subject = _stripslashes($HTTP_POST_VARS['t_subject']);
     $message = _stripslashes($HTTP_POST_VARS['t_message']);
-    if(!$subject){
+
+    if (!$subject) {
         $error = "<p>Enter a subject for the message:</p>";
         $valid = false;
     }
-    if($valid && !$message){
+
+    if ($valid && !$message) {
         $error = "<p>Enter some content for the message:</p>";
         $valid = false;
     }
-    if($valid){
-        $message = $message . "\n\nThis message was sent from a Beehive Forum by ".$from_user['LOGON'];
+
+    if ($valid) {
+
+        $message = wordwrap($message . "\n\nThis message was sent from a Beehive Forum by ".$from_user['LOGON']);
         $from = "From: ".$from_user['EMAIL'];
-        if(@mail($to_user['EMAIL'],$subject,$message,$from)){
-            $display = "<p>Message sent.</p>";
-        } else {
-            $display = "<p>Mail system failure. Message not sent</p>";
-        }
+
         html_draw_top("Email result");
+
         echo "<p>&nbsp;</p>\n";
         echo "<div align=\"center\">\n";
-        echo $display;
-        
-        $uri = "./user_profile.php?uid=". $HTTP_POST_VARS['t_to_uid'];
-        
-        echo "<a href=\"$uri\">Continue</a>";
+
+        if (@mail($to_user['EMAIL'],$subject,$message,$from)) {
+            echo "<p>Message sent.</p>";
+        }else {
+            echo "<p>Mail system failure. Message not sent</p>";
+        }
+
+        echo "<a href=\"./user_profile.php?uid=", $HTTP_POST_VARS['t_to_uid'], "\">Continue</a>";
         html_draw_bottom();
         exit;
+
     }
 }
 
@@ -101,9 +101,8 @@ html_draw_top("Email ".$to_user['LOGON']);
 
 echo "<h1>Email ".$to_user['LOGON']."</h1>\n";
 
-if(isset($error)){
-    echo $error;
-}
+if (isset($error)) echo $error;
+
 if (!isset($subject)) $subject = "";
 if (!isset($message)) $message = "";
 

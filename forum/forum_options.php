@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.32 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.33 2004-04-19 20:56:13 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,9 +49,9 @@ include_once("./include/emoticons.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -69,7 +69,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -104,7 +104,7 @@ $timezones = array("UTC -12h", "UTC -11h", "UTC -10h", "UTC -9h30m", "UTC -9h", 
 
 $timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
                         6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
-                        
+
 // Languages
 
 $available_langs = lang_get_available(); // get list of available languages
@@ -120,26 +120,26 @@ if (isset($_POST['submit'])) {
         $user_prefs['TIMEZONE'] = _stripslashes(trim($_POST['timezone']));
     }else {
         $user_prefs['TIMEZONE'] = 0;
-    }    
+    }
 
     if (isset($_POST['dl_saving']) && $_POST['dl_saving'] == "Y") {
         $user_prefs['DL_SAVING'] = "Y";
     }else {
         $user_prefs['DL_SAVING'] = "";
     }
-    
+
     if (isset($_POST['language'])) {
         $user_prefs['LANGUAGE'] = _stripslashes(trim($_POST['language']));
     }else {
         $user_prefs['LANGUAGE'] = "";
-    }    
+    }
 
     if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "Y") {
         $user_prefs['VIEW_SIGS'] = "Y";
     }else {
         $user_prefs['VIEW_SIGS'] = "";
     }
-    
+
     if (isset($_POST['pm_notify']) && $_POST['pm_notify'] == "Y") {
         $user_prefs['PM_NOTIFY'] = "Y";
     }else {
@@ -151,18 +151,18 @@ if (isset($_POST['submit'])) {
     }else {
         $user_prefs['MARK_AS_OF_INT'] = "";
     }
-    
+
     if (isset($_POST['images_to_links']) && $_POST['images_to_links'] == "Y") {
         $user_prefs['IMAGES_TO_LINKS'] = "Y";
     }else {
         $user_prefs['IMAGES_TO_LINKS'] = "";
     }
-    
+
     if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
     }else {
         $user_prefs['USE_WORD_FILTER'] = "";
-    }     
+    }
 
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = 1;
@@ -266,7 +266,7 @@ if (!empty($error_html)) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";
-    
+
     if (isset($t_font_size)) {
         echo "top.document.body.rows='60,' + $t_font_size * 2 + ',*';\n";
     }elseif (isset($user_prefs['FONT_SIZE'])) {
@@ -277,7 +277,7 @@ if (!empty($error_html)) {
         }
     }else {
         echo "top.document.body.rows='60,20,*';\n";
-    }    
+    }
 
     echo "top.frames['ftop'].location.replace('$top_html');\n";
     echo "top.frames['fnav'].location.reload();\n";
@@ -300,7 +300,13 @@ echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['timezone']}<
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                  <td>", form_dropdown_array("timezone", $timezones_data, $timezones, (isset($user_prefs['TIMEZONE']) ? $user_prefs['TIMEZONE'] : 0)), "</td>\n";
+
+if (isset($user_prefs['TIMEZONE']) && is_numeric($user_prefs['TIMEZONE'])) {
+    echo "                  <td>", form_dropdown_array("timezone", $timezones_data, $timezones, $user_prefs['TIMEZONE']), "</td>\n";
+}else {
+    echo "                  <td>", form_dropdown_array("timezone", $timezones_data, $timezones, 0), "</td>\n";
+}
+
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) ? $user_prefs['DL_SAVING'] : 0)), "</td>\n";
@@ -393,7 +399,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['postsperpage']}:</td>\n";
 
-if (isset($user_prefs['POSTS_PER_PAGE'])) {
+if (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PAGE'])) {
     echo "                  <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']), "</td>\n";
 }else {
     echo "                  <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), 10), "</td>\n";
@@ -403,14 +409,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">{$lang['fontsize']}:</td>\n";
 
-if (isset($user_prefs['FONT_SIZE'])) {
-    if ($user_prefs['FONT_SIZE'] == '') {
-        echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
-    }else{
-        echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']), "</td>\n";
-    }
+if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
+    echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']), "</td>\n";
 }else {
-    echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
+    echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), 10), "</td>\n";
 }
 
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.49 2004-04-17 20:06:59 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.50 2004-04-19 20:56:13 decoyduck Exp $ */
 
 // Create a form field
 
@@ -147,11 +147,13 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
     $html.= ">";
 
     for ($i = 0; $i < count($value); $i++) {
+
         $sel = (strtolower($value[$i]) == strtolower($default)) ? " selected=\"selected\"" : "";
+
         if (isset($label[$i])) {
-            $html.= "<option value=\"". $value[$i]. "\"$sel>". $label[$i]. "</option>";
+            $html.= "<option value=\"{$value[$i]}\"$sel>{$label[$i]}</option>";
         }else {
-            $html.= "<option$sel>". $value[$i]. "</option>";
+            $html.= "<option$sel>{$value[$i]}</option>";
         }
     }
 
@@ -166,7 +168,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
     $html = "<span class=\"bhinputcheckbox\">";
     $html.= "<input type=\"checkbox\" name=\"$name\" value=\"$value\" ";
     $html.= "autocomplete=\"off\"";
-    
+
     if ($checked) $html.= " checked=\"checked\"";
 
     if ($custom_html) {
@@ -268,7 +270,7 @@ function form_button($name, $value, $custom_html, $class="button")
 function form_quick_button($href, $label, $var = false, $value = false, $target = "_self")
 {
     $webtag = get_webtag();
-    
+
     echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" ";
     echo "target=\"$target\" autocomplete=\"off\">";
     echo "  ", form_input_hidden("webtag", $webtag), "\n";
@@ -309,19 +311,19 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
     $birthday_years = range(1900, date('Y', mktime()));
 
     if ($show_blank) {
-    
+
         $birthday_days_values = range(0, 31);
         array_unshift($birthday_days, ' ');
-        
+
         $birthday_months_values = range(0, 12);
         array_unshift($birthday_months, ' ');
-        
+
         $birthday_years_values = $birthday_years;
         array_unshift($birthday_years_values, 0);
         array_unshift($birthday_years, ' ');
-        
+
     }else {
-    
+
         $birthday_days_values = range(1, 31);
         $birthday_months_values = range(1, 12);
         $birthday_years_values = $birthday_years;
@@ -369,7 +371,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
 
     $days = range(1,31);
     array_unshift($days, " ");
-    
+
     $months = array(" ", $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'],
                     $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'],
                     $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
@@ -379,7 +381,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
 
     $years = range(date('Y'), 2037);
     array_unshift($years, " ");
-    
+
     $years_values = range(date('Y'), 2037);
     array_unshift($years_values, " ");
 

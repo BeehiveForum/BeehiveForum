@@ -452,7 +452,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
                 echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"Relationship\" />";
-                echo "&nbsp;<a href=\"user_rel.php?uid=".$message['FROM_UID']."&amp;ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
+                echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
             }
 
             if(perm_is_soldier()){

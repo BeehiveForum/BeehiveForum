@@ -27,6 +27,7 @@ require_once("./include/errorhandler.inc.php");
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/messages.inc.php");
 
 if(!bh_session_check()){
 
@@ -42,6 +43,15 @@ if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
         exit;
 }
 
+
+if (isset($HTTP_GET_VARS['msg'])) {
+    $msg = $HTTP_GET_VARS['msg'];
+}elseif (isset($HTTP_POST_VARS['msg'])) {
+    $msg = $HTTP_POST_VARS['msg'];
+}else {
+    $msg = messages_get_most_recent($HTTP_COOKIE_VARS['bh_sess_uid']);
+}
+
 require_once("./include/user.inc.php");
 require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
@@ -50,23 +60,24 @@ require_once("./include/format.inc.php");
 
 $my_uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
-if(isset($HTTP_POST_VARS['submit'])){
+if (isset($HTTP_POST_VARS['submit'])) {
 
-        $rel = $HTTP_POST_VARS['rel'] + $HTTP_POST_VARS['sig'];
-        $sig_global = $HTTP_POST_VARS['sig_global'];
+    $rel = isset($HTTP_POST_VARS['rel']) ? $HTTP_POST_VARS['rel'] : 0;
+    $rel+= isset($HTTP_POST_VARS['sig']) ? $HTTP_POST_VARS['sig'] : 0;
 
-        user_rel_update($my_uid, $HTTP_POST_VARS['uid'], $rel);
+    $sig_global = isset($HTTP_POST_VARS['sig_global']) ? $HTTP_POST_VARS['sig_global'] : '';
 
-        user_update_global_sig($my_uid, $sig_global);
+    user_rel_update($my_uid, $HTTP_POST_VARS['uid'], $rel);
 
-        // Update the User's Session to save them having to logout and back in
-        bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+    user_update_global_sig($my_uid, $sig_global);
 
-        header_redirect($HTTP_POST_VARS['ret']);
+    // Update the User's Session to save them having to logout and back in
+    bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+    header_redirect("messages.php?msg=$msg");
 }
 
-if(isset($HTTP_POST_VARS['cancel'])){
-        header_redirect($HTTP_POST_VARS['ret']);
+if (isset($HTTP_POST_VARS['cancel'])) {
+    header_redirect("messages.php?msg=$msg");
 }
 
 if (isset($HTTP_GET_VARS['uid'])) {
@@ -81,12 +92,6 @@ if (isset($HTTP_GET_VARS['uid'])) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['ret'])) {
-        $ret = $HTTP_GET_VARS['ret'];
-} else {
-        $ret = "index.php";
-}
-
 html_draw_top_script();
 
 $rel = user_rel_get($my_uid, $uid);
@@ -96,7 +101,7 @@ echo "<h1>User Relationship: $uname</h1>\n";
 
 <div class="postbody">
   <form name="relationship" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post" target="_self">
-<?php echo "    ", form_input_hidden("uid", $uid), "\n    ", form_input_hidden("ret",$ret), "\n"; ?>
+<?php echo "    ", form_input_hidden("uid", $uid), "\n    ", form_input_hidden("msg", $msg), "\n"; ?>
     <table class="posthead" width="500">
 <?php if (isset($uid)) { ?>
       <tr>

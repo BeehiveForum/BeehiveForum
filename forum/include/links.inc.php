@@ -140,7 +140,7 @@ function links_get_subfolders($fid, $folders)
 
     if (is_array($folders)) {
         while (list($key, $val) = each($folders)) {
-            if ($val['PARENT_FID'] == $fid && $key != 1) $subfolders[] = $key;
+            if (isset($val['PARENT_FID']) && $val['PARENT_FID'] == $fid && $key != 1) $subfolders[] = $key;
         }
     }
 

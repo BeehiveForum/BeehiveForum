@@ -108,6 +108,6 @@ $guest_account_enabled = true;  // Enable the use of forum guest account
 
 // To disable GZIP compression change the variable below to false
 
-$gzip_compress_output = false;
+$gzip_compress_output = true;
 
 ?>

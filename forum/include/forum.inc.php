@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.86 2004-09-26 19:35:33 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.87 2004-10-19 19:31:41 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -914,6 +914,16 @@ function forum_create($webtag, $forum_name, $access)
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
+        // Create VISITOR_LOG table
+
+        $sql = "CREATE TABLE {$webtag}_VISITOR_LOG (";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  LAST_LOGON DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+        $sql.= "  PRIMARY KEY  (UID)";
+        $sql.= ")";
+
+        if (!$result = db_query($sql, $db_forum_create)) return false;
+
         // Create General Folder
 
         $sql = "INSERT INTO {$webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
@@ -1017,16 +1027,17 @@ function forum_delete($fid)
             $result = db_query($sql, $db_forum_delete);
 
             $table_array = array('ADMIN_LOG', 'BANNED_IP', 'DEDUPE',
-                                 'FILTER_LIST', 'FOLDER', 'FORUM_LINKS', 'LINKS',
-                                 'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
-                                 'PM', 'PM_ATTACHMENT_IDS', 'PM_CONTENT',
-                                 'POLL', 'POLL_VOTES', 'POST',
+                                 'FILTER_LIST', 'FOLDER', 'FORUM_LINKS',
+                                 'GROUP_PERMS', 'GROUP_USERS', 'GROUPS',
+                                 'LINKS', 'LINKS_COMMENT', 'LINKS_FOLDERS',
+                                 'LINKS_VOTE', 'PM', 'PM_ATTACHMENT_IDS',
+                                 'PM_CONTENT', 'POLL', 'POLL_VOTES', 'POST',
                                  'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
                                  'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
                                  'STATS', 'THREAD', 'USER_FOLDER',
                                  'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
                                  'USER_PROFILE', 'USER_SIG', 'USER_THREAD',
-                                 'GROUP_PERMS', 'GROUP_USERS', 'GROUPS');
+                                 'VISITOR_LOG');
 
             foreach ($table_array as $table_name) {
 

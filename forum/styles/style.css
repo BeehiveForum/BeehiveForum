@@ -293,3 +293,23 @@ A		{
           font-family: Verdana, Arial, Helvetica, sans-serif;
           font-size: 8pt
 }
+
+.pollbar1 {
+          background-color: #0000AA
+}
+
+.pollbar2 {
+          background-color: #D40000
+}
+
+.pollbar3 {
+          background-color: #2AAA00
+}
+
+,pollbar4 {
+          background-color: #F4AA00
+}
+
+.pollbar5 {
+          background-color: #D42AD4
+}

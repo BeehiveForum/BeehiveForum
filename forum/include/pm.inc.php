@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.15 2003-08-06 21:46:40 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.16 2003-08-17 17:59:10 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -88,7 +88,7 @@ function pm_add_sentitem($mid)
 
     $sql = "INSERT INTO ". forum_table("PM"). " (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
-    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
+    $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". _addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}')";
 
     $result  = db_query($sql, $db_pm_add_sentitem);
@@ -100,7 +100,7 @@ function pm_add_sentitem($mid)
     // ------------------------------------------------------------
 
     $sql = "INSERT INTO ". forum_table("PM_CONTENT"). " (MID, CONTENT) ";
-    $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
+    $sql.= "VALUES ($new_mid, '". _addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
 
@@ -414,8 +414,8 @@ function pm_send_message($tuid, $subject, $content)
 {
     $db_pm_send_message = db_connect();
 
-    $subject = addslashes($subject);
-    $content = addslashes($content);
+    $subject = _addslashes($subject);
+    $content = _addslashes($content);
 
     $fuid = bh_session_get_value('UID');
 
@@ -453,8 +453,8 @@ function pm_edit_message($mid, $subject, $content)
 {
     $db_pm_edit_messages = db_connect();
 
-    $subject = addslashes($subject);
-    $content = addslashes($content);
+    $subject = _addslashes($subject);
+    $content = _addslashes($content);
 
     // ------------------------------------------------------------
     // Update the subject text

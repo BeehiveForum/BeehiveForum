@@ -57,8 +57,8 @@ CREATE TABLE PM (
   FROM_UID mediumint(8) unsigned NOT NULL default '0',
   SUBJECT varchar(64) NOT NULL default '',
   CREATED datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (MID),
-  KEY LID (MID)
+  PRIMARY KEY (MID),
+  KEY TO_UID (TO_UID)
 ) TYPE=MyISAM;
 
 CREATE TABLE PM_ATTACHMENT_IDS (

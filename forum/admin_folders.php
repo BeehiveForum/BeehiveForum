@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.32 2003-08-08 23:49:51 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.33 2003-08-17 17:59:10 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -123,10 +123,12 @@ if ($folder_array = folder_get_all()) {
 
         // if the thread count is 1, then it's probably 0.
         if ($folder_array[$i]['THREAD_COUNT'] == 1) $folder_array[$i]['THREAD_COUNT'] = 0;
+        if (!isset($folder_array[$i]['DESCRIPTION']) || is_null($folder_array[$i]['DESCRIPTION'])) $folder_array[$i]['DESCRIPTION'] = "";
+        if (!isset($folder_array[$i]['ALLOWED_TYPES']) || is_null($folder_array[$i]['ALLOWED_TYPES'])) $folder_array[$i]['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
 
         echo "          <tr>\n";
         echo "            <td align=\"left\">", form_dropdown_array("t_position[{$folder_array[$i]['FID']}]", range(1, sizeof($folder_array) + 1), range(1, sizeof($folder_array) + 1), $i + 1), form_input_hidden("t_old_position[{$folder_array[$i]['FID']}]", $i), form_input_hidden("t_fid[{$folder_array[$i]['FID']}]", $folder_array[$i]['FID']), "</td>\n";
-        echo "            <td align=\"left\">". form_field("t_title[{$folder_array[$i]['FID']}]", $folder_array[$i]['TITLE'], 32, 32). form_input_hidden("t_old_title[{$folder_array[$i]['FID']}]", $folder_array[$i]['TITLE']). "</td>\n";
+        echo "            <td align=\"left\">". form_field("t_title[{$folder_array[$i]['FID']}]", _stripslashes($folder_array[$i]['TITLE']), 32, 32). form_input_hidden("t_old_title[{$folder_array[$i]['FID']}]", $folder_array[$i]['TITLE']). "</td>\n";
         echo "            <td align=\"left\">". form_field("t_desc[{$folder_array[$i]['FID']}]", _stripslashes($folder_array[$i]['DESCRIPTION']), 32, 255). form_input_hidden("t_old_desc[{$folder_array[$i]['FID']}]", _stripslashes($folder_array[$i]['DESCRIPTION'])). "</td>\n";
 
         // Draw the ACCESS_LEVEL dropdown

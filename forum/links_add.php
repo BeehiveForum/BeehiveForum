@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.17 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: links_add.php,v 1.18 2003-08-17 17:59:10 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -83,8 +83,8 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     }
     if ($name == "") $error = $lang['mustspecifyname'];
     if (!$error) {
-        $name = addslashes(_htmlentities($name));
-        $description = addslashes(_htmlentities($description));
+        $name = _addslashes(_htmlentities($name));
+        $description = _addslashes(_htmlentities($description));
         links_add($uri, $name, $description, $fid, $uid);
         header_redirect("./links.php?fid=$fid");
         exit;
@@ -94,7 +94,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     $name = $HTTP_POST_VARS['name'];
     if ($name == "") $error = $lang['mustspecifyname'];
     if (!$error) {
-        $name = addslashes(_htmlentities($name));
+        $name = _addslashes(_htmlentities($name));
         links_add_folder($fid, $name, true);
         header_redirect("./links.php?fid=$fid");
         exit;

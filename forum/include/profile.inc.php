@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.14 2003-07-30 21:48:36 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.15 2003-08-17 17:59:10 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -48,7 +48,7 @@ function profile_section_create($name, $position)
 {
     $db_profile_section_create = db_connect();
 
-    $name = addslashes($name);
+    $name = _addslashes($name);
 
     $sql = "insert into " . forum_table("PROFILE_SECTION") . " (NAME, POSITION) ";
     $sql.= "values ('$name', $position)";
@@ -124,7 +124,7 @@ function profile_item_create($psid, $name, $position, $type)
 {
     $db_profile_item_create = db_connect();
 
-    $name = addslashes($name);
+    $name = _addslashes($name);
 
     $sql = "insert into ". forum_table("PROFILE_ITEM"). " (PSID, NAME, TYPE, POSITION) ";
     $sql.= "values ($psid, '$name', $type, $position)";
@@ -145,7 +145,7 @@ function profile_item_update($piid, $psid, $position, $type, $name)
 {
     $db_profile_item_update = db_connect();
 
-    $name = addslashes($name);
+    $name = _addslashes($name);
 
     $sql = "UPDATE " . forum_table("PROFILE_ITEM") . " ";
     $sql.= "SET PSID = $psid, POSITION = $position, ";

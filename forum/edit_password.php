@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.3 2004-03-04 20:30:35 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.4 2004-03-05 21:37:55 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -54,7 +54,7 @@ require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-    $valid = false;
+    $valid = true;
     $error_html = "";
 
     // Required fields
@@ -63,27 +63,40 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
         if (isset($HTTP_POST_VARS['cpw']) && strlen(trim($HTTP_POST_VARS['cpw'])) > 0) {
         
-            if ($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']) {
+            if (trim($HTTP_POST_VARS['pw']) == trim($HTTP_POST_VARS['cpw'])) {
             
                 if (_htmlentities(trim($HTTP_POST_VARS['pw'])) != trim($HTTP_POST_VARS['pw'])) {
                     $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
-                }elseif (strlen(trim($HTTP_POST_VARS['pw'])) < 6) {
+                    $valid = false;
+                }
+                
+                if (!preg_match("/^[a-z0-9_-]+$/i", trim($HTTP_POST_VARS['pw']))) {
+                    $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+                    $valid = false;
+                }                
+                
+                if (strlen(trim($HTTP_POST_VARS['pw'])) < 6) {
                     $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
-                }else {
-                    $valid = true;
+                    $valid = false;
+                }
+                
+                if ($valid) {
                     $t_password = $HTTP_POST_VARS['pw'];
                 }
                 
             }else {
                 $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+                $valid = false;
             }
             
         }else {
-            $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+            $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+            $valid = false;
         }
 
     }else {
         $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+        $valid = false;
     }
     
     if ($valid) {

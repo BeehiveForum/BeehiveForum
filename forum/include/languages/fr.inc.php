@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.31 2004-03-03 22:43:26 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.32 2004-03-05 21:37:55 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -777,6 +777,7 @@ $lang['usernametooshort'] = "Username doit être au moins 2 caractères longs";
 $lang['usernametoolong'] = "Username doit être au maximum 15 caractères longs";
 $lang['usernamerequired'] = "Un nom de logon est exigé";
 $lang['passwdmustnotcontainHTML'] = "Le mot de passe ne doit pas contenir les étiquettes de HTML";
+$lang['passwordinvalidchars'] = "Un mot de passe peut contenir seulement l'un-z, 0-9, _ - les caractères";
 $lang['passwdtooshort'] = "Le mot de passe doit être au moins 6 caractères longs";
 $lang['passwdrequired'] = "Un mot de passe est exigé";
 $lang['confirmationpasswdrequired'] = "Un mot de passe de confirmation est exigé";

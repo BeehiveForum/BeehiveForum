@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.60 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: register.php,v 1.61 2004-03-05 21:37:55 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -100,6 +100,11 @@ if(isset($HTTP_POST_VARS['submit'])) {
         $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
         $valid = false;
       }
+      
+      if (!preg_match("/^[a-z0-9_-]+$/i", $t_pw)) {
+        $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+        $valid = false;
+      }      
       
       if (strlen($t_pw) < 6) {
         $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";

@@ -22,3 +22,13 @@ USA
 function openEmoticons(pack, webtag) {
 	window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons','width=500, height=400, scrollbars=1');
 }
+
+function previewEmoticons(a) {
+	var str = "";
+	var p = a[0];
+	for(var i=1; i<a.length; i++) {
+		str += "<a href=\"#\" onclick=\"add_text('" + a[i][1] + "');return false;\" target=\"_self\">";
+		str += "<img src=\"" + a[0] + a[i][0] + "\" title=\"" + a[i][1] + a[i][2] + "\" border=\"0\" /></a> ";
+	}
+	return(str);
+}

@@ -100,11 +100,15 @@ if (isset($HTTP_POST_VARS['submit'])) {
           
         }
         
-        if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
+        if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
+          $usernames[] = $HTTP_POST_VARS['logon'];
+          $passwords[] = $HTTP_POST_VARS['password'];
+        }elseif (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
           $passwords[$key] = $HTTP_POST_VARS['password'];
         }
                
         for ($i = 0; $i < sizeof($usernames); $i++) {
+        
           setcookie("bh_remember_user[$i]", $usernames[$i], time() + YEAR_IN_SECONDS, '/');
 
           if(@$HTTP_POST_VARS['remember_user'] == "Y") {

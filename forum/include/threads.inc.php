@@ -223,7 +223,7 @@ function thread_get_author($tid)
 	$resource_id = db_query($sql, $db);
 	$author = db_fetch_array($resource_id);
 	db_disconnect($db);
-	return $author['LOGON'];
+	return format_user_name($author['LOGON'], $author['NICKNAME']);
 }
 	
 ?>

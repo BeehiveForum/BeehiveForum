@@ -28,16 +28,22 @@ require_once("./include/session.inc.php");
 require_once("./include/form.inc.php");
 
 // Where are we going after we've logged on?
-if(isset($HTTP_GET_VARS['final_uri'])){
+
+if(isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 } else {
     $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/";
 }
 
 if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+
     html_draw_top();
-    echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>";
-    echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>";
+    
+    echo "<div align=\"center\">\n";
+    echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>\n";
+    echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>\n";
+    echo "</div>\n";
+    
     html_draw_bottom();
     exit;
 }
@@ -46,135 +52,91 @@ $valid = true;
 
 if(isset($HTTP_POST_VARS['submit'])) {
 
-  if(isset($HTTP_POST_VARS['logon'])) {
-      if (htmlentities($HTTP_POST_VARS['logon']) != $HTTP_POST_VARS['logon']) {
-        $logon = "plaintext";
+  if(!empty($HTTP_POST_VARS['logon'])) {
+      if (htmlentities(strtoupper($HTTP_POST_VARS['logon'])) != strtoupper($HTTP_POST_VARS['logon'])) {
+        $error_html.= "<h2>Username must not contain HTML tags</h2>\n";
         $valid = false;
-      }else {
-        $logon = $HTTP_POST_VARS['logon'];
+      }
+      if (strlen($HTTP_POST_VARS['logon']) < 2) {
+        $error_html.= "<h2>Username must be a minimum of 2 characters long</h2>\n";
+        $valid = false;
+      }
+      if (strlen($HTTP_POST_VARS['logon']) > 10) {
+        $error_html.= "<h2>Username must be a maximum of 10 characters long</h2>\n";
+        $valid = false;
       }
   }else {
-      $logon = "";
+      $error_html.= "<h2>A logon name is required</h2>\n";
       $valid = false;
   }
 
-  if(isset($HTTP_POST_VARS['pw'])) {
+  if(!empty($HTTP_POST_VARS['pw'])) {
       if (htmlentities($HTTP_POST_VARS['pw']) != $HTTP_POST_VARS['pw']) {
-        $password = "plaintext";
+        $error_html.= "<h2>Password must not contain HTML tags</h2>\n";
         $valid = false;
-      }else {
-        $password = $HTTP_POST_VARS['pw'];
+      }
+      if (strlen($HTTP_POST_VARS['pw']) < 6) {
+        $error_html.= "<h2>Password must be a minimum of 6 characters long</h2>\n";
+        $valid = false;
       }
   }else {
-      $password = "";
-      $valid = false;
+      $error_html.= "<h2>A password is required</h2>\n";
+      $valid.= false;
   }
 
-  if(isset($HTTP_POST_VARS['cpw'])) {
+  if(!empty($HTTP_POST_VARS['cpw'])) {
       if (htmlentities($HTTP_POST_VARS['cpw']) != $HTTP_POST_VARS['cpw']) {
-        $cpassword = "plaintext";
+        $error_html.= "<h2>Password must not contain HTML tags</h2>\n";
         $valid = false;
-      }else {
-        $cpassword = $HTTP_POST_VARS['cpw'];
       }
   }else {
-      $cpassword = "";
+      $error_html.= "<h2>A confirmation password is required</h2>\n";
       $valid = false;
   }
 
-  if(isset($HTTP_POST_VARS['nickname'])) {
+  if(!empty($HTTP_POST_VARS['nickname'])) {
       if (htmlentities($HTTP_POST_VARS['nickname']) != $HTTP_POST_VARS['nickname']) {
-        $nickname = "plaintext";
+        $error_html.= "<h2>Nickname must not contain HTML tags</h2>\n";
         $valid = false;
-      }else {
-        $nickname = $HTTP_POST_VARS['nickname'];
       }
   }else {
-      $nickname = "";
+      $error_html.= "<h2>A nickname is required</h2>\n";
       $valid = false;
   }
 
-  if(isset($HTTP_POST_VARS['email'])) {
+  if(!empty($HTTP_POST_VARS['email'])) {
       if (htmlentities($HTTP_POST_VARS['email']) != $HTTP_POST_VARS['email']) {
-        $email = "plaintext";
+        $error_html.= "<h2>Email must not contain HTML tags</h2>\n";
         $valid = false;
-      }else {
-        $email = $HTTP_POST_VARS['email'];
       }
   }else {
-      $email = "";
+      $error_html.= "<h2>An email address is required</h2>\n";
       $valid = false;
   }
   
-  $remember_user = $HTTP_POST_VARS['remember_user'];
-
-  if($logon=="") {
-      $error_html = "<h2>A logon name is required</h2>";
-      $valid = false;
-  }else if($password=="") {
-      $error_html = "<h2>A password is required</h2>";
-      $valid = false;
-  }else if($cpassword=="") {
-      $error_html = "<h2>A confirmation password is required</h2>";
-      $valid = false;
-  }else if($nickname=="") {
-      $error_html = "<h2>A nickname is required</h2>";
-      $valid = false;
-  }else if($email=="") {
-      $error_html = "<h2>An email address is required</h2>";
-      $valid = false;
-  }
-
-  if($logon=="plaintext") {
-      $error_html = "<h2>Fields must not contain HTML tags</h2>";
-      $valid = false;
-      $logon = "";
-  }
-  
-  if($password=="plaintext") {
-      $error_html = "<h2>Fields must not contain HTML tags</h2>";
-      $valid = false;
-      $password = "";
-  }
-  
-  if($cpassword=="plaintext") {
-      $error_html = "<h2>Fields must not contain HTML tags</h2>";
-      $valid = false;
-      $cpassword = "";
-  }
-  
-  if($nickname=="plaintext") {
-      $error_html = "<h2>Fields must not contain HTML tags</h2>";
-      $valid = false;
-      $nickname = "";
-  }
-  
-  if($email=="plaintext") {
-      $error_html = "<h2>Fields must not contain HTML tags</h2>";
-      $valid = false;
-      $email = "";
-  }
-
   if($valid) {
-      if(user_exists($logon)) {
-          $error_html = "<h2>Sorry, a user with that name already exists</h2>";
+      if(user_exists(strtoupper($HTTP_POST_VARS['logon']))) {
+          $error_html.= "<h2>Sorry, a user with that name already exists</h2>\n";
           $valid = false;
       }
   }
 
   if($valid) {
-      if(!($password == $cpassword)) {
-          $error_html = "<h2>Passwords do not match</h2>";
+      if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']) {
+          $error_html.= "<h2>Passwords do not match</h2>\n";
           $valid = false;
       }
   }
 
   if($valid) {
-      $new_uid = user_create($logon,$password,$nickname,$email);
+  
+      $new_uid = user_create(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['pw'], $HTTP_POST_VARS['nickname'], $HTTP_POST_VARS['email']);
+      
       if($new_uid > -1) {
+      
           bh_session_init($new_uid);
           
-          if($remember_user == "Y") {
+          if($HTTP_POST_VARS['remember_user'] == "Y") {
         
             setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
             setcookie('bh_remember_password', $HTTP_POST_VARS['pw'], time() + YEAR_IN_SECONDS, '/');
@@ -187,15 +149,20 @@ if(isset($HTTP_POST_VARS['submit'])) {
           }
           
           html_draw_top();
+          
           echo "<div align=\"center\">\n";
           echo "<p>Huzzah! Your user record has been created successfully!</p>\n";
           echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>\n";      
           echo "</div>\n";
+          
           html_draw_bottom();
           exit;
+          
       } else {
-          $error_html = "<h2>Error creating user record</h2>";
+      
+          $error_html.= "<h2>Error creating user record</h2>\n";
           $valid = false;
+          
       }
   }
   
@@ -203,28 +170,61 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
 html_draw_top();
 
-echo "<h1>User Registration</h1>";
+echo "<h1>User Registration</h1>\n";
 
-if(isset($error_html)) echo $error_html;
+if (isset($error_html)) echo $error_html;
 
-echo "<div align=\"center\">";
-echo "<form name=\"register\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
-echo "<table>";
-echo "<tr><td align=\"right\" class=\"posthead\">Login Name :&nbsp;</td>";
-echo "<td>".form_field("logon", $logon, 32, 32)."</td>";
-echo "</tr><tr><td align=\"right\" class=\"posthead\">Password :&nbsp;</td>";
-echo "<td>".form_field("pw", $password, 32, 32,"password")."</td>";
-echo "</tr><tr><td align=\"right\" class=\"posthead\">Confirm :&nbsp;</td>";
-echo "<td>".form_field("cpw", $cpassword, 32, 32,"password")."</td>";
-echo "</tr><tr><td align=\"right\" class=\"posthead\">Nickname :&nbsp;</td>";
-echo "<td>".form_field("nickname", $nickname, 32, 32)."</td>";
-echo "</tr><tr><td align=\"right\" class=\"posthead\">Email :&nbsp;</td>";
-echo "<td>".form_field("email", $email, 32, 80)."</td>";
-echo "</tr><tr><td>&nbsp;</td>";
-echo "<td>". form_checkbox("remember_user", "Y", "Remember me", ($remember_user == "Y")). "</td>";
-echo "</tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></table>";
-echo form_submit("submit", "Register");
-echo "</form>";
+?>
+
+<div align="center">
+<form name="register" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
+  <table class="box" cellpadding="0" cellspacing="0" align="center">
+    <tr>
+      <td>
+        <table class="subhead" width="100%">
+          <tr>
+            <td>Register</td>
+          </tr>
+        </table>
+        <table class="posthead" width="100%">
+          <tr>
+            <td align="right" class="posthead">Login Name&nbsp;</td>
+            <td><?php echo form_field("logon", $HTTP_POST_VARS['logon'], 32, 32); ?></td>
+          </tr>
+          <tr>
+            <td align="right" class="posthead">Password&nbsp;</td>
+            <td><?php echo form_field("pw", $HTTP_POST_VARS['pw'], 32, 32,"password"); ?></td>
+          </tr>
+          <tr>
+            <td align="right" class="posthead">Confirm&nbsp;</td>
+            <td><?php echo form_field("cpw", $HTTP_POST_VARS['cpw'], 32, 32,"password"); ?></td>
+          </tr>
+          <tr>
+            <td align="right" class="posthead">Nickname&nbsp;</td>
+            <td><?php echo form_field("nickname", $HTTP_POST_VARS['nickname'], 32, 32); ?></td>
+          </tr>
+          <tr>
+            <td align="right" class="posthead">Email&nbsp;</td>
+            <td><?php echo form_field("email", $HTTP_POST_VARS['email'], 32, 80); ?></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td><?php echo form_checkbox("remember_user", "Y", "Remember me", ($HTTP_POST_VARS['remember_user'] == "Y")); ?></td>
+          </tr>
+        </table>
+        <table class="posthead" width="100%">
+          <tr>
+            <td align="center"><?php echo form_submit("submit", "Register"); ?></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</form>
+</div>
+
+<?php
 
 html_draw_bottom();
+
 ?>

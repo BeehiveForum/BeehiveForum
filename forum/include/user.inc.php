@@ -84,13 +84,11 @@ function user_update_status($uid,$status)
     return $result;
 }
 
-function user_logon($logon,$password)
+function user_logon($logon, $password)
 {
     $md5pass = md5($password);
 
-    $sql = "SELECT uid FROM " . forum_table("USER") . " ";
-    $sql .= "WHERE logon = \"$logon\" ";
-    $sql .= "AND passwd = \"$md5pass\"";
+    $sql = "SELECT uid FROM ". forum_table("USER"). " WHERE logon = '$logon' AND passwd = '$md5pass'";
 
     $db_user_logon = db_connect();
     $result = db_query($sql, $db_user_logon);
@@ -100,7 +98,7 @@ function user_logon($logon,$password)
     } else {
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
-        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid",$db_user_logon);
+        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid", $db_user_logon);
     }
 
     return $uid;

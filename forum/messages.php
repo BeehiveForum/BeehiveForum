@@ -65,6 +65,22 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
 list($tid, $pid) = explode('.', $msg);
 if ($pid == '') $pid = 1;
 
+// Poll stuff
+
+if (isset($HTTP_POST_VARS['pollsubmit'])) {
+
+  poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
+  
+}elseif (isset($HTTP_POST_VARS['pollclose'])) {
+
+  poll_close($HTTP_POST_VARS['tid']);
+  
+}elseif (isset($HTTP_POST_VARS['pollchangevote'])) {
+
+  poll_delete_vote($HTTP_POST_VARS['tid']);
+  
+}
+
 // Output XHTML header
 html_draw_top_script();
 

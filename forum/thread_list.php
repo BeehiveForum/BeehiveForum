@@ -109,7 +109,7 @@ function change_current_thread (thread_id) {
   <tr>
     <td class="postbody" colspan="2">
       <img src="<?php echo style_image('star.png'); ?>" width="14" height="14" alt="" />&nbsp;<a href="post.php" target="main">New Discussion</a><br />
-      <img src="<?php echo style_image('star.png'); ?>" width="14" height="14" alt="" />&nbsp;<a href="createpoll.php" target="main">Create Poll</a><br />
+      <img src="<?php echo style_image('star.png'); ?>" width="14" height="14" alt="" />&nbsp;<a href="create_poll.php" target="main">Create Poll</a><br />
       <img src="<?php echo style_image('star.png'); ?>" width="14" height="14" alt="" />&nbsp;<a href="search.php" target="right">Search</a><br />
     </td>
   </tr>

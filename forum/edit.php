@@ -48,6 +48,7 @@ require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/edit.inc.php");
 require_once("./include/poll.inc.php");
+require_once("./include/attachments.inc.php");
 
 if (isset($HTTP_GET_VARS['msg'])) {
 
@@ -276,6 +277,10 @@ if ($edit_html) {
 } else {
     echo "&nbsp;".form_submit("b_edit_html", "Edit HTML");
     echo form_input_hidden("t_post_html", "N");
+}
+
+if ($aid = get_attachment_id($tid, $pid)) {
+    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");    
 }
 
 echo "</form>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.27 2003-09-01 16:08:10 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.28 2003-11-13 20:44:41 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -151,20 +151,23 @@ function delete_attachment($uid, $aid, $filename)
     $sql.= "and AID = '$aid' AND FILENAME = '$filename'";
     $result = db_query($sql, $db_delete_attachment);
 
-    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where AID = '$aid'";
-    $result = db_query($sql, $db_delete_attachment);
+    if (db_affected_row($result) > 0) {
 
-    if (file_exists($attachment_dir. '/'. md5($aid. rawurldecode($filename)))) {
-        unlink($attachment_dir. '/'. md5($aid. rawurldecode($filename)));
-    }
-
-    if (db_num_rows($result) == 0) {
-
-        $sql = "delete from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
+        $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where AID = '$aid'";
         $result = db_query($sql, $db_delete_attachment);
 
-        $sql = "delete from ". forum_table("PM_ATTACHMENT_IDS"). " where AID = '$aid'";
-        $result = db_query($sql, $db_delete_attachment);
+        if (db_num_rows($result) == 0) {
+
+            $sql = "delete from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
+            $result = db_query($sql, $db_delete_attachment);
+
+            $sql = "delete from ". forum_table("PM_ATTACHMENT_IDS"). " where AID = '$aid'";
+            $result = db_query($sql, $db_delete_attachment);
+
+            if (file_exists($attachment_dir. '/'. md5($aid. rawurldecode($filename)))) {
+                unlink($attachment_dir. '/'. md5($aid. rawurldecode($filename)));
+            }
+	}
     }
 
     return $result;

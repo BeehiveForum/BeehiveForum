@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.27 2003-08-20 02:20:43 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.28 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -53,7 +53,7 @@ echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\
 echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
 
-if (isset($HTTP_GET_VARS['folder']) && folder_is_accessible($HTTP_GET_VARS['folder'])) {
+if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder']) && folder_is_accessible($HTTP_GET_VARS['folder'])) {
 
     $fid = $HTTP_GET_VARS['folder'];
     $msg = messages_get_most_recent(bh_session_get_value('UID'), $fid);
@@ -61,7 +61,7 @@ if (isset($HTTP_GET_VARS['folder']) && folder_is_accessible($HTTP_GET_VARS['fold
     echo "  <frame src=\"./thread_list.php?mode=0&amp;folder=$fid\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-}elseif (isset($HTTP_GET_VARS['msg'])) {
+}elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
     echo "  <frame src=\"./thread_list.php?msg={$HTTP_GET_VARS['msg']}\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?msg={$HTTP_GET_VARS['msg']}\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";

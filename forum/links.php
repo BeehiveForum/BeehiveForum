@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.24 2003-11-01 19:11:06 decoyduck Exp $ */
+/* $Id: links.php,v 1.25 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -79,7 +79,7 @@ if (!is_array($folders)) {
   $folders = links_folders_get(perm_is_moderator());
 }
 
-if (isset($HTTP_GET_VARS['fid']) && !isset($fid)) { // default to top level folder if no other valid folder specified
+if (isset($HTTP_GET_VARS['fid']) && is_int($HTTP_GET_VARS['fid']) && !isset($fid)) { // default to top level folder if no other valid folder specified
     if (is_array($folders) && array_key_exists($HTTP_GET_VARS['fid'], $folders)) {
         $fid = $HTTP_GET_VARS['fid'];
     } else {
@@ -89,7 +89,7 @@ if (isset($HTTP_GET_VARS['fid']) && !isset($fid)) { // default to top level fold
     list($fid) = array_keys($folders);
 }
 
-if (isset($HTTP_GET_VARS['viewmode'])) {
+if (isset($HTTP_GET_VARS['viewmode']) && is_int($HTTP_GET_VARS['viewmode']) && $HTTP_GET_VARS['viewmode'] == 1) {
     $viewmode = $HTTP_GET_VARS['viewmode'];
 }else {
     $viewmode = 0;

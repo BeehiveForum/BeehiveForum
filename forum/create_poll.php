@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.58 2003-11-09 14:19:46 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.59 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -415,9 +415,9 @@ if (isset($t_message_html) && $t_message_html != "Y") {
     $t_message_text = isset($t_message_text) ? _stripslashes($t_message_text) : "";
 }
 
-if (isset($HTTP_GET_VARS['fid'])) {
+if (isset($HTTP_GET_VARS['fid']) && is_int($HTTP_GET_VARS['fid'])) {
     $t_fid = $HTTP_GET_VARS['fid'];
-}elseif(isset($HTTP_POST_VARS['t_fid'])) {
+}elseif(isset($HTTP_POST_VARS['t_fid']) && is_int($HTTP_GET_VARS['t_fid'])) {
     $t_fid = $HTTP_POST_VARS['t_fid'];
 }else {
     $t_fid = 1;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.2 2003-09-21 14:32:50 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.3 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Changes the user's fontsize. Moved from messages.php (02.05.2003)
 
@@ -37,7 +37,7 @@ if (!bh_session_check()) {
 
 $uid = bh_session_get_value('UID');
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
     $msg = messages_get_most_recent($uid);

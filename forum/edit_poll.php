@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.31 2003-11-09 14:19:46 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.32 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -42,6 +42,7 @@ if(!bh_session_check()){
 }
 
 require_once("./include/html.inc.php");
+require_once("./include/messages.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/edit.inc.php");
@@ -54,14 +55,14 @@ if (isset($allow_polls) && !$allow_polls) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
-  $edit_msg = $HTTP_GET_VARS['msg'];
-  list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+  list($edit_msg) = explode(' ', rawurldecode($HTTP_GET_VARS['msg']));
+  list($tid, $pid) = explode('.', $edit_msg);
 
-}elseif (isset($HTTP_POST_VARS['t_msg'])) {
+}elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
 
-  $edit_msg = $HTTP_POST_VARS['t_msg'];
+  list($edit_msg) = explode(' ', rawurldecode($HTTP_POST_VARS['t_msg']));
   list($tid, $pid) = explode('.', $HTTP_POST_VARS['t_msg']);
 
 }else {

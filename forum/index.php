@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.47 2003-09-15 17:02:43 decoyduck Exp $ */
+/* $Id: index.php,v 1.48 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -32,6 +32,7 @@ require_once("./include/gzipenc.inc.php");
 // Main page
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
+require_once("./include/messages.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/lang.inc.php");
@@ -76,15 +77,15 @@ if (bh_session_check()) {
 
       echo "<frame src=\"". urldecode($HTTP_GET_VARS['final_uri']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-    }else if (isset($HTTP_GET_VARS['msg'])) {
+    }else if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
       echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-    }else if (isset($HTTP_GET_VARS['folder'])) {
+    }else if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
 
       echo "<frame src=\"./discussion.php?folder=". $HTTP_GET_VARS['folder']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-    }else if (isset($HTTP_GET_VARS['pmid'])) {
+    }else if (isset($HTTP_GET_VARS['pmid']) && is_int($HTTP_GET_VARS['pmid'])) {
 
       echo "<frame src=\"./pm.php?mid=". $HTTP_GET_VARS['pmid']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
@@ -120,7 +121,7 @@ if (bh_session_check()) {
 
             echo "<frame src=\"", urldecode($HTTP_GET_VARS['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }elseif(isset($HTTP_GET_VARS['msg'])) {
+        }elseif(isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
             echo "<frame src=\"discussion.php?msg=", $HTTP_GET_VARS['msg'], "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
@@ -147,15 +148,15 @@ if (bh_session_check()) {
 
             echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }elseif(isset($HTTP_GET_VARS['msg'])) {
+        }elseif(isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
             echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }else if (isset($HTTP_GET_VARS['folder'])) {
+        }else if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
 
             echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?folder=". $HTTP_GET_VARS['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }else if (isset($HTTP_GET_VARS['pmid'])) {
+        }else if (isset($HTTP_GET_VARS['pmid']) && is_int($HTTP_GET_VARS['folder'])) {
 
             echo "<frame src=\"./logon.php?final_uri=". urlencode("./pm.php?mid=". $HTTP_GET_VARS['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 

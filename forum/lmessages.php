@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.12 2003-09-21 13:36:35 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.13 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -52,17 +52,18 @@ if(!bh_session_check() || bh_session_get_value('UID') == 0){
 
 // Check that required variables are set
 // default to display most recent discussion for user
-if (!isset($HTTP_GET_VARS['msg'])) {
-    if(bh_session_get_value('UID')){
+
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+    $msg = $HTTP_GET_VARS['msg'];
+}else {
+    if (bh_session_get_value('UID')){
         $msg = messages_get_most_recent(bh_session_get_value('UID'));
     } else {
         $msg = "1.1";
     }
-} else {
-    $msg = $HTTP_GET_VARS['msg'];
 }
 
-if (isset($HTTP_GET_VARS['fontsize'])) {
+if (isset($HTTP_GET_VARS['fontsize']) && is_int($HTTP_GET_VARS['fontsize'])) {
 
     $userprefs = user_get_prefs(bh_session_get_value('UID'));
 

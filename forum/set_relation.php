@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.22 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.23 2003-11-13 20:44:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -40,10 +40,11 @@ require_once("./include/html.inc.php");
 require_once("./include/user_rel.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/messages.inc.php");
 
 if (!bh_session_check()) {
 
-    if (isset($HTTP_GET_VARS['msg'])) {
+    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
       $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
     }else {
       $uri = "./index.php?final_uri=". urlencode(get_request_uri());
@@ -88,7 +89,7 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($H
 
 }
 
-if (isset($HTTP_GET_VARS['msg'])) {
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
     header_redirect("./messages.php?msg=$msg");
 }else {

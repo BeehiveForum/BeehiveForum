@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.15 2004-03-17 14:14:28 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.16 2004-03-17 22:21:37 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
@@ -71,32 +71,7 @@ function get_webtag()
 
 function get_forum_settings()
 {
-    $default_settings = array('forum_name'                => "A Beehive Forum",
-                              'forum_email'               => "admin@abeehiveforum.net",
-                              'default_style'             => "default",
-                              'default_language'          => "en",
-                              'show_friendly_errors'      => 'Y',
-                              'cookie_domain'             => "",
-                              'show_stats'                => "Y",
-                              'show_links'                => "Y",
-                              'auto_logon'                => "Y",
-                              'show_pms'                  => "Y",
-                              'pm_allow_attachments'      => "Y",
-                              'maximum_post_length'       => 6226,
-                              'allow_post_editing'        => "Y",
-                              'post_edit_time'            => 0,
-                              'allow_polls'               => "Y",
-                              'search_min_word_length'    => 3,
-                              'attachments_enabled'       => "Y",
-                              'attachment_dir'            => "attachments",
-                              'attachments_show_deleted'  => "N",
-                              'attachment_allow_embed'    => "N",
-                              'attachment_use_old_method' => "N",
-                              'guest_account_enabled'     => "Y",
-                              'session_cutoff'            => 86400,
-                              'active_sess_cutoff'        => 900,
-                              'gzip_compress_output'      => "Y",
-                              'gzip_compress_level'       => 1);
+    global $forum_settings;
     
     $db_get_forum_settings = db_connect();
     
@@ -105,14 +80,12 @@ function get_forum_settings()
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$webtag['FID']}'";
     $result = db_query($sql, $db_get_forum_settings);
     
-    $forum_settings_array = $default_settings;
-    
     while ($row = db_fetch_array($result)) {
         
-        $forum_settings_array[$row['SNAME']] = $row['SVALUE'];
+        $forum_settings[$row['SNAME']] = $row['SVALUE'];
     }
     
-    return $forum_settings_array;
+    return $forum_settings;
 }
 
 function draw_start_page()

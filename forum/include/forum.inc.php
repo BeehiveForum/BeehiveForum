@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.79 2004-08-17 10:04:46 tribalonline Exp $ */
+/* $Id: forum.inc.php,v 1.80 2004-08-17 10:46:46 rowan_hill Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -875,7 +875,7 @@ function forum_create($webtag, $forum_name, $access)
 
         // Save Webtag
 
-        $sql = "INSERT INTO FORUMS (WEBTAG) VALUES ('$webtag')";
+        $sql = "INSERT INTO FORUMS (WEBTAG, ACCESS_LEVEL) VALUES ('$webtag', $access)";
         $result = db_query($sql, $db_forum_create);
 
         // Get the new FID so we can save the settings

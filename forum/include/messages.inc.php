@@ -205,10 +205,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 		  
 		    if (is_array($attachments)) {
 		  
-		      echo "<p>Attachments:</p>\n<p>";
+		      echo "<p><b>Attachments:</b><br>\n";
 		     
                       for ($i = 0; $i < sizeof($attachments); $i++) {
-                        echo "<img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\">&nbsp;<a href=\"getattachment.php?owneruid=". $message['FROM_UID']. "&filename=". $attachments[$i]['filename']. "&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a><br />\n";
+                        echo "<img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" align=\"absmiddle\"><a href=\"getattachment.php?owneruid=". $message['FROM_UID']. "&filename=". $attachments[$i]['filename']. "&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a><br />\n";
                       }
                     
                       echo "</p>\n";

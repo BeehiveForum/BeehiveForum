@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.200 2003-11-27 21:51:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.201 2003-12-01 21:37:54 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -211,7 +211,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang;
 
-    if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+    if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
         return;
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.28 2004-02-26 21:05:14 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.29 2004-02-27 22:00:13 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -668,6 +668,7 @@ $lang['notifyofnewpm'] = "Me notifier par popup de nouveaux messages personels."
 $lang['notifyofnewpmemail'] = "Me notifier par mél de nouveaux messages personels";
 $lang['daylightsaving'] = "DST";
 $lang['autohighinterest'] = "Automatiquement marquer comme intéressant les discussions dans lesquelles je participe";
+$lang['convertimagestolinks'] = "Automatically convert embedded images in posts into links";
 $lang['globallyignoresigs'] = "Ignorer globalement les signatures d'utilisateurs";
 $lang['timezonefromGMT'] = "Fuseau horaire";
 $lang['postsperpage'] = "Nombre de messages par page";

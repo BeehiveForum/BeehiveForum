@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.27 2004-02-26 21:05:14 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.28 2004-02-27 22:00:13 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -681,6 +681,7 @@ $lang['notifyofnewpm'] = "Nizotifizy by pizopizup of new PM mizessagizes to ma a
 $lang['notifyofnewpmemail'] = "Nizotifizy by emizail of new PM mizessagizes to ma ass";
 $lang['daylightsaving'] = "Adizjizust fo' dizaylizight sizavizing";
 $lang['autohighinterest'] = "Aizutomizaticizally mark thrizeads I pizost in as shit I'm down wit";
+$lang['convertimagestolinks'] = "Stop homiez laggin' ma net by shizowin links not pics.";
 $lang['globallyignoresigs'] = "Ignizore all sizigs";
 $lang['timezonefromGMT'] = "Yo tizimezizone";
 $lang['postsperpage'] = "Pizosts pizer pizage";

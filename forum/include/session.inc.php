@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.63 2003-11-29 23:30:36 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.64 2003-11-30 00:16:17 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -39,7 +39,7 @@ $user_sess = array();
 
 function bh_session_check()
 {
-    global $HTTP_COOKIE_VARS, $show_stats, $user_sess, $default_style, $default_language;
+    global $HTTP_COOKIE_VARS, $show_stats, $user_sess, $default_style, $default_language, $session_cutoff;
 
     ip_check();
 
@@ -99,11 +99,22 @@ function bh_session_check()
                     // Everything checks out OK. If the user's session is older
                     // then 5 minutes we should update it.
 
-		    if ($current_time - $user_sess['TIME'] > 300) {
+		    if ($current_time - $user_sess['TIME'] > 60) {
 
+                        $session_stamp = time() - $session_cutoff;
+                        
+                        // Update the session
+                        
                         $sql = "UPDATE ". forum_table("SESSIONS"). " ";
                         $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
                         $sql.= "WHERE SESSID = {$user_sess['SESSID']}";
+
+                        db_query($sql, $db_bh_session_check);
+
+			// Delete expires sessions
+
+                        $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE ";
+                        $sql.= "TIME < FROM_UNIXTIME($session_stamp) AND UID = 0";
 
                         db_query($sql, $db_bh_session_check);
 
@@ -134,7 +145,7 @@ function bh_session_get_value($session_key)
 
 function bh_session_init($uid)
 {
-    global $HTTP_SERVER_VARS, $default_style, $default_language;
+    global $HTTP_COOKIE_VARS;
 
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
@@ -142,7 +153,7 @@ function bh_session_init($uid)
     if ($uid > 0) {
 
         // If we're not logging in as a guest we should delete any
-	// old sessions for this UID.
+	// stale sessions for this UID.
 
         $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
 	$result = db_query($sql, $db_bh_session_init);
@@ -176,7 +187,7 @@ function bh_session_end()
         if ($uid > 0) {
 
             // If we're not logged in as a guest we should delete any
-	    // old sessions for this UID.
+	    // stale sessions for this UID.
 
             $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid";
 	    $result = db_query($sql, $db_bh_session_end);
@@ -184,6 +195,8 @@ function bh_session_end()
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
+        // Delete the session for the current MD5 hash
+        
         $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE HASH = '$user_hash'";
         $result = db_query($sql, $db_bh_session_end);
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.199 2004-10-06 20:21:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.200 2004-10-16 17:58:50 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -317,35 +317,37 @@ function user_get_prefs($uid)
     // There are three sources of preferences:
     // 1. The defaults, set here:
 
-    $default_prefs = array('FIRSTNAME'          => '',
-                           'LASTNAME'           => '',
-                           'DOB'                => '',
-                           'HOMEPAGE_URL'       => '',
-                           'PIC_URL'            => '',
-                           'EMAIL_NOTIFY'       => 'Y',
-                           'TIMEZONE'           => '0',
-                           'DL_SAVING'          => 'N',
-                           'MARK_AS_OF_INT'     => 'Y',
-                           'POSTS_PER_PAGE'     => '20',
-                           'FONT_SIZE'          => '10',
-                           'STYLE'              => '',
-                           'VIEW_SIGS'          => 'Y',
-                           'START_PAGE'         => '0',
-                           'LANGUAGE'           => '',
-                           'PM_NOTIFY'          => 'Y',
-                           'PM_NOTIFY_EMAIL'    => 'Y',
-                           'PM_SAVE_SENT_ITEM'  => 'Y',
-                           'PM_INCLUDE_REPLY'   => 'Y',
-                           'DOB_DISPLAY'        => 'Y',
-                           'ANON_LOGON'         => 'N',
-                           'SHOW_STATS'         => 'Y',
-                           'IMAGES_TO_LINKS'    => 'N',
-                           'USE_WORD_FILTER'    => 'N',
-                           'USE_ADMIN_FILTER'   => 'N',
-                           'EMOTICONS'          => '',
-                           'ALLOW_EMAIL'        => 'Y',
-                           'ALLOW_PM'           => 'Y',
-                           'POST_PAGE'          => '0');
+    $default_prefs = array('FIRSTNAME'            => '',
+                           'LASTNAME'             => '',
+                           'DOB'                  => '',
+                           'HOMEPAGE_URL'         => '',
+                           'PIC_URL'              => '',
+                           'EMAIL_NOTIFY'         => 'Y',
+                           'TIMEZONE'             => '0',
+                           'DL_SAVING'            => 'N',
+                           'MARK_AS_OF_INT'       => 'Y',
+                           'POSTS_PER_PAGE'       => '20',
+                           'FONT_SIZE'            => '10',
+                           'STYLE'                => '',
+                           'VIEW_SIGS'            => 'Y',
+                           'START_PAGE'           => '0',
+                           'LANGUAGE'             => '',
+                           'PM_NOTIFY'            => 'Y',
+                           'PM_NOTIFY_EMAIL'      => 'Y',
+                           'PM_SAVE_SENT_ITEM'    => 'Y',
+                           'PM_INCLUDE_REPLY'     => 'Y',
+                           'PM_AUTO_PRUNE'        => 'N',
+                           'PM_AUTO_PRUNE_LENGTH' => 0,
+                           'DOB_DISPLAY'          => 'Y',
+                           'ANON_LOGON'           => 'N',
+                           'SHOW_STATS'           => 'Y',
+                           'IMAGES_TO_LINKS'      => 'N',
+                           'USE_WORD_FILTER'      => 'N',
+                           'USE_ADMIN_FILTER'     => 'N',
+                           'EMOTICONS'            => '',
+                           'ALLOW_EMAIL'          => 'Y',
+                           'ALLOW_PM'             => 'Y',
+                           'POST_PAGE'            => '0');
 
     // 2. The user's global prefs, in USER_PREFS:
 
@@ -391,6 +393,13 @@ function user_get_prefs($uid)
     foreach ($global_prefs as $key => $value) {
         $global_prefs[$key.'_GLOBAL'] = true;
     }
+
+    echo "<pre>\n";
+    print_r($default_prefs);
+    print_r($global_prefs);
+    print_r($forum_prefs);
+    echo "</pre>\n";
+    exit;
 
     // Merge them all together, with forum prefs overriding
     // global prefs overriding default prefs

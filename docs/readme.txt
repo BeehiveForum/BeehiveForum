@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.5 / 12th September 2004
+Version 0.5 / 10th December 2004
 
 A list of changes since previous Beehive versions can be found in release.txt.
 
@@ -190,9 +190,9 @@ into another folder of your choosing.
 
 Once everything's uploaded, you will need to run the forum's install script. This
 is located in the /install subdirectory of your forum. To access it, you will need
-to load the file in your browser from the webspace you just uploaded to, e.g.:
+to load the file in your browser from the web space you just uploaded to, e.g.:
 
-http://www.mysite.com/forum/install/install.php
+http://www.mysite.com/forum/install.php
 
 This will then walk you through the creation of your new forum. Note that you will
 need your MySQL database's host address, username and password for this stage, as
@@ -393,12 +393,12 @@ the right one when you come across loads of .MYI and .MYD files with the same
 names as the BeehiveForum tables.
 
 If you can do this then great, if not you might want to ask your hosting provider
-if they can do it for you, at least temporarily why you do the upgrade. Then if
+if they can do it for you, at least temporarily while you do the upgrade. Then if
 anything does go wrong you can ask them to restore the data.
 
-If your ISP are less than cooperative about doing this then your next best chance
-of performing a backup is by using phpMyAdmin and making use of it's Export
-facility to save a copy of the database to your HD using your web browser. 
+If your hosting provider is less than cooperative about doing this then your next
+best chance of performing a backup is by using phpMyAdmin and making use of it's
+Export facility to save a copy of the database to your HD using your web browser. 
 Be warned that doing it this way will result in a easily rather large file being
 created on your HD so make sure you have adequate disc space in order to do this.
 It will also be harder to restore the backup this way.
@@ -431,10 +431,22 @@ Once you've backed up your database/files and uploaded the new files, you will
 need to run the upgrade script, located as /install/install.php in your forum
 directory:
 
-http://www.mysite.com/forumtemp/install/install.php
+http://www.mysite.com/forumtemp/install.php
 
 Make sure you select 'Upgrade' from the installation method drop-down list, and
 then follow the instructions.
+
+1.5 Upgrading from 0.5PR1 to 0.5
+================================
+
+If you are already running 0.5PR1 of Beehive Forum you can upgrade to 0.5 by
+following the instructions outlined in section 1.4.1 to 1.4.3. Once you have
+completed these steps run the upgrade script as instructed in step 1.4.4
+but instead of choosing to upgrade from 0.4 choose to upgrade from 0.5PR1.
+
+That should be all that is needed. If you have any problems with this please
+post on Teh Forum (http://www.tehforum.net/forum/) and we'll try our best to
+help you get sorted.
 
 
 1.5 Upgrading from 0.3 to 0.4
@@ -495,6 +507,11 @@ This will bring the database up to 0.4, and from there you can use 0.5's upgrade
   folders option and fixing the folder names. This was due to a bug
   in previous versions which has now been fixed.
 
+- Content created prior to the installation of 0.5 will be incorrectly
+  escaped (all ' and " characters will appear as \' and \" respectively).
+  This is due to a major bug in versions prior to 0.5 which meant
+  content inserted into the database was double-escaped.
+
 
 3 Support
 =========
@@ -534,7 +551,7 @@ As of 0.4 BeehiveForums supports multiple languages, but because we're all very
 busy doing other things the number of languages that ship with Beehive are few
 and far between, i.e. English, English and nothing but English. There's also an
 incomplete French translation, as well as the 'comedy' English X-Gangsta and
-X-Hacker languages.
+X-Hacker languages available from CVS should you wish to obtain them.
 
 
 3.3.1 Translating BeehiveForums into my native language
@@ -618,6 +635,8 @@ Chris Hodcroft
 - Michael from Hermitscave for taking the time to find all those nasty exploits.
   
 - Mike Quigley for Teh Backup Forum, Breaking lots of things and pimping Beehive without fail.
+
+- JimL for beating Mike in our being obcessed with Beehive competition.
 
 - SourceForge (http://sourceforge.net) for providing top-notch facilities to us
   (and to thousands of other projects) at absolutely no cost.

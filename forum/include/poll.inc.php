@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.125 2004-06-25 14:33:58 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.126 2004-07-25 20:04:31 rowan_hill Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -76,7 +76,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
 
 }
 
-function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type)
+function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $hardedit)
 {
     $db_poll_edit = db_connect();
 
@@ -100,8 +100,10 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
 
     // Delete the recorded user votes for this poll
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
-    $result = db_query($sql, $db_poll_edit);
+    if ($hardedit) {
+        $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
+        $result = db_query($sql, $db_poll_edit);
+    }
 
     // Update the Poll settings
 
@@ -1069,29 +1071,58 @@ function poll_preview_graph_table($pollresults)
         }
     }
 
-    $polldisplay = "            <table width=\"430\" cellpadding=\"6\" cellspacing=\"1\" border=\"0\">\n";
+  $rowcount = array();
+  $numvotes = 0;
+  for ($rows = 0; $rows < sizeof($group1); $rows++) {  
+    $rowcount[] = 0; 
+    for ($cols = 0; $cols < sizeof($group2); $cols++) {
+      $rowcount[$rows] += $table[$rows][$cols];
+      $numvotes += $table[$rows][$cols];
+    }
+  }
 
-    for ($rows = 0; $rows < sizeof($group1)+1; $rows++) {
+  $colcount = array();
+  for ($cols = 0; $cols < sizeof($group2); $cols++) {  
+    $colcount[] = 0; 
+    for ($rows = 0; $rows < sizeof($group1); $rows++) {
+      $colcount[$cols] += $table[$rows][$cols];
+    }
+  }
+  
+    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"6\" cellspacing=\"1\" border=\"0\">\n";
+    
+    for ($rows = 0; $rows < sizeof($group1)+2; $rows++) { 
 
         $polldisplay.= "              <tr>\n";
 
-        for ($cols = 0; $cols < sizeof($group2)+1; $cols++) {
+      for ($cols = 0; $cols < sizeof($group2)+2; $cols++) {
 
             if ($cols == 0) {
 
-                if ($rows == 0) {
+            	if (($rows == 0) || ($rows == sizeof($group1)+1)) {
                     $polldisplay.= "                <td>&nbsp;</td>\n";
-                }else {
-                    $polldisplay.= "                <th class=\"posthead\" align=\"right\">". $pollresults['OPTION_NAME'][$group1_keys[$rows-1]]. "&nbsp;</th>\n";
+            	} else {
+                	$polldisplay.= "                <th class=\"posthead\" align=\"right\">".$pollresults['OPTION_NAME'][$group1_keys[$rows-1]]."</th>\n";
                 }
 
-            }else {
+          } elseif ($cols == sizeof($group2)+1) {
+          
+            	if (($rows == 0) || ($rows == sizeof($group1)+1)) {
+                	$polldisplay.= "                <td>&nbsp;</td>\n";
+            	} else {
+                	$polldisplay.= "                <th class=\"posthead\" align=\"center\">".$rowcount[$rows-1]." (".round($rowcount[$rows-1]*100/$numvotes, 2)."%)</th>\n";
+            	}
+            	
+          } else {
 
                 if ($rows == 0) {
-                    $polldisplay.= "                <th class=\"posthead\" align=\"center\">". $pollresults['OPTION_NAME'][$group2_keys[$cols-1]]. "&nbsp;</th>\n";
-                }else {
-                    $polldisplay.= "                <td align=\"center\">". $table[$rows-1][$cols-1]. "</td>\n";
+                	$polldisplay.= "                <th class=\"posthead\"  align=\"center\">".$pollresults['OPTION_NAME'][$group2_keys[$cols-1]]."</th>\n";  
+            	} elseif ($rows == sizeof($group1)+1) {
+                	$polldisplay.= "                <th class=\"posthead\" align=\"center\">".$colcount[$cols-1]." (".round($colcount[$cols-1]*100/$numvotes, 2)."%)</th>\n";
+            	} else {
+                	$polldisplay.= "                <td align=\"center\">".$table[$rows-1][$cols-1]." (".round($table[$rows-1][$cols-1]*100/$numvotes, 2)."%)</td>\n";
                 }
+            	
             }
         }
 
@@ -1282,14 +1313,12 @@ function poll_table_graph($tid)
 
     for ($i = 0; $i < sizeof($group1_keys); $i++) {
         $group1[] = $pollresults['OPTION_ID'][$group1_keys[$i]];
-        $blank1[] = 0;
     }
 
     $group2 = array();
 
     for ($i = 0; $i < sizeof($group2_keys); $i++) {
         $group2[] = $pollresults['OPTION_ID'][$group2_keys[$i]];
-        $blank2[] = 0;
     }
 
     for ($rows = 0; $rows < sizeof($group1); $rows++) {
@@ -1309,11 +1338,9 @@ function poll_table_graph($tid)
           if (count($uid_keys) == 2) {
 
               if (in_array($polltableresults['OPTION_ID'][$uid_keys[0]], $group1)) {
-
                   $vote_group1 = $polltableresults['OPTION_ID'][$uid_keys[0]]-1;
                   $vote_group2 = $polltableresults['OPTION_ID'][$uid_keys[1]]-1-sizeof($group1);
-              }else {
-
+              } else {
                   $vote_group1 = $polltableresults['OPTION_ID'][$uid_keys[1]]-1;
                   $vote_group2 = $polltableresults['OPTION_ID'][$uid_keys[0]]-1-sizeof($group1);
               }
@@ -1331,33 +1358,63 @@ function poll_table_graph($tid)
 
     unset($poll_previous_uid);
 
+    $rowcount = array();
+    $numvotes = 0;
+    for ($rows = 0; $rows < sizeof($group1); $rows++) {  
+      $rowcount[] = 0; 
+      for ($cols = 0; $cols < sizeof($group2); $cols++) {
+        $rowcount[$rows] += $table[$rows][$cols];
+        $numvotes += $table[$rows][$cols];
+      }
+    }
+  
+    $colcount = array();
+    for ($cols = 0; $cols < sizeof($group2); $cols++) {  
+      $colcount[] = 0; 
+      for ($rows = 0; $rows < sizeof($group1); $rows++) {
+        $colcount[$cols] += $table[$rows][$cols];
+      }
+    }
+
     $polldisplay = "            <table width=\"430\" cellpadding=\"6\" cellspacing=\"1\" border=\"0\">\n";
 
-    for ($rows = 0; $rows < sizeof($group1)+1; $rows++) {
+    for ($rows = 0; $rows < sizeof($group1)+2; $rows++) { 
 
         $polldisplay.= "              <tr>\n";
 
-        for ($cols = 0; $cols < sizeof($group2)+1; $cols++) {
+      for ($cols = 0; $cols < sizeof($group2)+2; $cols++) {
 
             if ($cols == 0) {
 
-                if ($rows == 0) {
+            if (($rows == 0) || ($rows == sizeof($group1)+1)) {
                     $polldisplay.= "                <td>&nbsp;</td>\n";
                 } else {
-                    $polldisplay.= "                <th class=\"posthead\" align=\"right\">". $pollresults['OPTION_NAME'][$group1_keys[$rows-1]]. "&nbsp;</th>\n";
+                $polldisplay.= "                <th class=\"posthead\" align=\"right\">".$pollresults['OPTION_NAME'][$group1_keys[$rows-1]]."</th>\n";
                 }
 
-            }else {
+        } elseif ($cols == sizeof($group2)+1) {
+        
+            if (($rows == 0) || ($rows == sizeof($group1)+1)) {
+                $polldisplay.= "                <td>&nbsp;</td>\n";
+            } else {
+                $polldisplay.= "                <th class=\"posthead\" align=\"center\">".$rowcount[$rows-1]." (".round($rowcount[$rows-1]*100/$numvotes, 2)."%)</th>\n";
+            }
+        
+        } else {
 
                 if ($rows == 0) {
-                    $polldisplay.= "                <th class=\"posthead\" align=\"center\">". $pollresults['OPTION_NAME'][$group2_keys[$cols-1]]. "&nbsp;</th>\n";
+                $polldisplay.= "                <th class=\"posthead\"  align=\"center\">".$pollresults['OPTION_NAME'][$group2_keys[$cols-1]]."</th>\n";  
+            } elseif ($rows == sizeof($group1)+1) {
+                $polldisplay.= "                <th class=\"posthead\" align=\"center\">".$colcount[$cols-1]." (".round($colcount[$cols-1]*100/$numvotes, 2)."%)</th>\n";
                 } else {
-                    $polldisplay.= "                <td align=\"center\">". $table[$rows-1][$cols-1]. "</td>\n";
+                $polldisplay.= "                <td align=\"center\">".$table[$rows-1][$cols-1]." (".round($table[$rows-1][$cols-1]*100/$numvotes, 2)."%)</td>\n";
                 }
+            
             }
         }
 
         $polldisplay.= "              </tr>\n";
+      
     }
 
     $polldisplay.= "            </table>\n";

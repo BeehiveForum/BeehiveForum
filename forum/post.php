@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.231 2004-11-28 22:57:04 decoyduck Exp $ */
+/* $Id: post.php,v 1.232 2004-11-29 22:31:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -664,8 +664,20 @@ if ($valid && isset($_POST['submit'])) {
 
 }
 
-html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
+if (!isset($t_fid)) {
+    $t_fid = 1;
+}
 
+if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['cannotcreatenewthreads']}</h2>";
+    html_draw_bottom();
+    exit;
+}
+
+html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
 echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
@@ -764,10 +776,6 @@ if (!isset($t_threadtitle)) {
     $t_threadtitle = "";
 }
 
-if (!isset($t_fid)) {
-    $t_fid = 0;
-}
-
 echo "<table class=\"posthead\" width=\"720\">\n";
 echo "<tr><td class=\"subhead\" colspan=\"2\">";
 
@@ -786,7 +794,7 @@ echo "<tr><td>\n";
 if ($newthread) {
 
     echo "<h2>{$lang['folder']}:</h2>\n";
-    echo folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")."\n";
+    echo "$folder_dropdown\n";
     echo "<h2>{$lang['threadtitle']}:</h2>\n";
     echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.193 2004-11-29 22:09:59 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.194 2004-11-29 22:31:56 decoyduck Exp $ */
 
 // International English language file
 
@@ -765,6 +765,7 @@ $lang['converttoHTML'] = "Convert to HTML";
 $lang['pleaseentermembername'] = "Please enter a membername:";
 $lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in that folder!";
 $lang['cannotpostthisthreadtype'] = "You cannot post this thread type as there are no available folders that allow it.";
+$lang['cannotcreatenewthreads'] = "You cannot create new threads.";
 $lang['threadisclosedforposting'] = "This thread is closed, you cannot post in it!";
 $lang['moderatorthreadclosed'] = "Warning: this thread is closed for posting to normal users.";
 $lang['threadclosed'] = "Thread closed";

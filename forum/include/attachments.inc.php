@@ -46,7 +46,8 @@ function get_attachments($uid, $aid) {
       
         $userattachments[] = array("filename" => $row['FILENAME'],
                                    "filesize" => filesize($attachments_dir. '/'. md5($aid. $row['FILENAME'])),
-                                   "aid"      => $row['AID']);
+                                   "aid"      => $row['AID'],
+                                   "hash"     => $row['HASH']);
       }
                                  
     }
@@ -76,7 +77,8 @@ function get_all_attachments($uid, $aid) {
     
         $userattachments[] = array("filename" => $row['FILENAME'],
                                    "filesize" => filesize($attachments_dir. '/'. $row['AID']. '/'. md5($row['AID']. $row['FILENAME'])),
-                                   "aid"      => $row['AID']);
+                                   "aid"      => $row['AID'],
+                                   "hash"     => $row['HASH']);
       }
       
     }
@@ -89,8 +91,10 @@ function add_attachment($uid, $aid, $filename, $mimetype) {
 
     $db = db_connect();
     
-    $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (AID, UID, FILENAME, MIMETYPE) ";
-    $sql.= "values ('$aid', '$uid', '$filename', '$mimetype')";
+    $hash = md5($aid. $filename);
+    
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (AID, UID, FILENAME, MIMETYPE, HASH) ";
+    $sql.= "values ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
     
     $result = db_query($sql, $db) or die(mysql_error());
     
@@ -108,28 +112,6 @@ function delete_attachment($uid, $aid, $filename) {
     $result = db_query($sql, $db) or die(mysql_error());
     
     return $result;
-    
-}
-
-function move_attachment($uid, $new_aid, $old_aid, $filename) {
-
-    global $HTTP_SERVER_VARS;
-
-    $db = db_connect();
-    
-    $sql = "update ". forum_table("POST_ATTACHMENT_FILES"). " set AID = '$new_aid' ";
-    $sql.= "where AID = '$old_aid'";
-    
-    $result = db_query($sql, $db) or die(mysql_error());
-    
-    $attachments_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments';
-    
-    copy($attachments_dir. '/'. $old_aid. '/'. md5($old_aid. $filename),
-         $attachments_dir. '/'. $new_aid. '/'. md5($new_aid. $filename));
-         
-    unlink($attachments_dir. '/'. $old_aid. '/'. md5($old_aid. $filename));
-    
-    return result;
     
 }
 
@@ -195,29 +177,6 @@ function get_message_tidpid($aid) {
       
     }
     
-}
-
-function download_attachment($uid, $filename) {
-
-    global $HTTP_SERVER_VARS;
-
-    $userinfo = user_get($uid);
-    
-    $attachments_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON'];
-                       
-    if (file_exists($attachments_dir. '/'. $filename)) {
-    
-      header("Content-Type: application/x-ms-download");
-      header("Content-Length: ". filesize($attachments_dir. '/'. $filename));
-      header("Content-disposition: filename=". $filename);
-      header("Content-Transfer-Encoding: binary");
-      header("Pragma: no-cache");
-      header("Expires: 0");
-
-      readfile($attachments_dir. '/'. $filename);
-      
-    }
-       
 }
 
 ?>

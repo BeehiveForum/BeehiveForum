@@ -39,50 +39,52 @@ require_once("./include/attachments.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/db.inc.php");
 
-if (isset($HTTP_GET_VARS['hash']) && isset($HTTP_GET_VARS['filename']) && isset($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['hash'])) {
 
   $attachments_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments';
-
-  if (file_exists($attachments_dir. '/'. $HTTP_GET_VARS['hash']. '/'. md5($HTTP_GET_VARS['hash'].$HTTP_GET_VARS['filename']))) {
+  
+  $aid = substr($HTTP_GET_VARS['hash'], 0, 32);
+  $hash = substr($HTTP_GET_VARS['hash'], 32);
+  
+  $db = db_connect();
+  $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash' and AID = '$aid'";
+  
+  $result = db_query($sql, $db);
+  
+  if (db_num_rows($result)) {
+      
+    $attachmentdetails = db_fetch_array($result);
     
-    $db = db_connect();
-      
-    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES");
-    $sql.= " where UID = ". $HTTP_GET_VARS['uid']. " and";
-    $sql.= " FILENAME = '". $HTTP_GET_VARS['filename']. "'";
-      
-    $result = db_query($sql, $db);
-      
-    if (db_num_rows($result)) {
-      
-      $attachmentdetails = db_fetch_array($result);
+    if (file_exists($attachments_dir. '/'. $attachmentdetails['AID']. '/'. $attachmentdetails['HASH'])) {    
         
       if(isset($HTTP_GET_VARS['download'])) {
   
         header("Content-Type: application/x-ms-download");
-        header("Content-Length: ". filesize($attachments_dir. '/'. $HTTP_GET_VARS['hash']. '/'. md5($HTTP_GET_VARS['hash'].$HTTP_GET_VARS['filename'])));
-        header("Content-disposition: filename=". $HTTP_GET_VARS['filename']);
+        header("Content-Length: ". filesize($attachments_dir. '/'. $attachmentdetails['AID']. '/'. $attachmentdetails['HASH']));
+        header("Content-disposition: filename=". $attachmentdetails['FILENAME']);
         header("Content-Transfer-Encoding: binary");
         header("Pragma: no-cache");
         header("Expires: 0");
  
-        readfile($attachments_dir. '/'. $HTTP_GET_VARS['hash']. '/'. md5($HTTP_GET_VARS['hash'].$HTTP_GET_VARS['filename']));
+        readfile($attachments_dir. '/'. $attachmentdetails['AID']. '/'. $attachmentdetails['HASH']);
         exit;
       
       }else {
     
         header("Content-Type: ". $attachmentdetails['MIMETYPE']);
+        header("Content-Length: ". filesize($attachments_dir. '/'. $attachmentdetails['AID']. '/'. $attachmentdetails['HASH']));
+        header("Content-disposition: filename=". $attachmentdetails['FILENAME']);        
         
         if($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
-          header("Content-Length: ". filesize($attachments_dir. '/'. $HTTP_GET_VARS['hash']. '/'. md5($HTTP_GET_VARS['hash'].$HTTP_GET_VARS['filename'])));
-          header("Content-disposition: filename=". $HTTP_GET_VARS['filename']);
+
           header("Content-Transfer-Encoding: binary");
+          
         }
         
         header("Pragma: no-cache");
         header("Expires: 0");
           
-        readfile($attachments_dir. '/'. $HTTP_GET_VARS['hash']. '/'. md5($HTTP_GET_VARS['hash'].$HTTP_GET_VARS['filename']));
+        readfile($attachments_dir. '/'. $attachmentdetails['AID']. '/'. $attachmentdetails['HASH']);
         exit;          
   
       }

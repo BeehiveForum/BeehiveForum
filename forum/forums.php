@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.29 2004-08-17 11:21:28 rowan_hill Exp $ */
+/* $Id: forums.php,v 1.30 2004-08-17 20:38:00 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -149,7 +149,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 if (isset($_GET['final_uri'])) {
                     echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
                 }else {
-                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">"._stripslashes($forum['FORUM_NAME'])."</a>\n";
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
                 }
 
                 echo "                  </td>\n";
@@ -212,7 +212,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 if (isset($_GET['final_uri'])) {
                     echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
                 }else {
-                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">"._stripslashes($forum['FORUM_NAME'])."</a>\n";
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
                 }
 
                 echo "                  </td>\n";
@@ -275,7 +275,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 if (isset($_GET['final_uri'])) {
                     echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
                 }else {
-                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">"._stripslashes($forum['FORUM_NAME'])."</a>\n";
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
                 }
 
                 echo "                  </td>\n";
@@ -352,7 +352,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             if (isset($_GET['final_uri'])) {
                 echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
             }else {
-                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">"._stripslashes($forum['FORUM_NAME'])."</a>\n";
+                echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
             }
 
             echo "                  </td>\n";
@@ -409,9 +409,9 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
             echo "                  <td width=\"25%\">\n";
 
             if (isset($_GET['final_uri'])) {
-                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">"._stripslashes($forum['FORUM_NAME'])."</a>\n";
+                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
             }else {
-                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">"._stripslashes($forum['FORUM_NAME'])."</a>\n";
+                echo "            <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
             }
 
             echo "                </td>\n";

@@ -53,16 +53,20 @@ $error_html = "";
 
 if(isset($HTTP_POST_VARS['submit'])) {
 
-  if(!empty($HTTP_POST_VARS['logon'])) {
-      if (htmlentities(strtoupper($HTTP_POST_VARS['logon'])) != strtoupper($HTTP_POST_VARS['logon'])) {
+  if (strlen(trim($HTTP_POST_VARS['logon'])) > 0) {
+      if (htmlentities(trim($HTTP_POST_VARS['logon'])) != trim($HTTP_POST_VARS['logon'])) {
         $error_html.= "<h2>Username must not contain HTML tags</h2>\n";
         $valid = false;
       }
-      if (strlen($HTTP_POST_VARS['logon']) < 2) {
+      if (!preg_match("/^[a-z0-9_-]+$/i", trim($HTTP_POST_VARS['logon']))) {
+        $error_html.= "<h2>Username can only contain a-z, 0-9, _ - characters</h2>\n";
+        $valid = false;
+      }
+      if (strlen(trim($HTTP_POST_VARS['logon'])) < 2) {
         $error_html.= "<h2>Username must be a minimum of 2 characters long</h2>\n";
         $valid = false;
       }
-      if (strlen($HTTP_POST_VARS['logon']) > 15) {
+      if (strlen(trim($HTTP_POST_VARS['logon'])) > 15) {
         $error_html.= "<h2>Username must be a maximum of 15 characters long</h2>\n";
         $valid = false;
       }
@@ -71,12 +75,12 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $valid = false;
   }
 
-  if(!empty($HTTP_POST_VARS['pw'])) {
-      if (htmlentities($HTTP_POST_VARS['pw']) != $HTTP_POST_VARS['pw']) {
+  if (strlen(trim($HTTP_POST_VARS['pw'])) > 0) {
+      if (htmlentities(trim($HTTP_POST_VARS['pw'])) != trim($HTTP_POST_VARS['pw'])) {
         $error_html.= "<h2>Password must not contain HTML tags</h2>\n";
         $valid = false;
       }
-      if (strlen($HTTP_POST_VARS['pw']) < 6) {
+      if (strlen(trim($HTTP_POST_VARS['pw'])) < 6) {
         $error_html.= "<h2>Password must be a minimum of 6 characters long</h2>\n";
         $valid = false;
       }
@@ -85,7 +89,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $valid.= false;
   }
 
-  if(!empty($HTTP_POST_VARS['cpw'])) {
+  if (strlen(trim($HTTP_POST_VARS['cpw'])) > 0) {
       if (htmlentities($HTTP_POST_VARS['cpw']) != $HTTP_POST_VARS['cpw']) {
         $error_html.= "<h2>Password must not contain HTML tags</h2>\n";
         $valid = false;
@@ -95,7 +99,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $valid = false;
   }
 
-  if(!empty($HTTP_POST_VARS['nickname'])) {
+  if (strlen(trim($HTTP_POST_VARS['nickname'])) > 0) {
       if (htmlentities($HTTP_POST_VARS['nickname']) != $HTTP_POST_VARS['nickname']) {
         $error_html.= "<h2>Nickname must not contain HTML tags</h2>\n";
         $valid = false;
@@ -105,7 +109,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $valid = false;
   }
 
-  if(!empty($HTTP_POST_VARS['email'])) {
+  if (strlen(trim($HTTP_POST_VARS['email'])) > 0) {
       if (htmlentities($HTTP_POST_VARS['email']) != $HTTP_POST_VARS['email']) {
         $error_html.= "<h2>Email must not contain HTML tags</h2>\n";
         $valid = false;
@@ -115,23 +119,28 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $valid = false;
   }
 
-  if($valid) {
-      if(user_exists(strtoupper($HTTP_POST_VARS['logon']))) {
+
+  if ($valid) {
+      if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']) {
+          $error_html.= "<h2>Passwords do not match</h2>\n";
+          $valid = false;
+      }
+      if (trim($HTTP_POST_VARS['logon']) == trim($HTTP_POST_VARS['pw'])) {
+        $error_html.= "<h2>Username and password must be different.</h2>\n";
+        $valid = false;
+      }
+  }
+
+  if ($valid) {
+      if(user_exists(strtoupper(trim($HTTP_POST_VARS['logon'])))) {
           $error_html.= "<h2>Sorry, a user with that name already exists</h2>\n";
           $valid = false;
       }
   }
 
   if($valid) {
-      if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']) {
-          $error_html.= "<h2>Passwords do not match</h2>\n";
-          $valid = false;
-      }
-  }
 
-  if($valid) {
-
-      $new_uid = user_create(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['pw'], $HTTP_POST_VARS['nickname'], $HTTP_POST_VARS['email']);
+      $new_uid = user_create(strtoupper(trim($HTTP_POST_VARS['logon'])), trim($HTTP_POST_VARS['pw']), trim($HTTP_POST_VARS['nickname']), trim($HTTP_POST_VARS['email']));
 
       if($new_uid > -1) {
 
@@ -251,23 +260,23 @@ if (isset($error_html)) echo $error_html;
         <table class="posthead" width="100%">
           <tr>
             <td align="right" class="posthead">Login Name&nbsp;</td>
-            <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes($HTTP_POST_VARS['logon']) : ''), 32, 32); ?></td>
+            <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes(trim($HTTP_POST_VARS['logon'])) : ''), 32, 32); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Password&nbsp;</td>
-            <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes($HTTP_POST_VARS['pw']) : ''), 32, 32,"password"); ?></td>
+            <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 32, 32,"password"); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Confirm&nbsp;</td>
-            <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes($HTTP_POST_VARS['cpw']) : ''), 32, 32,"password"); ?></td>
+            <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes(trim($HTTP_POST_VARS['cpw'])) : ''), 32, 32,"password"); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Nickname&nbsp;</td>
-            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes($HTTP_POST_VARS['nickname']) : ''), 32, 32); ?></td>
+            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes(trim($HTTP_POST_VARS['nickname'])) : ''), 32, 32); ?></td>
           </tr>
           <tr>
             <td align="right" class="posthead">Email&nbsp;</td>
-            <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes($HTTP_POST_VARS['email']) : ''), 32, 80); ?></td>
+            <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes(trim($HTTP_POST_VARS['email'])) : ''), 32, 80); ?></td>
           </tr>
           <tr>
             <td>&nbsp;</td>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.43 2005-03-14 13:27:20 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.44 2005-03-28 19:43:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -62,7 +62,7 @@ if ($user_sess = bh_session_check(false) && bh_session_get_value('UID') != 0) {
 
     light_html_draw_top();
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
+    echo form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
     light_html_draw_bottom();
     exit;
 }
@@ -126,9 +126,9 @@ if (isset($_POST['submit'])) {
                 echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
                 if (isset($final_uri)) {
-                    form_quick_button($final_uri, $lang['continue'], false, false, "_top");
+                    echo form_quick_button($final_uri, $lang['continue'], false, false, "_top");
                 }else {
-                    form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
+                    echo form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
                 }
 
                 light_html_draw_bottom();
@@ -149,7 +149,7 @@ if (isset($_POST['submit'])) {
 
             light_html_draw_top();
             echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-            form_quick_button("./llogon.php", $lang['back'], false, false, "_top");
+            echo form_quick_button("./llogon.php", $lang['back'], false, false, "_top");
             light_html_draw_bottom();
             exit;
         }

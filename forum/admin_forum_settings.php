@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.65 2005-03-26 23:49:09 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.66 2005-03-28 19:43:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -320,7 +320,7 @@ if (isset($_POST['changepermissions'])) {
             // If they're still here, Javascript's not working. Give up, give a link.
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['forumsettingsupdated']}</p>";
-            form_quick_button("./admin_forum_settings.php", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./admin_forum_settings.php", $lang['continue'], false, false, "_top");
 
             html_draw_bottom();
             exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.118 2005-03-26 18:16:46 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.119 2005-03-28 19:43:35 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -54,7 +54,7 @@ function pm_edit_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannoteditpm']}</p>";
-    form_quick_button("./pm.php", $lang['back'], "folder", "2");
+    echo form_quick_button("./pm.php", $lang['back'], "folder", "2");
     echo "</div>";
 
 }
@@ -66,7 +66,7 @@ function pm_error_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannotviewpm']}</p>";
-    form_quick_button("./pm.php", $lang['back'], "folder", "1");
+    echo form_quick_button("./pm.php", $lang['back'], "folder", "1");
     echo "</div>";
 }
 
@@ -723,18 +723,17 @@ function pm_save_attachment_id($mid, $aid)
     return $result;
 }
 
-function pm_send_message($tuid, $subject, $content)
+function pm_send_message($tuid, $fuid, $subject, $content)
 {
     $db_pm_send_message = db_connect();
 
     if (!is_numeric($tuid)) return false;
+    if (!is_numeric($fuid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $subject = addslashes($subject);
     $content = addslashes($content);
-
-    $fuid = bh_session_get_value('UID');
 
     // ------------------------------------------------------------
     // Insert the main PM Data into the database
@@ -747,19 +746,18 @@ function pm_send_message($tuid, $subject, $content)
 
     if ($result) {
 
-      $new_mid = db_insert_id($db_pm_send_message);
+        $new_mid = db_insert_id($db_pm_send_message);
 
-      // ------------------------------------------------------------
-      // Insert the PM Content into the database
-      // ------------------------------------------------------------
+        // ------------------------------------------------------------
+        // Insert the PM Content into the database
+        // ------------------------------------------------------------
 
-      $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-      $sql.= "VALUES ('$new_mid', '$content')";
+        $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
+        $sql.= "VALUES ('$new_mid', '$content')";
 
-      if (db_query($sql, $db_pm_send_message)) {
-          return  $new_mid;
-      }
-
+        if (db_query($sql, $db_pm_send_message)) {
+            return  $new_mid;
+        }
     }
 
     return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.87 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: delete.php,v 1.88 2005-03-28 19:43:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -212,18 +212,18 @@ if ($valid) {
 
                 if (threads_any_unread() && $msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
-                    form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
+                    echo form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
 
                 }else {
 
                     bh_setcookie('bh_thread_mode', 0);
                     $msg = messages_get_most_recent(bh_session_get_value('UID'));
-                    form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
+                    echo form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
                 }
 
             }else {
 
-                form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
+                echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
             }
 
             echo "    </td>\n";

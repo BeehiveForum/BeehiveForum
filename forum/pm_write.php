@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.111 2005-03-27 13:02:57 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.112 2005-03-28 19:43:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -444,9 +444,11 @@ if ($valid && isset($_POST['submit'])) {
 
     if (check_ddkey($_POST['t_dedupe'])) {
 
+        $t_from_uid = bh_session_get_value('UID');
+
         if (isset($to_radio) && $to_radio == 0) {
 
-            if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+            if ($new_mid = pm_send_message($t_to_uid, $t_from_uid, $t_subject, $t_content)) {
 
                 if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
                 email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
@@ -461,7 +463,7 @@ if ($valid && isset($_POST['submit'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+                if ($new_mid = pm_send_message($t_to_uid, $t_from_uid, $t_subject, $t_content)) {
 
                     if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
                     email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));

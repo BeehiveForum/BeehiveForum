@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.72 2005-03-19 17:53:34 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.73 2005-03-28 19:43:35 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -313,24 +313,31 @@ function form_quick_button($href, $label, $var = false, $value = false, $target 
 {
     $webtag = get_webtag($webtag_search);
 
-    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" ";
-    echo "target=\"$target\">";
-    echo "  ", form_input_hidden("webtag", $webtag), "\n";
+    $html = "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" target=\"$target\">";
+    $html.= form_input_hidden("webtag", $webtag);
 
     if ($var) {
+
         if (is_array($var)) {
+
             for ($i = 0; $i < count($var); $i++) {
+
                 if (!is_array($var[$i])) {
-                    echo form_input_hidden($var[$i], $value[$i]);
+
+                    $html.= form_input_hidden($var[$i], $value[$i]);
                 }
             }
+
         }else {
-            echo form_input_hidden($var, $value);
+
+            $html.= form_input_hidden($var, $value);
         }
     }
 
-    echo form_submit(md5(uniqid(rand())), $label);
-    echo "</form>";
+    $html.= form_submit(md5(uniqid(rand())), $label);
+    $html.= "</form>";
+
+    return $html;
 }
 
 // create the date of birth dropdowns for prefs. $show_blank controls whether to show

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.29 2005-03-14 13:27:20 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.30 2005-03-28 19:43:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,7 +94,7 @@ if (isset($_POST['submit'])) {
         light_html_draw_top();
 
         echo "<p>{$lang['youhaveloggedout']}</p>";
-        form_quick_button("./llogon.php", $lang['ok']);
+        echo form_quick_button("./llogon.php", $lang['ok']);
 
         light_html_draw_bottom();
         exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.61 2005-03-14 13:27:19 decoyduck Exp $ */
+/* $Id: email.php,v 1.62 2005-03-28 19:43:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -157,7 +157,7 @@ if (isset($_POST['submit'])) {
             echo "<p>{$lang['msgfail']}</p>";
         }
 
-        form_quick_button("./user_profile.php", $lang['continue'], "uid", $to_uid);
+        echo form_quick_button("./user_profile.php", $lang['continue'], "uid", $to_uid);
         html_draw_bottom();
         exit;
     }

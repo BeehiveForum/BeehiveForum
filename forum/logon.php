@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.146 2005-03-14 13:27:20 decoyduck Exp $ */
+/* $Id: logon.php,v 1.147 2005-03-28 19:43:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -92,9 +92,9 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
 
     if (isset($final_uri)) {
-        form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
+        echo form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
     }else {
-        form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+        echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
     }
 
     echo "</div>\n";
@@ -181,9 +181,9 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         echo "<p>{$lang['cookiessuccessfullydeleted']}</p>";
 
         if (isset($final_uri)) {
-            form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
+            echo form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
         }else {
-            form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
         }
 
         html_draw_bottom();
@@ -228,9 +228,9 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
             echo "<p>{$lang['loggedinsuccessfully']}</p>\n";
 
             if (isset($final_uri)) {
-                form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
+                echo form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
             }else {
-               form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+               echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
             }
 
             echo "</div>\n";
@@ -247,9 +247,9 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
 
         if (isset($final_uri)) {
-            form_quick_button("./index.php", $lang['back'], "final_uri", rawurlencode($final_uri), "_top");
+            echo form_quick_button("./index.php", $lang['back'], "final_uri", rawurlencode($final_uri), "_top");
         }else {
-            form_quick_button("./index.php", $lang['back'], false, false, "_top");
+            echo form_quick_button("./index.php", $lang['back'], false, false, "_top");
         }
 
         echo "<hr width=\"350\" />\n";

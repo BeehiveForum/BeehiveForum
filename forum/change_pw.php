@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.48 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.49 2005-03-28 19:43:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
             echo "<div align=\"center\">\n";
             echo "<p>{$lang['passedchangedexp']}</p>\n";
 
-            form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
 
             echo "</div>\n";
 

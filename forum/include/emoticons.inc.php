@@ -21,14 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.42 2005-03-28 00:16:06 tribalonline Exp $ */
+/* $Id: emoticons.inc.php,v 1.43 2005-03-28 19:43:35 decoyduck Exp $ */
 
 // Emoticon filter file
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
-
 
 class Emoticons
 {

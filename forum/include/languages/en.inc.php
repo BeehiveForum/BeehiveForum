@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.249 2005-03-26 23:49:09 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.250 2005-03-28 19:43:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -415,8 +415,6 @@ $lang['usercanmoderatelinkssection'] = "User can moderate Links section";
 $lang['userisbanned'] = "User is banned";
 $lang['useriswormed'] = "User is wormed";
 
-
-
 $lang['groupcanaccessadmintools'] = "Group can access admin tools";
 $lang['groupisbanned'] = "Group is banned";
 $lang['groupiswormed'] = "Group is wormed";
@@ -441,7 +439,10 @@ $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
 
 $lang['newuserregistrations'] = "New User Registrations";
+$lang['preventuseofduplicateemailaddresses'] = "Prevent use of duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
+$lang['requireemailconfirmation'] = "Require email confirmation";
+$lang['usetextcaptcha'] = "Use Text Captcha";
 
 $lang['newuserpreferences'] = "New User Preferences";
 
@@ -667,7 +668,7 @@ $lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maxim
 $lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
 $lang['forum_settings_help_28'] = "This setting allows your forum to be spidered by search engines like Google, Altavista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
-$lang['forum_settings_help_29'] = "If you don't want any new user signups you can change this option. Doing so will make the registration form unavailable.";
+$lang['forum_settings_help_29'] = "<b>Allow new user registrations</b> allows or disallows the creation of new user accounts. Setting the option to no completely disables the registration form.";
 $lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your choosen Wiki.";
 $lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended Wiki links which create hyperlinks to the specified message / user profile of the specified user.";
 $lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify the URI of your WikiWiki. When entering the URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
@@ -680,6 +681,9 @@ $lang['forum_settings_help_38'] = "When setting Restricted or Password Protected
 $lang['forum_settings_help_39'] = "<b>Min search frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
 $lang['forum_settings_help_40'] = "<b>Minimum Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
 $lang['forum_settings_help_41'] = "The above options change the default values for the user registration form. Where applicable other settings will use the forum's own default settings.";
+$lang['forum_settings_help_42'] = "<b>Prevent use of duplicate email addresses</b> forces Beehive to check the user accounts against the email address the user is registering with and prompts them to use another if it is already in use.";
+$lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enabled will send an email to each new user with a link that can be used to confirm their email address. Until they confirm their email address they will not be able to post unless their user permissions are changed manually by an admin.";
+$lang['forum_settings_help_44'] = "<b>Use Text Captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -802,6 +806,18 @@ $lang['pwchangeemail_7'] = "immediatly to correct it.";
 
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
 $lang['hasinvalidemailaddress'] = "has an invalid email address";
+
+$lang['emailconfirmationrequired'] = "Email confirmation required";
+
+$lang['confirmemail_1'] = "Hello";
+$lang['confirmemail_2'] = "You recently created a new user account on ";
+$lang['confirmemail_2'] = "Before you can start posting we need to confirm your email address.";
+$lang['confirmemail_3'] = "Don't worry this is quite easy. All you need to do is click the link";
+$lang['confirmemail_4'] = "below (or copy and paste it into your browser):";
+$lang['confirmemail_5'] = "Once confirmation is complete you may login and start posting immediatly.";
+$lang['confirmemail_6'] = "If you did not create a user account on ";
+$lang['confirmemail_7'] = "please accept our apologies and forward this email to";
+$lang['confirmemail_8'] = "so that the source of it may be investigated.";
 
 // Error handler (errorhandler.inc.php) --------------------------------
 
@@ -1107,6 +1123,7 @@ $lang['emailaddressrequired'] = "Email address is required!";
 $lang['logonnotpermitted'] = "Logon not permitted. Choose another!";
 $lang['nicknamenotpermitted'] = "Nickname not permitted. Choose another!";
 $lang['emailaddressnotpermitted'] = "Email Address not permitted. Choose another!";
+$lang['emailaddressalreadyinuse'] = "Email Address already in use. Choose another!";
 $lang['relationshipsupdated'] = "Relationships Updated";
 $lang['relationshipupdatefailed'] = "Relationship updated failed!";
 $lang['jan'] = "January";
@@ -1292,7 +1309,10 @@ $lang['emailrequired'] = "An email address is required";
 $lang['passwdsdonotmatch'] = "Passwords do not match";
 $lang['usernamesameaspasswd'] = "Username and password must be different";
 $lang['usernameexists'] = "Sorry, a user with that name already exists";
-$lang['userrecordcreated'] = "Huzzah! Your user record has been created successfully!";
+$lang['successfullycreateduseraccount'] = "Successfully created user account";
+$lang['useraccountcreatedconfirmfailed'] = "Your user account has been created but the required confirmation email was not sent. Please contact the forum owner to rectify this. In this meantime please click the continue button to login in.";
+$lang['useraccountcreatedconfirmsuccess'] = "Your user account has been created but before you can start posting you must confirm your email address. Please check your email for a link that will allow you to confirm your address.";
+$lang['useraccountcreated'] = "Your user account has been created successfully! Click the continue button below to login";
 $lang['errorcreatinguserrecord'] = "Error creating user record";
 $lang['userregistration'] = "User Registration";
 $lang['registrationinformationrequired'] = "Registration Information (Required)";

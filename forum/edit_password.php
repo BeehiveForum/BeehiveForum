@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.37 2005-03-14 13:27:18 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.38 2005-03-28 19:43:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -204,7 +204,7 @@ if (isset($_POST['submit'])) {
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['passwdchanged']}</p>";
 
-            form_quick_button("./edit_password.php", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./edit_password.php", $lang['continue'], false, false, "_top");
 
             html_draw_bottom();
             exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.88 2005-03-15 21:29:46 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.89 2005-03-28 19:43:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -365,6 +365,65 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     return false;
 }
 
+function email_send_user_confirmation($tuid)
+{
+    if (!check_mail_variables()) return false;
+
+    if (!is_numeric($tuid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_settings = forum_get_settings();
+    $webtag = get_webtag($webtag_search);
+
+    if ($to_user = user_get($tuid)) {
+
+        // Validate the email address before we continue.
+
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+
+        // get the right language for the email
+        $lang = email_get_language($to_user['UID']);
+
+        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+
+        $subject = "{$lang['emailconfirmationrequired']} $forum_name";
+
+        $message = "{$lang['confirmemail_1']} {$to_user['NICKNAME']},\n\n";
+        $message.= "{$lang['confirmemail_2']} $forum_name.\n";
+        $message.= "{$lang['confirmemail_3']}\n";
+        $message.= "{$lang['confirmemail_4']}\n";
+
+        $message.= "http://{$_SERVER['HTTP_HOST']}";
+
+        if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
+            $message.= dirname($_SERVER['PHP_SELF']);
+        }
+
+        $message.= "/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}";
+        $message.= "{$lang['confirmemail_5']}\n\n";
+        $message.= "{$lang['confirmemail_6']}\n";
+        $message.= "{$lang['confirmemail_7']} $forum_email\n";
+        $message.= "{$lang['confirmemail_8']}\n";
+
+        $header = "From: \"$forum_name\" <$forum_email>\n";
+        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+        $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+        $header.= "X-Mailer: PHP/". phpversion();
+
+        // SF.net Bug #1040563:
+        // -------------------
+        // RFC2822 compliancy requires that the RCPT TO portion of the
+        // email headers only contain the email address in < >
+        // i.e. <someuser@abeehiveforum.net>
+
+        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+    }
+
+    return false;
+}
+
 // fetches the correct language file for the UID ($to_uid) who the email is being sent to
 
 function email_get_language($to_uid)
@@ -387,6 +446,21 @@ function email_get_language($to_uid)
 
     require("./include/languages/{$default_language}.inc.php");
     return $lang;
+}
+
+function email_is_unique($email_address)
+{
+    $db_email_is_unique = db_connect();
+
+    $email_address = addslashes($email_address);
+
+    $sql = "SELECT COUNT(*) AS EMAIL_COUNT FROM USER ";
+    $sql.= "WHERE EMAIL = '$email_address'";
+
+    $result = db_query($sql, $db_email_is_unique);
+    list($email_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($email_count == 0);
 }
 
 function check_mail_variables()

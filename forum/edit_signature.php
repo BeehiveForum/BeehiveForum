@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.50 2005-03-19 17:53:33 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.51 2005-03-28 19:43:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -151,7 +151,7 @@ if (isset($_POST['submit'])) {
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['preferencesupdated']}</p>";
 
-            form_quick_button("./edit_signature.php", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./edit_signature.php", $lang['continue'], false, false, "_top");
 
             html_draw_bottom();
             exit;

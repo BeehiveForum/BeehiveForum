@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.174 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: messages.php,v 1.175 2005-03-28 19:43:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -362,7 +362,7 @@ echo "</p></td>\n";
 echo "    <td width=\"33%\" align=\"right\">";
 if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
-    form_quick_button("./messages.php", "{$lang['keepreading']} &gt;&gt;", "msg", "$tid.$npid");
+    echo form_quick_button("./messages.php", "{$lang['keepreading']} &gt;&gt;", "msg", "$tid.$npid");
 } else {
         echo "&nbsp;";
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.24 2005-03-26 23:49:09 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.25 2005-03-28 19:43:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,6 +133,24 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['allow_new_registrations'] = "Y";
     }else {
         $new_forum_settings['allow_new_registrations'] = "N";
+    }
+
+    if (isset($_POST['require_unique_email']) && $_POST['require_unique_email'] == "Y") {
+        $new_forum_settings['require_unique_email'] = "Y";
+    }else {
+        $new_forum_settings['require_unique_email'] = "N";
+    }
+
+    if (isset($_POST['require_email_confirmation']) && $_POST['require_email_confirmation'] == "Y") {
+        $new_forum_settings['require_email_confirmation'] = "Y";
+    }else {
+        $new_forum_settings['require_email_confirmation'] = "N";
+    }
+
+    if (isset($_POST['use_text_capatcha']) && $_POST['use_text_capatcha'] == "Y") {
+        $new_forum_settings['use_text_capatcha'] = "Y";
+    }else {
+        $new_forum_settings['use_text_capatcha'] = "N";
     }
 
     if (isset($_POST['new_user_email_notify']) && $_POST['new_user_email_notify'] == "Y") {
@@ -293,7 +311,7 @@ if (isset($_POST['submit'])) {
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['forumsettingsupdated']}</p>";
 
-            form_quick_button("./admin_default_forum_settings.php", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./admin_default_forum_settings.php", $lang['continue'], false, false, "_top");
 
             html_draw_bottom();
             exit;
@@ -417,12 +435,27 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"270\">{$lang['allownewuserregistrations']}:</td>\n";
+echo "                        <td width=\"300\">{$lang['allownewuserregistrations']}:</td>\n";
 echo "                        <td>", form_radio("allow_new_registrations", "Y", $lang['yes'], (isset($default_forum_settings['allow_new_registrations']) && $default_forum_settings['allow_new_registrations'] == 'Y') || !isset($default_forum_settings['allow_new_registrations'])), "&nbsp;", form_radio("allow_new_registrations", "N", $lang['no'], (isset($default_forum_settings['allow_new_registrations']) && $default_forum_settings['allow_new_registrations'] == 'N')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"300\">{$lang['preventuseofduplicateemailaddresses']}:</td>\n";
+echo "                        <td>", form_radio("require_unique_email", "Y", $lang['yes'], (isset($default_forum_settings['require_unique_email']) && $default_forum_settings['require_unique_email'] == 'Y')), "&nbsp;", form_radio("require_unique_email", "N", $lang['no'], (isset($default_forum_settings['require_unique_email']) && $default_forum_settings['require_unique_email'] == 'N') || !isset($default_forum_settings['require_unique_email'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"300\">{$lang['requireemailconfirmation']}:</td>\n";
+echo "                        <td>", form_radio("require_email_confirmation", "Y", $lang['yes'], (isset($default_forum_settings['require_email_confirmation']) && $default_forum_settings['require_email_confirmation'] == 'Y')), "&nbsp;", form_radio("require_email_confirmation", "N", $lang['no'], (isset($default_forum_settings['require_email_confirmation']) && $default_forum_settings['require_email_confirmation'] == 'N') || !isset($default_forum_settings['require_email_confirmation'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"300\">{$lang['usetextcaptcha']}:</td>\n";
+echo "                        <td>", form_radio("use_text_capatcha", "Y", $lang['yes'], (isset($default_forum_settings['use_text_capatcha']) && $default_forum_settings['use_text_capatcha'] == 'Y')), "&nbsp;", form_radio("use_text_capatcha", "N", $lang['no'], (isset($default_forum_settings['use_text_capatcha']) && $default_forum_settings['use_text_capatcha'] == 'N') || !isset($default_forum_settings['use_text_capatcha'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                       <td colspan=\"2\" >\n";
 echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_29']}</p>\n";
+echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_42']}</p>\n";
+echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_43']}</p>\n";
+echo "                         <p class=\"smalltext\">{$lang['forum_settings_help_44']}</p>\n";
 echo "                       </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

@@ -169,9 +169,9 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
             }
 
             $new_pid = post_create($t_tid,$t_rpid,$HTTP_COOKIE_VARS['bh_sess_uid'],$HTTP_POST_VARS['t_to_uid'],$t_content);
-            if(!$newthread){
-                email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
-            }
+            
+            email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
+            email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
         }
     } else {
         $new_pid = 0;
@@ -312,7 +312,7 @@ if($newthread){
     echo "<tr><td>Select folder:</td></tr>\n";
     echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
     echo "<tr><td>Thread title:</td></tr>\n";
-    echo "<tr><td>".form_input_text("t_threadtitle",stripslashes(htmlentities($t_threadtitle)),64,64);
+    echo "<tr><td>".form_input_text("t_threadtitle",stripslashes(htmlentities($t_threadtitle)),30,64);
     echo "\n";
     echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
     echo "</table>\n";

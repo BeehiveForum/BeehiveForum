@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.2 2004-05-19 21:12:59 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.3 2004-05-19 21:17:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -143,7 +143,7 @@ if ($user_groups_array = perm_get_user_groups()) {
     foreach ($user_groups_array as $user_group) {
 
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;<a href=\"admin_user_group_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                  <td>&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
         echo "                </tr>\n";
     }
 

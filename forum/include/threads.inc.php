@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.134 2004-08-09 00:25:44 rowan_hill Exp $ */
+/* $Id: threads.inc.php,v 1.135 2004-08-09 00:49:35 rowan_hill Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -953,6 +953,28 @@ function threads_mark_read($tidarray)
 
         list($ctlength) = db_fetch_array($result);
         messages_update_read($ctid, $ctlength, bh_session_get_value('UID'));
+    }
+}
+
+function threads_draw_discussions_dropdown($mode)
+{
+
+    $lang = load_language_file();
+
+    if (bh_session_get_value('UID') == 0) {
+
+        $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
+        echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
+
+    }else {
+
+        $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
+                        $lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
+                        $lang['iverecentlyseen'],$lang['iveignored'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
+                        $lang['unreadstartedbyfriend'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['unreadtoday']);
+ 
+        echo form_dropdown_array("mode",range(0,16),$labels,$mode,"onchange=\"submit()\""). "\n";
+
     }
 }
 

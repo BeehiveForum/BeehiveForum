@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.37 2004-11-24 18:27:23 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.38 2004-11-25 09:02:14 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -1576,7 +1576,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         $word  = addslashes(trim($word));
 
         $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-        $sql.= "VALUES ('$word', SUBSTR(SOUNDEX('$word'), 1, 4), 0)";
+        $sql.= "VALUES ('$word', SUBSTRING(SOUNDEX('$word'), 1, 4), 0)";
 
         if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.12 2004-11-24 18:27:23 decoyduck Exp $ */
+/* $Id: install.php,v 1.13 2004-11-25 09:02:13 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -112,7 +112,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
         $db_cpassword = "";
     }
 
-    if ($install_method == 0) {
+    if (isset($install_method) && $install_method == 0) {
 
         if (isset($_POST['admin_username']) && strlen(trim(_stripslashes($_POST['admin_username']))) > 0) {
             $admin_username = trim(_stripslashes($_POST['admin_username']));
@@ -465,6 +465,7 @@ echo "        button.disabled = true;\n";
 echo "    } else if (button) {\n";
 echo "        button.onclick = null;\n";
 echo "    }\n";
+echo "    return true;\n";
 echo "}\n\n";
 echo "//-->\n";
 echo "</script>\n";
@@ -483,7 +484,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     }
 
     echo "<div align=\"center\">\n";
-    echo "<form method=\"post\" action=\"install.php\">\n";
+    echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td width=\"500\">\n";
@@ -496,11 +497,11 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Choose Installation Method:</td>\n";
-    echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" dir=\"ltr\"><option value=\"install\" selected=\"selected\">New Install</option><option value=\"upgrade\">Upgrade</option></select></td>\n";
+    echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" dir=\"ltr\"><option value=\"install\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option><option value=\"upgrade\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Upgrade</option></select></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) ? $forum_webtag : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">&nbsp;</td>\n";
@@ -533,7 +534,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Database Name:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Username:</td>\n";
@@ -594,16 +595,16 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td width=\"250\">&nbsp;</td>\n";
+    echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td width=\"250\">The installation process may take several minutes to complete. Please click the Install button once and once only. Clicking it multiple times may cause your installation to become corrupted.</td>\n";
+    echo "      <td><p>The installation process may take several minutes to complete. Please click the Install button once and once only. Clicking it multiple times may cause your installation to become corrupted.</p></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td width=\"250\">&nbsp;</td>\n";
+    echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" class=\"button\" onclick=\"disable_button(this);\" /></td>\n";
+    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"disable_button(this); install_form.submit()\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

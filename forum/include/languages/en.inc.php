@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.143 2004-06-13 22:52:00 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.144 2004-06-19 11:30:35 decoyduck Exp $ */
 
 // International English language file
 
@@ -111,6 +111,7 @@ $lang['name'] = "Name";
 $lang['description'] = "Description";
 $lang['date'] = "Date";
 $lang['view'] = "View";
+$lang['enterpasswd'] = "Enter Password";
 $lang['passwd'] = "Password";
 $lang['ignored'] = "Ignored";
 $lang['guest'] = "Guest";
@@ -708,6 +709,8 @@ $lang['noforumsavailable'] = "There are no forums available.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 $lang['defaultforumsettings'] = "Default Forum Settings";
 $lang['unnamedforum'] = "Unnamed Forum";
+$lang['passwdprotectedforum'] = "Password Protected Forum";
+$lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.69 2004-06-18 19:56:30 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.70 2004-06-19 11:30:34 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -41,9 +41,9 @@ function get_table_prefix()
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
+        if (isset($_GET['webtag'])) {
             $webtag = trim($_GET['webtag']);
-        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {
+        }else if (isset($_POST['webtag'])) {
             $webtag = trim($_POST['webtag']);
         }else {
             $webtag = false;
@@ -54,15 +54,17 @@ function get_table_prefix()
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
 
-            $sql = "SELECT F.FID, CONCAT(F.WEBTAG, '', '_') AS PREFIX  FROM FORUMS F ";
+            $sql = "SELECT F.FID, F.WEBTAG, CONCAT(F.WEBTAG, '', '_') AS PREFIX, F.ACCESS_LEVEL FROM FORUMS F ";
             $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 ";
+            $sql.= "OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
             $sql.= "AND F.WEBTAG = '$webtag'";
 
             $result = db_query($sql, $db_get_table_prefix);
 
             if (db_num_rows($result) > 0) {
                 $forum_data = db_fetch_array($result);
+		forum_check_password($forum_data);
                 return $forum_data;
             }
         }
@@ -72,15 +74,17 @@ function get_table_prefix()
             // Check #2: Try and select a default webtag from
             // the databse
 
-            $sql = "SELECT F.FID, CONCAT(F.WEBTAG, '', '_') AS PREFIX  FROM FORUMS F ";
+            $sql = "SELECT F.FID, F.WEBTAG, CONCAT(F.WEBTAG, '', '_') AS PREFIX, F.ACCESS_LEVEL FROM FORUMS F ";
 	    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 ";
+            $sql.= "OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
 	    $sql.= "AND F.DEFAULT_FORUM = 1";
 
             $result = db_query($sql, $db_get_table_prefix);
 
             if (db_num_rows($result) > 0) {
                 $forum_data = db_fetch_array($result);
+		forum_check_password($forum_data);
 	        return $forum_data;
             }
         }
@@ -114,9 +118,10 @@ function get_webtag(&$webtag_search)
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
 
-            $sql = "SELECT F.WEBTAG FROM FORUMS F ";
+            $sql = "SELECT F.FID, F.WEBTAG, F.ACCESS_LEVEL FROM FORUMS F ";
             $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 ";
+            $sql.= "OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
             $sql.= "AND F.WEBTAG = '$webtag'";
 
             $result = db_query($sql, $db_get_webtag);
@@ -124,6 +129,7 @@ function get_webtag(&$webtag_search)
             if (db_num_rows($result) > 0) {
 
                 $webtag_data = db_fetch_array($result);
+	        forum_check_password($webtag_data);
 	        return $webtag_data['WEBTAG'];
             }
         }
@@ -133,16 +139,17 @@ function get_webtag(&$webtag_search)
             // Check #2: Try and select a default webtag from
             // the databse
 
- 	    $sql = "SELECT F.WEBTAG FROM FORUMS F ";
+ 	    $sql = "SELECT F.FID, F.WEBTAG, F.ACCESS_LEVEL FROM FORUMS F ";
 	    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 ";
+            $sql.= "OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
 	    $sql.= "AND F.DEFAULT_FORUM = 1";
 
             $result = db_query($sql, $db_get_webtag);
 
             if (db_num_rows($result) > 0) {
-
                 $webtag_data = db_fetch_array($result);
+		forum_check_password($webtag_data);
                 return $webtag_data['WEBTAG'];
             }
         }
@@ -152,6 +159,79 @@ function get_webtag(&$webtag_search)
     }
 
     return $webtag_data['WEBTAG'];
+}
+
+function forum_check_password($forum_data)
+{
+    $db_forum_check_password = db_connect();
+
+    $page_array = array('forums.php', 'index.php', 'logon.php', 'nav.php', 'register.php');
+
+    if (isset($forum_data['ACCESS_LEVEL']) && $forum_data['ACCESS_LEVEL'] == 2) {
+
+        if (isset($_COOKIE["{$forum_data['WEBTAG']}_PASSWORD"])) {
+
+            $passwd = md5($_COOKIE["{$forum_data['WEBTAG']}_PASSWORD"]);
+
+	    $sql = "SELECT * FROM FORUMS WHERE FID = '{$forum_data['FID']}' ";
+	    $sql.= "AND ACCESS_LEVEL = 2 AND FORUM_PASSWD = '$passwd'";
+
+            $result = db_query($sql, $db_forum_check_password);
+
+	    if (db_num_rows($result) > 0) return true;
+	}
+
+	if (in_array(basename($_SERVER['PHP_SELF']), $page_array)) return true;
+	if (preg_match("/^admin[a-z_]*\.php$/", basename($_SERVER['PHP_SELF']))) return true;
+
+	$lang = load_language_file();
+
+	html_draw_top();
+
+	echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
+	echo "<p>{$lang['passwdprotectedwarning']}</p>\n";
+	echo "<div align=\"center\">\n";
+	echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
+	echo "  ", form_input_hidden('webtag', $forum_data['WEBTAG']), "\n";
+	echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+	echo "                  <td>{$lang['passwd']}</td>\n";
+        echo "                  <td>", form_input_password('forum_password', '', 32), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
+	echo "</div>\n";
+
+	html_draw_bottom();
+	exit;
+    }
+
+    return true;
 }
 
 function get_forum_settings()
@@ -795,7 +875,7 @@ function forum_delete($fid)
     return false;
 }
 
-function forum_update_access($fid, $access)
+function forum_update_access($fid, $access, $passwd = false)
 {
     if (!is_numeric($fid)) return false;
     if (!is_numeric($access)) return false;
@@ -813,7 +893,19 @@ function forum_update_access($fid, $access)
 
 	if (db_num_rows($result) > 0) {
 
-	    $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' WHERE FID = '$fid'";
+	    if ($passwd) {
+
+	        $passwd = md5($passwd);
+
+	        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access', ";
+	        $sql.= "FORUM_PASSWD = '$passwd' WHERE FID = '$fid'";
+
+            }else {
+
+	        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access', ";
+	        $sql.= "WHERE FID = '$fid'";
+            }
+
 	    $result = db_query($sql, $db_forum_update_access);
 
 	    $sql = "SELECT * FROM USER_FORUM WHERE FID = '$fid' AND UID = '$uid'";
@@ -925,82 +1017,91 @@ function forum_search($search_string)
 {
     $uid = bh_session_get_value('UID');
 
-    $search_string = addslashes(trim($search_string));
-    $search_string = preg_replace("/[^\w]/", "", $search_string);
+    if (strlen(trim($search_string)) > 0) {
 
-    $keywords_array = explode(" ", $search_string);
+        $keywords_array = explode(" ", $search_string);
 
-    $db_forum_search = db_connect();
-    $forum_search_array = array();
+	foreach($keywords_array as $key => $value) {
+	    $keywords_array[$key] = addslashes($value);
+	}
 
-    $forum_webtag_sql = "FORUMS.WEBTAG LIKE '%";
-    $forum_webtag_sql.= implode("%' OR FORUMS.WEBTAG LIKE '%", $keywords_array);
-    $forum_webtag_sql.= "%'";
+        $db_forum_search = db_connect();
+        $forum_search_array = array();
 
-    $forum_settings_sql = "FORUM_SETTINGS.SVALUE LIKE '%";
-    $forum_settings_sql.= implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $keywords_array);
-    $forum_settings_sql.= "%'";
+        $forum_webtag_sql = "FORUMS.WEBTAG LIKE '%";
+        $forum_webtag_sql.= implode("%' OR FORUMS.WEBTAG LIKE '%", $keywords_array);
+        $forum_webtag_sql.= "%'";
 
-    $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG FROM FORUM_SETTINGS ";
-    $sql.= "LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
-    $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED <=> 1)) ";
-    $sql.= "AND $forum_webtag_sql OR (FORUM_SETTINGS.SNAME = 'forum_keywords' ";
-    $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_desc' ";
-    $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_name' ";
-    $sql.= "AND ($forum_settings_sql))";
+        $forum_settings_sql = "FORUM_SETTINGS.SVALUE LIKE '%";
+        $forum_settings_sql.= implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $keywords_array);
+        $forum_settings_sql.= "%'";
 
-    $result = db_query($sql, $db_forum_search);
+        $sql = "SELECT DISTINCT FORUMS.FID, FORUMS.WEBTAG FROM FORUM_SETTINGS ";
+        $sql.= "LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
+        $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
+        $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
+        $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
+        $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED <=> 1)) ";
+        $sql.= "AND $forum_webtag_sql OR (FORUM_SETTINGS.SNAME = 'forum_keywords' ";
+        $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_desc' ";
+        $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_name' ";
+        $sql.= "AND ($forum_settings_sql))";
 
-    if (db_num_rows($result) > 0) {
+        $result = db_query($sql, $db_forum_search);
 
-        while ($forum_data = db_fetch_array($result)) {
+        if (db_num_rows($result) > 0) {
 
-            $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
-            $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
+            while ($forum_data = db_fetch_array($result)) {
 
-	    $result_forum_name = db_query($sql, $db_forum_search);
+                if (isset($forum_data['FID']) && isset($forum_data['WEBTAG'])) {
 
-	    if (db_num_rows($result_forum_name)) {
+                    $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
+                    $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
 
-	        $row = db_fetch_array($result_forum_name);
-	        $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
+	            $result_forum_name = db_query($sql, $db_forum_search);
 
-	    }else {
+	            if (db_num_rows($result_forum_name)) {
 
-	        $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
+	                $row = db_fetch_array($result_forum_name);
+	                $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
+
+	            }else {
+
+	                $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
+	            }
+
+                    $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+                    $result_post_count = db_query($sql, $db_forum_search);
+
+                    if (db_num_rows($result_post_count)) {
+
+                        $row = db_fetch_array($result_post_count);
+                        $forum_data['MESSAGES'] = $row['POST_COUNT'];
+
+                    }else {
+
+                        $forum_data['MESSAGES'] = 0;
+                    }
+
+                    $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
+                    $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
+                    $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
+
+                    $result_description = db_query($sql, $db_forum_search);
+
+                    if (db_num_rows($result_description)) {
+
+                        $row = db_fetch_array($result_description);
+                        $forum_data['DESCRIPTION'] = $row['SVALUE'];
+
+                    }else{
+
+                       $forum_data['DESCRIPTION'] = "";
+                    }
+
+                    $forum_search_array[$forum_data['FID']] = $forum_data;
+		}
 	    }
-
-            $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
-            $result_post_count = db_query($sql, $db_forum_search);
-
-            if (db_num_rows($result_post_count)) {
-
-                $row = db_fetch_array($result_post_count);
-                $forum_data['MESSAGES'] = $row['POST_COUNT'];
-
-            }else {
-
-                $forum_data['MESSAGES'] = 0;
-            }
-
-            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
-            $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
-            $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
-
-            $result_description = db_query($sql, $db_forum_search);
-
-            if (db_num_rows($result_description)) {
-
-                $row = db_fetch_array($result_description);
-                $forum_data['DESCRIPTION'] = $row['SVALUE'];
-
-            }else{
-
-                $forum_data['DESCRIPTION'] = "";
-            }
-
-            $forum_search_array[$forum_data['FID']] = $forum_data;
         }
 
         return $forum_search_array;

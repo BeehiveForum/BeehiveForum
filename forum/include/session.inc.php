@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.117 2004-06-18 19:56:30 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.118 2004-06-19 11:30:34 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -65,7 +65,7 @@ function bh_session_check($add_guest_sess = true)
 	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
 	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
+	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0, {$table_data['FID']})) ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
 	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
 	    $sql.= "GROUP BY USER.UID";
@@ -84,6 +84,22 @@ function bh_session_check($add_guest_sess = true)
 	if (db_num_rows($result) > 0) {
 
 	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
+
+            // We need to check here to see if the user is
+	    // banned from this forum as the login check
+	    // may have failed because they weren't logging
+	    // in to a specific forum.
+
+            if (isset($user_sess['STATUS']) && $user_sess['STATUS'] & USER_PERM_BANNED) {
+
+                if (!strstr(php_sapi_name(), 'cgi')) {
+                    header("HTTP/1.0 500 Internal Server Error");
+                }else {
+                    echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
+                }
+
+		exit;
+            }
 
 	    if (is_numeric($table_data['FID'])) {
 

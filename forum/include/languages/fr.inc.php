@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.86 2004-06-03 16:46:46 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.87 2004-06-19 11:33:17 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -700,6 +700,9 @@ $lang['noforumsavailable'] = "There are no forums available.";
 $lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
 $lang['defaultforumsettings'] = "Default Forum Settings";
 $lang['unnamedforum'] = "Unnamed Forum";
+$lang['enterpasswd'] = "Enter Password";
+$lang['passwdprotectedforum'] = "Password Protected Forum";
+$lang['passwdprotectedwarning'] = "This forum is password protected. To gain access enter the password below.";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 
@@ -1061,6 +1064,8 @@ $lang['searchdiscussions'] = "Chercher la discussion";
 $lang['containingallwords'] = "Contenir tous les mots";
 $lang['containinganywords'] = "Contenir n'importe quel des mots";
 $lang['containingexactphrase'] = "Contenir la phrase exacte";
+$lang['usingbooleanquery'] = "Use boolean query";
+$lang['searchbyuser'] = "Search by user (optional)";
 $lang['find'] = "Découverte";
 $lang['wordsshorterthan_1'] = "Les mots plus courts que";
 $lang['wordsshorterthan_2'] = "les caractères ne seront pas inclus";

@@ -125,6 +125,8 @@ $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
 if($closed) $foldertitle .= " (closed)";
 
+$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+
 $msg_count = count($messages);
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
@@ -150,14 +152,14 @@ if($msg_count > 0){
             
           }else {
           
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true);
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, $show_sigs);
             $last_pid = $message['PID'];
             
           }
           
         }else {
         
-          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true);
+          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, false, $show_sigs);
           $last_pid = $message['PID'];
           
         }

@@ -49,8 +49,8 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
     // for threads with unread messages, so the UID needs to be passed to the function
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
-    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP, ";
-    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP ";
+    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
+    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP ";
     $sql .= "from " . forum_table("POST") . " POST ";
     $sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
     $sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
@@ -98,7 +98,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
             $messages[$i]['VIEWED'] = @$message['VIEWED'];
             $messages[$i]['CONTENT'] = '';
             $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
-            $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $messages['TO_RELATIONSHIP'] : 0;
+            $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
             $messages[$i]['FNICK'] = $message['FNICK'];
             $messages[$i]['FLOGON'] = $message['FLOGON'];
 
@@ -158,7 +158,7 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
 {
 
     global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length, $attachment_dir;
@@ -202,15 +202,15 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
 
-    if($message['FROM_RELATIONSHIP'] == 1) {
+    if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
-    } else if($message['FROM_RELATIONSHIP'] == -1) {
+    } else if($message['FROM_RELATIONSHIP'] & USER_IGNORED) {
         echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
     }
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if($message['FROM_RELATIONSHIP'] < 0 && $limit_text) {
+    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
         echo "<b>Ignored message</b>";
     } else {
         if($in_list) {
@@ -228,9 +228,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
-        if($message['TO_RELATIONSHIP'] == 1) {
+        if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
-        } else if($message['TO_RELATIONSHIP'] == -1) {
+        } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
         }
 
@@ -246,8 +246,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td>\n";
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if($message['FROM_RELATIONSHIP'] == -1 && $limit_text && $in_list) {
-        echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
+    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list) {
+        echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
     }else if($in_list) {
         if ($is_poll) {
@@ -259,7 +259,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "&nbsp;</span></td></tr>\n";
     echo "</table></td></tr>\n";
 
-    if(!($message['FROM_RELATIONSHIP'] == -1 && $limit_text)) {
+    if(($message['FROM_RELATIONSHIP'] ^ USER_IGNORED) || !$limit_text) {
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
         if($in_list) {
             echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
@@ -275,6 +275,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
         }
         echo "&nbsp;</span></td></tr>\n";
+
+		if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
+			$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
+			$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
+			$msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
+			$message['CONTENT'] = "";
+			for ($i=0; $i<count($msg_split); $i++) {
+				if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
+				$message['CONTENT'] .= $msg_split[$i];
+			}
+			$message['CONTENT'] .= "</div>";
+		}
 
         echo "<tr><td class=\"postbody\">". $message['CONTENT'];
         if ($tid <> 0 && isset($message['PID'])) {
@@ -332,8 +344,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
                 echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
-                echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Ignore User</a>";
+                echo "&nbsp;<a href=\"user_rel.php?uid=".$message['FROM_UID']."&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
             }
+
+/*			if($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG){
+                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
+                echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."&sig=1\" target=\"_self\">Stop Ignoring Signature</a>";
+			} else {
+                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
+                echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."&sig=1\" target=\"_self\">Ignore Signature</a>";
+			}*/
 
             if(perm_is_soldier()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" />";

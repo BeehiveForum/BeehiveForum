@@ -290,7 +290,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || ($HTTP_GET_VARS['folder'] == $folder_number)) {
+	if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || ($HTTP_GET_VARS['folder'] == $fid)) {
 
             if (is_array($thread_info)) {
 

@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysqli.inc.php,v 1.3 2005-03-18 23:58:56 decoyduck Exp $ */
+/* $Id: db_mysqli.inc.php,v 1.4 2005-03-19 20:39:50 decoyduck Exp $ */
 
 function db_connect()
 {
-    global $db_server, $db_username, $db_password, $db_database, $show_friendly_errors;
+    global $db_server, $db_username, $db_password, $db_database;
 
     static $connection_id = false;
 
@@ -39,6 +39,8 @@ function db_connect()
                 return $connection_id;
             }
         }
+
+        trigger_error(mysqli_connect_error(), E_USER_ERROR);
     }
 
     return $connection_id;
@@ -59,11 +61,11 @@ function db_enable_big_selects($connection_id)
 
 function db_query($sql, $connection_id)
 {
-    if ($result = mysqli_query($connection_id, $sql)) {
+    if (@$result = mysqli_query($connection_id, $sql)) {
         return $result;
     }
 
-    db_trigger_error($connection_id);
+    db_trigger_error($connection_id, $sql);
 }
 
 function db_unbuffered_query ($sql, $connection_id)
@@ -91,10 +93,10 @@ function db_insert_id($result)
     return mysqli_insert_id($result);
 }
 
-function db_trigger_error($connection_id)
+function db_trigger_error($connection_id, $sql)
 {
     $errstr = db_error($connection_id);
-    trigger_error($errstr, E_USER_ERROR);
+    trigger_error("$errstr\n\n$sql", E_USER_ERROR);
 }
 
 function db_error($result)

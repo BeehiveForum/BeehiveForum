@@ -206,7 +206,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
 
     $temp_ignore = false;
-    
+
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
         $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
@@ -246,7 +246,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
         }
-      
+
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
             echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span";
         }else {
@@ -327,13 +327,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                       echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
                       echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\"";
-                        
+
                       if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
                         echo " target=\"_blank\"";
                       }else {
                         echo " target=\"_self\"";
                       }
-                        
+
                       echo " title=\"";
 
                       if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
@@ -371,17 +371,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
 
                 if ($is_poll && $message['PID'] == 1) {
-                
+
                   echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
                   echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
-                  
+
                 }else {
 
                   echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
                   echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
 
                 }
-                
+
             }
 
             if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
@@ -422,13 +422,13 @@ function message_display_deleted($tid,$pid)
 
 function messages_start_panel()
 {
-    echo "<p>&nbsp;</p>\n";
-    echo "<div align=\"center\"><table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\">";
+    //echo "<p>&nbsp;</p>\n";
+    echo "<p align=\"center\"><table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\">";
 }
 
 function messages_end_panel()
 {
-    echo "</td></tr></table></div>";
+    echo "</td></tr></table></p>";
 }
 
 function messages_nav_strip($tid,$pid,$length,$ppp)

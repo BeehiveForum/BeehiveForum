@@ -43,7 +43,7 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
       foreach($poll_options as $option_name) {
 
         if (!empty($option_name)) {
-        
+
           $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
           $sql.= "values ('$tid', '". addslashes($option_name). "')";
 
@@ -65,30 +65,30 @@ function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show
 {
 
     $db_poll_edit = db_connect();
-    
+
     // Delete the recorded user votes for this poll
-    
+
     $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
-    
+
     // Update the Poll settings
-    
+
     $sql = "update ". forum_table("POLL"). " set CHANGEVOTE = '$change_vote', POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results' ";
     if ($closes) $sql.= ", CLOSES = '$closes' ";
     $sql.= "where TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
-    
+
     // Delete the available options for the poll
-    
+
     $sql = "delete from ". forum_table("POLL_VOTES"). " where TID = '$tid'";
-    $result = db_query($sql, $db_poll_edit);    
-    
+    $result = db_query($sql, $db_poll_edit);
+
     // Insert the new poll options
-      
+
     foreach($poll_options as $option_name) {
 
       if (!empty($option_name)) {
-        
+
         $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
         $sql.= "values ('$tid', '". addslashes($option_name). "')";
 
@@ -97,9 +97,9 @@ function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show
       }
 
     }
-                  
+
 }
-      
+
 
 function poll_get($tid)
 {
@@ -160,19 +160,19 @@ function poll_user_has_voted($tid)
     $sql = "SELECT POLL_VOTES.OPTION_ID FROM ". forum_table('POLL_VOTES'). " POLL_VOTES ";
     $sql.= "LEFT JOIN ". forum_table('USER_POLL_VOTES'). " USER_POLL_VOTES ON ";
     $sql.= "(POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID) ";
-    $sql.= "WHERE POLL_VOTES.VOTES > 0 AND POLL_VOTES.TID = $tid AND USER_POLL_VOTES.PTUID = MD5($tid.$uid)"; 
-    
+    $sql.= "WHERE POLL_VOTES.VOTES > 0 AND POLL_VOTES.TID = $tid AND USER_POLL_VOTES.PTUID = MD5($tid.$uid)";
+
     $result = db_query($sql, $db_poll_get_votes);
-    
+
     if (db_num_rows($result)) {
-    
+
       list($vote) = db_fetch_array($result);
       return $vote;
-      
+
     }else {
-    
+
       return false;
-      
+
     }
 
 }
@@ -449,10 +449,10 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
     $polldata['CONTENT'].= "<br><br>\n";
-    
+
     // Work out what relationship the user has to the user who posted the poll
     $polldata['FROM_RELATIONSHIP'] = user_rel_get($HTTP_COOKIE_VARS['bh_sess_uid'], $polldata['FROM_UID']);
-    
+
     message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs, $is_preview);
 
 }
@@ -558,16 +558,14 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
     for ($i = 1; $i <= sizeof($pollresults); $i++) {
 
       if (!empty($pollresults[$i]['OPTION_NAME'])) {
-      
-        if ($totalvots > 0) {
 
-          $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['VOTES'], 2). "%)</td>\n";
-          
+        if ($totalvotes > 0) {
+          $vote_percent = round((100 / $totalvotes) * $pollresults[$i]['VOTES'], 2);
         }else {
-        
-          $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " votes (". round((100 / sizeof($pollresults)), 2). "%)</td>\n";
-          
+          $vote_percent = 0;
         }
+
+        $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"top\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " votes (". $vote_percent. "%)</td>\n";
 
       }
 
@@ -584,42 +582,42 @@ function poll_confirm_close($tid)
 {
 
     global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
-    
+
     if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse();
         return;
-    }    
-    
+    }
+
     $preview_message = messages_get($tid, 1, 1);
-    
+
     if($preview_message['TO_UID'] == 0) {
-    
+
         $preview_message['TLOGON'] = "ALL";
         $preview_message['TNICK'] = "ALL";
-        
+
     }else {
-    
+
         $preview_tuser = user_get($preview_message['TO_UID']);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-        
+
     }
-    
+
     $preview_fuser = user_get($preview_message['FROM_UID']);
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
-    
+
     echo "<h2>Are you sure you want to close the following Poll?</h2>\n";
-    
+
     poll_display($tid, $preview_message, 0, 0, false);
-    
+
     echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
     echo form_submit("pollclose", "End Poll");
     echo "&nbsp;".form_submit("cancel", "Cancel");
     echo "</form>\n";
-    
+
 }
 
 function poll_close($tid)
@@ -679,7 +677,7 @@ function poll_delete_vote($tid)
 
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
-    $sql = "select OPTION_ID from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)"; 
+    $sql = "select OPTION_ID from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_delete_vote);
 
     if (db_num_rows($result) > 0) {
@@ -689,7 +687,7 @@ function poll_delete_vote($tid)
       $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES - 1 where OPTION_ID = ". $userpollvote['OPTION_ID']. " and TID = $tid";
       $result = db_query($sql, $db_poll_delete_vote);
 
-      $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)"; 
+      $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)";
       $result = db_query($sql, $db_poll_delete_vote);
 
     }

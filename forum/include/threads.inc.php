@@ -87,7 +87,7 @@ function threads_get_all($uid) // get "all" threads (i.e. most recent threads, i
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -109,7 +109,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -132,7 +132,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
@@ -158,7 +158,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -181,7 +181,7 @@ function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
 	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
 	$sql .= "WHERE THREAD.fid in ($folders) ";
@@ -203,7 +203,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
 	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
 	$sql .= "WHERE THREAD.fid in ($folders) ";
@@ -226,7 +226,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
 	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
 	$sql .= "WHERE THREAD.fid in ($folders) ";
@@ -249,7 +249,7 @@ function threads_get_folder($uid,$fid) // get messages recently seem by $uid
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
 	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
 	$sql .= "WHERE THREAD.fid = $fid ";
@@ -294,6 +294,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 			$lst[$i]['last_read'] = 0;
 		}
 
+        $lst[$i]['interest'] = $thread['interest'];
 		$lst[$i]['modified'] = $thread['modified'];
 
 	    }

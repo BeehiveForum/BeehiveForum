@@ -31,18 +31,18 @@ require_once("./include/form.inc.php");
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }else {
-    $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/discussion.php";
+    $final_uri = "./discussion.php";
 }
 
 if (strstr($final_uri, 'logout.php')) {
-    $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/discussion.php";
+    $final_uri = "./discussion.php";
 }
 
 if(bh_session_check()) {
 
     html_draw_top();
     echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>";
-    echo "<p><a href=\"". $final_uri. "\">Continue</a></p>";
+    echo "<p><a href=\"./index.php?". $final_uri. "\">Continue</a></p>";
     html_draw_bottom();
     exit;
     
@@ -100,7 +100,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
       
-          header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST']. $final_uri);
+          header_redirect("./index.php?final_uri=". urlencode($final_uri));
           
       }else { // IIS bug prevents redirect at same time as setting cookies.
       
@@ -109,13 +109,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
           // Try a Javascript redirect
           echo "<script language=\"javascript\" type=\"text/javascript\">\n";
           echo "<!--\n";
-          echo "document.location.href = 'http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri ."';\n";
+          echo "document.location.href = './index.php?final_uri=". urlencode($final_uri). "';\n";
           echo "//-->\n";
           echo "</script>";
           
           // If they're still here, Javascript's not working. Give up, give a link.
           echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
           echo "<p>You logged in successfully.</p>";
+          echo form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri));
 
           html_draw_bottom();
           exit;
@@ -174,7 +175,7 @@ if (isset($HTTP_GET_VARS['other'])) {
 }
    
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\">\n";
+echo "<form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
 echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
 echo "</tr>\n</table>\n";
@@ -240,7 +241,7 @@ echo form_submit();
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
 echo "</form>\n";
-echo "<form name=\"guest\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "?final_uri=%2Fforum%2Fstart.php&". md5(uniqid(rand())). "\" method=\"POST\">\n";
+echo "<form name=\"guest\" action=\"". get_request_uri(). "&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
 echo "<p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
 echo "</form></div>\n";
 echo "<div align=\"center\">\n";

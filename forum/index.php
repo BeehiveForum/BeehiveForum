@@ -25,13 +25,11 @@ USA
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
-
-header_no_cache();
-$logged_in = bh_session_check();
-
 require_once("./include/config.inc.php");
 
-if(isset($default_style)){
+header_no_cache();
+
+if(isset($default_style)) {
     $user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
     $top_html = "./styles/$user_style/top.html";
 } else {
@@ -41,43 +39,50 @@ if(isset($default_style)){
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<title><?php echo $forum_name; ?></title>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link rel="stylesheet" href="styles.php?<?php echo md5(uniqid(rand())); ?>" type="text/css">
-	</head>
-	<frameset rows="60,*" border="0">
+<head>
+<title><?php echo $forum_name; ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="styles.php?<?php echo md5(uniqid(rand())); ?>" type="text/css">
+</head>
 <?php
 
-echo "<frame src=\"$top_html\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>";
+if(bh_session_check()) {
 
-if($logged_in){
+    echo "<frameset rows=\"60,20,*\" border=\"0\">\n";
+    echo "<frame src=\"". $top_html. "\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
+    echo "<frame src=\"./nav.php\" name=\"nav\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
 
-    if(isset($HTTP_GET_VARS['msg'])){
-        echo "          <frame src=\"./discussion.php?msg=".$HTTP_GET_VARS['msg'];
-    } else {
-        echo "          <frame src=\"./start.php";
+    if (isset($HTTP_GET_VARS['final_uri'])) {
+
+      echo "<frame src=\"". urldecode($HTTP_GET_VARS['final_uri']). "\" name=\"main\" border=\"1\">\n";
+      
+    }else if (isset($HTTP_GET_VARS['msg'])) {
+    
+      echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" border=\"1\">\n";
+      
+    }else {
+    
+      echo "<frame src=\"./start.php\" name=\"main\" border=\"1\">\n";
+      
     }
-
-    echo "\" name=\"main\" border=\"1\">";
 
 } else {
 
+    echo "<frameset rows=\"60,*\" border=\"0\">\n";
+    echo "<frame src=\"". $top_html. "\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
     echo "<frame src=\"./logon.php?final_uri=";
     
-    if(isset($HTTP_GET_VARS['msg'])){
-        $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']). "/discussion.php?msg=". $HTTP_GET_VARS['msg'];
+    if(isset($HTTP_GET_VARS['msg'])) {
+        $final_uri = "./discussion.php?msg=". $HTTP_GET_VARS['msg'];
     } else {
-        $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']). "/start.php";
+        $final_uri = "./start.php";
     }
-    
-    $final_uri = str_replace("\\", "", $final_uri);
-    $final_uri = str_replace("//", "/", $final_uri);
     
     echo urlencode($final_uri);
     echo "\" name=\"main\" border=\"1\">\n";
     
 }
+
 ?>
-	</frameset>
+</frameset>
 </html>

@@ -77,38 +77,63 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 }
   
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
-  
-  // Work out when the poll will close.
-    
-  if ($HTTP_POST_VARS['closepoll'] == 0) {
-    $poll_closes = gmmktime() + DAY_IN_SECONDS;
-  }elseif ($HTTP_POST_VARS['closepoll'] == 1) {
-    $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
-  }elseif ($HTTP_POST_VARS['closepoll'] == 2) {        
-    $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
-  }elseif ($HTTP_POST_VARS['closepoll'] == 3) {        
-    $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
-  }elseif ($HTTP_POST_VARS['closepoll'] == 4) {        
-    $poll_closes = 0;
-  }
-    
-  // Check HTML tick box, innit.
-    
-  for ($i = 0; $i < 5; $i++) {
-    if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
-      $HTTP_POST_VARS['answers'][$i] = fix_html(stripslashes($HTTP_POST_VARS['answers'][$i]));
-    }else {
-      $HTTP_POST_VARS['answers'][$i] = make_html(stripslashes($HTTP_POST_VARS['answers'][$i]));
-    }
-  }
-    
-  $HTTP_POST_VARS['question'] = trim($HTTP_POST_VARS['question']);
-    
-  // Create the poll thread with the poll_flag set to Y
 
-  $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y');
-  $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');    
-  poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
+  $db = db_connect();
+    
+  $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
+  $result = db_query($sql,$db);
+    
+  if(db_num_rows($result) > 0) {
+    
+      db_query($sql, $db);
+      list($ddkey) = db_fetch_array($result);
+      $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
+        
+  }else{
+    
+      $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
+      $ddkey = "";
+        
+  }
+    
+  db_query($sql,$db);
+  db_disconnect($db);
+  
+  if($ddkey != $HTTP_POST_VARS['t_dedupe']) {
+  
+    // Work out when the poll will close.
+    
+    if ($HTTP_POST_VARS['closepoll'] == 0) {
+      $poll_closes = gmmktime() + DAY_IN_SECONDS;
+    }elseif ($HTTP_POST_VARS['closepoll'] == 1) {
+      $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
+    }elseif ($HTTP_POST_VARS['closepoll'] == 2) {        
+      $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
+    }elseif ($HTTP_POST_VARS['closepoll'] == 3) {        
+      $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
+    }elseif ($HTTP_POST_VARS['closepoll'] == 4) {        
+      $poll_closes = 0;
+    }
+    
+    // Check HTML tick box, innit.
+    
+    for ($i = 0; $i < 5; $i++) {
+      if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
+        $HTTP_POST_VARS['answers'][$i] = fix_html(stripslashes($HTTP_POST_VARS['answers'][$i]));
+      }else {
+        $HTTP_POST_VARS['answers'][$i] = make_html(stripslashes($HTTP_POST_VARS['answers'][$i]));
+      }
+    }
+    
+    $HTTP_POST_VARS['question'] = trim($HTTP_POST_VARS['question']);
+    
+    // Create the poll thread with the poll_flag set to Y
+
+    $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y');
+    $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');    
+    poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
+    
+  }
     
   $uri = "./discussion.php?msg=$tid.1";   
   header_redirect($uri);
@@ -127,6 +152,15 @@ if(isset($error_html)) echo $error_html. "\n";
 
 ?>
 <form name="f_poll" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST" target="_self">
+<?php
+
+if(isset($HTTP_POST_VARS['t_dedupe'])) {
+    echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
+}else{
+    echo form_input_hidden("t_dedupe", date("YmdHis"));
+}
+
+?>
   <table border="0" cellpadding="0" cellspacing="0" width="500">
     <tr>
       <td><h2>Select folder</h2></td>

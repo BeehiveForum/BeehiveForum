@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.130 2004-09-14 20:18:12 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.131 2004-09-29 19:57:50 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -412,31 +412,25 @@ function style_image($img)
         return "./images/$img";
 }
 
-function bh_setcookie($name, $value, $expires = 0)
+function bh_setcookie($name, $value, $expires = 0, $secure = 0)
 {
     global $cookie_domain;
 
+    if (!is_numeric($expires)) $expires = 0;
+    if (!is_numeric($secure)) $secure = 0;
+
     if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0 && !defined('BEEHIVEMODE_LIGHT')) {
-
-        $cookie_domain = preg_replace("/^http:\/\//", "", trim($cookie_domain));
-
-        $cookie_path = preg_replace("/\\\/", "/", $cookie_domain);
-        $cookie_path = explode('/', $cookie_domain);
-
-        $cookie_domain = $cookie_path[0]; unset($cookie_path[0]);
-
-        $cookie_path = implode('/', $cookie_path);
-
-        $cookie_path = preg_replace("/[\/]+$/", "", $cookie_path);
-        $cookie_path = preg_replace("/^[\/]+/", "", $cookie_path);
-
-        $cookie_path = preg_replace("/[\/]+/", "/", "/$cookie_path/");
 
         if (isset($_SERVER['HTTP_HOST']) && !strstr($_SERVER['HTTP_HOST'], 'localhost')) {
 
+            $cookie_domain_array = parse_url($cookie_domain);
+
+            $cookie_domain = (isset($uri_array['host'])) ? "{$uri_array['host']}" : $_SERVER['HTTP_HOST'];
+            $cookie_path   = (isset($uri_array['path'])) ? "{$uri_array['path']}" : '/';
+
             if (strstr($_SERVER['HTTP_HOST'], $cookie_domain)) {
 
-                return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, 0);
+                return setcookie($name, $value, $expires, $cookie_path, $cookie_domain, $secure);
             }
         }
     }

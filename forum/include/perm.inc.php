@@ -28,7 +28,7 @@ require_once("./include/constants.inc.php");
 function perm_is_moderator()
 {
     global $HTTP_COOKIE_VARS;
-    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WORKER);
+    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.19 2003-08-31 18:15:11 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.20 2003-09-03 15:21:33 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -45,21 +45,6 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-// Get the Message ID (MID)
-
-if (isset($HTTP_GET_VARS['replyto'])) {
-    $mid = $HTTP_GET_VARS['replyto'];
-}elseif (isset($HTTP_POST_VARS['replyto'])) {
-    $mid = $HTTP_POST_VARS['replyto'];
-}
-
-if (isset($mid) && !($pm_elements_array = pm_single_get($mid, PM_FOLDER_INBOX, bh_session_get_value('UID')))) {
-    html_draw_top();
-    pm_error_refuse();
-    html_draw_bottom();
-    exit;
-}
-
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/fixhtml.inc.php");
@@ -70,46 +55,17 @@ require_once("./include/pm.inc.php");
 require_once("./include/email.inc.php");
 require_once("./include/attachments.inc.php");
 
-// User clicked cancel
+// Get the Message ID (MID) if any.
 
-if (isset($HTTP_POST_VARS['cancel'])) {
-    if (isset($mid)) {
-        $uri = "./pm.php?mid=$mid";
-    }else {
-        $uri = "./pm.php";
-    }
-    header_redirect($uri);
+if (isset($HTTP_GET_VARS['replyto'])) {
+    $mid = $HTTP_GET_VARS['replyto'];
+}elseif (isset($HTTP_POST_VARS['replyto'])) {
+    $mid = $HTTP_POST_VARS['replyto'];
 }
 
-// Assume everything is correct (form input, etc)
+// Get the To UID
 
-$valid = true;
-
-// Check to see if the PM is a reply and modify the subject line
-
-if (isset($mid)) {
-
-    if ($pm_data = pm_single_get($mid, PM_FOLDER_INBOX)) {
-        if (!isset($HTTP_POST_VARS['t_subject']) || trim($HTTP_POST_VARS['t_subject']) == "") {
-            $t_subject = $pm_data['SUBJECT'];
-            if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
-                $t_subject = "RE:". $t_subject;
-            }
-        }
-    }
-}
-
-// HTML tickbox
-
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    $t_post_html = "Y";
-}
-
-// Fetch the TO_UID value
-
-if (isset($HTTP_POST_VARS['t_to_uid'])) {
-    $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
-}elseif (isset($HTTP_GET_VARS['uid'])) {
+if (isset($HTTP_GET_VARS['uid'])) {
     $t_to_uid = $HTTP_GET_VARS['uid'];
 }elseif (isset($mid)) {
     $t_to_uid = pm_get_user($mid);
@@ -117,24 +73,34 @@ if (isset($HTTP_POST_VARS['t_to_uid'])) {
     $t_to_uid = 0;
 }
 
-// 'Other' Button was used to specify a username
+// Check the MID to see if it is valid and accessible.
 
-if (substr($t_to_uid, 0, 2) == "U:") {
-
-    $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
-
-    if ($touser = user_get($u_login)) {
-
-        $HTTP_POST_VARS['t_to_uid'] = $touser['UID'];
-        $t_to_uid = $touser['UID'];
-
-    }else{
-
-        $error_html = "<h2>{$lang['invalidusername']}</h2>";
-        $valid = false;
-
+if (isset($mid)) {
+    if ($pm_data = pm_single_get($mid, PM_FOLDER_INBOX)) {
+        if (!isset($HTTP_POST_VARS['t_subject']) || trim($HTTP_POST_VARS['t_subject']) == "") {
+            $t_subject = $pm_data['SUBJECT'];
+            if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
+                $t_subject = "Re:". $t_subject;
+            }
+        }
+    }else {
+        html_draw_top();
+        pm_error_refuse();
+        html_draw_bottom();
+        exit;
     }
 }
+
+// User clicked cancel
+
+if (isset($HTTP_POST_VARS['cancel'])) {
+    $uri = "./pm.php". (isset($mid)) ? "?mid=$mid" : "";
+    header_redirect($uri);
+}
+
+// Assume everything is correct (form input, etc)
+
+$valid = true;
 
 // User clicked the submit button - check the data that was submitted
 
@@ -143,23 +109,40 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
     if (isset($HTTP_POST_VARS['t_subject']) && trim($HTTP_POST_VARS['t_subject']) != "") {
         $t_subject = trim($HTTP_POST_VARS['t_subject']);
     }else {
-        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>";
+        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
         $t_content = $HTTP_POST_VARS['t_content'];
     }else {
-        $error_html = "<h2>{$lang['entercontentformessage']}</h2>";
+        $error_html = "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
     }
+
+    if (isset($HTTP_POST_VARS['t_to_uid']) && $HTTP_POST_VARS['t_to_uid'] <> 0) {
+        $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
+    }else {
+        $error_html = "<h2>{$lang['nouserspecified']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
+        $t_to_logon = substr($HTTP_POST_VARS['t_to_uid'], 2);
+        if ($touser = user_get_uid($t_to_logon)) {
+            $to_to_uid = $touser['UID'];
+        }else {
+            $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+            $valid = false;
+        }
+    }
+
+    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
+        $t_post_html = "Y";
+    }else {
+        $t_post_html = "N";
+    }
 }
-
-// Required variables - make sure they are initialised
-
-$t_content = isset($t_content) ? _stripslashes($t_content) : "";
-$t_subject = isset($t_subject) ? _stripslashes($t_subject) : "";
-$t_post_html = isset($t_post_html) ? $t_post_html : "";
 
 // Process the data based on what we know.
 
@@ -175,7 +158,6 @@ if ($valid) {
         $t_content = _stripslashes($t_content);
     }
 }
-
 
 // Send the PM
 
@@ -195,7 +177,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
             }
             email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
         }else {
-            $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
+            $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
             $valid = false;
         }
     }
@@ -303,7 +285,7 @@ echo "        <tr>\n";
 echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 72). "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td><span class=\"bhinputcheckbox\">", form_checkbox('t_post_html', 'Y', $lang['messagecontainsHTML'], ($t_post_html == 'Y')), "</td>\n";
+echo "          <td><span class=\"bhinputcheckbox\">", form_checkbox('t_post_html', 'Y', $lang['messagecontainsHTML'], (isset($t_post_html) && $t_post_html == 'Y')), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";

@@ -31,12 +31,22 @@ require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 
-// Check that required variables are set
-// default to display all discussions if no other mode specified
-if (!isset($HTTP_GET_VARS['mode'])) { $mode = 0; } else { $mode = $HTTP_GET_VARS['mode']; }
-
-// default to UID 0 (nobody) if no other UID is specified
-if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) { $user = 0; } else { $user = $HTTP_COOKIE_VARS['bh_sess_uid']; }
+// Check that required variables are set, and set them to defaults if they are not
+if (!isset($HTTP_GET_VARS['bh_sess_uid'])) {
+   $user = 0; // if no UID, user is a guest (uid 0)
+   if (!isset($HTTP_GET_VARS['mode'])) {
+      $mode = 0; // can't display unread messages for an unknown user, so default to "All"
+   } else {
+      $mode = $HTTP_GET_VARS['mode'];
+   }
+} else {
+   $user = $HTTP_GET_VARS['bh_sess_uid'];
+   if (!isset($HTTP_GET_VARS['mode'])) {
+      $mode = 1; // if user is logged in, display unread threads by default
+   } else {
+      $mode = $HTTP_GET_VARS['mode'];
+   }
+}
 
 // Output XHTML header
 html_draw_top();
@@ -237,12 +247,8 @@ while (list($key1, $folder) = each($folder_order)) {
 						echo "<img src=\"./images/bullet.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\" />";
 					}
 				}
-				// work out how long ago the thread was posted and format the time to display - this is going to need modification to account for differing timezones
-				if (date("j", $thread['modified']) == date("j") && date("n", $thread['modified']) == date("n") && date("Y", $thread['modified']) == date("Y")) {
-					$thread_time = date("H:i", $thread['modified']);
-				} else {
-					$thread_time = date("j M", $thread['modified']);
-				}
+				// work out how long ago the thread was posted and format the time to display
+	            $thread_time = format_time($thread['modified']);
 				
 				echo "&nbsp;</td><td valign\"top\">";
 				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". thread_get_author($thread['tid']) ."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a> <span class=\"threadxnewofy\">".$number."</span>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.4 2004-06-13 11:49:07 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.5 2004-06-17 16:03:29 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -252,7 +252,7 @@ $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (MID),";
+$sql.= "  PRIMARY KEY (MID),";
 $sql.= "  KEY TO_UID (TO_UID)";
 $sql.= ")";
 
@@ -501,8 +501,8 @@ if(!$result = mysql_query($sql, $db_install)) {
 
 
 $sql = "INSERT INTO {$forum_webtag}_THREAD ";
-$sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-$sql.= "VALUES (1, NULL, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);";
+$sql.= "(FID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+$sql.= "VALUES (1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);";
 
 if(!$result = mysql_query($sql, $db_install)) {
     die($sql. "<br />\n". mysql_error());

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.285 2004-06-07 16:53:11 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.286 2004-06-17 16:03:29 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -867,6 +867,8 @@ function messages_get_most_recent_unread($uid, $fid = false)
     if (db_num_rows($result)) {
 
         while ($row = db_fetch_array($result)) {
+
+            if (!isset($row['RELATIONSHIP'])) $row['RELATIONSHIP'] = 0;
 
             if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
 

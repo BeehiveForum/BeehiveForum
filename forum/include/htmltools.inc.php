@@ -40,9 +40,9 @@ echo '</form>'; */
 
 class TextAreaHTML {
 
-    var $form;                    // name of the form the textareas will belong to
-    var $tas = array();            // array of all the html-enabled textarea's names
-    var $tbs = 0;                // count of all the generated toolbars
+    private $form;                    // name of the form the textareas will belong to
+    private $tas = array();            // array of all the html-enabled textarea's names
+    private $tbs = 0;                // count of all the generated toolbars
 
     function TextAreaHTML ($form) {
         $this->form = $form;

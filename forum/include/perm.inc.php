@@ -31,4 +31,10 @@ function perm_is_moderator()
     return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER);
 }
 
+function perm_is_soldier()
+{
+    global $HTTP_COOKIE_VARS;
+    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_SOLDIER);
+}
+
 ?>

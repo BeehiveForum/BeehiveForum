@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.37 2004-11-25 09:02:13 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.38 2004-11-29 22:52:21 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -185,7 +185,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 6396);";
+$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 14588);";
 
 if (!$result = db_query($sql, $db_install)) {
 

@@ -339,7 +339,8 @@ A		{
 }
 
 .highlight {
-          background-color: #FF6666
+          background-color: #FF6666;
+          font-size: 10pt;
 }
 
 .quotetext {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.45 2003-10-23 19:16:45 uid81631 Exp $ */
+/* $Id: en.inc.php,v 1.46 2003-10-28 15:53:13 decoyduck Exp $ */
 
 // International English language file
 
@@ -539,6 +539,7 @@ $lang['backtothreadlist'] = "Back to thread list";
 $lang['postdoesnotexist'] = "That post does not exist in this thread!";
 $lang['clicktochangevote'] = "Click to change vote";
 $lang['youvotedforoption'] = "You voted for option";
+$lang['youvotedforoptions'] = "You voted for options";
 $lang['clicktovote'] = "Click to vote";
 $lang['youhavenotvoted'] = "You have not voted";
 $lang['viewresults'] = "View Results";

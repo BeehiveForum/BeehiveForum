@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fontsize.php,v 1.6 2003-09-22 20:18:17 decoyduck Exp $ */
+/* $Id: fontsize.php,v 1.7 2003-10-28 15:53:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -59,6 +59,7 @@ if (bh_session_get_value('FONT_SIZE') != '10') {
     echo ".messagefoot       { font-size: ", $fontsize, "pt }\n";
     echo ".notifier          { font-size: ", $fontsize, "pt }\n";
     echo ".subhead           { font-size: ", $fontsize, "pt }\n";
+    echo ".highlight         { font-size: ", $fontsize, "pt }\n";
 
     if ($fontsize > 10) {
         echo ".activeusers       { font-size: ", ($fontsize - 2), "pt }\n";

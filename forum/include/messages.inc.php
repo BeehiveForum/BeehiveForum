@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.268 2004-04-15 15:06:51 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.269 2004-04-15 20:44:26 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -188,8 +188,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length'))) && $limit_text) {
-		$cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
-		$cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
+	$cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
+	$cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
@@ -247,9 +247,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     // OUTPUT MESSAGE ----------------------------------------------------------
 
     echo "<br /><div align=\"center\">\n";
-	if (trim($up_arrow.$down_arrow) != "") {
-	    echo "<table width=\"96%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>$up_arrow$down_arrow</td></tr></table>\n";
-	}
+    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"2%\" valign=\"top\">$up_arrow<br />$down_arrow</td>\n";
+    echo "<td>\n";
     echo "<table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
     echo "<table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\"><tr>\n";
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
@@ -496,7 +495,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "</table>\n";
     }
 
-    echo "</td></tr></table></div>\n";
+    echo "</td></tr></table></td></tr></table></div>\n";
 }
 
 function message_display_deleted($tid,$pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.24 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.25 2004-01-15 19:20:29 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -273,7 +273,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo " {$lang['threads']}";
-            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"./lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
             echo "</p>\n";
 
             if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"./lthread_list.php?mode=0&folder=$folder&start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></i></p>\n";
@@ -344,7 +344,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             }
 
             echo " {$lang['threads']}</a>";
-            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+            if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"./lpost.php?fid=".$folder_number."\">{$lang['postnew']}</a></b>";
             echo "</p>\n";
         }
 

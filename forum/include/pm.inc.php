@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.23 2004-01-15 00:17:21 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.24 2004-01-15 19:20:29 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -344,7 +344,7 @@ function draw_pm_message($pm_elements_array)
             for ($i = 0; $i < sizeof($attachments); $i++) {
 
                 echo "              <img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "\" target=\"_blank\" title=\"";
+                echo "<a href=\"./getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "\" target=\"_blank\" title=\"";
 
                 if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
                     echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
@@ -374,7 +374,7 @@ function draw_pm_message($pm_elements_array)
         echo "          </table>\n";
         echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
         echo "            <tr>\n";
-        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"./pm_write.php?replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
         echo "            </tr>\n";
     }
 

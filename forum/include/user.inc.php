@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.91 2003-09-03 22:32:39 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.92 2003-09-04 14:39:45 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -81,7 +81,7 @@ function user_update($uid, $nickname, $email)
     $db_user_update = db_connect();
 
     $nickname = addslashes(_htmlentities($nickname));
-    $email = addslashes(_htmlentities($nickname));
+    $email = addslashes(_htmlentities($email));
 
     $sql = "UPDATE ". forum_table("USER"). " SET NICKNAME = '$nickname', ";
     $sql.= "EMAIL = '$email' WHERE UID = $uid";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.39 2005-02-28 00:24:40 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.40 2005-03-05 22:36:43 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -161,22 +161,7 @@ light_html_draw_top();
 
 if (isset($error_html)) echo $error_html;
 
-echo "<p>{$lang['welcometolight']}</p>\n";
-echo "<form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"post\">\n";
-
-echo "<p>{$lang['username']}: ";
-echo light_form_input_text("logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
-
-echo "<p>{$lang['passwd']}: ";
-echo light_form_input_password("password", (isset($_COOKIE['bh_light_remember_password']) ? $_COOKIE['bh_light_remember_password'] : "")). "</p>\n";
-
-echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
-
-echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
-
-echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
-
-echo "</form>\n";
+light_draw_logon_form();
 
 light_html_draw_bottom();
 

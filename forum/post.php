@@ -179,15 +179,13 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
         
             if($t_post_html != "Y") {
                 $t_content = make_html($t_content);
-            }else{
-                $t_content = stripslashes($t_content);
             }
 
             if($t_sig) {
                 if($t_sig_html != "Y") {
                     $t_sig = make_html($t_sig);
                 }
-                $t_content .= "\n<div class=\"sig\">". stripslashes($t_sig). "</div>";
+                $t_content .= "\n<div class=\"sig\">". $t_sig. "</div>";
             }
             
             $new_pid = post_create($t_tid, $t_rpid, $HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['t_to_uid'], $t_content);
@@ -272,7 +270,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
     
     }else{
     
-      $preview_message['CONTENT'] = stripslashes($t_content);
+      $preview_message['CONTENT'] = $t_content;
     
     }
         
@@ -288,7 +286,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
         
       }
 
-      $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". stripslashes($preview_sig). "</div>";
+      $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $preview_sig. "</div>";
 
     }else{
 
@@ -382,6 +380,15 @@ if($newthread) {
     
 }
 
+if($t_post_html != "Y") {
+	$t_content = stripslashes($t_content);
+}
+if(isset($t_sig)) {
+	if($t_sig_html != "Y") {
+		$t_sig = stripslashes($t_sig);
+	}
+}
+
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
 echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
 echo "<td>To: \n";
@@ -389,8 +396,8 @@ echo post_draw_to_dropdown($t_to_uid). "&nbsp;";
 echo  "<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\">\n";
 echo "</td></tr></table>\n";
 echo "<table border=\"0\" class=\"posthead\">\n";
-echo "<tr><td>".form_textarea("t_content", htmlspecialchars(stripslashes($t_content)), 12, 80). "</tr></td>";
-echo "<tr><td>Signature:<br />".form_textarea("t_sig", htmlspecialchars(stripslashes($t_sig)), 4, 80). form_input_hidden("t_sig_html", $t_sig_html)."</td></tr>\n";
+echo "<tr><td>".form_textarea("t_content", htmlspecialchars($t_content), 12, 80). "</tr></td>";
+echo "<tr><td>Signature:<br />".form_textarea("t_sig", htmlspecialchars($t_sig), 4, 80). form_input_hidden("t_sig_html", $t_sig_html)."</td></tr>\n";
 echo "<tr><td>".form_checkbox("t_post_html","Y","Contains HTML (not including signature)",($t_post_html == "Y"))."</td></tr>\n";
 echo "</table>\n";
 echo "</td></tr></table>\n";

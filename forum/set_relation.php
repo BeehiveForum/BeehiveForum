@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.17 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: set_relation.php,v 1.18 2003-07-30 21:48:31 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -64,27 +64,19 @@ require_once("./include/forum.inc.php");
 
 if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['rel'])) {
 
-    $uid = $HTTP_GET_VARS['uid'];
-    $rel = $HTTP_GET_VARS['rel'];
-    $myuid = bh_session_get_value('UID');
+    $uid   = bh_session_get_value('UID');
+    $peeruid = $HTTP_GET_VARS['uid'];
+    $rel   = $HTTP_GET_VARS['rel'];
 
-    $db = db_connect();
+    $relationship = user_rel_get($uid, $peeruid);
 
-        $sql = "select RELATIONSHIP from ". forum_table("USER_PEER"). " where UID = '" . $myuid . "' and PEER_UID = '" . $uid . "'";
-        $result = db_query($sql,$db);
-        $rel2 = 0;
-        if(db_num_rows($result)>0){
-                $rel2 = db_fetch_array($result);
-                $rel2 = $rel2['RELATIONSHIP'];
-        }
+    if ($rel == -1) {
+        $relationship = ($relationship & USER_IGNORED_SIG) ? USER_IGNORED_SIG + USER_IGNORED : USER_IGNORED;
+    }else {
+        $relationship = ($relationship & USER_IGNORED_SIG) ? USER_IGNORED_SIG : 0;
+    }
 
-        if ($rel == -1) {
-                $rel2 = ($rel2 & USER_IGNORED_SIG) ? USER_IGNORED_SIG + USER_IGNORED : USER_IGNORED;
-        } else {
-                $rel2 = ($rel2 & USER_IGNORED_SIG) ? USER_IGNORED_SIG : 0;
-        }
-
-        user_rel_update($myuid, $uid, $rel2);
+    user_rel_update($myuid, $peeruid, $relationship);
 
 }else {
 

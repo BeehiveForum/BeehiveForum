@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.10 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: user_profile.inc.php,v 1.11 2003-07-30 21:48:36 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -48,26 +48,38 @@ function user_profile_update($uid,$piid,$entry)
     return $result;
 }
 
-function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")
+function user_get_profile_entries($uid, $psid)
 {
-    $html = "<select name=\"${field_name}${suffix}\">";
-    $db_profile_section_dropdown = db_connect();
+    $db_user_get_profile_entries = db_connect();
 
-    $sql = "select PSID, NAME from " . forum_table("PROFILE_SECTION");
+    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM " . forum_table("PROFILE_ITEM") . " PI ";
+    $sql.= "LEFT JOIN " . forum_table("USER_PROFILE") . " UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
+    $sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
 
-    $result = db_query($sql, $db_profile_section_dropdown);
+    $result = db_query($sql, $db_user_get_profile_entries);
+    $user_profile_array = array();
 
-    $i = 0;
-    while($row = db_fetch_array($result)){
-        $html .= "<option value=\"" . $row['PSID'] . "\"";
-        if($row['PSID'] == $default_psid){
-            $html .= " selected";
-        }
-        $html .= ">" . $row['NAME'] . "</option>";
+    while ($row = db_fetch_array($result)) {
+        $user_profile_array[] = $row;
     }
 
-    $html .= "</select>";
-    return $html;
+    return $user_profile_array;
+}
+
+function user_get_profile_image($uid)
+{
+    $db_user_get_profile_image = db_connect();
+
+    $sql = "select PIC_URL from ". forum_table("USER_PREFS"). " where UID = $uid";
+    $result = db_query($sql, $db_user_get_profile_image);
+
+    $row = db_fetch_array($result);
+
+    if (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) {
+        return $row['PIC_URL'];
+    }else {
+        return false;
+    }
 }
 
 ?>

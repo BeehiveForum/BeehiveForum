@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.15 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: user_rel.php,v 1.16 2003-07-30 21:48:31 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -85,7 +85,13 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
 if (isset($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
-    $user = user_get($uid);
+    if (!$user = user_get($uid)) {
+        html_draw_top();
+        echo "<h1>{$lang['error']}:</h1>";
+        echo "<p>{$lang['invalidusername']}</p>";
+        html_draw_bottom();
+        exit;
+    }
     $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $uid .")\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
 }else {
     html_draw_top();

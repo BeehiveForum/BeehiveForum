@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.14 2004-08-08 20:34:34 tribalonline Exp $ */
+/* $Id: upgrade_script.php,v 1.15 2004-08-08 21:56:45 tribalonline Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -454,7 +454,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  USE_ADMIN_FILTER CHAR(1) DEFAULT 'N' NOT NULL,";
     $sql.= "  ALLOW_EMAIL CHAR(1) DEFAULT 'Y' NOT NULL,";
     $sql.= "  ALLOW_PM CHAR(1) DEFAULT 'Y' NOT NULL,";
-    $sql.= "  POST_PAGE INT(64) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  POST_PAGE INT(32) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY (UID)";
     $sql.= ")";
 
@@ -952,7 +952,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         if (($row['STATUS'] & 32) > 0 || ($row['STATUS'] & 16) > 0 || ($row['STATUS'] & 8) > 0) {
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
-            $sql.= "SELECT $gid, FID, 508 FROM {$forum_webtag}_FOLDER ";
+            $sql.= "SELECT $gid, FID, 6652 FROM {$forum_webtag}_FOLDER ";
             $sql.= "WHERE ACCESS_LEVEL = 0 ";
 
             if (!$result_fid = mysql_query($sql, $db_install)) {
@@ -972,7 +972,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
-    $sql.= "SELECT 0, FID, 252 FROM {$forum_webtag}_FOLDER WHERE ";
+    $sql.= "SELECT 0, FID, 6396 FROM {$forum_webtag}_FOLDER WHERE ";
     $sql.= "ACCESS_LEVEL = 0";
 
     if (!$result = mysql_query($sql, $db_install)) {
@@ -1000,7 +1000,7 @@ foreach($forum_webtag_array as $forum_webtag) {
             list($gid) = mysql_fetch_array($result_gid, MYSQL_NUM);
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
-            $sql.= "VALUES ('$gid', '{$row['FID']}', '252')";
+            $sql.= "VALUES ('$gid', '{$row['FID']}', '6396')";
 
             if (!$result_perm = mysql_query($sql, $db_install)) {
                 $valid = false;
@@ -1024,7 +1024,7 @@ foreach($forum_webtag_array as $forum_webtag) {
             }
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
-            $sql.= "VALUES ('$gid', '{$row['FID']}', '252')";
+            $sql.= "VALUES ('$gid', '{$row['FID']}', '6396')";
 
             if (!$result_perm = mysql_query($sql, $db_install)) {
                 $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.12 2004-08-08 20:34:34 tribalonline Exp $ */
+/* $Id: install_script.php,v 1.13 2004-08-08 21:56:45 tribalonline Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -112,19 +112,19 @@ if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 0, 1536);";
+$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 0, 1792);";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 1, 508);";
+$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 1, 6652);";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 252);";
+$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 6396);";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;
@@ -536,7 +536,7 @@ $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  POST_PAGE INT(64) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  POST_PAGE INT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 

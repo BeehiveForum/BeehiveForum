@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_access.php,v 1.15 2004-01-26 22:26:52 decoyduck Exp $ */
+/* $Id: admin_folder_access.php,v 1.16 2004-02-01 17:44:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -76,7 +76,7 @@ $folder_array = folder_get($fid);
 
 echo "<h1>{$lang['managefolder']} : ", _stripslashes($folder_array['TITLE']), "</h1>\n";
 
-if ($folder_array['ACCESS_LEVEL'] <> 1) {
+if ($folder_array['ACCESS_LEVEL'] < 1) {
     echo "<h2>{$lang['folderisnotrestricted']}</h2>\n";
     html_draw_bottom();
     exit;
@@ -106,7 +106,7 @@ if (isset($HTTP_POST_VARS['add_recent_user'])) {
         user_update_folders($HTTP_POST_VARS['user_add'][$i], $uf);
         admin_addlog($HTTP_POST_VARS['user_add'][$i], 0, 0, 0, 0, 0, 2);
     }
-}elseif (isset($HTTP_POST_VARS['remove_user'])) {
+}elseif (isset($HTTP_POST_VARS['remove_user']) && isset($HTTP_POST_VARS['user_remove']) && is_array($HTTP_POST_VARS['user_remove'])) {
     for ($i = 0; $i < sizeof($HTTP_POST_VARS['user_remove']); $i++) {
         $uf[0]['fid'] = $fid;
         $uf[0]['allowed'] = 0;

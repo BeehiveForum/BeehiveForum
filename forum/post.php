@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.147 2004-01-26 22:26:52 decoyduck Exp $ */
+/* $Id: post.php,v 1.148 2004-02-01 17:44:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -320,8 +320,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         if ($newthread) {
         
             $folderdata = folder_get($t_fid);
-        
-            if ($folderdata['ACCESS_LEVEL'] == 2 && !perm_is_moderator()) {
+            
+            if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($t_fid) && !perm_is_moderator()) {
         
                 html_draw_top();
                 
@@ -333,8 +333,6 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 echo "</td></tr>\n";
  
                 echo "<tr><td align=\"center\">\n";
-                echo form_input_hidden('t_tid', $t_tid);
-                echo form_input_hidden('t_rpid', $t_rpid);
                 echo form_submit('cancel', $lang['cancel']);
                 echo "</td></tr>\n";
                 echo "</table></form>\n";

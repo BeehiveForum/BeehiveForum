@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.68 2004-01-27 21:34:04 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.69 2004-02-01 17:44:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -197,7 +197,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
   
      $folderdata = folder_get($HTTP_POST_VARS['t_fid']);
      
-     if ($folderdata['ACCESS_LEVEL'] == 2 && !perm_is_moderator()) {
+     if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($HTTP_POST_VARS['t_fid']) && !perm_is_moderator()) {
         
        html_draw_top();
                 

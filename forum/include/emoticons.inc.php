@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.29 2004-11-05 21:53:13 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.30 2004-11-06 12:39:51 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -191,23 +191,25 @@ function emoticons_preview ($set, $width=190, $height=100, $num = 35) {
                     }
                 }
 
+                array_multisort($emots_array, SORT_DESC);
+
                 $str.= "<div style=\"width: {$width}px; height: {$height}px\" class=\"emoticon_preview\">\n";
 
-                foreach($emots_array as $emot) {
+                for ($i = 0; $i < min(count($emots_array), $num); $i++) {
 
                     $emot_tooltip_matches = array();
 
-                    foreach ($emot['matches'] as $key => $emot_match) {
+                    foreach ($emots_array[$i]['matches'] as $key => $emot_match) {
 
                         $emot_tooltip_matches[] = htmlentities($emot_match);
                     }
 
                     $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
 
-                    $str.= "<img src=\"$path/{$emot['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode($emot['matches'][0]) ." ');\" /> ";
+                    $str.= "<img src=\"$path/{$emots_array[$i]['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode($emots_array[$i]['matches'][0]) ." ');\" /> ";
                 }
 
-                if ($num < count($emot_match)) {
+                if ($num < count($emots_array)) {
                         $str.= " <b><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
                 }
 

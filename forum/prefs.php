@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.68 2003-08-31 16:21:06 hodcroftcj Exp $ */
+/* $Id: prefs.php,v 1.69 2003-09-01 16:08:08 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -126,12 +126,29 @@ if(isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
 
+    if (isset($HTTP_POST_VARS['sig_content']) && trim($HTTP_POST_VARS['sig_content']) != "") {
+        $sig_content = $HTTP_POST_VARS['sig_content'];
+    }else {
+        $sig_content = "";
+    }
+
+    if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y") {
+        $sig_html = "Y";
+    }else {
+        $sig_html = "N";
+    }
+
+    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $sig_content) && $sig_html != "N") {
+        $error_html = "<h2>You are not allowed to embed attachments in your signature.</h2>\n";
+        $valid = false;
+    }
+
     if ($valid) {
 
-        if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y"){
-            $HTTP_POST_VARS['sig_content'] = fix_html($HTTP_POST_VARS['sig_content']);
+        if ($sig_html == "Y") {
+            $sig_content = fix_html($sig_content);
         }else {
-            $HTTP_POST_VARS['sig_content'] = _stripslashes($HTTP_POST_VARS['sig_content']);
+            $sig_content = _stripslashes($sig_content);
         }
 
         $dob_day   = trim($HTTP_POST_VARS['dob_day']);
@@ -213,9 +230,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
         // Update USER_SIG
 
-        user_update_sig(bh_session_get_value('UID'),
-                        $HTTP_POST_VARS['sig_content'],
-                        isset($HTTP_POST_VARS['sig_html']) ? $HTTP_POST_VARS['sig_html'] : '');
+        user_update_sig(bh_session_get_value('UID'), $sig_content, $sig_html);
 
         // Update the User's Session to save them having to logout and back in
 

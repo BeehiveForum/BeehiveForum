@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.118 2003-08-31 19:02:28 decoyduck Exp $ */
+/* $Id: post.php,v 1.119 2003-09-01 16:08:08 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -154,7 +154,14 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
+
         $t_content = $HTTP_POST_VARS['t_content'];
+
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && isset($t_post_html) && $t_post_html) {
+            $error_html = "<h2>You are not allowed to embed attachments in your posts.</h2>\n";
+            $valid = false;
+        }
+
     }else{
         $t_content = "";
         $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
@@ -164,12 +171,24 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
     $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
 
+    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig) && isset($t_sig_html) && $t_sig_html != "N") {
+        $error_html = "<h2>You are not allowed to embed attachments in your signature.</h2>\n";
+        $valid = false;
+    }
+
 }else{
 
     if (isset($HTTP_POST_VARS['t_tid'])) {
 
         if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
+
             $t_content = $HTTP_POST_VARS['t_content'];
+
+            if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && isset($t_post_html) && $t_post_html) {
+                $error_html = "<h2>You are not allowed to embed attachments in your posts.</h2>\n";
+                $valid = false;
+            }
+
         }else{
             $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
             $valid = false;
@@ -177,6 +196,11 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
 
         $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
         $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
+
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig) && isset($t_sig_html) && $t_sig_html != "N") {
+            $error_html = "<h2>You are not allowed to embed attachments in your signature.</h2>\n";
+            $valid = false;
+        }
 
     }else{
 

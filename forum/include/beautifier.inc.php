@@ -31,6 +31,7 @@ $_beaut_out = new Output_HTML();
 $_beaut_done = array();
 if (!isset($beaut_langs)) $beaut_langs = array();
 foreach($beaut_langs as $_beaut_k => $_beaut_v) {
+	$_beaut_k = strtolower($_beaut_k);
 	if (!isset($_beaut_done[$_beaut_v])) {
 		$_beaut_done[$_beaut_v] = $_beaut_k;
 		include_once("$BEAUT_PATH/HFile/$_beaut_v.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.36 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: getattachment.php,v 1.37 2003-07-28 20:58:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -109,7 +109,7 @@ if (isset($attachment_data[1])) {
                 $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT";
 
                 if (isset($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE'])) {
-                    $remote_last_modified = stripslashes($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']);
+                    $remote_last_modified = _stripslashes($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']);
                 }else {
                     $remote_last_modified = false;
                 }

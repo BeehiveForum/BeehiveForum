@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.9 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: pm.php,v 1.10 2003-07-28 20:58:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -198,7 +198,7 @@ if (sizeof($listmessages_array) == 0) {
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"pm.php?folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
+        echo "<a href=\"pm.php?folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", _stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
 
         if (isset($listmessages_array[$i]['AID'])) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";

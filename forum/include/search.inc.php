@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.100 2005-03-09 18:26:18 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.101 2005-03-09 19:13:14 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -39,18 +39,17 @@ function search_execute($argarray, &$urlquery, &$error)
 
     // Ensure the bare minimum of variables are set
 
-    if (!isset($argarray['method'])) $argarray['method'] = 1;
-    if (!isset($argarray['date_from'])) $argarray['date_from'] = 7;
-    if (!isset($argarray['date_to'])) $argarray['date_to'] = 2;
-    if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;
-    if (!isset($argarray['group_by_thread'])) $argarray['group_by_thread'] = "N";
-    if (!isset($argarray['sstart'])) $argarray['sstart'] = 0;
-    if (!isset($argarray['fid'])) $argarray['fid'] = 0;
-    if (!isset($argarray['me_only'])) $argarray['me_only'] = "N";
-    if (!isset($argarray['include'])) $argarray['include'] = 2;
-    if (!isset($argarray['username'])) $argarray['username'] = "";
-    if (!isset($argarray['user_include'])) $argarray['user_include'] = 1;
-    if (!isset($argarray['forums'])) $argarray['forums'] = $table_data['FID'];
+    if (!isset($argarray['method']) || !is_numeric($argarray['method'])) $argarray['method'] = 1;
+    if (!isset($argarray['date_from']) || !is_numeric($argarray['date_from'])) $argarray['date_from'] = 7;
+    if (!isset($argarray['date_to']) || !is_numeric($argarray['date_to'])) $argarray['date_to'] = 2;
+    if (!isset($argarray['order_by']) || !is_numeric($argarray['order_by'])) $argarray['order_by'] = 1;
+    if (!isset($argarray['group_by_thread']) || !is_numeric($argarray['group_by_thread'])) $argarray['group_by_thread'] = "N";
+    if (!isset($argarray['sstart']) || !is_numeric($argarray['sstart'])) $argarray['sstart'] = 0;
+    if (!isset($argarray['fid']) || !is_numeric($argarray['fid'])) $argarray['fid'] = 0;
+    if (!isset($argarray['include']) || !is_numeric($argarray['include'])) $argarray['include'] = 2;
+    if (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) $argarray['username'] = "";
+    if (!isset($argarray['user_include']) || !is_numeric($argarray['user_include'])) $argarray['user_include'] = 1;
+    if (!isset($argarray['forums']) || !is_numeric($argarray['forums'])) $argarray['forums'] = $table_data['FID'];
 
     $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 
@@ -86,33 +85,38 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $search_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
-    if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
+    if ($argarray['user_include'] == 4) {
 
-        if ($user_uid = user_get_uid($argarray['username'])) {
+        $search_sql.= "AND (POST.TO_UID = '$uid' ";
+        $search_sql.= "OR POST.FROM_UID = '$uid') ";
 
-            if ($argarray['user_include'] == 1) {
+    }else {
 
-                $search_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}'";
+        if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
-            }elseif ($argarray['user_include'] == 2) {
+            if ($user_uid = user_get_uid($argarray['username'])) {
 
-                $search_sql.= "AND POST.TO_UID = '{$user_uid['UID']}'";
+                if ($argarray['user_include'] == 1) {
+
+                    $search_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}'";
+
+                }elseif ($argarray['user_include'] == 2) {
+
+                    $search_sql.= "AND POST.TO_UID = '{$user_uid['UID']}'";
+
+                }else {
+
+                    $search_sql.= "AND (POST.FROM_UID = '{$user_uid['UID']}' ";
+                    $search_sql.= "OR POST.TO_UID = '{$user_uid['UID']}')";
+                }
 
             }else {
 
-                $search_sql.= "AND (POST.FROM_UID = '{$user_uid['UID']}' ";
-                $search_sql.= "OR POST.TO_UID = '{$user_uid['UID']}')";
+                $error = SEARCH_USER_NOT_FOUND;
+                return false;
             }
 
-        }else {
-
-            $error = SEARCH_USER_NOT_FOUND;
-            return false;
         }
-
-    }elseif ($argarray['me_only'] == 'Y') {
-
-        $keyword_search_sql.= "AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') ";
     }
 
     if (strlen(trim($argarray['search_string'])) > 0) {
@@ -148,7 +152,7 @@ function search_execute($argarray, &$urlquery, &$error)
                 $search_sql.= "%') ";
             }
 
-        }else {
+        }elseif ($argarray['user_include'] < 4) {
 
             $error = SEARCH_NO_KEYWORDS;
             return false;
@@ -156,7 +160,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
     }else {
 
-        if (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) {
+        if ((!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) && $argarray['user_include'] < 4) {
 
             $error = SEARCH_NO_KEYWORDS;
             return false;
@@ -164,27 +168,27 @@ function search_execute($argarray, &$urlquery, &$error)
     }
 
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
-        $search_sql.= " GROUP BY THREAD.TID, POST.PID";
+        $search_sql.= " GROUP BY SEARCH_MATCH.TID";
     }else {
-        $search_sql.= " GROUP BY POST.PID";
+        $search_sql.= " GROUP BY SEARCH_MATCH.PID";
     }
 
     if ($argarray['order_by'] == 2) {
-        $search_sql.= " ORDER BY POST.CREATED DESC";
+        $search_sql.= " ORDER BY CREATED DESC";
     }elseif($argarray['order_by'] == 3) {
-        $search_sql.= " ORDER BY POST.CREATED";
+        $search_sql.= " ORDER BY CREATED";
     }
 
-    $search_sql.= " LIMIT ". $argarray['sstart']. ", 50";
+    $search_sql.= " LIMIT {$argarray['sstart']}, 50";
     $search_sql = preg_replace("/ +/", " ", $search_sql);
 
     $result = db_query($search_sql, $db_search_execute);
 
-    $urlquery = "&amp;fid={$argarray['fid']}&amp;date_from={$argarray['date_from']}";
-    $urlquery.= "&amp;date_to={$argarray['date_to']}&amp;search_string=". rawurlencode(trim($argarray['search_string']));
-    $urlquery.= "&amp;method={$argarray['method']}&amp;me_only={$argarray['me_only']}";
-    $urlquery.= "&amp;username={$argarray['username']}&amp;user_include={$argarray['user_include']}";
-    $urlquery.= "&amp;order_by={$argarray['order_by']}&amp;group_by_thread={$argarray['group_by_thread']}";
+    $uriquery = "";
+
+    foreach($argarray as $key => $value) {
+        $uriquery.= "&amp;$key=$value";
+    }
 
     if (db_num_rows($result) > 0) {
 

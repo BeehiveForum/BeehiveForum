@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.236 2005-03-07 22:39:54 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.237 2005-03-09 19:12:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -1305,8 +1305,11 @@ $lang['newestfirst'] = "Newest first";
 $lang['oldestfirst'] = "Oldest first";
 $lang['keywords'] = "Keywords";
 $lang['orderby'] = "Order by";
-$lang['onlyshowmessagestoorfromme'] = "Only show messages to or from me";
-$lang['groupsresultsbythread'] = "Group results by thread";
+$lang['groupbythread'] = "Group by thread";
+$lang['postsfromuser'] = "Posts from user";
+$lang['poststouser'] = "Posts to user";
+$lang['poststoandfromuser'] = "Posts to and from user";
+$lang['poststoandfrommeonly'] = "Posts to and from me only";
 
 // Start page (start_left.php) -----------------------------------------
 

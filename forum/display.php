@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.55 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: display.php,v 1.56 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -148,7 +148,35 @@ $foldertitle = folder_get_title($threaddata['FID']);
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td>", messages_top($foldertitle,_stripslashes($threaddata['TITLE'])), "</td>\n";
+echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
+
+if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
+
+    if ($userpollvote = poll_get_user_vote($tid)) {
+
+        if ($userpollvote ^ POLL_MULTIVOTE) {
+
+            for ($i = 0; $i < sizeof($userpollvote); $i++) {
+
+                $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
+            }
+
+            if (sizeof($userpollvotes_array) > 1) {
+
+                echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
+
+            }else {
+
+                echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
+            }
+        }
+
+    }else {
+
+        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youhavenotvoted']}</td>\n";
+    }
+}
+
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";

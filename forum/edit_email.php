@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.36 2004-08-15 11:40:36 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.37 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -178,7 +178,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['dob_display'])) {
-        $user_prefs['DOB_DISPLAY'] = _stripslashes(trim($_POST['dob_display']));
+        $user_prefs['DOB_DISPLAY'] = trim(_stripslashes($_POST['dob_display']));
     }else {
         $user_prefs['DOB_DISPLAY'] = 0;
     }

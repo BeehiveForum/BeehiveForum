@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.54 2004-11-14 00:45:31 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.55 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -126,9 +126,9 @@ if (isset($_POST['submit'])) {
 
         foreach ($_POST['match'] as $key => $match_text) {
 
-            $match_text = _stripslashes($match_text);
+            $match_text = trim(_stripslashes($match_text));
 
-            $replace_text  = (isset($_POST['replace'][$key])) ? _stripslashes($_POST['replace'][$key]) : "";
+            $replace_text  = (isset($_POST['replace'][$key])) ? trim(_stripslashes($_POST['replace'][$key])) : "";
             $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
 
             if ($filter_option == 2 && preg_match("/e[^\/]*$/i", $match_text)) {

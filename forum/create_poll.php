@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.132 2004-11-14 17:29:48 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.133 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -216,7 +216,7 @@ if (isset($_POST['t_sig_html'])) {
     $fetched_sig = false;
 
     if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
-        $t_sig = _stripslashes($_POST['t_sig']);
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
     }else {
         $t_sig = "";
     }
@@ -256,7 +256,7 @@ if (isset($_POST['cancel'])) {
     if (isset($_POST['question']) && strlen(trim(_stripslashes($_POST['question']))) > 0) {
         $t_question = trim(_stripslashes($_POST['question']));
     }else {
-        $error_html = "<h2>{$lang['mustspecifypollquestion']}</h2>";
+        $error_html = "<h2>{$lang['mustenterpollquestion']}</h2>";
         $valid = false;
     }
 
@@ -413,7 +413,7 @@ if (isset($_POST['cancel'])) {
 }else if (isset($_POST['sig_toggle_x'])) {
 
     if (isset($_POST['t_message_text']) && strlen(trim(_stripslashes($_POST['t_message_text']))) > 0) {
-        $t_message_text = _htmlentities(trim(_stripslashes($_POST['t_message_text'])));
+        $t_message_text = trim(_stripslashes($_POST['t_message_text']));
     }
 
     if (isset($t_sig)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.31 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.32 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -226,8 +226,6 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
             $threaddata['TITLE'] = _htmlentities($t_rename);
             thread_change_title($tid, $threaddata['TITLE']);
-
-            echo $threaddata['TITLE']; exit;
 
             post_add_edit_text($tid, 1);
 

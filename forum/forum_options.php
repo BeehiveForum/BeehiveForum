@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.58 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.59 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -150,7 +150,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['language'])) {
-        $user_prefs['LANGUAGE'] = _stripslashes(trim($_POST['language']));
+        $user_prefs['LANGUAGE'] = trim(_stripslashes($_POST['language']));
     }else {
         $user_prefs['LANGUAGE'] = "";
     }
@@ -220,7 +220,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['pm_auto_prune_length'])) {
-        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = _stripslashes(trim($_POST['pm_auto_prune_length']));
+        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = trim(_stripslashes($_POST['pm_auto_prune_length']));
     } else {
         $user_prefs['PM_AUTO_PRUNE_LENGTH'] = 60;
     }
@@ -285,7 +285,7 @@ if (isset($_POST['submit'])) {
 
 
     if (isset($_POST['posts_per_page'])) {
-        $user_prefs['POSTS_PER_PAGE'] = _stripslashes(trim($_POST['posts_per_page']));
+        $user_prefs['POSTS_PER_PAGE'] = trim(_stripslashes($_POST['posts_per_page']));
     }else {
         $user_prefs['POSTS_PER_PAGE'] = 20;
     }
@@ -298,7 +298,7 @@ if (isset($_POST['submit'])) {
 
 
     if (isset($_POST['font_size'])) {
-        $user_prefs['FONT_SIZE'] = _stripslashes(trim($_POST['font_size']));
+        $user_prefs['FONT_SIZE'] = trim(_stripslashes($_POST['font_size']));
     }else {
         $user_prefs['FONT_SIZE'] = 10;
     }
@@ -310,7 +310,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['style'])) {
-        $user_prefs['STYLE'] = _stripslashes(trim($_POST['style']));
+        $user_prefs['STYLE'] = trim(_stripslashes($_POST['style']));
     }else {
         $user_prefs['STYLE'] = forum_get_setting('default_style');
     }
@@ -322,7 +322,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['emoticons'])) {
-        $user_prefs['EMOTICONS'] = _stripslashes(trim($_POST['emoticons']));
+        $user_prefs['EMOTICONS'] = trim(_stripslashes($_POST['emoticons']));
     }else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons');
     }
@@ -334,7 +334,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['start_page'])) {
-        $user_prefs['START_PAGE'] = _stripslashes(trim($_POST['start_page']));
+        $user_prefs['START_PAGE'] = trim(_stripslashes($_POST['start_page']));
     }else {
         $user_prefs['START_PAGE'] = 0;
     }

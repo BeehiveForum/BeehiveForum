@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.36 2004-10-10 13:38:25 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.37 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,9 +120,9 @@ if (isset($_POST['submit'])) {
 
     // Required Fields
 
-    if (isset($_POST['nickname']) && trim($_POST['nickname']) != "") {
+    if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
 
-        $user_info['NICKNAME'] = _stripslashes(trim($_POST['nickname']));
+        $user_info['NICKNAME'] = trim(_stripslashes($_POST['nickname']));
 
     }else {
 
@@ -130,9 +130,9 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['email']) && trim($_POST['email']) != "") {
+    if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
 
-        $user_info['EMAIL'] = _stripslashes(trim($_POST['email']));
+        $user_info['EMAIL'] = trim(_stripslashes($_POST['email']));
 
     }else {
 
@@ -142,9 +142,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $dob['DAY']   = _stripslashes(trim($_POST['dob_day']));
-        $dob['MONTH'] = _stripslashes(trim($_POST['dob_month']));
-        $dob['YEAR']  = _stripslashes(trim($_POST['dob_year']));
+        $dob['DAY']   = trim(_stripslashes($_POST['dob_day']));
+        $dob['MONTH'] = trim(_stripslashes($_POST['dob_month']));
+        $dob['YEAR']  = trim(_stripslashes($_POST['dob_year']));
 
         $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
 
@@ -158,9 +158,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['firstname'])) {
 
-        if (user_check_pref('FIRSTNAME', _stripslashes(trim($_POST['firstname'])))) {
+        if (user_check_pref('FIRSTNAME', trim(_stripslashes($_POST['firstname'])))) {
 
-            $user_prefs['FIRSTNAME'] = _stripslashes(trim($_POST['firstname']));
+            $user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
 
         }else {
 
@@ -171,9 +171,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['lastname'])) {
 
-        if (user_check_pref('LASTNAME', _stripslashes(trim($_POST['lastname'])))) {
+        if (user_check_pref('LASTNAME', trim(_stripslashes($_POST['lastname'])))) {
 
-            $user_prefs['LASTNAME'] = _stripslashes(trim($_POST['lastname']));
+            $user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
 
         }else {
 
@@ -184,9 +184,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['homepage_url'])) {
 
-        if (user_check_pref('HOMEPAGE_URL', _stripslashes(trim($_POST['homepage_url'])))) {
+        if (user_check_pref('HOMEPAGE_URL', trim(_stripslashes($_POST['homepage_url'])))) {
 
-            $user_prefs['HOMEPAGE_URL'] = _stripslashes(trim($_POST['homepage_url']));
+            $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
             $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
 
         }else {
@@ -198,9 +198,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['pic_url'])) {
 
-        if (user_check_pref('PIC_URL', _stripslashes(trim($_POST['pic_url'])))) {
+        if (user_check_pref('PIC_URL', trim(_stripslashes($_POST['pic_url'])))) {
 
-            $user_prefs['PIC_URL'] = _stripslashes(trim($_POST['pic_url']));
+            $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
             $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
 
         }else {

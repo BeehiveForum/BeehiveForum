@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.73 2004-11-18 20:13:39 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.74 2004-11-21 17:26:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -64,7 +64,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
             $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
             $message.= " {$lang['msgnotificationemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['msgnotificationemail_2']} ". _htmlentities_decode(_stripslashes($thread['TITLE'])). "\n\n";
+            $message.= "{$lang['msgnotificationemail_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
             $message.= "{$lang['msgnotificationemail_3']}\n";
             $message.= "http://{$_SERVER['HTTP_HOST']}";
 
@@ -141,7 +141,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
         $message.= " {$lang['subnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-        $message.= "{$lang['subnotification_2']} ". _htmlentities_decode(_stripslashes($thread['TITLE'])). "\n\n";
+        $message.= "{$lang['subnotification_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
         $message.= "{$lang['subnotification_3']}\n";
         $message.= "http://{$_SERVER['HTTP_HOST']}";
 
@@ -209,7 +209,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
             $message.= " {$lang['pmnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['pmnotification_2']} ". _htmlentities_decode(_stripslashes($pm_subject)). "\n\n";
+            $message.= "{$lang['pmnotification_2']} ". _htmlentities_decode($pm_subject). "\n\n";
             $message.= "{$lang['pmnotification_3']}\n";
             $message.= "http://{$_SERVER['HTTP_HOST']}";
 

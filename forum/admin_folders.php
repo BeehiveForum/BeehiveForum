@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.83 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.84 2004-11-21 17:26:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,12 +151,12 @@ if (isset($_POST['submit'])) {
 // Draw the form
 echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";
 
-if (isset($_GET['add_success'])) {
-    echo "<h2>{$lang['successfullyaddedfolder']}: ", _stripslashes($_GET['add_success']), "</h2>\n";
+if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {
+    echo "<h2>{$lang['successfullyaddedfolder']}: ", trim(_stripslashes($_GET['add_success'])), "</h2>\n";
 }
 
-if (isset($_GET['del_success'])) {
-    echo "<h2>{$lang['successfullydeletedfolder']}: ", _stripslashes($_GET['del_success']), "</h2>\n";
+if (isset($_GET['del_success']) && strlen(trim(_stripslashes($_GET['del_success']))) > 0) {) {
+    echo "<h2>{$lang['successfullydeletedfolder']}: ", trim(_stripslashes($_GET['del_success'])), "</h2>\n";
 }
 
 echo "<br />\n";

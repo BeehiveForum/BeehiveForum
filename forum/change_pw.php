@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.42 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.43 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -68,9 +68,9 @@ if (isset($_POST['submit'])) {
 
             if (isset($_POST['pw']) && isset($_POST['cpw'])) {
 
-                if (trim(_stripslashes($_POST['pw']) == trim($_POST['cpw']))) {
+                if (trim(_stripslashes($_POST['pw']) == trim(_stripslashes($_POST['cpw'])))) {
 
-                    if (_htmlentities(trim(_stripslashes($_POST['pw'])) != trim($_POST['pw']))) {
+                    if (_htmlentities(trim(_stripslashes($_POST['pw'])) != trim(_stripslashes($_POST['pw'])))) {
                         $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
                         $valid = false;
                     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.94 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.95 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -185,7 +185,7 @@ if (isset($_POST['upload'])) {
                 $tempfile = $_FILES['userfile']['tmp_name'][$i];
                 $filetype = $_FILES['userfile']['type'][$i];
 
-                $filename = _stripslashes(trim($_FILES['userfile']['name'][$i]));
+                $filename = trim(_stripslashes($_FILES['userfile']['name'][$i]));
 
                 if ($users_free_space < $filesize) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.59 2004-11-14 00:45:32 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.60 2004-11-21 17:26:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -249,7 +249,7 @@ if ($mode == "link") {
     echo "<h1>{$lang['links']}: {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
 
-    if ($error) echo "<h2>$error</h2>\n";
+    if (isset($error)) echo "<h2>$error</h2>\n";
 
     echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";

@@ -61,7 +61,7 @@ if (isset($HTTP_GET_VARS['hash']) && isset($HTTP_GET_VARS['filename']) && isset(
   
         header("Content-Type: application/x-ms-download");
         header("Content-Length: ". filesize($attachments_dir. '/'. $HTTP_GET_VARS['hash']. '/'. md5($HTTP_GET_VARS['hash'].$HTTP_GET_VARS['filename'])));
-        header("Content-disposition: filename=". $filename);
+        header("Content-disposition: filename=". $HTTP_GET_VARS['filename']);
         header("Content-Transfer-Encoding: binary");
         header("Pragma: no-cache");
         header("Expires: 0");
@@ -70,18 +70,8 @@ if (isset($HTTP_GET_VARS['hash']) && isset($HTTP_GET_VARS['filename']) && isset(
         exit;
       
       }else {
-        
-        if (empty($attachmentdetails['MIMETYPE'])) {
-          
-          header("Content-Type: application/octet-stream");
-            
-        }else{
-      
-          header("Content-Type: ". $attachmentdetails['MIMETYPE']);
-            
-        }
-          
-        header("Content-disposition: filename=". $HTTP_GET_VARS['filename']);
+    
+        header("Content-Type: ". $attachmentdetails['MIMETYPE']);
         header("Pragma: no-cache");
         header("Expires: 0");
           

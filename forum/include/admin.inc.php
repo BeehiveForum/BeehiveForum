@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.11 2004-02-02 18:51:45 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.12 2004-02-03 18:08:51 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -139,7 +139,8 @@ function admin_user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DE
 {
     $db_user_search = db_connect();
 
-    $sort_array = array('UID', 'LOGON', 'STATUS', 'LAST_LOGON', 'LOGON_FROM');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'USER.STATUS', 
+                        'USER.LAST_LOGON', 'USER.LOGON_FROM', 'SESSIONS.SESSID');
     
     $usersearch = addslashes($usersearch);
     if (!is_numeric($offset)) $offset = 0;
@@ -170,7 +171,8 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sort_array = array('UID', 'LOGON', 'STATUS', 'LAST_LOGON', 'LOGON_FROM');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'USER.STATUS', 
+                        'USER.LAST_LOGON', 'USER.LOGON_FROM', 'SESSIONS.SESSID');
 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';

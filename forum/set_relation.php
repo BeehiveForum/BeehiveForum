@@ -24,6 +24,13 @@ USA
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING
 
+require_once("./include/html.inc.php");
+
+if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+	html_guest_error();
+	exit;
+}
+
 require_once("./include/db.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/forum.inc.php");

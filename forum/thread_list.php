@@ -30,11 +30,22 @@ require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/form.inc.php"); // Form drawing functions
 require_once("./include/header.inc.php");
 require_once("./include/functions.inc.php");
+require_once("./include/session.inc.php");
+
+if(!bh_session_check()) {
+
+    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $uri.= "/logon.php?final_uri=";
+    $uri.= urlencode(get_request_uri());
+    header_redirect($uri);
+    
+}
 
 header_no_cache();
 
 // Check that required variables are set
-if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
     $user = 0; // default to UID 0 if no other UID specified
     if (!isset($HTTP_GET_VARS['mode'])) {
         if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
@@ -110,12 +121,23 @@ function change_current_thread (thread_id) {
     <td colspan="2">
 <?
 
-$labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
-                "2 Days Back","7 Days Back","High Interest","Unread High Interest",
-                "I've recently seen","I've ignored","I've subscribed to");
-
 echo "      <form name=\"f_mode\" method=\"get\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">\n        ";
-echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+
+  $labels = array("All Discussions", "Today's Discussions", "2 Days Back", "7 Days Back");
+  echo form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode, "onchange=\"submit()\""). "\n        ";
+  
+}else {
+
+  $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
+                  "2 Days Back","7 Days Back","High Interest","Unread High Interest",
+                  "I've recently seen","I've ignored","I've subscribed to");
+
+  echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+  
+}
+
 echo form_submit("go","Go!"). "\n";
 
 ?>

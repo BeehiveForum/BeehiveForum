@@ -53,16 +53,20 @@ if (isset($HTTP_POST_VARS['submit'])) {
     if($luid > -1){
     
       bh_session_init($luid);
+      
+      if ($luid != 0) { // Don't store a cookie for the guest logon.
         
-      if(@$HTTP_POST_VARS['remember_user'] == "Y") {
+        if(@$HTTP_POST_VARS['remember_user'] == "Y") {
         
-        setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
-        setcookie('bh_remember_password', $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS, '/');
+          setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
+          setcookie('bh_remember_password', $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS, '/');
             
-      } else {
+        }else {
         
-        setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
-        setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
+          setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
+          setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
+        }
+        
       }
 
       if(substr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'],0,13) != "Microsoft-IIS"){ // Not IIS
@@ -130,6 +134,9 @@ echo "<tr><td align=\"center\">";
 echo form_submit();
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
+echo "</form>\n";
+echo "<form name=\"guest\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\">\n";
+echo "<p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
 echo "</form></div>\n";
 echo "<div align=\"center\">\n";
 echo "<p class=\"smalltext\">\nDon't have an account? ";

@@ -56,8 +56,8 @@ if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
 
 if(isset($HTTP_GET_VARS['uid'])){
     $uid = $HTTP_GET_VARS['uid'];
-} else if(isset($HTTP_POST_VARS['t_uid'])){
-    $uid = $HTTP_POST_VARS['t_uid'];
+} else if(isset($HTTP_POST_VARS['uid'])){
+    $uid = $HTTP_POST_VARS['uid'];
 } else {
     echo "<h1>Invalid Operation</h1>\n";
     echo "<p>No user specified for editing.</p>\n";
@@ -84,6 +84,7 @@ if(isset($HTTP_POST_VARS['submit'])){
         $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
         $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
     }
+    
     // Add lower ranks automatically
     if($new_status & USER_PERM_QUEEN) $new_status |= USER_PERM_SOLDIER;
     if($new_status & USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
@@ -138,7 +139,7 @@ if($i==0){
 
 echo "</table>\n";
 echo form_input_hidden("t_fcount",$i);
-echo form_input_hidden("t_uid",$uid);
+echo form_input_hidden("uid", $uid);
 echo "</td></tr></table>\n";
 echo form_submit();
 echo "</form>\n";

@@ -201,12 +201,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;To:&nbsp;</span></td>\n";
     echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
     
-    if($message['TLOGON'] != "ALL") {
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(".$message['TO_UID'].")\" target=\"_self\">";
+    if(($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
         if(!$message['VIEWED']) {
             echo " <span class=\"smalltext\">(unread)</span>";
-    }
+        }
     }else {
         echo "ALL</span>";
     }

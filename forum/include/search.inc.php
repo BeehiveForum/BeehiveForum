@@ -347,8 +347,12 @@ function search_draw_user_dropdown($name)
     $uids[]  = 0;
     $names[] = "ALL";
     
-    $uids[]  = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    $names[] = "ME";
+    if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+    
+      $uids[]  = $HTTP_COOKIE_VARS['bh_sess_uid'];
+      $names[] = "ME";
+      
+    }
     
     while($row = db_fetch_array($result)) {
     

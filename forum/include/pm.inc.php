@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.31 2004-02-27 00:24:13 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.32 2004-02-29 18:59:24 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -43,7 +43,9 @@ function pm_markasread($mid)
     // Update the row so it appears as read to the receipient
     // ------------------------------------------------------------
 
-    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_READ. " WHERE MID = '$mid' AND TO_UID = '$uid'";
+    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
+    $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
+    
     $result = db_query($sql, $db_pm_markasread);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.50 2004-05-10 15:56:49 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.51 2004-06-13 22:52:00 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -126,6 +126,48 @@ function db_insert_id($resource_id)
 {
     $insert_id = mysql_insert_id($resource_id);
     return $insert_id;
+}
+
+// Return the MySQL Server Version.
+// Adapted from phpMyAdmin (ahem!)
+
+function db_fetch_mysql_version()
+{
+    static $mysql_version = false;
+
+    if (!$mysql_version) {
+
+        $db_fetch_mysql_version = db_connect();
+
+        $sql = "SELECT VERSION() AS version";
+        $result = @db_query($sql, $db_fetch_mysql_version);
+
+        if (!$row = db_fetch_array($result)) {
+
+            $sql = "SHOW VARIABLES LIKE 'version'";
+	    $result = @db_query($sql, $db_fetch_mysql_version);
+
+            $row = db_fetch_array($result);
+        }
+
+        $version_array = explode(".", $row['version']);
+
+        if (!isset($version_array) || !isset($version_array[0])) {
+            $version_array[0] = 3;
+        }
+
+        if (!isset($version_array[1])) {
+            $version_array[1] = 21;
+        }
+
+        if (!isset($version_array[2])) {
+            $version_array[2] = 0;
+        }
+
+	$mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+    }
+
+    return $mysql_version;
 }
 
 ?>

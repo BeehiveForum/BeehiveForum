@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.67 2004-06-03 10:24:46 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.68 2004-06-13 22:52:00 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -42,6 +42,7 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;
     if (!isset($argarray['me_only'])) $argarray['me_only'] = "N";
     if (!isset($argarray['include'])) $argarray['include'] = 2;
+    if (!isset($argarray['user_include'])) $argarray['user_include'] = 1;
 
     $db_search_execute = db_connect();
 
@@ -73,32 +74,32 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $date_range_sql = search_date_range($argarray['date_from'], $argarray['date_to']);
 
-    if (isset($argarray['to_other']) && strlen(trim($argarray['to_other'])) > 0) {
+    if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
-        if ($to_uid = user_get_uid($argarray['to_other'])) {
-            $from_to_user_sql = "AND POST.TO_UID = '{$to_uid['UID']}'";
+        if ($user_uid = user_get_uid($argarray['username'])) {
+
+	    if ($argarray['user_include'] == 1) {
+
+                $from_to_user_sql = "AND POST.FROM_UID = '{$user_uid['UID']}'";
+
+	    }elseif ($argarray['user_include'] == 2) {
+
+	        $from_to_user_sql = "AND POST.TO_UID = '{$user_uid['UID']}'";
+
+	    }else {
+
+                $from_to_user_sql = "AND (POST.FROM_UID = '{$user_uid['UID']}' OR POST.TO_UID = '{$user_uid['UID']}')";
+	    }
+
         }else {
+
             $error = SEARCH_USER_NOT_FOUND;
             return false;
         }
 
-    }elseif (isset($argarray['to_uid']) && is_numeric($argarray['to_uid']) && $argarray['to_uid'] > 0) {
-        $from_to_user_sql = "AND POST.TO_UID = {$argarray['to_uid']}";
     }else {
+
         $from_to_user_sql = "";
-    }
-
-    if (isset($argarray['from_other']) && strlen(trim($argarray['from_other'])) > 0) {
-
-        if ($from_uid = user_get_uid($argarray['from_other'])) {
-            $from_to_user_sql.= " AND POST.FROM_UID = '{$from_uid['UID']}'";
-        }else {
-            $error = SEARCH_USER_NOT_FOUND;
-            return false;
-        }
-
-    }elseif (isset($argarray['from_uid']) && is_numeric($argarray['from_uid']) && $argarray['from_uid'] > 0) {
-        $from_to_user_sql.= " AND POST.FROM_UID = {$argarray['from_uid']}";
     }
 
     if (strlen(trim($argarray['search_string'])) > 0) {
@@ -107,92 +108,104 @@ function search_execute($argarray, &$urlquery, &$error)
         $post_content_sql = false;
         $attach_files_sql = false;
 
-        if ($argarray['method'] == 1) { // AND
+	// Filter the input so the user can't do anything dangerous with it
 
-            $keywords_array = explode(' ', trim($argarray['search_string']));
+	$argarray['search_string'] = str_replace("%", "", $argarray['search_string']);
 
-            foreach ($keywords_array as $key => $value) {
+	$argarray['search_string'] = _htmlentities($argarray['search_string']);
 
-                if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
-                    unset($keywords_array[$key]);
-                }
-            }
+	// Remove any keywords which are under the minimum length.
 
-            if (sizeof($keywords_array) > 0) {
+        $keywords_array = explode(' ', trim($argarray['search_string']));
 
-                if ($argarray['include'] > 0) {
+        foreach ($keywords_array as $key => $value) {
 
-                    $thread_title_sql = "THREAD.TITLE LIKE '%";
-                    $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
-                    $thread_title_sql.= "%'";
-                }
-
-                if ($argarray['include'] > 1) {
-
-                    $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
-                    $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                    $post_content_sql.= "%'";
-                }
-
-                if ($argarray['include'] > 2) {
-
-                    $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
-                    $attach_files_sql.= implode("%' AND POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
-                    $attach_files_sql.= "%'";
-                }
-            }
-
-        }elseif ($argarray['method'] == 2) { // OR
-
-            $keywords_array = explode(' ', trim($argarray['search_string']));
-
-            foreach ($keywords_array as $key => $value) {
-
-                if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
-                    unset($keywords_array[$key]);
-                }
-            }
-
-            if (sizeof($keywords_array) > 0) {
-
-                if ($argarray['include'] > 0) {
-
-                    $thread_title_sql = "THREAD.TITLE LIKE '%";
-                    $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
-                    $thread_title_sql.= "%'";
-                }
-
-                if ($argarray['include'] > 1) {
-
-                    $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
-                    $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                    $post_content_sql.= "%'";
-                }
-
-                if ($argarray['include'] > 2) {
-
-                    $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
-                    $attach_files_sql.= implode("%' OR POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
-                    $attach_files_sql.= "%'";
-                }
-            }
-
-        }elseif ($argarray['method'] == 3) { // EXACT
-
-            $words = addslashes(trim($argarray['search_string']));
-
-            if ($argarray['include'] > 0) {
-                $thread_title_sql.= "(INSTR(THREAD.TITLE, ' {$words} ') ";
-            }
-
-            if ($argarray['include'] > 1) {
-                $post_content_sql = "INSTR(POST_CONTENT.CONTENT, ' {$words} ') ";
-            }
-
-            if ($argarray['include'] > 2) {
-                $attach_files_sql = "INSTR(POST_ATTACHMENT_FILES.FILENAME, ' {$words} ')";
+            if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
+                unset($keywords_array[$key]);
             }
         }
+
+	if (sizeof($keywords_array) > 0) {
+
+            if ((db_fetch_mysql_version() > 33232) && ($argarray['method'] < 2)) {
+
+                // Full Text Support in MySQL 3.32.32 and above
+
+		$keywords = addslashes(trim(implode(' ', $keywords_array)));
+
+	        $bool_mode = (db_fetch_mysql_version() > 40010) ? "IN BOOLEAN MODE" : "";
+	        $keywords = search_convert_fulltext($keywords);
+
+    	        $thread_title_sql = "MATCH (THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
+	        $post_content_sql = "MATCH (POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
+	        $attach_files_sql = "MATCH (POST_ATTACHMENT_FILES.FILENAME) AGAINST('$keywords' $bool_mode)";
+
+	    }else {
+
+                if ($argarray['method'] == 1) { // AND
+
+                    if ($argarray['include'] > 0) {
+
+                        $thread_title_sql = "THREAD.TITLE LIKE '%";
+                        $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
+                        $thread_title_sql.= "%'";
+                    }
+
+                    if ($argarray['include'] > 1) {
+
+                        $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                        $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                        $post_content_sql.= "%'";
+                    }
+
+                    if ($argarray['include'] > 2) {
+
+                        $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
+                        $attach_files_sql.= implode("%' AND POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
+                        $attach_files_sql.= "%'";
+                    }
+
+                }elseif ($argarray['method'] == 2) { // OR
+
+                    if ($argarray['include'] > 0) {
+
+                        $thread_title_sql = "THREAD.TITLE LIKE '%";
+                        $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
+                        $thread_title_sql.= "%'";
+                    }
+
+                    if ($argarray['include'] > 1) {
+
+                        $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                        $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                        $post_content_sql.= "%'";
+                    }
+
+                    if ($argarray['include'] > 2) {
+
+                        $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
+                        $attach_files_sql.= implode("%' OR POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
+                        $attach_files_sql.= "%'";
+                    }
+
+                }elseif ($argarray['method'] == 3) { // EXACT
+
+                    $keywords = addslashes(trim(implode(' ', $keywords_array)));
+
+                    if ($argarray['include'] > 0) {
+                        $thread_title_sql.= "(INSTR(THREAD.TITLE, ' {$keywords} ') ";
+                    }
+
+                    if ($argarray['include'] > 1) {
+                        $post_content_sql = "INSTR(POST_CONTENT.CONTENT, ' {$keywords} ') ";
+                    }
+
+                    if ($argarray['include'] > 2) {
+                        $attach_files_sql = "INSTR(POST_ATTACHMENT_FILES.FILENAME, ' {$keywords} ')";
+                    }
+		}
+            }
+	}
 
         if ($thread_title_sql || $post_content_sql || $attach_files_sql) {
 
@@ -297,6 +310,17 @@ function search_execute($argarray, &$urlquery, &$error)
         $error = SEARCH_NO_KEYWORDS;
         return false;
     }
+}
+
+function search_convert_fulltext($search_string)
+{
+    $search_string = preg_replace( "/\s+AND\s+/i", " ",  $search_string);
+    $search_string = preg_replace( "/\s+NOT\s+/i", " -", $search_string);
+    $search_string = preg_replace( "/\s+OR\s+/i",  " ~", $search_string);
+    $search_string = preg_replace( "/\s+(?!-|~)/", " +", $search_string);
+    $search_string = preg_replace( "/~/",          "",   $search_string);
+
+    return $search_string;
 }
 
 function search_date_range($from, $to)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.43 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.44 2004-03-13 00:09:11 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -35,10 +35,10 @@ function db_connect ()
     if (!$connection_id) {
 
         if ($connection_id = @mysql_connect($db_server, $db_username, $db_password)) {
-            mysql_select_db($db_database, $connection_id) or trigger_error(BH_DB_CONNECT_ERROR, E_USER_ERROR);
+            mysql_select_db($db_database, $connection_id) or trigger_error(BH_DB_CONNECT_ERROR, FATAL);
 	    return $connection_id;
 	}else {
-            trigger_error(BH_DB_CONNECT_ERROR, E_USER_ERROR);
+            trigger_error(BH_DB_CONNECT_ERROR, FATAL);
 	}        
     }
 
@@ -62,7 +62,7 @@ function db_query ($sql, $connection_id)
         return $resource_id;
     }else {
         $mysql_error = mysql_error($connection_id);
-        trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", E_USER_ERROR);
+        trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", FATAL);
     }
 }
 
@@ -75,7 +75,7 @@ function db_unbuffered_query ($sql, $connection_id)
             return $resource_id;
         }else {
             $mysql_error = mysql_error($connection_id);
-            trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", E_USER_ERROR);
+            trigger_error("<p>Invalid query: $sql</p>\n<p>MySQL Said: $mysql_error</p>", FATAL);
 	}
     }else {
         db_query($sql, $connection_id);

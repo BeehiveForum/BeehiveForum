@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.5 2005-02-07 17:04:33 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.6 2005-02-08 12:43:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -81,237 +81,171 @@ if (!perm_has_forumtools_access()) {
     exit;
 }
 
-if (isset($_GET['doreport'])) {
+html_draw_top("robots=noindex,nofollow");
 
-    html_draw_top("robots=noindex,nofollow");
+echo "  <h1>{$lang['admin']}: {$lang['postingstats']}</h1>\n";
+echo "  <br />\n";
 
-    $month_start = date('d/m/Y', mktime(0, 0, 0, date('n'), 1, date('Y')));
-    $month_end = date('d/m/Y',  mktime(23, 59, 59, date('n'), date('t'), date('Y')));
+if (isset($_POST['update'])) {
 
-    echo "  <h1>{$lang['admin']}: {$lang['postingstats']}</h1>\n";
-    echo "  <br />\n";
-    echo "  <h2>{$lang['top10postersin']} ", $lang['month'][date('n')], "</h2>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['user']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['totalposts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['posts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['percentofthismonthsposts']}</td>\n";
-    echo "                </tr>\n";
+    $valid = true;
+    $error_html = "";
 
-    $user_stats_array = get_month_post_tallys();
-
-    if (sizeof($user_stats_array['user_stats']) > 0) {
-
-        foreach ($user_stats_array['user_stats'] as $user_stats) {
-
-            echo "                <tr>\n";
-            echo "                  <td>", format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']), "</td>\n";
-            echo "                  <td>", user_get_post_count($user_stats['UID']), "</td>\n";
-            echo "                  <td>{$user_stats['POST_COUNT']}</td>\n";
-            echo "                  <td>", round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), "%</td>\n";
-            echo "                </tr>\n";
-        }
-
+    if (isset($_POST['from_day']) && is_numeric($_POST['from_day'])) {
+        $from_day = $_POST['from_day'];
     }else {
-
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"4\">{$lang['nodata']}</td>\n";
-        echo "                </tr>\n";
+        $error_html.= "<h2>{$lang['mustchooseastartday']}</h2>\n";
+        $valid = false;
     }
 
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\" align=\"center\">{$lang['totalpoststhismonth']}: {$user_stats_array['post_count']}</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-
-    $timestamp = mktime(0, 0, 0, date('n'), date('j'), date('Y'));
-    $dayofweek = date('w', $timestamp);
-
-    $week_start = date('d/m/Y', mktime(0, 0, 0, date('n'), date('j') - $dayofweek, date('Y')));
-    $week_end = date('d/m/Y', mktime(23, 59, 59, date('n'), date('j') + (6 - $dayofweek), date('Y')));
-
-    echo "  <h2>{$lang['top10postersforthisweek']}: ({$week_start} - {$week_end})</h2>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['user']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['totalposts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['posts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['percentofthisweeksposts']}</td>\n";
-    echo "                </tr>\n";
-
-    $user_stats_array = get_week_post_tallys();
-
-    if (sizeof($user_stats_array['user_stats']) > 0) {
-
-        foreach ($user_stats_array['user_stats'] as $user_stats) {
-
-            echo "                <tr>\n";
-            echo "                  <td>", format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']), "</td>\n";
-            echo "                  <td>", user_get_post_count($user_stats['UID']), "</td>\n";
-            echo "                  <td>{$user_stats['POST_COUNT']}</td>\n";
-            echo "                  <td>", round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), "%</td>\n";
-            echo "                </tr>\n";
-        }
-
+    if (isset($_POST['from_month']) && is_numeric($_POST['from_month'])) {
+        $from_month = $_POST['from_month'];
     }else {
-
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"4\">{$lang['nodata']}</td>\n";
-        echo "                </tr>\n";
+        $error_html.= "<h2>{$lang['mustchooseastartmonth']}</h2>\n";
+        $valid = false;
     }
 
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\" align=\"center\">{$lang['totalpoststhisweek']}: {$user_stats_array['post_count']}</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-
-    $day_start = date('d/m/Y', mktime(0, 0, 0, date('n'), date('j'), date('Y')));
-    $day_end = date('d/m/Y', mktime(23, 59, 59, date('n'), date('j'), date('Y')));
-
-    echo "  <h2>{$lang['top10postersfortoday']}</h2>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['user']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['totalposts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['posts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['percentoftodaysposts']}</td>\n";
-    echo "                </tr>\n";
-
-    $user_stats_array = get_day_post_tallys();
-
-    if (sizeof($user_stats_array['user_stats']) > 0) {
-
-        foreach ($user_stats_array['user_stats'] as $user_stats) {
-
-            echo "                <tr>\n";
-            echo "                  <td>", format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']), "</td>\n";
-            echo "                  <td>", user_get_post_count($user_stats['UID']), "</td>\n";
-            echo "                  <td>{$user_stats['POST_COUNT']}</td>\n";
-            echo "                  <td>", round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), "%</td>\n";
-            echo "                </tr>\n";
-        }
-
+    if (isset($_POST['from_year']) && is_numeric($_POST['from_year'])) {
+        $from_year = $_POST['from_year'];
     }else {
-
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"4\">{$lang['nodata']}</td>\n";
-        echo "                </tr>\n";
+        $error_html.= "<h2>{$lang['mustchooseastartyear']}</h2>\n";
+        $valid = false;
     }
 
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\" align=\"center\">{$lang['totalpoststoday']}: {$user_stats_array['post_count']}</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <h2>{$lang['top10postersforthishour']}</h2>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['user']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['totalposts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['posts']}</td>\n";
-    echo "                  <td class=\"subhead\">{$lang['percentofthishoursposts']}</td>\n";
-    echo "                </tr>\n";
-
-    $user_stats_array = get_hour_post_tallys();
-
-    if (sizeof($user_stats_array['user_stats']) > 0) {
-
-        foreach ($user_stats_array['user_stats'] as $user_stats) {
-
-            echo "                <tr>\n";
-            echo "                  <td>", format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']), "</td>\n";
-            echo "                  <td>", user_get_post_count($user_stats['UID']), "</td>\n";
-            echo "                  <td>{$user_stats['POST_COUNT']}</td>\n";
-            echo "                  <td>", round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), "%</td>\n";
-            echo "                </tr>\n";
-        }
-
+    if (isset($_POST['to_day']) && is_numeric($_POST['to_day'])) {
+        $to_day = $_POST['to_day'];
     }else {
-
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"4\">{$lang['nodata']}</td>\n";
-        echo "                </tr>\n";
+        $error_html.= "<h2>{$lang['mustchooseaendday']}</h2>\n";
+        $valid = false;
     }
 
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"4\" align=\"center\">{$lang['totalpoststhishour']}: {$user_stats_array['post_count']}</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
+    if (isset($_POST['to_month']) && is_numeric($_POST['to_month'])) {
+        $to_month = $_POST['to_month'];
+    }else {
+        $error_html.= "<h2>{$lang['mustchooseaendmonth']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['to_year']) && is_numeric($_POST['to_year'])) {
+        $to_year = $_POST['to_year'];
+    }else {
+        $error_html.= "<h2>{$lang['mustchooseaendyear']}</h2>\n";
+        $valid = false;
+    }
+
+    if ($valid) {
+
+        $stats_start = mktime(0, 0, 0, $from_month, $from_day, $from_year);
+        $stats_end = mktime(23, 59, 59, $to_month, $to_day, $to_year);
+
+        if ($stats_start > $stats_end) {
+
+            $error_html.= "<h2>{$lang['startperiodisaheadofendperiod']}</h2>\n";
+            $valid = false;
+
+        }else {
+
+            $user_stats_array = get_post_tallys($stats_start, $stats_end);
+        }
+    }
+}
+
+if (!isset($user_stats_array) || !is_array($user_stats_array)) {
+
+    // Default to showing the stats for this month only
+
+    $from_day = 1;
+    $from_month = date('n');
+    $from_year = date('Y');
+
+    $to_day = date('t');
+    $to_month = date('n');
+    $to_year = date('Y');
+
+    $stats_start = mktime(0, 0, 0, $from_month, $from_day, $from_year);
+    $stats_end = mktime(23, 59, 59, $to_month, $to_day, $to_year);
+
+    $user_stats_array = get_post_tallys($stats_start, $stats_end);
+}
+
+if (isset($error_html) && strlen($error_html) > 0) {
+    echo $error_html;
+    echo "<br />\n";
+}
+
+echo "  <h2>{$lang['top10postersforperiod']} ", date("d/m/Y", $stats_start), " to ", date("d/m/Y", $stats_end), "</h2>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['user']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['totalposts']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['posts']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['percentofthisperiodsposts']}</td>\n";
+echo "                </tr>\n";
+
+if (sizeof($user_stats_array['user_stats']) > 0) {
+
+    foreach ($user_stats_array['user_stats'] as $user_stats) {
+
+        echo "                <tr>\n";
+        echo "                  <td>", format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']), "</td>\n";
+        echo "                  <td>", user_get_post_count($user_stats['UID']), "</td>\n";
+        echo "                  <td>{$user_stats['POST_COUNT']}</td>\n";
+        echo "                  <td>", round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), "%</td>\n";
+        echo "                </tr>\n";
+    }
 
 }else {
 
-    html_draw_top("refresh=2:admin_post_stats.php?webtag=$webtag&amp;doreport=1");
-
-    echo "  <h1>{$lang['admin']}: {$lang['postingstats']}</h1>\n";
-    echo "  <h2>Please wait while report is generated...</h2>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"4\">{$lang['nodata']}</td>\n";
+    echo "                </tr>\n";
 }
+
+echo "                <tr>\n";
+echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"4\" align=\"center\">{$lang['totalpostsforthisperiod']}: {$user_stats_array['post_count']}</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <form action=\"admin_post_stats.php\" method=\"post\" target=\"_self\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">\n";
+echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
+echo "          <tr>\n";
+echo "            <td>Date from:</td>\n";
+echo "            <td>", form_date_dropdowns($from_year, $from_month, $from_day, "from_", 2002), "</td>\n";
+echo "          </tr>\n";
+echo "            <td>Date to:</td>\n";
+echo "            <td>", form_date_dropdowns($to_year, $to_month, $to_day, "to_", 2002), "</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  </form>\n";
+echo "  <br />\n";
 
 html_draw_bottom();
 

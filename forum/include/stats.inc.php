@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.45 2005-02-07 17:04:49 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.46 2005-02-08 12:43:07 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -295,16 +295,13 @@ function get_newest_user()
     return false;
 }
 
-function get_month_post_tallys()
+function get_post_tallys($start_stamp, $end_stamp)
 {
     $db_get_month_post_tallys = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
     $post_tallys = array('user_stats' => array(), 'post_count' => 0);
-
-    $start_stamp = mktime(0, 0, 0, date('n'), 1, date('Y'));
-    $end_stamp = mktime(23, 59, 59, date('n'), date('t'), date('Y'));
 
     $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp)";

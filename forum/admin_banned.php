@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.2 2005-01-24 22:19:41 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.3 2005-01-24 23:00:37 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -91,25 +91,58 @@ html_draw_top();
 $error_html = "";
 $valid = true;
 
-if (isset($_POST['add_banned_ipaddress']) && strlen(trim(_stripslashes($_POST['add_banned_ipaddress'])))) {
+// Add IP address on URI query?
 
-    $add_banned_ipaddress = trim(_stripslashes($_POST['add_banned_ipaddress']));
+if (isset($_GET['ban_ipaddress']) && strlen(trim(_stripslashes($_GET['ban_ipaddress'])))) {
 
-    if (preg_match("/%+/", $add_banned_ipaddress)) {
+    $ban_ipaddress = trim(_stripslashes($_GET['ban_ipaddress']));
 
-        $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
-        $valid = false;
+}else {
 
-    }else {
+    $ban_ipaddress = "";
+}
 
-        if (!ip_is_banned($add_banned_ipaddress)) {
+// Are we returning somewhere?
 
-            add_ban_data('IPADDRESS', $add_banned_ipaddress);
+if (isset($_GET['ret'])) {
+
+    $ret = $_GET['ret'];
+
+}elseif (isset($_POST['ret'])) {
+
+    $ret = $_POST['ret'];
+}
+
+// Return to the page we came from.
+
+if (isset($_POST['back']) && isset($ret)) {
+
+    header_redirect($ret);
+    exit;
+}
+
+if (isset($_POST['add_ipaddress'])) {
+
+    if (isset($_POST['add_banned_ipaddress']) && strlen(trim(_stripslashes($_POST['add_banned_ipaddress'])))) {
+
+        $add_banned_ipaddress = trim(_stripslashes($_POST['add_banned_ipaddress']));
+
+        if (preg_match("/%+/", $add_banned_ipaddress)) {
+
+            $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+            $valid = false;
 
         }else {
 
-            $error_html.= "<h2>{$lang['ipaddressisalreadybanned']}</h2>\n";
-            $valid = false;
+            if (!ip_is_banned($add_banned_ipaddress)) {
+
+                add_ban_data('IPADDRESS', $add_banned_ipaddress);
+
+            }else {
+
+                $error_html.= "<h2>{$lang['ipaddressisalreadybanned']}</h2>\n";
+                $valid = false;
+            }
         }
     }
 
@@ -127,25 +160,28 @@ if (isset($_POST['add_banned_ipaddress']) && strlen(trim(_stripslashes($_POST['a
     }
 }
 
-if (isset($_POST['add_banned_logon']) && strlen(trim(_stripslashes($_POST['add_banned_logon'])))) {
+if (isset($_POST['add_logon'])) {
 
-    $add_banned_logon = trim(_stripslashes($_POST['add_banned_logon']));
+    if (isset($_POST['add_banned_logon']) && strlen(trim(_stripslashes($_POST['add_banned_logon'])))) {
 
-    if (preg_match("/%+/", $add_banned_logon)) {
+        $add_banned_logon = trim(_stripslashes($_POST['add_banned_logon']));
 
-        $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
-        $valid = false;
+        if (preg_match("/%+/", $add_banned_logon)) {
 
-    }else {
-
-        if (!logon_is_banned($add_banned_logon)) {
-
-            add_ban_data('LOGON', $add_banned_logon);
+            $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+            $valid = false;
 
         }else {
 
-            $error_html.= "<h2>{$lang['logonisalreadybanned']}</h2>\n";
-            $valid = false;
+            if (!logon_is_banned($add_banned_logon)) {
+
+                add_ban_data('LOGON', $add_banned_logon);
+
+            }else {
+
+                $error_html.= "<h2>{$lang['logonisalreadybanned']}</h2>\n";
+                $valid = false;
+            }
         }
     }
 
@@ -163,25 +199,28 @@ if (isset($_POST['add_banned_logon']) && strlen(trim(_stripslashes($_POST['add_b
     }
 }
 
-if (isset($_POST['add_banned_nickname']) && strlen(trim(_stripslashes($_POST['add_banned_nickname'])))) {
+if (isset($_POST['add_nickname'])) {
 
-    $add_banned_nickname = trim(_stripslashes($_POST['add_banned_nickname']));
+    if (isset($_POST['add_banned_nickname']) && strlen(trim(_stripslashes($_POST['add_banned_nickname'])))) {
 
-    if (preg_match("/%+/", $add_banned_nickname)) {
+        $add_banned_nickname = trim(_stripslashes($_POST['add_banned_nickname']));
 
-        $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
-        $valid = false;
+        if (preg_match("/%+/", $add_banned_nickname)) {
 
-    }else {
-
-        if (!nickname_is_banned($add_banned_nickname)) {
-
-            add_ban_data('NICKNAME', $add_banned_nickname);
+            $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+            $valid = false;
 
         }else {
 
-            $error_html.= "<h2>{$lang['nicknameisalreadybanned']}</h2>\n";
-            $valid = false;
+            if (!nickname_is_banned($add_banned_nickname)) {
+
+                add_ban_data('NICKNAME', $add_banned_nickname);
+
+            }else {
+
+                $error_html.= "<h2>{$lang['nicknameisalreadybanned']}</h2>\n";
+                $valid = false;
+            }
         }
     }
 
@@ -199,25 +238,28 @@ if (isset($_POST['add_banned_nickname']) && strlen(trim(_stripslashes($_POST['ad
     }
 }
 
-if (isset($_POST['add_banned_email']) && strlen(trim(_stripslashes($_POST['add_banned_email'])))) {
+if (isset($_POST['add_email'])) {
 
-    $add_banned_email = trim(_stripslashes($_POST['add_banned_email']));
+    if (isset($_POST['add_banned_email']) && strlen(trim(_stripslashes($_POST['add_banned_email'])))) {
 
-    if (preg_match("/%+/", $add_banned_email)) {
+        $add_banned_email = trim(_stripslashes($_POST['add_banned_email']));
 
-        $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
-        $valid = false;
+        if (preg_match("/%+/", $add_banned_email)) {
 
-    }else {
-
-        if (!email_is_banned($add_banned_email)) {
-
-            add_ban_data('EMAIL', $add_banned_email);
+            $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+            $valid = false;
 
         }else {
 
-            $error_html.= "<h2>{$lang['emailisalreadybanned']}</h2>\n";
-            $valid = false;
+            if (!email_is_banned($add_banned_email)) {
+
+                add_ban_data('EMAIL', $add_banned_email);
+
+            }else {
+
+                $error_html.= "<h2>{$lang['emailisalreadybanned']}</h2>\n";
+                $valid = false;
+            }
         }
     }
 
@@ -251,6 +293,10 @@ if (sizeof($ban_list_array['EMAIL'])     < 1) $ban_list_array['EMAIL']     = arr
 // Submit handling here later, chaps.
 
 echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+
+if (isset($ret)) echo "  ", form_input_hidden("ret", $ret), "\n";
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"670\">\n";
 echo "    <tr>\n";
 echo "      <td colspan=\"2\"><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
@@ -290,7 +336,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td>", form_input_text('add_banned_ipaddress', '', 28, 15), "&nbsp;", form_submit("add", $lang['add']), "</td>\n";
+echo "                              <td>", form_input_text('add_banned_ipaddress', $ban_ipaddress, 28, 15), "&nbsp;", form_submit("add_ipaddress", $lang['add']), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";
@@ -343,7 +389,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td>", form_input_text('add_banned_logon', '', 28, 15), "&nbsp;", form_submit("add", $lang['add']), "</td>\n";
+echo "                              <td>", form_input_text('add_banned_logon', '', 28, 15), "&nbsp;", form_submit("add_logon", $lang['add']), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";
@@ -400,7 +446,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td>", form_input_text('add_banned_nickname', '', 28, 15), "&nbsp;", form_submit("add", $lang['add']), "</td>\n";
+echo "                              <td>", form_input_text('add_banned_nickname', '', 28, 15), "&nbsp;", form_submit("add_nickname", $lang['add']), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";
@@ -453,7 +499,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td>", form_input_text('add_banned_email', '', 28, 15), "&nbsp;", form_submit("add", $lang['add']), "</td>\n";
+echo "                              <td>", form_input_text('add_banned_email', '', 28, 15), "&nbsp;", form_submit("add_email", $lang['add']), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";
@@ -473,9 +519,14 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
-//echo "    <tr>\n";
-//echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";
-//echo "    </tr>\n";
+
+if (isset($ret)) {
+
+    echo "    <tr>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "  </table>\n";
 echo "</form>\n";
 

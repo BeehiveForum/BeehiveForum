@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.3 2005-01-19 21:49:26 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.4 2005-01-24 23:00:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,7 +47,9 @@ include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
 include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
+include_once("./include/profile.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 include_once("./include/user_profile.inc.php");

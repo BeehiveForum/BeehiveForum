@@ -180,7 +180,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
             $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
             if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $editmessage['FROM_UID'] && !perm_is_moderator()) {
-                edit_refuse();
+                edit_refuse($tid, $pid);
                 exit;
             }
 

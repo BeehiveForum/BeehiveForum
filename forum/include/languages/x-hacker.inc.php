@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.62 2004-03-01 22:58:04 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.63 2004-03-03 22:43:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -329,7 +329,7 @@ $lang['uploadfailed'] = "UPLo4d f41l3d";
 $lang['errorfilesizeis0'] = "eRroR: f1L351Ze mU\$+ B3 GrE@+3r +H4N 0 8YT35";
 $lang['complete'] = "C0mPL3t3";
 $lang['uploadattachment'] = "uPl04D @ PH1LE pH0r ATt@CHMEN+ +o +He M3ss@ge";
-$lang['enterfilenametoupload'] = "EN+3R FiLen@M3 tO Upl04D";
+$lang['enterfilenamestoupload'] = "EN+3R FiLen@M3(5) tO Upl04D";
 $lang['nowpress'] = "now Pr3sS";
 $lang['ifdoneattachingfiles'] = "if J00 @r3 d0N3 4+T4ChInG pH1LE(S), pRe\$S";
 $lang['attachmentsforthismessage'] = "a++4CHM3nT\$ Ph0r THiS Mes\$49e";

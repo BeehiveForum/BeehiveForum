@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.75 2004-03-01 22:58:04 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.76 2004-03-03 22:43:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -329,7 +329,7 @@ $lang['uploadfailed'] = "Upload Failed";
 $lang['errorfilesizeis0'] = "Error: Filesize must be greater than 0 bytes";
 $lang['complete'] = "Complete";
 $lang['uploadattachment'] = "Upload a file for attachment to the message";
-$lang['enterfilenametoupload'] = "Enter filename to upload";
+$lang['enterfilenamestoupload'] = "Enter filename(s) to upload";
 $lang['nowpress'] = "Now press";
 $lang['ifdoneattachingfiles'] = "If you are done attaching file(s), press";
 $lang['attachmentsforthismessage'] = "Attachments for this message";

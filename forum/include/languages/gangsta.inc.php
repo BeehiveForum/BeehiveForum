@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.29 2004-03-01 22:58:04 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.30 2004-03-03 22:43:26 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -330,7 +330,7 @@ $lang['uploadfailed'] = "That shit failed";
 $lang['errorfilesizeis0'] = "Error: Filesize must be greater than 0 bytes, biatch";
 $lang['complete'] = "Complizete";
 $lang['uploadattachment'] = "Uplizoad a fizile fo' attachment to tha message fo shizzle";
-$lang['enterfilenametoupload'] = "Enter fizilename to upload";
+$lang['enterfilenamestoupload'] = "Enter fizilename(s) to upload";
 $lang['nowpress'] = "Nizow press";
 $lang['ifdoneattachingfiles'] = "If yo ass be done attaching fizile(s), press";
 $lang['attachmentsforthismessage'] = "Attachments fo' this message";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.233 2004-03-02 23:25:25 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.234 2004-03-03 22:43:25 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -199,18 +199,31 @@ function message_filter($content)
     $replace_array = array();
 
     while($row = db_fetch_array($result)) {
-        $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT'])). "/i";
+    
+        if ($row['PREG_EXPR'] == 1) {
+            $pattern_array[] = _stripslashes($row['MATCH_TEXT']);
+        }else {
+            $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT'])). "/i";
+        }
+            
         if (strlen(trim($row['REPLACE_TEXT'])) > 0) {
             $replace_array[] = _stripslashes($row['REPLACE_TEXT']);
         }else {
-            $replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
+            if ($row['PREG_EXPR'] == 1) {
+	        $replace_array[] = "****";
+	    }else {
+	        $replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
+            }
         }
     }
 
     usort($pattern_array, 'message_sort_filter');
     usort($replace_array, 'message_sort_filter');
 
-    $content = preg_replace($pattern_array, $replace_array, $content);
+    if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
+        return $new_content;
+    }
+    
     return $content;
 }
 

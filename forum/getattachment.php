@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.47 2004-02-22 15:24:33 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.48 2004-03-03 22:43:25 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -71,7 +71,7 @@ if (isset($attachment_data[1])) {
 
         // Use these quite a few times, so assign them to variables to save some time.
 
-        $filepath = $attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']));
+        $filepath = $attachment_dir. '/'. $attachmentdetails['HASH'];
         $filename = rawurldecode(basename($attachmentdetails['FILENAME']));
 
         if (file_exists($filepath)) {

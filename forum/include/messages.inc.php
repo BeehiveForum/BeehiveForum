@@ -105,6 +105,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
             }else {
                 $messages[$i]['FNICK'] = "Unknown User";
                 $messages[$i]['FLOGON'] = "Unknown User";
+                $messages[$i]['FROM_UID'] = -1;
             }
 
             if (isset($message['TNICK'])) {
@@ -253,8 +254,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
-    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
-    echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
+    if ($message['FROM_UID'] > -1) {
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
+        echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
+    }else {
+        echo format_user_name($message['FLOGON'], $message['FNICK']) . "</span>";
+    }
 
     $temp_ignore = false;
 

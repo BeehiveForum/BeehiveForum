@@ -35,6 +35,7 @@ require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/fixhtml.inc.php");
 
 // Where are we going after we've logged on?
 
@@ -150,11 +151,37 @@ if(isset($HTTP_POST_VARS['submit'])) {
   if($valid) {
 
       $new_uid = user_create(strtoupper(trim($HTTP_POST_VARS['logon'])), trim($HTTP_POST_VARS['pw']), trim($HTTP_POST_VARS['nickname']), trim($HTTP_POST_VARS['email']));
-      $dob = $HTTP_POST_VARS['dob_year']."-".$HTTP_POST_VARS['dob_month']."-".$HTTP_POST_VARS['dob_day'];
+
+      // Profile section
+
+      $firstname   = (isset($HTTP_POST_VARS['firstname']) && trim($HTTP_POST_VARS['firstname']) != "") ? trim($HTTP_POST_VARS['firstname']) : "";
+      $lastname    = (isset($HTTP_POST_VARS['lastname']) && trim($HTTP_POST_VARS['lastname']) != "") ? trim($HTTP_POST_VARS['lastname']) : "";
+      $dob         = $HTTP_POST_VARS['dob_year']."-".$HTTP_POST_VARS['dob_month']."-".$HTTP_POST_VARS['dob_day'];
+      $sig_content = (isset($HTTP_POST_VARS['sig_content']) && trim($HTTP_POST_VARS['sig_content']) != "") ? trim($HTTP_POST_VARS['sig_content']) : "";
+
+      if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y") {
+          $sig_content = fix_html($sig_content);
+          $sig_html = "Y";
+      }else {
+          $sig_content = _stripslashes($sig_content);
+          $sig_html = "";
+      }
+
+      // Preferences section
+
+      $email_notify       = (isset($HTTP_POST_VARS['notifybyemail']) && $HTTP_POST_VARS['notifybyemail'] == "Y") ? "Y" : "N";
+      $notifyofnewpmemail = (isset($HTTP_POST_VARS['notifyofnewpmemail']) && $HTTP_POST_VARS['notifyofnewpmemail'] == "Y") ? "Y" : "N";
+      $notifyofnewpm      = (isset($HTTP_POST_VARS['notifyofnewpm']) && $HTTP_POST_VARS['notifyofnewpm'] == "Y") ? "Y" : "N";
+      $mark_as_of_int     = (isset($HTTP_POST_VARS['autohighinterest']) && $HTTP_POST_VARS['autohighinterest'] == "Y") ? "Y" : "N";
+      $dl_saving          = (isset($HTTP_POST_VARS['daylightsaving']) && $HTTP_POST_VARS['daylightsaving'] == "Y") ? "Y" : "N";
+      $timezone           = (isset($HTTP_POST_VARS['timezone'])) ? $HTTP_POST_VARS['timezone'] : 0;
+      $language           = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : $default_language;
+      $forum_style        = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : $default_style;
 
       if($new_uid > -1) {
 
-          $prefs_set = user_update_prefs($new_uid,"","",$dob,"","","","","","","","",$default_style,"",0,"","","");
+          user_update_prefs($new_uid, $firstname, $lastname, $dob, "", "", $email_notify, $timezone, $dl_saving, $mark_as_of_int, "", "", $forum_style, "", 0, $language, $notifyofnewpmemail, $notifyofnewpm, 0);
+          user_update_sig($new_uid, $sig_content, $sig_html);
 
           bh_session_init($new_uid);
 
@@ -297,10 +324,13 @@ html_draw_top();
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
 
-if (isset($error_html)) echo $error_html;
+if (strlen($error_html) > 0) {
+    echo $error_html;
+}else {
+    echo "<br />\n";
+}
 
 ?>
-<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
 <div align="center">
 <form name="register" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
   <table class="box" cellpadding="0" cellspacing="0" align="center" width="500">
@@ -311,8 +341,12 @@ if (isset($error_html)) echo $error_html;
             <td class="subhead" colspan="2"><?php echo $lang['registrationinformationrequired']; ?></td>
           </tr>
           <tr>
-            <td class="posthead" width="260">&nbsp;<?php echo $lang['username']; ?>:</td>
+            <td class="posthead" width="250">&nbsp;<?php echo $lang['username']; ?>:</td>
             <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes(trim($HTTP_POST_VARS['logon'])) : ''), 35, 32); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['nickname']; ?>:</td>
+            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes(trim($HTTP_POST_VARS['nickname'])) : ''), 35, 32); ?></td>
           </tr>
           <tr>
             <td class="posthead">&nbsp;<?php echo $lang['email']; ?>:</td>
@@ -323,7 +357,7 @@ if (isset($error_html)) echo $error_html;
             <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 35, 32,"password"); ?></td>
           </tr>
           <tr>
-            <td class="posthead">&nbsp;<?php echo $lang['confirm']; ?>:</td>
+            <td class="posthead">&nbsp;<?php echo $lang['confirmpassword']; ?>:</td>
             <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes(trim($HTTP_POST_VARS['cpw'])) : ''), 35, 32,"password"); ?></td>
           </tr>
           <tr>
@@ -337,16 +371,12 @@ if (isset($error_html)) echo $error_html;
             <td class="subhead" colspan="2"><?php echo $lang['profileinformationoptional']; ?></td>
           </tr>
           <tr>
-            <td class="posthead">&nbsp;<?php echo $lang['nickname']; ?>:</td>
-            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes(trim($HTTP_POST_VARS['nickname'])) : ''), 35, 32); ?></td>
-          </tr>
-          <tr>
             <td class="posthead">&nbsp;<?php echo $lang['firstname']; ?>:</td>
-            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['firstname']) ? _stripslashes(trim($HTTP_POST_VARS['firstname'])) : ''), 35, 32); ?></td>
+            <td><?php echo form_field("firstname", (isset($HTTP_POST_VARS['firstname']) ? _stripslashes(trim($HTTP_POST_VARS['firstname'])) : ''), 35, 32); ?></td>
           </tr>
           <tr>
             <td class="posthead">&nbsp;<?php echo $lang['lastname']; ?>:</td>
-            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['lastname']) ? _stripslashes(trim($HTTP_POST_VARS['lastname'])) : ''), 35, 32); ?></td>
+            <td><?php echo form_field("lastname", (isset($HTTP_POST_VARS['lastname']) ? _stripslashes(trim($HTTP_POST_VARS['lastname'])) : ''), 35, 32); ?></td>
           </tr>
           <tr>
             <td class="posthead">&nbsp;<?php echo $lang['dateofbirth']; ?>:</td>
@@ -417,9 +447,9 @@ if (isset($error_html)) echo $error_html;
                 reset($available_styles);
 
                 if (isset($key)) {
-                  echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]);
+                  echo form_dropdown_array("forumstyle", $available_styles, $style_names, $available_styles[$key]);
                 }else {
-                  echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]);
+                  echo form_dropdown_array("forumstyle", $available_styles, $style_names, $available_styles[0]);
                 }
 
               ?>
@@ -432,6 +462,7 @@ if (isset($error_html)) echo $error_html;
       </td>
     </tr>
   </table>
+  <p class="threadtime">More Profile and Preference options are available once you register.</p>
   <p><?php echo form_submit("submit", $lang['register']); ?></p>
 </form>
 </div>

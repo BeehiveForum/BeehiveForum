@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.32 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.33 2004-12-01 02:15:25 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -329,7 +329,7 @@ if (perm_is_moderator($fid)) {
     }
 }
 
-html_draw_top("basetarget=_blank");
+html_draw_top("basetarget=_blank", "robots=noindex,nofollow");
 
 echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
 echo "<br />\n";

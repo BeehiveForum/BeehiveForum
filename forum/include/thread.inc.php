@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.59 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.60 2004-12-06 02:00:38 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -39,7 +39,7 @@ function thread_get_title($tid)
 
     if (db_num_rows($result) > 0) {
 
-        list($thread_title) = db_fetch_array($result, DB_FETCH_NUM);
+        list($thread_title) = db_fetch_array($result, DB_RESULT_NUM);
         return $thread_title;
     }
 

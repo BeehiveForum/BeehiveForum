@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.72 2004-11-03 23:31:54 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.73 2004-12-03 00:29:49 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -344,7 +344,7 @@ function get_pm_attachment_id($mid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT AID FROM {$table_data['PREFIX']}PM_ATTACHMENT_IDS WHERE MID = '$mid'";
+    $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
     $result = db_query($sql, $db_get_pm_attachment_id);
 
     if (db_num_rows($result) > 0) {
@@ -378,7 +378,7 @@ function get_message_link($aid)
 
     }else{
 
-        $sql = "SELECT MID FROM {$table_data['PREFIX']}PM_ATTACHMENT_IDS WHERE AID = '$aid'";
+        $sql = "SELECT MID FROM PM_ATTACHMENT_IDS WHERE AID = '$aid'";
         $result = db_query($sql, $db_get_message_link);
 
         if (db_num_rows($result) > 0) {

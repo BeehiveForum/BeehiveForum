@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.13 2004-11-25 09:02:13 decoyduck Exp $ */
+/* $Id: install.php,v 1.14 2004-12-03 00:29:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,10 +50,13 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
     $error_html = "";
 
     if (isset($_POST['install_method']) && strlen(trim(_stripslashes($_POST['forum_webtag']))) > 0) {
+
         if (trim(_stripslashes($_POST['install_method']) == 'install')) {
             $install_method = 0;
         }else if (trim(_stripslashes($_POST['install_method']) == 'upgrade')) {
             $install_method = 1;
+        }else if (trim(_stripslashes($_POST['install_method']) == 'upgrade05pr1')) {
+            $install_method = 2;
         }else {
             $error_html.= "<h2>You must choose an installation method.</h2>\n";
             $valid = false;
@@ -158,13 +161,17 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
         if ($db_install = db_connect()) {
 
-            if (($install_method == 1) && (@file_exists('./install/upgrade_script.php'))) {
+            if (($install_method == 2) && (@file_exists('./install/upgrade-05pr1-to-05.php'))) {
 
-                include_once("./install/upgrade_script.php");
+                include_once("./install/upgrade-05pr1-to-05.php");
 
-            }elseif (($install_method == 0) && (@file_exists('./install/install_script.php'))) {
+            }elseif (($install_method == 1) && (@file_exists('./install/upgrade-04-to-05.php'))) {
 
-                include_once("./install/install_script.php");
+                include_once("./install/upgrade-04-to-05.php");
+
+            }elseif (($install_method == 0) && (@file_exists('./install/new-install.php'))) {
+
+                include_once("./install/new-install.php");
 
             }else {
 
@@ -497,7 +504,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Choose Installation Method:</td>\n";
-    echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" dir=\"ltr\"><option value=\"install\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option><option value=\"upgrade\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Upgrade</option></select></td>\n";
+    echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" dir=\"ltr\"><option value=\"install\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option><option value=\"upgrade\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Upgrade 0.4 to 0.5</option><option value=\"upgrade05pr1\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Upgrade 0.5PR1 to 0.5</option></select></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";
@@ -506,8 +513,8 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                <tr>\n";
     echo "                  <td width=\"250\">&nbsp;</td>\n";
     echo "                  <td width=\"250\" valign=\"top\">\n";
-    echo "                    <p>For upgrades enter the WEBTAG of the forum to upgrade or leave blank to upgrade all forums.</p>\n";
-    echo "                    <p>For new installs enter the WEBTAG you want to use for the default forum.</p>\n";
+    echo "                    <p>For new installs or upgrades from 0.4 to 0.5 please enter the WEBTAG you want to use for the default forum.</p>\n";
+    echo "                    <p>For upgrades from 0.5PR1 to 0.5 the Default Forum Webtag is ignored and all forums are upgraded.</p>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.99 2004-11-20 13:57:39 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.100 2004-12-03 00:29:49 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -41,7 +41,7 @@ function pm_markasread($mid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
+    $sql = "UPDATE PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_markasread);
@@ -85,15 +85,15 @@ function pm_add_sentitem($mid)
     // ------------------------------------------------------------
 
     $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, ";
-    $sql.= "PM.SUBJECT, PM.CREATED, AT.AID FROM {$table_data['PREFIX']}PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
+    $sql.= "PM.SUBJECT, PM.CREATED, AT.AID FROM PM PM ";
+    $sql.= "LEFT JOIN PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_row = db_fetch_array($result);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}PM (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
+    $sql = "INSERT INTO PM (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
     $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}', 1)";
@@ -106,13 +106,13 @@ function pm_add_sentitem($mid)
     // the sender's sent items
     // ------------------------------------------------------------
 
-    $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}PM_CONTENT ";
+    $sql = "SELECT CONTENT FROM PM_CONTENT ";
     $sql.= "WHERE MID = '$mid'";
 
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_content_row = db_fetch_array($result);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}PM_CONTENT (MID, CONTENT) ";
+    $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
     $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_content_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
@@ -124,7 +124,7 @@ function pm_add_sentitem($mid)
 
     if (isset($db_pm_add_sentitem_row['AID']) && get_num_attachments($db_pm_add_sentitem_row['AID'])) {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}PM_ATTACHMENT_IDS (MID, AID) ";
+        $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
         $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";
 
         $result = db_query($sql, $db_pm_add_sentitem);
@@ -143,7 +143,7 @@ function pm_get_inbox($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_get_inbox);
@@ -155,10 +155,10 @@ function pm_get_inbox($offset)
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
-    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
     $sql.= "PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid' ";
     $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
     $sql.= "LIMIT $offset, 10";
@@ -192,7 +192,7 @@ function pm_get_outbox($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE TYPE = TYPE & ". PM_OUTBOX_ITEMS. " AND FROM_UID = '$uid' ";
 
     $result = db_query($sql, $db_pm_get_outbox);
@@ -204,10 +204,10 @@ function pm_get_outbox($offset)
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
-    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
     $sql.= "PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid' ";
     $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
     $sql.= "LIMIT $offset, 10";
@@ -241,7 +241,7 @@ function pm_get_sent($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid' ";
 
     $result = db_query($sql, $db_pm_get_outbox);
@@ -253,10 +253,10 @@ function pm_get_sent($offset)
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
-    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
     $sql.= "PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid' ";
     $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
     $sql.= "LIMIT $offset, 10";
@@ -290,7 +290,7 @@ function pm_get_saveditems($offset)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') OR ";
     $sql.= "(TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid')";
 
@@ -303,10 +303,10 @@ function pm_get_saveditems($offset)
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
-    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "FROM PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
     $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
     $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
     $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
@@ -340,7 +340,7 @@ function pm_get_free_space($uid = false)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(MID) AS PM_USER_MESSAGES_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}PM ";
+    $sql.= "FROM PM ";
     $sql.= "WHERE ((TYPE & ". PM_INBOX_ITEMS. " > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & ". PM_OUTBOX_ITEMS. " > 0) AND FROM_UID = '$uid') ";
     $sql.= "OR ((TYPE & ". PM_SENT_ITEMS. " > 0) AND FROM_UID = '$uid') ";
@@ -369,7 +369,7 @@ function pm_get_user($mid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM PM ON (PM.FROM_UID = USER.UID) ";
+    $sql.= "LEFT JOIN PM PM ON (PM.FROM_UID = USER.UID) ";
     $sql.= "WHERE PM.MID = '$mid'";
 
     $result = db_query($sql, $db_pm_get_user);
@@ -430,7 +430,7 @@ function pm_get_subject($mid, $tuid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PM.SUBJECT FROM {$table_data['PREFIX']}PM PM ";
+    $sql = "SELECT PM.SUBJECT FROM PM PM ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$tuid'";
 
     $result = db_query($sql, $db_pm_get_subject);
@@ -463,10 +463,10 @@ function pm_single_get($mid, $folder)
     $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "AT.AID FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "AT.AID FROM PM PM ";
     $sql.= "LEFT JOIN USER TUSER ON (TUSER.UID = PM.TO_UID) ";
     $sql.= "LEFT JOIN USER FUSER ON (FUSER.UID = PM.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ";
     $sql.= "ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' ";
 
@@ -522,7 +522,7 @@ function pm_get_content($mid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}PM_CONTENT ";
+    $sql = "SELECT CONTENT FROM PM_CONTENT ";
     $sql.= "WHERE MID = '$mid'";
 
     $result = db_query($sql, $db_pm_get_content);
@@ -707,7 +707,7 @@ function pm_save_attachment_id($mid, $aid)
     if (!$table_data = get_table_prefix()) return false;
 
     $db_pm_save_attachment_id = db_connect();
-    $sql = "INSERT INTO {$table_data['PREFIX']}PM_ATTACHMENT_IDS (MID, AID) values ('$mid', '$aid')";
+    $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) values ('$mid', '$aid')";
 
     $result = db_query($sql, $db_pm_save_attachment_id);
     return $result;
@@ -730,7 +730,7 @@ function pm_send_message($tuid, $subject, $content)
     // Insert the main PM Data into the database
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
+    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES (". PM_UNREAD. ", '$tuid', '$fuid', '$subject', NOW(), 0)";
 
     $result = db_query($sql, $db_pm_send_message);
@@ -743,7 +743,7 @@ function pm_send_message($tuid, $subject, $content)
       // Insert the PM Content into the database
       // ------------------------------------------------------------
 
-      $sql = "INSERT INTO {$table_data['PREFIX']}PM_CONTENT (MID, CONTENT) ";
+      $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
       $sql.= "VALUES ('$new_mid', '$content')";
 
       if (db_query($sql, $db_pm_send_message)) {
@@ -770,14 +770,14 @@ function pm_edit_message($mid, $subject, $content)
     // Update the subject text
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_data['PREFIX']}PM SET SUBJECT = '$subject' WHERE MID = '$mid'";
+    $sql = "UPDATE PM SET SUBJECT = '$subject' WHERE MID = '$mid'";
     $result_subject = db_query($sql, $db_pm_edit_messages);
 
     // ------------------------------------------------------------
     // Update the content
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_data['PREFIX']}PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
+    $sql = "UPDATE PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
     $result_content = db_query($sql, $db_pm_edit_messages);
 
     return ($result_subject && $result_content);
@@ -800,8 +800,8 @@ function pm_delete_message($mid)
     // ------------------------------------------------------------
 
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, PAF.FILENAME, AT.AID ";
-    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
+    $sql.= "FROM PM PM ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
@@ -832,10 +832,10 @@ function pm_delete_message($mid)
         delete_attachment_by_aid($db_delete_pm_row['AID']);
     }
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}PM WHERE MID = '$mid'";
+    $sql = "DELETE FROM PM WHERE MID = '$mid'";
     $result = db_query($sql, $db_delete_pm);
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}PM_CONTENT WHERE MID = '$mid'";
+    $sql = "DELETE FROM PM_CONTENT WHERE MID = '$mid'";
     return db_query($sql, $db_delete_pm);
 
 }
@@ -855,7 +855,7 @@ function pm_archive_message($mid)
     // his Sent Items folder.
     // ------------------------------------------------------------
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}PM WHERE MID = '$mid'";
+    $sql = "SELECT * FROM PM WHERE MID = '$mid'";
 
     $result = db_query($sql, $db_pm_archive_message);
 
@@ -876,7 +876,7 @@ function pm_archive_message($mid)
     // Archive any PM that are in the User's Inbox
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_data['PREFIX']}PM SET TYPE = ". PM_SAVED_IN. " ";
+    $sql = "UPDATE PM SET TYPE = ". PM_SAVED_IN. " ";
     $sql.= "WHERE MID = '$mid' AND (TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
     $sql.= "AND TO_UID = '$uid'";
 
@@ -886,7 +886,7 @@ function pm_archive_message($mid)
     // Archive any PM that are in the User's Sent Items
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_data['PREFIX']}PM SET TYPE = ". PM_SAVED_OUT. " ";
+    $sql = "UPDATE PM SET TYPE = ". PM_SAVED_OUT. " ";
     $sql.= "WHERE MID = '$mid' AND TYPE = ". PM_SENT. " AND FROM_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_archive_message);
@@ -903,7 +903,7 @@ function pm_new_check()
     // Check to see if the user has any new PMs
     // ------------------------------------------------------------
 
-    $sql = "SELECT MID FROM {$table_data['PREFIX']}PM ";
+    $sql = "SELECT MID FROM PM ";
     $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
@@ -916,7 +916,7 @@ function pm_new_check()
     // the page, so set all NEW messages to UNREAD.
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_data['PREFIX']}PM SET NOTIFIED = 1 ";
+    $sql = "UPDATE PM SET NOTIFIED = 1 ";
     $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
@@ -935,7 +935,7 @@ function pm_get_unread_count()
     // Check to see if the user has any new PMs
     // ------------------------------------------------------------
 
-    $sql = "SELECT MID FROM {$table_data['PREFIX']}PM ";
+    $sql = "SELECT MID FROM PM ";
     $sql.= "WHERE TYPE = ". PM_UNREAD. " AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_get_unread_count);
@@ -956,14 +956,14 @@ function pm_user_prune_folders($uid = false)
 
     $user_prefs = user_get_prefs($uid);
 
-    if (isset($user_prefs['PM_PRUNE_FOLDERS']) && $user_prefs['PM_PRUNE_FOLDERS'] == 'Y') {
+    if (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == 'Y') {
 
-        if (isset($user_prefs['PM_PRUNE_LENGTH']) && is_numeric($user_prefs['PM_PRUNE_LENGTH'])) {
+        if (isset($user_prefs[' PM_AUTO_PRUNE_LENGTH']) && is_numeric($user_prefs[' PM_AUTO_PRUNE_LENGTH'])) {
 
-            $pm_prune_length = intval($user_prefs['PM_PRUNE_LENGTH']);
+            $pm_prune_length = intval($user_prefs[' PM_AUTO_PRUNE_LENGTH']);
             $pm_prune_length = time() - ($pm_prune_length * DAY_IN_SECONDS);
 
-            $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}PM WHERE ";
+            $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
             $sql.= "((TYPE = TYPE & ". PM_READ. " AND TO_UID = '$uid') ";
             $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid') ";
             $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";
@@ -987,7 +987,7 @@ function pm_system_prune_folders()
         $pm_prune_length = intval(forum_get_setting('pm_auto_prune_length', false, 60));
         $pm_prune_length = time() - ($pm_prune_length * DAY_IN_SECONDS);
 
-        $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}PM WHERE ";
+        $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
         $sql.= "((TYPE = TYPE & ". PM_READ. ") ";
         $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. ")) ";
         $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";

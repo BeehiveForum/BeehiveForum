@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.211 2004-11-29 22:09:58 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.212 2004-12-03 00:29:49 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -368,8 +368,7 @@ function user_get_prefs($uid)
     if ($table_data = get_table_prefix()) {
 
         $sql  = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, ";
-        $sql .= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, ";
-        $sql .= "PM_NOTIFY_EMAIL, PM_SAVE_SENT_ITEM, PM_INCLUDE_REPLY, PM_AUTO_PRUNE, PM_AUTO_PRUNE_LENGTH, ";
+        $sql .= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, ";
         $sql .= "DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
         $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
 
@@ -447,8 +446,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'EMAIL_NOTIFY',
                                'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
                                'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
-                               'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
-                               'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 'PM_AUTO_PRUNE_LENGTH',
                                'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
                                'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
                                'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM');

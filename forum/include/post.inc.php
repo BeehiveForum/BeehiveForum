@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.97 2004-11-21 17:26:07 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.98 2004-12-03 00:29:49 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -358,21 +358,23 @@ function check_ddkey($ddkey)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DDKEY FROM {$table_data['PREFIX']}DEDUPE WHERE UID = '$uid'";
+    $sql = "SELECT DDKEY FROM DEDUPE WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_ddkey);
 
     if (db_num_rows($result)) {
 
         list($ddkey_check) = db_fetch_array($result);
-        $sql = "UPDATE {$table_data['PREFIX']}DEDUPE SET DDKEY = '$ddkey' WHERE UID = '$uid'";
+
+        $sql = "UPDATE DEDUPE SET DDKEY = '$ddkey' WHERE UID = '$uid'";
         $result = db_query($sql, $db_check_ddkey);
 
     }else{
 
         $ddkey_check = "";
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}DEDUPE (UID, DDKEY) ";
+        $sql = "INSERT INTO DEDUPE (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', '$ddkey')";
+
         $result = db_query($sql, $db_check_ddkey);
     }
 

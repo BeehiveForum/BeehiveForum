@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.79 2005-03-20 21:47:00 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.80 2005-03-21 14:33:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -129,7 +129,7 @@ if (isset($_POST['clear'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['adminaccesslog']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['adminaccesslog']}</h1>\n";
 echo "<p>{$lang['adminlogexp']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";

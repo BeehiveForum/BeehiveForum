@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.22 2005-03-21 10:43:16 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.23 2005-03-21 14:33:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -281,7 +281,7 @@ if (isset($_POST['submit'])) {
 
 html_draw_top("emoticons.js");
 
-echo "<h1>{$lang['globalforumsettings']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['globalforumsettings']}</h1>\n";
 
 // Any error messages to display?
 
@@ -292,6 +292,7 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
+echo "<div align=\"center\">\n";
 echo "<form name=\"prefs\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
@@ -588,6 +589,7 @@ echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.8 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.9 2005-03-21 14:33:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -137,15 +137,22 @@ if (isset($_POST['l_title_new']) && $_POST['l_title_new'] != "" && isset($_POST[
 
 html_draw_top();
 
-echo "<h1>{$lang['admin']} : {$lang['editforumlinks']}</h1>\n";
-echo "<p>{$lang['editforumlinks_exp']}</p>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['editforumlinks']}</h1>\n";
+echo "<br />\n";
 
 $links = forum_links_get_links();
 
 if (isset($status_text)) echo $status_text;
 
+echo "<div align=\"center\">\n";
 echo "<form method=\"post\" action=\"admin_forum_links.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td>{$lang['editforumlinks_exp']}</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -215,8 +222,8 @@ echo "    <tr>\n";
 echo "      <td align=\"center\">". form_submit("submit", $lang['submit'])." ".form_reset() ."</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-
 echo "</form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

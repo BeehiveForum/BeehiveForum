@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.25 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.26 2005-03-21 14:33:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -123,7 +123,7 @@ if (!$group = perm_get_group($gid)) {
 $group_permissions = perm_get_group_permissions($gid);
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageusergroups']} : {$group['GROUP_NAME']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['manageusergroups']} : {$group['GROUP_NAME']}</h1>\n";
 
 // Do updates
 

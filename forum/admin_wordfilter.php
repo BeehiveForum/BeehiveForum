@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.60 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.61 2005-03-21 14:33:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -172,16 +172,23 @@ if (isset($_POST['submit'])) {
 
 $word_filter_array = admin_get_word_filter();
 
-echo "<h1>{$lang['admin']} : {$lang['editwordfilter']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['editwordfilter']}</h1>\n";
 
 if (isset($_GET['updated'])) {
     echo "<h2>{$lang['wordfilterupdated']}</h2>\n";
 }
 
-echo "<p>{$lang['wordfilterexp_1']}</p>\n";
-echo "<p>{$lang['wordfilterexp_2']}</p>\n";
+echo "<div align=\"center\">\n";
 echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <p>{$lang['wordfilterexp_1']}</p>\n";
+echo "        <p>{$lang['wordfilterexp_2']}</p>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -262,10 +269,17 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "  <p>{$lang['word_filter_help_1']}</p>\n";
-echo "  <p>{$lang['word_filter_help_2']}</p>\n";
-echo "  <p>{$lang['word_filter_help_3']}</p>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <p>{$lang['word_filter_help_1']}</p>\n";
+echo "        <p>{$lang['word_filter_help_2']}</p>\n";
+echo "        <p>{$lang['word_filter_help_3']}</p>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.76 2005-03-20 20:35:22 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.77 2005-03-21 14:33:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -232,7 +232,7 @@ if (isset($_POST['submit'])) {
 html_draw_top();
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageprofileitems']}<br />{$lang['section']}: ". profile_section_get_name($psid). "</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['manageprofileitems']} : ", profile_section_get_name($psid), "</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.94 2005-03-21 10:43:16 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.95 2005-03-21 14:33:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
 html_draw_top();
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['managefolders']}</h1>\n";
 
 if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {
     echo "<h2>{$lang['successfullyaddedfolder']}: ", trim(_stripslashes($_GET['add_success'])), "</h2>\n";

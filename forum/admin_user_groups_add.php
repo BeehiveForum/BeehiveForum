@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.19 2005-03-14 13:27:16 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.20 2005-03-21 14:33:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -103,7 +103,7 @@ if (!(perm_has_admin_access())) {
 }
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageusergroups']} : {$lang['addusergroup']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['manageusergroups']} : {$lang['addusergroup']}</h1>\n";
 
 // Do updates
 
@@ -174,7 +174,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-echo "<p>&nbsp;</p>\n";
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"admin_user_form\" action=\"admin_user_groups_add.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";

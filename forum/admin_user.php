@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.136 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.137 2005-03-21 14:33:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,7 +132,7 @@ $user = user_get($uid);
 $user_perms = perm_get_user_permissions($uid);
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageuser']} : {$user['LOGON']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$user['LOGON']}</h1>\n";
 
 // Do updates
 
@@ -274,7 +274,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
     }
 }
 
-echo "<p>&nbsp;</p>\n";
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";

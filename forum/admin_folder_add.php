@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.21 2005-03-20 17:53:30 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.22 2005-03-21 14:33:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -151,7 +151,7 @@ if (isset($_POST['submit'])) {
 $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lang['both']);
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
-echo "<h1>{$lang['admin']} : {$lang['managefolders']} : {$lang['addnewfolder']}</h1>\n";
+echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['managefolders']} : {$lang['addnewfolder']}</h1>\n";
 
 if (isset($error_html) && strlen($error_html) > 0) {
     echo $error_html;

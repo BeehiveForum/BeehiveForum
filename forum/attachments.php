@@ -140,7 +140,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody">2. <?php echo $lang['nowpress']."&nbsp;".form_submit('submit', $lang['upload'], 'onclick="this.value = \'{$lang["waitdotdot"]}\'"'); ?></td>
+    <td class="postbody">2. <?php echo $lang['nowpress'], "&nbsp;", form_submit('submit', $lang['upload'], "onclick=\"this.value='{$lang["waitdotdot"]}'\""); ?></td>
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>

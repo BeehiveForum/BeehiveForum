@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.25 2004-10-08 01:22:17 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.26 2004-10-17 11:29:40 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -777,7 +777,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
-    $sql = "ALTER TABLE SESSIONS ADD PRIMARY KEY (UID)";
+    $sql = "ALTER TABLE SESSIONS ADD PRIMARY KEY (UID, IPADDRESS)";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;

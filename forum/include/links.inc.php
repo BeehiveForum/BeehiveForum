@@ -28,6 +28,7 @@ require_once("forum.inc.php");
 require_once("header.inc.php");
 require_once("html.inc.php");
 require_once("form.inc.php");
+require_once("format.inc.php");
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {

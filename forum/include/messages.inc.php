@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.205 2003-12-09 23:03:49 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.206 2003-12-11 12:56:51 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -304,9 +304,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
-	    if (perm_is_soldier()) {
-                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) echo "<b class=\"adminipdisplay\">{$lang['ip']}: {$message['IPADDRESS']}</b> ";
-	    }
             echo format_time($message['CREATED'], 1);
         }
     }
@@ -452,7 +449,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
             echo "<tr>\n";
-            echo "  <td>";
+            echo "  <td width=\"25%\">&nbsp;</td>\n";
+            echo "  <td width=\"50%\" nowrap=\"nowrap\">";
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP)) || (bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
@@ -492,6 +490,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
             echo "</td>\n";
+
+	    if (perm_is_soldier() && isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
+	        echo "  <td width=\"25%\" align=\"right\" nowrap=\"nowrap\"><span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span></td>";
+	    }else {
+	        echo "  <td width=\"25%\">&nbsp;</td>";
+	    }
+
             echo "</tr>";
         }
         echo "</table>\n";

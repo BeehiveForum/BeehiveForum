@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.72 2004-04-28 14:28:54 decoyduck Exp $ */
+/* $Id: nav.php,v 1.73 2004-04-28 21:33:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -75,7 +75,7 @@ if ($webtag) {
 
 echo "<a href=\"forums.php?webtag=$webtag\" target=\"main\">{$lang['myforums']}</a>&nbsp;|&nbsp;\n";
 
-if ((bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
+if ((bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<a href=\"admin.php?webtag=$webtag\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
 }
 

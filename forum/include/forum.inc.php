@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.65 2004-04-28 20:38:56 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.66 2004-04-28 21:33:19 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -39,17 +39,17 @@ function get_table_prefix()
 
         $db_get_table_prefix = db_connect();
 
-        if ($uid = bh_session_get_value('UID')) $uid = 0;
+        if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
+        if (isset($_GET['webtag'])) {
             $webtag = trim($_GET['webtag']);
-        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {
+        }else if (isset($_POST['webtag'])) {
             $webtag = trim($_POST['webtag']);
         }else {
             $webtag = false;
         }
 
-        if ($webtag) {
+        if (!is_bool($webtag)) {
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
@@ -67,7 +67,7 @@ function get_table_prefix()
             }
         }
 
-        if (!$webtag) {
+        if (is_bool($webtag)) {
 
             // Check #2: Try and select a default webtag from
             // the databse
@@ -99,17 +99,17 @@ function get_webtag(&$webtag_search)
 
         $db_get_webtag = db_connect();
 
-        if ($uid = bh_session_get_value('UID')) $uid = 0;
+        if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
+        if (isset($_GET['webtag'])) {
             $webtag = trim($_GET['webtag']);
-        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {
+        }else if (isset($_POST['webtag'])) {
             $webtag = trim($_POST['webtag']);
         }else {
             $webtag = false;
         }
 
-        if ($webtag) {
+        if (!is_bool($webtag)) {
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
@@ -128,7 +128,7 @@ function get_webtag(&$webtag_search)
             }
         }
 
-        if (!$webtag) {
+        if (is_bool($webtag)) {
 
             // Check #2: Try and select a default webtag from
             // the databse

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.19 2004-04-28 14:28:53 decoyduck Exp $ */
+/* $Id: forums.php,v 1.20 2004-04-28 21:33:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -413,7 +413,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<form action=\"forums.php\" method=\"get\">\n";
+echo "<form action=\"forums.php\" method=\"get\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

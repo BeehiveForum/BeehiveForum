@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.45 2005-01-19 14:41:07 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.46 2005-01-24 22:19:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -153,7 +153,7 @@ if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($
     exit;
 }
 
-if ($user = user_get($uid, $key)) {
+if ($user = user_get_password($uid, $key)) {
     $logon = strtoupper($user['LOGON']);
 }else {
     html_draw_top();

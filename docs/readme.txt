@@ -22,6 +22,8 @@ A list of changes since previous Beehive versions can be found in release.txt.
     1.3.1    Stylesheet
     1.3.2    Images
     1.3.3    The top frame
+    1.3.4    Emoticons
+    1.3.5    Beautifier
   1.4    Upgrading 0.4.1 to 0.5
     1.4.1    Make a back up of your database
     1.4.2    Back up your files
@@ -310,6 +312,64 @@ find a file called "top.html", which you can edit any way you like, put what you
 want in there, little Flash movies with solar/lunar cycles or big headache
 inducing adverts for stuff, it's entirely up to you.
 Just keep it 60 pixels high or under.
+
+
+1.3.4 Emoticons
+===============
+
+Beehive uses CSS-styled emoticons. This allows the end-user to have great control,
+being able to choose from options such as completely invisible, text-only, and the
+range of graphic sets which can be installed. All this comes with no extra server
+processing load, as the emoticon code is added at post-time, rather than each time
+a message is displayed. The compromise for this functionality, however, is quite a
+complicated method to create new emoticon sets.
+
+In brief, there exists a file emoticon_definitions.inc.php in the /emoticons
+directory. This file contains the textual pattern definitions of the emoticons. For
+example, to add a ':-)' emoticon, one would add the following line:
+
+$emoticon[':-)'] = "smile";
+
+Then, in your new emoticon set's directory (we'll call it /emoticons/test) you will
+need to create a file desc.txt (which has the name of the set on one line) and a
+style.css file. To add your ':-)' emoticon you will need CSS code similar to this:
+
+.e_smile {
+	padding-left: 15px; // the width of the emoticon image
+	height: 13px;       // the height of the image
+	font-size: 13px;    // the height of the image again, for Mozilla
+	background-image: url("./images/smile.gif");  // the image itself
+	background-repeat: no-repeat;
+}
+.e_smile span {
+	display: none;
+}
+
+Notice the class name 'e_smile' - this is the word you associated with the ':-)'
+pattern in emoticon_definitions.inc.php ("smile") prefixed by 'e_'. Be careful
+not to use the same associated word for different emoticons (it's fine to use the
+same word for, for example, both ':)' and ':-)', however). Also note that every
+.e_NAME class must also have the .e_NAME span { ... } class.
+
+
+1.3.5 Beautifier
+================
+
+Beehive uses several 'custom' HTML tags, including the <code> tag. This tag now 
+accepts a 'language' attribute (<code language="...">) which will highlight your 
+code, thanks to the open-source software 'Beautifier' (http://www.beautifier.org/). 
+By default Beehive includes Javascript, PHP and HTML modules, and you can add others 
+to your install by downloading the modules from the Beautifier website and adding 
+them to the /beautifier/HFile directory in your forum install. You must then edit 
+/beautifier/language_definitions.inc.php and add the filename (minus the .php suffix)
+to a 'nickname', e.g.:
+
+$beaut_langs['html'] = 'HFile_xhtml10';
+
+By then using <code language="html">...</code> Beautifier will highlight your code
+syntax.
+
+Note: Beautifier is created by Mike Jewell, not the Beehive developers.
 
 
 1.4 Upgrading from 0.4 to 0.5

@@ -28,6 +28,8 @@ require_once("./include/user.inc.php");
 function search_construct_query($argarray, &$searchsql, &$urlquery)
 {
 
+  global $HTTP_COOKIE_VARS;
+
   if ($argarray['fid'] > 0) {
     $searchsql.= "THREAD.FID = ". $argarray['fid']. " ";
   }else{
@@ -35,25 +37,72 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
     $searchsql.= "THREAD.FID in ($folders) ";
   }
   
-  $searchsql.= search_date_range($argarray['date_from'], $argarray['date_to']). " ";
+  $searchsql.= search_date_range($argarray['date_from'], $argarray['date_to']);
   
   if (!empty($argarray['search_string'])) {
   
-    if ($argarray['method'] == 1) {
+    if ($argarray['method'] == 1) { // AND
   
       $keywords = explode(' ', $argarray['search_string']);
-      foreach($keywords as $word) $searchsql.= "AND POST_CONTENT.CONTENT LIKE '%$word%' ";
-    
-    }elseif ($argarray['method'] == 2) {
+      
+      foreach($keywords as $word) {
+        $threadtitle.= "THREAD.TITLE LIKE '%$word%' AND ";
+      }
+      
+      foreach($keywords as $word) {
+        $postcontent.= "POST_CONTENT.CONTENT LIKE '%$word%' AND ";
+      }
+      
+      $threadtitle = substr($threadtitle, 0, -5);
+      $postcontent = substr($postcontent, 0, -5);
+      
+      if ($argarray['me_only'] == 'Y') {
+        
+        $searchsql.= " AND (". $threadtitle. " AND (POST.TO_UID = ". 
+        $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".
+        $HTTP_COOKIE_VARS['bh_sess_uid']. ")) OR (". $postcontent.
+        " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'].
+        " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")) ";
+        
+      }else {
+      
+        $searchsql.= " AND (". $threadtitle. ") OR (". $postcontent. ") ";
+        
+      }
+      
+    }elseif ($argarray['method'] == 2) { // OR
   
-      $searchsql.= "AND ";
       $keywords = explode(' ', $argarray['search_string']);
-      foreach($keywords as $word) $searchsql.= "POST_CONTENT.CONTENT LIKE '%$word%' OR ";
-      $searchsql = substr($searchsql, 0, -3);
+      
+      foreach($keywords as $word) {
+        $threadtitle.= "THREAD.TITLE LIKE '%$word%' OR ";
+      }
+      
+      foreach($keywords as $word) {
+        $postcontent.= "POST_CONTENT.CONTENT LIKE '%$word%' OR ";
+      }
+      
+      $threadtitle = substr($threadtitle, 0, -4);
+      $postcontent = substr($postcontent, 0, -4);
+      
+      if ($argarray['me_only'] == 'Y') {
+      
+        $searchsql = " AND (". $threadtitle. " AND (POST.TO_UID = ".
+        $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".
+        $HTTP_COOKIE_VARS['bh_sess_uid']. ")) OR (". $postcontent.
+        " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'].
+        " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")) ";
+        
+      }else {
+      
+        $searchsql.= "AND (". $threadtitle. ") OR (". $postcontent. ") ";
+        
+      }
     
-    }elseif ($argarray['method'] == 3) {
+    }elseif ($argarray['method'] == 3) { // EXACT
   
-      $searchsql.= "AND POST_CONTENT.CONTENT LIKE '%". $argarray['search_string']. "%' ";
+      $searchsql.= "AND (THREAD.TITLE LIKE '%". $argarray['search_string']. "%' ";
+      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". $argarray['search_string']. "%') ";
 
     }
     
@@ -75,11 +124,6 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
       if ($fromuid > -1) $searchsql.= "AND POST.FROM_UID = ". $fromuid. " ";      
     }
     
-  }else {
-  
-    $searchsql.= "AND POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR ";
-    $searchsql.= $searchsql. " AND POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " ";
-
   }
   
   if ($argarray['order_by'] == 2) {
@@ -92,7 +136,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
   $urlquery.= "&search_string=". rawurlencode($argarray['search_string']). "&method=". $argarray['method']. "&me_only=". $argarray['me_only'];
   $urlquery.= "&to_other=". $argarray['to_other']. "&to_uid=". $argarray['to_uid']. "&from_other=". $argarray['from_other'];
   $urlquery.= "&from_uid=". $argarray['from_uid']. "&order_by=". $argarray['order_by'];
-  
+ 
 }
 
 function search_date_range($from, $to)

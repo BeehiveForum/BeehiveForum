@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.286 2004-06-17 16:03:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.287 2004-07-03 21:48:52 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -196,12 +196,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	$cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
-    }
-
-    if (isset($message['EDITED']) && $message['EDITED'] > 0) {
-        $message['CONTENT'].= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". format_time($message['EDITED'], 1, "d/m/y H:i T");
-        $message['CONTENT'].= " {$lang['by']} {$message['EDIT_LOGON']}";
-        $message['CONTENT'].= "</p>";
     }
 
     if($in_list && isset($message['PID'])){
@@ -381,7 +375,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 			}
         }
 
-        echo "<tr><td class=\"postbody\" align=\"left\">". $message['CONTENT']. "</td></tr>\n";
+        echo "<tr><td class=\"postbody\" align=\"left\">{$message['CONTENT']}</td></tr>\n";
+
+        if (isset($message['EDITED']) && $message['EDITED'] > 0) {
+
+	    echo "<tr><td class=\"postbody\" align=\"left\">\n";
+            echo "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ";
+            echo format_time($message['EDITED'], 1, "d/m/y H:i T");
+            echo " {$lang['by']} {$message['EDIT_LOGON']}</p>";
+	    echo "</td></tr>\n";
+        }
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 

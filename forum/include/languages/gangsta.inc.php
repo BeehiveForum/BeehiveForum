@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.6 2003-11-09 13:56:15 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.7 2003-11-09 14:37:29 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -321,6 +321,7 @@ $lang['otherattachmentsincludingpm'] = "Other Attizachments (incizluding fuckin'
 $lang['totalsize'] = "Total Sizize";
 $lang['freespace'] = "Free Spizace";
 $lang['attachmentproblem'] = "There was a prizoblem dizownloading this piece of shit. Please try again later.";
+$lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
@@ -716,6 +717,7 @@ $lang['editpoll'] = "Edizit Pizoll";
 $lang['results'] = "Rizesults";
 $lang['resultdetails'] = "Rizesult Dizetizails";
 $lang['changevote'] = "Change yo mizind";
+$lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
 
 // Profiles (profile.php) ----------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.78 2004-12-22 22:21:10 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.79 2004-12-27 16:19:57 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -46,7 +46,7 @@ function get_attachments($uid, $aid)
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
     $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID = '$aid' ";
-    $sql.= "ORDER BY FORUMS.FID";
+    $sql.= "ORDER BY FORUMS.FID DESC";
 
     $result = db_query($sql, $db_get_attachments);
 
@@ -63,7 +63,7 @@ function get_attachments($uid, $aid)
                                         "hash"         => $row['HASH'],
                                         "mimetype"     => $row['MIMETYPE'],
                                         "downloads"    => $row['DOWNLOADS'],
-                                        "forum_fid"    => $row['FID'],
+                                        "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
                                         "forum_webtag" => $row['WEBTAG']);
         }
     }
@@ -89,7 +89,7 @@ function get_all_attachments($uid, $aid)
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
     $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID <> '$aid'";
-    $sql.= "ORDER BY FORUMS.FID";
+    $sql.= "ORDER BY FORUMS.FID DESC";
 
     $result = db_query($sql, $db_get_all_attachments);
 
@@ -106,7 +106,7 @@ function get_all_attachments($uid, $aid)
                                         "hash"         => $row['HASH'],
                                         "mimetype"     => $row['MIMETYPE'],
                                         "downloads"    => $row['DOWNLOADS'],
-                                        "forum_fid"    => $row['FID'],
+                                        "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
                                         "forum_webtag" => $row['WEBTAG']);
         }
     }
@@ -131,7 +131,7 @@ function get_users_attachments($uid)
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
     $sql.= "WHERE PAF.UID = '$uid'";
-    $sql.= "ORDER BY FORUMS.FID";
+    $sql.= "ORDER BY FORUMS.FID DESC";
 
     $result = db_query($sql, $db_get_users_attachments);
 
@@ -148,7 +148,7 @@ function get_users_attachments($uid)
                                         "hash"         => $row['HASH'],
                                         "mimetype"     => $row['MIMETYPE'],
                                         "downloads"    => $row['DOWNLOADS'],
-                                        "forum_fid"    => $row['FID'],
+                                        "forum_fid"    => is_numeric($row['FID']) ? $row['FID'] : 0,
                                         "forum_webtag" => $row['WEBTAG']);
         }
     }

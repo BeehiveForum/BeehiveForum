@@ -398,7 +398,7 @@ least bundled here amongst the other credits.
 Current available languages are as follows:
 
 English (UK)
-French
+French (note: incomplete - includes some English phrases still)
 X-Hacker
 Gangsta
 
@@ -427,7 +427,7 @@ Nigel Moore / Kevin Yip / Andrew Holgate
 4.4 Translations
 ================
 
-French   - Mark Krywonos (note: incomplete - includes some English phrases still)
+French   - Mark Krywonos
 Gangsta  - Jay Graham.
 X-Hacker - Matt Beale.
 

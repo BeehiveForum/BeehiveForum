@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.153 2004-08-12 17:53:23 rowan_hill Exp $ */
+/* $Id: messages.php,v 1.154 2004-08-14 23:16:00 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -276,6 +276,13 @@ if (isset($_GET['markasread'])) {
 
     echo "  <tr>\n";
     echo "    <td><h2>{$lang['threareadstatusupdated']}</h2></td>\n";
+    echo "  </tr>\n";
+}
+
+if (isset($_GET['setinterest'])) {
+
+    echo "  <tr>\n";
+    echo "    <td><h2>{$lang['interestupdated']}</h2></td>\n";
     echo "  </tr>\n";
 }
 

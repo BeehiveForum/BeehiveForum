@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.292 2004-08-08 12:18:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.293 2004-08-14 23:16:00 rowan_hill Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -639,10 +639,10 @@ function messages_interest_form($tid,$pid)
     $chk[$interest+1] = " checked";
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
     echo form_input_hidden('webtag', $webtag), "\n";
     echo "<p>{$lang['ratemyinterest']}: \n";
-    echo form_radio_array("interest",array(-1,0,1,2),array("{$lang['ignore']} ","{$lang['normal']} ","{$lang['interested']} ","{$lang['subscribe']} "),$interest);
+    echo form_radio_array("setinterest",array(-1,0,1,2),array("{$lang['ignore']} ","{$lang['normal']} ","{$lang['interested']} ","{$lang['subscribe']} "),$interest);
     echo form_input_hidden("tid",$tid);
     echo form_submit("submit", $lang['apply']);
     echo "</p>\n";

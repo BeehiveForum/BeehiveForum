@@ -38,10 +38,10 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
   }else{
       $folders = "THREAD.FID in (". threads_get_available_folders(). ")";
   }
-  
+
   $daterange = search_date_range($argarray['date_from'], $argarray['date_to']);
   $fromtouser = "";
-  
+
     if(!isset($argarray['me_only'])){
         $argarray['me_only'] = "N";
     }
@@ -86,90 +86,90 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
         $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") OR (". $postcontent.
         " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'].
         " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") ";
-        
+
       }else {
-      
+
         $searchsql.= " (". $folders. " AND ". $threadtitle. " ". $daterange. " ". $fromtouser. ")";
         $searchsql.= " OR (". $folders. " AND ". $postcontent. " ". $daterange. " ". $fromtouser. ") ";
-        
+
       }
-      
+
     }elseif ($argarray['method'] == 2) { // OR
-  
+
       $keywords = explode(' ', $argarray['search_string']);
-      
+
       foreach($keywords as $word) {
         $threadtitle.= "THREAD.TITLE LIKE '%$word%' OR ";
       }
-      
+
       foreach($keywords as $word) {
         $postcontent.= "POST_CONTENT.CONTENT LIKE '%$word%' OR ";
       }
-      
+
       $threadtitle = substr($threadtitle, 0, -4);
       $postcontent = substr($postcontent, 0, -4);
-      
+
       if ($argarray['me_only'] == 'Y') {
-      
+
         $searchsql = " (". $folders. " AND ". $threadtitle. " AND (POST.TO_UID = ".
         $HTTP_COOKIE_VARS['bh_sess_uid']. " OR POST.FROM_UID = ".
         $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") OR (". $postcontent.
         " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'].
         " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ") ". $daterange. ") ";
-        
+
       }else {
-      
+
         $searchsql.= " (". $folders. " AND ". $threadtitle. " ". $daterange. " ". $fromtouser. ")";
         $searchsql.= " OR (". $folders. " AND ". $postcontent. " ". $daterange. " ". $fromtouser. ") ";
-        
+
       }
-    
+
     }elseif ($argarray['method'] == 3) { // EXACT
-  
+
       $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". $argarray['search_string']. "%' ";
       $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". $argarray['search_string']. "%') ";
       $searchsql.= $daterange;
-      
+
       if ($argarray['me_only'] == 'Y') {
-      
+
         $searchsql.= " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
         $searchsql.= " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")";
-        
+
       }else {
-      
+
         $searchsql.= $fromtouser;
-        
-      }      
+
+      }
 
     }
-    
+
   }else {
-  
+
     if ($argarray['me_only'] == 'Y') {
-     
+
       $searchsql.= $folders. " AND (POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
       $searchsql.= " OR POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. ")";
       $searchsql.= " ". $daterange;
-      
+
     }else {
-    
+
       $searchsql.= $folders. " ". $fromtouser. " ". $daterange;
-      
+
     }
-    
+
   }
-  
+
   if ($argarray['order_by'] == 2) {
     $searchsql.= " ORDER BY POST.CREATED DESC";
   }elseif($argarray['order_by'] == 3) {
     $searchsql.= " ORDER BY POST.CREATED";
   }
-  
+
   $urlquery = "&fid=". $argarray['fid']. "&date_from=". $argarray['date_from']. "&date_to=". $argarray['date_to'];
   $urlquery.= "&search_string=". rawurlencode($argarray['search_string']). "&method=". $argarray['method']. "&me_only=". $argarray['me_only'];
   $urlquery.= "&to_other=". $argarray['to_other']. "&to_uid=". $argarray['to_uid']. "&from_other=". $argarray['from_other'];
   $urlquery.= "&from_uid=". $argarray['from_uid']. "&order_by=". $argarray['order_by'];
- 
+
 }
 
 function search_date_range($from, $to)
@@ -178,159 +178,166 @@ function search_date_range($from, $to)
     $year  = date('Y', mktime());
     $month = date('n', mktime());
     $day   = date('j', mktime());
-    
+
     $range = "";
 
     switch($from) {
-    
+
       case 1:  // Today
-      
+
         $from_timestamp = mktime(0, 0, 0, $month, $day, $year);
         break;
-      
+
       case 2:  // Yesterday
-      
+
         $from_timestamp = mktime(0, 0, 0, $month, $day - 1, $year);
         break;
-      
+
       case 3:  // Day before yesterday
-      
+
         $from_timestamp = mktime(0, 0, 0, $month, $day - 2, $year);
         break;
-      
+
       case 4:  // 1 week ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month, $day - 7, $year);
         break;
-      
+
       case 5:  // 2 weeks ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month, $day - 14, $year);
-        break;      
-      
+        break;
+
       case 6:  // 3 weeks ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month, $day - 21, $year);
-        break;      
-      
+        break;
+
       case 7:  // 1 month ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month - 1, $day, $year);
-        break;      
-      
+        break;
+
       case 8:  // 2 months ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month - 2, $day, $year);
-        break;      
-      
+        break;
+
       case 9:  // 3 months ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month - 3, $day, $year);
-        break;      
-      
+        break;
+
       case 10: // 6 months ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month - 6, $day, $year);
-        break;      
-      
+        break;
+
       case 11: // 1 year ago
-      
+
         $from_timestamp = mktime(0, 0, 0, $month, $day, $year - 1);
-        break;      
-      
+        break;
+
     }
-    
+
     switch($to) {
-    
+
       case 1:  // Now
-      
+
         $to_timestamp = mktime();
         break;
-      
+
       case 2:  // Today
-      
+
         $to_timestamp = mktime(23, 59, 59, $month, $day, $year);
         break;
-      
+
       case 3:  // Yesterday
-      
+
         $to_timestamp = mktime(23, 59, 59, $month, $day - 1, $year);
-        break;      
-      
+        break;
+
       case 4:  // Day before yesterday
-      
+
         $to_timestamp = mktime(23, 59, 59, $month, $day - 2, $year);
-        break;      
-      
+        break;
+
       case 5:  // 1 week ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month, $day - 7, $year);
-        break;      
-      
+        break;
+
       case 6:  // 2 weeks ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month, $day - 14, $year);
-        break;      
-      
+        break;
+
       case 7:  // 3 weeks ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month, $day - 21, $year);
-        break;      
-      
+        break;
+
       case 8:  // 1 month ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month - 1, $day, $year);
-        break;      
-      
+        break;
+
       case 9:  // 2 months ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month - 2, $day, $year);
-        break;      
-      
+        break;
+
       case 10: // 3 months ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month - 3, $day, $year);
-        break;      
-      
+        break;
+
       case 11: // 6 months ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month - 6, $day, $year);
-        break;      
-      
+        break;
+
       case 12: // 1 year ago
-      
+
         $to_timestamp = mktime(23, 59, 59, $month, $day, $year - 1);
-        break;      
-      
+        break;
+
     }
-    
+
     if (isset($from_timestamp)) $range = "AND POST.CREATED >= FROM_UNIXTIME($from_timestamp)";
     if (isset($to_timestamp)) $range.= " AND POST.CREATED <= FROM_UNIXTIME($to_timestamp)";
-    
+
     return $range;
-    
+
 }
 
 function folder_search_dropdown()
 {
 
     $db_folder_search_dropdown = db_connect();
-    
-    $sql = "select FID, TITLE from " . forum_table("FOLDER");
+
+    if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+      $sql = "select FID, TITLE from " . forum_table("FOLDER");
+    }else {
+      $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
+      $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
+      $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+    }
+
     $result = db_query($sql, $db_folder_search_dropdown);
-    
+
     $fids[] = 0;
     $titles[] = "ALL";
-    
+
     while($row = db_fetch_array($result)) {
-    
+
       $fids[]   = $row['FID'];
       $titles[] = $row['TITLE'];
-      
+
     }
-    
+
     return form_dropdown_array("fid", $fids, $titles, 0);
-    
+
 }
 
 function search_draw_user_dropdown($name)
@@ -339,33 +346,33 @@ function search_draw_user_dropdown($name)
     global $HTTP_COOKIE_VARS;
 
     $db_search_draw_user_dropdown = db_connect();
-    
+
     $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
     $sql.= "from ".forum_table("USER")." U WHERE U.UID > 0 AND U.UID <> ". $HTTP_COOKIE_VARS['bh_sess_uid']. " ";
     $sql.= "order by U.LAST_LOGON desc ";
     $sql.= "limit 0, 20";
-    
+
     $result = db_query($sql, $db_search_draw_user_dropdown);
-    
+
     $uids[]  = 0;
     $names[] = "ALL";
-    
+
     if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
-    
+
       $uids[]  = $HTTP_COOKIE_VARS['bh_sess_uid'];
       $names[] = "ME";
-      
+
     }
-    
+
     while($row = db_fetch_array($result)) {
-    
+
       $uids[]  = $row['UID'];
       $names[] = format_user_name($row['LOGON'], $row['NICKNAME']);
-      
+
     }
-    
+
     return form_dropdown_array($name, $uids, $names, 0);
-    
+
 }
 
 ?>

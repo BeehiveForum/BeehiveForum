@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.101 2005-01-20 00:14:56 tribalonline Exp $ */
+/* $Id: index.php,v 1.102 2005-01-20 15:43:33 tribalonline Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -87,7 +87,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\" />\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
-    echo "<meta name=\"robots\" content=\"noindex,follow\" />\n";
+    echo "<meta name=\"robots\" content=\"index,follow\" />\n";
     echo "</head>\n";
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
@@ -180,7 +180,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\" />\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
-    echo "<meta name=\"robots\" content=\"noindex,follow\" />\n";
+    echo "<meta name=\"robots\" content=\"index,follow\" />\n";
     echo "</head>\n";
 
     // Fetch the forum settings

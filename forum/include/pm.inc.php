@@ -27,33 +27,96 @@ require_once('./include/header.inc.php');
 require_once('./include/html.inc.php');
 require_once('./include/form.inc.php');
 require_once('./include/format.inc.php');
+require_once('./include/constants.inc.php');
 
-
-function _pm_markasread($mid)
+function pm_markasread($mid)
 {
     $db_pm_markasread = db_connect();
-    $sql  = "UPDATE ".forum_table("PM")." SET VIEWED = NOW() WHERE MID = $mid";
-    $result_id = db_query($sql, $db_pm_markasread);
+    $uid = bh_session_get_value('UID');
+
+    // ------------------------------------------------------------
+    // Get the PM data to reinsert later
+    // ------------------------------------------------------------
+
+    $sql = "SELECT PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT ";
+    $sql.= "FROM ". forum_table("PM"). " PM ";
+    $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON ";
+    $sql.= "(PM_CONTENT.MID = PM.MID) ";
+    $sql.= "WHERE PM.MID = $mid";
+
+    $result = db_query($sql, $db_pm_markasread);
+    $pm_row = db_fetch_array($result);
+
+    // ------------------------------------------------------------
+    // Mark as read only if it is the receipient viewing the PM
+    // ------------------------------------------------------------
+
+    if ($pm_row['TO_UID'] == $uid) {
+
+        // ------------------------------------------------------------
+        // Update the row so it appears as read to the receipient
+        // ------------------------------------------------------------
+
+        $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_READ. " WHERE MID = $mid";
+        $result = db_query($sql, $db_pm_markasread);
+
+        // ------------------------------------------------------------
+        // Insert the original PM data as a new row to appear in the
+        // sender's sent items
+        // ------------------------------------------------------------
+
+        $sql = "INSERT INTO ". forum_table("PM"). " (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED) ";
+        $sql.= "VALUES (". PM_SENT. ", {$pm_row['FROM_UID']}, {$pm_row['TO_UID']}, ";
+        $sql.= "'{$pm_row['SUBJECT']}', '{$pm_row['CREATED']}')";
+
+        $result  = db_query($sql, $db_pm_markasread);
+        $new_mid = db_insert_id($db_pm_markasread);
+
+        // ------------------------------------------------------------
+        // Insert the original PM content as a new row to appear in
+        // the sender's sent items
+        // ------------------------------------------------------------
+
+        $sql = "INSERT INTO ". forum_table("PM_CONTENT"). " (MID, CONTENT) ";
+        $sql.= "VALUES ($new_mid, '{$pm_row['CONTENT']}')";
+
+        $result = db_query($sql, $db_pm_markasread);
+    }
 }
 
-function pm_list_get()
+function pm_list_get($folder)
 {
     $pms = array();
 
     $db_pm_list_get = db_connect();
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT PM.MID, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(PM.VIEWED) AS VIEWED, USER.LOGON, USER.NICKNAME ";
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+    $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK ";
     $sql.= "FROM ". forum_table("PM"). " PM ";
-    $sql.= "LEFT JOIN " . forum_table("USER"). " USER ON ";
-    $sql.= "(PM.FROM_UID = USER.UID) WHERE PM.DELETED = 'Y' AND PM.TO_UID = $uid ORDER BY CREATED DESC";
+    $sql.= "LEFT JOIN " . forum_table("USER"). " FUSER ON (PM.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN " . forum_table("USER"). " TUSER ON (PM.TO_UID = TUSER.UID) WHERE ";
 
+    if (($folder == PM_FOLDER_INBOX)) {
+        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = $uid ";
+    }elseif (($folder == PM_FOLDER_SENT) || ($folder == PM_FOLDER_OUTBOX)) {
+        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = $uid ";
+    }elseif ($folder == PM_FOLDER_SAVED) {
+        $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = $uid) OR ";
+        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid)";
+    }
+
+    $sql.= "ORDER BY CREATED DESC";
     $result = db_query($sql, $db_pm_list_get);
 
     while ($row = db_fetch_array($result)) {
         $pms[] = $row;
     }
+
+    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_UNREAD. " WHERE TYPE = ". PM_NEW. " AND TO_UID = $uid";
+    $result = db_query($sql, $db_pm_list_get);
 
     return $pms;
 }
@@ -123,7 +186,7 @@ function pm_draw_to_dropdown($default_uid)
     return $html;
 }
 
-function pm_single_get($mid, $uid = false)
+function pm_single_get($mid, $folder, $uid = false)
 {
     $pms = array();
 
@@ -135,12 +198,22 @@ function pm_single_get($mid, $uid = false)
     $sql.= "FROM ". forum_table("PM"). " PM ";
     $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = PM.FROM_UID) ";
     $sql.= "LEFT JOIN ". forum_table("PM_CONTENT"). " PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "WHERE PM.MID = $mid AND PM.DELETED = 0 AND PM.TO_UID = $uid";
+    $sql.= "WHERE PM.MID = $mid ";
 
+    if (($folder == PM_FOLDER_INBOX)) {
+        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = $uid ";
+    }elseif (($folder == PM_FOLDER_SENT) || ($folder == PM_FOLDER_OUTBOX)) {
+        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = $uid ";
+    }elseif ($folder == PM_FOLDER_SAVED) {
+        $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = $uid) OR ";
+        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = $uid) ";
+    }
+
+    $sql.= "LIMIT 0, 1";
     $result = db_query($sql, $db_pm_list_get);
 
     if (db_num_rows($result) > 0) {
-        _pm_markasread($mid);
+        pm_markasread($mid);
         return db_fetch_array($result);
     }else {
         return false;
@@ -256,8 +329,8 @@ function pm_send_message($tuid, $subject, $content)
     $fuid = bh_session_get_value('UID');
 
     $sql = "insert into ". forum_table("PM");
-    $sql.= " (TO_UID, FROM_UID, SUBJECT, CREATED) ";
-    $sql.= "values ('$tuid', '$fuid', '$subject', NOW())";
+    $sql.= " (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED) ";
+    $sql.= "values (". PM_NEW. ", '$tuid', '$fuid', '$subject', NOW())";
 
     $result = db_query($sql, $db_pm_send_message);
 
@@ -279,37 +352,49 @@ function pm_send_message($tuid, $subject, $content)
 
 function pm_delete_message($mid)
 {
-   $db_delete_pm = db_connect();
-   $uid = bh_session_get_value('UID');
 
-   $sql = "UPDATE ". forum_table('PM'). " SET DELETED = 1 WHERE MID = '$mid' AND TO_UID = '$uid'";
+    $db_delete_pm = db_connect();
 
-   return db_query($sql, $db_delete_pm);
+    $sql = "DELETE FROM ". forum_table('PM'). " WHERE MID = $mid";
+    return db_query($sql, $db_delete_pm);
+
 }
 
-function pm_new_check($uid)
+function pm_archive_message($mid)
+{
+    $db_pm_archive_message = db_connect();
+    $uid = bh_session_get_value('UID');
+
+    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_SAVED_IN. " ";
+    $sql.= "WHERE MID = $mid AND (TYPE = ". PM_NEW. " OR TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
+    $sql.= "AND TO_UID = $uid";
+
+    $result = db_query($sql, $db_pm_archive_message);
+
+    $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_SAVED_OUT. " ";
+    $sql.= "WHERE MID = $mid AND TYPE = ". PM_SENT. " AND FROM_UID = $uid";
+
+    $result = db_query($sql, $db_pm_archive_message);
+
+}
+
+function pm_new_check()
 {
     $db_pm_new_check = db_connect();
+    $uid = bh_session_get_value('UID');
+
+    $pm_types = PM_NEW;
 
     // Fetch any new messages that we haven't already notified the user about
 
-    $sql = "SELECT MID, TO_UID FROM ". forum_table("PM"). " ";
-    $sql.= "WHERE VIEWED IS NULL AND DELETED = 0 AND NOTIFIED = 0 AND TO_UID = $uid ORDER BY MID DESC";
+    $sql = "SELECT MID FROM ". forum_table("PM"). " ";
+    $sql.= "WHERE TYPE IN ($pm_types) AND TO_UID = $uid ORDER BY MID DESC";
 
     $result = db_query($sql, $db_pm_new_check);
 
     $num_rows = db_num_rows($result);
 
-    if ($num_rows > 0) {
-
-        // Update the notified state of the messages
-        list($mid) = db_fetch_array($result);
-        $sql = "UPDATE ". forum_table("PM"). " SET NOTIFIED = 1 WHERE MID <= $mid AND TO_UID = $uid";
-        $result = db_query($sql, $db_pm_new_check);
-    }
-
     return ($num_rows > 0);
-
 }
 
 ?>

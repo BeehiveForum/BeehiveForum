@@ -482,6 +482,9 @@ $lang['closeforposting'] = "Close for posting";
 $lang['start'] = "Start";
 $lang['messages'] = "Messages";
 $lang['pminbox'] = "PM Inbox";
+$lang['pmsentitems'] = "Sent Items";
+$lang['pmoutbox'] = "Outbox";
+$lang['pmsaveditems'] = "Saved Items";
 $lang['links'] = "Links";
 $lang['preferences'] = "Preferences";
 $lang['profile'] = "Profile";
@@ -492,6 +495,7 @@ $lang['logout'] = "Logout";
 // PM System (pm.php, pm_write.php, pm.inc.php) ------------------------
 $lang['privatemessages'] = "Private Messages";
 $lang['sendnewpm'] = "Send New PM";
+$lang['savemessage'] = "Save Message";
 $lang['sentby'] = "Sent By";
 $lang['timesent'] = "Time Sent";
 $lang['nomessages'] = "No Messages";

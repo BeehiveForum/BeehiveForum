@@ -38,12 +38,22 @@ require_once("./include/format.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/lang.inc.php");
 
-if(isset($HTTP_GET_VARS['final_uri'])){
-    $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
-}
+if (isset($HTTP_GET_VARS['final_uri'])) {
 
-if (isset($HTTP_GET_VARS['msg'])) {
+    $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
+
+}elseif (isset($HTTP_GET_VARS['msg'])) {
+
     $final_uri = "./discussion.php?msg=". $HTTP_GET_VARS['msg'];
+
+}elseif (isset($HTTP_GET_VARS['folder'])) {
+
+    $final_uri = "./discussion.php?folder=". $HTTP_GET_VARS['folder'];
+
+}elseif (isset($HTTP_GET_VARS['pmid'])) {
+
+    $final_uri = "./pm.php?mid=". $HTTP_GET_VARS['pmid'];
+
 }
 
 if (isset($final_uri) && strstr($final_uri, 'logout.php')) {

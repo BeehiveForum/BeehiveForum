@@ -174,14 +174,14 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             $message = strtoupper($mailfrom['LOGON']). " posted a PM to you on $forum_name\n\n";
             $message.= "The subject is:  ". _htmlentities_decode(_stripslashes($pm_message['SUBJECT'])). "\n\n";
-            $message.= "To read that message and others in the same discussion, go to:\n";
+            $message.= "To read the message go to:\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
             if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/?pmsg=$mid\n\n";
+            $message.= "/?pmid=$mid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "Note: If you do not wish to receive email notifications of PM messages\n";
             $message.= "posted to you, go to http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, click\n";

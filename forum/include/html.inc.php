@@ -102,7 +102,7 @@ function _html_draw_top_script()
 function _html_draw_post_top2()
 {
     echo "</head>\n";
-    echo "<body onLoad=\"self.focus();document.f_post.t_content.focus();\">\n";
+    echo "<body onLoad=\"document.f_post.t_content.focus();\">\n";
 }
 
 

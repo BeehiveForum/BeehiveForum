@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.84 2004-04-28 17:04:02 decoyduck Exp $ */
+/* $Id: index.php,v 1.85 2004-04-28 21:33:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -86,7 +86,7 @@ if ($user_sess = bh_session_check()) {
     echo "</head>\n";
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
-    echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+    echo "<frame src=\"$top_html\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
     echo "<frame src=\"./nav.php?webtag=$webtag\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
     if ($webtag) {
@@ -128,30 +128,30 @@ if ($user_sess = bh_session_check()) {
 	        $final_uri = "./start.php?webtag=$webtag";
 	    }
 
-            echo "<frame src=\"", $final_uri, "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"$final_uri\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 	}
 
     }else {
 
         if (isset($_GET['final_uri'])) {
 
-            echo "<frame src=\"./forums.php?final_uri=", rawurlencode($_GET['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode($_GET['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-            echo "<frame src=\"./forums.php?final_uri=", rawurlencode("./discussion.php?msg=". $_GET['msg']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode("./discussion.php?msg=". $_GET['msg']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-            echo "<frame src=\"./forums.php?final_uri=", rawurlencode("./discussion.php?folder=". $_GET['folder']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode("./discussion.php?folder=". $_GET['folder']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-            echo "<frame src=\"./forums.php?final_uri=", rawurlencode("./pm.php?mid=". $_GET['pmid']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode("./pm.php?mid=". $_GET['pmid']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else {
 
-            echo "<frame src=\"./forums.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            echo "<frame src=\"./forums.php?webtag_search=$webtag_search\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 	}
     }
 
@@ -211,23 +211,23 @@ if ($user_sess = bh_session_check()) {
 
             if (isset($_GET['final_uri'])) {
 
-                echo "<frame src=\"./forums.php?webtag=$webtag&amp;final_uri=", rawurlencode($_GET['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+                echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode($_GET['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
             }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-                echo "<frame src=\"./forums.php?webtag=$webtag&amp;final_uri=", rawurlencode("./discussion.php?webtag=$webtag&amp;msg=", $_GET['msg']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+                echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode("./discussion.php?webtag=$webtag&amp;msg=", $_GET['msg']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
             }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-                echo "<frame src=\"./forums.php?webtag=$webtag&amp;final_uri=". rawurlencode("./discussion.php?webtag=$webtag&amp;folder=". $_GET['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+                echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=". rawurlencode("./discussion.php?webtag=$webtag&amp;folder=". $_GET['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
             }else if (isset($_GET['pmid'])) {
 
-                echo "<frame src=\"./forums.php?webtag=$webtag&amp;final_uri=". rawurlencode("./pm.php?webtag=$webtag&amp;mid=". $_GET['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+                echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=". rawurlencode("./pm.php?webtag=$webtag&amp;mid=". $_GET['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
             }else {
 
-                echo "<frame src=\"./forums.php?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+                echo "<frame src=\"./forums.php?webtag_search=$webtag_search\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
             }
 	}
 
@@ -242,7 +242,7 @@ if ($user_sess = bh_session_check()) {
         $webtag = get_webtag($webtag_search);
 
         echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
-        echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+        echo "<frame src=\"$top_html\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
         if (isset($_GET['final_uri'])) {
 

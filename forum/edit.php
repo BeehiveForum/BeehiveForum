@@ -109,6 +109,7 @@ if($valid){
     if(isset($HTTP_POST_VARS['submit'])){
         $t_content .= "<p><font size=\"1\">EDITED: " . date("d/m/y H:i");
         $t_content .= " by " . user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']);
+        $t_content .= "</font></p>";
         $updated = post_update($msg_bits[0],$msg_bits[1],$t_content);
         if($updated){
             echo "<p>&nbsp;</p>";
@@ -145,18 +146,19 @@ if($valid){
     message_display(0,$preview_message,0,0,false);
 }
 
-echo "<h2>Edit message</h2>";
-
 if(isset($error_html)){
     echo $error_html;
 }
-echo "<form name=\"f_edit\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
-echo "<h2>" . thread_get_title($msg_bits[0]) . "</h2>";
-echo "<input type=\"hidden\" name=\"t_msg\" value=\"$edit_msg\">";
-echo "<input type=\"hidden\" name=\"t_to_uid\" value=\"$to_uid\">";
-echo "<input type=\"hidden\" name=\"t_from_uid\" value=\"$from_uid\">";
-echo "<table><tr><td>";
-echo "<textarea name=\"t_content\" cols=\"60\" rows=\"10\" wrap=\"VIRTUAL\">";
+echo "<form name=\"f_edit\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
+echo "<h2>" . thread_get_title($msg_bits[0]) . "</h2>\n";
+echo "<input type=\"hidden\" name=\"t_msg\" value=\"$edit_msg\">\n";
+echo "<input type=\"hidden\" name=\"t_to_uid\" value=\"$to_uid\">\n";
+echo "<input type=\"hidden\" name=\"t_from_uid\" value=\"$from_uid\">\n";
+echo "<table class=\"box\"><tr><td>\n";
+echo "<table>\n";
+echo "<tr><td class=\"posthead\">Edit message</td></tr>\n";
+echo "<tr><td>\n";
+echo "<textarea name=\"t_content\" cols=\"60\" rows=\"10\" wrap=\"VIRTUAL\">\n";
 if(isset($t_content)){
     if($t_post_html == "Y"){
         echo stripslashes(htmlentities($t_content));
@@ -165,13 +167,14 @@ if(isset($t_content)){
     }
 }
 echo "</textarea></td></tr></table>";
-echo "<input name=\"submit\" type=\"submit\" value=\"Apply\">";
-echo "&nbsp;&nbsp;<input name=\"preview\" type=\"submit\" value=\"Preview\">";
+echo "</td></tr></table>";
+echo "<input class=\"button\" name=\"submit\" type=\"submit\" value=\"Apply\">";
+echo "&nbsp;&nbsp;<input class=\"button\" name=\"preview\" type=\"submit\" value=\"Preview\">";
 if($edit_html){
-    echo "&nbsp;&nbsp;<input name=\"b_edit_text\" type=\"submit\" value=\"Edit text\">";
+    echo "&nbsp;&nbsp;<input class=\"button\" name=\"b_edit_text\" type=\"submit\" value=\"Edit text\">";
     echo "<input type=\"hidden\" name=\"t_post_html\" value=\"Y\">";
 } else {
-    echo "&nbsp;&nbsp;<input name=\"b_edit_html\" type=\"submit\" value=\"Edit XHTML\">";
+    echo "&nbsp;&nbsp;<input class=\"button\" name=\"b_edit_html\" type=\"submit\" value=\"Edit XHTML\">";
     echo "<input type=\"hidden\" name=\"t_post_html\" value=\"N\">";
 }
 echo "</form>";

@@ -140,10 +140,10 @@ if($valid){
             if($new_pid > -1){
                 echo "<p>&nbsp;</p>";
                 echo "<p>&nbsp;</p>";
-                echo "<div align=\"center\">";
-                echo "<p>Post created successfully</p>";
-                echo "<p><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a></p>";
-                echo "</div>";
+                echo "<div align=\"center\"><p>\n";
+                echo "Message posted successfully\n";
+                echo "<a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a>\n";
+                echo "</p></div>\n";
                 html_draw_bottom();
                 if(!$newthread){
                     email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
@@ -187,36 +187,36 @@ $sig_content = "";
 $sig_html = "N";
 $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$sig_content,$sig_html);
 if($newthread){
-    echo "<h2>Create new thread</h2>";
+    echo "<h2>Create new thread</h2>\n";
 } else {
-    echo "<h2>Post reply</h2>";
+    echo "<h2>Post reply</h2>\n";
 }
 if(isset($error_html)){
-    echo $error_html;
+    echo $error_html . "\n";
 }
-echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
+echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
 if($newthread){
-    echo "<table>";
-    echo "<tr><td>Select folder:</td></tr>";
-    echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>";
-    echo "<tr><td>Thread title:</td></tr>";
+    echo "<table>\n";
+    echo "<tr><td>Select folder:</td></tr>\n";
+    echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
+    echo "<tr><td>Thread title:</td></tr>\n";
     echo "<tr><td><input type=\"text\" name=\"t_threadtitle\" maxchars=\"64\" width=\"64\" value=\"";
     if (isset($t_threadtitle)) echo stripslashes(htmlentities($t_threadtitle));
-    echo "\">";
-    echo "<input type=\"hidden\" name=\"t_newthread\" value=\"Y\"></td></tr>";
-    echo "</table>";
+    echo "\">\n";
+    echo "<input type=\"hidden\" name=\"t_newthread\" value=\"Y\"></td></tr>\n";
+    echo "</table>\n";
 } else {
-    echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>";
-    echo "<input type=\"hidden\" name=\"t_tid\" value=\"$reply_to_tid\">";
-    echo "<input type=\"hidden\" name=\"t_rpid\" value=\"$reply_to_pid\">";
+    echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
+    echo "<input type=\"hidden\" name=\"t_tid\" value=\"$reply_to_tid\">\n";
+    echo "<input type=\"hidden\" name=\"t_rpid\" value=\"$reply_to_pid\">\n";
 }
-echo "<table><tr><td>";
-echo "<table><tr>";
-echo "<td align=\"right\">To:</td>";
-echo "<td>";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
+echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
+echo "<td>To: \n";
 echo post_draw_to_dropdown($t_to_uid);
-echo "</td></tr></table>";
-echo "<tr><td><textarea name=\"t_content\" cols=\"60\" rows=\"10\" wrap=\"VIRTUAL\">";
+echo "</td></tr></table>\n";
+echo "<table border=\"0\">\n";
+echo "<tr><td><textarea name=\"t_content\" cols=\"60\" rows=\"10\" wrap=\"VIRTUAL\">\n";
 if(isset($t_content)){
     if($t_post_html == "Y"){
         echo stripslashes(htmlentities($t_content));
@@ -224,23 +224,25 @@ if(isset($t_content)){
         echo stripslashes($t_content);
     }
 }
-echo "</textarea></td></tr>";
-echo "<tr><td><textarea name=\"t_sig\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">$sig_content</textarea>";
-echo "<input type=\"hidden\" name=\"t_sig_html\" value=\"$sig_html\"></td></tr>";
-echo "<tr><td><input type=\"checkbox\" name=\"t_post_html\" value=\"Y\"";
+echo "</textarea></td></tr>\n";
+echo "<tr><td><textarea name=\"t_sig\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">$sig_content</textarea>\n";
+echo "<input type=\"hidden\" name=\"t_sig_html\" value=\"$sig_html\"></td></tr>\n";
+echo "<tr><td class=\"smalltext\"><input type=\"checkbox\" name=\"t_post_html\" value=\"Y\"";
 if($t_post_html == "Y"){
     echo " checked";
 }
-echo ">&nbsp;Contains HTML</td></tr></table>";
-echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
-echo "&nbsp;&nbsp;<input name=\"preview\" type=\"submit\" value=\"Preview\">";
-echo "</form>";
-echo "<p>&nbsp;&nbsp;</p>";
+echo ">&nbsp;Contains HTML</td></tr>\n";
+echo "</table>\n";
+echo "</td></tr></table>\n";
+echo "<input class=\"button\" name=\"submit\" type=\"submit\" value=\"Submit\">\n";
+echo "&nbsp;&nbsp;<input class=\"button\" name=\"preview\" type=\"submit\" value=\"Preview\">\n";
+echo "</form>\n";
+echo "<p>&nbsp;&nbsp;</p>\n";
 if(!$newthread){
-    echo "<p>In reply to:</p>";
+    echo "<p>In reply to:</p>\n";
     $reply_message = messages_get($reply_to_tid,$reply_to_pid);
     message_display(0,$reply_message[0],0,0,false);
-    echo "<p>&nbsp;&nbsp;</p>";
+    echo "<p>&nbsp;&nbsp;</p>\n";
 }
 html_draw_bottom();
 ?>

@@ -133,8 +133,8 @@ if(!empty($error_html)){
 }
 echo "<div class=\"postbody\">";
 echo "<form name=\"prefs\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
-echo "<table>";
-echo "<tr><td><h1>User Details</h1></td><td></td></tr>";
+echo "<table class=\"posthead\">";
+echo "<tr><td class=\"subhead\" colspan=\"2\">User Details</td></tr>";
 echo "<tr><td>New Password:</td>";
 echo "<td><input type=\"password\" name=\"pw\"></td></tr>";
 echo "<tr><td>Confirm Password:</td>";
@@ -144,7 +144,6 @@ echo "<td><input type=\"text\" name=\"nickname\" maxchars=\"32\" width=\"32\" va
 echo "<tr><td>Email Address:</td>";
 echo "<td><input type=\"text\" name=\"email\"  maxchars=\"80\" width=\"60\" value=\"" . $user['EMAIL'] . "\"></td></tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td>Forum Options</td><td></td></tr>";
 echo "<tr><td>First name:</td>";
 echo "<td><input type=\"text\" name=\"firstname\"  maxchars=\"32\" width=\"32\" value=\"" . $user_prefs['FIRSTNAME'] . "\"></td></tr>";
 echo "<tr><td>Last name:</td>";
@@ -153,6 +152,8 @@ echo "<tr><td>Homepage URL:</td>";
 echo "<td><input type=\"text\" name=\"homepage_url\" maxchars=\"255\" width=\"60\"  value=\"" . $user_prefs['HOMEPAGE_URL'] . "\"></td></tr>";
 echo "<tr><td>Picture URL:</td>";
 echo "<td><input type=\"text\" name=\"pic_url\" maxchars=\"255\" width=\"60\"  value=\"" . $user_prefs['PIC_URL'] . "\"></td></tr>";
+echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+echo "<tr><td class=\"subhead\" colspan=\"2\">Forum Options</td></tr>";
 echo "<tr><td colspan=\"2\">Notify by email of posts to me&nbsp;";
 echo "<input type=\"checkbox\" name=\"email_notify\" value=\"Y\"";
 if($user_prefs['EMAIL_NOTIFY'] == "Y"){
@@ -193,7 +194,7 @@ for($ppp = 5; $ppp < 25; $ppp+=5){
 }
 echo "</select></td></tr>";
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
-echo "<tr><td colspan=\"2\"><h2>Signature:</h2></td></tr>";
+echo "<tr><td class=\"subhead\" colspan=\"2\">Signature</td></tr>";
 echo "<tr><td colspan=\"2\"><textarea name=\"sig_content\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">". $user_sig['CONTENT'] . "</textarea>";
 echo "<tr><td colspan=\"2\"><input type=\"checkbox\" name=\"sig_html\" value=\"Y\"";
 if($user_sig['HTML'] == "Y"){

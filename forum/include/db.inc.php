@@ -43,21 +43,90 @@ function db_connection_error()
 
     $getvars = substr($getvars, 0, -1);
 
+    if (!isset($HTTP_GET_VARS['retryerror'])) {
+      $getvars.= "&retryerror=yes";
+    }
+
     html_draw_top();
+
     echo "<div align=\"center\">\n";
-    echo "<p>An error occured while trying to connect to the database. Please wait a few minutes and then click the Retry button below.</p>\n";
-    echo "<p>As long as this browser window remains open, any form data you've submitted remains safe.</p>\n";
     echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "  <tr>\n";
+    echo "    <td>\n";
+    echo "      <table border=\"0\" width=\"100%\">\n";
+    echo "        <tr>\n";
+    echo "          <td>An error occured while trying to connect to the database. Please wait a few minutes and then click the Retry button below.</td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>";    
 
     foreach ($HTTP_POST_VARS as $key => $value) {
       echo form_input_hidden($key, htmlspecialchars(_stripslashes($value))), "\n";
     }
 
+    echo "          </td>\n";
+    echo "        </tr>\n";
+
     srand((double)microtime()*1000000);
 
-    echo form_submit(md5(uniqid(rand())), 'Retry'); // - Doesn't work in Mozilla :? - , 'onclick="document.location.reload();"'), "\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"center\">", form_submit(md5(uniqid(rand())), 'Retry'), "</td>\n";
+    echo "        </tr>\n";
+
+    if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+
+      echo "        <tr>\n";
+      echo "          <td>&nbsp;</td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td><hr /></td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td>This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td>&nbsp;</td>\n";
+      echo "        </tr>\n";
+      echo "        <tr>\n";
+      echo "          <td>", form_textarea("t_content", htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_content'])), 15, 85), "</td>\n";
+      echo "        </tr>\n";
+
+      if (isset($HTTP_GET_VARS['replyto'])) {
+
+        echo "        <tr>\n";
+        echo "          <td>&nbsp;</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td>Reply Message Number:</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td>", form_input_text("t_request_url", $HTTP_GET_VARS['replyto'], 10, 64), "</td>\n";
+        echo "        </tr>\n";
+
+      }
+
+    }
+
+    echo "        <tr>\n";
+    echo "          <td>&nbsp;</td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td><hr /></td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td><h2>Error Message for developers:</h2></td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>", __FILE__, " (Line: ", __LINE__ ,")<br />", mysql_error(), "</td>\n";
+    echo "        </tr>\n";
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
     echo "</form>\n";
     echo "</div>\n";
+    
     html_draw_bottom();
 
 }

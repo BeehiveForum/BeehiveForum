@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.57 2004-11-02 19:24:22 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.58 2004-11-05 20:52:49 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -32,7 +32,7 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 {
     $lang = load_language_file();
 
-    $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" autocomplete=\"off\" value=\"$value\" ";
+    $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" value=\"$value\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -80,7 +80,7 @@ function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_h
 {
     $lang = load_language_file();
 
-    $html = "<textarea name=\"$name\" class=\"bhtextarea\" autocomplete=\"off\" ";
+    $html = "<textarea name=\"$name\" class=\"bhtextarea\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -107,7 +107,7 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
+    $html = "<select name=\"$name\" class=\"bhselect\" ";
     $html.= "dir=\"{$lang['_textdir']}\" ";
 
     if ($custom_html) {
@@ -137,8 +137,7 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 function form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
     $html = "<span class=\"bhinputcheckbox\">";
-    $html.= "<input type=\"checkbox\" name=\"$name\" value=\"$value\" ";
-    $html.= "autocomplete=\"off\"";
+    $html.= "<input type=\"checkbox\" name=\"$name\" value=\"$value\"";
 
     if ($checked) $html.= " checked=\"checked\"";
 
@@ -156,8 +155,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 function form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
     $html = "<span class=\"bhinputradio\">";
-    $html.= "<input type=\"radio\" name=\"$name\" value=\"$value\" ";
-    $html.= "autocomplete=\"off\"";
+    $html.= "<input type=\"radio\" name=\"$name\" value=\"$value\"";
 
     if ($checked) $html.= " checked=\"checked\"";
 
@@ -189,8 +187,7 @@ function form_radio_array($name, $value, $text, $checked = false, $custom_html =
 
 function form_submit($name = "submit", $value = "Submit", $custom_html = false, $class = "button")
 {
-    $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" ";
-    $html.= "autocomplete=\"off\" class=\"$class\" ";
+    $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -206,7 +203,6 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false)
 {
     $html = "<input name=\"$name\" value=\"$value\" type=\"image\" src=\"". style_image($image). "\" ";
-    $html.= "autocomplete=\"off\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -221,8 +217,7 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
 
 function form_reset($name = "reset", $value = "Reset", $custom_html = false, $class = "button")
 {
-    $html = "<input type=\"reset\" name=\"$name\" value=\"$value\" ";
-    $html.= "autocomplete=\"off\" class=\"$class\" ";
+    $html = "<input type=\"reset\" name=\"$name\" value=\"$value\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -237,8 +232,7 @@ function form_reset($name = "reset", $value = "Reset", $custom_html = false, $cl
 
 function form_button($name, $value, $custom_html, $class="button")
 {
-    $html = "<input type=\"button\" name=\"$name\" value=\"$value\" ";
-    $html.= "autocomplete=\"off\" class=\"$class\" ";
+    $html = "<input type=\"button\" name=\"$name\" value=\"$value\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -259,7 +253,7 @@ function form_quick_button($href, $label, $var = false, $value = false, $target 
     $webtag = get_webtag($webtag_search);
 
     echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" ";
-    echo "target=\"$target\" autocomplete=\"off\">";
+    echo "target=\"$target\">";
     echo "  ", form_input_hidden("webtag", $webtag), "\n";
 
     if ($var) {

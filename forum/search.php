@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.91 2004-10-29 20:42:48 decoyduck Exp $ */
+/* $Id: search.php,v 1.92 2004-11-05 20:52:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -262,7 +262,6 @@ if (isset($_POST['search_string'])) {
     echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>", form_radio("include", 3, "Thread Titles, Post and Attachments", false), "&nbsp;", "</td>\n";
     echo "                </tr>\n";
-    echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>", form_checkbox("me_only", "Y", $lang['onlyshowmessagestoorfromme'], false), "&nbsp;</td>\n";
@@ -289,6 +288,7 @@ if (isset($_POST['search_string'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
+    echo "</div>\n";
 
     html_draw_bottom();
     exit;
@@ -392,9 +392,17 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
         }
 
-        echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
-        if (strlen($message['CONTENT']) > 0) echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-        echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
+        if (strlen($message['CONTENT']) > 0) {
+
+            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
+            echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
+            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
+
+        }else {
+
+            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b></a><br />";
+            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
+        }
     }
 
     echo "</ol>\n";

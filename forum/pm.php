@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.76 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: pm.php,v 1.77 2004-11-05 20:52:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -192,7 +192,7 @@ echo "}\n";
 echo "//-->\n";
 echo "</script>\n";
 
-echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
+echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" class=\"pmhead\">\n";
 echo "  <tr>\n";
 
 $start = floor($page - 1) * 10;
@@ -415,8 +415,8 @@ echo "    <tr>\n";
 echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "</div>\n";
 echo "</form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

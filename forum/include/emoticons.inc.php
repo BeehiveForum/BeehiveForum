@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.27 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.28 2004-11-05 20:52:49 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -199,15 +199,12 @@ function emoticons_preview ($set, $width=190, $height=100, $num = 35) {
 
                     foreach ($emot['matches'] as $key => $emot_match) {
 
-                        if ($key > 0) {
-
-                            $emot_tooltip_matches[] = htmlentities($emot_match);
-                        }
+                        $emot_tooltip_matches[] = htmlentities($emot_match);
                     }
 
                     $emot_tiptext = trim(implode(" ", $emot_tooltip_matches));
 
-                    $str.= "<img src=\"$path/{$emot['img']}\" alt=\"{$emot['matches'][0]} {$emot_tiptext}\" title=\"{$emot['matches'][0]} {$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode(str_replace("'", "\\'", $emot['matches'][0])) ." ');\" /> ";
+                    $str.= "<img src=\"$path/{$emot['img']}\" alt=\"{$emot_tiptext}\" title=\"{$emot_tiptext}\" onclick=\"add_text(' ". rawurlencode(str_replace("'", "\\'", $emot['matches'][0])) ." ');\" /> ";
                 }
 
                 if ($num < count($emot_match)) {

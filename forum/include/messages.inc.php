@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.304 2004-11-05 18:50:02 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.305 2004-11-05 20:52:49 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -360,13 +360,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td>\n";
     echo "                <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
+
         echo "<a href=\"set_relation.php?webtag=$webtag&amp;uid=".$message['FROM_UID']."&amp;rel=0&amp;exists=1&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
+
     }else if($in_list && $msg_count > 0) {
+
         if ($is_poll) {
-          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
+
+            echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
         }
+
         echo $message['PID'] . " {$lang['of']} " . $msg_count;
     }
 
@@ -542,19 +547,19 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "</td>\n";
             echo "            <td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
-            echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+            echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['pm_reply']}\" /></a>&nbsp;";
 
-            echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+            echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['print']}\" /></a>&nbsp;";
 
-            echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+            echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['markasunread']}\" /></a>&nbsp;";
 
             if (bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=", $message['FROM_UID'], "&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=", $message['FROM_UID'], "&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['relationship']}\" /></a>&nbsp;";
             }
 
             if (perm_is_moderator($message['FID'])){
 
-                echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" /></a>&nbsp;";
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
                     echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
@@ -1026,7 +1031,7 @@ function messages_forum_stats($tid, $pid)
         if ($user_show_stats == 1 || $uid == 0) {
 
             if ($uid != 0) {
-                echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=0&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\"></a></td>\n";
+                echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=0&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_hide.png'), "\" border=\"0\" alt=\"{$lang['hide_stats']}\" /></a></td>\n";
             }else {
                 echo "      <td class=\"subhead\">&nbsp;</td>\n";
             }
@@ -1163,12 +1168,13 @@ function messages_forum_stats($tid, $pid)
 
                 if ($most_users['MOST_USERS_COUNT'] > 0 && $most_users['MOST_USERS_DATE'] > 0) {
 
-                   echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                   echo "          <tr>\n";
-                   echo "            <td width=\"35\">&nbsp;</td>\n";
-                   echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> {$lang['on']} ", format_time($most_users['MOST_USERS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
-                   echo "            <td width=\"35\">&nbsp;</td>\n";
-                   echo "          </tr>\n";
+                    echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+                    echo "          <tr>\n";
+                    echo "            <td width=\"35\">&nbsp;</td>\n";
+                    echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> {$lang['on']} ", format_time($most_users['MOST_USERS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
+                    echo "            <td width=\"35\">&nbsp;</td>\n";
+                    echo "          </tr>\n";
+                    echo "        </table>\n";
                 }
             }
 
@@ -1210,7 +1216,7 @@ function messages_forum_stats($tid, $pid)
 
         }else {
 
-            echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=1&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\"></a></td>\n";
+            echo "      <td class=\"subhead\" width=\"1%\" align=\"right\"><a href=\"user_stats.php?webtag=$webtag&amp;show_stats=1&amp;msg=$tid.$pid\" target=\"_self\"><img src=\"", style_image('stats_show.png'), "\" border=\"0\" alt=\"{$lang['show_stats']}\" /></a></td>\n";
         }
 
         echo "    </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.14 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: install.php,v 1.15 2004-12-04 22:17:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -208,10 +208,10 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
                 echo "<head>\n";
                 echo "<title>BeehiveForum ", BEEHIVE_VERSION, " Installation</title>\n";
                 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-                echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
+                echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
                 echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
                 echo "</head>\n";
-                echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
+                echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
 
@@ -382,11 +382,11 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
         echo "<head>\n";
         echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
+        echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
         echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
         echo "</head>\n";
 
-        echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
+        echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -462,7 +462,7 @@ echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" d
 echo "<head>\n";
 echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
+echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
@@ -478,7 +478,7 @@ echo "//-->\n";
 echo "</script>\n";
 echo "</head>\n";
 
-echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
+echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
 
 if (!defined('BEEHIVE_INSTALLED')) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.20 2004-08-02 00:32:29 tribalonline Exp $ */
+/* $Id: emoticons.inc.php,v 1.21 2004-08-09 01:05:52 tribalonline Exp $ */
 
 // Emoticon filter file
 
@@ -54,8 +54,8 @@ for ($i=0; $i<count($e_keys); $i++) {
 				$a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
 				$a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
 
-				$pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
-				$replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
+				$pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span>&thinsp;<\/span>".$a_e ."/";
+				$replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span>&thinsp;</span>";
 			}
 		}
 	}
@@ -83,11 +83,11 @@ function emoticons_convert ($content) {
 
 		if ($k != $k3) {
 			$pattern_array[] = "/$front". preg_quote($k3, "/") ."$end/";
-			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
+			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>&thinsp;</span>";
 		}
 
 		$pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
-		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
+		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>&thinsp;</span>";
 	}
 
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {

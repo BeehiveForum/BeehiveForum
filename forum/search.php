@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.93 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: search.php,v 1.94 2004-11-29 22:35:11 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,6 +119,15 @@ if (isset($_COOKIE['bh_thread_mode'])) {
     $mode = $_COOKIE['bh_thread_mode'];
 }else{
     $mode = 0;
+}
+
+if (!$folder_dropdown = folder_search_dropdown()) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";
+    html_draw_bottom();
+    exit;
 }
 
 html_draw_top("robots=noindex,nofollow");
@@ -236,7 +245,7 @@ if (isset($_POST['search_string'])) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"40%\">&nbsp;{$lang['folderbrackets_s']}:</td>\n";
-    echo "                  <td>", folder_search_dropdown(), "&nbsp;</td>\n";
+    echo "                  <td>", $folder_dropdown, "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['postedfrom']}:</td>\n";

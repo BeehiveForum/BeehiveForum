@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.128 2004-10-24 13:25:57 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.129 2004-11-02 19:24:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -873,7 +873,7 @@ if ($allow_sig == true) {
                 echo "  <tr>\n";
                 echo "    <td colspan=\"2\">\n";
 
-                echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+                echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
                 echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 

@@ -512,6 +512,12 @@ function add_tag (tag, a, v, enclose) {
 
 
 function add_text(text) {
+
+        // Unescape the URLencoded emoticon text.
+	// We need this to remain XHTML compliant.
+        
+        text = unescape(text);
+
 	if (!active_field.createTextRange && !active_field.setSelectionRange) {
 		active_field.value += text;
 		return;

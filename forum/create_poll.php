@@ -60,7 +60,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
   $valid = true;
 
-  if (empty($HTTP_POST_VARS['question'])) {
+  if (strlen(trim($HTTP_POST_VARS['question'])) == 0) {
     $error_html = "<h2>You must enter a poll question</h2>";
     $valid = false;
   }
@@ -70,12 +70,12 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $valid = false;
   }
 
-  if ($valid && strlen($HTTP_POST_VARS['answers'][0]) == 0) {
+  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][0])) == 0) {
     $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
     $valid = false;
   }
 
-  if ($valid && strlen($HTTP_POST_VARS['answers'][1]) == 0) {
+  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][1])) == 0) {
     $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
     $valid = false;
   }
@@ -228,19 +228,55 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
-  $polldata['CONTENT'].= "            <ul>\n";
+
+  $pollresults = array();
+
+  $max_value   = 0;
+  $totalvotes  = 0;
+  $optioncount = 0;
 
   for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
-    if (strlen($HTTP_POST_VARS['answers'][$i]) > 0) {
+
+    if (strlen(trim($HTTP_POST_VARS['answers'][$i])) > 0) {
+
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $polldata['CONTENT'].= "          <li>". fix_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
+        $poll_option = fix_html($HTTP_POST_VARS['answers'][$i]);
       }else {
-        $polldata['CONTENT'].= "          <li>". make_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
+        $poll_option = make_html($HTTP_POST_VARS['answers'][$i]);
       }
+
+      srand((double)microtime()*1000000);
+      $poll_vote = rand(1, 10);
+
+      if ($poll_vote > $max_value) $max_value = $poll_vote;
+
+      $totalvotes += $poll_vote;
+      $optioncount++;
+
+      $pollresults[$i + 1] = array('OPTION_ID' => $i + 1, 'OPTION_NAME' => $poll_option, 'VOTES' => $poll_vote);
+
     }
   }
 
-  $polldata['CONTENT'].= "            </ul>\n";
+  if ($max_value > 0) {
+
+    $horizontal_bar_width = floor((300 / $max_value));
+
+    $vertical_bar_height = floor((200 / $max_value));
+    $vertical_bar_width = floor((400 / $optioncount));
+
+  }
+
+  if ($HTTP_POST_VARS['polltype'] == 0) {
+
+    $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
+
+  }else {
+
+    $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
+
+  }
+
   $polldata['CONTENT'].= "          </td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "      </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.296 2004-09-13 14:43:22 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.297 2004-10-20 23:21:24 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -185,8 +185,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
     {
-    	message_display_deleted($tid, $message['PID']);
-    	return;
+        message_display_deleted($tid, $message['PID']);
+        return;
     }
 
     // Check for words that should be filtered ---------------------------------
@@ -808,6 +808,8 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return "1.1";
 
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
@@ -820,11 +822,12 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND POST.TID = THREAD.TID ";
     $sql.= "AND POST.PID = 1 ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_messages_get_most_recent);
 
@@ -834,23 +837,24 @@ function messages_get_most_recent($uid, $fid = false)
 
             if (!isset($row['RELATIONSHIP'])) $row['RELATIONSHIP'] = 0;
 
-            if(!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
-            {
-				if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
+            if (!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
-					if (isset($row['LAST_READ'])) {
+                if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
 
-						if ($row['LAST_READ'] < $row['LENGTH']) {
-							$row['LAST_READ']++;
-						}
+                    if (isset($row['LAST_READ'])) {
 
-						return "{$row['TID']}.{$row['LAST_READ']}";
+                        if ($row['LAST_READ'] < $row['LENGTH']) {
+                            $row['LAST_READ']++;
+                        }
 
-					}else {
-						return "{$row['TID']}.1";
-					}
-				}
-			}
+                        return "{$row['TID']}.{$row['LAST_READ']}";
+
+                    }else {
+
+                        return "{$row['TID']}.1";
+                    }
+                }
+            }
         }
     }
 
@@ -871,6 +875,8 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return "1.1";
 
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
@@ -883,12 +889,13 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND POST.TID = THREAD.TID ";
     $sql.= "AND POST.PID = 1 ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_messages_get_most_recent);
 
@@ -898,23 +905,24 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
             if (!isset($row['RELATIONSHIP'])) $row['RELATIONSHIP'] = 0;
 
-            if(!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY))
-            {
-				if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
+            if (!($row['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
-					if (isset($row['LAST_READ'])) {
+                if (!($row['RELATIONSHIP'] & USER_IGNORED) || $row['LENGTH'] > 1) {
 
-						if ($row['LAST_READ'] < $row['LENGTH']) {
-							$row['LAST_READ']++;
-						}
+                    if (isset($row['LAST_READ'])) {
 
-						return "{$row['TID']}.{$row['LAST_READ']}";
+                        if ($row['LAST_READ'] < $row['LENGTH']) {
+                            $row['LAST_READ']++;
+                        }
 
-					}else {
-						return "{$row['TID']}.1";
-					}
-				}
-			}
+                        return "{$row['TID']}.{$row['LAST_READ']}";
+
+                    }else {
+
+                        return "{$row['TID']}.1";
+                    }
+                }
+            }
         }
     }
 

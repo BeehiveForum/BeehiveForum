@@ -21,77 +21,92 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.3 2004-08-24 23:00:39 tribalonline Exp $ */
+/* $Id: forum_links.inc.php,v 1.4 2004-10-20 23:21:24 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 
 function forum_links_get_links()
 {
-	$table_data = get_table_prefix();
+    $table_data = get_table_prefix();
 
-	$db_forum_draw_friends_dropdown = db_connect();
+    $db_forum_draw_friends_dropdown = db_connect();
 
-	$sql = "SELECT * FROM {$table_data['PREFIX']}FORUM_LINKS ORDER BY POS ASC, LID ASC";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}FORUM_LINKS ORDER BY POS ASC, LID ASC";
 
-	$result = db_query($sql, $db_forum_draw_friends_dropdown);
+    $result = db_query($sql, $db_forum_draw_friends_dropdown);
 
-	if (db_num_rows($result) > 0) {
-		while ($row = db_fetch_array($result)) {
-			$links[] = array("URI" => $row['URI'], "TITLE" => $row['TITLE'], "LID" => $row['LID']);
-		}
-		return $links;
-	}
-	return false;
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            if (!isset($row['URI'])) $row['URI'] = "";
+            if (!isset($row['LID'])) $row['LID'] = 0;
+            if (!isset($row['TITLE'])) $row['TITLE'] = "-";
+
+            $links[] = array("URI" => $row['URI'], "TITLE" => $row['TITLE'], "LID" => $row['LID']);
+        }
+
+        return $links;
+    }
+
+    return false;
 }
 
 function forum_links_draw_dropdown()
 {
-	$html = "";
-	$links = forum_links_get_links();
-	if (count($links) > 1) {
-		$html = "<select name=\"forum_links\" onChange=\"openForumLink(this)\" class=\"forumlinks\">\n";
-		for ($i=0; $i<count($links); $i++) {
-			$html .= "<option value=\"".$links[$i]['URI']."\">".$links[$i]['TITLE']."</option>\n";
-		}
-		$html.= "</select>\n";
-	}
-	return $html; 
+    $html = "";
+
+    $links = forum_links_get_links();
+
+    if (count($links) > 1) {
+
+        $html = "<select name=\"forum_links\" onChange=\"openForumLink(this)\" class=\"forumlinks\">\n";
+
+        for ($i=0; $i<count($links); $i++) {
+
+            $html .= "<option value=\"{$links[$i]['URI']}\">{$links[$i]['TITLE']}</option>\n";
+        }
+
+        $html.= "</select>\n";
+    }
+
+    return $html;
 }
 
 function forum_links_delete($lid)
 {
-	$table_data = get_table_prefix();
+    $table_data = get_table_prefix();
 
-	$db_forum_links_delete = db_connect();
+    $db_forum_links_delete = db_connect();
 
-	$sql = "DELETE from {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
+    $sql = "DELETE from {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
 
-	return db_query($sql, $db_forum_links_delete);
+    return db_query($sql, $db_forum_links_delete);
 }
 
 function forum_links_update($lid, $pos, $title, $uri = "")
 {
-	$table_data = get_table_prefix();
+    $table_data = get_table_prefix();
 
-	$db_forum_links_update = db_connect();
+    $db_forum_links_update = db_connect();
 
-	$sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS ";
-	$sql.= "SET POS = '$pos', TITLE = '$title', URI = '$uri' ";
-	$sql.= "WHERE LID = '$lid'";
+    $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "SET POS = '$pos', TITLE = '$title', URI = '$uri' ";
+    $sql.= "WHERE LID = '$lid'";
 
-	return db_query($sql, $db_forum_links_update);
+    return db_query($sql, $db_forum_links_update);
 }
 
 function forum_links_add($pos, $title, $uri = "")
 {
-	$table_data = get_table_prefix();
+    $table_data = get_table_prefix();
 
-	$db_forum_links_add = db_connect();
+    $db_forum_links_add = db_connect();
 
-	$sql = "INSERT INTO {$table_data['PREFIX']}FORUM_LINKS ";
-	$sql.= "(pos, title, uri) VALUES ('$pos', '$title', '$uri')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "(pos, title, uri) VALUES ('$pos', '$title', '$uri')";
 
-	return db_query($sql, $db_forum_links_add);
+    return db_query($sql, $db_forum_links_add);
 }
 
 ?>

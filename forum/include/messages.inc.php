@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.238 2004-03-09 23:00:08 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.239 2004-03-10 12:39:59 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -187,9 +187,10 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang, $attachments_show_deleted, $user_wordfilter;
+    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang, $attachment_use_old_method, $attachments_show_deleted;
     
     if (!isset($attachments_show_deleted)) $attachments_show_deleted = false;
+    if (!isset($attachment_use_old_method)) $attachment_use_old_method = false;    
     if (!isset($maximum_post_length)) $maximum_post_length = 6226;
     if (!isset($allow_post_editing)) $allow_post_editing = true;
     if (!isset($post_edit_time)) $post_edit_time = 0;
@@ -429,7 +430,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                            
                         }else {
                             
-                            echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
+                            if ($attachment_use_old_method) {
+                                echo "<a href=\"getattachment.php?hash=", $visible_attachments[$i]['hash'], "\"";
+                            }else {
+                                echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
+                            }
 
                             if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
                                 echo " target=\"_blank\"";

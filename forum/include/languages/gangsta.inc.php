@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.49 2004-04-10 21:27:44 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.50 2004-04-10 21:45:32 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -627,6 +627,21 @@ $lang['usingaPDA'] = "Yo ass a high roller?";
 $lang['lightHTMLversion'] = "Wack ass version";
 $lang['youhaveloggedout'] = "Yo geesed";
 $lang['currentlyloggedinas'] = "Yo logged in as";
+
+// My Forums (forums.php) ---------------------------------------------------------
+
+$lang['myforums'] = "My Forums";
+$lang['availableforums'] = "Available Forums";
+$lang['favouriteforums'] = "Favourite Forums";
+$lang['lastvisited'] = "Last Visited";
+$lang['newmessages'] = "New Messages";
+$lang['removefromfavourites'] = "Remove From Favourites";
+$lang['addtofavourites'] = "Add To Favourites";
+$lang['availableforums'] = "Available Forums";
+$lang['noforumsavailable'] = "There are no forums available.";
+$lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
+$lang['defaultforumsettings'] = "Default Forum Settings";
+$lang['unnamedforum'] = "Unnamed Forum";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.51 2004-04-10 21:27:44 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.52 2004-04-10 21:45:32 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -615,6 +615,21 @@ $lang['usingaPDA'] = "L'utilisation un PDA?";
 $lang['lightHTMLversion'] = "La version légère de HTML";
 $lang['youhaveloggedout'] = "Vous avez noté hors.";
 $lang['currentlyloggedinas'] = "Vous êtes actuellement abonnés comme";
+
+// My Forums (forums.php) ---------------------------------------------------------
+
+$lang['myforums'] = "My Forums";
+$lang['availableforums'] = "Available Forums";
+$lang['favouriteforums'] = "Favourite Forums";
+$lang['lastvisited'] = "Last Visited";
+$lang['newmessages'] = "New Messages";
+$lang['removefromfavourites'] = "Remove From Favourites";
+$lang['addtofavourites'] = "Add To Favourites";
+$lang['availableforums'] = "Available Forums";
+$lang['noforumsavailable'] = "There are no forums available.";
+$lang['noforumsavailablelogin'] = "There are no forums available. Please login to view your forums.";
+$lang['defaultforumsettings'] = "Default Forum Settings";
+$lang['unnamedforum'] = "Unnamed Forum";
 
 // Message composition (post.php, lpost.php) --------------------------------------
 

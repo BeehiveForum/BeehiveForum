@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: fixhtml.inc.php,v 1.71 2004-04-10 21:45:32 decoyduck Exp $ */
+
 include_once("./include/emoticons.inc.php");
 
 // fix_html - process html to prevent it breaking the forum

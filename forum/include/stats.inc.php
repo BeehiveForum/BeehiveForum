@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: stats.inc.php,v 1.24 2004-04-10 21:45:32 decoyduck Exp $ */
+
 function update_stats()
 {
     $db_update_stats = db_connect();

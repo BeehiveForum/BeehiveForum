@@ -27,6 +27,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/user.inc.php");
+require_once("./include/ip.inc.php");
 
 define("BH_SESS_HASH", "change this string if you like");
 
@@ -67,6 +68,8 @@ function bh_session_check()
     if (!user_check_logon($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_COOKIE_VARS['bh_sess_logon'], $HTTP_COOKIE_VARS['bh_sess_passwd'])) {
         return false;
     }
+
+    @ip_check();
         
     return true;
 

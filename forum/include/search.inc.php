@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.79 2004-12-11 14:37:29 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.80 2004-12-21 23:56:56 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -136,8 +136,13 @@ function search_execute($argarray, &$urlquery, &$error)
                 $bool_mode = (db_fetch_mysql_version() > 40010) ? "IN BOOLEAN MODE" : "";
                 $keywords = search_convert_fulltext($keywords);
 
-                if ($argarray['include'] > 0) $thread_title_sql = "MATCH (THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
-                if ($argarray['include'] > 1) $post_content_sql = "MATCH (POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
+                if ($argarray['include'] > 0) {
+                    $thread_title_sql = "MATCH(THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
+                }
+
+                if ($argarray['include'] > 1) {
+                    $thread_title_sql = "MATCH(THREAD.TITLE, POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
+                }
 
             }else {
 

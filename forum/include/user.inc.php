@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.207 2004-11-05 18:50:04 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.208 2004-11-06 20:26:29 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -612,7 +612,7 @@ function user_check_pref($name, $value)
             return preg_match("/^[a-z0-9 ]*$/i", $value);
         } elseif ($name == "STYLE" || $name == "EMOTICONS" || $name == "LANGUAGE") {
             // NB: this does not check that the files/folders for STYLE, EMOTICONS, and LANGUAGE actually exist
-            return preg_match("/^[a-z0-9]*$/i", $value);
+            return preg_match("/^[a-z0-9_-]*$/i", $value);
         } elseif ($name ==  "DOB") {
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
         } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.5 2004-06-15 20:49:31 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.6 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -112,7 +112,7 @@ if (isset($HTTP_GET_VARS['gallery'])) {
 
         echo "  <tr>\n";
         echo "    <td align=\"center\">\n";
-        echo "      <p><a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\"><img src=\"{$images_dir}/{$images_array[$i]}\" {$html} border=\"0\" /></a></p>\n";
+        echo "      <p><a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\"><img src=\"{$images_dir}/{$images_array[$i]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$i]), "\" title=\"", formatname($images_array[$i]), "\" /></a></p>\n";
         echo "      <p class=\"bodytext\">", formatname($images_array[$i]), "</p>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -126,7 +126,7 @@ if (isset($HTTP_GET_VARS['gallery'])) {
     if (isset($id) && isset($images_array[$id])) {
 
         echo "<div class=\"image\">\n";
-        echo "<p><img src=\"{$images_dir}/{$images_array[$id]}\" {$html} border=\"0\" /></p>\n";
+        echo "<p><img src=\"{$images_dir}/{$images_array[$id]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$id]), "\" title=\"", formatname($images_array[$id]), "\" /></p>\n";
         echo "<p><div align=\"center\">", formatname($images_array[$id]), "</div></p>\n";
         echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery=true\">Gallery</a>]</div></p>\n";
         echo "</div>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.93 2004-10-29 20:42:48 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.94 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -301,7 +301,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $_GET['aid'])) {
         if (@file_exists("{$attachment_dir}/{$attachments[$i]['hash']}")) {
 
             echo "  <tr>\n";
-            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
+            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                 echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";
@@ -395,7 +395,7 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $_GET['aid']
         if (@file_exists("{$attachment_dir}/{$attachments[$i]['hash']}")) {
 
             echo "  <tr>\n";
-            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
+            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
 
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                 echo "<a href=\"getattachment.php?webtag=$webtag&amp;hash=", $attachments[$i]['hash'], "\" title=\"";

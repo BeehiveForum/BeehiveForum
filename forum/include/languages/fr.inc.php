@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.121 2004-11-05 20:52:49 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.122 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -159,6 +159,8 @@ $lang['top'] = "Top";
 $lang['free'] = "Free";
 $lang['used'] = "Used";
 $lang['days'] = "days";
+$lang['sortasc'] = "Sort Asc";
+$lang['sortdesc'] = "Sort Desc";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -858,6 +860,9 @@ $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 $lang['includepminreply'] = "Include message body when replying to PM";
 $lang['yourpmfoldersare_1'] = "Your PM folders are";
 $lang['yourpmfoldersare_2'] = "full";
+$lang['currentmessage'] = "Current Message";
+$lang['unreadmessage'] = "Unread Message";
+$lang['readmessage'] = "Read Message";
 
 
 // Preferences / Profile (user_*.php) ---------------------------------------------

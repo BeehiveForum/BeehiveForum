@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.77 2004-11-05 20:52:50 decoyduck Exp $ */
+/* $Id: pm.php,v 1.78 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -280,12 +280,12 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }
 
         if ($mid == $message['MID']) {
-            echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" height=\"15\" title=\"Current Message\" alt=\"\"/>";
+            echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" height=\"15\" title=\"{$lang['currentmessage']}\" alt=\"{$lang['currentmessage']}\"/>";
         }else {
             if (($message['TYPE'] == PM_UNREAD)) {
-                echo "<img src=\"".style_image('pmunread.png')."\" align=\"middle\" height=\"15\" title=\"Unread Message\" alt=\"\" />";
+                echo "<img src=\"".style_image('pmunread.png')."\" align=\"middle\" height=\"15\" title=\"{$lang['unreadmessage']}\" alt=\"{$lang['unreadmessage']}\" />";
             }else {
-                echo "<img src=\"".style_image('pmread.png')."\" align=\"middle\" height=\"15\" title=\"Read Message\" alt=\"\" />";
+                echo "<img src=\"".style_image('pmread.png')."\" align=\"middle\" height=\"15\" title=\"{$lang['readmessage']}\" alt=\"{$lang['readmessage']}\" />";
             }
         }
 
@@ -295,7 +295,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid=".$message['MID']."\" target=\"_self\">{$message['SUBJECT']}</a>";
 
         if (isset($message['AID'])) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
         }
 
         if (($folder == PM_FOLDER_OUTBOX) && ($message['TYPE'] == PM_UNREAD)) {
@@ -407,7 +407,7 @@ if (pm_auto_prune_enabled()) {
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
-    echo "      <td class=\"pmbar_text\" colspan=\"4\"><img src=\"", style_image('warning.png'), "\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['pmpruneexplanation']}');\">?</a>]</td>\n";
+    echo "      <td class=\"pmbar_text\" colspan=\"4\"><img src=\"", style_image('warning.png'), "\" alt=\"{$lang['pmfolderpruningisenabled']}\" title=\"{$lang['pmfolderpruningisenabled']}\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['pmpruneexplanation']}');\">?</a>]</td>\n";
     echo "    </tr>\n";
 }
 

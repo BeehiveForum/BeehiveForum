@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.6 2004-03-27 19:46:59 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.7 2004-11-06 20:26:24 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -29,13 +29,22 @@ USA
 
 // Outputs to STDOUT.
 
-function rn($r) {
+function htmlentities_decode($text)
+{
+    $trans_tbl = get_html_translation_table (HTML_ENTITIES);
+    $trans_tbl = array_flip ($trans_tbl);
+    $ret = strtr ($text, $trans_tbl);
+    return preg_replace('/&amp;#(\d+);/me', "chr('\\1')",$ret);
+}
+
+function rn($r)
+{
     srand((double)microtime()*1000000);
     return rand(1, $r);
 }
 
-function translate($string) {
-
+function translate($string)
+{
     $string_parts = preg_split('/([<|>])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     // Initialize the variables we need.
@@ -54,7 +63,7 @@ function translate($string) {
 
             for ($j = 0; $j < sizeof($str_words); $j++) {
 
-                $str_word = $str_words[$j];
+                $str_word = htmlentities_decode($str_words[$j]);
 
                 if ($str_word == "am" && $str_words[$i + 1] == "good") {
                     $str_word = "ownz0r";
@@ -139,7 +148,7 @@ function translate($string) {
                 $char = substr($string_parts[$i], $j, 1);
 
                 if (rn(10) > 5) $char = strtoupper($char);
-                $str_out = $str_out. $char;
+                $str_out = $str_out. htmlentities($char);
 
             }
 

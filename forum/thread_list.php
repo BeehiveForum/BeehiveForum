@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.220 2004-11-05 20:52:50 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.221 2004-11-06 20:26:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -194,19 +194,19 @@ echo "// -->\n";
 echo "</script>\n\n";
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "  </tr>\n";
 
 if ($pm_new_count = pm_get_unread_count() && bh_session_get_value('UID') != 0) {
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
     echo "  </tr>\n";
 }else {
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
     echo "  </tr>\n";
 }
 
@@ -412,7 +412,7 @@ if (!$thread_info) {
     echo "  </tr>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></td></tr><tr><td>&nbsp;</td></tr>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['prev50threads']}\" title=\"{$lang['prev50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></td></tr><tr><td>&nbsp;</td></tr>\n";
 
 // Iterate through the information we've just got and display it in the right order
 
@@ -425,7 +425,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "          <td class=\"foldername\">\n";
 
     if ($folder_info[$folder_number]['INTEREST'] == 0) {
-        echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
+        echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />\n";
     }else {
         echo "            <img src=\"".style_image('folder_ignored.png')."\" height=\"15\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
     }
@@ -435,9 +435,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
     if (bh_session_get_value('UID') > 0) {
         if ($folder_info[$folder_number]['INTEREST'] == 0) {
-            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
+            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
         }else {
-            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
+            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['stopignoringthisfolder']}\" title=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
         }
     }
 
@@ -517,9 +517,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                                 $first_thread = $thread['tid'];
-                                echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }else {
-                                echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }
 
                         }elseif ($thread['last_read'] < $thread['length']) {
@@ -530,9 +530,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                                 $first_thread = $thread['tid'];
-                                echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }else {
-                                echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }
 
                         }else {
@@ -547,9 +547,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                                 $first_thread = $thread['tid'];
-                                echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                             } else {
-                                echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }
 
                         }
@@ -568,7 +568,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                         if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
                         if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
                         if ($thread['sticky'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" height=\"15\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
-                        if ($thread['relationship']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
+                        if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
 
                         if (thread_has_attachments($thread['tid'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
@@ -651,8 +651,8 @@ if ($mode == 0 && !isset($folder)) {
       }
 
       $more_threads = $total_threads - $start_from - 50;
-      if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</td></tr>\n";
-      if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></td></tr>\n";
+      if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['next']} $more_threads {$lang['threads']}\" title=\"{$lang['next']} $more_threads {$lang['threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</td></tr>\n";
+      if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['next50threads']}\" title=\"{$lang['next50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></td></tr>\n";
 
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.76 2003-08-01 20:00:50 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.77 2003-08-01 23:52:54 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -43,7 +43,7 @@ function user_exists($logon)
     return $exists;
 }
 
-function user_create($logon,$password,$nickname,$email)
+function user_create($logon, $password, $nickname, $email)
 {
 
     global $HTTP_SERVER_VARS;
@@ -77,16 +77,20 @@ function user_update($uid, $nickname, $email)
     return $result;
 }
 
-function user_change_pw($uid, $password)
+function user_change_pw($uid, $password, $hash = false)
 {
-
-    $password = md5($password);
-    $sql = "UPDATE ". forum_table("USER"). " set PASSWD = '$password' WHERE UID = $uid";
-
     $db_user_change_pw = db_connect();
-    $result = db_query($sql, $db_user_change_pw);
+    $password = md5($password);
 
-    return $result;
+    $sql = "UPDATE ". forum_table("USER"). " SET PASSWD = '$password' WHERE UID = $uid ";
+
+    if ($hash) {
+        $hash = _addslashes($hash);
+        $sql.= "AND PASSWD = '$hash'";
+    }
+
+    $result = db_query($sql, $db_user_change_pw);
+    return (db_affected_rows($db_user_change_pw) > 0);
 }
 
 
@@ -103,7 +107,7 @@ function user_get_status($uid)
 
 }
 
-function user_update_status($uid,$status)
+function user_update_status($uid, $status)
 {
     $sql = "update " . forum_table("USER") . " set STATUS = $status ";
     $sql .= "WHERE UID = $uid";
@@ -202,20 +206,26 @@ function user_check_logon($uid, $logon, $md5pass)
     }
 }
 
-function user_get($uid)
+function user_get($uid, $hash = false)
 {
     $db_user_get = db_connect();
 
-    $sql = "select * from " . forum_table("USER") . " where uid = $uid";
+    $sql = "SELECT * FROM " . forum_table("USER") . " WHERE UID = $uid ";
+
+    if ($hash) {
+        $hash = _addslashes($hash);
+        $sql.= "AND PASSWD = '$hash'";
+    }
+
     $result = db_query($sql, $db_user_get);
 
     if(!db_num_rows($result)){
-        $fa = false;
+        $user_get = false;
     } else {
-        $fa = db_fetch_array($result);
+        $user_get = db_fetch_array($result);
     }
 
-    return $fa;
+    return $user_get;
 }
 
 function user_get_logon($uid)
@@ -325,7 +335,7 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
     return $result;
 }
 
-function user_update_sig($uid,$content,$html)
+function user_update_sig($uid, $content, $html)
 {
 
     $content = addslashes($content);
@@ -342,7 +352,7 @@ function user_update_sig($uid,$content,$html)
     return $result;
 }
 
-function user_update_global_sig($uid,$value)
+function user_update_global_sig($uid, $value)
 {
 
     $db_user_update_global_sig = db_connect();
@@ -398,7 +408,6 @@ function user_get_last_logon_time($uid)
 
 function user_guest_enabled()
 {
-
     $db_user_guest_account = db_connect();
 
     $sql = "SELECT UID, STATUS FROM ". forum_table("USER"). " WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
@@ -414,7 +423,6 @@ function user_guest_enabled()
     }
 
     return false;
-
 }
 
 function user_get_dob($uid)
@@ -524,6 +532,28 @@ function user_get_by_ipaddress($ip, $uid_filter = false)
 	    $user_get_by_ipaddress[] = $row;
 	}
 	return $user_get_by_ipaddress;
+    }else {
+        return false;
+    }
+}
+
+function users_get_recent()
+{
+    $db_users_get_recent = db_connect();
+
+    $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM ". forum_table("USER"). " U ";
+    $sql.= "ORDER BY U.LAST_LOGON DESC ";
+    $sql.= "LIMIT 0, 10";
+
+    $result = db_query($sql, $db_users_get_recent);
+
+    if (db_num_rows($result)) {
+        $users_get_recent_array = array();
+	while ($row = db_fetch_array($result)) {
+	    $users_get_recent_array[] = $row;
+	}
+	return $users_get_recent_array;
     }else {
         return false;
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.24 2003-08-01 20:37:08 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.25 2003-08-01 23:52:54 decoyduck Exp $ */
 
 // International English language file
 
@@ -317,7 +317,7 @@ $lang['updatefailed'] = "Update failed";
 $lang['passwdsdonotmatch'] = "Passwords do not match.";
 $lang['allfieldsrequired'] = "All fields are required.";
 $lang['invalidaccess'] = "Invalid Access";
-$lang['requiredinformationnotfound'] = "ERROR: required information not found";
+$lang['requiredinformationnotfound'] = "Required information not found";
 $lang['forgotpasswd'] = "Forgot password";
 $lang['enternewpasswdforuser'] = "Enter a new password for user";
 
@@ -485,7 +485,7 @@ $lang['moderatorthreadclosed'] = "Warning: this thread is closed for posting to 
 
 // Message display (messages.php) --------------------------------------
 
-$lang['inreplyto'] = "in reply to";
+$lang['inreplyto'] = "In reply to";
 $lang['showmessages'] = "Show messages";
 $lang['ratemyinterest'] = "Rate my interest";
 $lang['adjtextsize'] = "Adjust text size";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.41 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: start_left.php,v 1.42 2003-08-01 23:52:52 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -43,8 +43,6 @@ if(!bh_session_check()){
 
 }
 
-$uid = bh_session_get_value('UID');
-
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
@@ -53,6 +51,7 @@ require_once("./include/format.inc.php");
 require_once("./include/thread.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/threads.inc.php");
 
 html_draw_top_script();
 
@@ -60,66 +59,49 @@ echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cel
 echo "  <tr>\n";
 echo "    <td class=\"subhead\">{$lang['recentthreads']}</td>\n";
 echo "  </tr>\n";
-
-// Get available folders
-$fidlist = folder_get_available();
-
-$db = db_connect();
-
-// Get most recent threads
-$sql  = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
-$sql .= "FROM ".forum_table("THREAD")." T ";
-$sql .= "LEFT JOIN ".forum_table("USER_THREAD")." UT ";
-$sql .= "ON (T.TID = UT.TID and UT.UID = $uid) ";
-$sql .= "JOIN " . forum_table("USER") . " U ";
-$sql .= "JOIN " . forum_table("POST") . " P ";
-$sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " UF ON ";
-$sql .= "(UF.FID = T.FID AND UF.UID = $uid) ";
-$sql .= "WHERE T.FID IN ($fidlist) ";
-$sql .= "AND U.UID = P.FROM_UID ";
-$sql .= "AND P.TID = T.TID ";
-$sql .= "AND P.PID = 1 ";
-$sql .= "AND NOT (UT.INTEREST <=> -1) ";
-$sql .= "AND NOT (UF.INTEREST <=> -1) ";
-$sql .= "ORDER BY T.MODIFIED desc ";
-$sql .= "LIMIT 0, 10";
-
-$result = db_query($sql, $db);
-
 echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
-while($row = db_fetch_array($result)){
+if ($thread_array = threads_get_most_recent()) {
 
-    $tid = $row['TID'];
+    foreach ($thread_array as $thread) {
 
-    if (isset($row['LAST_READ']) && $row['LAST_READ'] && $row['LENGTH'] > $row['LAST_READ']){
-        $pid = $row['LAST_READ'] + 1;
-    } else {
-        $pid = 1;
+        $tid = $thread['TID'];
+
+        if (isset($thread['LAST_READ']) && $thread['LAST_READ'] && $thread['LENGTH'] > $thread['LAST_READ']){
+            $pid = $thread['LAST_READ'] + 1;
+        } else {
+            $pid = 1;
+        }
+
+        echo "        <tr>\n";
+        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
+
+        if (!isset($thread['LAST_READ'])) {
+            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['TID']."\" align=\"middle\" alt=\"{$lang['unreadthread']}\" />";
+        }else if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
+            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['TID']."\" align=\"middle\" alt=\"{$lang['unreadmessages']}\" />";
+        }else if ($thread['LAST_READ'] == $thread['LENGTH']) {
+            echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['TID']."\" align=\"middle\" alt=\"{$lang['readthread']}\" />";
+        }
+
+        echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "          <td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">";
+        echo _stripslashes($thread['TITLE'])."</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+
+        if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
+        if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
+        if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" align=\"middle\" />";
+
+        echo "          </td>\n";
+        echo "        </tr>\n";
     }
+
+}else {
 
     echo "        <tr>\n";
-    echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
-
-    if (!isset($row['LAST_READ'])) {
-        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"{$lang['unreadthread']}\" />";
-    }else if ($row['LAST_READ'] == 0 || $row['LAST_READ'] < $row['LENGTH']) {
-        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"{$lang['unreadmessages']}\" />";
-    }else if ($row['LAST_READ'] == $row['LENGTH']) {
-        echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"{$lang['readthread']}\" />";
-    }
-
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "          <td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($row['LOGON'], $row['NICKNAME']) . "\">";
-    echo _stripslashes($row['TITLE'])."</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-
-    if (isset($row['INTEREST']) && $row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
-    if (isset($row['INTEREST']) && $row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
-    if (isset($row['STICKY']) && $row['STICKY'] == "Y") echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" align=\"middle\" />";
-
-    echo "          </td>\n";
+    echo "          <td>{$lang['nomessages']}</td>\n";
     echo "        </tr>\n";
 
 }
@@ -167,30 +149,26 @@ echo "    <td class=\"subhead\">{$lang['recentvisitors']}</td>\n";
 echo "  </tr>\n";
 
 // Get recent visitors
-$sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
-$sql.= "from ".forum_table("USER")." U ";
-$sql.= "order by U.LAST_LOGON desc ";
-$sql.= "limit 0, 10";
+if ($users_array = users_get_recent()) {
 
-$result = db_query($sql, $db);
+    echo "  <tr>\n";
+    echo "    <td>\n";
+    echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 
-echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+    foreach ($users_array as $resent_user) {
 
-while($row = db_fetch_array($result)){
+        echo "        <tr>\n";
+        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
+        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $resent_user['UID'], ")\">", $resent_user['NICKNAME'], "</a></td>\n";
+        echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($resent_user['LAST_LOGON']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "        </tr>\n";
+    }
 
-    echo "        <tr>\n";
-    echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"".style_image('bullet.png')."\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-    echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">". $row['NICKNAME']. "</a></td>\n";
-    echo "          <td align=\"right\" nowrap=\"nowrap\">". format_time($row['LAST_LOGON']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "        </tr>\n";
-
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
 }
 
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "  </tr>\n";
@@ -202,19 +180,23 @@ echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "  </tr>\n";
 
 if ($birthdays = user_get_forthcoming_birthdays()) {
+
     echo "  <tr>\n";
     echo "    <td class=\"subhead\" colspan=\"2\">{$lang['forthcomingbirthdays']}</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td>\n";
     echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+
     foreach ($birthdays as $row) {
+
         echo "        <tr>\n";
-        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"".style_image('bullet.png')."\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
-        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">". $row['NICKNAME']. "</a></td>\n";
-        echo "          <td align=\"right\" nowrap=\"nowrap\">". format_birthday($row['DOB']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
+        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">", $row['NICKNAME'], "</a></td>\n";
+        echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
         echo "        </tr>\n";
     }
+
     echo "      </table>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

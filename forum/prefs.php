@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.63 2003-07-29 16:26:43 hodcroftcj Exp $ */
+/* $Id: prefs.php,v 1.64 2003-08-01 23:52:52 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -88,7 +88,7 @@ $timezones = array("GMT -12h", "GMT -11h", "GMT -10h", "GMT -9h30m", "GMT -9h", 
                    "GMT", "GMT +1h", "GMT +2h", "GMT +3h",  "GMT +3h30m","GMT +4h", "GMT +4h30m", "GMT +5h",
                    "GMT +5h30m", "GMT +6h", "GMT +6h30m", "GMT +7h", "GMT +8h", "GMT +9h", "GMT +9h30m",
                    "GMT +10h", "GMT +10h30m", "GMT +11h", "GMT +11h30m", "GMT +12h", "GMT +13h", "GMT +14h");
-                   
+
 $timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
                         6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
 
@@ -148,7 +148,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
         if ($update_password) {
 
-            user_update_pw($HTTP_POST_VARS['pw']);
+            user_change_pw(bh_session_get_value('UID'), $HTTP_POST_VARS['pw']);
 
             // Username array
 
@@ -253,24 +253,27 @@ html_draw_top();
 
 echo "<h1>{$lang['userpreferences']}</h1>\n";
 
-if(!empty($error_html)) {
+if (!empty($error_html)) {
     echo $error_html;
-}elseif (isset($HTTP_GET_VARS['updated'])) {
+}else if (isset($HTTP_GET_VARS['updated'])) {
 
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 
-        $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style) . "/top.html";
-        if (!file_exists($top_html)) {
-                $top_html = "./top.html";
-        }
-        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-        echo "<!--\n";
-        echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
-        echo "-->\n";
-        echo "</script>";
+    $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style) . "/top.html";
+
+    if (!file_exists($top_html)) {
+        $top_html = "./top.html";
+    }
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "<!--\n";
+    echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
+    echo "-->\n";
+    echo "</script>";
 }
 
 ?>
+<br />
 <div class="postbody">
   <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post" target="_self">
     <table class="posthead" width="400">

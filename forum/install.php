@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.35 2005-04-02 22:39:17 decoyduck Exp $ */
+/* $Id: install.php,v 1.36 2005-04-05 22:09:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -54,18 +54,9 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
     $error_array = array();
 
-    if (isset($_POST['install_method']) && strlen(trim(_stripslashes($_POST['install_method']))) > 0) {
+    if (isset($_POST['install_method']) && is_numeric($_POST['install_method'])) {
 
-        if (trim(_stripslashes($_POST['install_method']) == 'install')) {
-            $install_method = 0;
-        }else if (trim(_stripslashes($_POST['install_method']) == 'upgrade05')) {
-            $install_method = 1;
-        }else if (trim(_stripslashes($_POST['install_method']) == 'upgrade06')) {
-            $install_method = 2;
-        }else {
-            $error_array[] = "You must choose an installation method.\n";
-            $valid = false;
-        }
+        $install_method = $_POST['install_method'];
 
     }else {
 
@@ -184,22 +175,22 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
         if ($db_install = db_connect()) {
 
-            if (($install_method == 2) && (@file_exists('./install/upgrade-05-to-06.php'))) {
+            if (($install_method == 4) && (@file_exists('./install/upgrade-05-to-06.php'))) {
 
                 include_once("./install/upgrade-05-to-06.php");
 
-            }elseif (($install_method == 1) && (@file_exists('./install/upgrade-04-to-05.php'))) {
+            }elseif (($install_method == 3) && (@file_exists('./install/upgrade-04-to-05.php'))) {
 
                 include_once("./install/upgrade-04-to-05.php");
+
+            }elseif (($install_method == 1) && (@file_exists('./install/new-install.php'))) {
+
+                $remove_conflicts = true;
+                include_once("./install/new-install.php");
 
             }elseif (($install_method == 0) && (@file_exists('./install/new-install.php'))) {
 
                 include_once("./install/new-install.php");
-
-            }else {
-
-                $error_array[] = "Could not find the required script.\n";
-                $valid = false;
             }
 
             if ($valid) {
@@ -533,38 +524,7 @@ echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
-echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-echo "<!--\n\n";
-echo "function disable_button (button) {\n";
-echo "    if (document.all || document.getElementById) {\n";
-echo "        button.disabled = true;\n";
-echo "    } else if (button) {\n";
-echo "        button.onclick = null;\n";
-echo "    }\n";
-echo "    return true;\n";
-echo "}\n\n";
-echo "function show_install_help(topic) {\n";
-echo "    if (topic == 0) {\n";
-echo "      topic_text = 'For new installations please select \'New Install\' from the drop down and enter a webtag.\\n';\n";
-echo "      topic_text+= 'Your webtag can be anything you want as long as it only contains the characters A-Z, 0-9, underscore and hyphen. If you enter any other characters an error will occur.\\n\\n';\n";
-echo "      topic_text+= 'For upgrades please select the correct upgrade process. The webtag field is ignored.\\n\\n';\n";
-echo "    } else if (topic == 1) {\n";
-echo "      topic_text = 'These are the MySQL database details required by to install and run your BeehiveForum.\\n\\n';\n";
-echo "      topic_text+= 'Hostname: The address of the MySQL server. This may be an IP or a DNS for example 127.0.0.1 or localhost or mysql.myhosting.com\\n';\n";
-echo "      topic_text+= 'Database name: The name of the database you want your BeehiveForum to use. The database must already exist and you must have at least SELECT, INSERT, UPDATE, CREATE, ALTER, INDEX and DROP privilleges on the database for the installation and your BeehiveForum to work correctly.\\n';\n";
-echo "      topic_text+= 'Username: The username needed to connect to the MySQL server.\\n';\n";
-echo "      topic_text+= 'Password: The password needed to connect to the MySQL server.\\n\\n';\n";
-echo "      topic_text+= 'If you do not know what these settings are please contact your hosting provider.';\n";
-echo "    } else if (topic == 2) {\n";
-echo "      topic_text = 'The credentials of the user you want to have initial Admin access. This information is only required for new installations. Upgrades will leave the existing user accounts intact.';\n";
-echo "    } else if (topic == 3) {\n";
-echo "      topic_text = 'These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your BeehiveForum and other software you may have installed. Use with extreme caution!\\n\\n';\n";
-echo "    }\n";
-echo "    alert(topic_text);\n";
-echo "    return true;\n";
-echo "}\n\n";
-echo "//-->\n";
-echo "</script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/install.js\"></script>\n";
 echo "</head>\n";
 echo "<body>\n";
 
@@ -620,12 +580,21 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "                  <td align=\"center\" colspan=\"2\">\n";
     echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Choose Installation Method:</td>\n";
-    echo "                        <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" dir=\"ltr\"><option value=\"install\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option><option value=\"upgrade\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Upgrade 0.4 to 0.5</option><option value=\"upgrade06\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Upgrade 0.5 to 0.6</option></select></td>\n";
+    echo "                        <td width=\"200\">Installation Method:</td>\n";
+    echo "                        <td>\n";
+    echo "                          <select name=\"install_method\" id =\"install_method\" class=\"bhselect\" dir=\"ltr\">\n";
+    echo "                            <option value=\"\">Please select...</option>\n";
+    echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
+    echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
+    echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
+    echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.4 to 0.5</option>\n";
+    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.5 to 0.6</option>\n";
+    echo "                          </select>\n";
+    echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) ? $forum_webtag : ""), "\" size=\"24\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\" valign=\"top\">Default Forum Webtag:</td>\n";
+    echo "                        <td><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) ? $forum_webtag : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td colspan=\"2\">&nbsp;</td>\n";
@@ -656,24 +625,24 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "                  <td align=\"center\" colspan=\"2\">\n";
     echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Hostname:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Hostname:</td>\n";
+    echo "                        <td><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Database Name:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Database Name:</td>\n";
+    echo "                        <td><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Username:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Username:</td>\n";
+    echo "                        <td><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Password:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Password:</td>\n";
+    echo "                        <td><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Confirm Password:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Confirm Password:</td>\n";
+    echo "                        <td><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td colspan=\"2\">&nbsp;</td>\n";
@@ -704,20 +673,20 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "                  <td align=\"center\" colspan=\"2\">\n";
     echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Admin Username:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Admin Username:</td>\n";
+    echo "                        <td><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Admin Email Address:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Admin Email Address:</td>\n";
+    echo "                        <td><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Admin Password:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Admin Password:</td>\n";
+    echo "                        <td><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">Confirm Password:</td>\n";
-    echo "                        <td width=\"250\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                        <td width=\"200\">Confirm Password:</td>\n";
+    echo "                        <td><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td colspan=\"2\">&nbsp;</td>\n";
@@ -775,7 +744,7 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"disable_button(this); install_form.submit()\" /></td>\n";
+    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirm_install(this);\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.159 2005-02-04 19:35:35 decoyduck Exp $ */
+/* $Id: edit.php,v 1.160 2005-02-14 23:09:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -864,7 +864,6 @@ if ($allow_sig == true) {
     echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
-    echo "    <td class=\"subhead\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "</td>\n";
 
     $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
@@ -884,7 +883,7 @@ if ($allow_sig == true) {
 
     }else {
 
-        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'hide'), "</td>\n";
         echo "    ", form_input_hidden("t_sig", $t_sig), "\n";
     }
 

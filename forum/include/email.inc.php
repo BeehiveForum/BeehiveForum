@@ -23,14 +23,23 @@ USA
 
 require_once("./include/db.inc.php"); // Database functions
 
-function email_sendnotification($tuid, $msg, $fuid)
+function email_sendnotification($tuid, $msg, $fuid, $tid = 0)
 {
 
     // This function sends the email notification.
     // There is no return value, like.
-    
+
     $db = db_connect();
 
+    $sql = "select LOGON from ". forum_table("USER") . " where UID = $fuid";
+    $resultfrom = db_query($sql, $db);
+    if(db_num_rows($resultfrom)){
+        $mailfrom = db_fetch_array($resultfrom);
+    } else {
+        $mailfrom['LOGON'] = "Someone";
+    }
+
+    // E-mail the person replied to if they've specified that in their preferences
     // Fetch the Receipient's notification status, nickname and email address
 
     $sql = "select PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL from ";
@@ -40,7 +49,7 @@ function email_sendnotification($tuid, $msg, $fuid)
     $sql.= "and PROFILE.UID = PREFS.UID";
 
     $result = db_query($sql, $db);
-    
+
     if(db_num_rows($result)){
 
         $mailto = db_fetch_array($result);
@@ -49,19 +58,13 @@ function email_sendnotification($tuid, $msg, $fuid)
 
     	if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != ''){
 
-    	    // Retrieve the Sender's LOGON details. (Can this be done another way, session details perhaps?)
-
-    	    $sql = "select LOGON from ". forum_table("USER") . " where UID = $fuid";
-            $resultfrom = db_query($sql, $db);
-
-    	    if(db_num_rows($resultfrom)){
-
-    	        $mailfrom = db_fetch_array($resultfrom);
+            // Hold recipients UID to exclude from Subscriber mailing later
+            $xuid = $tuid;
 
         	// Construct the notification body and headers. These are half-inched from Delphi's
        		// own notifications. Will need amendments later on to use the Forum's name rather
        		// than 'Beehiveforum'.
-        		
+
        		$message = strtoupper($mailfrom['LOGON']). " posted a message to you on Beehive Forum\n\n";
        		$message.= "To read that message and others in the same discussion, go to:\n";
        		$message.= "http://beehiveforum.sourceforge.net/forum/?msg=$msg\n\n";
@@ -69,21 +72,68 @@ function email_sendnotification($tuid, $msg, $fuid)
        		$message.= "Note: If you do not wish to receive email notifications of Forum messages\n";
        		$message.= "posted to you, go to http://beehiveforum.sourceforge.net/forum/, click\n";
        		$message.= "on Preferences, unselect the Email Notification checkbox and press Submit.\n";
-       		
+
        		$header = "From: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";
        		$header.= "Reply-To: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";
-       		$header.= "X-Mailer: PHP/". phpversion();        		
-        		
+       		$header.= "X-Mailer: PHP/". phpversion();
+
        		// Construct a well formatted Recepient (doesn't work on PHP Win32)
-       		
+
        		$recepient = $mailto['NICKNAME']. ' <'. $mailto['EMAIL']. '>';
-       		
+
        		// Send the email
-        		
+
        		@mail($mailto['EMAIL'], "Message Notification from Beehive Forums", $message, $header);
-    	    }
     	}
     }
+
+    // Email people who've subscribed to the thread
+
+    $tid = strtok($msg,".");
+
+    $sql = "select USER.UID, USER.NICKNAME, USER.EMAIL from ";
+    $sql.= forum_table("USER_THREAD") . " USER_THREAD, ";
+    $sql.= forum_table("USER") . " USER ";
+    $sql.= "where USER_THREAD.TID = $tid ";
+    $sql.= "and USER_THREAD.INTEREST = 2 ";
+    $sql.= "and USER.UID = USER_THREAD.UID";
+
+    $result = db_query($sql, $db);
+
+    for($i=0;$i<db_num_rows($result);$i++){
+
+        $mailto = db_fetch_array($result);
+
+        // Don't send to person who posted message, or person already mailed.
+        if($mailto['UID'] != $fuid && $mailto['UID'] != $xuid){
+        	// Construct the notification body and headers. These are half-inched from Delphi's
+       		// own notifications. Will need amendments later on to use the Forum's name rather
+       		// than 'Beehiveforum'.
+
+       		$message = strtoupper($mailfrom['LOGON']). " posted a message in\n";
+       		$message.= "a thread you have subscribed to on Beehive Forum\n\n";
+       		$message.= "To read that message and others in the same discussion, go to:\n";
+       		$message.= "http://beehiveforum.sourceforge.net/forum/?msg=$msg\n\n";
+       		$message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+       		$message.= "Note: If you do not wish to receive email notifications of new messages\n";
+       		$message.= "in this thread, go to http://beehiveforum.sourceforge.net/forum/?msg=$msg,\n";
+       		$message.= "and adjust your Interest level at the end of the page.\n";
+
+       		$header = "From: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";
+       		$header.= "Reply-To: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";
+       		$header.= "X-Mailer: PHP/". phpversion();
+
+       		// Construct a well formatted Recepient (doesn't work on PHP Win32)
+
+       		$recepient = $mailto['NICKNAME']. ' <'. $mailto['EMAIL']. '>';
+
+       		// Send the email
+
+       		@mail($mailto['EMAIL'], "Message Notification from Beehive Forums", $message, $header);
+        }
+    }
+
+    db_disconnect($db);
 }
 
 ?>

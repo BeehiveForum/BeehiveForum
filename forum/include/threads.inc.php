@@ -57,6 +57,7 @@ function threads_get_all($uid) // get "all" threads (i.e. most recent threads, i
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
+	$sql .= "AND USER_THREAD.INTEREST != -1 ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -79,6 +80,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
+	$sql .= "AND USER_THREAD.INTEREST != -1 ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -103,6 +105,7 @@ function threads_get_unread_to_me($uid) // get unread messages for $uid
 	$sql .= forum_table("POST") . " POST ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
+	$sql .= "AND USER_THREAD.INTEREST != -1 ";
 	$sql .= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
@@ -127,6 +130,7 @@ function threads_get_by_days($uid,$days = 1) // get "all" threads (i.e. most rec
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+	$sql .= "AND USER_THREAD.INTEREST != -1 ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -137,7 +141,7 @@ function threads_get_by_days($uid,$days = 1) // get "all" threads (i.e. most rec
 
 }
 
-function threads_get_by_interest($uid,$interest = 3) // get unread messages for $uid (default High Interest)
+function threads_get_by_interest($uid,$interest = 1) // get unread messages for $uid (default High Interest)
 {
 	$db = db_connect();
 
@@ -159,7 +163,7 @@ function threads_get_by_interest($uid,$interest = 3) // get unread messages for 
 
 }
 
-function threads_get_unread_by_interest($uid,$interest = 3) // get unread messages for $uid (default High Interest)
+function threads_get_unread_by_interest($uid,$interest = 1) // get unread messages for $uid (default High Interest)
 {
 	$db = db_connect();
 
@@ -194,6 +198,7 @@ function threads_get_recently_viewed($uid) // get unread messages for $uid (defa
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
 	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT <= 1 ";
+	$sql .= "AND USER_THREAD.INTEREST != -1 ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
 
@@ -340,5 +345,33 @@ function thread_get_author($tid)
 	db_disconnect($db);
 	return format_user_name($author['LOGON'], $author['NICKNAME']);
 }
-	
+
+function thread_get_interest($tid)
+{
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+	$db = db_connect();
+	$sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
+	$resource_id = db_query($sql, $db);
+	$fa = db_fetch_array($resource_id);
+	db_disconnect($db);
+	$return = isset($fa['INTEREST']) ? $fa['INTEREST'] : 0;
+	return $return;
+}
+
+function thread_set_interest($tid,$interest,$new = false)
+{
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    if($new){
+    	$sql = "insert into USER_THREAD (UID,TID,INTEREST) values ($uid,$tid,$interest)";
+    } else {
+        $sql = "update USER_THREAD set INTEREST = $interest where UID = $uid and TID = $tid";
+    }
+	$db = db_connect();
+	db_query($sql, $db);
+	db_disconnect($db);
+
+}
+
 ?>

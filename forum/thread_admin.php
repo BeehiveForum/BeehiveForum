@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.26 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.27 2004-01-07 20:11:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -45,61 +45,74 @@ if (!bh_session_check()) {
     }
 
     header_redirect($uri);
-
 }
 
-if (!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
-    html_draw_top();
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
-    html_draw_bottom();
-    exit;
-}
+// Check to see if we are requesting a thread rename.
 
-if (isset($HTTP_POST_VARS['move'])) {
-
-    if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move']) && is_numeric($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_move']) && folder_is_valid($HTTP_POST_VARS['t_move'])) {
-
-        $tid = $HTTP_POST_VARS['t_tid'];
-        $fid = $HTTP_POST_VARS['t_move'];
-
-	thread_change_folder($tid, $fid);
-        admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
-    }
-
-}else if (isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
-
-    $tid = $HTTP_POST_VARS['t_tid'];
-    thread_set_closed($tid, true);
-    admin_addlog(0, 0, $tid, 0, 0, 0, 19);
-
-}else if (isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
-
-    $tid = $HTTP_POST_VARS['t_tid'];
-    thread_set_closed($tid, false);
-    admin_addlog(0, 0, $tid, 0, 0, 0, 20);
-
-}else if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
 
     $tid  = $HTTP_POST_VARS['t_tid'];
     $name = $HTTP_POST_VARS['t_name'];
+    
+    $threaddata = thread_get($tid);
+    
+    // Only Queens, Soldiers, Workers and thread creators can rename threads.
+    
+    if (perm_is_moderator() || $threaddata['FROM_UID'] == bh_session_get_value('UID')) {
 
-    thread_change_title($tid, $name);
-    admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+        thread_change_title($tid, $name);
+        if (perm_is_moderator()) admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+    }
 
-}else if (isset($HTTP_POST_VARS['sticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+}else {
 
-    $day = isset($HTTP_POST_VARS['sticky_day']) && is_numeric($HTTP_POST_VARS['sticky_day']) ? $HTTP_POST_VARS['sticky_day'] : 0;
-    $month = isset($HTTP_POST_VARS['sticky_month']) && is_numeric($HTTP_POST_VARS['sticky_month']) ? $HTTP_POST_VARS['sticky_month'] : 0;
-    $year = isset($HTTP_POST_VARS['sticky_year']) && is_numeric($HTTP_POST_VARS['sticky_year']) ? $HTTP_POST_VARS['sticky_year'] : 0;
-    $sticky_until = $day || $month || $year ? mktime(0, 0, 0, $month, $day, $year) : false;
-    thread_set_sticky($HTTP_POST_VARS['t_tid'], true, $sticky_until);
-    admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 25);
+    // Only Queens, Soldiers and Workers can perform any other moderating duties
 
-}else if(isset($HTTP_POST_VARS['nonsticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    if (!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
+        html_draw_top();
+        echo "<h1>{$lang['accessdenied']}</h1>\n";
+        echo "<p>{$lang['accessdeniedexp']}</p>";
+        html_draw_bottom();
+        exit;
+    }
 
-    thread_set_sticky($HTTP_POST_VARS['t_tid'], false);
-    admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 26);
+    if (isset($HTTP_POST_VARS['move'])) {
+
+        if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move']) && is_numeric($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_move']) && folder_is_valid($HTTP_POST_VARS['t_move'])) {
+
+            $tid = $HTTP_POST_VARS['t_tid'];
+            $fid = $HTTP_POST_VARS['t_move'];
+
+            thread_change_folder($tid, $fid);
+            admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
+        }
+
+    }else if (isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+
+        $tid = $HTTP_POST_VARS['t_tid'];
+        thread_set_closed($tid, true);
+        admin_addlog(0, 0, $tid, 0, 0, 0, 19);
+
+    }else if (isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+
+        $tid = $HTTP_POST_VARS['t_tid'];
+        thread_set_closed($tid, false);
+        admin_addlog(0, 0, $tid, 0, 0, 0, 20);
+
+    }else if (isset($HTTP_POST_VARS['sticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+
+        $day = isset($HTTP_POST_VARS['sticky_day']) && is_numeric($HTTP_POST_VARS['sticky_day']) ? $HTTP_POST_VARS['sticky_day'] : 0;
+        $month = isset($HTTP_POST_VARS['sticky_month']) && is_numeric($HTTP_POST_VARS['sticky_month']) ? $HTTP_POST_VARS['sticky_month'] : 0;
+        $year = isset($HTTP_POST_VARS['sticky_year']) && is_numeric($HTTP_POST_VARS['sticky_year']) ? $HTTP_POST_VARS['sticky_year'] : 0;
+        $sticky_until = $day || $month || $year ? mktime(0, 0, 0, $month, $day, $year) : false;
+        thread_set_sticky($HTTP_POST_VARS['t_tid'], true, $sticky_until);
+        admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 25);
+
+    }else if(isset($HTTP_POST_VARS['nonsticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+
+        thread_set_sticky($HTTP_POST_VARS['t_tid'], false);
+        admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 26);
+    }
 }
 
 if (isset($HTTP_GET_VARS['ret'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.37 2003-11-27 13:52:23 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.38 2004-01-07 20:11:43 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -57,9 +57,11 @@ function thread_get($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
-    $sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
+    $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, ";
+    $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, ";
+    $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
     $sql.= "FROM ". forum_table("THREAD"). " THREAD ";
     $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)";

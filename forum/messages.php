@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.104 2004-01-04 17:04:39 decoyduck Exp $ */
+/* $Id: messages.php,v 1.105 2004-01-07 20:11:43 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -278,8 +278,13 @@ if (bh_session_get_value('UID') != 0) {
         messages_interest_form($tid, $pid);
         messages_fontsize_form($tid, $pid);
 
-        if(perm_is_moderator()){
-                messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL']);
+        if (perm_is_moderator()) {
+        
+            messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL']);
+            
+        }elseif ($threaddata['FROM_UID'] == bh_session_get_value('UID')) {
+        
+            messages_edit_thread_title($tid, $pid, $threaddata['TITLE']);
         }
 }
 

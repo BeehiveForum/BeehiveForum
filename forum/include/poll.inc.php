@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.103 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.104 2004-04-08 07:30:05 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -248,12 +248,12 @@ function poll_get_total_votes($tid)
 {
     $db_poll_get_total_votes = db_connect();
 
-    if (!is_numeric($tid)) return false;
+    if (!is_numeric($tid)) return 0;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(ID) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "GROUP BY OPTION_ID";
+    $sql.= "WHERE TID = '$tid' GROUP BY OPTION_ID";
 
     $result_get_total_votes = db_query($sql, $db_poll_get_total_votes);
     $total_votes = db_fetch_array($result_get_total_votes);

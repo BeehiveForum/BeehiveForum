@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.33 2004-04-28 14:28:53 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.34 2004-04-28 16:16:59 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -56,7 +56,6 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
     form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
     light_html_draw_bottom();
     exit;
-
 }
 
 // Load language file
@@ -69,78 +68,88 @@ $webtag = get_webtag($webtag_search);
 
 // Get the final_uri from the URL
 
-if (isset($_GET['final_uri'])) {
-    $final_uri = rawurldecode($_GET['final_uri']);
-}else {
-    $final_uri = "./lthread_list.php?webtag=$webtag";
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+    $final_uri = "./lthread_list.php?webtag=$webtag&msg={$_GET['msg']}";
+
+}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+    $final_uri = "./lthread_list.php?webtag=$webtag&folder={$_GET['folder']}";
 }
 
 if (isset($_POST['submit'])) {
 
-  if (isset($_POST['logon']) && isset($_POST['password'])) {
+    if (isset($_POST['logon']) && isset($_POST['password'])) {
 
-    $luid = user_logon(strtoupper($_POST['logon']), $_POST['password']);
+        $luid = user_logon(strtoupper($_POST['logon']), $_POST['password']);
 
-    if ($luid > -1) {
+        if ($luid > -1) {
 
-      bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
+            bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
-      if ((strtoupper($_POST['logon']) == 'GUEST') && (strtoupper($_POST['password']) == 'GUEST')) {
+            if ((strtoupper($_POST['logon']) == 'GUEST') && (strtoupper($_POST['password']) == 'GUEST')) {
 
-        bh_session_init(0); // Use UID 0 for guest account.
+                bh_session_init(0);
 
-      }else {
+            }else {
 
-        bh_session_init($luid);
+                bh_session_init($luid);
+            }
 
-      }
+            if (isset($_POST['remember_user']) && $_POST['remember_user'] == 'Y') {
 
-      if (isset($_POST['remember_user']) && $_POST['remember_user'] == 'Y') {
+                bh_setcookie("bh_light_remember_username", $_POST['logon'], time() + YEAR_IN_SECONDS);
+	        bh_setcookie("bh_light_remember_password", $_POST['password'], time() + YEAR_IN_SECONDS);
+            }
 
-          bh_setcookie("bh_light_remember_username", $_POST['logon'], time() + YEAR_IN_SECONDS);
-	  bh_setcookie("bh_light_remember_password", $_POST['password'], time() + YEAR_IN_SECONDS);
-      }
+            if (!strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
-      if (!strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
+                if (isset($final_uri)) {
+                    header_redirect($final_uri);
+                }else {
+                    header_redirect("./lthread_list.php?webtag=$webtag");
+                }
 
-          header_redirect("./lthread_list.php?webtag=$webtag");
+            }else { // IIS bug prevents redirect at same time as setting cookies.
 
-      }else { // IIS bug prevents redirect at same time as setting cookies.
+                light_html_draw_top();
 
-          light_html_draw_top();
+                echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
-          echo "<p>{$lang['loggedinsuccessfully']}</p>";
-          form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri));
+                if (isset($final_uri)) {
+                    form_quick_button($final_uri, $lang['continue'], false, false, "_top");
+                }else {
+                    form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
+                }
 
-          light_html_draw_bottom();
-          exit;
+                light_html_draw_bottom();
+                exit;
 
-      }
+            }
 
-    }else if ($luid == -2) { // User is banned - everybody hide
+        }else if ($luid == -2) { // User is banned - everybody hide
 
-        if (!strstr(php_sapi_name(), 'cgi')) {
-            header("HTTP/1.0 500 Internal Server Error");
+            if (!strstr(php_sapi_name(), 'cgi')) {
+                header("HTTP/1.0 500 Internal Server Error");
+            }else {
+                echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
+            }
+
+            exit;
+
         }else {
-            echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
-        }
 
-        exit;
+            light_html_draw_top();
+            echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+            form_quick_button("./index.php", $lang['back'], false, false, "_top");
+            light_html_draw_bottom();
+            exit;
+        }
 
     }else {
 
-        light_html_draw_top();
-        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-        form_quick_button("./index.php", $lang['back'], false, false, "_top");
-        light_html_draw_bottom();
-        exit;
+        $error_html = "<h2>{$lang['usernameandpasswdrequired']}</h2>";
     }
-
-  }else {
-
-    $error_html = "<h2>{$lang['usernameandpasswdrequired']}</h2>";
-  }
-
 }
 
 light_html_draw_top();
@@ -148,7 +157,7 @@ light_html_draw_top();
 if (isset($error_html)) echo $error_html;
 
 echo "<p>{$lang['welcometolight']}</p>\n";
-echo "  <form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"POST\">\n";
+echo "<form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"POST\">\n";
 
 echo "<p>{$lang['username']}: ";
 echo light_form_input_text("logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
@@ -160,7 +169,7 @@ echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isse
 
 echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
 
-echo "  </form>\n";
+echo "</form>\n";
 
 light_html_draw_bottom();
 

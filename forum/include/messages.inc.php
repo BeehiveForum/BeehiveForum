@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.206 2003-12-11 12:56:51 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.207 2003-12-11 14:28:33 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -476,27 +476,26 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     }
                 }
             }
-            echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['print']}\" />";
-            echo "&nbsp;<a href=\"display.php?msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['print']}</a>";
+
+            echo "</td>\n";
+	    echo "<td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
+
+            echo "<a href=\"display.php?msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['print']}\" align=\"middle\" /></a>&nbsp;";
 
             if (bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" />";
-                echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['relationship']}</a>";
+                echo "<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" align=\"middle\" /></a>&nbsp;";
             }
 
             if (perm_is_soldier()){
-                echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" />";
-                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\">{$lang['privileges']}</a>";
-            }
 
-            echo "</td>\n";
+                echo "<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" align=\"middle\" /></a>&nbsp;";
 
-	    if (perm_is_soldier() && isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
-	        echo "  <td width=\"25%\" align=\"right\" nowrap=\"nowrap\"><span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span></td>";
-	    }else {
-	        echo "  <td width=\"25%\">&nbsp;</td>";
+                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
+	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+		}
 	    }
 
+            echo "</td>\n";
             echo "</tr>";
         }
         echo "</table>\n";

@@ -338,7 +338,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
     $preview_message['CREATED'] = mktime();
     $preview_message['AID'] = $aid;
 
-    message_display(0, $preview_message, 0, 0, true, false, false, false, true);
+    message_display(0, $preview_message, 0, 0, true, false, false, false, true, true);
     echo "<br />\n";
 
 }

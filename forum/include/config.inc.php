@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.75 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.76 2004-04-11 22:08:52 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -39,7 +39,7 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 //            if the customised ones cannot be retrieved from the database. Under 
 //            normal operation these settings will be ignored.
 
-/*$forum_settings = array('forum_name'                => "A Beehive Forum",
+$forum_settings = array('forum_name'                => "A Beehive Forum",
                         'forum_email'               => "admin@abeehiveforum.net",
                         'default_style'             => "default",
                         'default_emoticons'         => "default",
@@ -65,6 +65,6 @@ $db_database = "beehiveforum";  // the name of your MySQL database
                         'session_cutoff'            => "86400",
                         'active_sess_cutoff'        => "900",
                         'gzip_compress_output'      => "Y",
-                        'gzip_compress_level'       => "1"); */
+                        'gzip_compress_level'       => "1");
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.61 2003-11-27 21:51:50 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.62 2003-11-27 21:57:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -125,7 +125,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $t_sig_html = "N";
   }
 
-  if ($valid && isset($HTTP_POST_VARS['t_message_text']) && strlen(trim($HTTP_POST_VARS['t_message_text'])) > 0) {
+  if (isset($HTTP_POST_VARS['t_message_text']) && strlen(trim($HTTP_POST_VARS['t_message_text'])) > 0) {
     $t_message_text = trim($HTTP_POST_VARS['t_message_text']);
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_message_text) && $t_message_html == "Y") {
       $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
@@ -135,7 +135,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $t_message_text = "";
   }
 
-  if ($valid && isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+  if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
     $t_sig = trim($HTTP_POST_VARS['t_sig']);
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig) && $t_sig_html == "Y") {
       $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";

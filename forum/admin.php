@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.23 2003-09-21 12:57:57 decoyduck Exp $ */
+/* $Id: admin.php,v 1.24 2003-11-29 12:07:05 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -36,7 +36,7 @@ require_once("./include/session.inc.php");
 
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
+if (!bh_session_check()) {
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);

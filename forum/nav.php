@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.36 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: nav.php,v 1.37 2003-11-29 12:07:05 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -50,6 +50,7 @@ if ($show_links) {
     echo "<a href=\"links.php\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
 }
 
+bh_session_check();
 
 if (bh_session_get_value('UID') > 0) {
 

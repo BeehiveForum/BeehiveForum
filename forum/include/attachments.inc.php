@@ -199,7 +199,27 @@ function get_attachment_id($tid, $pid) {
 
     $db = db_connect();
 
-    $sql = "select * from ". forum_table("POST_ATTACHMENT_IDS"). " where TID = $tid AND PID = $pid";
+    $sql = "SELECT AID FROM ". forum_table("POST_ATTACHMENT_IDS"). " WHERE TID = $tid AND PID = $pid";
+    $result = db_query($sql, $db);
+
+    if (db_num_rows($result) > 0) {
+
+      $attachment = db_fetch_array($result);
+      return $attachment['AID'];
+
+    }else{
+
+      return false;
+
+    }
+
+}
+
+function get_pm_attachment_id($mid) {
+
+    $db = db_connect();
+
+    $sql = "SELECT AID FROM ". forum_table("PM_ATTACHMENT_IDS"). " WHERE MID = $mid";
     $result = db_query($sql, $db);
 
     if (db_num_rows($result) > 0) {

@@ -44,6 +44,17 @@ function pm_markasread($mid)
 
 }
 
+function pm_edit_refuse()
+{
+    global $lang;
+    echo "<div align=\"center\">";
+    echo "<h1>{$lang['error']}</h1>";
+    echo "<p>{$lang['cannoteditpm']}</p>";
+    echo form_quick_button("pm.php", $lang['back'], "folder", "2");
+    echo "</div>";
+
+}
+
 function pm_add_sentitem($mid)
 {
     $db_pm_add_sentitem = db_connect();
@@ -239,7 +250,7 @@ function pm_single_get($mid, $folder, $uid = false)
         // Check to see if we should add a sent item before delete
         // ------------------------------------------------------------
 
-        if ($folder == PM_FOLDER_INBOX && ($db_pm_list_get_row['TYPE'] == PM_NEW) || ($db_pm_list_get_row['TYPE'] == PM_UNREAD)) {
+        if ($folder == PM_FOLDER_INBOX && (($db_pm_list_get_row['TYPE'] == PM_NEW) || ($db_pm_list_get_row['TYPE'] == PM_UNREAD))) {
             pm_markasread($mid);
             pm_add_sentitem($mid);
         }
@@ -344,7 +355,7 @@ function draw_pm_message($pm_elements_array)
     echo "          <tr>\n";
     echo "            <td align=\"center\">\n";
 
-    if (isset($pm_elements_array['MID'])) {
+    if (($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) && (isset($pm_elements_array['MID']))) {
         echo "<span class=\"postresponse\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></span>\n";
     }
 
@@ -424,6 +435,31 @@ function pm_send_message($tuid, $subject, $content)
     }
 
     return false;
+}
+
+function pm_edit_message($mid, $subject, $content)
+{
+    $db_pm_edit_messages = db_connect();
+
+    $subject = addslashes($subject);
+    $content = addslashes($content);
+
+    // ------------------------------------------------------------
+    // Update the subject text
+    // ------------------------------------------------------------
+
+    $sql = "UPDATE ". forum_table("PM"). " SET SUBJECT = '$subject' WHERE MID = $mid";
+    $result_subject = db_query($sql, $db_pm_edit_messages);
+
+    // ------------------------------------------------------------
+    // Update the content
+    // ------------------------------------------------------------
+
+    $sql = "UPDATE ". forum_table("PM_CONTENT"). " SET CONTENT = '$content' WHERE MID = $mid";
+    $result_content = db_query($sql, $db_pm_edit_messages);
+
+    return ($result_subject && $result_content);
+
 }
 
 function pm_delete_message($mid)

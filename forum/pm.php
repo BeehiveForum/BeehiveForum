@@ -199,7 +199,11 @@ if (sizeof($listmessages_array) == 0) {
         echo "<a href=\"pm.php?folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
 
         if (isset($listmessages_array[$i]['AID'])) {
-            echo "&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
+        }
+
+        if (($folder_bitwise == PM_FOLDER_OUTBOX) && (($listmessages_array[$i]['TYPE'] == PM_NEW) || ($listmessages_array[$i]['TYPE'] == PM_UNREAD))) {
+            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?mid={$listmessages_array[$i]['MID']}\">Edit</a>]</span>";
         }
 
         echo "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.15 2005-02-06 13:58:54 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.16 2005-02-12 19:07:13 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -30,7 +30,7 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05
     header("Location: ../install.php");
     exit;
 
-}else if (!isset($_SERVER['PHP_SELF'])) {
+}else if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     echo "To install BeehiveForums 0.5 please visit install.php in your browser";
     exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.10 2004-08-07 22:39:47 tribalonline Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.11 2004-08-08 00:49:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,7 +151,7 @@ $group = perm_get_group($gid);
 $group_permissions = perm_get_group_permissions($gid);
 $user_perms = perm_get_user_permissions(bh_session_get_value('UID'));
 
-if (!perm_user_in_group(bh_session_get_value('UID'), $gid) && $user_perms['STATUS'] < $group_permissions) {
+if (!perm_user_in_group(bh_session_get_value('UID'), $gid) && $user_perms < $group_permissions) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -215,8 +215,8 @@ if (isset($_POST['submit'])) {
                     $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
                     $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-					$t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-					$t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                                        $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                                        $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
 
                     $new_group_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
                     $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete;
@@ -240,8 +240,8 @@ if (isset($_POST['submit'])) {
                     $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
                     $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-					$t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-					$t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                                        $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                                        $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
 
                     $new_group_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
                     $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete;
@@ -373,10 +373,10 @@ if ($folder_array = folder_get_all()) {
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $group_folder_permissions['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $group_folder_permissions['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
             echo "                                    </tr>\n";
-			echo "                                    <tr>\n";
-			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $group_folder_permissions['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
-			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $group_folder_permissions['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
-			echo "                                    </tr>\n";
+                        echo "                                    <tr>\n";
+                        echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $group_folder_permissions['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
+                        echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $group_folder_permissions['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
+                        echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $group_folder_permissions['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
             echo "                                    </tr>\n";
@@ -402,10 +402,10 @@ if ($folder_array = folder_get_all()) {
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], true), "</td>\n";
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], true), "</td>\n";
             echo "                                    </tr>\n";
-			echo "                                    <tr>\n";
-			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], true), "</td>\n";
-			echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], true), "</td>\n";
-			echo "                                    </tr>\n";
+                        echo "                                    <tr>\n";
+                        echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], true), "</td>\n";
+                        echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], true), "</td>\n";
+                        echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], false), "</td>\n";
             echo "                                    </tr>\n";

@@ -91,36 +91,35 @@ echo "<h1>User Preferences</h1>";
 if(!empty($error_html)){
     echo $error_html;
 }
-echo "<div align=\"center\" class=\"postbody\">";
+echo "<div class=\"postbody\">";
 echo "<form name=\"prefs\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
 echo "<table>";
-echo "<tr><td>User Details</td><td></td></tr>";
-echo "<tr><td align=\"right\">Password</td>";
+echo "<tr><td><h1>User Details</h1></td><td></td></tr>";
+echo "<tr><td>New Password:</td>";
 echo "<td><input type=\"password\" name=\"pw\"></td></tr>";
-echo "<tr><td align=\"right\">Confirm</td>";
+echo "<tr><td>Confirm Password:</td>";
 echo "<td><input type=\"password\" name=\"cpw\"></td></tr>";
-echo "<tr><td align=\"right\">Nickname</td>";
-echo "<td><input type=\"text\" name=\"nickname\" value=\"" . $user['NICKNAME'] . "\"></td></tr>";
-echo "<tr><td align=\"right\">Email</td>";
-echo "<td><input type=\"text\" name=\"email\" value=\"" . $user['EMAIL'] . "\"></td></tr>";
-echo "</tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></table>";
-echo "<table>";
+echo "<tr><td>Nickname:</td>";
+echo "<td><input type=\"text\" name=\"nickname\" maxchars=\"32\" width=\"32\" value=\"" . $user['NICKNAME'] . "\"></td></tr>";
+echo "<tr><td>Email Address:</td>";
+echo "<td><input type=\"text\" name=\"email\"  maxchars=\"80\" width=\"60\" value=\"" . $user['EMAIL'] . "\"></td></tr>";
+echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td>Forum Options</td><td></td></tr>";
-echo "<tr><td align=\"right\">First name</td>";
-echo "<td><input type=\"text\" name=\"firstname\" value=\"" . $user_prefs['FIRSTNAME'] . "\"></td></tr>";
-echo "<tr><td align=\"right\">Last name</td>";
-echo "<td><input type=\"text\" name=\"lastname\" value=\"" . $user_prefs['LASTNAME'] . "\"></td></tr>";
-echo "<tr><td align=\"right\">Homepage URL</td>";
-echo "<td><input type=\"text\" name=\"homepage_url\" value=\"" . $user_prefs['HOMEPAGE_URL'] . "\"></td></tr>";
-echo "<tr><td align=\"right\">Picture URL</td>";
-echo "<td><input type=\"text\" name=\"pic_url\" value=\"" . $user_prefs['PIC_URL'] . "\"></td></tr>";
+echo "<tr><td>First name:</td>";
+echo "<td><input type=\"text\" name=\"firstname\"  maxchars=\"32\" width=\"32\" value=\"" . $user_prefs['FIRSTNAME'] . "\"></td></tr>";
+echo "<tr><td>Last name:</td>";
+echo "<td><input type=\"text\" name=\"lastname\" maxchars=\"32\" width=\"32\"  value=\"" . $user_prefs['LASTNAME'] . "\"></td></tr>";
+echo "<tr><td>Homepage URL:</td>";
+echo "<td><input type=\"text\" name=\"homepage_url\" maxchars=\"255\" width=\"60\"  value=\"" . $user_prefs['HOMEPAGE_URL'] . "\"></td></tr>";
+echo "<tr><td>Picture URL:</td>";
+echo "<td><input type=\"text\" name=\"pic_url\" maxchars=\"255\" width=\"60\"  value=\"" . $user_prefs['PIC_URL'] . "\"></td></tr>";
 echo "<tr><td colspan=\"2\">Notify by email of posts to me&nbsp;";
 echo "<input type=\"checkbox\" name=\"email_notify\" value=\"Y\"";
 if($user_prefs['EMAIL_NOTIFY'] == "Y"){
     echo " checked";
 }
 echo "></td></tr>";
-echo "<tr><td align=\"right\">Timezone (from GMT)</td>";
+echo "<tr><td>Timezone (from GMT)</td>";
 echo "<td><select name=\"timezone\"";
 echo "<option value=\"" . $user_prefs['TIMEZONE'] . "\">" . $user_prefs['TIMEZONE'] . "</option>";
 for($tz = -11; $tz < 12; $tz++){
@@ -143,7 +142,7 @@ if($user_prefs['MARK_AS_OF_INT'] == "Y"){
     echo " checked";
 }
 echo "></td></tr>";
-echo "<tr><td align=\"right\">Posts per page</td>";
+echo "<tr><td>Posts per page:</td>";
 echo "<td><select name=\"posts_per_page\"";
 for($ppp = 5; $ppp < 25; $ppp+=5){
     if($ppp == $user_prefs['POSTS_PER_PAGE']){
@@ -152,11 +151,11 @@ for($ppp = 5; $ppp < 25; $ppp+=5){
         echo "<option value=\"$ppp\">$ppp</option>";
     }
 }
-echo "</select></td></tr></table>";
-echo "<table>";
-echo "<tr><td>Signature</td></tr>";
-echo "<tr><td><textarea name=\"sig_content\" cols=\"40\" rows=\"4\" wrap=\"VIRTUAL\">". $user_sig['CONTENT'] . "</textarea>";
-echo "<tr><td><input type=\"checkbox\" name=\"sig_html\" value=\"Y\"";
+echo "</select></td></tr>";
+echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+echo "<tr><td colspan=\"2\"><h2>Signature:</h2></td></tr>";
+echo "<tr><td colspan=\"2\"><textarea name=\"sig_content\" cols=\"60\" rows=\"4\" wrap=\"VIRTUAL\">". $user_sig['CONTENT'] . "</textarea>";
+echo "<tr><td colspan=\"2\"><input type=\"checkbox\" name=\"sig_html\" value=\"Y\"";
 if($user_sig['HTML'] == "Y"){
     echo " checked";
 }

@@ -75,7 +75,7 @@ function messages_top($foldertitle, $threadtitle)
 
 function messages_bottom()
 {
-    echo "<p>Bottom of messages, innit?</p>";
+    echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
 function message_display($tid, $message, $msg_count, $first_msg)
@@ -97,7 +97,7 @@ function message_display($tid, $message, $msg_count, $first_msg)
     echo "<br />" . $message['PID'] . " of $msg_count";
     echo "</p></td></table>\n";
     echo "<table width=\"100%\" border=\"0\">\n";
-    echo "<tr><td class=\"postnumber\">";
+    echo "<tr><td align=\"right\"><p class=\"postnumber\" style=\"text-align:right\">";
     echo "$tid." . $message['PID'];
     if($message['PID'] > 1){
         echo " in reply to ";
@@ -109,11 +109,11 @@ function message_display($tid, $message, $msg_count, $first_msg)
             echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
         }
     }
-    echo "</td></tr>\n";
+    echo "</p></td></tr>\n";
     echo "<tr><td class=\"postbody\">\n";
     echo $message['CONTENT'] . "\n";
     echo "</td></tr>\n";
-    echo "<tr><td><p class=\"postresponse\"><a href=\"post.php?replyto=$tid.".$message['PID']."\">Reply</a></p></td></tr></table>\n";
+    echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\"><a href=\"post.php?replyto=$tid.".$message['PID']."\">Reply</a></p></td></tr></table>\n";
     echo "</td></tr></table></div>\n";
 }
 
@@ -178,7 +178,7 @@ function messages_nav_strip($tid,$pid,$length)
         $i++;
     }
 
-    echo "<table width=\"96%\"><tr><td align=\"center\">" . $html . "</td></tr></table>";
+    echo "<table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\" class=\"messagefoot\">" . $html . "</td></tr></table>";
 }
 
 function mess_nav_range($from,$to)

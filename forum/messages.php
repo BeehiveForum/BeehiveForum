@@ -57,7 +57,6 @@ messages_top($foldertitle,$threaddata['TITLE']);
 
 if($msg_count>0){
     $first_msg = $messages[0]['PID'];
-    echo "<p>first_msg: $first_msg</p>";
     foreach($messages as $message) {
         message_display($tid,$message,$threaddata['LENGTH'],$first_msg);
         $last_pid = $message[PID];

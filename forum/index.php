@@ -2,7 +2,11 @@
 // Main page
 // Disable caching when showing logon page
 require_once("./include/header.inc.php");
-if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+require_once("./include/session.inc.php");
+
+$logged_in = bh_session_check();
+
+if(!$logged_in){
     header_no_cache();
 }
 ?>
@@ -17,19 +21,20 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 		<frame src="./blank.html" name="top" border="0" scrolling="no" noresize>
 		<frame src="./nav.php" name="nav" border="0" scrolling="no" noresize>
 <?
-if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-    echo "<frameset cols=\"250,*\" border=\"1\">";
-    echo "<frame src=\"./thread_list.php\" name=\"left\" border=\"1\">";
-    echo "<frame src=\"./messages.php";
+if($logged_in){
+    echo "<frame src=\"./discussion.php";
     if($HTTP_GET_VARS['msg']){
-        echo "?msg=$msg";
+        echo "?msg=".$HTTP_GET_VARS['msg'];
     }
-    echo "\" name=\"right\" border=\"1\">";
-    echo "</frameset>";
+    echo "\" name=\"main\" border=\"1\">";
 } else {
     echo "<frame src=\"./logon.php?final_uri=";
-    echo urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
-    echo "\" name=\"login\" border=\"1\">";
+    if($HTTP_GET_VARS['msg']){
+        echo urlencode(dirname($HTTP_SERVER_VARS['PHP_SELF'])."/?msg=".$HTTP_GET_VARS['msg']);
+    } else {
+        echo urlencode(dirname($HTTP_SERVER_VARS['PHP_SELF'])."/");
+    }
+    echo "\" name=\"main\" border=\"1\">";
 }
 ?>
 	</frameset>

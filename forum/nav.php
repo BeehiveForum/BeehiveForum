@@ -12,8 +12,8 @@
 if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 ?>
         <a href="#">Start</a>&nbsp;
-        <a href="messages.php" target="right">Messages</a>&nbsp;
-        <a href="prefs.php" target="right">Preferences</a>&nbsp;
+        <a href="discussion.php" target="main">Messages</a>&nbsp;
+        <a href="prefs.php" target="main">Preferences</a>&nbsp;
         <a href="#">Logout</a>
 <?
 } else {

@@ -2,6 +2,7 @@
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/session.inc.php");
 
 // Where are we going after we've logged on?
 if(isset($HTTP_GET_VARS['final_uri'])){
@@ -11,7 +12,7 @@ if(isset($HTTP_GET_VARS['final_uri'])){
 }
 
 // Are we already logged on?
-if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+if(bh_session_check()){
     html_draw_top();
     echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>";
     echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>";
@@ -48,7 +49,8 @@ if(isset($HTTP_POST_VARS['submit'])){
 if($valid){
     $luid = user_logon($logon,$password);
     if($luid>-1){
-        setcookie("bh_sess_uid",$luid);
+        bh_session_init($luid);
+//      setcookie("bh_sess_uid",$luid);
         if($HTTP_POST_VARS['remember_user'] == "Y"){
             setcookie("bh_remember_user",$logon,YEAR_IN_SECONDS);
             setcookie("bh_remember_password",$password,YEAR_IN_SECONDS);
@@ -62,13 +64,17 @@ if($valid){
     }
 }
 
+if($valid){
+    //header("Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
+    echo "<script language=\"Javascript\" type=\"text/javascript\">";
+    echo "<!--\n parent.location = \"http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri."\";";
+    echo "\n-->\n</script>";
+    exit;
+}
+
 html_draw_top();
 
-if($valid){
-    echo "<p>SESSION: $PHPSESSID</p>";
-    echo "<p>w00t! You've logged on.</p>";
-    echo "<p><a href=\"$final_uri\" target=\"_top\">Go to messages.</a></p>";
-} else {
+if(!$valid){
     if($logon == ""){
         if(isset($HTTP_COOKIE_VARS['bh_remember_user'])){
             $logon = $HTTP_COOKIE_VARS['bh_remember_user'];
@@ -80,7 +86,7 @@ if($valid){
         echo $error_html;
     }
     echo "<div align=\"center\">";
-    echo "<form name=\"register\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
+    echo "<form name=\"register\" action=\"" . $HTTP_SERVER_VARS['REQUEST_URI'] . "\" method=\"POST\">";
     echo "<table>";
     echo "<tr><td align=\"right\">Login Name</td>";
     echo "<td><input type=\"text\" name=\"logon\" value=\"" . $logon . "\"></td>";

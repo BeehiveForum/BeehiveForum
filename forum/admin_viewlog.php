@@ -181,25 +181,25 @@ if (db_num_rows($result)) {
         }
 
         if (isset($row['FOLDER_TITLE']) && !empty($row['FOLDER_TITLE'])) {
-            $folder_title = $row['FOLDER_TITLE'];
+            $folder_title = _stripslashes($row['FOLDER_TITLE']);
         }else {
             $folder_title = "Unknown (FID: ". $row['FID']. ")";
         }
 
         if (isset($row['THREAD_TITLE']) && !empty($row['THREAD_TITLE'])) {
-            $thread_title = $row['THREAD_TITLE'];
+            $thread_title = _stripslashes($row['THREAD_TITLE']);
         }else {
             $thread_title = "Unknown (TID: ". $row['TID']. ")";
         }
 
         if (isset($row['PS_NAME']) && !empty($row['PS_NAME'])) {
-            $ps_name = $row['PS_NAME'];
+            $ps_name = _stripslashes($row['PS_NAME']);
         }else {
             $ps_name = "Unknown (PSID: ". $row['PSID']. ")";
         }
 
         if (isset($row['PI_NAME']) && !empty($row['PI_NAME'])) {
-            $pi_name = $row['PI_NAME'];
+            $pi_name = _stripslashes($row['PI_NAME']);
         }else {
             $pi_name = "Unknown (PIID: ". $row['PIID']. ")";
         }

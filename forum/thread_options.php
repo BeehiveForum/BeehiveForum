@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.25 2004-08-04 23:46:35 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.26 2004-08-12 22:31:44 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -311,7 +311,7 @@ if (perm_is_moderator($fid)) {
 
 html_draw_top("basetarget=_blank");
 
-echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
+echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} ", _stripslashes($threaddata['TITLE']), "</a></h1>\n";
 echo "<br />\n";
 
 if ($update) {

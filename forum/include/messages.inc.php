@@ -180,6 +180,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!isset($message['FROM_RELATIONSHIP'])) {
         $message['FROM_RELATIONSHIP'] = 0;
     }
+
     if(!isset($message['TO_RELATIONSHIP'])) {
         $message['TO_RELATIONSHIP'] = 0;
     }
@@ -363,7 +364,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         echo "</td></tr>\n";
 
-        if($in_list && $limit_text != false){
+        if (($in_list && $limit_text) || $is_poll) {
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
 
@@ -394,14 +395,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"user_rel.php?uid=".$message['FROM_UID']."&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
             }
-
-/*			if($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
-                echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."&sig=1\" target=\"_self\">Stop Ignoring Signature</a>";
-			} else {
-                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" />";
-                echo "&nbsp;<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=-1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."&sig=1\" target=\"_self\">Ignore Signature</a>";
-			}*/
 
             if(perm_is_soldier()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" />";

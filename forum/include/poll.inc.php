@@ -32,7 +32,7 @@ function poll_create($tid, $answers, $closes, $change_vote, $poll_type, $show_re
     $db_poll_create = db_connect();
     
     $sql = "insert into ". forum_table("POLL"). " (TID, O1, O2, O3, O4, O5, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS) ";
-    $sql.= "values ($tid, '". $answers[0]. "', '". $answers[1]. "', '". $answers[2]. "', '". $answers[3]. "', '". $answers[4]. "', ";
+    $sql.= "values ($tid, '". addslashes($answers[0]). "', '". addslashes($answers[1]). "', '". addslashes($answers[2]). "', '". addslashes($answers[3]). "', '". addslashes($answers[4]). "', ";
     $sql.= "'$closes', '$change_vote', '$poll_type', '$show_results')";
     
     $result = db_query($sql,$db_poll_create);

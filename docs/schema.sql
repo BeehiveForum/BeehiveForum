@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.49 2003-09-08 01:08:29 decoyduck Exp $
+# $Id: schema.sql,v 1.50 2003-09-21 14:22:47 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -348,6 +348,36 @@ INSERT INTO PROFILE_SECTION (PSID, NAME) VALUES (1, 'Personal');
 # --------------------------------------------------------
 
 #
+# Table structure for table `SESSIONS`
+#
+
+CREATE TABLE SESSIONS (
+  SESSID mediumint(8) unsigned NOT NULL auto_increment,
+  UID mediumint(8) unsigned NOT NULL default '0',
+  IPADDRESS varchar(15) NOT NULL default '',
+  TIME datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`SESSID`)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `STATS`
+#
+
+CREATE TABLE STATS (
+  MOST_USERS_DATE datetime NOT NULL default '0000-00-00 00:00:00',
+  MOST_USERS_COUNT mediumint(8) unsigned NOT NULL default '0'
+) TYPE=MyISAM;
+
+#
+# Dumping data for table `STATS`
+#
+
+INSERT INTO STATS (MOST_USERS_DATE, MOST_USERS_COUNT) VALUES ('0000-00-00 00:00:00', '0');
+# --------------------------------------------------------
+
+#
 # Table structure for table `THREAD`
 #
 
@@ -464,6 +494,8 @@ CREATE TABLE USER_PREFS (
   PM_NOTIFY char(1) default NULL,
   PM_NOTIFY_EMAIL char(1) default NULL,
   DOB_DISPLAY tinyint(3) unsigned default NULL,
+  ANON_LOGON tinyint(3) unsigned default NULL,
+  SHOW_STATS tinyint(3) unsigned default NULL,
   KEY STYLE (STYLE),
   KEY UID (UID)
 ) TYPE=MyISAM;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.222 2004-02-05 22:10:32 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.223 2004-02-13 01:14:11 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -162,16 +162,16 @@ function message_get_content($tid, $pid)
     return isset($fa['CONTENT']) ? $fa['CONTENT'] : "";
 }
 
-function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N")
+function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     global $lang;
     echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;$foldertitle: $threadtitle";
+    if ($closed) echo "&nbsp;<img src=\"". style_image('locked.png'). "\" height=\"15\" alt=\"{$lang['locked']}\" align=\"middle\" />\n";
     if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
     if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
     if ($sticky == "Y") echo "&nbsp;<img src=\"". style_image('sticky.png'). "\" height=\"15\" alt=\"{$lang['sticky']}\" align=\"middle\" />";
     echo "</p>";
     // To be expanded later
-
 }
 
 function messages_bottom()

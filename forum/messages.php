@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.108 2004-02-05 21:14:20 decoyduck Exp $ */
+/* $Id: messages.php,v 1.109 2004-02-13 01:14:11 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -150,9 +150,7 @@ if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
     }
 }
 
-$closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
-if($closed) $foldertitle .= " ({$lang['closed']})";
 
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
@@ -182,7 +180,7 @@ echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">";
 
-messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY']);
+messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
 
 echo "    </td>\n";
 
@@ -244,7 +242,7 @@ if($msg_count > 0) {
 
         }else {
 
-          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, false, $show_sigs, false, $highlight);
+          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, false, $show_sigs, false, $highlight);
           $last_pid = $message['PID'];
 
         }
@@ -280,7 +278,7 @@ if (bh_session_get_value('UID') != 0) {
 
         if (perm_is_moderator()) {
         
-            messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed, ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL'], $threaddata['ADMIN_LOCK']);
+            messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $threaddata['CLOSED'], ($threaddata['STICKY'] == "Y") ? true : false, $threaddata['STICKY_UNTIL'], $threaddata['ADMIN_LOCK']);
             
         }elseif (($threaddata['FROM_UID'] == bh_session_get_value('UID')) && $threaddata['ADMIN_LOCK'] == 0) {
                     

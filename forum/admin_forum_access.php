@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.25 2005-03-21 14:33:01 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.26 2005-03-28 23:45:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,7 +98,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 if ($forum_array = forum_get($fid)) {
 
-    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'Unknown Forum'), " : {$lang['manageforumpermissions']}</h1>\n";
+    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['manageforumpermissions']}</h1>\n";
 
     if ($forum_array['ACCESS_LEVEL'] != 1) {
         echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";

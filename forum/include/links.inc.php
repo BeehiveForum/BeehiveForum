@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.31 2004-04-05 20:54:47 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.32 2004-04-05 21:12:31 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
@@ -401,7 +401,7 @@ function links_delete_comment($cid)
 {
     $db_links_delete_comment = db_connect();
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
     
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = $cid";
     $result_id = db_query($sql, $db_links_delete_comment);
@@ -414,7 +414,7 @@ function links_delete($lid)
 
     if (!is_numeric($lid))  return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_delete);
@@ -433,7 +433,7 @@ function links_update($lid, $fid, $title, $uri, $description)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($fid))  return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET LID = '$lid', FID = '$fid', ";
     $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description' WHERE LID = '$lid'";
@@ -447,7 +447,7 @@ function links_get_creator_uid($lid)
 
     if (!is_numeric($lid))  return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_get_creator_uid);
@@ -461,7 +461,7 @@ function links_get_comment_uid($cid)
 
     if (!is_numeric($cid))  return false;
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = '$cid'";
     $result_id = db_query($sql, $db_links_get_comment_uid);

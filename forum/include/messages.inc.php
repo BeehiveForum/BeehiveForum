@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.257 2004-04-05 20:54:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.258 2004-04-05 21:12:36 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -35,7 +35,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $db_message_get = db_connect();
    
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
@@ -124,7 +124,7 @@ function message_get_content($tid, $pid)
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
     
-    if ($table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}POST_CONTENT WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql,$db_mgc);
@@ -691,7 +691,7 @@ function message_get_user($tid, $pid)
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
     
-    if ($table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql, $db_message_get_user);
@@ -717,7 +717,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     // Check for existing entry in USER_THREAD
     
-    if ($table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
     $result = db_query($sql, $db_message_update_read);
@@ -765,7 +765,7 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!is_numeric($uid)) return false;
     
-    if ($table_data = get_table_prefix()) return "1.1";
+    if (!$table_data = get_table_prefix()) return "1.1";
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";

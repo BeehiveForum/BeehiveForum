@@ -570,6 +570,7 @@ function threads_mark_all_read()
 {
 
     global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
     $db_threads_mark_all_read = db_connect();
 
@@ -578,7 +579,9 @@ function threads_mark_all_read()
 
     while($row = db_fetch_array($result_threads)) {
 
-      $sql = "SELECT TID, LAST_READ, INTEREST FROM ". forum_table("USER_THREAD");
+      messages_update_read($row['TID'], $row['LENGTH'], $HTTP_COOKIE_VARS['bh_sess_uid']);
+
+      /*$sql = "SELECT TID, LAST_READ, INTEREST FROM ". forum_table("USER_THREAD");
       $sql.= " WHERE TID = ". $row['TID']. " AND UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
 
       $result_lastread = db_query($sql, $db_threads_mark_all_read);
@@ -598,7 +601,7 @@ function threads_mark_all_read()
 
         db_query($sql, $db_threads_mark_all_read);
 
-      }
+      }*/
 
     }
 

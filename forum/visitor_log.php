@@ -45,14 +45,30 @@ if (isset($HTTP_GET_VARS['offset'])) {
     $start = 0;
 }
 
+if (isset($HTTP_GET_VARS['usersearch']) && isset($HTTP_GET_VARS['submit']) && $HTTP_GET_VARS['submit'] == 'Search') {
+    $usersearch = $HTTP_GET_VARS['usersearch'];
+}else {
+    $usersearch = '';
+}
+
 html_draw_top_script();
 
 echo "<h1>Recent Visitors</h1><br />\n";
 
 $db = db_connect();
 
-$sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) as LAST_LOGON ";
-$sql.= "FROM ". forum_table("USER"). " ORDER BY LAST_LOGON LIMIT $start, 20";
+if (isset($usersearch) && strlen($usersearch) > 0) {
+
+  $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
+  $sql.= "FROM ". forum_table("USER"). " WHERE LOGON LIKE '%$usersearch%' OR ";
+  $sql.= "NICKNAME LIKE '%$usersearch%' ORDER BY LAST_LOGON DESC LIMIT $start, 20";
+
+}else {
+
+  $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
+  $sql.= "FROM ". forum_table("USER"). " ORDER BY LAST_LOGON DESC LIMIT $start, 20";
+
+}
 
 $result = db_query($sql, $db);
 
@@ -81,8 +97,33 @@ echo "  </tr>\n";
 echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
-  echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start, "\">More</a></p>\n";
+  if ($start < 20) {
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\">More</a></p>\n";
+  }elseif ($start >= 20) {
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\">Recent Visitors</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\">More</a></p>\n";
+  }
 }
+
+echo "<p>&nbsp;</p>\n";
+echo "<table width=\"65%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"posthead\">\n";
+echo "      <table width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td class=\"subhead\">Search for a user not in list:</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td class=\"posthead\">\n";
+echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" target=\"_self\">\n";
+echo "              Username: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', 'Search'), " ", form_submit('submit', 'Clear'), "\n";
+echo "            </form>\n";
+echo "          </td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
 
 echo "</div>\n";
 

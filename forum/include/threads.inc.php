@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.90 2003-09-02 23:21:10 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.91 2003-09-06 13:54:27 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -304,7 +304,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
     // Formulate query
 
-    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
@@ -642,7 +642,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
             $lst[$i]['nickname'] = $thread['nickname'];
             $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
             $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
-            $lst[$i]['sticky'] = $thread['sticky'];
+            $lst[$i]['sticky'] = isset($thread['sticky']) ? $thread['sticky'] : 0;
 
         }
 

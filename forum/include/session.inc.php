@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.140 2004-10-28 19:31:34 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.141 2004-10-31 10:13:45 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -78,6 +78,8 @@ function bh_session_check($add_guest_sess = true)
 
         }else {
 
+            $fid = 0;
+
             $sql = "SELECT USER.LOGON, USER.PASSWD, SESSIONS.UID, ";
             $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
@@ -114,32 +116,26 @@ function bh_session_check($add_guest_sess = true)
                 }
             }
 
-            // If the user is not logged into the current forum, we should
-            // do that now for them.
-
-            if ((isset($fid) && is_numeric($fid)) && ($user_sess['FID'] != $fid)) {
-
-                $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$fid', ";
-                $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
-
-                $result = db_query($sql, $db_bh_session_check);
-
-                bh_update_visitor_log($user_sess['UID']);
-            }
-
             // Everything checks out OK. If the user's session is older
             // then 5 minutes we should update it.
 
             if (($current_time - $user_sess['TIME']) > 300) {
 
-                // Update the session for the current forum
-
-                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), ";
-                $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
+                $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
+                $sql.= "UID = '{$user_sess['UID']}' AND IPADDRESS = '$ipaddress' ";
+                $sql.= "AND HASH <> '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
 
-                if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
+                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), ";
+                $sql.= "FID = '$fid', IPADDRESS = '$ipaddress' ";
+                $sql.= "WHERE HASH = '$user_hash'";
+
+                $result = db_query($sql, $db_bh_session_check);
+
+                bh_update_visitor_log($user_sess['UID']);
+
+                if (forum_get_setting('show_stats', 'Y', false)) {
                     update_stats();
                 }
 

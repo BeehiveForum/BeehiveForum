@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.24 2004-07-30 00:00:18 rowan_hill Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.25 2004-07-31 20:22:35 rowan_hill Exp $ */
 
 // Gangsta language file
 
@@ -938,6 +938,10 @@ $lang['possibleanswers'] = "Pizossibizle Answizers";
 $lang['enterpollquestionexp'] = "Entizer tha answizers fo' yo polla question.. If yo polla is a \"word/wack\" questizion, simply enter \"word\" fo' Answizer 1 and \"wack\" fo' Answizer 2.";
 $lang['numberanswers'] = "Nah, man. Answizers, yo";
 $lang['answerscontainHTML'] = "Answers Cizontizain fly-ass code (not including yo sizig)";
+$lang['optionsdisplay'] = "Answizers displizay type";
+$lang['optionsdisplayexp'] = "Hizow should tha optizions to tha damn foo's who gonna vote?";
+$lang['dropdown'] = "As square shit that drizops down";
+$lang['radios'] = "As round shit yo' clizick";
 $lang['votechanging'] = "Vizote Changizing";
 $lang['votechangingexp'] = "Can a homie change hizis or hizer vizote?";
 $lang['allowmultiplevotes'] = "Allizow Mizultiple Vizotes";

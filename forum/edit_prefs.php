@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.13 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.14 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -161,7 +161,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['preferencesupdated']}</p>";
 
-            form_quick_button("./edit_prefs.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "", "", "_top");
+            form_quick_button("./edit_prefs.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
 
             html_draw_bottom();
             exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.80 2004-03-15 21:33:29 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.81 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -36,6 +36,7 @@ $forum_settings = get_forum_settings();
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
+include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/folder.inc.php");
@@ -64,7 +65,7 @@ if (bh_session_get_value('UID') == 0) {
 
 // Check to see if the forum owner has allowed the creation of polls
 
-if (strtoupper($forum_settings['allow_polls']) == "Y") {
+if (strtoupper($forum_settings['allow_polls']) == "N") {
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -209,7 +210,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         
        html_draw_top();
                 
-       echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+       echo "<form name=\"f_post\" action=\"./create_poll.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
        echo "<table class=\"posthead\" width=\"720\">\n";
        echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
        echo "<tr><td>\n";
@@ -434,9 +435,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 if (isset($error_html)) echo $error_html. "\n";
 
-?>
-<form name="f_poll" action="create_poll.php?webtag={$webtag['WEBTAG']}" method="post" target="_self">
-<?php
+echo "<form name=\"f_poll\" action=\"create_poll.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);

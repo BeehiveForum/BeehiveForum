@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.48 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.49 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -55,7 +55,7 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (strtoupper($forum_settings['allow_polls']) == "Y") {
+if (strtoupper($forum_settings['allow_polls']) == "N") {
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
     html_draw_bottom();

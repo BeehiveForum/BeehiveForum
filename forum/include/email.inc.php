@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.49 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.50 2004-03-17 17:20:35 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
@@ -285,6 +285,8 @@ function email_send_pw_reminder($logon)
 
 function email_get_language($to_uid)
 {
+    global $forum_settings;
+    
     $prefs = user_get_prefs($to_uid);
 
      // if the user has expressed a preference for language, use it

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.35 2004-03-15 21:33:30 decoyduck Exp $ */
+/* $Id: email.php,v 1.36 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -36,6 +36,7 @@ $forum_settings = get_forum_settings();
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
 
+include_once("./include/email.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
@@ -66,14 +67,14 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
 if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
     $to_uid = $HTTP_GET_VARS['uid'];
-}else if (isset($HTTP_POST_VARS['t_to_uid'])) {
+}else if (isset($HTTP_POST_VARS['t_to_uid']) && is_numeric($HTTP_POST_VARS['t_to_uid'])) {
     $to_uid = $HTTP_POST_VARS['t_to_uid'];
 }else {
-  html_draw_top();
-  echo "<h1>{$lang['invalidop']}</h1>\n";
-  echo "<h2>{$lang['nouserspecifiedforemail']}</h2>";
-  html_draw_bottom();
-  exit;
+    html_draw_top();
+    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h2>{$lang['nouserspecifiedforemail']}</h2>";
+    html_draw_bottom();
+    exit;
 }
 
 $to_user = user_get($to_uid);
@@ -82,39 +83,48 @@ $from_user = user_get(bh_session_get_value('UID'));
 if (isset($HTTP_POST_VARS['submit'])) {
 
     $valid = true;
-    $subject = _stripslashes($HTTP_POST_VARS['t_subject']);
+    
     $message = _stripslashes($HTTP_POST_VARS['t_message']);
 
-    if (!$subject) {
+    if (isset($HTTP_POST_VARS['t_subject']) && strlen(trim(_stripslashes($HTTP_POST_VARS['t_subject']))) > 0) {
+        $subject = trim(_stripslashes($HTTP_POST_VARS['t_subject']));
+    }else {
         $error = "<p>{$lang['entersubjectformessage']}:</p>";
         $valid = false;
     }
-
-    if ($valid && !$message) {
+    
+    if (isset($HTTP_POST_VARS['t_message']) && strlen(trim(_stripslashes($HTTP_POST_VARS['t_message']))) > 0) {
+        $message = trim(_stripslashes($HTTP_POST_VARS['t_message']));
+    }else {
         $error = "<p>{$lang['entercontentformessage']}:</p>";
         $valid = false;
-    }
+    }    
 
     if ($valid) {
+    
+        $email_lang = email_get_language($to_user['UID']);    
 
         $message = wordwrap($message . "\n\n{$lang['msgsentfrombeehiveforumby']} ".$from_user['LOGON']);
-        $from = "From: ".$from_user['EMAIL'];
+                       
+        $header = "From: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
+        $header.= "Reply-To: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
+        $header.= "Content-type: text/plain; charset={$email_lang['_charset']}\n";
+        $header.= "X-Mailer: PHP/". phpversion();        
 
         html_draw_top("title={$lang['emailresult']}");
 
         echo "<p>&nbsp;</p>\n";
         echo "<div align=\"center\">\n";
 
-        if (@mail($to_user['EMAIL'],$subject,$message,$from)) {
+        if (@mail($to_user['EMAIL'], $subject, $message, $header)) {
             echo "<p>{$lang['msgsent']}.</p>";
         }else {
             echo "<p>{$lang['msgfail']}</p>";
         }
-
-        echo "<a href=\"user_profile.php?webtag={$webtag['WEBTAG']}&uid=", $HTTP_POST_VARS['t_to_uid'], "\">{$lang['continue']}</a>";
+        
+        form_quick_button("user_profile.php", $lang['continue'], array("webtag", "uid"), array($webtag['WEBTAG'], $HTTP_POST_VARS['t_to_uid']));
         html_draw_bottom();
         exit;
-
     }
 }
 

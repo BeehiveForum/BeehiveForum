@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.58 2004-03-03 23:15:17 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.59 2004-03-10 12:39:59 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -402,7 +402,13 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
         for ($i = 0; $i < sizeof($attachments); $i++) {
 
             echo "              <tr>\n";
-            echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "\" title=\"";
+            echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
+            
+            if ($attachment_use_old_method) {
+                echo "<a href=\"getattachment.php?hash=", $attachments[$i]['hash'], "\" title=\"";
+            }else {
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
+            }           
 
             if (strlen($attachments[$i]['filename']) > 16) {
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";

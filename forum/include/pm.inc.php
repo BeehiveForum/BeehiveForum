@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.35 2004-03-09 23:00:08 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.36 2004-03-10 12:39:59 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -289,9 +289,11 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array)
 {
-    global $HTTP_SERVER_VARS, $lang, $attachment_dir, $user_wordfilter;
+    global $HTTP_SERVER_VARS, $lang, $attachment_dir, $attachment_use_old_method, $attachments_show_deleted;
     
     if (!isset($attachment_dir)) $attachment_dir = "attachments";
+    if (!isset($attachment_use_old_method)) $attachment_use_old_method = false;
+    if (!isset($attachments_show_deleted)) $attachments_show_deleted = false;
 
     $uid = bh_session_get_value('UID');
 
@@ -387,7 +389,11 @@ function draw_pm_message($pm_elements_array)
                            
                     }else {
                             
-                        echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
+                        if ($attachment_use_old_method) {
+                            echo "<a href=\"getattachment.php?hash=", $visible_attachments[$i]['hash'], "\"";
+                        }else {
+                            echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
+                        }
 
                         if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'pm_write.php') {
                             echo " target=\"_blank\"";

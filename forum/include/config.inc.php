@@ -160,6 +160,20 @@ $attachments_show_deleted = false;
 
 $attachment_allow_embed = false;
 
+// Since Beehive 0.4 attachment retrieval is handled
+// differently in order to be more compatible with
+// different browsers. But since some webservers do
+// not entirely support this method you may need to
+// enable the setting below to revert to the old
+// pre-0.4 method. A sign that the newer method does
+// not work with your web server would be a 404
+// error on getattachment.php. If your attachments
+// work fine there is no need to change this setting.
+//
+// Default: Disabled.
+
+$attachment_use_old_method = false;
+
 // ---------------------------------------------------------------------
 
 // User Accounts -------------------------------------------------------

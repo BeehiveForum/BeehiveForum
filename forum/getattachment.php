@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.48 2004-03-03 22:43:25 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.49 2004-03-10 12:39:59 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -50,19 +50,21 @@ if (isset($attachments_enabled) && !$attachments_enabled) {
     exit;
 }
 
-// Different PHP versions format the PHP_SELF variable differently if
-// a spoofed path type URL query is used.
-
-if (strstr($HTTP_SERVER_VARS['PHP_SELF'], 'getattachment.php')) {
-    preg_match("/\/getattachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+if ($attachment_use_old_method) {
+    if (isset($HTTP_GET_VARS['hash'])) {
+        $hash = $HTTP_GET_VARS['hash'];
+    }
 }else {
-    preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+    if (strstr($HTTP_SERVER_VARS['PHP_SELF'], 'getattachment.php')) {
+        preg_match("/\/getattachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+        $hash = $attachment_data[1];
+    }else {
+        preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+        $hash = $attachment_data[1];        
+    }
 }
 
-if (isset($attachment_data[1])) {
-
-    $hash = explode('/', $attachment_data[1]);
-    $hash = $hash[sizeof($hash) - 1];
+if (isset($hash) && is_md5($hash)) {
 
     // Increment the 'Downloaded x times tooltip text'
     attachment_inc_dload_count($hash);

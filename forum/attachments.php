@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.56 2004-03-04 20:57:14 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.57 2004-03-10 12:39:59 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -235,7 +235,13 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
         if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
 
             echo "  <tr>\n";
-            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=1\" title=\"";
+            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
+
+            if ($attachment_use_old_method) {
+                echo "<a href=\"getattachment.php?hash=", $attachments[$i]['hash'], "\" title=\"";
+            }else {
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\" title=\"";
+            }            
 
             if (strlen($attachments[$i]['filename']) > 16) {
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
@@ -321,7 +327,13 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
         if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {    
 
             echo "  <tr>\n";
-            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=true\" title=\"";
+            echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
+            
+            if ($attachment_use_old_method) {
+                echo "<a href=\"getattachment.php?hash=", $attachments[$i]['hash'], "\" title=\"";
+            }else {
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
+            }            
 
             if (strlen($attachments[$i]['filename']) > 16) {
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";

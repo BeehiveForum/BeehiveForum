@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.69 2004-04-13 17:57:50 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.70 2004-04-13 17:58:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -144,7 +144,7 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
 }
 
 if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = $HTTP_GET_VARS['page'] * 20;
+    $start = floor($HTTP_GET_VARS['page'] - 1) * 20;
 }else {
     $start = 0;
 }

@@ -16,6 +16,16 @@ CREATE TABLE DEDUPE (
   DDKEY char(32) default NULL,
   PRIMARY KEY  (UID)
 ) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `BANNED_IP`
+#
+
+CREATE TABLE BANNED_IP (
+  IP char(15) NOT NULL default ''
+) TYPE=MyISAM;
 # --------------------------------------------------------
 
 #

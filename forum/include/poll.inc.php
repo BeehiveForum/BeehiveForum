@@ -167,45 +167,25 @@ function poll_get_votes($tid)
 
 }
 
-function poll_user_has_voted($tid)
-{
-
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-
-    $db_poll_get_votes = db_connect();
-
-    $sql = "SELECT POLL_VOTES.OPTION_ID FROM ". forum_table('POLL_VOTES'). " POLL_VOTES ";
-    $sql.= "LEFT JOIN ". forum_table('USER_POLL_VOTES'). " USER_POLL_VOTES ON ";
-    $sql.= "(POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID) ";
-    $sql.= "WHERE POLL_VOTES.VOTES > 0 AND POLL_VOTES.TID = $tid AND USER_POLL_VOTES.PTUID = MD5($tid.$uid)";
-
-    $result = db_query($sql, $db_poll_get_votes);
-
-    if (db_num_rows($result)) {
-
-      list($vote) = db_fetch_array($result);
-      return $vote;
-
-    }else {
-
-      return false;
-
-    }
-
-}
-
 function poll_get_user_vote($tid)
 {
 
     global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
+    $polldata = poll_get($tid);
+    if ($polldata['CHANGEVOTE'] == 2) return POLL_MULTIVOTE;
+
     $db_poll_get_user_vote = db_connect();
 
     $sql = "select OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from ". forum_table('USER_POLL_VOTES'). " where PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_get_user_vote);
-    $userpolldata = db_fetch_array($result);
+
+    if (db_num_rows($result)) {
+      $userpolldata = db_fetch_array($result);
+    }else {
+      $userpolldata = false;
+    }
 
     return $userpolldata;
 
@@ -702,7 +682,14 @@ function poll_vote($tid, $vote)
 
     $db_poll_vote = db_connect();
 
-    if ($uid > 0 && !poll_user_has_voted($tid)) {
+    $polldata = poll_get($tid);
+
+    if ($polldata['CHANGEVOTE'] == 2) {
+
+      $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES + 1 where TID = $tid and OPTION_ID = $vote";
+      $result = db_query($sql, $db_poll_vote);
+
+    }elseif ($uid > 0 && !poll_get_user_vote($tid)) {
 
       $sql = "insert into ". forum_table("USER_POLL_VOTES"). " (TID, PTUID, OPTION_ID, TSTAMP) ";
       $sql.= "values ($tid, MD5($tid.$uid), $vote, FROM_UNIXTIME(". mktime(). "))";

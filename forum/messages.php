@@ -179,8 +179,10 @@ echo "    </td>\n";
 
 if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
-  if ($userpollvote = poll_user_has_voted($tid)) {
-    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to change vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You voted for option #", $userpollvote, "</td>\n";
+  if ($userpollvote = poll_get_user_vote($tid)) {
+    if ($userpollvote ^ POLL_MULTIVOTE) {
+      echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to change vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You voted for option #", $userpollvote['OPTION_ID'], "</td>\n";
+    }
   }else {
     echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You have not voted</td>\n";
   }

@@ -301,6 +301,8 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   if ($HTTP_POST_VARS['changevote'] == 1) {
     $polldata['CONTENT'].= "You will be able to change your vote.";
+  }elseif ($HTTP_POST_VARS['changevote'] == 2) {
+    $polldata['CONTENT'].= "You will be able to vote multiple times.";
   }else {
     $polldata['CONTENT'].= "You will not be able to change your vote.";
   }
@@ -453,6 +455,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
                 <tr>
                   <td><?php echo form_radio('changevote', '1', 'Yes', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : true); ?></td>
                   <td><?php echo form_radio('changevote', '0', 'No', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : false); ?></td>
+                  <td><?php echo form_radio('changevote', '2', 'Allow Multiple Votes', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : false); ?></td>
                 </tr>
               </table>
             </td>

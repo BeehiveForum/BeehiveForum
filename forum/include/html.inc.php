@@ -82,6 +82,7 @@ function _html_draw_top2($body_class = false)
         echo " class=\"$body_class\"";
     }
     echo ">\n";
+    echo "<!-- [bh_gzhandler] //-->\n";
 }
 
 function _html_draw_top_script()

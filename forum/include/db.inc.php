@@ -55,7 +55,7 @@ function db_connection_error()
 
     srand((double)microtime()*1000000);
 
-    echo form_submit(md5(uniqid(rand())), 'Retry', 'onclick="document.location.reload();"'), "\n";
+    echo form_submit(md5(uniqid(rand())), 'Retry'); // - Doesn't work in Mozilla :? - , 'onclick="document.location.reload();"'), "\n";
     echo "</form>\n";
     echo "</div>\n";
     html_draw_bottom();

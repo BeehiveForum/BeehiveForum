@@ -4,7 +4,7 @@
 #
 # Generation Time: Mar 16, 2004 at 00:17
 #
-# $Id: upgrade-04-to-041.sql,v 1.20 2004-04-09 21:18:56 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.21 2004-04-10 14:33:57 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -204,6 +204,7 @@ CREATE TABLE FORUMS (
   FID mediumint(8) unsigned NOT NULL auto_increment,
   WEBTAG varchar(255) NOT NULL default '',
   DEFAULT_FORUM tinyint(4) NOT NULL default '0',
+  ACCESS_LEVEL tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
 

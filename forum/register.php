@@ -24,6 +24,7 @@ USA
 require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/form.inc.php");
 
 // Where are we going after we've logged on?
 if(isset($HTTP_GET_VARS['final_uri'])){

@@ -43,6 +43,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/form.inc.php");
 
 html_draw_top();
 
@@ -103,45 +104,21 @@ echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
 echo "<td class=\"subhead\">User: ".$user['LOGON']."</td></tr>\n";
 
 if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
-    echo "<tr><td><input type=\"checkbox\" name=\"t_soldier\" value=\"". USER_PERM_SOLDIER . "\"";
-    if($user['STATUS'] & USER_PERM_SOLDIER){
-        echo " checked";
-    }
-    echo "> Soldier</td></tr>\n";
+    echo "<tr><td>".form_checkbox("t_soldier",USER_PERM_SOLDIER,"Soldier",($user['STATUS'] & USER_PERM_SOLDIER))."</td></tr>\n";
 }
 
-echo "<tr><td><input type=\"checkbox\" name=\"t_worker\" value=\"". USER_PERM_WORKER . "\"";
-if($user['STATUS'] & USER_PERM_WORKER){
-    echo " checked";
-}
-echo "> Worker</td></tr>\n";
-
-echo "<tr><td><input type=\"checkbox\" name=\"t_worm\" value=\"". USER_PERM_WORM . "\"";
-if($user['STATUS'] & USER_PERM_WORM){
-    echo " checked";
-}
-echo "> Worm</td></tr>\n";
-
-echo "<tr><td><input type=\"checkbox\" name=\"t_wasp\" value=\"". USER_PERM_WASP . "\"";
-if($user['STATUS'] & USER_PERM_WASP){
-    echo " checked";
-}
-echo "> Wasp</td></tr>\n";
-
-echo "<tr><td><input type=\"checkbox\" name=\"t_splat\" value=\"". USER_PERM_SPLAT . "\"";
-if($user['STATUS'] & USER_PERM_SPLAT){
-    echo " checked";
-}
-echo "> Splat</td></tr>\n";
-
+echo "<tr><td>".form_checkbox("t_worker",USER_PERM_WORKER,"Soldier",($user['STATUS'] & USER_PERM_WORKER))."</td></tr>\n";
+echo "<tr><td>".form_checkbox("t_worm",USER_PERM_WORM,"Worm",($user['STATUS'] & USER_PERM_WORM))."</td></tr>\n";
+echo "<tr><td>".form_checkbox("t_wasp",USER_PERM_WASP,"Wasp",($user['STATUS'] & USER_PERM_WASP))."</td></tr>\n";
+echo "<tr><td>".form_checkbox("t_splat",USER_PERM_SPLAT,"Splat",($user['STATUS'] & USER_PERM_SPLAT))."</td></tr>\n";
 
 echo "</table>\n";
-echo "<input type=\"hidden\" name=\"t_uid\" value=\"$uid\">\n";
+echo form_input_hidden("t_uid",$uid);
 echo "</td></tr></table>\n";
-echo "<input type=\"submit\" class=\"button\" name=\"submit\" value=\"Submit\">\n";
+echo form_submit();
 echo "</form>\n";
 echo "<p>&nbsp;</p>";
-echo "<table border=\"0\"><tr><td>";
+echo "<table width=\"50%\" border=\"0\"><tr><td>";
 echo "<p><b>Soldiers</b> can access all moderation tools, but cannot create or remove other Soldiers.</p>\n";
 echo "<p><b>Workers</b> can edit or delete any post.</p>\n";
 echo "<p><b>Worms</b> can read messages and post as normal, but their messages will appear deleted to all other users.</p>\n";

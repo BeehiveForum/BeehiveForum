@@ -43,6 +43,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/form.inc.php");
 
 html_draw_top();
 
@@ -104,21 +105,13 @@ for($i=0;$i<$result_count;$i++){
     // If the thread count is 1, then it's probably 0.
     if($row['THREAD_COUNT'] == 1) $row['THREAD_COUNT'] = 0;
 
-    // Use this array to select the relevant ACCESS_LEVEL in the dropdown
-    $sel = array("","","");
-    $sel[$row['ACCESS_LEVEL']+1] = " selected";
-
-    echo "<tr><td>".$row['FID']."<input type=\"hidden\" name=\"t_fid_$i\" value=\"".$row['FID']."\"></td>\n";
-    echo "<td><input type=\"text\" name=\"t_title_$i\" width=\"32\" maxchars=\"32\" value=\"".$row['TITLE']."\">";
-    echo "<input type=\"hidden\" name=\"t_old_title_$i\" value=\"".$row['TITLE']."\"></td>";
+    echo "<tr><td>".$row['FID'].form_input_hidden("t_fid_$i",$row['FID'])."</td>\n";
+    echo "<td>".form_field("t_title_$i",$row['TITLE'],32,32);
+    echo form_input_hidden("t_old_title_$i",$row['TITLE'])."</td>";
 
     // Draw the ACCESS_LEVEL dropdown
-    echo "<td><select name=\"t_access_$i\">\n";
-    echo "<option value=\"-1\"".$sel[0].">Closed</option>\n";
-    echo "<option value=\"0\"".$sel[1].">Open</option>\n";
-    echo "<option value=\"1\"".$sel[2].">Restricted</option>\n";
-    echo "</select>\n";
-    echo "<input type=\"hidden\" name=\"t_old_access_$i\" value=\"".$row['ACCESS_LEVEL']."\"></td>\n";
+    echo "<td>".form_dropdown_array("t_access_$i",array(-1,0,1),array("Closed","Open","Restricted"),$row['ACCESS_LEVEL']);
+    echo form_input_hidden("t_old_access_$i",$row['ACCESS_LEVEL'])."</td>\n";
 
     echo "<td>".$row['THREAD_COUNT']."</td>\n";
     echo "<td>" . folder_draw_dropdown($row['FID'],"t_move","_$i") . "</td></tr>\n";
@@ -126,21 +119,17 @@ for($i=0;$i<$result_count;$i++){
 
 // Draw a row for a new folder to be created
 echo "<tr><td>NEW</td>\n";
-echo "<td><input type=\"text\" name=\"t_title_new\" width=\"32\" maxchars=\"32\" value=\"New Folder\"></td>";
+echo "<td>".form_field("t_title_new","New Folder",32,32)."</td>";
 
 // Draw the ACCESS_LEVEL dropdown
-echo "<td><select name=\"t_access_new\">\n";
-echo "<option value=\"-1\">Closed</option>\n";
-echo "<option value=\"0\" selected>Open</option>\n";
-echo "<option value=\"1\">Restricted</option>\n";
-echo "</select>\n";
+echo "<td>".form_dropdown_array("t_access_new",array(-1,0,1),array("Closed","Open","Restricted"));
 
 echo "<td>-</td>\n";
 echo "<td>&nbsp;</td></tr>\n";
 echo "<tr><td colspan=\"5\">&nbsp;</td></tr>\n";
 echo "<tr><td colspan=\"5\" align=\"right\">\n";
-echo "<input type=\"hidden\" name=\"t_count\" value=\"$result_count\">\n";
-echo "<input type=\"submit\" name=\"submit\" value=\"Submit\" class=\"button\">\n";
+echo form_input_hidden("t_count",$result_count);
+echo form_submit();
 echo "</td></tr></table>\n";
 echo "</form>\n";
 echo "</td></tr></table>\n";

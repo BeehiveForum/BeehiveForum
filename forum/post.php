@@ -24,7 +24,6 @@ USA
 //Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
-require_once("./include/form.inc.php");
 
 if(!bh_session_check()){
 
@@ -32,7 +31,7 @@ if(!bh_session_check()){
     $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $uri.= "/logon.php?final_uri=";
     $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
-    
+
     header_redirect($uri);
 }
 
@@ -45,6 +44,7 @@ require_once("./include/threads.inc.php");
 require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/email.inc.php");
+require_once("./include/form.inc.php");
 
 $valid = true;
 

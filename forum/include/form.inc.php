@@ -136,4 +136,22 @@ function form_submit($name = "submit", $value = "Submit", $class = "button")
     return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" />";
 }
 
+// create a form just to be a link button
+function form_quick_button($href,$label,$var = 0,$value = 0)
+{
+    echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\">\n";
+
+    if($var){
+        if(isarray($var)){
+            for($i=0;$i<count($var);$i++){
+                echo form_input_hidden($var[$i],$value[$i]);
+            }
+        } else {
+            echo form_input_hidden($var,$value);
+        }
+    }
+
+    echo form_submit("submit",$label)."</form>";
+}
+
 ?>

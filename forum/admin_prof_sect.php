@@ -43,6 +43,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/profile.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/form.inc.php");
 
 html_draw_top();
 
@@ -94,20 +95,20 @@ for($i=0;$i<$result_count;$i++){
 
     $row = db_fetch_array($result);
 
-    echo "<tr><td>".$row['PSID']."<input type=\"hidden\" name=\"t_psid_$i\" value=\"".$row['PSID']."\"></td>\n";
-    echo "<td><input type=\"text\" name=\"t_name_$i\" width=\"64\" maxchars=\"64\" value=\"".$row['NAME']."\">";
-    echo "<input type=\"hidden\" name=\"t_old_name_$i\" value=\"".$row['NAME']."\"></td>";
+    echo "<tr><td>".$row['PSID'].form_input_hidden("t_psid_$i",$row['PSID'])."</td>\n";
+    echo "<td>".form_field("t_name_$i",$row['NAME'],64,64);
+    echo form_input_hidden("t_old_name_$i",$row['NAME'])."</td>";
     echo "<td><a href=\"./admin_prof_items.php?psid=".$row['PSID']."\">Items...</a></td></tr>";
 }
 
 // Draw a row for a new section to be created
 echo "<tr><td>NEW</td>\n";
-echo "<td><input type=\"text\" name=\"t_name_new\" width=\"64\" maxchars=\"64\" value=\"New Section\"></td>";
+echo "<td>".form_field("t_name_new","New Section",64,64)."</td>";
 echo "<td align=\"center\">-</td></tr>\n";
 echo "<tr><td colspan=\"5\">&nbsp;</td></tr>\n";
 echo "<tr><td colspan=\"5\" align=\"right\">\n";
-echo "<input type=\"hidden\" name=\"t_count\" value=\"$result_count\">\n";
-echo "<input type=\"submit\" name=\"submit\" value=\"Submit\" class=\"button\">\n";
+echo form_input_hidden("t_count",$result_count);
+echo form_submit();
 echo "</td></tr></table>\n";
 echo "</form>\n";
 echo "</td></tr></table>\n";

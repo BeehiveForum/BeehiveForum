@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.78 2004-06-13 20:02:10 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.79 2004-06-17 23:08:43 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -357,6 +357,8 @@ function user_set_folder_interest($fid, $interest)
     $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_FOLDER ";
     $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
 
+    echo "<p>$sql<p>\n";
+
     $result = db_query($sql, $db_user_set_folder_interest);
 
     if (db_num_rows($result) > 0) {
@@ -369,6 +371,9 @@ function user_set_folder_interest($fid, $interest)
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, INTEREST) ";
         $sql.= "VALUES ('$uid', '$fid', '$interest')";
     }
+
+    echo "<p>$sql<p>\n";
+    exit;
 
     return db_query($sql, $db_user_set_folder_interest);
 }

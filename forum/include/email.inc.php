@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.83 2005-02-23 15:26:55 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.84 2005-02-24 23:32:01 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -44,6 +44,9 @@ function email_sendnotification($tuid, $msg, $fuid)
 
         $to_user   = user_get($tuid);
         $from_user = user_get($fuid);
+
+        $user_rel  = user_rel_get($to_user, $from_user);
+        if ($user_rel & USER_IGNORED_COMPLETELY) return true;
 
         // Validate the email address before we continue.
 
@@ -128,11 +131,15 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         while ($to_user = db_fetch_array($result)) {
 
+            $from_user = user_get($fuid);
+
+            $user_rel  = user_rel_get($to_user, $from_user);
+            if ($user_rel & USER_IGNORED_COMPLETELY) return true;
+
             // Validate the email address before we continue.
 
             if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
 
-            $from_user = user_get($fuid);
             $thread = thread_get($tid);
 
             // get the right language for the email
@@ -195,6 +202,9 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
         $to_user   = user_get($tuid);
         $from_user = user_get($fuid);
+
+        $user_rel  = user_rel_get($to_user, $from_user);
+        if ($user_rel & USER_IGNORED_COMPLETELY) return true;
 
         // Validate the email address before we continue.
 

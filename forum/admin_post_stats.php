@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.7 2005-02-09 23:50:24 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.8 2005-02-17 10:19:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -176,7 +176,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
     echo "<br />\n";
 }
 
-echo "  <h2>{$lang['top10postersforperiod']} ", date("d/m/Y", $stats_start), " to ", date("d/m/Y", $stats_end), "</h2>\n";
+echo "  <h2>{$lang['top20postersforperiod']} ", date("d/m/Y", $stats_start), " to ", date("d/m/Y", $stats_end), "</h2>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";

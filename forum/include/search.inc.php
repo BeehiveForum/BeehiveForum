@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.81 2005-01-20 18:49:09 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.82 2005-01-21 01:19:45 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -29,6 +29,12 @@ include_once("./include/user.inc.php");
 
 function search_execute($argarray, &$urlquery, &$error)
 {
+    // MySQL has a list of stop words for fulltext searches.
+    // We'll save ourselves some server time by checking
+    // them first.
+
+    include_once("./include/search_stopwords.inc.php");
+
     // Ensure the bare minimum of variables are set
 
     if (!isset($argarray['method'])) $argarray['method'] = 2;
@@ -61,7 +67,7 @@ function search_execute($argarray, &$urlquery, &$error)
     $search_sql.= "ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
     $search_sql.= "WHERE (USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. " = 0 ";
     $search_sql.= "OR USER_PEER.RELATIONSHIP & ". USER_IGNORED. " = 0 ";
-    $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+    $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) AND ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
         $folder_sql = "THREAD.FID = {$argarray['fid']}";
@@ -121,8 +127,9 @@ function search_execute($argarray, &$urlquery, &$error)
 
         foreach ($keywords_array as $key => $value) {
 
-            if (!in_array($key, $boolean_search_params)) {
-                if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
+            if (!in_array($value, $boolean_search_params)) {
+
+                if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3)) || in_array($value, $mysql_fulltext_stopwords)) {
                     unset($keywords_array[$key]);
                 }
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.64 2005-01-19 22:44:14 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.65 2005-01-21 01:19:47 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -254,7 +254,6 @@ $lang['useripaddresses'] = "User IP addresses";
 $lang['listofthelastknownipaddresses'] = "This is a list of the last known IP addresses for this user. To ban an IP address tick the box next to the address and click the Submit button below.";
 $lang['nomatches'] = "Ain't no mizatches";
 $lang['usersettingsupdated'] = "User Settings Successfully Updated";
-$lang['tobananIPaddress'] = "To ban an IP Address tick the checkbox next to the alias and click the Submit button below";
 $lang['cannotipbansoldiers'] = "Yo ain't gonna IP bizan other Ballers. What tha fuck yo thinkin' about? Lizower their punk-ass Stizatus fizirst.";
 $lang['banthisipaddress'] = "Bizan this crackas IP";
 $lang['noipaddress'] = "Thizere ain't no IP address fo' this crackas accizount. Yo ain't gonna beat this foo' dizown.";
@@ -542,7 +541,6 @@ $lang['uploadnewattachment'] = "Uplizoad New Attachment";
 $lang['waitdotdot'] = "Aight, hold up muthafucka&hellip;";
 $lang['attachmentnospace'] = "Fuck that shit, homes. Yo ass needs mo' space fo' fiziles";
 $lang['successfullyuploaded'] = "Hell yeah, that shit gone up good";
-$lang['uploadfailed'] = "That shit failed";
 $lang['errorfilesizeis0'] = "Error: Filesize must be greater than 0 bytes, biatch";
 $lang['complete'] = "Complizete";
 $lang['uploadattachment'] = "Uplizoad a fizile fo' attachment to tha message fo shizzle";
@@ -604,36 +602,42 @@ $lang['pollediterror'] = "Yo ass be trippin' o' some shit. You cannot edit pizol
 
 // Email (email.php) ---------------------------------------------------
 
-$lang['nouserspecifiedforemail'] = "No homie specified fo' emailing.";
-$lang['entersubjectformessage'] = "Enter a subject fo' yo shit";
-$lang['entercontentformessage'] = "Enter some content fo' tha message";
-$lang['msgsentfrombeehiveforumby'] = "This message was sent from a Bizeehizive Fizorum by";
+$lang['nouserspecifiedforemail'] = "No user specified for emailing.";
+$lang['entersubjectformessage'] = "Enter a subject for the message";
+$lang['entercontentformessage'] = "Enter some content for the message";
+$lang['msgsentfrombeehiveforumby'] = "This message was sent from a Beehive Forum by";
 $lang['subject'] = "Subject";
 $lang['send'] = "Send";
-$lang['msgnotificationemail_1'] = "pizosted a mizessage to you on";
-$lang['msgnotificationemail_2'] = "tha motherfuckin 'subject iz";
-$lang['msgnotificationemail_3'] = "To read that shit and others in tha same shit, go to:";
-$lang['msgnotificationemail_4'] = "Yo: If yo ain't wishin' to receive e-fuckin'-mail notifiizcations of Fizorum shit";
-$lang['msgnotificationemail_5'] = "posted to you, fuck you.";
-$lang['msgnotificationemail_6'] = "Oh, and clizick";
-$lang['msgnotificationemail_7'] = "on Prizeferizences, unselect tha Eizmail Notification chizeckbox and press Aight, fuckass.";
-$lang['msgnotification_subject'] = "Message Nizotizifizicazition from";
-$lang['subnotification_1'] = "pizosted a meizssage in a thrizead yo";
-$lang['subnotification_2'] = "are down wit'";
-$lang['subnotification_3'] = "tha subject iz";
-$lang['subnotification_4'] = "To read that shit and others shit in tha same shit, bring yo ass to";
-$lang['subnotification_5'] = "Note: If you do not wish to receive email notifications of new messages";
-$lang['subnotification_6'] = "in this thread, fuck you. And go to:";
-$lang['subnotification_7'] = "and adjust yo Interest level at tha end of tha page.";
-$lang['subnotification_subject'] = "Fuck ass Subsizcription Nizotificization from";
-$lang['pmnotification_1'] = "posted a P to tha M to you on";
-$lang['pmnotification_2'] = "tha subject iz";
-$lang['pmnotification_3'] = "To read that shit bring yo ass to";
-$lang['pmnotification_4'] = "Yo! If yo ain't wantin' to receive email shizit of PM shizit";
-$lang['pmnotification_5'] = "posted to you, fuck you. And";
-$lang['pmnotification_6'] = "click";
-$lang['pmnotification_7'] = "on Prizeferizences, unselect tha PM Eizmail Nizotification shit and press Aight.";
-$lang['pmnotification_subject'] = "PM Nizotificatizion from";
+
+$lang['msgnotification_subject'] = "Message Notification from";
+
+$lang['msgnotificationemail_1'] = "posted a message to you on";
+$lang['msgnotificationemail_2'] = "The subject is:";
+$lang['msgnotificationemail_3'] = "To read that message and others in the same discussion, go to:";
+$lang['msgnotificationemail_4'] = "Note: If you do not wish to receive email notifications of forum";
+$lang['msgnotificationemail_5'] = "messages posted to you, go to:";
+$lang['msgnotificationemail_6'] = "click on My Controls then Email and Privacy, unselect the Email";
+$lang['msgnotificationemail_7'] = "Notification checkbox and press Submit.";
+
+$lang['subnotification_subject'] = "Subscription Notification from";
+
+$lang['subnotification_1'] = "posted a message in a thread you have subscribed to on";
+$lang['subnotification_2'] = "The subject is:";
+$lang['subnotification_3'] = "To read that message and others in the same discussion, go to:";
+$lang['subnotification_4'] = "Note: If you do not wish to receive email notifications of new";
+$lang['subnotification_5'] = "messages in this thread, go to:";
+$lang['subnotification_6'] = "and adjust your Interest level at the bottom of the page.";
+
+$lang['pmnotification_subject'] = "PM Notification from";
+
+$lang['pmnotification_1']  = "posted a PM to you on";
+$lang['pmnotification_2']  = "The subject is:";
+$lang['pmnotification_3']  = "To read the message go to:";
+$lang['pmnotification_4']  = "Note: If you do not wish to receive email notifications of new PM";
+$lang['pmnotification_5']  = "messages posted to you, go to:";
+$lang['pmnotification_6']  = "click My Controls then Email and Privacy, unselect the PM";
+$lang['pmnotification_7']  = "Notification checkbox and press Submit.";
+
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
 $lang['hasinvalidemailaddress'] = "has an invalid email address";
 
@@ -1162,8 +1166,9 @@ $lang['globallyignoredsig_exp'] = "Yo see any sigs trippin' this side o' the hoo
 
 $lang['searchresults'] = "Yo Search Results";
 $lang['usernamenotfound'] = "tha tag yo wanted in tha to or from field ain't here, yo.";
-$lang['notexttosearchfor_1'] = "You did not specify any words to search for or the words were under";
-$lang['notexttosearchfor_2'] = "characters long or you did not enter a username to search against";
+$lang['notexttosearchfor'] = "You did not enter any search words or the words you entered were removed because they were too short or they appeared in the MySQL stopwords list.";
+$lang['searchcriteria_1'] = "<b>Note:</b> Words under";
+$lang['searchcriteria_2'] = "characters long or those that appear in the MySQL FULLTEXT stopword list will be automatically removed.";
 $lang['foundzeromatches'] = "Fizound: 0 pussy";
 $lang['found'] = "Fizound";
 $lang['matches'] = "mizatches";

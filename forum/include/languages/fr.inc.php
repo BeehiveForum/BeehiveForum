@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.133 2005-01-19 22:44:14 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.134 2005-01-21 01:19:46 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -255,7 +255,6 @@ $lang['usersettingsupdated'] = "Arrangements D'Utilisateur Avec succès Mis à jou
 $lang['useripaddresses'] = "User IP addresses";
 $lang['listofthelastknownipaddresses'] = "This is a list of the last known IP addresses for this user. To ban an IP address tick the box next to the address and click the Submit button below.";
 $lang['nomatches'] = "Aucunes allumettes";
-$lang['tobananIPaddress'] = "To ban an IP Address tick the checkbox next to the alias and click the Submit button below";
 $lang['cannotipbansoldiers'] = "Vous ne pouvez pas l'interdiction de IP les autres Soldats. Plus bas leur Statut premièrement.";
 $lang['banthisipaddress'] = "Interdire cette adresse de IP";
 $lang['noipaddress'] = "Il n'y a pas l'adresse de IP pour ce compte. L'utilisateur ne peut pas être interdit par l'adresse de IP.";
@@ -539,7 +538,6 @@ $lang['uploadnewattachment'] = "Nouvel Attachement De Téléchargement";
 $lang['waitdotdot'] = "attente..";
 $lang['attachmentnospace'] = "Désolé, vous n'avez pas l'espace assez d'attachement libre. S'il vous plaît libérer quelque espace et essaie encore.";
 $lang['successfullyuploaded'] = "Avec succès Téléchargé";
-$lang['uploadfailed'] = "Télécharger Echoué";
 $lang['errorfilesizeis0'] = "L'erreur: Filesize doit être plus grand que 0 octets";
 $lang['complete'] = "Complet";
 $lang['uploadattachment'] = "Télécharger un fichier pour l'attachement à le message";
@@ -598,36 +596,42 @@ $lang['pollediterror'] = "Vous ne pouvez pas éditer de sondage";
 
 // Email (email.php) ---------------------------------------------------
 
-$lang['nouserspecifiedforemail'] = "Aucun utilisateur spécifié pour envoie un e-mail à.";
-$lang['entersubjectformessage'] = "Entrer un sujet pour le message";
-$lang['entercontentformessage'] = "Entrer quelque contenu pour le message";
-$lang['msgsentfrombeehiveforumby'] = "Ce message a été envoyé d'un Forum de Ruche par";
-$lang['subject'] = "Sujet";
-$lang['send'] = "Envoyer";
-$lang['msgnotificationemail_1'] = "a posté un message à vous sur";
-$lang['msgnotificationemail_2'] = "Le sujet est";
-$lang['msgnotificationemail_3'] = "Pour lire ce message et ces autres dans la discussion pareille, Valider à";
-$lang['msgnotificationemail_4'] = "Note: Si vous ne souhaitez pas recevoir les notifications d'e-mail de messages de Forum";
-$lang['msgnotificationemail_5'] = "posté à vous, allez à";
-$lang['msgnotificationemail_6'] = "déclic";
-$lang['msgnotificationemail_7'] = "sur les Préférences, desélectionner la case de pointage de Notification d'E-mail et la presse Soumet.";
-$lang['msgnotification_subject'] = "La Notification de message de";
-$lang['subnotification_1'] = "a posté un message dans un fil vous";
-$lang['subnotification_2'] = "s'est abonné à sur";
-$lang['subnotification_3'] = "Le sujet est";
-$lang['subnotification_4'] = "Pour lire ce message et ces autres dans la discussion pareille, Valider à";
-$lang['subnotification_5'] = "Note: Si vous ne souhaitez pas recevoir les notifications d'e-mail de nouveaux messages";
-$lang['subnotification_6'] = "dans ce fil, Valider à";
-$lang['subnotification_7'] = "et ajuster votre niveau d'Intérêt à la fin de la page.";
-$lang['subnotification_subject'] = "La Notification de souscription de";
-$lang['pmnotification_1'] = "a posté un PM à vous sur";
-$lang['pmnotification_2'] = "Le sujet est";
-$lang['pmnotification_3'] = "Pour lire le message va à";
-$lang['pmnotification_4'] = "Note: Si vous ne souhaitez pas recevoir les notifications d'e-mail de PM les messages";
-$lang['pmnotification_5'] = "posté à vous, allez à";
-$lang['pmnotification_6'] = "déclic";
-$lang['pmnotification_7'] = "sur les Préférences, desélectionner le PM la case de pointage de Notification d'E-mail et la presse Soumettent.";
-$lang['pmnotification_subject'] = "PM la Notification de";
+$lang['nouserspecifiedforemail'] = "No user specified for emailing.";
+$lang['entersubjectformessage'] = "Enter a subject for the message";
+$lang['entercontentformessage'] = "Enter some content for the message";
+$lang['msgsentfrombeehiveforumby'] = "This message was sent from a Beehive Forum by";
+$lang['subject'] = "Subject";
+$lang['send'] = "Send";
+
+$lang['msgnotification_subject'] = "Message Notification from";
+
+$lang['msgnotificationemail_1'] = "posted a message to you on";
+$lang['msgnotificationemail_2'] = "The subject is:";
+$lang['msgnotificationemail_3'] = "To read that message and others in the same discussion, go to:";
+$lang['msgnotificationemail_4'] = "Note: If you do not wish to receive email notifications of forum";
+$lang['msgnotificationemail_5'] = "messages posted to you, go to:";
+$lang['msgnotificationemail_6'] = "click on My Controls then Email and Privacy, unselect the Email";
+$lang['msgnotificationemail_7'] = "Notification checkbox and press Submit.";
+
+$lang['subnotification_subject'] = "Subscription Notification from";
+
+$lang['subnotification_1'] = "posted a message in a thread you have subscribed to on";
+$lang['subnotification_2'] = "The subject is:";
+$lang['subnotification_3'] = "To read that message and others in the same discussion, go to:";
+$lang['subnotification_4'] = "Note: If you do not wish to receive email notifications of new";
+$lang['subnotification_5'] = "messages in this thread, go to:";
+$lang['subnotification_6'] = "and adjust your Interest level at the bottom of the page.";
+
+$lang['pmnotification_subject'] = "PM Notification from";
+
+$lang['pmnotification_1']  = "posted a PM to you on";
+$lang['pmnotification_2']  = "The subject is:";
+$lang['pmnotification_3']  = "To read the message go to:";
+$lang['pmnotification_4']  = "Note: If you do not wish to receive email notifications of new PM";
+$lang['pmnotification_5']  = "messages posted to you, go to:";
+$lang['pmnotification_6']  = "click My Controls then Email and Privacy, unselect the PM";
+$lang['pmnotification_7']  = "Notification checkbox and press Submit.";
+
 $lang['hasoptedoutofemail'] = "has opted out of email contact";
 $lang['hasinvalidemailaddress'] = "has an invalid email address";
 
@@ -1153,8 +1157,9 @@ $lang['globallyignoredsig_exp'] = "Aucunes signatures sont affiché.";
 
 $lang['searchresults'] = "Résultat de recherches";
 $lang['usernamenotfound'] = "Le username que vous avez spécifié dans l'à ou du champ n'a pas été trouvé.";
-$lang['notexttosearchfor_1'] = "You did not specify any words to search for or the words were under";
-$lang['notexttosearchfor_2'] = "characters long or you did not enter a username to search against";
+$lang['notexttosearchfor'] = "You did not enter any search words or the words you entered were removed because they were too short or they appeared in the MySQL stopwords list.";
+$lang['searchcriteria_1'] = "<b>Note:</b> Words under";
+$lang['searchcriteria_2'] = "characters long or those that appear in the MySQL FULLTEXT stopword list will be automatically removed.";
 $lang['foundzeromatches'] = "Trouvé: 0 allumettes";
 $lang['found'] = "Trouvé";
 $lang['matches'] = "allumettes";

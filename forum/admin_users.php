@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.30 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.31 2003-07-31 22:08:38 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -35,11 +35,9 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
-
+if (!bh_session_check()) {
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
 require_once("./include/perm.inc.php");
@@ -52,7 +50,7 @@ require_once("./include/lang.inc.php");
 
 html_draw_top();
 
-if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
+if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -115,33 +113,33 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">UID</a></td>\n";
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
 }
 
 if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
 }
 
 if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -149,47 +147,37 @@ echo "        </tr>\n";
 $db = db_connect();
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
-
-  $sql = "SELECT UID, LOGON, STATUS, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, ";
-  $sql.= "LOGON_FROM FROM " . forum_table("USER") . " WHERE LOGON LIKE '%$usersearch%' ";
-  $sql.= "OR NICKNAME LIKE '%$usersearch%' ORDER BY $sort_by $sort_dir LIMIT $start, 20";
-
+    $user_array = user_search($usersearch);
 }else {
-
-  $sql = "SELECT UID, LOGON, STATUS, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, ";
-  $sql.= "LOGON_FROM FROM " . forum_table("USER") . " WHERE (LOGON <> 'GUEST' AND PASSWD <> MD5('GUEST')) ";
-  $sql.= "ORDER BY $sort_by $sort_dir LIMIT $start, 20";
-
+    $user_array = user_get_all($start);
 }
 
-$result = db_query($sql,$db);
+if (sizeof($user_array) > 0) {
 
-if (db_num_rows($result)) {
-
-    while ($row = db_fetch_array($result)) {
+    foreach ($user_array as $user) {
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\" align=\"left\">", $row['UID'], "</td>\n";
-        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", $user['UID'], "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $user['UID'], "\">", $user['LOGON'], "</a></td>\n";
         echo "          <td class=\"posthead\" align=\"left\">";
 
-        if (isset($row['STATUS']) && $row['STATUS'] > 0) {
+        if (isset($user['STATUS']) && $user['STATUS'] > 0) {
 
-            if ($row['STATUS'] & USER_PERM_QUEEN)   echo "{$lang['queen']} ";
-            if ($row['STATUS'] & USER_PERM_SOLDIER) echo "{$lang['soldier']} ";
-            if ($row['STATUS'] & USER_PERM_WORKER)  echo "{$lang['worker']} ";
-            if ($row['STATUS'] & USER_PERM_WORM)    echo "{$lang['worm']} ";
-            if ($row['STATUS'] & USER_PERM_WASP)    echo "{$lang['wasp']} ";
-            if ($row['STATUS'] & USER_PERM_SPLAT)   echo "{$lang['splat']}";
+            if ($user['STATUS'] & USER_PERM_QUEEN)   echo "{$lang['queen']} ";
+            if ($user['STATUS'] & USER_PERM_SOLDIER) echo "{$lang['soldier']} ";
+            if ($user['STATUS'] & USER_PERM_WORKER)  echo "{$lang['worker']} ";
+            if ($user['STATUS'] & USER_PERM_WORM)    echo "{$lang['worm']} ";
+            if ($user['STATUS'] & USER_PERM_WASP)    echo "{$lang['wasp']} ";
+            if ($user['STATUS'] & USER_PERM_SPLAT)   echo "{$lang['splat']}";
 
-            echo " (", $row['STATUS'], ")</td>\n";
+            echo " (", $user['STATUS'], ")</td>\n";
 
         }else {
           echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
         }
 
-        echo "          <td class=\"posthead\" align=\"left\">", format_time($row['LAST_LOGON'], 1), "</td>\n";
-        echo "          <td class=\"posthead\" align=\"left\">", $row['LOGON_FROM'], "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", format_time($user['LAST_LOGON'], 1), "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", $user['LOGON_FROM'], "</td>\n";
         echo "        </tr>\n";
 
     }
@@ -222,21 +210,21 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-if (db_num_rows($result) == 20) {
-  if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
-  }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
-  }
+if (sizeof($user_array) == 20) {
+    if ($start < 20) {
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+    }elseif ($start >= 20) {
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+    }
 }else {
-  if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-  }else {
-    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
-  }
+    if ($start >= 20) {
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    }else {
+        echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+    }
 }
 
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";

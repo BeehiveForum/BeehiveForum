@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.15 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: interest.php,v 1.16 2003-07-31 22:08:38 decoyduck Exp $ */
 
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING
@@ -41,9 +41,9 @@ require_once("./include/thread.inc.php");
 if (!bh_session_check()) {
 
     if (isset($HTTP_GET_VARS['msg'])) {
-      $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
+        $uri = "./index.php?msg=". $HTTP_GET_VARS['msg'];
     }else {
-      $uri = "./index.php?final_uri=". urlencode(get_request_uri());
+        $uri = "./index.php?final_uri=". urlencode(get_request_uri());
     }
 
     header_redirect($uri);
@@ -61,16 +61,13 @@ if (isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest']) && is_nu
     $int = $HTTP_POST_VARS['interest'];
     $uid = bh_session_get_value('UID');
 
-    $db  = db_connect();
-    $sql = "UPDATE LOW_PRIORITY ". forum_table("USER_THREAD"). " SET INTEREST = $int WHERE TID = $tid AND UID = $uid";
-
-    db_query($sql,$db);
+    thread_set_interest($tid, $int);
 }
 
 if (isset($HTTP_GET_VARS['ret'])) {
     header_redirect($HTTP_GET_VARS['ret']);
 }else {
-    header_redirect(basename($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
+    header_redirect("./messages.php");
 }
 
 ?>

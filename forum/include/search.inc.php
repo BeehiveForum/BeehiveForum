@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.30 2003-07-30 19:53:18 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.31 2003-07-31 22:08:43 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -185,9 +185,6 @@ function search_construct_query($argarray, &$searchsql, &$urlquery, &$error)
       }
 
     }elseif ($argarray['method'] == 3) { // EXACT
-
-      //$searchsql.= $folders. " AND (THREAD.TITLE LIKE '". addslashes(trim($argarray['search_string'])). "% '";
-      //$searchsql.= " OR POST_CONTENT.CONTENT LIKE '%". addslashes(trim($argarray['search_string'])). "% <div class=\"sig\">%')";
 
       $searchsql.= $folders. " AND INSTR(THREAD.TITLE, ' ". addslashes(trim($argarray['search_string'])). " ')";
       $searchsql.= " OR INSTR(POST_CONTENT.CONTENT, ' ". addslashes(trim($argarray['search_string'])). " ')";

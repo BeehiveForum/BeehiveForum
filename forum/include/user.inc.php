@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.74 2003-07-30 21:48:36 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.75 2003-07-31 22:08:43 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -129,11 +129,11 @@ function user_update_folders($uid,$folders)
         $sql = "select ALLOWED from ".forum_table("USER_FOLDER")." where UID = '$uid' and FID = '$fid'";
         $result = db_query($sql,$db);
         if(db_num_rows($result)){
-            $sql = "update ".forum_table("USER_FOLDER")." set ALLOWED = '$allowed' ";
-            $sql.= "where UID = '$uid' and FID = '$fid'";
+       $sql = "update ".forum_table("USER_FOLDER")." set ALLOWED = '$allowed' ";
+       $sql.= "where UID = '$uid' and FID = '$fid'";
         } else {
-            $sql = "insert into ".forum_table("USER_FOLDER")." (UID,FID,ALLOWED) ";
-            $sql.= "values ('$uid','$fid','$allowed')";
+       $sql = "insert into ".forum_table("USER_FOLDER")." (UID,FID,ALLOWED) ";
+       $sql.= "values ('$uid','$fid','$allowed')";
         }
         db_query($sql,$db);
     }
@@ -163,13 +163,13 @@ function user_logon($logon, $password, $md5hash = false)
         $uid = $fa['uid'];
 
         if (isset($fa['status']) && $fa['status'] & USER_PERM_SPLAT) { // User is banned
-            $uid = -2;
+       $uid = -2;
         }
 
         if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
-          $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+     $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
         }else {
-          $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+     $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
         }
 
         db_query("update ".forum_table("USER")." set LAST_LOGON = NOW(), LOGON_FROM = '$ipaddress' where UID = $uid", $db_user_logon);
@@ -188,16 +188,16 @@ function user_check_logon($uid, $logon, $md5pass)
       $result = db_query($sql, $db_user_check_logon);
 
       if (!db_num_rows($result)) {
-          return false;
+     return false;
       }else {
 
-          list($status) = db_fetch_array($result);
+     list($status) = db_fetch_array($result);
 
-          if ($status & USER_PERM_SPLAT) {
-            return false;
-          }else {
-            return true;
-          }
+     if ($status & USER_PERM_SPLAT) {
+       return false;
+     }else {
+       return true;
+     }
       }
 
     }else {
@@ -287,10 +287,10 @@ function user_get_prefs($uid)
 
     if(!db_num_rows($result)){
         $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
-                    'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
-                    'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
-                    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
-                    'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '');
+          'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
+          'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
+          'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
+          'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '');
     } else {
         $fa = db_fetch_array($result);
     }
@@ -299,9 +299,9 @@ function user_get_prefs($uid)
 }
 
 function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_url = "",$pic_url = "",
-                           $email_notify = "",$timezone = 0,$dl_saving = "",$mark_as_of_int = "",
-                           $posts_per_page = 5, $font_size = 10, $style, $view_sigs = "",
-                           $start_page = 0, $language = "", $pm_notify = "", $pm_notify_email = "", $dob_display = 0)
+            $email_notify = "",$timezone = 0,$dl_saving = "",$mark_as_of_int = "",
+            $posts_per_page = 5, $font_size = 10, $style, $view_sigs = "",
+            $start_page = 0, $language = "", $pm_notify = "", $pm_notify_email = "", $dob_display = 0)
 {
 
     global $default_style;
@@ -322,7 +322,8 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
     $sql.= "values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
     $sql.= "'". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "', ";
     $sql.= "'". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int', ";
-    $sql.= "$posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language', '$pm_notify', '$pm_notify_email', '$dob_display')";
+    $sql.= "$posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language', '$pm_notify', ";
+    $sql.= "'$pm_notify_email', '$dob_display')";
 
     $result = db_query($sql, $db_user_update_prefs);
 
@@ -378,48 +379,46 @@ function user_get_global_sig($uid)
 
 function user_get_post_count($uid)
 {
-        $db_user_get_count = db_connect();
+    $db_user_get_count = db_connect();
 
-        $sql = "select COUNT(FROM_UID) AS COUNT FROM " . forum_table("POST") . " where FROM_UID = $uid";
+    $sql = "select COUNT(FROM_UID) AS COUNT FROM " . forum_table("POST") . " where FROM_UID = $uid";
+    $result = db_query($sql, $db_user_get_count);
 
-        $result = db_query($sql, $db_user_get_count);
+    $post_count = db_fetch_array($result);
 
-        $post_count = db_fetch_array($result);
-
-        return $post_count['COUNT'];
+    return $post_count['COUNT'];
 }
 
 function user_get_last_logon_time($uid)
 {
-         $db_user_get_last_logon_time = db_connect();
+    $db_user_get_last_logon_time = db_connect();
 
-         $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM " . forum_table("USER") . " WHERE UID = $uid";
+    $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM " . forum_table("USER") . " WHERE UID = $uid";
+    $result = db_query($sql, $db_user_get_last_logon_time);
 
-         $result = db_query($sql, $db_user_get_last_logon_time);
+    $last_logon = db_fetch_array($result);
 
-         $last_logon = db_fetch_array($result);
-
-         return $last_logon['LAST_LOGON'];
+    return $last_logon['LAST_LOGON'];
 }
 
 function user_guest_enabled()
 {
 
-         $db_user_guest_account = db_connect();
+    $db_user_guest_account = db_connect();
 
-         $sql = "SELECT UID, STATUS FROM ". forum_table("USER"). " WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
-         $result = db_query($sql, $db_user_guest_account);
+    $sql = "SELECT UID, STATUS FROM ". forum_table("USER"). " WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
+    $result = db_query($sql, $db_user_guest_account);
 
-         if (db_num_rows($result)) {
-           $fa = db_fetch_array($result);
-           if ($fa['STATUS'] & USER_PERM_SPLAT) {
-             return false;
-           }else {
-             return true;
-           }
-         }
+    if (db_num_rows($result)) {
+        $fa = db_fetch_array($result);
+        if ($fa['STATUS'] & USER_PERM_SPLAT) {
+            return false;
+        }else {
+            return true;
+        }
+    }
 
-         return false;
+    return false;
 
 }
 
@@ -435,10 +434,11 @@ function user_get_dob($uid)
 
 function user_get_age($uid)
 {
-        $prefs = user_get_prefs($uid);
-        if ($prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
-            return format_age($prefs['DOB']);
-    } else {
+    $prefs = user_get_prefs($uid);
+
+    if ($prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
+        return format_age($prefs['DOB']);
+    }else {
         return false;
     }
 }
@@ -455,6 +455,7 @@ function user_get_forthcoming_birthdays()
     $sql .= "LIMIT 0, 5";
 
     $result = db_query($sql, $db_user_get_forthcoming_birthdays);
+
     if (db_num_rows($result)) {
         $birthdays = array();
         while ($row = db_fetch_array($result)) {
@@ -470,7 +471,7 @@ function user_search($usersearch)
 {
     $db_user_search = db_connect();
 
-    $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM ";
+    $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM, STATUS ";
     $sql.= "FROM " . forum_table("USER") . " WHERE LOGON LIKE '%$usersearch%' ";
     $sql.= "OR NICKNAME LIKE '%$usersearch%' LIMIT 0, 20";
 
@@ -492,7 +493,7 @@ function user_get_all($offset = 0)
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
+    $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM, STATUS ";
     $sql.= "FROM ". forum_table("USER"). " ORDER BY LAST_LOGON DESC LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_get_all);
@@ -502,6 +503,35 @@ function user_get_all($offset = 0)
     }
 
     return $user_get_all_array;
+}
+
+function user_get_by_ipaddress($ip, $uid_filter = false)
+{
+    $db_user_get_by_ipaddress = db_connect();
+
+    $sql = "SELECT UID, LOGON from ". forum_table("USER"). " ";
+    $sql.= "WHERE LOGON_FROM = '$ip' ";
+
+    // filter out a UID if specified
+
+    if ($uid_filter) {
+        $uid_filter = _addslashes($uid_filter);
+        $sql.= "AND UID <> '$uid_filter'";
+    }
+
+    $sql.= "AND (LOGON <> 'GUEST' AND PASSWD <> MD5('GUEST'))";
+
+    $result = db_query($sql, $db_user_get_by_ipaddress);
+
+    if (db_num_rows($result)) {
+        $user_get_by_ipaddress = array();
+	while ($row = db_fetch_array($result)) {
+	    $user_get_by_ipaddress[] = $row;
+	}
+	return $user_get_by_ipaddress;
+    }else {
+        return false;
+    }
 }
 
 ?>

@@ -94,6 +94,7 @@ echo "<td class=\"subhead\" align=\"left\">{$lang['accesslevel']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['threads']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['move']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['allow']}</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['folderaccess']}</td>\n";
 echo "</tr>\n";
 
 $folder_array = folder_get_all();
@@ -120,6 +121,13 @@ foreach ($folder_array as $key => $folder) {
     echo "  <td align=\"left\">". $folder['THREAD_COUNT']. "</td>\n";
     echo "  <td align=\"left\">". folder_draw_dropdown($folder['FID'], "t_move", "_$key"). "</td>\n";
     echo "  <td align=\"left\">". form_dropdown_array("t_allow_$key", $allow_values, $allow_labels, $folder['ALLOWED_TYPES'] ? $folder['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow_$key", $folder['ALLOWED_TYPES'])."</td>\n";
+
+    if ($folder['ACCESS_LEVEL'] > 0) {
+        echo "  <td align=\"left\"><a href=\"./admin_folder_access.php?fid=", $folder['FID'], "\">{$lang['permissions']}...</a></td>";
+    }else {
+        echo "  <td align=\"left\">-</td>";
+    }
+
     echo "</tr>\n";
 }
 
@@ -132,10 +140,11 @@ echo "  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1),
 echo "  <td align=\"left\">-</td>\n";
 echo "  <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "  <td align=\"left\">".form_dropdown_array("t_allow_new", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD)."</td>\n";
+echo "  <td align=\"left\">-</td>\n";
 echo "</tr>\n";
 
-echo "<tr><td colspan=\"7\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
-echo "<tr><td colspan=\"7\" align=\"right\">\n";
+echo "<tr><td colspan=\"8\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
+echo "<tr><td colspan=\"8\" align=\"right\">\n";
 echo form_input_hidden("t_count", sizeof($folder_array));
 echo form_submit();
 echo "</td></tr></table>\n";

@@ -43,6 +43,14 @@ function html_poll_edit_error ()
     html_draw_bottom();
 }
 
+function html_message_type_error()
+{
+    global $lang;
+    html_draw_top();
+    echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
+    html_draw_bottom();
+}
+
 function _html_draw_top1($title = false)
 {
 

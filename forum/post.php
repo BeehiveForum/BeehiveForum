@@ -64,6 +64,12 @@ require_once("./include/poll.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
 
+// Check that there are some available folders for this thread type
+if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
+    html_message_type_error();
+    exit;
+}
+
 if (isset($HTTP_POST_VARS['cancel'])) {
 
     $uri = "./discussion.php";
@@ -463,6 +469,14 @@ if ($newthread) {
       exit;
 
     }else {
+
+      if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+
+        echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
+        html_draw_bottom();
+        exit;
+
+      }
 
       if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
 

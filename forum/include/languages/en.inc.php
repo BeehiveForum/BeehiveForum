@@ -31,6 +31,8 @@ $lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
 
 // Common words --------------------------------------------------------
 
+$lang['add'] = "Add";
+$lang['remove'] = "Remove";
 $lang['go'] = "Go";
 $lang['folder'] = "Folder";
 $lang['folders'] = "Folders";
@@ -115,12 +117,15 @@ $lang['unread'] = "unread";
 $lang['all'] = "All";
 $lang['me_caps'] = "ME";
 $lang['by'] = "by";
+$lang['permissions'] = "Permissions";
+$lang['or'] = "or";
 
 // Admin interface (admin*.php) ----------------------------------------
 
 $lang['accessdenied'] = "Access Denied";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
 $lang['managefolders'] = "Manage Folders";
+$lang['managefolder'] = "Manage Folder";
 $lang['id'] = "ID";
 $lang['foldername'] = "Folder Name";
 $lang['accesslevel'] = "Access Level";
@@ -256,6 +261,12 @@ $lang['allow'] = "Allow";
 $lang['normalthreadsonly'] = "Normal threads only";
 $lang['pollthreadsonly'] = "Poll threads only";
 $lang['both'] = "Both thread types";
+$lang['existingpermissions'] = "Existing Permissions";
+$lang['folderisnotrestricted'] = "Folder is not restricted. Set it's Access Level to Restricted before adding/removing users";
+$lang['nousers'] = "No users";
+$lang['addnewuser'] = "Add New User";
+$lang['adduser'] = "Add User";
+$lang['searchforuser'] = "Search For User";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 
@@ -448,6 +459,8 @@ $lang['messagehasbeendeleted'] = "Message has been deleted.";
 $lang['converttoHTML'] = "Convert to HTML";
 $lang['pleaseentermembername'] = "Please enter a membername:";
 $lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in that folder!";
+$lang['cannotpostthisthreadtype'] = "You cannot post this thread type as there are no available folders that allow it.";
+$lang['threadisclosedforposting'] = "This thread is closed, you cannot post in it!";
 
 // Message display (messages.php) --------------------------------------
 

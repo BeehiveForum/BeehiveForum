@@ -46,13 +46,18 @@ if(bh_session_get_value('UID') == 0) {
     exit;
 }
 
-
 require_once("./include/constants.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/lang.inc.php");
+
+// Check that there are some available folders for this thread type
+if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
+    html_message_type_error();
+    exit;
+}
 
 // Check if the user is viewing signatures.
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
@@ -77,7 +82,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
     $valid = false;
   }
-  
+
   if ($valid && !folder_thread_type_allowed($HTTP_POST_VARS['t_fid'], FOLDER_ALLOW_POLL_THREAD)) {
       $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
       $valid = false;

@@ -452,52 +452,30 @@ function messages_get_most_recent($uid)
     return $return;
 }
 
-function message_fontsize_form($fontsize, $tid, $pid)
+function messages_fontsize_form($tid, $pid)
 {
 
     global $HTTP_COOKIE_VARS;
     
-    $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-    
-    if (empty($fontsize)) {
-      if (empty($user_prefs['FONT_SIZE'])) {
-        $fontsize = 10;
-      }else {
-        $fontsize = $user_prefs['FONT_SIZE'];
-      }
-    }
-
-    if (!isset($user_prefs['FIRSTNAME'])) $user_prefs['FIRSTNAME'] = "";
-    if (!isset($user_prefs['LASTNAME'])) $user_prefs['LASTNAME'] = "";
-    if (!isset($user_prefs['HOMEPAGE_URL'])) $user_prefs['HOMEPAGE_URL'] = "";
-    if (!isset($user_prefs['PIC_URL'])) $user_prefs['PIC_URL'] = "";
-
-    user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRSTNAME'],
-                      $user_prefs['LASTNAME'], $user_prefs['HOMEPAGE_URL'],
-                      $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],
-                      $user_prefs['TIMEZONE'], $user_prefs['DL_SAVING'],
-                      $user_prefs['MARK_AS_OF_INT'], $user_prefs['POSTS_PER_PAGE'],
-                      $fontsize);
-    
     $fontstrip = "Adjust text size: ";
     
-    if (($fontsize > 1) && ($fontsize < 15)) {
+    if (($HTTP_COOKIE_VARS['bh_sess_fontsize'] > 1) && ($HTTP_COOKIE_VARS['bh_sess_fontsize'] < 15)) {
     
-      $fontsmaller = $fontsize - 1;
-      $fontlarger = $fontsize + 1;
+      $fontsmaller = $HTTP_COOKIE_VARS['bh_sess_fontsize'] - 1;
+      $fontlarger = $HTTP_COOKIE_VARS['bh_sess_fontsize'] + 1;
         
       if ($fontsmaller < 1) $fontsmaller = 1;
       if ($fontlarger > 15) $fontlarger = 15;
         
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ". $fontsize. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\" target=\"_self\">Larger</a>";
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\" target=\"_self\">Larger</a>";
       
-    }elseif ($fontsize == 1) {
+    }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 1) {
     
-      $fontstrip.= $fontsize. "<a href=\"messages.php?msg=$tid.$pid&fontsize=2\" target=\"_self\">Larger</a>";
+      $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. "<a href=\"messages.php?msg=$tid.$pid&fontsize=2\" target=\"_self\">Larger</a>";
       
-    }elseif ($fontsize == 15) {
+    }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 15) {
    
-      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=14\" target=\"_self\">Smaller</a> ". $fontsize;
+      $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=14\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize'];
       
     }
       

@@ -185,7 +185,9 @@ function user_get_prefs($uid)
     $result = db_query($sql, $db_user_get_prefs);
 
     if(!db_num_rows($result)){
-        $fa = array();
+        $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'HOMEPAGE_URL' => '',
+                    'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
+                    'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '');
     } else {
         $fa = db_fetch_array($result);
     }

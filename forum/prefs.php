@@ -40,6 +40,7 @@ require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/header.inc.php");
 
 $error_html = "";
 
@@ -93,6 +94,12 @@ if(isset($HTTP_POST_VARS['submit'])){
         user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
                         $HTTP_POST_VARS['sig_content'],
                         $HTTP_POST_VARS['sig_html']);
+                        
+        // Update the User's Session to save them having to logout and back in
+        
+        bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
+        
+        header_redirect("prefs.php");
                         
     }
     

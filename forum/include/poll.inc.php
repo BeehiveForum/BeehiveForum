@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.77 2003-11-27 21:51:50 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.78 2003-11-27 22:14:33 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -319,6 +319,15 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     $poll_group_count = 1;
 
+    for ($i = 0; $i < sizeof($pollresults['GROUP_ID']); $i++) {
+      
+      if (!isset($pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]]))	{
+        $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]] = 1;
+      }else {
+        $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]]++;
+      }
+    }
+
     if ($in_list) {
 
       if ((!is_array($userpolldata) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime()) && !$is_preview) {
@@ -336,10 +345,20 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                 $poll_group_count++;
             }
 
-            $polldata['CONTENT'].= "        <tr>\n";
-            $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"15\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-            $polldata['CONTENT'].= "          <td class=\"postbody\" width=\"435\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
-            $polldata['CONTENT'].= "        </tr>\n";
+	    if ($pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]] > 1) {
+
+              $polldata['CONTENT'].= "        <tr>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"15\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\" width=\"435\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
+              $polldata['CONTENT'].= "        </tr>\n";
+
+	    }else {
+
+              $polldata['CONTENT'].= "        <tr>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"15\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\" width=\"435\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
+              $polldata['CONTENT'].= "        </tr>\n";
+	    }
 
             $poll_previous_group = $pollresults['GROUP_ID'][$i];
 

@@ -452,7 +452,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
             echo "</table>\n</td>\n</tr>\n";
 
-        }else {
+        }elseif ($folder_info[$folder_number]['INTEREST'] != -1) {
 
             // Only display the additional folder info if the user _DOESN'T_ have the folder on ignore
 

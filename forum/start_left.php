@@ -67,11 +67,14 @@ $sql .= "LEFT JOIN ".forum_table("USER_THREAD")." UT ";
 $sql .= "ON (T.TID = UT.TID and UT.UID = $uid) ";
 $sql .= "JOIN " . forum_table("USER") . " U ";
 $sql .= "JOIN " . forum_table("POST") . " P ";
+$sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " UF ON ";
+$sql .= "(UF.FID = T.FID AND UF.UID = $uid) ";
 $sql .= "WHERE T.FID IN ($fidlist) ";
 $sql .= "AND U.UID = P.FROM_UID ";
 $sql .= "AND P.TID = T.TID ";
 $sql .= "AND P.PID = 1 ";
-$sql .= "AND (UT.INTEREST >= 0 or UT.INTEREST is null) ";
+$sql .= "AND NOT (UT.INTEREST <=> -1) ";
+$sql .= "AND NOT (UF.INTEREST <=> -1) ";
 $sql .= "ORDER BY T.MODIFIED desc ";
 $sql .= "LIMIT 0, 10";
 

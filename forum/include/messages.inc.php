@@ -109,13 +109,13 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
 {
 
     global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length;
 
-    if(!isset($message['CONTENT']) || $message['CONTENT'] == ""){
-        message_display_deleted($tid,$message['PID']);
+    if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+        message_display_deleted($tid, $message['PID']);
         return;
     }
     
@@ -124,13 +124,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
 	$content_length = strlen($message['CONTENT']);
-	if($content_length > $maximum_post_length && is_integer($maximum_post_length)){
-		$message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length))
-			."...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=".$tid.".".$message['PID']."\" target=\"_self\">View full message.</a>";
+	if(($content_length > $maximum_post_length) && $limit_text) {
+		$message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
+		$message['CONTENT'].= "...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">View full message.</a>";
 	}
 
     if($in_list){
-        echo "<a name=\"a" . $tid . "_" . $message['PID'] . "\"></a>";
+        echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>";
     }
 
 	// OUTPUT MESSAGE ----------------------------------------------------------
@@ -145,7 +145,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span></td>\n";
 
 	echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
-	if($message['RELATIONSHIP'] < 0 && $maximum_post_length){
+	if($message['RELATIONSHIP'] < 0 && $limit_text){
 		echo "<b>Ignored message</b>";
 	} else {
 		if($in_list){
@@ -171,7 +171,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	echo "</td>\n";
 
 	echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
-	if($message['RELATIONSHIP'] < 0 && $maximum_post_length && $in_list){
+	if($message['RELATIONSHIP'] < 0 && $limit_text && $in_list){
 		echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
 		echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
 	} else if($in_list) {
@@ -181,7 +181,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
 	echo "</table></td></tr>\n";
 
-	if(!($message['RELATIONSHIP'] < 0 && $maximum_post_length)){
+	if(!($message['RELATIONSHIP'] < 0 && $limit_text)){
 		echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
 		if($in_list){
 			echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";            
@@ -199,7 +199,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 		echo "&nbsp;</span></td></tr>\n";
 	}
 
-	if(!($message['RELATIONSHIP'] < 0 && $maximum_post_length)){
+	if(!($message['RELATIONSHIP'] < 0 && $limit_text)){
 
 		echo "<tr><td class=\"postbody\">". $message['CONTENT'];
 		
@@ -228,7 +228,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 		
 		echo "</td></tr>\n";
 
-		if($in_list && $maximum_post_length != false){
+		if($in_list && $limit_text != false){
 			echo "<tr><td align=\"center\"><span class=\"postresponse\">";
 			if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))){
 				echo "<img src=\"./images/star.png\" border=\"0\" />";

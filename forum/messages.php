@@ -86,7 +86,7 @@ echo "</td></tr></table></div>\n";
 if($msg_count>0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
-        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed,$maximum_post_length);
+        message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed, true);
         $last_pid = $message['PID'];
     }
 }

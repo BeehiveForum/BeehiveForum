@@ -36,6 +36,9 @@ function bh_check_gzip()
         return false;
     }
 
+    // Skip gzip compression if the browser/proxy reports it is HTTP/1.0
+    if (strpos($HTTP_SERVER_VARS['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
+
     // determine which gzip encoding the client asked for
     // (x-gzip = IE; gzip = everything else).
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.194 2004-11-29 22:31:56 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.195 2004-12-05 20:34:59 decoyduck Exp $ */
 
 // International English language file
 
@@ -1313,5 +1313,18 @@ $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
 // Dictionary (dictionary.php) -----------------------------------------
 
 $lang['spellcheck'] = "Spell check";
+
+// Permissions keys ----------------------------------------------------
+
+$lang['postreadingallowed'] = "Post reading allowed";
+$lang['postcreationallowed'] = "Post creation allowed";
+$lang['threadcreationallowed'] = "Thread creation allowed";
+$lang['posteditingallowed'] = "Post editing allowed";
+$lang['postdeletionallowed'] = "Post deletion allowed";
+$lang['attachmentsallowed'] = "Attachments allowed";
+$lang['htmlpostingallowed'] = "HTML posting allowed";
+$lang['signatureallowed'] = "Signature allowed";
+$lang['guestaccessallowed'] = "Guest access allowed";
+
 
 ?>

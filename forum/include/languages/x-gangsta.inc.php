@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.56 2004-12-04 17:49:13 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.57 2004-12-05 20:34:59 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -1310,5 +1310,17 @@ $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
 // Dictionary (dictionary.php) -----------------------------------------
 
 $lang['spellcheck'] = "Spizellin'";
+
+// Permissions keys ----------------------------------------------------
+
+$lang['postreadingallowed'] = "Post reading allowed";
+$lang['postcreationallowed'] = "Post creation allowed";
+$lang['threadcreationallowed'] = "Thread creation allowed";
+$lang['posteditingallowed'] = "Post editing allowed";
+$lang['postdeletionallowed'] = "Post deletion allowed";
+$lang['attachmentsallowed'] = "Attachments allowed";
+$lang['htmlpostingallowed'] = "HTML posting allowed";
+$lang['signatureallowed'] = "Signature allowed";
+$lang['guestaccessallowed'] = "Guest access allowed";
 
 ?>

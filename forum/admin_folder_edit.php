@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.22 2004-11-29 22:31:51 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.23 2004-12-05 20:34:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,6 +162,10 @@ if (isset($_POST['submit'])) {
         $folder_data['ALLOWED_TYPES'] = $_POST['allowed_types'];
     }
 
+    if (isset($_POST['position']) && is_numeric($_POST['position'])) {
+        $folder_data['POSITION'] = $_POST['position'];
+    }
+
     $t_post_read     = (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
     $t_post_create   = (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
     $t_thread_create = (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
@@ -219,6 +223,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('fid', $fid), "\n";
+echo "  ", form_input_hidden('position', $folder_data['POSITION']), "\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";

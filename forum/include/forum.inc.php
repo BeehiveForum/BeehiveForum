@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.93 2004-12-05 17:58:05 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.94 2004-12-11 14:37:29 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -442,7 +442,6 @@ function forum_create($webtag, $forum_name, $access)
                              'FOLDER', 'FORUM_LINKS', 'LINKS',
                              'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
                              'POLL', 'POLL_VOTES', 'POST',
-                             'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
                              'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
                              'STATS', 'THREAD', 'USER_FOLDER',
                              'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
@@ -662,36 +661,6 @@ function forum_create($webtag, $forum_name, $access)
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        // Create POST_ATTACHMENT_FILES table
-
-        $sql = "CREATE TABLE {$webtag}_POST_ATTACHMENT_FILES (";
-        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
-        $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
-        $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
-        $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (ID),";
-        $sql.= "  KEY AID (AID),";
-        $sql.= "  KEY HASH (HASH)";
-        $sql.= ") TYPE=MYISAM;";
-
-        if (!$result = db_query($sql, $db_forum_create)) return false;
-
-        // Create POST_ATTACHMENT_IDS table
-
-        $sql = "CREATE TABLE {$webtag}_POST_ATTACHMENT_IDS (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-        $sql.= "  PRIMARY KEY  (TID,PID),";
-        $sql.= "  KEY AID (AID)";
-        $sql.= ") TYPE=MYISAM;";
-
-        if (!$result = db_query($sql, $db_forum_create)) return false;
-
         // Create POST_CONTENT table
 
         $sql = "CREATE TABLE {$webtag}_POST_CONTENT (";
@@ -746,6 +715,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql = "CREATE TABLE {$webtag}_THREAD (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
         $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
@@ -754,9 +724,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
         $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
         $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY  (TID),";
-        $sql.= "  KEY FID (FID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= "  PRIMARY KEY (TID),";
+        $sql.= "  KEY FID (FID),";
+        $sql.= "  KEY BY_UID (BY_UID),";
+        $sql.= "  FULLTEXT KEY TITLE (TITLE)";
+        $sql.= ")";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -971,12 +943,19 @@ function forum_delete($fid)
             $sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
             $result = db_query($sql, $db_forum_delete);
 
+            $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
+
+            while ($row = db_fetch_array($result)) {
+
+                delete_attachment_by_aid($row['AID']);
+            }
+
             $table_array = array('ADMIN_LOG', 'BANNED_IP', 'FILTER_LIST',
-                                 'FOLDER', 'FORUM_LINKS', 'GROUP_PERMS',
-                                 'GROUP_USERS', 'GROUPS', 'LINKS',
+                                 'FOLDER', 'FORUM_LINKS', 'GROUPS',
+                                 'GROUP_PERMS', 'GROUP_USERS', 'LINKS',
                                  'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
                                  'POLL', 'POLL_VOTES', 'POST',
-                                 'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
                                  'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
                                  'STATS', 'THREAD', 'USER_FOLDER',
                                  'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',

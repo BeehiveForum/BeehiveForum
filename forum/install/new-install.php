@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.7 2004-12-10 19:51:32 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.8 2004-12-11 14:37:29 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -431,7 +431,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_FILES (";
+$sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
 $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -451,11 +451,12 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_IDS (";
+$sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (TID,PID),";
+$sql.= "  PRIMARY KEY  (FID, TID, PID),";
 $sql.= "  KEY AID (AID)";
 $sql.= ")";
 

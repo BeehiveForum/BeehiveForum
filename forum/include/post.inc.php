@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.98 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.99 2004-12-11 14:37:29 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -88,20 +88,21 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT TID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT TID FROM POST_ATTACHMENT_IDS ";
+    $sql.= "WHERE FID = '{$table_data['FID']}' ";
+    $sql.= "AND TID = '$tid' AND PID = '$pid'";
 
     $result = db_query($sql, $db_post_save_attachment_id);
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE {$table_data['PREFIX']}POST_ATTACHMENT_IDS SET AID = '$aid' ";
-        $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+        $sql = "UPDATE POST_ATTACHMENT_IDS SET AID = '$aid' ";
+        $sql.= "WHERE FID = '{$table_data['FID']}' AND TID = '$tid' AND PID = '$pid'";
 
     }else {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
-        $sql.= "(TID, PID, AID) VALUES ('$tid', '$pid', '$aid')";
+        $sql = "INSERT INTO POST_ATTACHMENT_IDS ";
+        $sql.= "(FID, TID, PID, AID) VALUES ('{$table_data['FID']}', '$tid', '$pid', '$aid')";
     }
 
     return db_query($sql, $db_post_save_attachment_id);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.59 2004-12-03 15:27:10 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.60 2004-12-11 14:37:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,15 +151,15 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['sig']) && is_numeric($_POST['sig'])) {
-        $t_sig = $_POST['rel'];
+        $t_rel+= $_POST['rel'];
     }else {
-        $t_sig = 0;
+        $t_rel+= 0;
     }
 
     if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "N") {
-        $t_sig = "N";
+        $view_sigs = "N";
     }else {
-        $t_sig = "";
+        $view_sigs = "";
     }
 
     if (isset($_POST['view_sigs_global'])) {
@@ -170,7 +170,7 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        user_rel_update($uid, $peer_uid, $rel);
+        user_rel_update($uid, $peer_uid, $t_rel);
 
         user_update_global_sig($uid, $view_sigs, $view_sigs_global);
 
@@ -242,19 +242,19 @@ if (isset($peer_uid)) {
     echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['relationship']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"200\">", form_radio("rel", "1", $lang['friend'], $rel&USER_FRIEND ? true : false), "</td>\n";
+    echo "                  <td width=\"200\">", form_radio("rel", "1", $lang['friend'], $rel & USER_FRIEND ? true : false), "</td>\n";
     echo "                  <td width=\"400\">: {$lang['friend_exp']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"200\">", form_radio("rel", "0", $lang['normal'], !(($rel&USER_IGNORED) || ($rel&USER_FRIEND)) ? true : false), "</td>\n";
+    echo "                  <td width=\"200\">", form_radio("rel", "0", $lang['normal'], !(($rel & USER_IGNORED) || ($rel & USER_FRIEND) || ($rel & USER_IGNORED_COMPLETELY)) ? true : false), "</td>\n";
     echo "                  <td width=\"400\">: {$lang['normal_exp']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"200\">", form_radio("rel", "2", $lang['ignored'], $rel&USER_IGNORED ? true : false), "</td>\n";
+    echo "                  <td width=\"200\">", form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false), "</td>\n";
     echo "                  <td width=\"400\">: {$lang['ignore_exp']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"200\">", form_radio("rel", "8", $lang['ignoredcompletely'], $rel&USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
+    echo "                  <td width=\"200\">", form_radio("rel", "8", $lang['ignoredcompletely'], $rel & USER_IGNORED_COMPLETELY ? true : false), "</td>\n";
     echo "                  <td width=\"400\">: {$lang['ignore_completely_exp']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -288,14 +288,14 @@ if (isset($peer_uid)) {
     echo "                  <td width=\"400\">: {$lang['displaysig_exp']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"200\">", form_radio("sig", "4", $lang['ignore'], $rel&USER_IGNORED_SIG ? true : false), "</td>\n";
+    echo "                  <td width=\"200\">", form_radio("sig", "4", $lang['ignore'], $rel & USER_IGNORED_SIG ? true : false), "</td>\n";
     echo "                  <td width=\"400\">: {$lang['hidesig_exp']}</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
 echo "                  <td width=\"200\" valign=\"top\">", form_checkbox("view_sigs", "N", $lang['globallyignored'], $user_prefs['VIEW_SIGS'] == 'N'), "</td>\n";
-echo "                  <td width=\"400\">: {$lang['globallyignoredsig_exp']}<br />&nbsp;(", form_checkbox("view_sigs_global","Y",$lang['setforallforums'],$user_prefs['VIEW_SIGS_GLOBAL']) ,")</td>\n";
+echo "                  <td width=\"400\">: {$lang['globallyignoredsig_exp']}<br />&nbsp;(", form_checkbox("view_sigs_global", "Y", $lang['setforallforums'], $user_prefs['VIEW_SIGS_GLOBAL']) ,")</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.94 2004-11-29 22:35:11 decoyduck Exp $ */
+/* $Id: search.php,v 1.95 2004-12-11 14:37:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -266,10 +266,6 @@ if (isset($_POST['search_string'])) {
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>", form_radio("include", 2, "Thread Title and Posts only", true), "&nbsp;", "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_radio("include", 3, "Thread Titles, Post and Attachments", false), "&nbsp;", "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";

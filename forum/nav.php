@@ -35,7 +35,7 @@ header_no_cache();
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
-    <body style="font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px; background-color: #999999">
+    <body style="font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px; background-color: #D7D7D7">
         <a href="start.php" target="main">Start</a>&nbsp;
         <a href="discussion.php" target="main">Messages</a>&nbsp;
         <a href="prefs.php" target="main">Preferences</a>&nbsp;

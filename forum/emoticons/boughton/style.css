@@ -1,12 +1,13 @@
+.e__ {
+	display: none;
+}
+
 .e_smile { /* :) :-) */
 	padding-left: 15px;
     height: 13px;
 	font-size: 13px;
     background-image: url("./images/smile.png");
     background-repeat: no-repeat;
-}
-.e_smile span {
-	display: none;
 }
 
 .e_wink { /* ;) ;-) */
@@ -16,9 +17,6 @@
     background-image: url("./images/wink.png");
     background-repeat: no-repeat;
 }
-.e_wink span {
-	display: none;
-}
 
 .e_sad { /* :( :-( */
 	padding-left: 15px;
@@ -27,19 +25,13 @@
     background-image: url("./images/sad.png");
     background-repeat: no-repeat;
 }
-.e_sad span {
-	display: none;
-}
 
 .e_cry { /* :'( :'-( */
 	padding-left: 15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cry.png");
+    background-image: url("./images/tears.png");
     background-repeat: no-repeat;
-}
-.e_cry span {
-	display: none;
 }
 
 .e_tongue { /* :P :-P */
@@ -49,9 +41,6 @@
     background-image: url("./images/tease.png");
     background-repeat: no-repeat;
 }
-.e_tongue span {
-	display: none;
-}
 
 .e_grin { /* :D :-D */
 	padding-left: 15px;
@@ -59,9 +48,6 @@
 	font-size: 13px;
     background-image: url("./images/grin.png");
     background-repeat: no-repeat;
-}
-.e_grin span {
-	display: none;
 }
 
 .e_confused { /* :S :-S */
@@ -71,9 +57,6 @@
     background-image: url("./images/confused.png");
     background-repeat: no-repeat;
 }
-.e_confused span {
-	display: none;
-}
 
 .e_plain { /* :| :-| */
 	padding-left: 15px;
@@ -81,9 +64,6 @@
 	font-size: 13px;
     background-image: url("./images/plain.png");
     background-repeat: no-repeat;
-}
-.e_plain span {
-	display: none;
 }
 
 .e_unsure { /* :/ :-/ */
@@ -93,9 +73,6 @@
     background-image: url("./images/unsure.png");
     background-repeat: no-repeat;
 }
-.e_unsure span {
-	display: none;
-}
 
 .e_shock { /* :O :-O */
 	padding-left: 15px;
@@ -103,9 +80,6 @@
 	font-size: 13px;
     background-image: url("./images/shock.png");
     background-repeat: no-repeat;
-}
-.e_shock span {
-	display: none;
 }
 
 .e_angry { /* :@ :-@ */
@@ -115,9 +89,6 @@
     background-image: url("./images/angry.png");
     background-repeat: no-repeat;
 }
-.e_angry span {
-	display: none;
-}
 
 .e_sidelook { /* ¬_¬ */
 	padding-left: 15px;
@@ -125,9 +96,6 @@
 	font-size: 13px;
     background-image: url("./images/sidelook.png");
     background-repeat: no-repeat;
-}
-.e_sidelook span {
-	display: none;
 }
 
 .e_cringe { /* >.< */
@@ -137,9 +105,6 @@
     background-image: url("./images/cringe.png");
     background-repeat: no-repeat;
 }
-.e_cringe span {
-	display: none;
-}
 
 .e_cheeky { /* :> */
 	padding-left: 15px;
@@ -147,9 +112,6 @@
 	font-size: 13px;
     background-image: url("./images/cheeky.png");
     background-repeat: no-repeat;
-}
-.e_cheeky span {
-	display: none;
 }
 
 .e_evil_cheeky { /* }:> */
@@ -159,9 +121,6 @@
     background-image: url("./images/evil_cheeky.png");
     background-repeat: no-repeat;
 }
-.e_evil_cheeky span {
-	display: none;
-}
 
 .e_happy { /* ^.^ */
 	padding-left: 15px;
@@ -169,9 +128,6 @@
 	font-size: 13px;
     background-image: url("./images/happy.png");
     background-repeat: no-repeat;
-}
-.e_happy span {
-	display: none;
 }
 
 .e_shades { /* B-) B) 8-) 8) */
@@ -181,9 +137,6 @@
     background-image: url("./images/shades.png");
     background-repeat: no-repeat;
 }
-.e_shades span {
-	display: none;
-}
 
 .e_smile_big_nose { /* :o) :O) */
 	padding-left: 15px;
@@ -192,6 +145,211 @@
     background-image: url("./images/smile_big_nose.png");
     background-repeat: no-repeat;
 }
-.e_smile_big_nose span {
-	display: none;
+
+.e_beer { /* (beer) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/beer.png");
+    background-repeat: no-repeat;
+}
+
+.e_boy { /* (boy) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/boy.png");
+    background-repeat: no-repeat;
+}
+
+.e_brokenheart { /* (heartbroke) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/brokenheart.png");
+    background-repeat: no-repeat;
+}
+
+.e_cat { /* (cat) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cat.png");
+    background-repeat: no-repeat;
+}
+
+.e_cheering { /* (cheer) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cheer.gif");
+    background-repeat: no-repeat;
+}
+
+.e_cig { /* (cig) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cig.png");
+    background-repeat: no-repeat;
+}
+
+.e_clock { /* (clock) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/clock.png");
+    background-repeat: no-repeat;
+}
+
+.e_cow { /* (cow) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cow.png");
+    background-repeat: no-repeat;
+}
+
+.e_cowboy { /* (cowboy) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cowboy.png");
+    background-repeat: no-repeat;
+}
+
+.e_drink { /* (drink) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/drink.png");
+    background-repeat: no-repeat;
+}
+
+.e_envelope { /* (envelope) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/envelope.png");
+    background-repeat: no-repeat;
+}
+
+.e_fail { /* (fail) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/fail2.gif");
+    background-repeat: no-repeat;
+}
+
+.e_fish { /* (fish) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/fish.png");
+    background-repeat: no-repeat;
+}
+
+.e_flower { /* (flower) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/flower.png");
+    background-repeat: no-repeat;
+}
+
+.e_girl { /* (girl) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/girl.png");
+    background-repeat: no-repeat;
+}
+
+.e_heart { /* (heart) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/heart.png");
+    background-repeat: no-repeat;
+}
+
+.e_kiss { /* (kiss) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/kiss.png");
+    background-repeat: no-repeat;
+}
+
+.e_lightbulb { /* (lightbulb) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/lightbulb.png");
+    background-repeat: no-repeat;
+}
+
+.e_monkey { /* (monkey) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/monkey.png");
+    background-repeat: no-repeat;
+}
+
+.e_musicnote { /* (music) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/musicnote.png");
+    background-repeat: no-repeat;
+}
+
+.e_nosmoke { /* (nosmoke) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/nosmoke.png");
+    background-repeat: no-repeat;
+}
+
+.e_rainbow { /* (rainbow) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/rainbow.png");
+    background-repeat: no-repeat;
+}
+
+.e_pipe { /* :Y :-Y */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/smoke.png");
+    background-repeat: no-repeat;
+}
+
+.e_star { /* (star) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/star.png");
+    background-repeat: no-repeat;
+}
+
+.e_tea { /* (tea) */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/tea.png");
+    background-repeat: no-repeat;
+}
+
+.e_crying { /* :(( :-(( */
+	padding-left: 15px;
+    height: 13px;
+	font-size: 13px;
+    background-image: url("./images/cry.png");
+    background-repeat: no-repeat;
 }

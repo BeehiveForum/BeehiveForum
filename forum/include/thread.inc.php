@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.42 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.43 2004-03-10 21:42:48 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -34,7 +34,7 @@ function thread_get_title($tid)
 {
     $db_thread_get_title = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return "The Unknown Thread";
 
@@ -55,7 +55,7 @@ function thread_get($tid)
 {
     $db_thread_get = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
   
     $uid = bh_session_get_value('UID');
 
@@ -119,7 +119,7 @@ function thread_get_author($tid)
 {
     $db_thread_get_author = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return false;
 
@@ -137,7 +137,7 @@ function thread_get_interest($tid)
     $uid = bh_session_get_value('UID');
     $db_thread_get_interest = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return false;
 
@@ -159,7 +159,7 @@ function thread_set_interest($tid, $interest, $new = false)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($interest)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if ($new) {
         $sql = "insert into {$table_prefix}USER_THREAD (UID, TID, INTEREST) ";
@@ -178,7 +178,7 @@ function thread_can_view($tid = 0, $uid = 0)
     $fidlist = folder_get_available();
     $db_thread_can_view = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($uid)) return false;
@@ -193,7 +193,7 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 {
     $db_thread_set_sticky = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return false;
 
@@ -216,7 +216,7 @@ function thread_set_closed($tid, $closed = true)
 {
     $db_thread_set_closed = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return false;
 
@@ -233,7 +233,7 @@ function thread_admin_lock($tid, $locked = true)
 {
     $db_thread_admin_lock = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return false;
 
@@ -250,7 +250,7 @@ function thread_change_folder($tid, $new_fid)
 {
     $db_thread_set_closed = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($new_fid)) return false;
@@ -263,7 +263,7 @@ function thread_change_title($tid, $new_title)
 {
     $db_thread_change_title = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $new_title = addslashes(_htmlentities($new_title));
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.241 2004-03-10 20:21:04 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.242 2004-03-10 21:42:47 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -48,7 +48,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $db_message_get = db_connect();
    
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
@@ -156,7 +156,7 @@ function message_get_content($tid, $pid)
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT CONTENT FROM {$table_prefix}POST_CONTENT WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql,$db_mgc);
@@ -749,7 +749,7 @@ function message_get_user($tid, $pid)
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT FROM_UID FROM {$table_prefix}POST WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql, $db_message_get_user);
@@ -775,7 +775,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     // Check for existing entry in USER_THREAD
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT LAST_READ FROM {$table_prefix}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
     $result = db_query($sql, $db_message_update_read);
@@ -823,7 +823,7 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
     $sql.= "FROM {$table_prefix}THREAD THREAD ";

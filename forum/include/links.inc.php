@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.23 2004-03-10 20:21:04 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.24 2004-03-10 21:42:47 decoyduck Exp $ */
 
 // Functions for the links database
 
@@ -43,7 +43,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
     $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
@@ -72,7 +72,7 @@ function links_folders_get($invisible = false)
 {
     $db_links_folders_get = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql  = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_prefix}LINKS_FOLDERS ";
     if (!$invisible) $sql .= "WHERE VISIBLE = 'Y' ";
@@ -98,7 +98,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 
     $visible = $visible ? "Y" : "N";
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}LINKS (URI, TITLE, DESCRIPTION, FID, UID, VISIBLE, CREATED) ";
     $sql.= "VALUES ('$uri', '$title', '$description', '$fid', '$uid', '$visible', NOW())";
@@ -114,7 +114,7 @@ function links_add_folder($fid, $name, $visible = false)
 
     $visible = $visible ? "Y" : "N";
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) ";
     $sql.= "VALUES (NULL, $fid, '$name', '$visible')";
@@ -178,7 +178,7 @@ function links_change_visibility($lid, $visible = true)
 
     $db_links_change_visibility = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}LINKS SET VISIBLE = '$visible' WHERE LID = '$lid'";
     return db_query($sql, $db_links_change_visibility);
@@ -190,7 +190,7 @@ function links_click($lid)
 
     $db_links_click = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}LINKS SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_click);
@@ -208,7 +208,7 @@ function links_get_single($lid)
 
     $db_links_get_single = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql  = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, ";
     $sql .= "LINKS.VISIBLE, LINKS.CLICKS, USER.LOGON, USER.NICKNAME, AVG(LINKS_VOTE.RATING) AS RATING, COUNT(LINKS_VOTE.RATING) AS VOTES ";
@@ -242,7 +242,7 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
 
     $db_links_get_in_folder = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
     $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
@@ -274,7 +274,7 @@ function links_folder_change_visibility($fid, $visible = true)
 
     $visible = $visible ? "Y" : "N";
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}LINKS_FOLDERS SET VISIBLE = '$visible' WHERE FID = $fid";
     return db_query($sql, $db_links_folder_change_visibility);
@@ -288,7 +288,7 @@ function links_folder_delete($fid)
 
     $db_links_folder_delete = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT MIN(FID) AS FID FROM {$table_prefix}LINKS";
     $result_id = db_query($sql, $db_links_folder_delete);
@@ -312,7 +312,7 @@ function links_get_vote($lid, $uid)
     if (!is_numeric($lid)) return false;
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT RATING FROM {$table_prefix}LINKS_VOTE WHERE LID = $lid AND UID = $uid";
     $result_id = db_query($sql, $db_links_get_vote);
@@ -333,7 +333,7 @@ function links_vote($lid, $vote, $uid)
     if (!is_numeric($vote)) return false;
     if (!is_numeric($uid))  return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "DELETE FROM {$table_prefix}LINKS_VOTE WHERE UID = '$uid' AND LID = '$lid'";
     $result = db_query($sql, $db_links_vote);
@@ -351,7 +351,7 @@ function links_add_comment($lid, $uid, $comment)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($uid))  return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}LINKS_COMMENT (LID, UID, COMMENT, CREATED) ";
     $sql.= "VALUES ('$lid', '$uid', '$comment', NOW())";
@@ -365,7 +365,7 @@ function links_get_comments($lid)
 
     if (!is_numeric($lid))  return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
     $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT ";
@@ -403,7 +403,7 @@ function links_delete_comment($cid)
 {
     $db_links_delete_comment = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql = "DELETE FROM {$table_prefix}LINKS_COMMENT WHERE CID = $cid";
     $result_id = db_query($sql, $db_links_delete_comment);
@@ -416,7 +416,7 @@ function links_delete($lid)
 
     if (!is_numeric($lid))  return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "DELETE FROM {$table_prefix}LINKS WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_delete);
@@ -435,7 +435,7 @@ function links_update($lid, $fid, $title, $uri, $description)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($fid))  return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}LINKS SET LID = '$lid', FID = '$fid', ";
     $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description' WHERE LID = '$lid'";
@@ -449,7 +449,7 @@ function links_get_creator_uid($lid)
 
     if (!is_numeric($lid))  return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT UID FROM {$table_prefix}LINKS WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_get_creator_uid);
@@ -463,7 +463,7 @@ function links_get_comment_uid($cid)
 
     if (!is_numeric($cid))  return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT UID FROM {$table_prefix}LINKS_COMMENT WHERE CID = '$cid'";
     $result_id = db_query($sql, $db_links_get_comment_uid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.47 2004-03-10 20:21:04 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.48 2004-03-10 21:42:47 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -34,7 +34,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 
@@ -57,7 +57,7 @@ function folder_get_title($fid)
 
    if (!is_numeric($fid)) return "The Unknown Folder";
    
-   $table_prefix = get_table_prefix();
+   $table_prefix = get_webtag(true);
 
    $sql = "SELECT FOLDER.TITLE FROM {$table_prefix}FOLDER FOLDER WHERE FID = $fid";
    $result = db_query($sql, $db_folder_get_title);
@@ -82,7 +82,7 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
     if (!is_numeric($access)) $access = 0;
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}FOLDER (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
     $sql.= "VALUES ('$title', $access, '$description', $allowed_types, $position)";
@@ -105,7 +105,7 @@ function folder_update($fid, $title, $access, $description = "", $allowed_types 
     $title = addslashes($title);
     $description = addslashes($description);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE LOW_PRIORITY {$table_prefix}FOLDER SET TITLE = '$title', ";
     $sql.= "ACCESS_LEVEL = $access, DESCRIPTION = '$description', ";
@@ -121,7 +121,7 @@ function folder_move_threads($from, $to)
     if (!is_numeric($from)) return false;
     if (!is_numeric($to)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}THREAD SET FID = '$to' WHERE FID = '$from'";
     $result = db_query($sql, $db_folder_move_threads);
@@ -134,7 +134,7 @@ function folder_get_available()
     $uid = bh_session_get_value('UID');
     $db_folder_get_available = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT F.FID FROM {$table_prefix}FOLDER F LEFT JOIN ";
     $sql.= "{$table_prefix}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
@@ -159,7 +159,7 @@ function folder_get_all()
 {
     $db_folder_get_all = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(THREAD.FID) AS THREAD_COUNT ";
@@ -187,7 +187,7 @@ function folder_get($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, COUNT(*) AS THREAD_COUNT ";
@@ -210,7 +210,7 @@ function folder_get_permissions($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM ";
     $sql.= "USER USER, {$table_prefix}FOLDER FOLDER ";
@@ -238,7 +238,7 @@ function folder_is_valid($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT FID FROM {$table_prefix}FOLDER WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_get_available);
@@ -259,7 +259,7 @@ function folder_is_accessible($fid)
 
     if (!is_numeric($fid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT F.FID FROM {$table_prefix}FOLDER F LEFT JOIN ";
     $sql.= "{$table_prefix}USER_FOLDER UF ON (UF.FID = F.FID and UF.UID = $uid) ";
@@ -284,7 +284,7 @@ function user_set_folder_interest($fid, $interest)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT FID FROM {$table_prefix}USER_FOLDER WHERE UID = '$uid' AND FID = '$fid'";
     $result = db_query($sql, $db_user_set_folder_interest);
@@ -309,7 +309,7 @@ function user_get_restricted_folders($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT F.FID, F.TITLE, UF.ALLOWED FROM {$table_prefix}FOLDER F ";
     $sql.= "LEFT JOIN {$table_prefix}USER_FOLDER UF ON (UF.UID = $uid AND UF.FID = F.FID) ";
@@ -335,7 +335,7 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
     if (!is_numeric($fid)) return false;
     if (!is_numeric($type)) $type = FOLDER_ALLOW_ALL_THREAD;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT ALLOWED_TYPES FROM {$table_prefix}FOLDER WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_thread_type_allowed);
@@ -361,7 +361,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT F.FID FROM {$table_prefix}FOLDER F LEFT JOIN ";
     $sql.= "{$table_prefix}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";

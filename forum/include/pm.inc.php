@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.38 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.39 2004-03-10 21:42:47 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -44,7 +44,7 @@ function pm_markasread($mid)
     // Update the row so it appears as read to the receipient
     // ------------------------------------------------------------
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
@@ -82,7 +82,7 @@ function pm_add_sentitem($mid)
 
     if (!is_numeric($mid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT, AT.AID ";
     $sql.= "FROM {$table_prefix}PM PM ";
@@ -143,7 +143,7 @@ function pm_list_get($folder)
     // Get a list of messages in the specified folder
     // ------------------------------------------------------------
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
@@ -179,7 +179,7 @@ function pm_get_user($mid)
 
     if (!is_numeric($mid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}PM PM ON (PM.FROM_UID = USER.UID) ";
@@ -213,7 +213,7 @@ function pm_draw_to_dropdown($default_uid)
         }
     }
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
@@ -245,7 +245,7 @@ function pm_single_get($mid, $folder, $uid = false)
     // Fetch the single message as specified by the MID
     // ------------------------------------------------------------
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.TO_UID, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
@@ -473,7 +473,7 @@ function pm_save_attachment_id($mid, $aid)
     if (!is_numeric($mid)) return false;
     if (!is_md5($aid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $db_pm_save_attachment_id = db_connect();
     $sql = "INSERT INTO {$table_prefix}PM_ATTACHMENT_IDS (MID, AID) values ('$mid', '$aid')";
@@ -488,7 +488,7 @@ function pm_send_message($tuid, $subject, $content)
 
     if (!is_numeric($tuid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $subject = addslashes($subject);
     $content = addslashes($content);
@@ -534,7 +534,7 @@ function pm_edit_message($mid, $subject, $content)
     $subject = addslashes($subject);
     $content = addslashes($content);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     // ------------------------------------------------------------
     // Update the subject text
@@ -562,7 +562,7 @@ function pm_delete_message($mid)
 
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     // ------------------------------------------------------------
     // Get the PM data incase the sendee hasn't got a copy of it
@@ -611,7 +611,7 @@ function pm_archive_message($mid)
 
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     // ------------------------------------------------------------
     // Check to see if the the sender need an item in
@@ -651,7 +651,7 @@ function pm_new_check()
     $db_pm_new_check = db_connect();
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     // ------------------------------------------------------------
     // Check to see if the user has any new PMs
@@ -683,7 +683,7 @@ function pm_get_unread_count()
     $db_pm_get_unread_count = db_connect();
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     // ------------------------------------------------------------
     // Check to see if the user has any new PMs

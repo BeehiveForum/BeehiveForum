@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.129 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.130 2004-03-10 21:42:48 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -34,7 +34,7 @@ function user_count()
 {
    $db_user_count = db_connect();
    
-   $table_prefix = get_table_prefix();
+   $table_prefix = get_webtag(true);
 
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER ";
    $sql.= "WHERE USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')";
@@ -49,7 +49,7 @@ function user_exists($logon)
 {
     $db_user_exists = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $logon = addslashes($logon);
 
@@ -72,7 +72,7 @@ function user_create($logon, $password, $nickname, $email)
         $ipaddress = "";
     }
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$ipaddress')";
@@ -93,7 +93,7 @@ function user_update($uid, $nickname, $email)
 {
     $db_user_update = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $nickname = addslashes(_htmlentities($nickname));
     $email = addslashes(_htmlentities($email));
@@ -109,7 +109,7 @@ function user_change_pw($uid, $password, $hash = false)
     $db_user_change_pw = db_connect();
     $password = md5($password);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE USER SET PASSWD = '$password' WHERE UID = $uid ";
 
@@ -127,7 +127,7 @@ function user_get_status($uid)
 {
     if (!is_numeric($uid)) return 0;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT STATUS FROM USER WHERE UID = $uid";
     $db_user_get_status = db_connect();
@@ -143,7 +143,7 @@ function user_update_status($uid, $status)
 {
     $db_user_update_status = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) return false;
 
@@ -159,7 +159,7 @@ function user_update_folders($uid, $folders)
 {
     $db_user_update_folders = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) return false;
     if (!is_array($folders)) return false;
@@ -203,7 +203,7 @@ function user_logon($logon, $password, $md5hash = false)
 
     $logon = addslashes($logon);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT UID, STATUS FROM USER WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
 
@@ -244,7 +244,7 @@ function user_check_logon($uid, $logon, $md5pass)
         
         $db_user_check_logon = db_connect();
         
-        $table_prefix = get_table_prefix();
+        $table_prefix = get_webtag(true);
 
         $sql = "SELECT STATUS FROM USER WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
         $result = db_query($sql, $db_user_check_logon);
@@ -273,7 +273,7 @@ function user_get($uid, $hash = false)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT * FROM USER WHERE UID = $uid ";
 
@@ -298,7 +298,7 @@ function user_get_logon($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select LOGON from USER where uid = $uid";
 
@@ -320,7 +320,7 @@ function user_get_uid($logon)
 
     $logon = addslashes($logon);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
@@ -339,7 +339,7 @@ function user_get_sig($uid, &$content, &$html)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT CONTENT, HTML FROM {$table_prefix}USER_SIG WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_sig);
@@ -362,7 +362,7 @@ function user_get_prefs($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT * FROM {$table_prefix}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_prefs);
@@ -392,7 +392,7 @@ function user_update_prefs($uid, $prefs_array)
 
     $db_user_update_prefs = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     // Get the current prefs and merge them with the new ones.   
 
@@ -434,7 +434,7 @@ function user_update_sig($uid, $content, $html)
     $content = addslashes($content);
     $db_user_update_sig = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "delete from {$table_prefix}USER_SIG where UID = $uid";
     $result = db_query($sql, $db_user_update_sig);
@@ -453,7 +453,7 @@ function user_update_global_sig($uid, $value)
 
     $db_user_update_global_sig = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "update {$table_prefix}USER_PREFS set ";
     $sql .= "VIEW_SIGS = '$value' where UID = $uid";
@@ -469,7 +469,7 @@ function user_get_global_sig($uid)
 
     $db_user_update_global_sig = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select VIEW_SIGS from {$table_prefix}USER_PREFS where uid = $uid";
 
@@ -489,7 +489,7 @@ function user_get_post_count($uid)
 
     $db_user_get_count = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM {$table_prefix}POST ";
     $sql.= "LEFT JOIN {$table_prefix}POST_CONTENT POST_CONTENT ";
@@ -511,7 +511,7 @@ function user_get_last_logon_time($uid, $verbose = true)
 
     $db_user_get_last_logon_time = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
@@ -536,7 +536,7 @@ function user_guest_enabled()
 {
     $db_user_guest_account = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT UID, STATUS FROM USER WHERE LOGON = 'GUEST' AND PASSWD = MD5('guest')";
     $result = db_query($sql, $db_user_guest_account);
@@ -583,7 +583,7 @@ function user_get_forthcoming_birthdays()
 {
     $db_user_get_forthcoming_birthdays = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) ";
     $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
@@ -610,7 +610,7 @@ function user_search($usersearch, $sort_by = "USER.LAST_LOGON", $sort_dir = "DES
 {
     $db_user_search = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sort_array = array('UID', 'LOGON', 'STATUS', 'LAST_LOGON', 'LOGON_FROM');
 
@@ -645,7 +645,7 @@ function user_get_all($sort_by = "USER.LAST_LOGON", $sort_dir = "ASC", $offset =
 {
     $db_user_get_all = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $user_get_all_array = array();
 
@@ -675,7 +675,7 @@ function user_get_aliases($uid)
 {
     $db_user_get_aliases = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) return false;
     
@@ -750,7 +750,7 @@ function users_get_recent()
 {
     $db_users_get_recent = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
@@ -776,7 +776,7 @@ function user_get_friends($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -799,7 +799,7 @@ function user_get_ignored($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -822,7 +822,7 @@ function user_get_ignored_signatures($uid)
 {
     $db_user_get_peers = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -845,7 +845,7 @@ function user_get_relationships($uid, $offset = 0)
 {
     $db_user_get_relationships = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     if (!is_numeric($offset)) $offset = 0;
 
@@ -871,7 +871,7 @@ function user_get_word_filter($incadminfilter = false)
 {
     $db_user_get_word_filter = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $uid = bh_session_get_value('UID');    
 
@@ -892,7 +892,7 @@ function user_clear_word_filter()
 {
     $db_user_clear_word_filter = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $uid = bh_session_get_value('UID');
 
@@ -907,7 +907,7 @@ function user_add_word_filter($match, $replace, $preg_expr)
 
     $db_user_save_word_filter = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $uid = bh_session_get_value('UID');
 

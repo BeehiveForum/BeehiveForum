@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.8 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.9 2004-03-10 21:42:48 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -30,7 +30,7 @@ function user_rel_update($uid, $peer_uid, $value)
 {
     $db_user_rel_update = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "DELETE FROM {$table_prefix}USER_PEER WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
@@ -49,7 +49,7 @@ function user_rel_get($uid, $peer_uid)
 
     $db_user_rel_get = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select RELATIONSHIP from {$table_prefix}USER_PEER ";
     $sql.= "where UID = '$uid' and PEER_UID = '$peer_uid'";

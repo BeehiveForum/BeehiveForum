@@ -27,7 +27,7 @@ function update_stats()
 {
     $db_update_stats = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $num_sessions = get_num_sessions();
     $num_recent_posts = get_recent_post_count();
@@ -76,7 +76,7 @@ function get_num_sessions()
 
     $get_num_sessions = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $session_stamp = time() - $active_sess_cutoff;
 
@@ -103,7 +103,7 @@ function get_active_users()
 
     $db_get_active_users = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $session_stamp = time() - $active_sess_cutoff;
 
@@ -149,7 +149,7 @@ function get_thread_count()
 {
     $db_get_thread_count = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_prefix}THREAD THREAD";
     $result = db_query($sql, $db_get_thread_count);
@@ -166,7 +166,7 @@ function get_post_count()
 {
     $db_get_post_count = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_prefix}POST POST";
     $result = db_query($sql, $db_get_post_count);
@@ -183,7 +183,7 @@ function get_recent_post_count()
 {
     $db_get_post_count = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $post_stamp = time() - HOUR_IN_SECONDS;
 
@@ -204,7 +204,7 @@ function get_longest_thread()
 {
     $db_get_longest_thread = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_prefix}THREAD ";
     $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
@@ -223,7 +223,7 @@ function get_most_users()
 {
     $db_get_most_users = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
     $sql.= "FROM {$table_prefix}STATS";
@@ -242,7 +242,7 @@ function get_most_posts()
 {
     $db_get_most_posts = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
     $sql.= "FROM {$table_prefix}STATS";
@@ -261,7 +261,7 @@ function get_newest_user()
 {
     $db_get_newest_user = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE ";
     $sql.= "LOGON <> 'GUEST' AND PASSWD <> MD5('GUEST') ";

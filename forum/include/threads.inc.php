@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.101 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.102 2004-03-10 21:42:48 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -44,7 +44,7 @@ function threads_get_folders()
 
     $db_threads_get_folders = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT F.FID, F.TITLE, F.DESCRIPTION, F.ALLOWED_TYPES, ";
     $sql.= "F.ACCESS_LEVEL, UF.INTEREST FROM {$table_prefix}FOLDER F LEFT JOIN ";
@@ -83,7 +83,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -125,7 +125,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -208,7 +208,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $folders = threads_get_available_folders();
     $db_threads_get_by_days = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($days)) $days = 1;
@@ -252,7 +252,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $folders = threads_get_available_folders();
     $db_threads_get_by_interest = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($interest)) $interest = 1;
@@ -294,7 +294,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $folders = threads_get_available_folders();
     $db_threads_get_unread_by_interest = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($interest)) $interest = 1;
@@ -337,7 +337,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $folders = threads_get_available_folders();
     $db_threads_get_recently_viewed = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -379,7 +379,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -421,7 +421,7 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -465,7 +465,7 @@ function threads_get_polls($uid, $start = 0)
     $folders = threads_get_available_folders();
     $db_threads_get_polls = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -508,7 +508,7 @@ function threads_get_sticky($uid, $start = 0)
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($start)) $start = 0;
@@ -552,7 +552,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -594,7 +594,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 {
     $db_threads_get_folder = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($start)) $start = 0;
@@ -634,7 +634,7 @@ function threads_get_most_recent()
 {
     $db_threads_get_recent = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $fidlist = folder_get_available();
     $uid = bh_session_get_value('UID');
@@ -740,7 +740,7 @@ function threads_get_folder_msgs()
     $folder_msgs = array();
     $db_threads_get_folder_msgs = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT FID, COUNT(*) AS TOTAL FROM {$table_prefix}THREAD GROUP BY FID";
     $resource_id = db_query($sql, $db_threads_get_folder_msgs);
@@ -756,7 +756,7 @@ function threads_any_unread()
 {
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select * from {$table_prefix}THREAD T left join {$table_prefix}USER_THREAD UT ";
     $sql.= "on (T.TID = UT.TID and UT.UID = '$uid') ";
@@ -776,7 +776,7 @@ function threads_mark_all_read()
 
     $db_threads_mark_all_read = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT TID, LENGTH FROM {$table_prefix}THREAD";
     $result_threads = db_query($sql, $db_threads_mark_all_read);
@@ -793,7 +793,7 @@ function threads_mark_50_read()
 
     $db_threads_mark_50_read = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT THREAD.TID, THREAD.LENGTH FROM {$table_prefix}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
@@ -812,7 +812,7 @@ function threads_mark_read($tidarray)
 {
     $db_threads_mark_read = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (!is_array($tidarray)) return false;
     

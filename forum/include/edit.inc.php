@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.32 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.33 2004-03-10 21:42:47 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -37,7 +37,7 @@ function post_update($tid, $pid, $content)
     $content  = addslashes($content);
     $edit_uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}POST_CONTENT SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
@@ -54,7 +54,7 @@ function post_add_edit_text($tid, $pid)
     $db_post_add_edit_text = db_connect();
     $edit_uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql = "UPDATE {$table_prefix}POST SET EDITED = NOW(), EDITED_BY = '$edit_uid' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
@@ -75,7 +75,7 @@ function post_delete($tid, $pid)
         $result = db_query($sql, $db_post_delete);
     }
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "DELETE FROM {$table_prefix}THREAD WHERE TID = '$tid' AND LENGTH = 1";
     $result = db_query($sql, $db_post_delete);

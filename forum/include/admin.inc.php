@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.17 2004-03-10 20:21:04 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.18 2004-03-10 21:42:47 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -35,7 +35,7 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
     $piid   = addslashes($piid);
     $action = addslashes($action);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
     $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
@@ -51,7 +51,7 @@ function admin_clearlog()
 
     if ((bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 
-        $table_prefix = get_table_prefix();
+        $table_prefix = get_webtag(true);
         
         $sql = "DELETE FROM {$table_prefix}ADMIN_LOG";
 	$result = db_query($sql, $db_admin_clearlog);
@@ -68,7 +68,7 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
     $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
@@ -100,7 +100,7 @@ function admin_get_word_filter()
 {
     $db_admin_get_word_filter = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT * FROM {$table_prefix}FILTER_LIST WHERE UID = 0";
     $result = db_query($sql, $db_admin_get_word_filter);
@@ -118,7 +118,7 @@ function admin_clear_word_filter()
 {
     $db_admin_clear_word_filter = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "DELETE FROM {$table_prefix}FILTER_LIST WHERE UID = 0";
     return db_query($sql, $db_admin_clear_word_filter);
@@ -132,7 +132,7 @@ function admin_add_word_filter($match, $replace, $preg_expr)
     $db_admin_add_word_filter = db_connect();
     $uid = bh_session_get_value('UID');    
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, PREG_EXPR) ";
     $sql.= "VALUES ('$match', '$replace', '$preg_expr')";
@@ -151,7 +151,7 @@ function admin_user_search($usersearch, $sort_by = "USER.LAST_LOGON", $sort_dir 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'USER.LAST_LOGON';
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM USER USER ";
@@ -184,7 +184,7 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS, SESSIONS.SESSID FROM USER USER ";
@@ -207,7 +207,7 @@ function admin_session_end($uid)
     
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql = "DELETE FROM SESSIONS WHERE UID = '$uid'";
     $result = db_query($sql, $db_admin_session_end);

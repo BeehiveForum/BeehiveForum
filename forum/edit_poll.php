@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.94 2005-04-03 22:28:21 rowan_hill Exp $ */
+/* $Id: edit_poll.php,v 1.95 2005-04-03 23:09:19 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -679,8 +679,6 @@ for ($i = 0; $i < $answer_count; $i++) {
 
     if (isset($t_answers[$i])) {
 
-	//I have no idea what clean_emoticons is, or where it lives, but it's gone missing, so I've just chopped it out for now.
-        //echo "                        <td>", form_input_text("answers[$i]", _htmlentities(clean_emoticons($t_answers[$i])), 40, 255), "</td>\n";
         echo "                        <td>", form_input_text("answers[$i]", _htmlentities($t_answers[$i]), 40, 255), "</td>\n";
 
     }else {

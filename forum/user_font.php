@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.7 2003-09-21 13:36:35 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.8 2003-09-21 14:32:50 decoyduck Exp $ */
 
 // Changes the user's fontsize. Moved from messages.php (02.05.2003)
 
@@ -31,19 +31,19 @@ require_once("./include/messages.inc.php");
 require_once("./include/format.inc.php");
 
 if (!bh_session_check()) {
-
     $uri = "./index.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+$uid = bh_session_get_value('UID');
 
 if (isset($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
-    $msg = messages_get_most_recent(bh_session_get_value('UID'));
+    $msg = messages_get_most_recent($uid);
 }
 
-if (isset($HTTP_GET_VARS['fontsize']) && $HTTP_GET_VARS['fontsize'] > 0 && $HTTP_GET_VARS['fontsize'] < 16) {
+if (isset($HTTP_GET_VARS['fontsize']) && $HTTP_GET_VARS['fontsize'] > 0 && $HTTP_GET_VARS['fontsize'] < 16 && $uid > 0) {
 
     $userprefs = user_get_prefs(bh_session_get_value('UID'));
 

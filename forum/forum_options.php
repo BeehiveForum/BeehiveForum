@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.59 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.60 2004-11-22 22:10:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -219,17 +219,22 @@ if (isset($_POST['submit'])) {
         $user_prefs['PM_AUTO_PRUNE'] = "N";
     }
 
-    if (isset($_POST['pm_auto_prune_length'])) {
-        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = trim(_stripslashes($_POST['pm_auto_prune_length']));
+    if (isset($_POST['pm_auto_prune_global'])) {
+        $user_prefs_global['PM_AUTO_PRUNE'] = ($_POST['pm_auto_prune_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs['PM_AUTO_PRUNE'] = "N";
+    }
+
+
+    if (isset($_POST['pm_auto_prune_length']) && is_numeric($_POST['pm_auto_prune_length'])) {
+        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = $_POST['pm_auto_prune_length'];
     } else {
         $user_prefs['PM_AUTO_PRUNE_LENGTH'] = 60;
     }
 
-    if (isset($_POST['pm_auto_prune_global'])) {
-        $user_prefs_global['PM_AUTO_PRUNE'] = ($_POST['pm_auto_prune_global'] == "Y") ? true : false;
+    if (isset($_POST['pm_auto_prune_length_global'])) {
         $user_prefs_global['PM_AUTO_PRUNE_LENGTH'] = ($_POST['pm_auto_prune_global'] == "Y") ? true : false;
     } else {
-        $user_prefs_global['PM_AUTO_PRUNE'] = false;
         $user_prefs_global['PM_AUTO_PRUNE_LENGTH'] = false;
     }
 
@@ -538,7 +543,7 @@ if (isset($user_prefs['PM_AUTO_PRUNE_LENGTH']) && is_numeric($user_prefs['PM_AUT
     echo "                  <td>", form_checkbox("pm_auto_prune", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == "Y") ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), 60), " {$lang['days']}</td>\n";
 }
 
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_auto_prune_global","Y",$lang['setforallforums'],$user_prefs['PM_AUTO_PRUNE_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_auto_prune_global", "Y", $lang['setforallforums'], $user_prefs['PM_AUTO_PRUNE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

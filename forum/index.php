@@ -36,6 +36,10 @@ require_once("./include/lang.inc.php");
 
 header_no_cache();
 
+if (!isset($HTTP_COOKIE_VARS['bh_remember_username'])) {
+    setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+}
+
 $top_html   = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/top.html";
 $stylesheet = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
 
@@ -97,7 +101,7 @@ if (bh_session_check()) {
 
     // Check to see if the user has visited before and logged in.
 
-    if (!isset($HTTP_COOKIE_VARS['bh_logon']) && isset($auto_logon)) {
+    if (!isset($HTTP_COOKIE_VARS['bh_logon']) && user_guest_enabled() && $guest_account_enabled && $auto_logon) {
 
         bh_session_init(0); // auto login as guest
 

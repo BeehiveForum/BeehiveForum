@@ -83,8 +83,15 @@ if(isset($HTTP_POST_VARS['submit'])){
 
     $valid = true;
 
-    if(isset($HTTP_POST_VARS['pw'])){
-        if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']){
+    if (isset($HTTP_POST_VARS['pw'])) {
+        if (isset($HTTP_POST_VARS['cpw'])) {
+            if ($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']) {
+
+            }else {
+                $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
+                $valid = false;
+            }
+        }else {
             $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
             $valid = false;
         }
@@ -125,6 +132,48 @@ if(isset($HTTP_POST_VARS['submit'])){
                     $HTTP_POST_VARS['pw'],
                     $HTTP_POST_VARS['nickname'],
                     $HTTP_POST_VARS['email']);
+
+        // Update the stored logon password
+
+        if (isset($HTTP_POST_VARS['pw'])) {
+
+            // Username array
+
+            if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
+                $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
+            }else {
+                $username_array = array();
+            }
+
+            // Password array
+
+            if (isset($HTTP_COOKIE_VARS['bh_remember_password']) && is_array($HTTP_COOKIE_VARS['bh_remember_password'])) {
+                $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
+            }else {
+                $password_array = array();
+            }
+
+            // Passhash array
+
+            if (isset($HTTP_COOKIE_VARS['bh_remember_passhash']) && is_array($HTTP_COOKIE_VARS['bh_remember_passhash'])) {
+                $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
+            }else {
+                $passhash_array = array();
+            }
+
+            // Update the password that matches the current logged on user
+
+            foreach ($username_array as $key => $logon) {
+                if (stristr($logon, bh_session_get_value('LOGON'))) {
+                    $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['pw'])));
+                    $passh = md5(_stripslashes($HTTP_POST_VARS['pw']));
+                    if (isset($password_array[$key]) && isset($passhash_array[$key])) {
+                        setcookie("bh_remember_password[$key]", $passw, time() + YEAR_IN_SECONDS);
+                        setcookie("bh_remember_passhash[$key]", $passh, time() + YEAR_IN_SECONDS);
+                    }
+                }
+            }
+        }
 
         // Update USER_PREFS
 

@@ -149,20 +149,30 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           bh_session_init($new_uid);
 
-          // Retrieve existing cookie data
+          // Retrieve existing cookie data if any
 
-          if (is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
+          // Username array
 
-            $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
-            $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
-            $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
-
+          if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
+              $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
           }else {
+              $username_array = array();
+          }
 
-            $username_array = array();
-            $password_array = array();
-            $passhash_array = array();
+          // Password array
 
+          if (isset($HTTP_COOKIE_VARS['bh_remember_password']) && is_array($HTTP_COOKIE_VARS['bh_remember_password'])) {
+              $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
+          }else {
+              $password_array = array();
+          }
+
+          // Passhash array
+
+          if (isset($HTTP_COOKIE_VARS['bh_remember_passhash']) && is_array($HTTP_COOKIE_VARS['bh_remember_passhash'])) {
+              $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
+          }else {
+              $passhash_array = array();
           }
 
           // Prepare Form Data

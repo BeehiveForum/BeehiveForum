@@ -32,8 +32,8 @@ define("FATAL", E_USER_ERROR);
 define("ERROR", E_USER_WARNING);
 define("WARNING", E_USER_NOTICE);
 
-// Set the error reporting level
-error_reporting(FATAL | ERROR | WARNING);
+// Set the error reporting level (Default: FATAL | ERROR | WARNING)
+error_reporting(E_ALL);
 
 // Beehive Error Handler Function
 

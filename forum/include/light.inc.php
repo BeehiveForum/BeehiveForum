@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.37 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.38 2004-04-22 16:28:05 decoyduck Exp $ */
 
 function light_html_draw_top ($title = false)
 {
@@ -453,6 +453,52 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         echo "<p>". $message['CONTENT']. "</p>\n";
 
+        if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
+
+            $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
+            $attachments_array = get_attachments($message['FROM_UID'], $aid);
+
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+
+                // Draw the attachment header at the bottom of the post
+
+                echo "<p><b>{$lang['attachments']}:</b><br />\n";
+
+                foreach($attachments_array as $attachment) {
+
+                    if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+                        echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
+                    }else {
+                        echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
+                    }
+
+                    if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'lpost.php') {
+                        echo " target=\"_blank\"";
+                    }else {
+                        echo " target=\"_self\"";
+                    }
+
+                    echo " title=\"";
+
+                    if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
+                        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                    }
+
+                    echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
+                    echo "{$lang['downloaded']}: ". $attachment['downloads'];
+
+                    if ($attachment['downloads'] == 1) {
+                        echo " {$lang['time']}";
+                    }else {
+                        echo " {$lang['times']}";
+                    }
+
+                    echo "\">{$attachment['filename']}</a><br />";
+                }
+
+                echo "</p>\n";
+            }
+        }
 
         echo "<p>\n";
 

@@ -444,6 +444,7 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid = $fid ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.modified DESC ";
     $sql .= "LIMIT $start, 50";
 

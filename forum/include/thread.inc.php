@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.33 2003-08-31 16:21:07 hodcroftcj Exp $ */
+/* $Id: thread.inc.php,v 1.34 2003-08-31 16:30:43 hodcroftcj Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -163,6 +163,8 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
         $sql  = "UPDATE ".forum_table("THREAD")." SET STICKY = 'Y' ";
         if ($sticky_until) {
             $sql .= ", STICKY_UNTIL = FROM_UNIXTIME($sticky_until) ";
+        } else {
+            $sql .= ", STICKY_UNTIL = NULL ";
         }
         $sql .= "WHERE TID = $tid";
     } else {

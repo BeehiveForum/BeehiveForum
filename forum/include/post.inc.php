@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.92 2004-10-19 19:31:41 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.93 2004-10-21 10:19:02 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -142,6 +142,8 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $db_post_draw_to_dropdown = db_connect();
 
     if (!is_numeric($default_uid)) $default_uid = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
 
     if (isset($default_uid) && $default_uid != 0){
 

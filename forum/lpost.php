@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.56 2004-09-23 08:37:44 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.57 2004-10-21 10:19:02 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -453,10 +453,8 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-
-    light_message_display(0, $preview_message, 0, 0, false, false, false);
+    light_message_display(0, $preview_message, 0, 0, false, false, false, false, $show_sigs, true);
     echo "<br />\n";
-
 }
 
 if (!$newthread) {

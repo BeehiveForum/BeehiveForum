@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.44 2004-10-19 19:31:41 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.45 2004-10-21 10:19:02 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -206,7 +206,7 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 
         $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
         $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-        $sql.= "LEFT {$table_data['PREFIX']}JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
         $sql.= "ORDER BY $sort_by $sort_dir ";
         $sql.= "LIMIT $offset, 20";

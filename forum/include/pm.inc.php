@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.63 2004-04-13 14:04:04 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.64 2004-04-15 09:15:30 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -442,7 +442,7 @@ function pm_single_get($mid, $folder, $uid = false)
         // Check to see if we should add a sent item before delete
         // ------------------------------------------------------------
 
-        if ($folder == PM_FOLDER_INBOX && (($db_pm_list_get_row['TYPE'] == PM_NEW) || ($db_pm_list_get_row['TYPE'] == PM_UNREAD))) {
+        if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
             pm_markasread($mid);
             pm_add_sentitem($mid);
         }
@@ -717,6 +717,7 @@ function pm_delete_message($mid)
     // ------------------------------------------------------------
 
     if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
+        pm_markasread($mid);
         pm_add_sentitem($mid);
     }
 
@@ -756,7 +757,8 @@ function pm_archive_message($mid)
     $result = db_query($sql, $db_pm_archive_message);
     $db_pm_archive_message_row = db_fetch_array($result);
 
-    if (($db_pm_archive_message_row['TYPE'] == PM_NEW) || ($db_pm_archive_message_row['TYPE'] == PM_UNREAD)) {
+    if (($db_delete_pm_row['TO_UID'] == $uid) && (($db_delete_pm_row['TYPE'] == PM_NEW) || ($db_delete_pm_row['TYPE'] == PM_UNREAD))) {
+        pm_markasread($mid);
         pm_add_sentitem($mid);
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.106 2004-03-05 21:06:01 decoyduck Exp $ */
+/* $Id: logon.php,v 1.107 2004-03-05 21:23:06 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -152,34 +152,25 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 if (isset($HTTP_POST_VARS['submit'])) {
 
     if (isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
-
-        if (strlen(trim($HTTP_POST_VARS['password'])) > 1) {
         
+        if (preg_match("/^ +$/", _stripslashes($HTTP_POST_VARS['password']))) {
+        
+            if (isset($HTTP_POST_VARS['passhash']) && is_md5(_stripslashes($HTTP_POST_VARS['passhash']))) {
+                
+                $logon = _stripslashes($HTTP_POST_VARS['logon']);
+                $passw = _stripslashes($HTTP_POST_VARS['password']);
+                $passh = _stripslashes($HTTP_POST_VARS['passhash']);
+
+                $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password'], true);
+            }
+
+        }else {
+         
             $logon = _stripslashes($HTTP_POST_VARS['logon']);
             $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['password'])));
             $passh = md5(_stripslashes($HTTP_POST_VARS['password']));
   
             $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password'], false);
-            
-        }else {
-        
-            if (isset($HTTP_POST_VARS['passhash']) && is_md5($HTTP_POST_VARS['passhash'])) {
-           
-                $logon = _stripslashes($HTTP_POST_VARS['logon']);
-                $passw = _stripslashes($HTTP_POST_VARS['password']);
-                $passh = _stripslashes($HTTP_POST_VARS['passhash']);
-
-                $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['passhash'], true);
-
-            }else {
-            
-                $logon = _stripslashes($HTTP_POST_VARS['logon']);
-                $passw = _stripslashes($HTTP_POST_VARS['password']);
-                $passh = _stripslashes($HTTP_POST_VARS['passhash']);
-
-                $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['passhash'], true);
-            }
-
         }
 
         if (isset($luid) && $luid > -1) {
@@ -197,7 +188,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
                 bh_session_init($luid);
         
-                if (($key = array_search($logon, $username_array)) !== false) {
+                if (($key = _array_search($logon, $username_array)) !== false) {
 
                     unset($username_array[$key]);
                     unset($password_array[$key]);

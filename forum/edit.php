@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.74 2003-11-27 19:36:06 decoyduck Exp $ */
+/* $Id: edit.php,v 1.75 2003-11-28 19:49:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -201,8 +201,11 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
+
         $t_content = $HTTP_POST_VARS['t_content'];
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == true) {
+	$t_content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_content));
+
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content_check) && $t_post_html == true) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
@@ -212,13 +215,17 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+
         $old_t_sig = $HTTP_POST_VARS['t_sig'];
+
         $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+	$t_sig_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_sig));
 
         if ($old_t_sig != $t_sig) {
             $sig_html_changes = true;
         }
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig)) {
+
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig_check)) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
@@ -292,8 +299,11 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
+
         $t_content = $HTTP_POST_VARS['t_content'];
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == true) {
+	$t_content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_content));
+
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content_check) && $t_post_html == true) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
@@ -303,14 +313,17 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+
         $old_t_sig = $HTTP_POST_VARS['t_sig'];
+
         $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+        $t_sig_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($t_sig));
 
         if ($old_t_sig != $t_sig) {
             $sig_html_changes = true;
         }
 
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig)) {
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig_check)) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }

@@ -95,14 +95,14 @@ function get_all_attachments($uid, $aid) {
     
 }
     
-function add_attachment($uid, $aid, $filename) {
+function add_attachment($uid, $aid, $filename, $mimetype) {
 
     $db = db_connect();
     
     delete_attachment($uid, $filename); // Remove duplicate entries
     
-    $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (AID, UID, FILENAME) ";
-    $sql.= "values ('$aid', '$uid', '$filename')";
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (AID, UID, FILENAME, MIMETYPE) ";
+    $sql.= "values ('$aid', '$uid', '$filename', '$mimetype')";
     
     $result = db_query($sql, $db) or die(mysql_error());
     

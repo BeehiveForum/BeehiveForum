@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.142 2004-11-05 18:50:04 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.143 2004-11-08 18:35:22 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -121,19 +121,17 @@ function bh_session_check($add_guest_sess = true)
 
             if (($current_time - $user_sess['TIME']) > 300) {
 
-                $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
+                $sql = "DELETE FROM SESSIONS WHERE ";
                 $sql.= "UID = '{$user_sess['UID']}' AND IPADDRESS = '$ipaddress' ";
                 $sql.= "AND HASH <> '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
 
-                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), ";
+                $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
                 $sql.= "FID = '$fid', IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
-
-                bh_update_visitor_log($user_sess['UID']);
 
                 if (forum_get_setting('show_stats', 'Y', false)) {
                     update_stats();
@@ -182,7 +180,7 @@ function bh_session_check($add_guest_sess = true)
 
             if (($current_time - $user_sess['TIME']) > 300) {
 
-                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), ";
+                $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
                 $sql.= "FID = '$fid' WHERE UID = 0 ";
                 $sql.= "AND IPADDRESS = '$ipaddress'";
 
@@ -243,7 +241,7 @@ function bh_remove_stale_sessions()
 
     $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
-    $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
+    $sql = "DELETE FROM SESSIONS WHERE ";
     $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
     return db_query($sql, $db_bh_remove_stale_sessions);
@@ -268,7 +266,7 @@ function bh_update_visitor_log($uid)
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}VISITOR_LOG ";
+        $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
         $sql.= "SET LAST_LOGON = NOW() WHERE UID = '$uid'";
 
     }else {
@@ -316,7 +314,7 @@ function bh_session_init($uid)
 
             $user_hash = md5(uniqid($ipaddress));
 
-            $sql = "UPDATE LOW_PRIORITY SESSIONS SET HASH = '$user_hash' ";
+            $sql = "UPDATE SESSIONS SET HASH = '$user_hash' ";
             $sql.= "WHERE UID = '$uid' AND IPADDRESS = '$ipaddress' ";
             $sql.= "AND FID = '$fid'";
 

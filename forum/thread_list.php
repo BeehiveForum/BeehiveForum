@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.221 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.222 2004-11-08 18:35:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -435,9 +435,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
     if (bh_session_get_value('UID') > 0) {
         if ($folder_info[$folder_number]['INTEREST'] == 0) {
-            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
+            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\" onclick=\"return confirmFolderIgnore();\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
         }else {
-            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['stopignoringthisfolder']}\" title=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
+            echo "          <td class=\"folderpostnew\"><a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\" onclick=\"return confirmFolderUnignore();\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" height=\"15\" alt=\"{$lang['stopignoringthisfolder']}\" title=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
         }
     }
 

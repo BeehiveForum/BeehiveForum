@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.38 2004-12-01 09:25:47 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.39 2005-02-28 00:24:40 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -55,7 +55,7 @@ include_once("./include/light.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
+if ($user_sess = bh_session_check(false) && bh_session_get_value('UID') != 0) {
 
     light_html_draw_top();
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
@@ -173,6 +173,8 @@ echo light_form_input_password("password", (isset($_COOKIE['bh_light_remember_pa
 echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
 
 echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
+
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 
 echo "</form>\n";
 

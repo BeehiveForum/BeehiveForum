@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.13 2004-12-05 17:58:04 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.14 2005-02-28 00:24:40 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -168,6 +168,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 }
 
 echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
+
 light_html_draw_bottom();
 
 ?>

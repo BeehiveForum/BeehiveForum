@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.15 2005-02-24 11:05:07 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.16 2005-02-28 00:24:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -334,11 +334,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['sessioncutoffseconds']}:</td>\n";
-echo "                        <td>", form_input_text("session_cutoff", (isset($default_forum_settings['session_cutoff'])) ? $default_forum_settings['session_cutoff'] : "", 20, 6), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("session_cutoff", (isset($default_forum_settings['session_cutoff'])) ? $default_forum_settings['session_cutoff'] : "86400", 20, 6), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['activesessioncutoffseconds']}:</td>\n";
-echo "                        <td>", form_input_text("active_sess_cutoff", (isset($default_forum_settings['active_sess_cutoff'])) ? $default_forum_settings['active_sess_cutoff'] : "", 20, 6), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("active_sess_cutoff", (isset($default_forum_settings['active_sess_cutoff'])) ? $default_forum_settings['active_sess_cutoff'] : "900", 20, 6), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.32 2005-03-07 12:47:41 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.33 2005-03-07 22:39:54 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -897,6 +897,21 @@ if (!@$result = db_query($sql, $db_install)) {
 
 $sql = "INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM, ACCESS_LEVEL) ";
 $sql.= "VALUES ('{$forum_webtag}', 1, 0);";
+
+if (!@$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE SEARCH_KEYWORDS (";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  KEYWORD VARCHAR(64) NOT NULL DEFAULT '',";
+$sql.= "  PRIMARY KEY  (FID,TID,PID,KEYWORD)";
+$sql.= ") TYPE=MYISAM";
 
 if (!@$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.90 2005-03-07 21:41:42 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.91 2005-03-07 22:39:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -34,6 +34,8 @@ function search_execute($argarray, &$urlquery, &$error)
     // them first.
 
     include("./include/search_stopwords.inc.php");
+
+    if (!$table_data = get_table_prefix()) return false;
 
     // Ensure the bare minimum of variables are set
 
@@ -48,6 +50,7 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['include'])) $argarray['include'] = 2;
     if (!isset($argarray['username'])) $argarray['username'] = "";
     if (!isset($argarray['user_include'])) $argarray['user_include'] = 1;
+    if (!isset($argarray['forums'])) $argarray['forums'] = $table_data['FID'];
 
     $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 
@@ -55,9 +58,11 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $uid = bh_session_get_value('UID');
 
-    if (!$table_data = get_table_prefix()) return false;
-
     $forum_settings = get_forum_settings();
+
+    if ($argarray['forums'] == 0 && $forum_fids = forum_get_all_fids()) {
+        $argarray['forums'] = implode(",", $forum_fids);
+    }
 
     $search_sql = "SELECT THREAD.FID, THREAD.TITLE, POST.TID, POST.PID, ";
     $search_sql.= "POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
@@ -65,9 +70,10 @@ function search_execute($argarray, &$urlquery, &$error)
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
     $search_sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (THREAD.TID = POST.TID) ";
-    $search_sql.= "LEFT JOIN {$table_data['PREFIX']}SEARCH_KEYWORDS SEARCH_KEYWORDS ";
+    $search_sql.= "LEFT JOIN SEARCH_KEYWORDS SEARCH_KEYWORDS ";
     $search_sql.= "ON (SEARCH_KEYWORDS.TID = POST.TID AND SEARCH_KEYWORDS.PID = POST.PID) ";
-    $search_sql.= "WHERE ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+    $search_sql.= "WHERE SEARCH_KEYWORDS.FID IN ({$argarray['forums']}) ";
+    $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $search_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $search_sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
@@ -76,7 +82,7 @@ function search_execute($argarray, &$urlquery, &$error)
         $search_sql.= "AND THREAD.FID = {$argarray['fid']} ";
     }else{
         $folders = folder_get_available();
-        $search_sql.= "AND THREAD.FID in ($folders) ";
+        $search_sql.= "AND THREAD.FID IN ($folders) ";
     }
 
     $search_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
@@ -142,6 +148,11 @@ function search_execute($argarray, &$urlquery, &$error)
                 $search_sql.= implode("%' OR SEARCH_KEYWORDS.KEYWORD LIKE '%", $keywords_array);
                 $search_sql.= "%') ";
             }
+
+        }else {
+
+            $error = SEARCH_NO_KEYWORDS;
+            return false;
         }
 
     }else {
@@ -332,6 +343,42 @@ function search_date_range($from, $to)
     return $range;
 }
 
+function forum_search_dropdown()
+{
+    $lang = load_language_file();
+
+    $db_forum_search_dropdown = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $sql = "SELECT FORUMS.FID, FORUM_SETTINGS.SVALUE FROM FORUMS FORUMS ";
+    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
+    $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID) ";
+    $sql.= "WHERE FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2 ";
+    $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1) ";
+
+    $result = db_query($sql, $db_forum_search_dropdown);
+
+    if (db_num_rows($result) > 0) {
+
+        $forums_array[0] = $lang['all_caps'];
+
+        while($row = db_fetch_array($result)) {
+
+            $forums_array[$row['FID']] = $row['SVALUE'];
+        }
+
+        return form_dropdown_array("forums", array_keys($forums_array), array_values($forums_array), $forum_fid, false, "search_dropdown");
+    }
+
+    return false;
+}
+
 function folder_search_dropdown()
 {
     $lang = load_language_file();
@@ -340,7 +387,7 @@ function folder_search_dropdown()
 
     $uid = bh_session_get_value('UID');
 
-    if (!$table_data = get_table_prefix()) return "";
+    if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
@@ -447,6 +494,8 @@ function search_index_post()
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 
     $sql = "SELECT TID, PID, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
@@ -474,14 +523,14 @@ function search_index_post()
             }else {
 
                 $value = addslashes(strtolower($value));
-                $content_array[$key] = "('$tid', '$pid', '$value')";
+                $content_array[$key] = "('$forum_fid', '$tid', '$pid', '$value')";
             }
         }
 
         $sql_values = implode(",\n", $content_array);
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}SEARCH_KEYWORDS ";
-        $sql.= "(TID, PID, KEYWORD) VALUES $sql_values ";
+        $sql = "INSERT INTO SEARCH_KEYWORDS ";
+        $sql.= "(FID, TID, PID, KEYWORD) VALUES $sql_values ";
 
         $result = db_query($sql, $db_search_index_post);
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.102 2005-03-07 21:32:45 decoyduck Exp $ */
+/* $Id: search.php,v 1.103 2005-03-07 22:39:54 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,6 +96,15 @@ if (!$folder_dropdown = folder_search_dropdown()) {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";
+    html_draw_bottom();
+    exit;
+}
+
+if (!$forum_dropdown = forum_search_dropdown()) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['couldnotretrieveforuminformation']}</h2>\n";
     html_draw_bottom();
     exit;
 }
@@ -199,6 +208,10 @@ if (isset($_POST['search_string'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td colspan=\"2\" class=\"subhead\">&nbsp;{$lang['additionalcriteria']}:</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"40%\">&nbsp;{$lang['forumbrackets_s']}:</td>\n";
+    echo "                  <td>", $forum_dropdown, "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"40%\">&nbsp;{$lang['folderbrackets_s']}:</td>\n";

@@ -402,7 +402,7 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td align=\"right\">{$lang['password']}:</td>\n";
+  echo "            <td align=\"right\">{$lang['passwd']}:</td>\n";
   echo "            <td>";
 
   if (isset($password_array[0]) && isset($passhash_array[0])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.187 2003-10-29 21:05:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.188 2003-11-02 11:11:47 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -803,7 +803,7 @@ function messages_fontsize_form($tid, $pid)
 
 function messages_forum_stats($tid, $pid)
 {
-    global $show_stats;
+    global $lang, $show_stats;
 
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
@@ -814,7 +814,7 @@ function messages_forum_stats($tid, $pid)
         echo "  <br />\n";
         echo "  <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "    <tr>\n";
-        echo "      <td class=\"subhead\">&nbsp;Forum stats:</td>\n";
+        echo "      <td class=\"subhead\">&nbsp;{$lang['forumstats']}:</td>\n";
 
         if ($user_show_stats == 1 || $uid == 0) {
 
@@ -839,10 +839,10 @@ function messages_forum_stats($tid, $pid)
                 echo "          <tr>\n";
                 echo "            <td>&nbsp;</td>\n";
                 echo "            <td>\n";
-                echo "              <b>{$user_stats['GUESTS']}</b> guests\n";
-                echo "              <b>{$user_stats['NUSERS']}</b> members\n";
-                echo "              <b>{$user_stats['AUSERS']}</b> anonymous members\n";
-                echo "              [ <a href=\"start.php?show=visitors\" target=\"main\">View Complete List</a> ]\n";
+                echo "              <b>{$user_stats['GUESTS']}</b> {$lang['guests']}\n";
+                echo "              <b>{$user_stats['NUSERS']}</b> {$lang['members']}\n";
+                echo "              <b>{$user_stats['AUSERS']}</b> {$lang['anonymousmembers']}\n";
+                echo "              [ <a href=\"start.php?show=visitors\" target=\"main\">{$lang['viewcompletelist']}</a> ]\n";
                 echo "            </td>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
@@ -880,7 +880,7 @@ function messages_forum_stats($tid, $pid)
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";
-            echo "            <td>Our members have made a total of <b>", number_format(get_thread_count(), 0, ".", ","), "</b> threads and <b>", number_format(get_post_count(), 0, ".", ","), "</b> posts</td>\n";
+            echo "            <td>{$lang['ourmembershavemadeatotalof']} <b>", number_format(get_thread_count(), 0, ".", ","), "</b> {$lang['threadsand']} <b>", number_format(get_post_count(), 0, ".", ","), "</b> {$lang['postslowercase']}</td>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
@@ -890,7 +890,7 @@ function messages_forum_stats($tid, $pid)
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>Longest thread is '<a href=\"./?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' with <b>", number_format($longest_thread['LENGTH'], 0, ".", ","), "</b> posts.</td>\n";
+                echo "            <td>{$lang['longestthreadis']} '<a href=\"./?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ".", ","), "</b> {$lang['postslowercase']}.</td>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
                 echo "        </table>\n";
@@ -908,7 +908,7 @@ function messages_forum_stats($tid, $pid)
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>There have been <b>$recent_posts</b> posts made in the last 60 minutes.</td>\n";
+                echo "            <td>{$lang['therehavebeen']} <b>$recent_posts</b> {$lang['postsmadeinthelastsixtyminutes']}</td>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
                 echo "        </table>\n";
@@ -920,7 +920,7 @@ function messages_forum_stats($tid, $pid)
                         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                         echo "          <tr>\n";
                         echo "            <td width=\"35\">&nbsp;</td>\n";
-                        echo "            <td>Most posts ever made in a single 60 minute period is <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ".", ","), "</b></td>\n";
+                        echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodis']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ".", ","), "</b></td>\n";
                         echo "            <td width=\"35\">&nbsp;</td>\n";
                         echo "          </tr>\n";
                         echo "        </table>\n";
@@ -937,11 +937,11 @@ function messages_forum_stats($tid, $pid)
             echo "          <tr>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "            <td>\n";
-            echo "              We have <b>", user_count(), "</b> registered members.\n";
+            echo "              {$lang['wehave']} <b>", user_count(), "</b> {$lang['registeredmembers']}\n";
 
             if ($newest_member = get_newest_user()) {
 
-                echo "              The newest member is <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']})\" target=\"_self\">", format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), "</a>.\n";
+                echo "              {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']})\" target=\"_self\">", format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), "</a>.\n";
             }
 
             echo "            </td>\n";
@@ -956,7 +956,7 @@ function messages_forum_stats($tid, $pid)
                    echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                    echo "          <tr>\n";
                    echo "            <td width=\"35\">&nbsp;</td>\n";
-                   echo "            <td>Most users ever online was <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> on ", date("M jS Y, g:i A", $most_users['MOST_USERS_DATE']), "</td>\n";
+                   echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> on ", date("M jS Y, g:i A", $most_users['MOST_USERS_DATE']), "</td>\n";
                    echo "            <td width=\"35\">&nbsp;</td>\n";
                    echo "          </tr>\n";
                 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.92 2004-09-13 12:06:56 tribalonline Exp $ */
+/* $Id: pm_write.php,v 1.93 2004-09-14 17:42:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,6 +121,10 @@ if (bh_session_get_value('UID') == 0) {
 // Get the user's post page preferences.
 
 $page_prefs = bh_session_get_post_page_prefs();
+
+// Prune old messages for the current user
+
+pm_user_prune_folders();
 
 
 // Get the Message ID (MID) if any.
@@ -324,14 +328,28 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                         if ((pm_get_free_space($uid) < 1) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
 
-                            $error_html.= "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
-                            $valid = false;
+                            // Prune old messages for the current user
+
+                            pm_user_prune_folders();
+
+                            // Check again to see if we have enough space
+
+                            if ((pm_get_free_space($uid) < 1) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+
+                                $error_html.= "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
+                                $valid = false;
+                            }
                         }
 
                         if (pm_get_free_space($to_user['UID']) < 1) {
 
-                            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
-                            $valid = false;
+                            pm_user_prune_folders($to_user['UID']);
+
+                            if (pm_get_free_space($to_user['UID']) < 1) {
+
+                                $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
+                                $valid = false;
+                            }
                         }
                     }
 
@@ -701,7 +719,7 @@ if ($allow_html == true) {
                 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
         }
 
-		echo "<br /><br />\n";
+                echo "<br /><br />\n";
 
 } else {
 

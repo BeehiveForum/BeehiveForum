@@ -21,12 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.125 2004-09-09 01:09:12 tribalonline Exp $ */
+/* $Id: session.inc.php,v 1.126 2004-09-14 17:42:15 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
 include_once("./include/forum.inc.php");
 include_once("./include/ip.inc.php");
+include_once("./include/pm.inc.php");
 include_once("./include/stats.inc.php");
 include_once("./include/user.inc.php");
 
@@ -61,18 +62,18 @@ function bh_session_check($add_guest_sess = true)
         if ($table_data = get_table_prefix()) {
 
 
-	    $sql = "SELECT USER.LOGON, USER.PASSWD, ";
-	    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
+            $sql = "SELECT USER.LOGON, USER.PASSWD, ";
+            $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
         $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-	    $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
-	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-	    $sql.= "ON (GROUP_USERS.UID = SESSIONS.UID) ";
-	    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-	    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
-	    $sql.= "GROUP BY USER.UID";
+            $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
+            $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+            $sql.= "ON (GROUP_USERS.UID = SESSIONS.UID) ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+            $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
+            $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
+            $sql.= "GROUP BY USER.UID";
 
         }else {
 
@@ -89,13 +90,14 @@ function bh_session_check($add_guest_sess = true)
 
             $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
-			// Add preference settings
-	        $user_sess = array_merge($user_sess, user_get_prefs($user_sess['UID']));
-	
-			// We need to check here to see if the user is
-		    // banned from this forum as the login check
-		    // may have failed because they weren't logging
-		    // in to a specific forum.
+            // Add preference settings
+
+            $user_sess = array_merge($user_sess, user_get_prefs($user_sess['UID']));
+
+            // We need to check here to see if the user is
+            // banned from this forum as the login check
+            // may have failed because they weren't logging
+            // in to a specific forum.
 
             if ($user_sess['USER_PERM_COUNT'] > 0 && $user_sess['STATUS'] & USER_PERM_BANNED) {
 
@@ -104,6 +106,7 @@ function bh_session_check($add_guest_sess = true)
                 }else {
                     echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
                 }
+
                 exit;
             }
 
@@ -189,6 +192,10 @@ function bh_session_check($add_guest_sess = true)
             if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
                 update_stats();
             }
+
+            // Perform system-wide PM Prune
+
+            pm_system_prune_folders();
 
             return $user_sess;
 
@@ -370,13 +377,13 @@ function get_request_uri($rawurlencode = false)
 
 function bh_session_get_post_page_prefs()
 {
-	$page_prefs = bh_session_get_value('POST_PAGE');
+        $page_prefs = bh_session_get_value('POST_PAGE');
 
-	if (!($page_prefs > 0)) {
-		$page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
-	}
+        if (!($page_prefs > 0)) {
+                $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
+        }
 
-	return $page_prefs;
+        return $page_prefs;
 }
 
 ?>

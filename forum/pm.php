@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.68 2004-09-14 08:28:58 decoyduck Exp $ */
+/* $Id: pm.php,v 1.69 2004-09-14 17:42:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -136,6 +136,13 @@ if (isset($_POST['savemessages'])) {
     }
 }
 
+// Prune old messages for the current user
+
+pm_user_prune_folders();
+
+
+// Check to see which page we should be one
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $start = floor($_GET['page'] - 1) * 10;
 }else {
@@ -228,7 +235,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     }else {
 
-        echo "<p>{$lang['messagehasbeendeleted']}</p>\n";
+        echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
     }
 }
 

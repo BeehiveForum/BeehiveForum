@@ -37,7 +37,8 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
     $result = db_query($sql,$db_post_create);
 
-    if($result){
+    if($result) {
+    
         $new_pid = db_insert_id($db_post_create);
         $sql = "insert into  " . forum_table("POST_CONTENT");
         $sql .= " (TID,PID,CONTENT) ";
@@ -47,6 +48,7 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
         $sql = "update low_priority " . forum_table("THREAD") . " set length = length + 1, modified = NOW() ";
         $sql .= "where tid = $tid";
         $result = db_query($sql, $db_post_create);
+        
     } else {
         $new_pid = -1;
     }

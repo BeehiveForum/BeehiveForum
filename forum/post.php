@@ -41,8 +41,8 @@ if(!bh_session_check()) {
 require_once("./include/html.inc.php");
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/user.inc.php");
@@ -77,14 +77,14 @@ $t_post_html = @$HTTP_POST_VARS['t_post_html'];
 if(substr(@$HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
 
   $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
-	
+    
   $db = db_connect();
   $sql = "select UID from ". forum_table("USER"). " where LOGON = '" . $u_login. "'";
-	
+    
   $result = db_query($sql,$db);
-	
+    
   if(db_num_rows($result) > 0) { 
-	
+    
     $touser = db_fetch_array($result); 
     $HTTP_POST_VARS['t_to_uid'] = $touser['UID']; 
     $t_to_uid = $touser['UID'];
@@ -141,7 +141,9 @@ if(isset($HTTP_POST_VARS['t_newthread'])) {
         $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
 
     }else{
+    
         $valid = false;
+        
     }
 }
 
@@ -150,20 +152,24 @@ if($valid) {
     if($t_post_html == "Y") {
         $t_content = fix_html($t_content);
     }
-	if(isset($t_sig)) {
-		if($t_sig_html == "Y") {
-			$t_sig = fix_html($t_sig);
-		}
-	}
-} else {
+    
+    if(isset($t_sig)) {
+        if($t_sig_html == "Y") {
+          $t_sig = fix_html($t_sig);
+        }
+    }
+    
+}else{
+
     if($t_post_html == "Y") {
         $t_content = stripslashes($t_content);
     }
-	if(isset($t_sig)) {
-		if($t_sig_html == "Y") {
-			$t_sig = stripslashes($t_sig);
-		}
-	}
+    
+    if(isset($t_sig)) {
+        if($t_sig_html == "Y") {
+            $t_sig = stripslashes($t_sig);
+        }
+    }
 }
 
 if($valid && isset($HTTP_POST_VARS['submit'])) {
@@ -247,9 +253,9 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
         
           $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
           $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-          $uri.= "/discussion.php?msg=$t_tid.$t_rpid&newthread=true";
+          $uri.= "/discussion.php?msg=$t_tid.$t_rpid";
           
-        }else {
+        }else{
         
           $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
           $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
@@ -396,7 +402,7 @@ echo "//-->\n";
 echo "</script>\n";
 echo "<form name=\"f_post\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">\n";
 
-if(!isset($t_threadtitle)){
+if(!isset($t_threadtitle)) {
     $t_threadtitle = "";
 }
 
@@ -423,7 +429,7 @@ if($newthread) {
       html_draw_bottom();
       exit;
     
-    }else {
+    }else{
 
       echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
       echo form_input_hidden("t_tid",$reply_to_tid);
@@ -442,7 +448,7 @@ if(isset($t_sig)) {
     //}
 }
 
-if(!isset($t_to_uid)){
+if(!isset($t_to_uid)) {
     $t_to_uid = -1;
 }
 

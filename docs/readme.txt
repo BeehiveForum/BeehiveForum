@@ -323,9 +323,10 @@ least bundled here amongst the other credits.
 
 Current available languages are as follows:
 
-English (UK)  - Beehive Forum Coding Team
-X-Hacker      - Beehive Forum Coding Team
-French        - Kriv @ tehforum.net.
+English (UK)
+French
+X-Hacker
+Gangsta
 
 
 4 Credits
@@ -348,20 +349,25 @@ Mike Franklin / Simon Roberts / Kevin Yip
 
 Nigel Moore / Kevin Yip / Andrew Holgate
 
+4.4 Translations
+================
 
-4.4 Contributions
+French - Mark Krywonos.
+
+
+4.5 Contributions
 =================
 
 Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Lots of other people
 
 
-4.5 Director
+4.6 Director
 ============
 Mark Rendle
 and Matt/Andy while I was moving house...
 
 
-4.6 Thanks to
+4.7 Thanks to
 =============
 - The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.3 2003-11-02 16:18:33 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.4 2003-11-04 19:11:26 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -66,7 +66,6 @@ $lang['worker'] = "Thug";
 $lang['worm'] = "Punk Ass";
 $lang['wasp'] = "Hater";
 $lang['splat'] = "Cracker";
-$lang['with'] = "with";
 $lang['attachment'] = "Attizachment";
 $lang['attachments'] = "Attizachmentz";
 $lang['filename'] = "Fiizlenizame";
@@ -115,7 +114,8 @@ $lang['poll'] = "Pizoll";
 $lang['friend'] = "Homie";
 $lang['error'] = "Izerror";
 $lang['reset'] = "Resizet";
-$lang['guesterror'] = "Sorry, yo ass need to be lizogged in to use thizis motherfucker. <a href=\"logout.php?final_uri=". get_request_uri(). "\" target=\"_top\">Login Now</a>, foo'.";
+$lang['guesterror_1'] = "Sorry, yo ass need to be lizogged in to use thizis motherfucker.";
+$lang['guesterror_2'] = "Login Now, foo'";
 $lang['on'] = "izon";
 $lang['unread'] = "unrizead";
 $lang['all'] = "Izall";
@@ -132,10 +132,7 @@ $lang['polls'] = "Pizolls";
 $lang['user'] = "Homie";
 $lang['enabled'] = "Enizabled";
 $lang['disabled'] = "Dizisabled";
-
-// Error handling messages (error_handler.inc.php) ---------------------
-
-$lang['db_connect_error'] = "<p>An error has occured while connecting to the database.</p>\n<p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p><pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre><p>They should be set to the database details given to you by your hosting provider.</p>\n";
+$lang['with'] = "wit";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -906,23 +903,23 @@ $lang['indigo'] = "Indigo";
 $lang['violet'] = "Violet";
 $lang['white'] = "Honky";
 
-// Forum Stats (messages.inc.php - messages_forum_stats()) -------------
+// Forum stats (stats.inc.php) -----------------------------------------
 
-$lang['forumstats'] = "Forum Stats";
-$lang['guests'] = "guests";
-$lang['members'] = "members";
-$lang['anonymousmembers'] = "anonymous members";
-$lang['viewcompletelist'] = "View Complete List";
-$lang['ourmembershavemadeatotalof'] = "Our members have made a total of";
-$lang['threadsand'] = "threads and";
-$lang['postslowercase'] = "posts";
-$lang['longestthreadis'] = "Longest thread is";
-$lang['therehavebeen'] = "There have been";
-$lang['postsmadeinthelastsixtyminutes'] = "posts made in the last 60 minutes";
-$lang['mostpostsevermadeinasinglesixtyminuteperiodis'] = "Most posts ever made in a single 60 minute period is";
-$lang['wehave'] = "We have";
-$lang['registeredmembers'] = "registered members";
-$lang['thenewestmemberis'] = "The newest member is";
-$lang['mostuserseveronlinewas'] = "Most users ever online was";
+$lang['forumstats'] = "Fizorum Stats'n'shizit";
+$lang['guests'] = "bitchez along fo' tha ride,";
+$lang['members'] = "homiez an'";
+$lang['anonymousmembers'] = "homes keepin' thizeir heads lizow";
+$lang['viewcompletelist'] = "Viziew all tha shit";
+$lang['ourmembershavemadeatotalof'] = "Our homiez have made a mothafuckin' tizotal of";
+$lang['threadsand'] = "thrizeads and";
+$lang['postslowercase'] = "pizosts";
+$lang['longestthreadis'] = "Tha biggest-ass thrizead is";
+$lang['therehavebeen'] = "There be";
+$lang['postsmadeinthelastsixtyminutes'] = "pizosts made in tha last fuckin' hizour";
+$lang['mostpostsevermadeinasinglesixtyminuteperiodis'] = "Tha most pizosts ever made in an hizour is";
+$lang['wehave'] = "We's got";
+$lang['registeredmembers'] = "rizegistizered homiez";
+$lang['thenewestmemberis'] = "The greenest-ass homie is";
+$lang['mostuserseveronlinewas'] = "Mizost homiez ever chillin' at the one tizime was";
 
 ?>

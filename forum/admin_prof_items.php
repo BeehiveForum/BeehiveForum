@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.24 2003-07-28 17:09:22 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.25 2003-07-28 20:20:14 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -116,10 +116,10 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 // Draw the form
 echo "<h1>{$lang['manageprofileitems']}<br />{$lang['section']}: ".profile_section_get_name($psid)."</h1>\n";
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_items\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
-echo "  <table width=\"96%\" class=\"box\">\n";
+echo "  <table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";

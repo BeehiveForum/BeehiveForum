@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.35 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: post.inc.php,v 1.36 2003-07-28 20:20:14 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -133,10 +133,10 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         $html .= "<option value=\"0\">ALL</option>\n";
     }
 
-    $sql = "select U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) as LAST_LOGON ";
-    $sql.= "from ".forum_table("USER")." U where U.UID > 0 ";
-    $sql.= "order by U.LAST_LOGON desc ";
-    $sql.= "limit 0, 20";
+    $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM ".forum_table("USER")." U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST') ";
+    $sql.= "ORDER by U.LAST_LOGON DESC ";
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 

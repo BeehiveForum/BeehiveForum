@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.41 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: admin_user.php,v 1.42 2003-07-28 20:20:14 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -90,10 +90,7 @@ if(isset($HTTP_GET_VARS['uid'])){
 
 $db = db_connect();
 
-$sql = "select LOGON, NICKNAME, STATUS, LOGON_FROM from ". forum_table("USER"). " where UID = $uid";
-$result = db_query($sql,$db);
-
-$user = db_fetch_array($result);
+$user = user_get($uid);
 
 if (!isset($user['STATUS'])) {
   $user['STATUS'] = 0;

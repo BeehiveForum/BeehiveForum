@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.31 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: folder.inc.php,v 1.32 2003-07-28 20:20:14 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -190,8 +190,6 @@ function folder_get_permissions($fid)
         return false;
     }
 }
-
-
 
 // Checks that a $fid is a valid folder and is accessible by the user.
 

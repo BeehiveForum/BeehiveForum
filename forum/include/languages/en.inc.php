@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.19 2003-07-28 17:09:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.20 2003-07-28 20:20:15 decoyduck Exp $ */
 
 // International English language file
 
@@ -184,6 +184,7 @@ $lang['section'] = "Section";
 $lang['itemname'] = "Item Name";
 $lang['moveto'] = "Move To";
 $lang['deleteitem'] = "Delete Item";
+$lang['deletesection'] = "Delete Section";
 $lang['new_caps'] = "NEW";
 $lang['newsection'] = "New Section";
 $lang['manageprofilesections'] = "Manage Profile Sections";
@@ -279,6 +280,7 @@ $lang['smalltextfield'] = "Small Text Field";
 $lang['multilinetextfield'] = "Multiline Text Field";
 $lang['radiobuttons'] = "Radio Buttons";
 $lang['dropdown'] = "Drop Down";
+$lang['threadcount'] = "Thread Count";
 $lang['fieldtypeexample1'] = "For Radio Buttons and Drop Down Fields you need to seperate the fieldname and the values with a colon and each value should be seperated by semi-colons.";
 $lang['fieldtypeexample2'] = "Example: To create a basic Gender radio buttons, with two selections for Male and Female, you would enter: <b>Gender:Male;Female</b> in the Item Name field.";
 

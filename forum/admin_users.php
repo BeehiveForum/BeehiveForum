@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.29 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: admin_users.php,v 1.30 2003-07-28 20:20:14 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -157,7 +157,8 @@ if (isset($usersearch) && strlen($usersearch) > 0) {
 }else {
 
   $sql = "SELECT UID, LOGON, STATUS, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, ";
-  $sql.= "LOGON_FROM FROM " . forum_table("USER") . " WHERE UID > 0 ORDER BY $sort_by $sort_dir LIMIT $start, 20";
+  $sql.= "LOGON_FROM FROM " . forum_table("USER") . " WHERE (LOGON <> 'GUEST' AND PASSWD <> MD5('GUEST')) ";
+  $sql.= "ORDER BY $sort_by $sort_dir LIMIT $start, 20";
 
 }
 

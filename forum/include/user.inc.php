@@ -142,7 +142,7 @@ function user_logon($logon, $password)
             $uid = -2;
         }
 
-	if (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
+	if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
 	  $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
 	}else {
 	  $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.17 2003-08-01 19:20:37 hodcroftcj Exp $ */
+/* $Id: admin_viewlog.php,v 1.18 2003-08-01 20:52:59 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -35,11 +35,9 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
-
+if (!bh_session_check()) {
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
 require_once("./include/perm.inc.php");
@@ -49,6 +47,7 @@ require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/admin.inc.php");
 
 html_draw_top();
 
@@ -91,44 +90,15 @@ if (isset($HTTP_GET_VARS['page'])) {
     $start = 0;
 }
 
-$db = db_connect();
+// Clear the admin log.
 
-if (isset($HTTP_POST_VARS['clear']) && (bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
-
-    $sql = "DELETE FROM ". forum_table("ADMIN_LOG");
-    $result = db_query($sql, $db);
-
+if (isset($HTTP_POST_VARS['clear'])) {
+    admin_clearlog();
 }
-
-$sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
-$sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
-$sql.= "ADMIN_LOG.FID, ADMIN_LOG.TID, ADMIN_LOG.PID, FOLDER.TITLE AS FOLDER_TITLE, THREAD.TITLE AS THREAD_TITLE, ";
-$sql.= "ADMIN_LOG.PSID, ADMIN_LOG.PIID, PS.NAME AS PS_NAME, PI.NAME AS PI_NAME, ADMIN_LOG.ACTION ";
-$sql.= "FROM ". forum_table("ADMIN_LOG"). " ADMIN_LOG ";
-$sql.= "LEFT JOIN ". forum_table("USER"). " AUSER ON (AUSER.UID = ADMIN_LOG.ADMIN_UID) ";
-$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = ADMIN_LOG.UID) ";
-$sql.= "LEFT JOIN ". forum_table("PROFILE_SECTION"). " PS ON (PS.PSID = ADMIN_LOG.PSID) ";
-$sql.= "LEFT JOIN ". forum_table("PROFILE_ITEM"). " PI ON (PI.PIID = ADMIN_LOG.PIID) ";
-$sql.= "LEFT JOIN ". forum_table("FOLDER"). " FOLDER ON (FOLDER.FID = ADMIN_LOG.FID) ";
-$sql.= "LEFT JOIN ". forum_table("THREAD"). " THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
-$sql.= "ORDER BY $sort_by $sort_dir LIMIT $start, 20";
-
-$result = db_query($sql, $db);
 
 // Draw the form
 echo "<h1>{$lang['adminaccesslog']}</h1>\n";
 echo "<p>{$lang['adminlogexp']}</p>\n";
-
-if ($start > 0) {
-  echo "<p>{$lang['showingactions']} ", $start + 1, " to ";
-  if ($start + 20 > db_num_rows($result)) {
-    echo $start + db_num_rows($result);
-  }else {
-    echo $start + 20;
-  }
-  echo " {$lang['inclusive']}.</p>\n";
-}
-
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
@@ -156,60 +126,60 @@ if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
 
 echo "        </tr>\n";
 
-if (db_num_rows($result)) {
+if ($admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir)) {
 
-    while ($row = db_fetch_array($result)) {
+    foreach ($admin_log_array as $admin_log_entry) {
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\" align=\"left\">", format_time($row['LOG_TIME']), "</td>\n";
-        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $row['ADMIN_UID'], "\">", format_user_name($row['ALOGON'], $row['ANICKNAME']), "</a></td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", format_time($admin_log_entry['LOG_TIME']), "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $admin_log_entry['ADMIN_UID'], "\">", format_user_name($admin_log_entry['ALOGON'], $admin_log_entry['ANICKNAME']), "</a></td>\n";
 
-        if (!empty($row['LOGON']) && !empty($row['NICKNAME'])) {
-            $user = "<a href=\"./admin_user.php?uid=". $row['UID']. "\">";
-            $user.= format_user_name($row['LOGON'], $row['NICKNAME']). "</a>";
+        if (!empty($admin_log_entry['LOGON']) && !empty($admin_log_entry['NICKNAME'])) {
+            $user = "<a href=\"./admin_user.php?uid=". $admin_log_entry['UID']. "\">";
+            $user.= format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']). "</a>";
         }else {
-            $user = "{$lang['unknownuser']} (UID: ". $row['UID']. ")";
+            $user = "{$lang['unknownuser']} (UID: ". $admin_log_entry['UID']. ")";
         }
 
-        if (isset($row['FID']) && $row['FID'] > 0) {
-            $title = $row['FID'];
+        if (isset($admin_log_entry['FID']) && $admin_log_entry['FID'] > 0) {
+            $title = $admin_log_entry['FID'];
         }else {
             $title = "{$lang['unknownfolder']}";
         }
 
-        if (isset($row['TID']) && $row['TID'] > 0) {
-            $tid = $row['TID'];
+        if (isset($admin_log_entry['TID']) && $admin_log_entry['TID'] > 0) {
+            $tid = $admin_log_entry['TID'];
         }
 
-        if (isset($row['PID']) && $row['PID'] > 0) {
-            $pid = $row['PID'];
+        if (isset($admin_log_entry['PID']) && $admin_log_entry['PID'] > 0) {
+            $pid = $admin_log_entry['PID'];
         }
 
-        if (isset($row['FOLDER_TITLE']) && !empty($row['FOLDER_TITLE'])) {
-            $folder_title = _stripslashes($row['FOLDER_TITLE']);
+        if (isset($admin_log_entry['FOLDER_TITLE']) && !empty($admin_log_entry['FOLDER_TITLE'])) {
+            $folder_title = _stripslashes($admin_log_entry['FOLDER_TITLE']);
         }else {
-            $folder_title = "{$lang['unknown']} (FID: ". $row['FID']. ")";
+            $folder_title = "{$lang['unknown']} (FID: ". $admin_log_entry['FID']. ")";
         }
 
-        if (isset($row['THREAD_TITLE']) && !empty($row['THREAD_TITLE'])) {
-            $thread_title = _stripslashes($row['THREAD_TITLE']);
+        if (isset($admin_log_entry['THREAD_TITLE']) && !empty($admin_log_entry['THREAD_TITLE'])) {
+            $thread_title = _stripslashes($admin_log_entry['THREAD_TITLE']);
         }else {
-            $thread_title = "{$lang['unknown']} (TID: ". $row['TID']. ")";
+            $thread_title = "{$lang['unknown']} (TID: ". $admin_log_entry['TID']. ")";
         }
 
-        if (isset($row['PS_NAME']) && !empty($row['PS_NAME'])) {
-            $ps_name = _stripslashes($row['PS_NAME']);
+        if (isset($admin_log_entry['PS_NAME']) && !empty($admin_log_entry['PS_NAME'])) {
+            $ps_name = _stripslashes($admin_log_entry['PS_NAME']);
         }else {
-            $ps_name = "{$lang['unknown']} (PSID: ". $row['PSID']. ")";
+            $ps_name = "{$lang['unknown']} (PSID: ". $admin_log_entry['PSID']. ")";
         }
 
-        if (isset($row['PI_NAME']) && !empty($row['PI_NAME'])) {
-            $pi_name = _stripslashes($row['PI_NAME']);
+        if (isset($admin_log_entry['PI_NAME']) && !empty($admin_log_entry['PI_NAME'])) {
+            $pi_name = _stripslashes($admin_log_entry['PI_NAME']);
         }else {
-            $pi_name = "{$lang['unknown']} (PIID: ". $row['PIID']. ")";
+            $pi_name = "{$lang['unknown']} (PIID: ". $admin_log_entry['PIID']. ")";
         }
 
-        switch ($row['ACTION']) {
+        switch ($admin_log_entry['ACTION']) {
             case 1:
                 $action_text = "{$lang['changeduserstatus']}: $user";
                 break;
@@ -314,25 +284,25 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-if (db_num_rows($result) == 20) {
-  if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
-  }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
-  }
+if (sizeof($admin_log_array) == 20) {
+    if ($start < 20) {
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+    }elseif ($start >= 20) {
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+    }
 }else {
-  if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-  }
+    if ($start >= 20) {
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_viewlog.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+    }
 }
 
 echo "</div>\n";
 echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 
-if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && db_num_rows($result)) {
+if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && $admin_log_array) {
     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
     echo form_submit('clear',$lang['clearlog']);
     echo "</form>\n";

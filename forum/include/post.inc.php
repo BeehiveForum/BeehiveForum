@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.122 2005-04-05 02:10:54 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.123 2005-04-06 17:35:10 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -178,6 +178,8 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     if (isset($default_uid) && $default_uid != 0){
 
         $top_sql = "SELECT LOGON, NICKNAME FROM USER where UID = '$default_uid'";
@@ -197,8 +199,9 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
-    $sql.= "ON (USER.UID = VISITOR_LOG.UID) WHERE USER.UID <> '$default_uid' ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
+    $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
+    $sql.= "WHERE USER.UID <> '$default_uid' ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -239,6 +242,8 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
+    $forum_fid = $table_data['FID'];
+
     if (isset($default_uid) && $default_uid != 0) {
 
         $top_sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$default_uid'";
@@ -258,8 +263,9 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
-    $sql.= "ON (USER.UID = VISITOR_LOG.UID) WHERE USER.UID <> '$default_uid' ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
+    $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
+    $sql.= "WHERE USER.UID <> '$default_uid' ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.94 2005-03-14 13:27:22 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.95 2005-04-06 17:35:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -196,7 +196,12 @@ if ($users_array['user_count'] > 0) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", apply_wordfilter($recent_user['NICKNAME']), "</a></td>\n";
+
+        if ($recent_user['UID'] > 0) {
+            echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", apply_wordfilter($recent_user['NICKNAME']), "</a></td>\n";
+        }else {
+            echo "          <td>", apply_wordfilter($recent_user['NICKNAME']), "</td>\n";
+        }
 
         if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {
             echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_user['LAST_LOGON']), "&nbsp;</td>\n";

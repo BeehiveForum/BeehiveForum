@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.61 2005-03-26 18:16:45 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.62 2005-04-06 17:35:08 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
@@ -190,10 +190,13 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 
     if ($table_data = get_table_prefix()) {
 
+        $forum_fid = $table_data['FID'];
+
         $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-        $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
-        $sql.= "ON (USER.UID = VISITOR_LOG.UID) WHERE (USER.LOGON LIKE '$usersearch%' ";
-        $sql.= "OR USER.NICKNAME LIKE '$usersearch%') ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql.= "FROM USER USER LEFT JOIN VISITOR_LOG VISITOR_LOG ";
+        $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
+        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 
@@ -241,9 +244,12 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     if ($table_data = get_table_prefix()) {
 
+        $forum_fid = $table_data['FID'];
+
         $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-        $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
-        $sql.= "ON (USER.UID = VISITOR_LOG.UID) ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql.= "FROM USER USER LEFT JOIN VISITOR_LOG VISITOR_LOG ";
+        $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";$
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 

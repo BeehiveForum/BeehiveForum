@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.169 2005-04-04 17:29:23 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.170 2005-04-06 17:35:11 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -343,27 +343,27 @@ function bh_update_visitor_log($uid)
 
         if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") {
 
-            $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
-            $sql.= "SET LAST_LOGON = NULL WHERE UID = $uid";
+            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NULL ";
+            $sql.= "WHERE UID = $uid";
 
         }else {
 
-            $sql = "SELECT LAST_LOGON FROM {$table_data['PREFIX']}";
-            $sql.= "VISITOR_LOG WHERE UID = $uid";
+            $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
+            $sql.= "WHERE UID = $uid";
 
             $result = db_query($sql, $db_bh_update_visitor_log);
 
             if (db_num_rows($result) > 0) {
 
-                $sql = "UPDATE {$table_data['PREFIX']}VISITOR_LOG ";
-                $sql.= "SET LAST_LOGON = NOW() WHERE UID = $uid";
+                $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
+                $sql.= "WHERE UID = $uid";
 
                 $result = db_query($sql, $db_bh_update_visitor_log);
 
             }else {
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}VISITOR_LOG ";
-                $sql.= "(FORUM, UID, LAST_LOGON) VALUES ($forum_fid, $uid, NOW())";
+                $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
+                $sql.= "VALUES ($forum_fid, $uid, NOW())";
 
                 $result = db_query($sql, $db_bh_update_visitor_log);
             }
@@ -371,7 +371,7 @@ function bh_update_visitor_log($uid)
 
     }else {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}VISITOR_LOG ";
+        $sql = "INSERT INTO VISITOR_LOG ";
         $sql.= "(FORUM, UID, LAST_LOGON) VALUES ($forum_fid, 0, NOW())";
 
         $result = db_query($sql, $db_bh_update_visitor_log);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.1 2004-05-08 17:56:44 decoyduck Exp $ */
+/* $Id: install.php,v 1.2 2004-05-08 22:02:27 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 
@@ -94,12 +94,6 @@ if (isset($_POST['submit'])) {
         $db_cpassword = "";
     }
 
-    if (isset($_POST['db_prefix']) && strlen(trim($_POST['db_prefix'])) > 0) {
-        $db_prefix = trim($_POST['db_prefix']);
-    }else {
-        $db_prefix = "";
-    }
-
     if ($valid && $install_method == 1) {
 
         if (isset($_POST['admin_username']) && strlen(trim($_POST['admin_username'])) > 0) {
@@ -131,8 +125,6 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        echo $db_password, " = ", $db_cpassword;
-
         if ($admin_password != $admin_cpassword) {
             $error_html.= "<h2>Administrator account passwords do not match.</h2>\n";
             $valid = false;
@@ -151,14 +143,36 @@ if (isset($_POST['submit'])) {
             if (mysql_select_db($db_database, $db_install)) {
 
                 if ($install_method == 0) {
-                    $schema_file = "./install/install.inc.php";
+                    $schema_file = "./install/install.sql";
                 }else {
-                    $schema_file = "./install/upgrade.inc.php";
+                    $schema_file = "./install/upgrade.sql";
                 }
 
                 if (file_exists($schema_file)) {
 
-                    include_once($schema_file);
+                    $schema_array = file($schema_file);
+
+                    foreach ($schema_array as $key => $schema_entry) {
+                        if (substr($schema_entry, 0, 1) == "#") {
+                            unset($schema_array[$key]);
+                        }else {
+                            $schema_entry = str_replace('{$forum_webtag}',   $forum_webtag,   $schema_entry);
+                            $schema_entry = str_replace('{$admin_username}', $admin_username, $schema_entry);
+                            $schema_entry = str_replace('{$admin_password}', $admin_password, $schema_entry);
+                            $schema_entry = str_replace('{$admin_email}',    $admin_email,    $schema_entry);
+                            $schema_array[$key] = $schema_entry;
+                        }
+                    }
+
+                    $schema_array = explode(";", implode("", $schema_array));
+
+                    foreach ($schema_array as $key => $schema_entry) {
+                        if ($valid) {
+                            if (!mysql_query(trim($schema_entry), $db_install)) {
+                                $valid = false;
+                            }
+                        }
+                    }
 
                     if ($valid) {
 
@@ -208,6 +222,11 @@ if (isset($_POST['submit'])) {
                         echo "</body>\n";
                         echo "</html>\n";
                         exit;
+
+                    }else {
+
+                        $error_html.="<h2>Could not complete installation. Error was: ". mysql_error($db_install). "</h2>\n";
+                        $valid = false;
                     }
 
                 }else {
@@ -242,6 +261,7 @@ echo "</head>\n";
 
 echo "<h1>BeehiveForum Installation (Doesn't work 100% yet!)</h2>\n";
 echo "<p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
+echo "<p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
 
 if (isset($error_html)) {
     echo $error_html;
@@ -312,10 +332,6 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">Confirm Password:</td>\n";
 echo "                  <td width=\"250\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"250\">Table Prefix:</td>\n";
-echo "                  <td width=\"250\"><input type=\"text\" name=\"db_prefix\" class=\"bhinputtext\" autocomplete=\"off\" value=\"bh_\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

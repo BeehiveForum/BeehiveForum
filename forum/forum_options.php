@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.51 2004-08-17 23:46:32 tribalonline Exp $ */
+/* $Id: forum_options.php,v 1.52 2004-08-18 00:27:58 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -362,9 +362,9 @@ if (!empty($error_html)) {
     echo "<!--\n";
 
     if (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) {
-        echo "top.document.body.rows='60,' + {$user_prefs['FONT_SIZE']} * 2 + ',*';\n";
+        echo "top.document.body.rows='60,' + ". max($user_prefs['FONT_SIZE']* 2, 22) ."+ ',*';\n";
     }else {
-        echo "top.document.body.rows='60,20,*';\n";
+        echo "top.document.body.rows='60,22,*';\n";
     }
 
     echo "top.frames['ftop'].location.replace('$top_html');\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.25 2003-08-31 16:21:07 hodcroftcj Exp $ */
+/* $Id: x-hacker.inc.php,v 1.26 2003-09-01 21:31:56 tribalonline Exp $ */
 
 // International English language file
 
@@ -517,6 +517,7 @@ $lang['submittedcode'] = "\$UBM1+t3d CODE";
 $lang['htmlinmessage'] = "h+Ml 1n Me\$\$493";
 $lang['enabledwithautolinebreaks'] = "3n@8led w1+H 4U+o-LIN38RE4ks";
 $lang['fixhtmlexplanation'] = "+H1s pH0ruM u\$3s hTML FILTeR1N9. YOUr su8M1tT3D htmL HaS 8EeN mOD1F13d by TEH pHil+er\$ iN \$0ME w@y.\\n\\NtO VieW YouR 0r19in4L c0De, Selec+ +EH \\'SUBm1++ED CODe\\' Radi0 BU+T0n.\\ntO V1ew tEH M0D1f1ed cODE, seleCT +3h \\'CORR3c+3D code\\' R4D10 8u+t0N.";
+$lang['messageoptions'] = "Me5S49E op+ION5";
 
 // Message display (messages.php) --------------------------------------
 

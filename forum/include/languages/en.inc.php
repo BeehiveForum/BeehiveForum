@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.223 2005-02-09 21:45:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.224 2005-02-09 23:50:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -62,6 +62,8 @@ $lang['month_short'][12] = "Dec";
 
 // Common words --------------------------------------------------------
 
+$lang['percent'] = "Percent";
+$lang['average'] = "Average";
 $lang['approve'] = "Approve";
 $lang['banned'] = "Banned";
 $lang['locked'] = "Locked";

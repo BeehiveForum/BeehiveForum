@@ -57,7 +57,7 @@ $error_html = "";
 if(isset($HTTP_POST_VARS['submit'])) {
 
   if (strlen(trim($HTTP_POST_VARS['logon'])) > 0) {
-      if (_htmlspecialchars(trim($HTTP_POST_VARS['logon'])) != trim($HTTP_POST_VARS['logon'])) {
+      if (_htmlentities(trim($HTTP_POST_VARS['logon'])) != trim($HTTP_POST_VARS['logon'])) {
         $error_html.= "<h2>Username must not contain HTML tags</h2>\n";
         $valid = false;
       }
@@ -79,7 +79,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
   }
 
   if (strlen(trim($HTTP_POST_VARS['pw'])) > 0) {
-      if (_htmlspecialchars(trim($HTTP_POST_VARS['pw'])) != trim($HTTP_POST_VARS['pw'])) {
+      if (_htmlentities(trim($HTTP_POST_VARS['pw'])) != trim($HTTP_POST_VARS['pw'])) {
         $error_html.= "<h2>Password must not contain HTML tags</h2>\n";
         $valid = false;
       }
@@ -93,7 +93,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
   }
 
   if (strlen(trim($HTTP_POST_VARS['cpw'])) > 0) {
-      if (_htmlspecialchars($HTTP_POST_VARS['cpw']) != $HTTP_POST_VARS['cpw']) {
+      if (_htmlentities($HTTP_POST_VARS['cpw']) != $HTTP_POST_VARS['cpw']) {
         $error_html.= "<h2>Password must not contain HTML tags</h2>\n";
         $valid = false;
       }
@@ -103,7 +103,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
   }
 
   if (strlen(trim($HTTP_POST_VARS['nickname'])) > 0) {
-      if (_htmlspecialchars($HTTP_POST_VARS['nickname']) != $HTTP_POST_VARS['nickname']) {
+      if (_htmlentities($HTTP_POST_VARS['nickname']) != $HTTP_POST_VARS['nickname']) {
         $error_html.= "<h2>Nickname must not contain HTML tags</h2>\n";
         $valid = false;
       }
@@ -113,7 +113,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
   }
 
   if (strlen(trim($HTTP_POST_VARS['email'])) > 0) {
-      if (_htmlspecialchars($HTTP_POST_VARS['email']) != $HTTP_POST_VARS['email']) {
+      if (_htmlentities($HTTP_POST_VARS['email']) != $HTTP_POST_VARS['email']) {
         $error_html.= "<h2>Email must not contain HTML tags</h2>\n";
         $valid = false;
       }

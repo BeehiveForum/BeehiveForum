@@ -70,7 +70,7 @@ if (isset($HTTP_GET_VARS['folder']) && folder_is_valid($HTTP_GET_VARS['folder'])
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title><?php echo $forum_name ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="./styles/style.css" type="text/css" />
 </head>
 <frameset cols="250,*" border="1">

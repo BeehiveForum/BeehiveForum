@@ -256,7 +256,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
                 $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
                 $t_content = strip_tags($t_content);
             }else{
-                $t_content = _htmlspecialchars($t_content);
+                $t_content = _htmlentities($t_content);
             }
 
         }else{
@@ -291,7 +291,7 @@ echo "        <tr>\n";
 echo "          <td>". form_textarea("t_content", $t_content, 15, 85). "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>Signature:<br />". form_textarea("t_sig", _htmlspecialchars($t_sig), 5, 85). "</td>\n";
+echo "          <td>Signature:<br />". form_textarea("t_sig", _htmlentities($t_sig), 5, 85). "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";

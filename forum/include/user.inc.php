@@ -68,7 +68,7 @@ function user_update($uid,$password,$nickname,$email)
 {
     $bit = ($password) ? "PASSWD = \"" . md5($password) . "\", " : "";
 
-    $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"". _htmlspecialchars($nickname). "\", EMAIL = \"". _htmlspecialchars($email). "\"";
+    $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"". _htmlentities($nickname). "\", EMAIL = \"". _htmlentities($email). "\"";
     $sql .= " WHERE UID = $uid";
 
     //echo $sql;
@@ -306,9 +306,9 @@ function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL,";
     $sql.= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE)";
-    $sql.= " values ($uid, '". _htmlspecialchars($firstname). "', '". _htmlspecialchars($lastname). "', '$dob', ";
-    $sql.= " '". _htmlspecialchars($homepage_url). "', '". _htmlspecialchars($pic_url). "',";
-    $sql.= " '". _htmlspecialchars($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int',";
+    $sql.= " values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
+    $sql.= " '". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "',";
+    $sql.= " '". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int',";
     $sql.= " $posts_per_page, $font_size, '$style', '$view_sigs', '$start_page')";
 
     $result = db_query($sql, $db_user_update_prefs);

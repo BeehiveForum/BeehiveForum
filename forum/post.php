@@ -355,7 +355,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
 
-   $t_content = nl2br(_htmlspecialchars(_stripslashes($t_content)));
+   $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
    $t_post_html = "Y";
 
 }
@@ -493,10 +493,10 @@ echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\">\n";
 echo "        <tr>\n";
-echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlspecialchars($t_content) : "", 15, 85). "</td>\n";
+echo "          <td>".form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>Signature:<br />".form_textarea("t_sig", _htmlspecialchars($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</td>\n";
+echo "          <td>Signature:<br />".form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td>", form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", (isset($t_post_html) && $t_post_html == "Y")), "</td>\n";

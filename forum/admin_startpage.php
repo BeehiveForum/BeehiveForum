@@ -104,7 +104,7 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td>", form_textarea('content', _htmlspecialchars($content), 20, 90, 'off', 'style="font-family: monospace"'), "</td>\n";
+echo "          <td>", form_textarea('content', _htmlentities($content), 20, 90, 'off', 'style="font-family: monospace"'), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";

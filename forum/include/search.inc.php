@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.40 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.41 2004-03-10 21:42:48 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -49,7 +49,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $db_search_execute = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $searchsql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
     $searchsql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
@@ -411,7 +411,7 @@ function folder_search_dropdown()
 
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select DISTINCT F.FID, F.TITLE from {$table_prefix}FOLDER F left join ";
     $sql."{$table_prefix}USER_FOLDER UF on (UF.FID = F.FID and UF.UID = '$uid') ";
@@ -440,7 +440,7 @@ function search_draw_user_dropdown($name)
     $db_search_draw_user_dropdown = db_connect();
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";

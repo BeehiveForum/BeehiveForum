@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.18 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.19 2004-03-10 21:42:48 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -30,7 +30,7 @@ function user_profile_update($uid, $piid, $entry)
 {
     $db_user_profile_update = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $entry = addslashes(_htmlentities($entry));
 
@@ -52,7 +52,7 @@ function user_get_profile_entries($uid, $psid)
 {
     $db_user_get_profile_entries = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM {$table_prefix}PROFILE_ITEM PI ";
     $sql.= "LEFT JOIN {$table_prefix}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
@@ -72,7 +72,7 @@ function user_get_profile_image($uid)
 {
     $db_user_get_profile_image = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PIC_URL from {$table_prefix}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_profile_image);

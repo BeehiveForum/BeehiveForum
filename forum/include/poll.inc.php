@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.90 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.91 2004-03-10 21:42:47 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -48,7 +48,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
     $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type')";
@@ -94,7 +94,7 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
     $edit_uid = bh_session_get_value('UID');
     $poll_question = addslashes($poll_question);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     // Rename the thread
 
@@ -155,7 +155,7 @@ function poll_get($tid)
 
     $db_poll_get = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
@@ -211,7 +211,7 @@ function poll_get_votes($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT OPTION_ID, OPTION_NAME, GROUP_ID ";
     $sql.= "FROM {$table_prefix}POLL_VOTES WHERE TID = '$tid' ";
@@ -256,7 +256,7 @@ function poll_get_user_votes($tid, $viewstyle)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($viewstyle)) $viewstyle = 0;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT UP.UID, UP.OPTION_ID FROM {$table_prefix}USER_POLL_VOTES UP ";
     $sql.= "LEFT JOIN {$table_prefix}POLL POLL ON (UP.TID = POLL.TID) ";
@@ -288,7 +288,7 @@ function poll_get_user_vote($tid)
 
     $db_poll_get_user_vote = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from {$table_prefix}USER_POLL_VOTES ";
     $sql.= "where PTUID = MD5($tid.$uid) ORDER BY ID";
@@ -1254,7 +1254,7 @@ function poll_close($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select FROM_UID from {$table_prefix}POST where TID = $tid and PID = 1";
     $result = db_query($sql, $db_poll_close);
@@ -1280,7 +1280,7 @@ function poll_is_closed($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select CLOSES from {$table_prefix}POLL where TID = $tid";
     $result = db_query($sql, $db_poll_is_closed);
@@ -1303,7 +1303,7 @@ function poll_vote($tid, $vote_array)
 
     $db_poll_vote = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
@@ -1354,7 +1354,7 @@ function poll_delete_vote($tid)
 
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select OPTION_ID from {$table_prefix}USER_POLL_VOTES where PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_delete_vote);
@@ -1380,7 +1380,7 @@ function thread_is_poll($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select CLOSES from {$table_prefix}POLL where TID = $tid";
     $result = db_query($sql, $db_thread_is_poll);

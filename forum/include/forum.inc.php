@@ -21,52 +21,50 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.7 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.8 2004-03-10 21:42:47 decoyduck Exp $ */
 
 // Forum-handling functions
 
 // Fetches the webtag from the GET/POST var, checks for it in the
 // database and returns a value.
 
-function get_table_prefix()
+require_once("./include/db.inc.php");
+require_once("./include/lang.inc.php");
+require_once("./include/form.inc.php");
+
+function get_webtag($prefix = false)
 {
-    global $HTTP_GET_VARS, $HTTP_POST_VARS;
+    global $HTTP_GET_VARS, $lang;
+    
+    $db_get_table_prefix = db_connect();    
     
     if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+        
         $webtag = strtoupper(trim($HTTP_GET_VARS['webtag']));
-    }elseif (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {
-        $webtag = strtoupper(trim($HTTP_POST_VARS['webtag']));
-    }
     
-    if (isset($webtag)) {
-    
-        $db_get_table_prefix = db_connect();
-                
         // test to see if the POST table exists with our prefix.
         
         $sql = "SHOW TABLES LIKE '{$webtag}_POST'"; 
         $result = db_query($sql, $db_get_table_prefix);
         
-        // if we found the post table with the webtag return the prefix
+        // if we found the post table return the webtag
     
         if (db_num_rows($result) > 0) {
-            return "{$webtag}_";
+            if ($prefix) {
+                return "{$webtag}_";
+            }else {
+                return $webtag;
+            }
         }
+        
+        html_draw_top();
+        echo "<div align=\"center\">\n";
+        echo "<h2>Unknown Forum Tag.</h2>\n";
+        //form_quick_button("./index.php", $lang['continue']);
+        echo "</div>\n";
+        html_draw_bottom();
+        exit;
     }
-    
-    return "";
-}
-
-function get_webtag()
-{
-    global $HTTP_GET_VARS;
-    
-    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
-        $webtag = strtoupper(trim($HTTP_GET_VARS['webtag']));
-        return $webtag;
-    }
-    
-    return "";
 }
 
 $webtag = get_webtag();

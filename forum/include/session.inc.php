@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.76 2004-03-10 20:21:05 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.77 2004-03-10 21:42:48 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -51,7 +51,7 @@ function bh_session_check()
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     // Current server time.
 
@@ -160,7 +160,7 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $session_stamp = time() - $session_cutoff;
 
@@ -192,7 +192,7 @@ function bh_session_end()
 
     $db_bh_session_end = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 

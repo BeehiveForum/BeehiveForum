@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.41 2004-03-10 18:43:18 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.42 2004-03-10 21:42:47 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -41,7 +41,7 @@ function get_attachments($uid, $aid)
     $uid = addslashes($uid);
     $aid = addslashes($aid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT * FROM {$table_prefix}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID = '$aid'";
     $result = db_query($sql, $db_get_attachments);
@@ -89,7 +89,7 @@ function get_all_attachments($uid, $aid)
     $uid = addslashes($uid);
     $aid = addslashes($aid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT * FROM {$table_prefix}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID <> '$aid'";
     $result = db_query($sql, $db_get_all_attachments);
@@ -136,7 +136,7 @@ function get_users_attachments($uid)
 
     $uid = addslashes($uid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT DISTINCT * FROM {$table_prefix}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);
@@ -184,7 +184,7 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
     $filename = addslashes($filename);
     $mimetype = addslashes($mimetype);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
     
     $sql = "INSERT INTO {$table_prefix}POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
@@ -220,7 +220,7 @@ function get_free_attachment_space($uid)
 
     $uid = addslashes($uid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT * FROM {$table_prefix}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_free_attachment_space);
@@ -243,7 +243,7 @@ function get_attachment_id($tid, $pid)
     $tid = addslashes($tid);
     $pid = addslashes($pid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT AID FROM {$table_prefix}POST_ATTACHMENT_IDS WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql, $db_get_attachment_id);
@@ -265,7 +265,7 @@ function get_pm_attachment_id($mid)
 
     $mid = addslashes($mid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT AID FROM {$table_prefix}PM_ATTACHMENT_IDS WHERE MID = '$mid'";
     $result = db_query($sql, $db_get_pm_attachment_id);
@@ -289,7 +289,7 @@ function get_message_link($aid)
 
     $aid = addslashes($aid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT TID, PID FROM {$table_prefix}POST_ATTACHMENT_IDS WHERE AID = '$aid'";
     $result = db_query($sql, $db_get_message_link);
@@ -320,7 +320,7 @@ function get_num_attachments($aid)
 
     $aid = addslashes($aid);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT * FROM {$table_prefix}POST_ATTACHMENT_FILES WHERE AID = '$aid'";
     $result = db_query($sql, $db_get_num_attachments);
@@ -333,7 +333,7 @@ function get_attachment_by_hash($hash)
     $db_get_attachment_by_hash = db_connect();
     $hash = addslashes($hash);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT * FROM {$table_prefix}POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
     $result = db_query($sql, $db_get_attachment_by_hash);
@@ -350,7 +350,7 @@ function attachment_inc_dload_count($hash)
     $db_attachment_inc_dload_count = db_connect();
     $hash = addslashes($hash);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE LOW_PRIORITY {$table_prefix}POST_ATTACHMENT_FILES ";
     $sql.= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";

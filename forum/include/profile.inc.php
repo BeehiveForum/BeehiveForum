@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.19 2004-03-09 23:00:09 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.20 2004-03-10 21:42:48 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -32,7 +32,7 @@ function profile_section_get_name($psid)
 
    if (!is_numeric($psid)) return "The Unknown Section";
    
-   $table_prefix = get_table_prefix();
+   $table_prefix = get_webtag(true);
 
    $sql = "SELECT PS.NAME FROM {$table_prefix}PROFILE_SECTION PS WHERE PS.PSID = $psid";
    $resource_id = db_query($sql, $db_profile_section_get_name);
@@ -55,7 +55,7 @@ function profile_section_create($name, $position)
 
     $name = addslashes($name);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "INSERT INTO {$table_prefix}PROFILE_SECTION (NAME, POSITION) ";
     $sql.= "VALUES ('$name', '$position')";
@@ -80,7 +80,7 @@ function profile_section_update($psid, $position, $name)
 
     $name = addslashes($name);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}PROFILE_SECTION ";
     $sql.= "SET NAME = '$name', POSITION = '$position' ";
@@ -95,7 +95,7 @@ function profile_sections_get()
 {
     $db_profile_section_get = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
     $sql.= "FROM {$table_prefix}PROFILE_SECTION PROFILE_SECTION ";
@@ -120,7 +120,7 @@ function profile_items_get($psid)
 
     if (!is_numeric($psid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, PROFILE_ITEM.TYPE ";
     $sql.= "FROM {$table_prefix}PROFILE_ITEM PROFILE_ITEM ";
@@ -150,7 +150,7 @@ function profile_item_create($psid, $name, $position, $type)
 
     $name = addslashes($name);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "insert into {$table_prefix}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
     $sql.= "values ($psid, '$name', $type, $position)";
@@ -178,7 +178,7 @@ function profile_item_update($piid, $psid, $position, $type, $name)
 
     $name = addslashes($name);
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "UPDATE {$table_prefix}PROFILE_ITEM ";
     $sql.= "SET PSID = $psid, POSITION = $position, ";
@@ -195,7 +195,7 @@ function profile_section_delete($psid)
 
     if (!is_numeric($psid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "DELETE FROM {$table_prefix}PROFILE_SECTION WHERE PSID = '$psid'";
     return db_query($sql, $db_profile_section_delete);
@@ -207,7 +207,7 @@ function profile_item_delete($piid)
 
     if (!is_numeric($piid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "DELETE FROM {$table_prefix}PROFILE_ITEM WHERE PIID = '$piid'";
     return db_query($sql, $db_profile_item_delete);
@@ -218,7 +218,7 @@ function profile_section_dropdown($default_psid, $field_name="t_psid", $suffix="
     $html = "<select name=\"${field_name}${suffix}\">";
     $db_profile_section_dropdown = db_connect();
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "select PSID, NAME from {$table_prefix}PROFILE_SECTION";
     $result = db_query($sql, $db_profile_section_dropdown);
@@ -244,7 +244,7 @@ function profile_get_user_values($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_table_prefix();
+    $table_prefix = get_webtag(true);
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME AS SECTION_NAME, ";
     $sql.= "PROFILE_ITEM.PIID, PROFILE_ITEM.NAME AS ITEM_NAME, PROFILE_ITEM.TYPE, ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.96 2003-11-27 13:52:23 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.97 2003-12-18 21:25:53 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -600,19 +600,25 @@ function threads_get_most_recent()
     $fidlist = folder_get_available();
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
+    $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, T.POLL_FLAG, UT.LAST_READ, ";
+    $sql.= "UP.RELATIONSHIP, AT.AID AS ATTACHMENTS, UT.INTEREST, U.NICKNAME, U.LOGON ";
     $sql.= "FROM ". forum_table("THREAD"). " T ";
     $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " UT ";
-    $sql.= "ON (T.TID = UT.TID and UT.UID = $uid) ";
+    $sql.= "ON (T.TID = UT.TID and UT.UID = '$uid') ";
     $sql.= "JOIN ". forum_table("USER"). " U ";
     $sql.= "JOIN ". forum_table("POST"). " P ";
     $sql.= "LEFT JOIN ". forum_table("USER_FOLDER"). " UF ON ";
-    $sql.= "(UF.FID = T.FID AND UF.UID = $uid) ";
+    $sql.= "(UF.FID = T.FID AND UF.UID = '$uid') ";
+    $sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
+    $sql.= "(UP.UID = '$uid' AND UP.PEER_UID = P.FROM_UID) ";
+    $sql.= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql.= "(AT.TID = T.TID) ";
     $sql.= "WHERE T.FID IN ($fidlist) ";
     $sql.= "AND U.UID = P.FROM_UID ";
     $sql.= "AND P.TID = T.TID ";
     $sql.= "AND P.PID = 1 ";
     $sql.= "AND NOT ((UT.INTEREST <=> -1) OR (UF.INTEREST <=> -1)) ";
+    $sql.= "GROUP BY T.TID ";
     $sql.= "ORDER BY T.MODIFIED desc ";
     $sql.= "LIMIT 0, 10";
 

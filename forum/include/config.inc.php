@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.115 2005-01-21 01:19:45 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.116 2005-01-21 21:25:51 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -112,34 +112,4 @@ $gzip_compress_level  = 1;
 
 // ---------------------------------------------------------------------
 
-// Default settings ----------------------------------------------------
-
-// IMPORTANT: As of BeehiveForum 0.5 the additional settings stored in
-//            config.inc.php have been moved to a database table. The
-//            settings below are only used if the customised ones cannot
-//            be retrieved from the database. Under normal operation
-//            these settings will be replaced by those in the database.
-
-$default_settings = array('forum_name'                => "A Beehive Forum",
-                          'forum_email'               => "admin@abeehiveforum.net",
-                          'default_style'             => "default",
-                          'default_emoticons'         => "default",
-                          'default_language'          => "en",
-                          'show_stats'                => "Y",
-                          'show_links'                => "Y",
-                          'auto_logon'                => "Y",
-                          'show_pms'                  => "Y",
-                          'pm_allow_attachments'      => "Y",
-                          'maximum_post_length'       => "6226",
-                          'allow_post_editing'        => "Y",
-                          'post_edit_time'            => "0",
-                          'allow_polls'               => "Y",
-                          'search_min_word_length'    => "3",
-                          'attachments_enabled'       => "Y",
-                          'attachment_dir'            => "attachments",
-                          'attachment_allow_embed'    => "N",
-                          'attachment_use_old_method' => "N",
-                          'guest_account_enabled'     => "Y",
-                          'session_cutoff'            => "86400",
-                          'active_sess_cutoff'        => "900");
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.206 2005-01-21 01:19:46 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.207 2005-01-21 21:25:52 decoyduck Exp $ */
 
 // International English language file
 
@@ -193,7 +193,7 @@ $lang['adminexp_10'] = "<b>Posting stats</b> generates a report listing the top 
 $lang['adminexp_11'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
 $lang['adminexp_12'] = "<b>View log</b> lists recent actions by the forum moderators.";
 $lang['adminexp_13'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
-$lang['adminexp_14'] = "<b>Default Forum Settings</b> allows you to modify settings which affect all forums.";
+$lang['adminexp_14'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";
@@ -221,7 +221,8 @@ $lang['usergroups'] = "User Groups";
 $lang['profiles'] = "Profiles";
 $lang['manageforums'] = "Manage Forums";
 $lang['forumsettings'] = "Forum Settings";
-$lang['defaultforumsettings'] = "Default Forum Settings";
+$lang['globalforumsettings'] = "Global Forum Settings";
+$lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";

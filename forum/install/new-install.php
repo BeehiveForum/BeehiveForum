@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.17 2004-12-27 00:23:33 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.18 2005-01-21 21:26:01 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -810,9 +810,6 @@ $forum_settings = array('1' => array('forum_name'             => 'A Beehive Foru
                                      'post_edit_time'         => '0',
                                      'maximum_post_length'    => '6226',
                                      'allow_polls'            => 'Y',
-                                     'search_min_word_length' => '3',
-                                     'session_cutoff'         => '86400',
-                                     'active_sess_cutoff'     => '900',
                                      'show_stats'             => 'Y',
                                      'guest_account_enabled'  => 'Y',
                                      'auto_logon'             => 'Y',
@@ -823,6 +820,9 @@ $forum_settings = array('1' => array('forum_name'             => 'A Beehive Foru
                                      'pm_auto_prune'              => 'N',
                                      'pm_auto_prune_length'       => '60',
                                      'pm_allow_attachments'       => 'Y',
+                                     'search_min_word_length'     => '3',
+                                     'session_cutoff'             => '86400',
+                                     'active_sess_cutoff'         => '900',
                                      'attachment_dir'             => 'attachments',
                                      'attachments_enabled'        => 'Y',
                                      'attachments_max_user_space' => '1048576',

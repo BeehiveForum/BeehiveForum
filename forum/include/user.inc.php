@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.119 2004-02-23 21:31:27 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.120 2004-02-26 21:05:13 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -559,7 +559,7 @@ function user_get_forthcoming_birthdays()
     }
 }
 
-function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $offset = 0)
+function user_search($usersearch, $sort_by = "USER.LAST_LOGON", $sort_dir = "DESC", $offset = 0)
 {
     $db_user_search = db_connect();
 
@@ -567,7 +567,7 @@ function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $
 
     if (!is_numeric($offset)) $offset = 0;
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'USER.UID';
 
     $usersearch = addslashes($usersearch);
 
@@ -576,7 +576,7 @@ function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "WHERE (LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND NOT (USER_PREFS.ANON_LOGON <=> 1) ";
-    $sql.= "ORDER BY USER.$sort_by $sort_dir ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_search);
@@ -592,7 +592,7 @@ function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $
     }
 }
 
-function user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
+function user_get_all($sort_by = "USER.LAST_LOGON", $sort_dir = "ASC", $offset = 0)
 {
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
@@ -601,13 +601,14 @@ function user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
 
     if (!is_numeric($offset)) $offset = 0;
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'USER.LAST_LOGON';
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) ";
-    $sql.= "ORDER BY USER.$sort_by $sort_dir LIMIT $offset, 20";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_get_all);
 
@@ -777,5 +778,29 @@ function user_get_ignored_signatures($uid)
         return false;
     }
 }
+
+function user_get_relationships($uid, $offset = 0)
+{
+    $db_user_get_relationships = db_connect();
+    
+    if (!is_numeric($offset)) $offset = 0;
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM ". forum_table("USER"). " USER ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PEER"). " USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' ORDER BY USER.LOGON ASC ";    
+    $sql.= "LIMIT $offset, 20";
+
+    $result = db_query($sql, $db_user_get_relationships);
+    
+    if (db_num_rows($result)) {
+        $user_get_peers_array = array();
+        while ($row = db_fetch_array($result)) {
+            $user_get_peers_array[] = $row;
+        }
+        return $user_get_peers_array;
+    }else {
+        return false;
+    }
+}    
 
 ?>

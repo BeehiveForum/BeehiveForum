@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.12 2004-02-03 18:08:51 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.13 2004-02-26 21:04:58 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -135,7 +135,7 @@ function admin_save_word_filter($filter)
     }
 }
 
-function admin_user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $offset = 0)
+function admin_user_search($usersearch, $sort_by = "USER.LAST_LOGON", $sort_dir = "DESC", $offset = 0)
 {
     $db_user_search = db_connect();
 
@@ -144,13 +144,13 @@ function admin_user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DE
     
     $usersearch = addslashes($usersearch);
     if (!is_numeric($offset)) $offset = 0;
-    if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'USER.LAST_LOGON';
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM " . forum_table("USER") . " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
     $sql.= "WHERE (LOGON LIKE '$usersearch%' OR NICKNAME LIKE '$usersearch%') ";
-    $sql.= "ORDER BY USER.$sort_by $sort_dir ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_search);

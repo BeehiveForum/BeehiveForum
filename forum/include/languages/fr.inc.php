@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.10 2003-12-06 19:15:56 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.11 2003-12-09 22:26:54 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -247,6 +247,7 @@ $lang['deletedallusersposts'] = "A effacé Toutes Postes pour l'Utilisateur";
 $lang['banneduser'] = "Utilisateur interdit";
 $lang['unbanneduser'] = "Unbanned Utilisateur";
 $lang['ipaddress'] = "IP adresse";
+$lang['ip'] = "IP";
 $lang['deleteduser'] = "Utilisateur effacé";
 $lang['changedtitleaccessfolder'] = "Les Options changées de Dossier pour le dossier";
 $lang['movedthreads'] = "A transféré fils au dossier";

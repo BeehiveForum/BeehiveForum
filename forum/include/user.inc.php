@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.208 2004-11-06 20:26:29 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.209 2004-11-22 22:10:16 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -337,7 +337,7 @@ function user_get_prefs($uid)
                            'PM_SAVE_SENT_ITEM'    => 'Y',
                            'PM_INCLUDE_REPLY'     => 'Y',
                            'PM_AUTO_PRUNE'        => 'N',
-                           'PM_AUTO_PRUNE_LENGTH' => 0,
+                           'PM_AUTO_PRUNE_LENGTH' => '60',
                            'DOB_DISPLAY'          => 'Y',
                            'ANON_LOGON'           => 'N',
                            'SHOW_STATS'           => 'Y',

@@ -21,58 +21,178 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.1 2004-11-16 21:02:57 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.2 2004-11-22 22:10:16 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
+require_once('./include/format.inc.php');
 
-function dictionary_add_custom_word($word)
-{
-    $db_dictionary_add_custom_word = db_connect();
+class dictionary {
 
-    $word = addslashes(trim($word));
+    var $ignored_words_array;
+    var $suggestions_array;
 
-    $uid = bh_session_get_value('UID');
+    var $content_array;
 
-    $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-    $sql.= "VALUES ('$word', SUBSTR(SOUNDEX('$word'), 1, 4), '$uid')";
+    var $current_word;
+    var $obj_id;
 
-    return db_query($sql, $db_dictionary_add_custom_word);
-}
+    var $check_complete;
 
-function dictionary_get_suggestions($word)
-{
-    $db_dictionary_get_suggestions = db_connect();
+    function dictionary($content, $ignored_words, $current_word, $obj_id) {
 
-    $word = addslashes(trim($word));
+        $this->ignored_words_array = array();
+        $this->suggestions_array = array();
 
-    $uid = bh_session_get_value('UID');
+        preg_match_all("/([abcdefghijklmnopqrstuvwxyz']+)|(.)/i", $content, $content_array);
+        $this->content_array = $content_array[0];
 
-    $suggestions_array = array();
+        $this->ignored_words_array = explode(" ", $ignored_words);
 
-    // Exact match
-
-    $sql = "SELECT * FROM DICTIONARY WHERE WORD LIKE '$word' ";
-    $sql.= "AND (UID = 0 OR UID = '$uid')";
-
-    $result = db_query($sql, $db_dictionary_get_suggestions);
-
-    if (db_num_rows($result) > 0) return false;
-
-    // Soundex match
-
-    $sql = "SELECT WORD FROM DICTIONARY WHERE ";
-    $sql.= "SUBSTR(SOUNDEX(WORD), 1, 4) = SUBSTR(SOUNDEX('$word'), 1, 4) ";
-    $sql.= "AND (UID = 0 OR UID = '$uid')";
-
-    $result = db_query($sql, $db_dictionary_get_suggestions);
-
-    while($row = db_fetch_array($result)) {
-
-        $suggestions_array[] = $row['WORD'];
+        $this->current_word = $current_word;
+        $this->obj_id = $obj_id;
     }
 
-    return $suggestions_array;
+    function get_obj_id()
+    {
+        return $this->obj_id;
+    }
+
+    function get_content()
+    {
+        return implode("", $this->content_array);
+    }
+
+    function get_ignored_words()
+    {
+        return implode("", $this->ignored_words_array);
+    }
+
+    function get_current_word_index()
+    {
+        return $this->current_word;
+    }
+
+    function get_current_word()
+    {
+        if (!isset($this->content_array[$this->current_word])) return "";
+        return $this->content_array[$this->current_word];
+    }
+
+    function is_check_complete()
+    {
+        return $this->check_complete;
+    }
+
+    function pretty_print_content()
+    {
+        foreach($this->content_array as $key => $word) {
+
+            if ($key == $this->current_word) {
+                echo "<span class=\"highlight\">$word</span>";
+            }else {
+                echo "$word";
+            }
+        }
+    }
+
+    function add_custom_word($word)
+    {
+        $db_dictionary_add_custom_word = db_connect();
+
+        $word = addslashes(trim($word));
+
+        $uid = bh_session_get_value('UID');
+
+        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+        $sql.= "VALUES ('$word', SUBSTR(SOUNDEX('$word'), 1, 4), '$uid')";
+
+        return db_query($sql, $db_dictionary_add_custom_word);
+    }
+
+    function change_current_word($change_to)
+    {
+        $this->content_array[$this->current_word] = $change_to;
+    }
+
+    function add_ignored_word($word)
+    {
+        if (!in_array(strtolower($word), $this->ignored_words_array)) {
+
+            $this->ignored_words_array[] = strtolower($word);
+        }
+    }
+
+    function word_is_valid()
+    {
+        return (preg_match("/([abcdefghijklmnopqrstuvwxyz']+)/i", $this->content_array[$this->current_word]) > 0);
+    }
+
+    function word_is_ignored()
+    {
+        return _in_array($this->content_array[$this->current_word], $this->ignored_words_array);
+    }
+
+    function get_suggestions()
+    {
+        $db_dictionary_get_suggestions = db_connect();
+
+        if (!isset($this->content_array[$this->current_word])) return false;
+
+        $word = addslashes(trim($this->content_array[$this->current_word]));
+
+        $uid = bh_session_get_value('UID');
+
+        // Exact match
+
+        $sql = "SELECT * FROM DICTIONARY WHERE WORD LIKE '$word' ";
+        $sql.= "AND (UID = 0 OR UID = '$uid')";
+
+        $result = db_query($sql, $db_dictionary_get_suggestions);
+
+        if (db_num_rows($result) > 0) return false;
+
+        // Soundex match
+
+        $sql = "SELECT WORD FROM DICTIONARY WHERE ";
+        $sql.= "SUBSTR(SOUNDEX(WORD), 1, 4) = SUBSTR(SOUNDEX('$word'), 1, 4) ";
+        $sql.= "AND (UID = 0 OR UID = '$uid')";
+
+        $result = db_query($sql, $db_dictionary_get_suggestions);
+
+        while($row = db_fetch_array($result)) {
+
+            $this->suggestions_array[] = $row['WORD'];
+        }
+
+        return $this->suggestions_array;
+    }
+
+    function find_next_word()
+    {
+        $this->current_word++;
+
+        if ($this->current_word > (sizeof($this->content_array) - 1)) {
+
+            $this->check_complete = true;
+            return;
+
+        }else {
+
+            while (!$this->word_is_valid() || $this->word_is_ignored()) {
+
+                $this->current_word++;
+
+                if ($this->current_word > (sizeof($this->content_array) - 1)) {
+
+                    $this->check_complete = true;
+                    return;
+                }
+            }
+
+            if (!$this->get_suggestions()) $this->find_next_word();
+        }
+    }
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.94 2005-03-08 17:16:32 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.95 2005-03-08 17:29:50 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -515,11 +515,11 @@ function search_index_post()
         // Tidy the content up (remove URLs, new lines and HTML)
 
         $drop_char_match = array("/\^/", "/\$/", "/&/", "/\(/", "/\)/", "/\</",
-                                 "/\>/", "/`/", "/'/", "/\"/", "/\|/", "/,/",
-                                 "/@/", "/_/", "/\?/", "/%/", "/-/", "/~/",
-                                 "/\+/", "/\./", "/\[/", "/\]/", "/\{/", "/\}/",
-                                 "/\:/", "/\\\/", "/\//", "/\=/", "/#/", "/'/",
-                                 "/;/", "/\!/");
+                                 "/\>/", "/`/", "/\"/", "/\|/", "/,/", "/@/",
+                                 "/_/", "/\?/", "/%/", "/-/", "/~/", "/\+/",
+                                 "/\./", "/\[/", "/\]/", "/\{/", "/\}/",
+                                 "/\:/", "/\\\/", "/\//", "/\=/", "/#/",
+                                 "/'/", "/;/", "/\!/");
 
         $content = preg_replace("/[\n\r]/is", " ", strip_tags($content));
         $content = preg_replace("/&[a-z]+;/", " ", $content);

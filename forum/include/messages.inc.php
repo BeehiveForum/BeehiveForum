@@ -581,10 +581,12 @@ function messages_get_most_recent($uid)
 
     $db_messages_get_most_recent = db_connect();
 
-    $sql = "select THREAD.TID, THREAD.MODIFIED, USER_THREAD.LAST_READ ";
+    $sql = "select THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
     $sql .= "from " . forum_table("THREAD") . " THREAD ";
     $sql .= "left join " . forum_table("USER_THREAD") . " USER_THREAD on (USER_THREAD.TID = THREAD.TID and USER_THREAD.UID = $uid) ";
+    $sql .= "left join " . forum_table("USER_FOLDER") . " USER_FOLDER on (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "where THREAD.FID in ($fidlist) ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "and (USER_THREAD.INTEREST >= 0 or USER_THREAD.INTEREST is null) ";
     $sql .= "order by THREAD.MODIFIED DESC LIMIT 0,1";
 
@@ -593,7 +595,11 @@ function messages_get_most_recent($uid)
     if(db_num_rows($result)){
         $fa = db_fetch_array($result);
         if(isset($fa['LAST_READ'])){
-            $return = $fa['TID'] . "." . $fa['LAST_READ'];
+	    if (intval($fa['LAST_READ']) < intval($fa['LENGTH'])) {
+	      $return = $fa['TID'] . ".". intval($fa['LAST_READ'] + 1);
+	    }else {
+              $return = $fa['TID'] . "." . $fa['LAST_READ'];
+	    }
         } else {
             $return = $fa['TID'] . ".1";
         }

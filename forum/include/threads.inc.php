@@ -97,7 +97,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -107,6 +107,8 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -133,7 +135,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -143,6 +145,8 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -169,7 +173,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
 
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
@@ -178,6 +182,8 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
     $sql .= "JOIN " . forum_table("POST") . " POST2 ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
@@ -205,7 +211,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -215,6 +221,8 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -241,13 +249,15 @@ function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
     $sql .= forum_table("USER_THREAD") . " USER_THREAD ";
     $sql .= "JOIN " . forum_table("USER") . " USER ";
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -273,13 +283,15 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
     $sql .= forum_table("USER_THREAD") . " USER_THREAD ";
     $sql .= "JOIN " . forum_table("USER") . " USER ";
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -306,13 +318,15 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
     $sql .= forum_table("USER_THREAD") . " USER_THREAD ";
     $sql .= "JOIN " . forum_table("USER") . " USER ";
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -337,7 +351,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -347,6 +361,8 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -374,7 +390,7 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
-    $sql .= "USER.logon, USER.nickname, UP.relationship ";
+    $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -384,6 +400,8 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "JOIN " . forum_table("POST") . " POST ";
     $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
     $sql .= "AND POST.tid = THREAD.tid ";
@@ -409,10 +427,12 @@ function threads_get_folder($uid, $fid, $start = 0)
     // Formulate query
 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
-    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid = $fid ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "ORDER BY THREAD.modified DESC ";
@@ -471,6 +491,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
             $lst[$i]['logon'] = $thread['logon'];
             $lst[$i]['nickname'] = $thread['nickname'];
             $lst[$i]['relationship'] = isset($thread['relationship']) ? $thread['relationship'] : 0;
+	    $lst[$i]['attachments'] = isset($thread['aid']) ? true : false;
 
         }
 

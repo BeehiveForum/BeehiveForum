@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.38 2003-11-27 12:03:10 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.39 2003-12-15 16:37:31 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -30,8 +30,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/user.inc.php");
 
 function email_sendnotification($tuid, $msg, $fuid)
-{
-    if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
+{  
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
@@ -83,24 +82,22 @@ function email_sendnotification($tuid, $msg, $fuid)
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion(). "\n";
 
-            if (isset($mailto['NICKNAME']) && trim($mailto['NICKNAME']) != "") {
+            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
                 $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
             }else {
                 $recipient = $mailto['EMAIL'];
             }
 
-            mail($recipient, "{$lang['msgnotification_subject']} $forum_name", $message, $header);
+            @mail($recipient, "{$lang['msgnotification_subject']} $forum_name", $message, $header);
 
         }
     }
 
     return true;
-
 }
 
 function email_sendsubscription($tuid, $msg, $fuid)
 {
-    if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
@@ -120,7 +117,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
     $result = db_query($sql, $db_email_sendsubscription);
     $numRows = db_num_rows($result);
 
-    for($i = 0; $i < $numRows; $i++) {
+    for ($i = 0; $i < $numRows; $i++) {
 
         $mailto = db_fetch_array($result);
 
@@ -154,13 +151,13 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
         $header.= "X-Mailer: PHP/". phpversion(). "\n";
 
-        if (isset($mailto['NICKNAME']) && trim($mailto['NICKNAME']) != "") {
+        if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
             $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
         }else {
             $recipient = $mailto['EMAIL'];
         }
 
-        mail($recipient, "{$lang['subnotification_subject']} $forum_name", $message, $header);
+        @mail($recipient, "{$lang['subnotification_subject']} $forum_name", $message, $header);
 
     }
 
@@ -170,7 +167,6 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
 function email_send_pm_notification($tuid, $mid, $fuid)
 {
-    if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
     if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email, $lang;
@@ -219,13 +215,13 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion(). "\n";
 
-            if (isset($mailto['NICKNAME']) && trim($mailto['NICKNAME']) != "") {
+            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
                 $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
             }else {
                 $recipient = $mailto['EMAIL'];
             }
 
-            mail($recipient, "{$lang['pmnotification_subject']} $forum_name", $message, $header);
+            @mail($recipient, "{$lang['pmnotification_subject']} $forum_name", $message, $header);
 
         }
     }
@@ -238,8 +234,6 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
 function email_send_pw_reminder($logon)
 {
-    if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
-
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
 
     $db_email_send_pw_reminder = db_connect();
@@ -272,13 +266,13 @@ function email_send_pw_reminder($logon)
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($mailto['NICKNAME']) && trim($mailto['NICKNAME']) != "") {
+            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
                 $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
             }else {
                 $recipient = $mailto['EMAIL'];
             }
 
-            if (mail($recipient, "{$lang['passwdresetrequest']} - $forum_name", $message, $header)) return true;
+            if (@mail($recipient, "{$lang['passwdresetrequest']} - $forum_name", $message, $header)) return true;
 	}
     }
 

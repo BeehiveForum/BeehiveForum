@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.84 2004-04-28 14:28:51 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.85 2004-04-28 18:36:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -200,7 +200,6 @@ if (isset($_POST['upload'])) {
                         }
 
                         $upload_failure[] = $filename;
-                        echo "\"$filename\"<br />";
                     }
                 }
             }

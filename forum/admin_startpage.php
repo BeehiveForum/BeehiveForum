@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.46 2004-04-28 14:28:51 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.47 2004-04-28 18:36:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -105,7 +105,12 @@ if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
 
 }
 
+$allowed_file_exts = array('html', 'htm', 'shtml', 'cgi', 'pl', 'php', 'php3', 'phtml', 'txt');
+
 html_draw_top("htmltools.js");
+
+echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
+echo "<p>{$lang['editstartpageexp']}</p>\n";
 
 if (isset($_POST['submit'])) {
 
@@ -118,20 +123,44 @@ if (isset($_POST['submit'])) {
 
     admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
-}else{
+}elseif (isset($_POST['upload'])) {
 
-    $content = load_start_page();
+    if (isset($_FILES['userfile']['tmp_name']) && strlen(trim($_FILES['userfile']['tmp_name'])) > 0) {
+
+        $path_parts = pathinfo($_FILES['userfile']['tmp_name']);
+
+        if (in_array($path_parts['extension'], $allowed_file_exts)) {
+
+            if (@move_uploaded_file($_FILES['userfile']['tmp_name'], "forums/$webtag/start_main.php")) {
+
+                $content = load_start_page();
+
+                $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
+                $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";
+                $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
+
+                admin_addlog(0, 0, 0, 0, 0, 0, 16);
+
+            }else {
+
+                $status_text = "<h2>{$lang['uploadfailed']}: {$_FILES['userfile']['name']}</h2>\n";
+            }
+
+        }else {
+
+            $status_text = "<h2>{$lang['uploadfailed']}: {$_FILES['userfile']['name']}</h2>\n";
+        }
+    }
 }
 
-echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
-echo "<p>{$lang['editstartpageexp']}</p>\n";
-echo "<p>{$lang['mustusebh401startmain']}</p>";
+
+$content = load_start_page();
 
 if (isset($status_text)) echo $status_text;
 
 $tools = new TextAreaHTML("startpage");
 
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php\">\n";
+echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -141,7 +170,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td>", $tools->toolbar(), "</td>\n";
+echo "                  <td>", $tools->toolbar(true, form_submit('submit', $lang['save'])), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", $tools->textarea('content', _htmlentities($content), 20, 80, 'off', 'style="font-family: monospace"'), "</td>\n";
@@ -159,6 +188,37 @@ echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_reset(), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['uploadstartpage']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>{$lang['filename']}: ", form_field("userfile", "", 45, 0, "file"), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("upload", $lang['upload']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+
 echo "</form>\n";
 
 echo $tools->js();

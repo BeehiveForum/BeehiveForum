@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.50 2004-04-28 17:04:02 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.51 2004-04-28 18:36:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -140,27 +140,31 @@ if (isset($_POST['submit'])) {
 
         if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
 
-            if (@mkdir("./forums/$webtag/styles/$stylename", 0755)) {
+            // Create the directory structure we need
 
-                @chmod("./sforums/$webtag/styles/$stylename", 0777);
+            if (!is_dir("forums")) mkdir("forums", 0755);
+            if (!is_dir("forums/$webtag")) mkdir("forums/$webtag", 0755);
+            if (!is_dir("forums/$webtag/styles")) mkdir("forums/$webtag/styles", 0755);
+            if (!is_dir("forums/$webtag/styles/$stylename")) mkdir("forums/$webtag/styles/$stylename", 0755);
 
-                // Save the style desc
+            // Save the style desc.txt file
 
-                if (@$fp = fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
+            if (@$fp = fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
 
-                    fwrite($fp, $styledesc);
+                fwrite($fp, $styledesc);
+                fclose($fp);
+
+                // Save the style.css file
+
+                if (@$fp = fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
+
+                    fwrite($fp, $stylesheet);
                     fclose($fp);
 
-                    if (@$fp = fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
+                    $success = true;
 
-                        fwrite($fp, $stylesheet);
-                        fclose($fp);
-
-                        $success = true;
-
-                        admin_addlog(0, 0, 0, 0, 0, 0, 17);
-                        echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
-                    }
+                    admin_addlog(0, 0, 0, 0, 0, 0, 17);
+                    echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
                 }
             }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.63 2004-04-28 14:28:55 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.64 2004-04-28 18:36:15 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -230,86 +230,35 @@ function forum_get_setting($setting_name, $value = false, $default = false)
     return $default;
 }
 
-function draw_start_page()
-{
-    $lang = load_language_file();
-
-    $db_draw_start_page = db_connect();
-
-    if (!$table_data = get_table_prefix()) {
-        html_draw_top();
-        echo "<h1>{$lang['editstartpage_help']}</h1>\n";
-        html_draw_bottom();
-	return;
-    }
-
-    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
-    $result = db_query($sql, $db_draw_start_page);
-
-    if (db_num_rows($result)) {
-
-        $row = db_fetch_array($result);
-
-        if (strlen(trim($row['HTML'])) > 0) {
-
-            echo $row['HTML'];
-
-        }else {
-
-            html_draw_top();
-            echo "<h1>{$lang['editstartpage_help']}</h1>\n";
-            html_draw_bottom();
-        }
-
-    }else {
-
-        html_draw_top();
-        echo "<h1>{$lang['editstartpage_help']}</h1>\n";
-        html_draw_bottom();
-    }
-}
-
 function load_start_page()
 {
-    $db_load_start_page = db_connect();
+    $webtag = get_webtag();
 
-    if (!$table_data = get_table_prefix()) return "";
+    if (@file_exists("forums/$webtag/start_main.php")) {
 
-    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
-    $result = db_query($sql, $db_load_start_page);
-
-    if (db_num_rows($result)) {
-
-        $row = db_fetch_array($result);
-        return $row['HTML'];
+        $content = implode("\n", file("forums/$webtag/start_main.php"));
+        return $content;
     }
 
-    return "";
+    return false;
 }
 
 function save_start_page($content)
 {
-    $db_save_start_page = db_connect();
+    $webtag = get_webtag();
 
-    $content = addslashes($content);
+    if (!is_dir("forums")) mkdir("forums", 0755);
+    if (!is_dir("forums/$webtag")) mkdir("forums/$webtag", 0755);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (@$fp = fopen("./forums/$webtag/start_main.php", "w")) {
 
-    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
-    $result = db_query($sql, $db_save_start_page);
+        fwrite($fp, $content);
+        fclose($fp);
 
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE START_MAIN SET HTML = '$content' ";
-        $sql.= "WHERE FID = '{$table_data['FID']}'";
-
-    }else {
-
-        $sql = "INSERT INTO START_MAIN (FID, HTML) ";
-        $sql.= "VALUES('{$table_data['FID']}', '$content')";
+        return true;
     }
 
-    return db_query($sql, $db_save_start_page);
+    return false;
 }
 
 function forum_create($webtag, $forum_name, $access)

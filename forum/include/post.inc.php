@@ -5,7 +5,8 @@ require_once("./include/format.inc.php");
 function post_create($tid,$reply_pid,$fuid,$tuid,$content)
 {
     $db = db_connect();
-
+    $content = mysql_escape_string($content);
+    
     $sql = "insert into POST (tid,reply_to_pid,from_uid,to_uid,created,content) ";
     $sql .= "values ($tid,$reply_pid,$fuid,$tuid,NOW(),\"$content\")";
 
@@ -47,7 +48,8 @@ function post_create_thread($fid,$title)
 
 function make_html($text)
 {
-    $html = htmlentities($text);
+    $html = stripslashes($text);
+    $html = htmlentities($html,ENT_QUOTES);
     $html = format_url2link($html);
     $html = nl2br($html);
 

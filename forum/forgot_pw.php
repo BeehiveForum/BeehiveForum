@@ -42,7 +42,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
             if(isset($fa['UID']) && isset($fa['EMAIL'])){
                 $msg = "You requested this e-mail from $forum_name because you have forgotten your password.\n\n";
                 $msg.= "Click the link below (or copy and paste it into your browser) to reset your password:\n\n";
-                $msg.= "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/change_pw.php?u={$fa['UID']}&h={$fa['PASSWD']}";
+                $msg.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+                
+                if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+                  $msg. dirname($HTTP_SERVER_VARS['PHP_SELF']);
+                }
+                
+                $msg.= "/change_pw.php?u={$fa['UID']}&h={$fa['PASSWD']}";
 
                 $header = "From: \"$forum_name\" <$forum_email>\n";
                 $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";

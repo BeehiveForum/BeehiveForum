@@ -23,10 +23,8 @@ USA
 
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING
-
-require_once("./include/html.inc.php");
-
-if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+require_once("./include/html.inc.php");
+if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 	html_guest_error();
 	exit;
 }
@@ -52,13 +50,10 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
 }
 
 if(isset($HTTP_GET_VARS['ret'])){
-
-    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST']. $ret);
+    header_redirect($ret);
     
 }else{
-
-    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/user_profile.php?uid=$uid");
+    header_redirect("./user_profile.php?uid=$uid");
     
 }
-
 ?>

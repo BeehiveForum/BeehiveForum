@@ -75,6 +75,38 @@ function poll_get($tid)
     
 }
 
+function poll_get_votes($tid)
+{
+
+    $db_poll_get_votes = db_connect();
+    
+    $sql = "select O1, O2, O3, O4, O5, O1_VOTES, O2_VOTES, O3_VOTES, O4_VOTES, O5_VOTES, ";
+    $sql.= "CHANGEVOTE, POLLTYPE, SHOWRESULTS, UNIX_TIMESTAMP(CLOSES) AS CLOSES ";
+    $sql.= "FROM POLL WHERE TID = $tid";
+    
+    $result = db_query($sql, $db_poll_get_votes);
+    $pollresults = db_fetch_array($result);
+    
+    return $pollresults;
+    
+}
+
+function poll_get_user_vote($tid)
+{
+
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    
+    $db_poll_get_user_vote = db_connect();
+
+    $sql = "select VOTE, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from POLL_VOTES where UID = $uid and TID = $tid";
+    $result = db_query($sql, $db_poll_get_user_vote);
+    $userpolldata = db_fetch_array($result);
+    
+    return $userpolldata;
+    
+}
+
 function poll_sort($a, $b) {
 
     if ($a['votes'] == $b['votes']) return 0;
@@ -87,16 +119,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    
+    $poll = poll_get_votes($tid);
+    $polldata = poll_get($tid);
+    $userpolldata = poll_get_user_vote($tid);
 
-    $db_poll_display = db_connect();
-    
-    $sql = "select O1, O2, O3, O4, O5, O1_VOTES, O2_VOTES, O3_VOTES, O4_VOTES, O5_VOTES, ";
-    $sql.= "CHANGEVOTE, POLLTYPE, SHOWRESULTS, UNIX_TIMESTAMP(CLOSES) AS CLOSES ";
-    $sql.= "FROM POLL WHERE TID = $tid";
-    
-    $result = db_query($sql, $db_poll_display);
-    $poll = db_fetch_array($result);
-    
     $totalvotes = $poll['O1_VOTES'] + $poll['O2_VOTES'] + 
                   $poll['O3_VOTES'] + $poll['O4_VOTES'] + 
                   $poll['O5_VOTES'];
@@ -106,15 +133,6 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                          2 => array('option' => $poll['O3'], 'votes' => $poll['O3_VOTES']),
                          3 => array('option' => $poll['O4'], 'votes' => $poll['O4_VOTES']),
                          4 => array('option' => $poll['O5'], 'votes' => $poll['O5_VOTES']));
-                         
-                       
-    //usort($pollresults, "poll_sort");
-
-    $polldata = poll_get($tid);
-    
-    $sql = "select VOTE, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from POLL_VOTES where UID = $uid and TID = $tid";
-    $result = db_query($sql, $db_poll_display);
-    $userpolldata = db_fetch_array($result);
     
     $polldata['CONTENT'] = "<br>\n";
     $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
@@ -127,8 +145,6 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td>\n";
 
     $max_value = 0;
     
@@ -145,10 +161,10 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     
     if ($max_value > 0) {
     
-      $horizontal_bar_width = (300 / $max_value);
+      $horizontal_bar_width = floor((300 / $max_value));
       
-      $vertical_bar_height = (200 / $max_value);
-      $vertical_bar_width = (350 / $optioncount);
+      $vertical_bar_height = floor((200 / $max_value));
+      $vertical_bar_width = floor((400 / $optioncount));
       
     }
         
@@ -160,9 +176,9 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         
           if (!empty($pollresults[$i]['option'])) {
             
-            $polldata['CONTENT'].= "          <tr>\n";
-            $polldata['CONTENT'].= "            <td class=\"postbody\">". form_radio("pollvote", $i, '', false). "&nbsp;". $pollresults[$i]['option']. "</td>\n";
-            $polldata['CONTENT'].= "          </tr>\n";
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td class=\"postbody\">". form_radio("pollvote", $i, '', false). "&nbsp;". $pollresults[$i]['option']. "</td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
             
           }
           
@@ -174,11 +190,19 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             
           if ($poll['POLLTYPE'] == 0) {
         
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td>\n";
             $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width);
+            $polldata['CONTENT'].= "          </td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
                
           }else {
-              
+
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td>\n";
             $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width);
+            $polldata['CONTENT'].= "          </td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
                 
           }
           
@@ -188,9 +212,9 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         
             if (!empty($pollresults[$i]['option'])) {
 
-              $polldata['CONTENT'].= "          <tr>\n";
-              $polldata['CONTENT'].= "            <td class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
-              $polldata['CONTENT'].= "          </tr>\n";
+              $polldata['CONTENT'].= "        <tr>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+              $polldata['CONTENT'].= "        </tr>\n";
           
             }
         
@@ -206,17 +230,15 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         
         if (!empty($pollresults[$i]['option'])) {
         
-          $polldata['CONTENT'].= "          <tr>\n";
-          $polldata['CONTENT'].= "            <td class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
-          $polldata['CONTENT'].= "          </tr>\n";
+          $polldata['CONTENT'].= "        <tr>\n";
+          $polldata['CONTENT'].= "          <td class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+          $polldata['CONTENT'].= "        </tr>\n";
           
         }
         
       }
           
-    }
-
-    $polldata['CONTENT'].= "          </td>\n";    
+    }  
     
     if ($in_list) {
     
@@ -313,7 +335,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           
           if ($poll['SHOWRESULTS'] == 1) {
           
-            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=350, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
             
           }
 
@@ -359,11 +381,11 @@ function poll_horizontal_graph($pollresults, $bar_width)
         
         if ($pollresults[$i]['votes'] > 0) {
         
-          $polldisplay.= "                <td class=\"postbody\"><img src=\"./images/pollbar". $i. ".png\" height=\"20\" width=\"". $bar_width * $pollresults[$i]['votes']. "\" alt=\"\"></td>\n";
+          $polldisplay.= "                <td class=\"postbody\" height=\"20\"><img src=\"./images/pollbar". $i. ".png\" height=\"20\" width=\"". $bar_width * $pollresults[$i]['votes']. "\" alt=\"\"></td>\n";
           
         }else {
         
-          $polldisplay.= "                <td class=\"postbody\">&nbsp;</td>\n";
+          $polldisplay.= "                <td class=\"postbody\" height=\"20\">&nbsp;</td>\n";
           
         }
         
@@ -397,11 +419,9 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width)
           
         }else {
         
-          $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"bottom\">&nbsp;</td>\n";
+          $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"bottom\"><img src=\"./images/pollbar". $i. ".png\" height=\"0\" width=\"". $bar_width. "\" alt=\"\"></td>\n";
           
         }
-        
-        $polldisplay.= "                <td>&nbsp;</td>\n";
         
       }
       
@@ -415,7 +435,6 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width)
       if (!empty($pollresults[$i]['option'])) {
      
         $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "</td>\n";
-        $polldisplay.= "                <td>&nbsp;</td>\n";
         
       }
       

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.14 2005-02-06 13:58:54 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.15 2005-02-07 17:05:04 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -373,6 +373,24 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     // Lots of other indexes to make things go /fast/ (maybe)
+
+    $sql = "ALTER TABLE FORUMS ADD INDEX (WEBTAG) ";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE FORUM_SETTINGS ADD INDEX (SVALUE) ";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (LAST_READ) ";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.220 2005-02-06 21:35:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.221 2005-02-07 17:04:49 decoyduck Exp $ */
 
 // International English language file
 
@@ -30,6 +30,34 @@ USA
 $lang['_charset'] = "utf-8"; // ISO Charset code
 $lang['_isocode'] = "en";    // ISO-639 language code
 $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
+
+// Months --------------------------------------------------------------
+
+$lang['month'][1]  = "January";
+$lang['month'][2]  = "February";
+$lang['month'][3]  = "March";
+$lang['month'][4]  = "April";
+$lang['month'][5]  = "May";
+$lang['month'][6]  = "June";
+$lang['month'][7]  = "July";
+$lang['month'][8]  = "August";
+$lang['month'][9]  = "September";
+$lang['month'][10] = "October";
+$lang['month'][11] = "November";
+$lang['month'][12] = "December";
+
+$lang['month_short'][1]  = "Jan";
+$lang['month_short'][2]  = "Feb";
+$lang['month_short'][3]  = "Mar";
+$lang['month_short'][4]  = "Apr";
+$lang['month_short'][5]  = "May";
+$lang['month_short'][6]  = "Jun";
+$lang['month_short'][7]  = "Jul";
+$lang['month_short'][8]  = "Aug";
+$lang['month_short'][9]  = "Sep";
+$lang['month_short'][10] = "Oct";
+$lang['month_short'][11] = "Nov";
+$lang['month_short'][12] = "Dec";
 
 
 // Common words --------------------------------------------------------
@@ -434,7 +462,7 @@ $lang['allowsearchenginespidering'] = "Allow search engines to spider post conte
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
 
-$lang['top10postersforthismonth'] = "Top 10 posters for this month";
+$lang['top10postersin'] = "Top 10 posters in";
 $lang['top10postersforthisweek'] = "Top 10 posters for this week";
 $lang['top10postersfortoday'] = "Top 10 posters for today";
 $lang['top10postersforthishour'] = "Top 10 posters for this hour";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.56 2003-08-10 02:18:32 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.57 2003-08-10 17:30:51 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -30,7 +30,7 @@ require_once('./include/thread.inc.php');
 require_once('./include/user_rel.inc.php');
 require_once("./include/lang.inc.php");
 
-function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $show_results)
+function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type)
 {
 
     $db_poll_create = db_connect();
@@ -41,8 +41,8 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
       $closes = 'NULL';
     }
 
-    $sql = "insert into ". forum_table("POLL"). " (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS) ";
-    $sql.= "values ('$tid', $closes, '$change_vote', '$poll_type', '$show_results')";
+    $sql = "insert into ". forum_table("POLL"). " (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
+    $sql.= "values ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type')";
 
     if (db_query($sql, $db_poll_create)) {
 
@@ -67,7 +67,7 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
 
 }
 
-function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $poll_type, $show_results)
+function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type)
 {
 
     $db_poll_edit = db_connect();
@@ -91,7 +91,7 @@ function poll_edit($tid, $poll_question, $poll_options, $closes, $change_vote, $
     }
 
     $sql = "UPDATE ". forum_table("POLL"). " SET CHANGEVOTE = '$change_vote', ";
-    $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results' ";
+    $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', VOTETYPE = '$poll_vote_type' ";
 
     if ($closes && $closes > 0) $sql.= ", CLOSES = $closes ";
 
@@ -131,7 +131,7 @@ function poll_get($tid)
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
     $sql.= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
     $sql.= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP, ";
-    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, ";
+    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, ";
     $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) as CLOSES ";
     $sql.= "from ". forum_table("POST"). " POST ";
     $sql.= "left join ". forum_table("USER"). " FUSER on (POST.FROM_UID = FUSER.UID) ";
@@ -455,8 +455,15 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
+            if ($polldata['VOTETYPE'] == 1) {
 
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+
+            }else {
+
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+
+            }
           }
 
           if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()){
@@ -476,6 +483,17 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           }
 
+          if ($polldata['VOTETYPE'] == 1) {
+
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
+            $polldata['CONTENT'].= "        <tr>\n";
+            $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">{$lang['polltypewarning']}</td>\n";
+            $polldata['CONTENT'].= "        </tr>\n";
+
+          }
+
         }elseif (bh_session_get_value('UID') > 0) {
 
           $polldata['CONTENT'].= "        <tr>\n";
@@ -486,7 +504,15 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
+            if ($polldata['VOTETYPE'] == 1) {
+
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+
+            }else {
+
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+
+            }
 
           }
 
@@ -499,7 +525,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
 
-          if ($polldata['POLLTYPE'] == 2) {
+          if ($polldata['VOTETYPE'] == 1) {
 
             $polldata['CONTENT'].= "        <tr>\n";
             $polldata['CONTENT'].= "          <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";

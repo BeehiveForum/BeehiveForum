@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.30 2003-08-10 02:18:32 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.31 2003-08-10 17:30:51 decoyduck Exp $ */
 
 // International English language file
 
@@ -618,7 +618,7 @@ $lang['pollresultsexp'] = "How would you like to display the results of your pol
 $lang['pollvotetype'] = "Poll Voting Type";
 $lang['pollvotesexp'] = "How should the poll be conducted?";
 $lang['pollvoteanon'] = "Anonymously";
-$lang['pollvotepub'] = "Publicly viewable votes";
+$lang['pollvotepub'] = "Public ballot";
 $lang['pollresultnote'] = "<b>Note:</b> Choosing '{$lang['pollvotepub']}' will overide the poll result type.";
 $lang['horizgraph'] = "Horizontal graph";
 $lang['vertgraph'] = "Vertical graph";
@@ -649,6 +649,7 @@ $lang['youvotedforoption'] = "You voted for option";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";
 $lang['editpoll'] = "Edit Poll";
 $lang['results'] = "Results";
+$lang['resultdetails'] = "Result Details";
 $lang['changevote'] = "Change vote";
 
 // Profiles (profile.php) ----------------------------------------------

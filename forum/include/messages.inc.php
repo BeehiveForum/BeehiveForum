@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.160 2003-08-08 23:29:49 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.161 2003-08-10 17:30:51 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -327,7 +327,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
     }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
-          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\"></a> {$lang['poll']} ";
+          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\"></a> {$lang['poll']} ";
         }
         echo $message['PID'] . " {$lang['of']} " . $msg_count;
     }

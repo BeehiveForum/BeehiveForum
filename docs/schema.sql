@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.43 2003-08-10 02:18:30 decoyduck Exp $
+# $Id: schema.sql,v 1.44 2003-08-10 17:30:49 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -207,7 +207,7 @@ CREATE TABLE POLL (
   CHANGEVOTE tinyint(1) NOT NULL default '1',
   POLLTYPE tinyint(1) NOT NULL default '0',
   SHOWRESULTS tinyint(1) NOT NULL default '1',
-  POLLVOTETYPE tinyint(1) unsigned NOT NULL default '0',
+  VOTETYPE tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY (TID)
 ) TYPE=MyISAM;
 

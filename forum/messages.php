@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.83 2003-08-08 23:29:49 decoyduck Exp $ */
+/* $Id: messages.php,v 1.84 2003-08-10 17:30:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -251,7 +251,7 @@ messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
 if($threaddata['POLL_FLAG'] == 'Y') {
-    echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\">{$lang['viewresults']}</a>\n";
+    echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a>\n";
 }
 
 if (bh_session_get_value('UID') != 0) {

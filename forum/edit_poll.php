@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.21 2003-08-10 02:18:32 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.22 2003-08-10 17:30:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -353,7 +353,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
       <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid), 30, 64); ?></td>
     </tr>
     <tr>
-      <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+      <td>&nbsp;</td>
     </tr>
   </table>
   <table class="box" cellpadding="0" cellspacing="0" width="500">
@@ -391,7 +391,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
 
                 ?>
                 <tr>
-                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                  <td>&nbsp;</td>
                   <td><?php echo $lang['numberanswers'] ?>: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), $answerselection), " ", form_submit("changecount", $lang['change'])  ?></td>
                 </tr>
                 <?php
@@ -433,14 +433,14 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
 
                 ?>
                 <tr>
-                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                  <td>&nbsp;</td>
                   <td><?php echo form_checkbox("t_post_html", "Y", $lang['answerscontainHTML'], $t_post_html); ?></td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+            <td>&nbsp;</td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['votechanging'] ?></h2></td>
@@ -450,17 +450,17 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
           </tr>
           <tr>
             <td>
-              <table border="0" width="300">
+              <table border="0" width="500">
                 <tr>
-                  <td><?php echo form_radio('changevote', '1', $lang['yes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1); ?></td>
-                  <td><?php echo form_radio('changevote', '0', $lang['no'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '1', $lang['yes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '0', $lang['no'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0); ?></td>
                   <td><?php echo form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : $polldata['CHANGEVOTE'] == 2); ?></td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+            <td>&nbsp;</td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['pollresults'] ?></h2></td>
@@ -472,15 +472,33 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td>
               <table border="0" width="400">
                 <tr>
-                  <td><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : $polldata['POLLTYPE'] == 0); ?></td>
-                  <td><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : $polldata['POLLTYPE'] == 1); ?></td>
-                  <td><?php echo form_radio('polltype', '2', $lang['publicviewable'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 2 : $polldata['POLLTYPE'] == 2); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : $polldata['POLLTYPE'] == 0); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : $polldata['POLLTYPE'] == 1); ?></td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><h2><?php echo $lang['pollvotetype']; ?></h2></td>
+          </tr>
+          <tr>
+            <td><?php echo $lang['pollvotesexp']; ?></td>
+          </tr>
+          <tr>
+            <td>
+              <table border="0" width="400">
+                <tr>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 0 : $polldata['VOTETYPE'] == 0); ?></td>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 1 : $polldata['VOTETYPE'] == 1); ?></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['expiration'] ?></h2></td>
@@ -492,14 +510,14 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('showresults', '1', $lang['yes'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : $polldata['SHOWRESULTS'] == 1); ?></td>
-                  <td><?php echo form_radio('showresults', '0', $lang['no'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : $polldata['SHOWRESULTS'] == 0); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '1', $lang['yes'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : $polldata['SHOWRESULTS'] == 1); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '0', $lang['no'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : $polldata['SHOWRESULTS'] == 0); ?></td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+            <td>&nbsp;</td>
           </tr>
           <tr>
             <td><?php echo $lang['changewhenpollcloses']; ?></td>
@@ -508,7 +526,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td><?php echo form_dropdown_array('closepoll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($HTTP_POST_VARS['closepoll']) ? $HTTP_POST_VARS['closepoll'] : 5); ?></td>
           </tr>
           <tr>
-            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+            <td>&nbsp;</td>
           </tr>
         </table>
       </td>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.232 2004-03-01 22:58:03 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.233 2004-03-02 23:25:25 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -199,8 +199,12 @@ function message_filter($content)
     $replace_array = array();
 
     while($row = db_fetch_array($result)) {
-      $pattern_array[] = "/". trim($row['MATCH_TEXT']). "/i";
-      $replace_array[] = $row['REPLACE_TEXT'];
+        $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT'])). "/i";
+        if (strlen(trim($row['REPLACE_TEXT'])) > 0) {
+            $replace_array[] = _stripslashes($row['REPLACE_TEXT']);
+        }else {
+            $replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
+        }
     }
 
     usort($pattern_array, 'message_sort_filter');
@@ -239,6 +243,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!isset($message['TO_RELATIONSHIP'])) {
         $message['TO_RELATIONSHIP'] = 0;
     }
+
+    // Check for words that should be filtered ---------------------------------
+
+    $message['CONTENT'] = message_filter($message['CONTENT']);    
     
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
@@ -273,10 +281,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
         $message['CONTENT'] = implode('', $message_parts);
     }
-
-    // Check for words that should be filtered ---------------------------------
-
-    $message['CONTENT'] = message_filter($message['CONTENT']);
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 

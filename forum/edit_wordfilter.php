@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.1 2004-03-01 23:41:16 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.2 2004-03-02 23:25:25 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -59,10 +59,12 @@ if (isset($HTTP_POST_VARS['save'])) {
     
     if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
         for ($i = 0; $i < sizeof($HTTP_POST_VARS['match']); $i++) {
-            if (isset($HTTP_POST_VARS['replace'][$i])) {
-                user_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i]);
-            }else {
-                user_add_word_filter($HTTP_POST_VARS['match'][$i], "");
+            if (isset($HTTP_POST_VARS['match'][$i]) && trim(strlen($HTTP_POST_VARS['match'][$i])) > 0) {
+                if (isset($HTTP_POST_VARS['replace'][$i]) && trim(strlen($HTTP_POST_VARS['replace'][$i])) > 0) {
+                    user_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i]);
+                }else {
+                    user_add_word_filter($HTTP_POST_VARS['match'][$i], "");
+                }
             }
         }
     }
@@ -82,7 +84,7 @@ if (isset($HTTP_POST_VARS['save'])) {
     }
     
     user_update_prefs($uid, $user_prefs);
-    $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
+    if (!isset($status_text)) $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
 }
 
 // Get User Prefs
@@ -102,7 +104,6 @@ echo "<h1>{$lang['editwordfilter']}</h1>\n";
 if (isset($status_text)) echo $status_text;
 
 echo "<p>{$lang['wordfilterexp_3']}</p>\n";
-echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 echo "<div class=\"postbody\">\n";
 echo "  <form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
@@ -114,8 +115,8 @@ echo "              <td class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"100%\">\n";
 echo "                  <tr>\n";
 echo "                    <td class=\"subhead\">&nbsp;</td>\n";
-echo "                    <td class=\"subhead\">Matched Text</td>\n";
-echo "                    <td class=\"subhead\">Replacement Text</td>\n";
+echo "                    <td class=\"subhead\">&nbsp;Matched Text</td>\n";
+echo "                    <td class=\"subhead\">&nbsp;Replacement Text</td>\n";
 echo "                    <td class=\"subhead\">&nbsp;</td>\n";
 echo "                  </tr>\n";
 
@@ -125,12 +126,12 @@ foreach ($word_filter_array as $word_filter) {
     echo "                    <td>&nbsp;</td>\n";
     
     if ($word_filter['UID'] == 0) {
-        echo "                    <td>{$word_filter['MATCH_TEXT']}</td>\n";
-        echo "                    <td>{$word_filter['REPLACE_TEXT']}</td>\n";
-        echo "                    <td>[A]</td>\n";
+        echo "                    <td>", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
+        echo "                    <td>", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), "</td>\n";
+        echo "                    <td><sup>[A]</sup></td>\n";
     }else {
-        echo "                    <td>", form_input_text("match[]", $word_filter['MATCH_TEXT'], 30), "</td>\n";
-        echo "                    <td>", form_input_text("replace[]", $word_filter['REPLACE_TEXT'], 30), "</td>\n";
+        echo "                    <td>", form_input_text("match[]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
+        echo "                    <td>", form_input_text("replace[]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
         echo "                    <td>&nbsp;</td>\n";
     }
     

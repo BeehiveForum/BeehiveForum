@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.56 2004-09-09 00:47:04 tribalonline Exp $ */
+/* $Id: forum_options.php,v 1.57 2004-09-13 21:23:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -198,9 +198,10 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['PM_SAVE_SENT_ITEM'] = false;
     }
 
+
     if (isset($_POST['pm_include_reply']) && $_POST['pm_include_reply'] == "Y") {
         $user_prefs['PM_INCLUDE_REPLY'] = "Y";
-    }else {
+    } else {
         $user_prefs['PM_INCLUDE_REPLY'] = "N";
     }
 
@@ -208,6 +209,27 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['PM_INCLUDE_REPLY'] = ($_POST['pm_include_reply_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['PM_INCLUDE_REPLY'] = false;
+    }
+
+
+    if (isset($_POST['pm_auto_prune']) && $_POST['pm_auto_prune'] == "Y") {
+        $user_prefs['PM_AUTO_PRUNE'] = "Y";
+    } else {
+        $user_prefs['PM_AUTO_PRUNE'] = "N";
+    }
+
+    if (isset($_POST['pm_auto_prune_length'])) {
+        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = _stripslashes(trim($_POST['pm_auto_prune_length']));
+    } else {
+        $user_prefs['PM_AUTO_PRUNE_LENGTH'] = 60;
+    }
+
+    if (isset($_POST['pm_auto_prune_global'])) {
+        $user_prefs_global['PM_AUTO_PRUNE'] = ($_POST['pm_auto_prune_global'] == "Y") ? true : false;
+        $user_prefs_global['PM_AUTO_PRUNE_LENGTH'] = ($_POST['pm_auto_prune_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['PM_AUTO_PRUNE'] = false;
+        $user_prefs_global['PM_AUTO_PRUNE_LENGTH'] = false;
     }
 
 
@@ -486,6 +508,16 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_include_reply", "Y", $lang['includepminreply'], (isset($user_prefs['PM_INCLUDE_REPLY']) && $user_prefs['PM_INCLUDE_REPLY'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_include_reply_global","Y",$lang['setforallforums'],$user_prefs['PM_INCLUDE_REPLY_GLOBAL']), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+
+if (isset($user_prefs['PM_AUTO_PRUNE_LENGTH']) && is_numeric($user_prefs['PM_AUTO_PRUNE_LENGTH'])) {
+    echo "                  <td>", form_checkbox("pm_auto_prune", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == "Y") ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), $user_prefs['PM_AUTO_PRUNE_LENGTH']), " {$lang['days']}</td>\n";
+}else {
+    echo "                  <td>", form_checkbox("pm_auto_prune", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] == "Y") ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune_length', array(10, 15, 30, 60), array(10, 15, 30, 60), 60), " {$lang['days']}</td>\n";
+}
+
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_auto_prune_global","Y",$lang['setforallforums'],$user_prefs['PM_AUTO_PRUNE_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

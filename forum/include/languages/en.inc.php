@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.174 2004-09-13 15:59:21 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.175 2004-09-13 21:23:14 decoyduck Exp $ */
 
 // International English language file
 
@@ -158,6 +158,7 @@ $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
 $lang['top'] = "Top";
 $lang['free'] = "Free";
+$lang['days'] = "days";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -459,6 +460,7 @@ $lang['personalmessages'] = "Personal Messages";
 $lang['enablepersonalmessages'] = "Enable Personal Messages";
 $lang['pmusermessages'] = "PM messages per user";
 $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachments";
+$lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every:";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['autologinguests'] = "Automatically Login Guests";
@@ -960,6 +962,7 @@ $lang['postinhtmlbydefault'] = "Post in HTML by default";
 $lang['privatemessageoptions'] = "Private Message Options";
 $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
 $lang['includepminreply'] = "Include message body when replying to PM";
+$lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

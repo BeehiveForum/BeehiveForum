@@ -137,7 +137,7 @@ function bh_session_init($uid)
     setcookie("bh_sess_dlsav", $user_dlsav);
     setcookie("bh_sess_markread", $user_markread);
     setcookie("bh_sess_fontsize", $user_fontsize);
-	setcookie("bh_sess_style", $user_style);
+    setcookie("bh_sess_style", $user_style);
     setcookie("bh_sess_check",md5($check));
 
 }

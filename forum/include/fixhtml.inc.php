@@ -366,4 +366,5 @@ function preg_filter($text, $regex, $join)
 	$ret_text = preg_replace("/".$regex."/i", $join, $text);
 	return $ret_text;
 }
+
 ?>

@@ -26,7 +26,7 @@ function draw_beehive_bar()
 ?>
 <div align="center"><table width="96%" class="posthead"><tr>
 <td width="60%" class="smalltext">
-Beehive Forum 0.1.2
+Beehive Forum 0.2
 &nbsp;|&nbsp;
 <a href="http://beehiveforum.sf.net/faq" target="_blank">FAQ</a>
 &nbsp;|&nbsp;

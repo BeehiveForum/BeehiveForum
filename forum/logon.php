@@ -58,6 +58,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
       bh_session_init($luid);
       
+      setcookie('bh_thread_mode', 0);
+      
       if ($luid != 0) { // Don't store a cookie for the guest logon.
         
         if(@$HTTP_POST_VARS['remember_user'] == "Y") {

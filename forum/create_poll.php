@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.124 2004-08-17 23:46:31 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.125 2004-08-24 10:12:24 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -358,7 +358,7 @@ if (!isset($t_message_text)) $t_message_text = "";
 if (!isset($t_sig)) $t_sig = "";
 
 $post = new MessageText($allow_html ? $post_html : false, $t_message_text, $emots_enabled, $links_enabled);
-$sig = new MessageText($allow_html ? $sig_html : false, $t_sig);
+$sig = new MessageText($allow_html ? $sig_html : false, $t_sig, true, false);
 
 $t_message_text = $post->getContent();
 $t_sig = $sig->getContent();

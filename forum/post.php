@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.218 2004-08-22 23:46:03 rowan_hill Exp $ */
+/* $Id: post.php,v 1.219 2004-08-24 10:12:24 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -354,7 +354,7 @@ if (!isset($t_content)) $t_content = "";
 if (!isset($t_sig)) $t_sig = "";
 
 $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
-$sig = new MessageText($sig_html, $t_sig);
+$sig = new MessageText($sig_html, $t_sig, true, false);
 
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();

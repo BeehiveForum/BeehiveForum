@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.17 2004-05-17 17:22:33 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.18 2004-05-17 21:56:25 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -100,8 +100,8 @@ function perm_check_folder_permissions($fid, $access_level)
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM DEFAULT_GROUP_PERMS GROUP_PERMS ";
-    $sql.= "JOIN DEFAULT_GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID OR GROUP_PERMS.GID = 0) ";
+    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID OR GROUP_PERMS.GID = 0) ";
     $sql.= "WHERE GROUP_USERS.UID = $uid AND GROUP_PERMS.FID IN (0, $fid) ";
     $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 

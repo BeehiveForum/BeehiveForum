@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.78 2004-05-15 14:43:41 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.79 2004-05-17 21:56:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -174,8 +174,6 @@ echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['foldername']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['threadcount']}</td>\n";
 echo "                </tr>\n";
-
-$folder_array = folder_get_all();
 
 if ($folder_array = folder_get_all()) {
 

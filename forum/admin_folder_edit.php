@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.10 2004-05-17 17:22:33 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.11 2004-05-17 21:56:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -134,14 +134,6 @@ if (!folder_is_valid($fid)) {
     exit;
 }
 
-if (isset($_POST['delete']) && $folder_data['THREAD_COUNT'] == 0) {
-
-    folder_delete($fid);
-
-    $del_success = rawurlencode($folder_data['TITLE']);
-    header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success");
-}
-
 if (isset($_POST['submit'])) {
 
     $valid = true;
@@ -190,6 +182,14 @@ if (isset($_POST['submit'])) {
 
 $folder_data = folder_get($fid);
 $folder_permissions = folder_get_permissions($fid);
+
+if (isset($_POST['delete']) && $folder_data['THREAD_COUNT'] == 0) {
+
+    folder_delete($fid);
+
+    $del_success = rawurlencode($folder_data['TITLE']);
+    header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success");
+}
 
 // Make the arrays for the allow post types dropdown
 

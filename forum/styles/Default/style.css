@@ -429,6 +429,7 @@ A		{
 		padding: 2px;
 		background-color: #FFFFFF;
 }
+
 .emoticon_preview img {
 		cursor: pointer;
 }
@@ -446,4 +447,9 @@ A		{
 .pmbar {
 		height: 16px;
 		background-color: #C8D7E6;
+}
+
+.admin_folder_perms {
+		overflow: auto;
+		padding: 2px;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.174 2004-05-17 15:57:01 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.175 2004-05-17 21:56:25 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -990,6 +990,31 @@ function user_allow_email($uid)
     $result = db_query($sql, $db_pm_user_allow);
 
     return (db_num_rows($result) > 0);
+}
+
+function user_get_folder_perms($uid, $fid)
+{
+    $db_user_get_folder_perms = db_connect();
+
+    if (!is_numeric($uid)) return 0;
+    if (!is_numeric($fid)) return 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID OR GROUP_PERMS.GID = 0) ";
+    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = '$fid' ";
+    $sql.= "ORDER BY GROUP_PERMS.GID DESC";
+
+    $result = db_query($sql, $db_user_get_folder_perms);
+
+    if (db_num_rows($result) > 0) {
+
+        $row = db_fetch_array($result);
+        return $row['STATUS'];
+    }
+
+    return 0;
 }
 
 ?>

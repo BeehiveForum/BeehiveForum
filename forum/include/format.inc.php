@@ -63,5 +63,30 @@ function timestamp_to_date($timestamp)
     $second=substr($timestamp,12,2);
     $newdate=mktime($hour,$minute,$second,$month,$day,$year);
     return ($newdate);
-}  
+}
+
+function timestamp_is_bst($timestamp = mktime())
+{
+
+    $year = date("Y", mktime());
+      
+    $ldmarw = date("w", mktime(2, 0, 0, 4,  0, $year));
+    $ldoctw = date("w", mktime(2, 0, 0, 11, 0, $year));
+    $ldmard = date("d", mktime(2, 0, 0, 4,  0, $year));
+    $ldoctd = date("d", mktime(2, 0, 0, 11, 0, $year));
+      
+    if ($ldmarw > 0) $ldmard = $ldmard - $ldmarw;
+    if ($ldoctw > 0) $ldoctd = $ldoctd - $ldoctw;
+      
+    $startofbst = mktime(2, 0, 0, 3,  $ldmard, $year);
+    $endofbst   = mktime(2, 0, 0, 10, $ldoctd, $year);
+      
+    if (($timestamp > $startofbst) && ($timestamp < $endofbst)) {
+      return true;
+    }else{
+      return false;
+    }
+
+}
+
 ?>

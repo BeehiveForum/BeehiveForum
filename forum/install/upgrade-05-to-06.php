@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.23 2005-03-04 22:54:07 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.24 2005-03-05 21:55:44 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -123,7 +123,186 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "CREATE TABLE GROUP_PERMS (";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (GID,FID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE GROUP_USERS (";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (GID,UID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE GROUPS (";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
+$sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
+$sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (GID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    // Permissions system has changed to be global tables
+
+    $sql = "SELECT * FROM {$forum_webtag}_GROUPS";
+
+    if ($result = db_query($sql, $db_install)) {
+
+        while ($group_data = db_fetch_array($result)) {
+
+            $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+            $sql.= "VALUES ('$forum_fid', '{$group_data['GROUP_NAME']}', ";
+            $sql.= "'{$group_data['GROUP_DESC']}', '{$group_data['AUTO_GROUP']}')";
+
+            if ($result_group = db_query($sql, $db_instal)) {
+
+                $new_group_gid = db_insert_id($db_install);
+
+                $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
+                $sql.= "SELECT $new_group_gid, $forum_fid, FID, PERMS FROM ";
+                $sql.= "{$forum_webtag}_GROUP_PERMS WHERE GID = '{$group_data['GID']}'";
+
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                    $valid = false;
+                    return;
+                }
+
+                $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
+                $sql.= "SELECT $new_group_gid, UID FROM {$forum_webtag}_GROUP_USERS ";
+                $sql.= "WHERE GID = '{$group_data['GID']}'";
+
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                    $valid = false;
+                    return;
+                }
+
+            }else {
+
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
+        }
+
+    }else {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Find any users with USER_PERM_FORUM_TOOLS permissions
+    // and make sure they have global perms set.
+
+    $sql = "SELECT DISTINCT GROUP_USERS.UID FROM TEST_GROUP_PERMS GROUP_PERMS ";
+    $sql.= "LEFT JOIN TEST_GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+    $sql.= "WHERE GROUP_PERMS.PERM & 1024 > 0 AND FID = 0";
+
+    if ($result = db_query($sql, $db_install)) {
+
+        while ($user_data = db_fetch_array($result)) {
+
+            $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+            $sql.= "VALUES ('$forum_fid', '{$group_data['GROUP_NAME']}', ";
+            $sql.= "'{$group_data['GROUP_DESC']}', '{$group_data['AUTO_GROUP']}')";
+
+            if ($result_group = db_query($sql, $db_instal)) {
+
+                $new_group_gid = db_insert_id($db_install);
+
+                $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
+                $sql.= "VALUES ('$new_group_gid', '$forum_fid', 0, 1024)";
+
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                    $valid = false;
+                    return;
+                }
+
+                $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
+                $sql.= "VALUES('$new_group_gid', '{$user_data['UID']}')";
+
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                    $valid = false;
+                    return;
+                }
+
+            }else {
+
+                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+                $valid = false;
+                return;
+            }
+        }
+
+    }else {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_GROUPS";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_GROUPS_PERMS";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_GROUPS_USERS";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
 
     // Improved ban controls allow banning of IP, LOGON
     // NICKNAME and EMAIL seperatly or in combinations.
@@ -409,6 +588,12 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 return;
             }
         }
+
+    }else {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES";
@@ -623,6 +808,12 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 return;
             }
         }
+
+    }else {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
     }
 
     $sql = "ALTER TABLE USER_PREFS DROP PM_AUTO_PRUNE_LENGTH";

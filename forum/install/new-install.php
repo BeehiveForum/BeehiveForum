@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.28 2005-03-04 22:54:07 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.29 2005-03-05 21:55:44 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -186,8 +186,9 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_GROUP_PERMS (";
+$sql = "CREATE TABLE GROUP_PERMS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID,FID)";
@@ -200,7 +201,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 0, 1792);";
+$sql = "INSERT INTO GROUP_PERMS VALUES (1, 1, 0, 1792);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -209,7 +210,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 1, 6652);";
+$sql = "INSERT INTO GROUP_PERMS VALUES (1, 1, 1, 6652);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -218,7 +219,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 14588);";
+$sql = "INSERT INTO GROUP_PERMS VALUES (0, 1, 1, 14588);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -227,7 +228,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_GROUP_USERS (";
+$sql = "CREATE TABLE GROUP_USERS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID,UID)";
@@ -240,7 +241,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUP_USERS VALUES (1, 1);";
+$sql = "INSERT INTO GROUP_USERS VALUES (1, 1);";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -249,8 +250,9 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_GROUPS (";
+$sql = "CREATE TABLE GROUPS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
@@ -264,8 +266,8 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO {$forum_webtag}_GROUPS (GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-$sql.= "VALUES ('Queen', NULL, 0);";
+$sql = "INSERT INTO {$forum_webtag}_GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
+$sql.= "VALUES (1, 'Queen', NULL, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 

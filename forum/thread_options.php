@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.26 2004-08-12 22:31:44 tribalonline Exp $ */
+/* $Id: thread_options.php,v 1.27 2004-08-14 23:16:01 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -128,9 +128,13 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }elseif (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
     $tid = $_GET['tid'];
     $pid = 1;
+}elseif (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+    $tid = $_POST['tid'];
+    $pid = 1;
 }else {
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo"Ararar";
     html_draw_bottom();
     exit;
 }
@@ -189,6 +193,17 @@ if (isset($_POST['markasread']) && is_numeric($_POST['markasread']) && $_POST['m
     messages_set_read($tid, $markasread, $uid);
 
     $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&markasread=1";
+    header_redirect($uri);
+    exit;
+
+}
+
+if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest']) && $_POST['setinterest'] != $threaddata['INTEREST']) {
+    $threaddata['INTEREST'] = $_POST['setinterest'];
+    thread_set_interest($tid, $threaddata['INTEREST']);
+    $update = true;
+    
+    $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&setinterest=1";
     header_redirect($uri);
     exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.102 2004-08-14 21:40:37 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.103 2004-08-14 23:15:57 rowan_hill Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -1248,5 +1248,6 @@ $lang['deletethread'] = "Delete Thread";
 $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
+$lang['interestupdated'] = "Thread Interest Status Updated Successfully";
 
 ?>

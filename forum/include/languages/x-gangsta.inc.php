@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.32 2004-08-14 21:40:37 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.33 2004-08-14 23:15:57 rowan_hill Exp $ */
 
 // Gangsta language file
 
@@ -1257,5 +1257,6 @@ $lang['deletethread'] = "Delete Thread";
 $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
+$lang['interestupdated'] = "Thread Interest Status Updated Successfully";
 
 ?>

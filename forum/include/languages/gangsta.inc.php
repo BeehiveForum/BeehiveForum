@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.62 2004-04-15 11:43:06 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.63 2004-04-15 18:31:59 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -689,6 +689,8 @@ $lang['fixhtmlexplanation'] = "This forum uses fly-ass filtering, yo. Yo submitt
 $lang['messageoptions'] = "Message optizioizns";
 $lang['notallowedembedattachmentpost'] = "Can't embed attachments in yo posts here, yo.";
 $lang['notallowedembedattachmentsignature'] = "You ain't allowed to embed no attachments in yo signature.";
+$lang['reducemessagelength'] = "Message length must be under 65,535 characters (currently: ";
+$lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently: ";
 
 // Message display (messages.php) --------------------------------------
 

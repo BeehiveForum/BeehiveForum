@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.64 2004-04-15 11:43:06 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.65 2004-04-15 18:31:59 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -677,6 +677,8 @@ $lang['fixhtmlexplanation'] = "Ce forum utilise filtrer de HTML. Votre HTML soum
 $lang['messageoptions'] = "Options de message";
 $lang['notallowedembedattachmentpost'] = "Vous n'êtes pas permis d'enfoncer des attachements dans vos postes.";
 $lang['notallowedembedattachmentsignature'] = "Vous n'êtes pas permis d'enfoncer des attachements dans votre signature.";
+$lang['reducemessagelength'] = "Message length must be under 65,535 characters (currently: ";
+$lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently: ";
 
 // Message display (messages.php) --------------------------------------
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.113 2003-08-30 00:16:21 decoyduck Exp $ */
+/* $Id: post.php,v 1.114 2003-08-30 00:34:27 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -72,8 +72,13 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
+
     $uri = "./discussion.php";
-    if (isset($HTTP_POST_VARS['t_rpid'])) $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
+
+    if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid'])) {
+        $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
+    }
+
     header_redirect($uri);
 }
 
@@ -334,11 +339,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
             if ($t_sig) {
 
                 if ($t_sig_html != "Y") $t_sig = make_html($t_sig);
-                $t_content .= "\n<div class=\"sig\">". $t_sig. "</div>";
+                $t_content.= "\n<div class=\"sig\">". $t_sig. "</div>";
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $HTTP_POST_VARS['t_to_uid'], addslashes($t_content));
+            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $HTTP_POST_VARS['t_to_uid'], $t_content);
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 

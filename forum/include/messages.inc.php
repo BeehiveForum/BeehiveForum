@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.219 2004-01-30 21:34:27 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.220 2004-02-02 23:21:38 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -359,7 +359,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             if ($is_preview) {
                 echo "<a href=\"messages.php?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
             }else {
-                echo "<a href=\"?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"index.php?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             }
 
             if ($message['PID'] > 1) {
@@ -489,7 +489,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if (perm_is_soldier()){
 
-                echo "<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" align=\"middle\" /></a>&nbsp;";
+                echo "<a href=\"admin_user.php?uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" align=\"middle\" /></a>&nbsp;";
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
 	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
@@ -632,9 +632,7 @@ function messages_interest_form($tid,$pid)
     global $HTTP_SERVER_VARS, $lang;
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=";
-    echo urlencode(basename($HTTP_SERVER_VARS['PHP_SELF'])). "?msg=$tid.$pid";
-    echo "\" method=\"post\">\n";
+    echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=", get_request_uri(), "\" method=\"post\">\n";
     echo "<p>{$lang['ratemyinterest']}: \n";
     echo form_radio_array("interest",array(-1,0,1,2),array("{$lang['ignore']} ","{$lang['normal']} ","{$lang['interested']} ","{$lang['subscribe']} "),$interest);
     echo form_input_hidden("tid",$tid);
@@ -649,9 +647,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     global $HTTP_SERVER_VARS, $lang;
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
-    echo urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid");
-    echo "\" method=\"post\">\n";
+    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=", get_request_uri(), "\" method=\"post\">\n";
 
     if (thread_is_poll($tid)) {
         echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
@@ -700,9 +696,7 @@ function messages_edit_thread_title($tid, $pid, $title)
     global $HTTP_SERVER_VARS, $lang;
     
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
-    echo urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid");
-    echo "\" method=\"post\">\n";
+    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=", get_request_uri(), "\" method=\"post\">\n";
 
     if (thread_is_poll($tid)) {
         echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";

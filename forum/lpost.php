@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.22 2003-12-17 18:50:49 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.23 2004-02-02 23:21:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -72,7 +72,13 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 if (isset($HTTP_POST_VARS['cancel'])) {
 
     $uri = "./lthread_list.php";
-    if (isset($HTTP_POST_VARS['t_rpid'])) $uri.= "?msg=". $HTTP_POST_VARS['t_tid']. ".". $HTTP_POST_VARS['t_rpid'];
+    
+    if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid'])) {
+        $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
+    }elseif (isset($HTTP_GET_VARS['replyto'])) {
+        $uri.= "?msg={$HTTP_GET_VARS['replyto']}";
+    }
+    
     header_redirect($uri);
 
 }

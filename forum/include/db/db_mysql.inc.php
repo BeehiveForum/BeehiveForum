@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.2 2005-03-14 21:16:35 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.3 2005-03-18 09:01:32 decoyduck Exp $ */
 
 function db_connect ()
 {
@@ -66,7 +66,7 @@ function db_unbuffered_query ($sql, $connection_id)
 {
     if (function_exists("mysql_unbuffered_query")) {
 
-        return mysql_unbuffered_query($sql, $connection_id)) {
+        return mysql_unbuffered_query($sql, $connection_id);
 
     }else {
 

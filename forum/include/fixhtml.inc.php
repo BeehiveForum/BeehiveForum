@@ -170,6 +170,9 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 			} else {
 				$html_parts[$i] = str_replace("<", "&lt;", $html_parts[$i]);
 				$html_parts[$i] = str_replace(">", "&gt;", $html_parts[$i]);
+				if (isset($tag) && $tag != "code") {
+					$html_parts[$i] = emoticons_convert($html_parts[$i]);
+				}
 			}
 		}
 
@@ -382,7 +385,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						}
 					}
 				}
-			}
+			} // else { normal text }
 		}
 		// reconstruct the HTML
 		for($i=0; $i<count($html_parts); $i++){
@@ -391,7 +394,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 					$ret_text .= "<".$html_parts[$i].">";
 				}
 			} else {
-				$ret_text .= emoticons_convert($html_parts[$i]);
+				$ret_text .= $html_parts[$i];
 			}
 		}
 

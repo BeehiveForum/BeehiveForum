@@ -262,7 +262,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
         messages_fontsize_form($tid, $pid);
 
         if(perm_is_moderator()){
-                messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
+                messages_admin_form($threaddata['FID'], $tid, $pid, $threaddata['TITLE'], $closed);
         }
 }
 

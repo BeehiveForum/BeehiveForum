@@ -597,7 +597,7 @@ function messages_interest_form($tid,$pid)
     echo "</div>\n";
 }
 
-function messages_admin_form($tid, $pid, $title, $closed = false)
+function messages_admin_form($fid, $tid, $pid, $title, $closed = false)
 {
     global $HTTP_SERVER_VARS;
 
@@ -606,7 +606,7 @@ function messages_admin_form($tid, $pid, $title, $closed = false)
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.$pid";
     echo "\" method=\"post\">\n";
     echo "<p>Rename thread: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
-    echo "<p>Move thread: " . folder_draw_dropdown(0,"t_move"). "&nbsp;".form_submit("move", "Move");
+    echo "<p>Move thread: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", "Move");
 
     if ($closed) {
         echo "&nbsp;".form_submit("reopen","Reopen for posting"). "</p>\n";

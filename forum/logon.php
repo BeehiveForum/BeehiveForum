@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.111 2004-03-11 22:34:36 decoyduck Exp $ */
-
-//Multiple forum support
-include_once("./include/forum.inc.php");
+/* $Id: logon.php,v 1.112 2004-03-12 14:30:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
+
+//Multiple forum support
+include_once("./include/forum.inc.php");
 
 include_once("./include/html.inc.php");
 include_once("./include/user.inc.php");
@@ -248,11 +248,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
                 if (isset($final_uri)) {
-                    form_quick_button("./index.php?webtag=$webtag", $lang['continue'], "final_uri", urlencode($final_uri), "_top");
+                    form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(urlencode($final_uri), $webtag), "_top");
                 }else {
-                    form_quick_button("./index.php?webtag=$webtag", $lang['continue'], "", "", "_top");
+                    form_quick_button("./index.php", $lang['continue'], "webtag", $webtag, "_top");
                 }
 
+                echo "</div>\n";
                 html_draw_bottom();
                 exit;
             }
@@ -276,9 +277,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
 
             if (isset($final_uri)) {
-                form_quick_button("./index.php?webtag=$webtag", $lang['back'], "final_uri", urlencode($final_uri), "_top");
+                form_quick_button("./index.php", $lang['back'], array("final_uri", "webtag"), array(urlencode($final_uri), $webtag), "_top");
             }else {
-                form_quick_button("./index.php?webtag=$webtag", $lang['back'], "", "", "_top");
+                form_quick_button("./index.php", $lang['back'], "webtag", $webtag, "_top");
             }
             
             echo "<hr width=\"350\" />\n";

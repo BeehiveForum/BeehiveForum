@@ -182,6 +182,13 @@ if ($valid) {
 // Send the PM
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
+
+    $t_subject = _htmlentities($t_subject);
+
+    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
+        $t_content = make_html($t_content);
+    }
+
     if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
         if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
             pm_save_attachment_id($new_mid, $HTTP_POST_VARS['aid']);
@@ -195,7 +202,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         header_redirect($uri);
     }else {
         $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
-        $valid = $false;
+        $valid = false;
     }
 }
 
@@ -248,7 +255,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $pm_elements_array['FNICK'] = $preview_tuser['NICKNAME'];
     $pm_elements_array['FROM_UID'] = $preview_tuser['UID'];
 
-    $pm_elements_array['SUBJECT'] = $t_subject;
+    $pm_elements_array['SUBJECT'] = _htmlentities($t_subject);
     $pm_elements_array['CREATED'] = mktime();
     $pm_elements_array['AID'] = $aid;
 
@@ -302,7 +309,7 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
-echo form_submit('submit', $lang['cancel']);
+echo form_submit('cancel', $lang['cancel']);
 
 if ($attachments_enabled && $pm_allow_attachments) {
     echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
@@ -315,7 +322,7 @@ echo "</form>\n";
 
 if (isset($mid)) {
 
-    $pm_elements_array = pm_single_get($mid, 0, bh_session_get_value('TO_UID'));
+    $pm_elements_array = pm_single_get($mid, 0, bh_session_get_value('UID'));
     echo "<p>in reply to:</p>";
     draw_pm_message($pm_elements_array);
 

@@ -500,8 +500,10 @@ $lang['savemessage'] = "Save Message";
 $lang['sentby'] = "Sent By";
 $lang['timesent'] = "Time Sent";
 $lang['nomessages'] = "No Messages";
-$lang['errorcreatingpm'] = "Error creating post! Please try again in a few minutes";
+$lang['errorcreatingpm'] = "Error creating PM! Please try again in a few minutes";
 $lang['writepm'] = "Write Message";
+$lang['editpm'] = "Edit Message";
+$lang['cannoteditpm'] = "Cannot edit this PM. It has already been viewed by the recipient";
 
 // Preferences (prefs.php) ---------------------------------------------
 $lang['newpasswd'] = "New Password";

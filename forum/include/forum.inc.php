@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.43 2004-04-10 21:33:24 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.44 2004-04-11 15:27:07 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -283,6 +283,13 @@ function save_start_page($content)
 
 function forum_create($webtag, $forum_name, $access)
 {
+    // Ensure the variables we've been given are valid
+
+    $webtag = preg_replace("/[^A-Z0-9-_]/", "", strtoupper($webtag));
+    $forum_name = addslashes($forum_name);
+
+    if (!is_numeric($access)) $access = 0;
+
     // Only the queen can create forums!!
     
     if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
@@ -295,13 +302,8 @@ function forum_create($webtag, $forum_name, $access)
         $result = db_query($sql, $db_forum_create);
                 
         if (db_num_rows($result) > 0) {
-                return false;
+            return false;
         }
-
-        $webtag = preg_replace("/[^A-Z0-9-_]/", "", strtoupper($webtag));
-        $forum_name = addslashes($forum_name);
-
-        if (!is_numeric($access)) $access = 0;
 
         // Create ADMIN_LOG table
 

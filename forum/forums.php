@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.11 2004-04-11 13:53:40 decoyduck Exp $ */
+/* $Id: forums.php,v 1.12 2004-04-11 15:27:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -80,7 +80,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "<div align=\"center\">\n";
         echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
 
-        if (sizeof($forums_array['FAVOURITES']) > 0) {
+        if (sizeof($forums_array['FAV_FORUMS']) > 0) {
 
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
             echo "    <tr>\n";
@@ -94,7 +94,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "                  <td class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
-            foreach ($forums_array['FAVOURITES'] as $forum) {
+            foreach ($forums_array['FAV_FORUMS'] as $forum) {
 
                 echo "                <tr>\n";
                 echo "                  <td width=\"20\">", form_checkbox("rem_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
@@ -143,7 +143,70 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "  <br />\n";
         }
 
-        if (sizeof($forums_array['FORUMS']) > 0) {
+        if (sizeof($forums_array['RECENT_FORUMS']) > 0) {
+
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+            echo "    <tr>\n";
+            echo "      <td>\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td colspan=\"4\" class=\"subhead\">&nbsp;{$lang['recentlyvisitedforums']}:</td>\n";
+            echo "                  <td class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
+            echo "                </tr>\n";
+
+            foreach ($forums_array['RECENT_FORUMS'] as $forum) {
+
+                echo "                <tr>\n";
+                echo "                  <td width=\"20\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
+                echo "                  <td width=\"25%\">\n";
+
+                if (isset($HTTP_GET_VARS['final_uri'])) {
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=", rawurlencode($HTTP_GET_VARS['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
+                }else {
+                    echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
+                }
+
+                echo "                  </td>\n";
+                echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
+
+                if ($forum['UNREAD_TO_ME'] > 0) {
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
+                }else {
+                    echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
+                }
+
+		if ($forum['LAST_LOGON'] > 0) {
+                    echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
+		}else {
+                    echo "                  <td width=\"20%\">{$lang['never']}</td>\n";
+		}
+
+                echo "                </tr>\n";
+            }
+
+            echo "                <tr>\n";
+            echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"right\">", form_submit("submit", $lang['addtofavourites']), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+	    echo "  <br />\n";
+        }
+
+        if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
 
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
             echo "    <tr>\n";
@@ -157,7 +220,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "                  <td class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
-            foreach ($forums_array['FORUMS'] as $forum) {
+            foreach ($forums_array['OTHER_FORUMS'] as $forum) {
 
                 echo "                <tr>\n";
                 echo "                  <td width=\"20\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";

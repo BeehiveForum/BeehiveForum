@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.36 2004-04-10 16:35:01 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.37 2004-04-11 15:27:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,9 +116,9 @@ html_draw_top("openprofile.js");
 echo "<h1>{$lang['recentvisitors']}</h1><br />\n";
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
-    $user_search_array = user_search($usersearch, "LAST_LOGON", "DESC", $start);
+    $user_search_array = users_search_recent($usersearch, $start);
 }else {
-    $user_search_array = user_get_all("LAST_LOGON", "DESC", $start);
+    $user_search_array = users_get_recent();
 }
 
 echo "<div align=\"center\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.3 2004-04-10 14:33:57 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.4 2004-04-11 15:27:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,10 +96,11 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 }
 
 // Do updates
+
 if (isset($HTTP_POST_VARS['submit'])) {
 
     $valid = true;
-    $error_html = "";
+    $message_html = "";
 
     if (isset($HTTP_POST_VARS['t_access']) && is_array($HTTP_POST_VARS['t_access'])) {
 
@@ -113,7 +114,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $new_webtag = strtoupper(trim(_stripslashes($HTTP_POST_VARS['t_webtag_new'])));
         
         if (!preg_match("/^[A-Z0-9_-]+$/", $new_webtag)) {
-            $error_html.= "<h2>{$lang['webtaginvalidchars']}</h2>\n";
+            $message_html.= "<h2>{$lang['webtaginvalidchars']}</h2>\n";
             $valid = false;
         }
 
@@ -130,7 +131,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 	}
 
 	if ($valid) {
-            forum_create($new_webtag, $new_name, $new_access);
+            if ($new_fid = forum_create($new_webtag, $new_name, $new_access)) {
+	        $message_html = "<h2>Successfully created forum $new_webtag</h2>\n";
+	    }else {
+	        $message_html = "<h2>Failed to create forum $new_webtag. Please check to make sure the webtag isn't already in use.</h2>\n";
+	    }
 	}
     }
 
@@ -186,12 +191,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
     forum_delete($fid);
 }
 
-// Draw the form
 echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
+echo "<br />\n";
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo "<p>$error_html</p>\n";
-}else {
+if (isset($message_html) && strlen($message_html) > 0) {
+    echo $message_html;
     echo "<br />\n";
 }
 

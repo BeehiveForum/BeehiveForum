@@ -382,7 +382,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "              <tr>\n";
-      echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" title=\"";
+      echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "\" title=\"";
 
       if (strlen($attachments[$i]['filename']) > 16) {
         echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.48 2004-04-17 19:35:59 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.49 2004-04-17 20:06:59 decoyduck Exp $ */
 
 // Create a form field
 
@@ -147,7 +147,7 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
     $html.= ">";
 
     for ($i = 0; $i < count($value); $i++) {
-        $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
+        $sel = (strtolower($value[$i]) == strtolower($default)) ? " selected=\"selected\"" : "";
         if (isset($label[$i])) {
             $html.= "<option value=\"". $value[$i]. "\"$sel>". $label[$i]. "</option>";
         }else {

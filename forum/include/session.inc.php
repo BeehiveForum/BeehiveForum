@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.101 2004-04-17 17:39:30 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.102 2004-04-17 20:06:59 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -64,7 +64,7 @@ function bh_session_check()
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$table_data['FID']}) ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)";
+	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
 	}else {
 
@@ -72,7 +72,7 @@ function bh_session_check()
 	    $sql.= "SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = 0) ";
-	    $sql.= "WHERE SESSIONS.HASH = '$user_hash' AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp)";
+	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 	}
 	
 	$result = db_query($sql, $db_bh_session_check);

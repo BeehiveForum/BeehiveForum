@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.24 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: form.inc.php,v 1.25 2003-08-01 02:58:36 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -123,11 +123,11 @@ function form_dropdown_array($name, $value, $label, $default = "", $custom_html 
 }
 
 // create a <input type="checkbox">
-function form_checkbox($name, $value, $text, $checked = false)
+function form_checkbox($name, $value, $text, $checked = false, $custom_html = "")
 {
     $html = "<span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"$name\" value=\"$value\"";
     if($checked) $html .= " checked=\"checked\"";
-    return $html . " />$text</span>";
+    return $html . " $custom_html />$text</span>";
 }
 
 // create a <input type="radio">
@@ -135,7 +135,7 @@ function form_radio($name, $value, $text, $checked = false)
 {
     $html = "<span class=\"bhinputradio\"><input type=\"radio\" name=\"$name\" value=\"$value\"";
     if($checked) $html .= " checked=\"checked\"";
-    return $html . " />$text</span>";
+    return $html . " $custom_html />$text</span>";
 }
 
 // create a <input type="radio"> set with values from array(s)
@@ -194,7 +194,7 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
     $birthday_days   = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
     $birthday_months = array($lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
     $birthday_years = range(1900, date('Y', mktime()));
-    
+
     if ($show_blank) {
         $birthday_days_values = range(0, 31);
         $birthday_days = array_merge(' ', $birthday_days);

@@ -86,10 +86,14 @@ function pm_add_sentitem($mid)
     // the sender's Sent Items
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO ". forum_table("PM_ATTACHMENT_IDS"). " (MID, AID) ";
-    $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";
+    if (get_num_attachments($db_pm_add_sentitem_row['AID'])) {
 
-    $result = db_query($sql, $db_pm_add_sentitem);
+        $sql = "INSERT INTO ". forum_table("PM_ATTACHMENT_IDS"). " (MID, AID) ";
+        $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";
+
+        $result = db_query($sql, $db_pm_add_sentitem);
+
+    }
 
 }
 

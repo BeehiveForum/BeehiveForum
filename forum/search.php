@@ -91,14 +91,31 @@ $basesql.= "LEFT JOIN ". forum_table("POST"). " POST ON (THREAD.TID = POST.TID) 
 $basesql.= "LEFT JOIN ". forum_table("POST_CONTENT"). " POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
 $basesql.= "WHERE ";
 
+html_draw_top();
+
 // Construct the unique part of the query
 
-if (isset($HTTP_POST_VARS['submit'])) search_construct_query($HTTP_POST_VARS, $searchsql, $urlquery);
-if (isset($HTTP_GET_VARS['sstart'])) search_construct_query($HTTP_GET_VARS, $searchsql, $urlquery);
+if (isset($HTTP_POST_VARS['submit'])) {
+  if (isset($HTTP_POST_VARS['search_string']) && strlen($HTTP_POST_VARS['search_string']) > 0) {
+    search_construct_query($HTTP_POST_VARS, $searchsql, $urlquery);
+  }else {
+    echo "<h1>Search Results</h1>";
+    echo "<h2>You did not specify any words to search for.</h2>\n";
+    html_draw_bottom();
+    exit;
+  }
+}elseif (isset($HTTP_GET_VARS['sstart'])) {
+  if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
+    search_construct_query($HTTP_GET_VARS, $searchsql, $urlquery);
+  }else {
+    echo "<h1>Search Results</h1>";
+    echo "<h2>You did not specify any words to search for.</h2>\n";
+    html_draw_bottom();
+    exit;
+  }
+}
 
 if (isset($searchsql)) {
-
-  html_draw_top();
 
   echo "<img src=\"".style_image('post.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a><br />\n";
   echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a><br />\n";
@@ -215,8 +232,6 @@ if (isset($searchsql)) {
   exit;
 
 }
-
-html_draw_top();
 
 ?>
 <h1>Search Messages</h1>

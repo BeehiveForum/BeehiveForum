@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.53 2004-05-09 00:57:49 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.54 2004-06-30 20:08:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -173,71 +173,90 @@ $rel = user_rel_get($my_uid, $uid);
 
 echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 echo "<br />\n";
-echo "<div class=\"postbody\">\n";
-echo "  <form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
-echo "    ", form_input_hidden('webtag', $webtag), "\n";
-echo "    ", form_input_hidden("uid", $uid), "\n";
-echo "    ", form_input_hidden("msg", $msg), "\n";
-echo "    ", form_input_hidden("edit_rel", $edit_rel), "\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"500\">\n";
+echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden("uid", $uid), "\n";
+echo "  ", form_input_hidden("msg", $msg), "\n";
+echo "  ", form_input_hidden("edit_rel", $edit_rel), "\n";
 
 if (isset($uid)) {
 
-    echo "                  <tr>\n";
-    echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['relationship']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("rel", "1", $lang['friend'], $rel&USER_FRIEND ? true : false), "</td>\n";
-    echo "                    <td width=\"370\">: {$lang['friend_exp']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("rel", "0", $lang['normal'], !(($rel&USER_IGNORED) || ($rel&USER_FRIEND)) ? true : false), "</td>\n";
-    echo "                    <td width=\"370\">: {$lang['normal_exp']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("rel", "2", $lang['ignored'], $rel&USER_IGNORED ? true : false), "</td>\n";
-    echo "                    <td width=\"370\">: {$lang['ignore_exp']}</td>\n";
-    echo "                  </tr>\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"500\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['relationship']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"130\">", form_radio("rel", "1", $lang['friend'], $rel&USER_FRIEND ? true : false), "</td>\n";
+    echo "                  <td width=\"370\">: {$lang['friend_exp']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"130\">", form_radio("rel", "0", $lang['normal'], !(($rel&USER_IGNORED) || ($rel&USER_FRIEND)) ? true : false), "</td>\n";
+    echo "                  <td width=\"370\">: {$lang['normal_exp']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"130\">", form_radio("rel", "2", $lang['ignored'], $rel&USER_IGNORED ? true : false), "</td>\n";
+    echo "                  <td width=\"370\">: {$lang['ignore_exp']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
 }
 
-echo "                  <tr>\n";
-echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['signature']}</td>\n";
-echo "                  </tr>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['signature']}</td>\n";
+echo "                </tr>\n";
 
 if (isset($uid)) {
 
-    echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("sig", "0", $lang['display'], $rel ^ USER_IGNORED_SIG ? true : false), "</td>\n";
-    echo "                    <td width=\"370\">: {$lang['displaysig_exp']}</td>\n";
-    echo "                  </tr>\n";
-    echo "                  <tr>\n";
-    echo "                    <td width=\"130\">", form_radio("sig", "4", $lang['ignore'], $rel&USER_IGNORED_SIG ? true : false), "</td>\n";
-    echo "                    <td width=\"370\">: {$lang['hidesig_exp']}</td>\n";
-    echo "                  </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"130\">", form_radio("sig", "0", $lang['display'], $rel ^ USER_IGNORED_SIG ? true : false), "</td>\n";
+    echo "                  <td width=\"370\">: {$lang['displaysig_exp']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"130\">", form_radio("sig", "4", $lang['ignore'], $rel&USER_IGNORED_SIG ? true : false), "</td>\n";
+    echo "                  <td width=\"370\">: {$lang['hidesig_exp']}</td>\n";
+    echo "                </tr>\n";
 }
 
-echo "                  <tr>\n";
-echo "                    <td width=\"130\">", form_checkbox("sig_global", "Y", $lang['globallyignored'], user_get_global_sig(bh_session_get_value('UID')) == "Y"), "</td>\n";
-echo "                    <td width=\"370\">: {$lang['globallyignoredsig_exp']}</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "        <td align=\"center\"><p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "  </form>\n";
-echo "</div>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"130\">", form_checkbox("sig_global", "Y", $lang['globallyignored'], user_get_global_sig(bh_session_get_value('UID')) == "Y"), "</td>\n";
+echo "                  <td width=\"370\">: {$lang['globallyignoredsig_exp']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\"><p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
 html_draw_bottom();
 

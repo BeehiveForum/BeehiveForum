@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.5 2004-10-29 20:42:48 decoyduck Exp $ */
+/* $Id: install.php,v 1.6 2004-11-06 23:43:22 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -182,7 +182,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                 }
 
                 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-                echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+                echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
                 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
                 echo "<head>\n";
                 echo "<title>BeehiveForum ", BEEHIVE_VERSION, " Installation</title>\n";
@@ -356,7 +356,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+        echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
         echo "<head>\n";
         echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
@@ -436,7 +436,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 }
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
 echo "<head>\n";
 echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";

@@ -21,13 +21,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.40 2005-03-26 18:16:45 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.41 2005-03-27 01:47:41 tribalonline Exp $ */
 
 // Emoticon filter file
 
-include_once("./emoticons/emoticon_definitions.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
+
+$user_emots = bh_session_get_value('EMOTICONS');
+$user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons', false, 'default');
+
+$emoticon = array();
+
+if (file_exists("./emoticons/$user_emots/definitions.php")) {
+    include_once("./emoticons/$user_emots/definitions.php");
+}
 
 krsort($emoticon);
 reset($emoticon);
@@ -76,22 +85,31 @@ function emoticons_convert ($content)
 
     if (!is_array($emoticon)) return $content;
 
+    // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
+    $browser = '</span>';
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+        if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
+            $browser = '&nbsp;</span>';
+        } else if (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
+            $browser .= ' ';
+        }
+    }
+
+    $front = "(?<=\s|^|>)";
+    $end = "(?=\s|$|<)";
+
     foreach ($emoticon as $k => $v) {
 
-        $k3 = _htmlentities($k);
-        $k2 = urlencode($k3);
+        $k2 = _htmlentities($k);
 
-        $front = "(?<=\s|^)";
-        $end = "(?=\s|$)";
+        if ($k != $k2) {
 
-        if ($k != $k3) {
-
-            $pattern_array[] = "/$front". preg_quote($k3, "/") ."$end/";
-            $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
+            $pattern_array[] = "/$front". preg_quote($k2, "/") ."$end/";
+            $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser";
         }
 
         $pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
-        $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
+        $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser";
     }
 
     if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
@@ -104,14 +122,7 @@ function emoticons_convert ($content)
         $content = $new_content;
     }
 
-    $content = preg_replace_callback("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span><\/span>(\s|$))/", "emoticons_callback", $content);
-
     return $content;
-}
-
-function emoticons_callback ($matches)
-{
-    return urldecode($matches[1]);
 }
 
 function emoticons_get_available()

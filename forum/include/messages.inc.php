@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.340 2005-03-26 18:16:46 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.341 2005-03-27 01:47:41 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
+include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -300,19 +301,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
 
-    // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
+    // Convert emoticons
 
-    if (isset($_SERVER['HTTP_USER_AGENT'])) {
-
-        if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
-
-            $message['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1&nbsp;</span>", $message['CONTENT']);
-
-        }elseif (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
-
-            $message['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1</span> ", $message['CONTENT']);
-        }
-    }
+    $message['CONTENT'] = emoticons_convert($message['CONTENT']);
 
     // Convert any WikiWords to hyperlinks -------------------------------------
 

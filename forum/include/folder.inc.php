@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.39 2003-09-03 22:32:39 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.40 2003-09-10 17:03:50 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -233,8 +233,7 @@ function folder_is_accessible($fid)
 
 function user_set_folder_interest($fid, $interest)
 {
-    global $HTTP_COOKIE_VARS;
-    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = bh_session_get_value('UID');
 
     $db_user_set_folder_interest = db_connect();
 
@@ -246,15 +245,13 @@ function user_set_folder_interest($fid, $interest)
         $sql = "UPDATE ". forum_table("USER_FOLDER"). " SET INTEREST = '$interest' ";
         $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
 
-        $result = db_query($sql, $db_user_set_folder_interest);
-
     }else {
 
         $sql = "INSERT INTO ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
         $sql.= "VALUES ('$uid', '$fid', '$interest')";
-
-        $result = db_query($sql, $db_user_set_folder_interest);
     }
+
+    $result = db_query($sql, $db_user_set_folder_interest);
 }
 
 function user_get_restricted_folders($uid)

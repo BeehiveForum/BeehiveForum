@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.18 2003-09-03 18:00:17 decoyduck Exp $ */
+/* $Id: display.php,v 1.19 2003-09-10 17:03:48 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -50,17 +50,16 @@ if (!bh_session_check()) {
     }
 
     header_redirect($uri);
-
 }
 
-// Check that required variables are set
-if(!isset($HTTP_GET_VARS['msg'])){
-        $msg = "1.1";
-} else {
-        $msg = $HTTP_GET_VARS['msg'];
+if (isset($HTTP_GET_VARS['msg'])) {
+    $msg = $HTTP_GET_VARS['msg'];
+}else {
+    $msg = "1.1";
 }
 
 list($tid, $pid) = explode('.', $msg);
+
 if (!is_numeric($pid)) $pid = 1;
 if (!is_numeric($tid)) $tid = 1;
 
@@ -77,13 +76,13 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 // Output XHTML header
 html_draw_top("basetarget=_blank", "openprofile.js");
 
-$message = messages_get($tid,$pid,1);
+$message = messages_get($tid, $pid, 1);
 $threaddata = thread_get($tid);
 
 $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
 
-if($closed) $foldertitle .= " (closed)";
+if ($closed) $foldertitle.= " (closed)";
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
 messages_top($foldertitle,_stripslashes($threaddata['TITLE']));
@@ -92,6 +91,7 @@ echo "</td></tr></table></div>\n";
 if ($message) {
 
     $first_msg = $message['PID'];
+    $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
     if($threaddata['POLL_FLAG'] == 'Y') {
 

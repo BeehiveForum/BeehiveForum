@@ -21,21 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.6 2003-07-30 21:48:36 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.7 2003-09-10 17:03:50 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 
-function user_rel_update($uid,$peer_uid,$value)
+function user_rel_update($uid, $peer_uid, $value)
 {
-
     $db_user_rel_update = db_connect();
 
-    $sql = "delete from ". forum_table("USER_PEER"). " where UID = $uid and PEER_UID = $peer_uid";
+    $sql = "DELETE FROM ". forum_table("USER_PEER"). " WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+
     db_query($sql, $db_user_rel_update);
 
-    $sql = "insert into " . forum_table("USER_PEER") . " (UID, PEER_UID, RELATIONSHIP)";
-    $sql .= " values ($uid, $peer_uid, $value)";
+    $sql = "INSERT INTO " . forum_table("USER_PEER") . " (UID, PEER_UID, RELATIONSHIP) ";
+    $sql.= "VALUES ('$uid', '$peer_uid', '$value')";
 
     $result = db_query($sql, $db_user_rel_update);
 

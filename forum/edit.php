@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.134 2004-06-29 15:50:15 tribalonline Exp $ */
+/* $Id: edit.php,v 1.135 2004-07-07 17:21:05 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -525,6 +525,9 @@ if (isset($_POST['preview'])) {
 
 	if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
 	    $post_html = 2;
+		if (add_paragraphs($t_content) == $t_content) {
+			$post_html = 1;
+		}
 	} else {
 	    $t_content = strip_tags($t_content);
 	}
@@ -547,6 +550,9 @@ if (isset($_POST['preview'])) {
 echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
 echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo form_input_hidden('webtag', $webtag), "\n";
+
+$tools = new TextAreaHTML("f_edit");
+echo $tools->preload();
 
 if (isset($error_html)) {
     echo "<table class=\"posthead\" width=\"720\">\n";
@@ -622,8 +628,6 @@ echo "<table class=\"posthead\" width=\"500\">\n";
 echo "<tr><td>\n";
 
 echo "<h2>". $lang['message'] .":</h2>\n";
-
-$tools = new TextAreaHTML("f_edit");
 
 echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
 

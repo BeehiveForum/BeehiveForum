@@ -62,32 +62,31 @@ class TextAreaHTML {
 
         $str = "<div id=\"_tb{$this->tbs}\" class=\"tools\">\n";
 
-        $str.= $this->_tb_img($lang['bold'], "add_tag('b');", "bold_button.png");
-        $str.= $this->_tb_img($lang['italic'], "add_tag('i');", "italic_button.png");
-        $str.= $this->_tb_img($lang['underline'], "add_tag('u');", "underline_button.png");
-        $str.= $this->_tb_img($lang['strikethrough'], "add_tag('s');", "strikethrough_button.png");
-        $str.= $this->_tb_img($lang['superscript'], "add_tag('sup');", "superscript_button.png");
-        $str.= $this->_tb_img($lang['subscript'], "add_tag('sub');", "subscript_button.png");
-        $str.= $this->_tb_img($lang['leftalign'], "add_tag('div', 'align', 'left');", "align_left_button.png");
-        $str.= $this->_tb_img($lang['center'], "add_tag('div', 'align', 'center');", "align_center_button.png");
-        $str.= $this->_tb_img($lang['rightalign'], "add_tag('div', 'align', 'right');", "align_right_button.png");
-        $str.= $this->_tb_img($lang['numberedlist'], "add_tag('list', true, null, true);", "numbered_list_button.png");
-        $str.= $this->_tb_img($lang['list'], "add_tag('list', null, null, true);", "list_button.png");
-        $str.= $this->_tb_img($lang['indenttext'], "add_tag('blockquote', null, null, true);", "block_quote_button.png");
-        $str.= $this->_tb_img($lang['code'], "add_tag('code', 'language', '', true);", "code_button.png");
-        $str.= $this->_tb_img($lang['quote'], "add_tag('quote', 'source', '', true);", "quote_button.png");
-        $str.= $this->_tb_img($lang['spoiler'], "add_tag('spoiler', null, null, true);", "spoiler_button.png");
-        $str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);", "horizontal_rule_button.png");
-        $str.= $this->_tb_img($lang['image'], "add_image();", "image_button.png");
-        $str.= $this->_tb_img($lang['hyperlink'], "add_link();", "link_button.png");
+        $str.= $this->_tb_img($lang['bold'], "add_tag('b');");
+        $str.= $this->_tb_img($lang['italic'], "add_tag('i');");
+        $str.= $this->_tb_img($lang['underline'], "add_tag('u');");
+        $str.= $this->_tb_img($lang['strikethrough'], "add_tag('s');");
+        $str.= $this->_tb_img($lang['superscript'], "add_tag('sup');");
+        $str.= $this->_tb_img($lang['subscript'], "add_tag('sub');");
+        $str.= $this->_tb_img($lang['leftalign'], "add_tag('div', 'align', 'left');");
+        $str.= $this->_tb_img($lang['center'], "add_tag('div', 'align', 'center');");
+        $str.= $this->_tb_img($lang['rightalign'], "add_tag('div', 'align', 'right');");
+        $str.= $this->_tb_img($lang['numberedlist'], "add_tag('list', true, null, true);");
+        $str.= $this->_tb_img($lang['list'], "add_tag('list', null, null, true);");
+        $str.= $this->_tb_img($lang['indenttext'], "add_tag('blockquote', null, null, true);");
+        $str.= $this->_tb_img($lang['code'], "add_tag('code', 'language', '', true);");
+        $str.= $this->_tb_img($lang['quote'], "add_tag('quote', 'source', '', true);");
+        $str.= $this->_tb_img($lang['spoiler'], "add_tag('spoiler', null, null, true);");
+        $str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);");
+        $str.= $this->_tb_img($lang['image'], "add_image();");
+        $str.= $this->_tb_img($lang['hyperlink'], "add_link();");
+        $str.= $this->_tb_img($lang['noemoticons'], "add_tag('noemots');");
 
         if ($emoticons == true) {
             $str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
         }
 
-        $str.= $this->_tb_img($lang['noemoticons'], "add_tag('noemots');", "no_emoticons_button.png");
-
-        $str.= "    <br /><br />\n";
+        $str.= "    <br />\n";
         $str.= "    <select class=\"bhselect\" onChange=\"add_tag('font', 'face', this.options[this.selectedIndex].value); this.selectedIndex = 0;\" name=\"font_face\">\n";
         $str.= "        <option value=\"\" selected>{$lang['fontface']}</option>\n";
         $str.= "        <option value=\"Arial\">Arial</option>\n";
@@ -141,6 +140,28 @@ class TextAreaHTML {
 
         $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
         $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html);
+
+        return $str;
+    }
+
+    // ----------------------------------------------------
+
+
+    // ----------------------------------------------------
+    // Preloads the images needed by the toolbars
+	// CALL THIS FUNCTION TOWARDS THE BEGINNING OF THE PAGE
+	// ----------------------------------------------------
+
+    function preload () {
+
+        $str = "<script language=\"Javascript\">\n";
+        $str.= "  <!--\n";
+		$str.= "    _tb_image_main = new Image();\n";
+		$str.= "    _tb_image_main.src = \"./images/html_toolbar.png\";\n";
+		$str.= "    _tb_image_blank = new Image();\n";
+		$str.= "    _tb_image_blank.src = \"./images/blank.png\";\n";
+        $str.= "  //-->\n";
+        $str.= "</script>\n";
 
         return $str;
     }
@@ -264,7 +285,7 @@ class TextAreaHTML {
     // Internal function - returns HTML for toolbar image
     // ----------------------------------------------------
 
-    function _tb_img ($title, $on_click, $image_name) {
+    function _tb_img ($title, $on_click, $image_name = "blank.png") {
         return "<img src=\"". style_image($image_name). "\" onClick=\"{$on_click}\" title=\"{$title}\" class=\"tools_up\" onMouseOver=\"m_ov(this);\" onMouseOut=\"m_ou(this);\" onMouseDown=\"m_d(this);\" onMouseUp=\"m_u(this);\" />";
     }
 

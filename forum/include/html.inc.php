@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.118 2004-07-07 13:59:20 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.119 2004-07-07 17:21:06 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -188,9 +188,9 @@ function html_get_forum_email()
 //      <script src="openprofile.js"> tag within the HTML output.
 //
 //      To retain the old functionality as well as offer all this
-//      html_draw_top also supports 5 named arguments, which
+//      html_draw_top also supports 6 named arguments, which
 //      you can use to alter the default page title, body class,
-//      base target, and also specify functions to be
+//      base target, meta 'robots' tag, and also specify functions to be
 //      called by the browser in the body tag's onload and onunload
 //      events. These have to be called in a specific manner.
 //      For example:

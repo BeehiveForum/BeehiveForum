@@ -157,15 +157,16 @@ A                   { background-color: transparent; color: #$text_colour[body];
 					  background-color: #EEEEEE; margin-top: 0px; margin-bottom: 10px; margin-left: 40px; margin-right: 10px;
 					  padding: 3px; }
 
-.tools              { margin: 0; margin-bottom: 3px; padding: 2px; text-align:left; display: none; }
+.tools				{ margin: 0; margin-bottom: 3px; text-align:left; display: none; background-image: url('../../images/html_toolbar.png');
+					  background-repeat: no-repeat; }
 
-.tools_up           { border: 1px solid #$elements[threads]; margin: 1; float:left; width:18px; height:18px; }
+.tools_up           { border: 1px solid #$elements[threads]; margin-left: 1px; margin-right: 1px; width: 18px; height: 18px; }
 
 .tools_over         { border-top: 1px solid buttonhighlight; border-left: 1px solid buttonhighlight; border-bottom: 1px solid buttonshadow;
-                      border-right: 1px solid buttonshadow; margin:1; float:left; }
+                      border-right: 1px solid buttonshadow; margin-left: 1px; margin-right: 1px; width: 18px; height: 18px; }
 
 .tools_down         { border-top: 1px solid buttonshadow; border-left: 1px solid buttonshadow; border-bottom: 1px solid buttonhighlight;
-                      border-right: 1px solid buttonhighlight; margin:1; float:left; }
+                      border-right: 1px solid buttonhighlight; margin-left: 1px; margin-right: 1px; width: 18px; height: 18px; }
 
 .activeusers        { font-size: 8pt; }
 

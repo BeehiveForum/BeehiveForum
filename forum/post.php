@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.203 2004-06-28 21:51:03 decoyduck Exp $ */
+/* $Id: post.php,v 1.204 2004-07-07 17:21:05 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -546,6 +546,9 @@ if (!$newthread) {
     }
 }
 
+$tools = new TextAreaHTML("f_post");
+echo $tools->preload();
+
 if ($valid && isset($_POST['preview'])) {
 
     echo "<table class=\"posthead\" width=\"720\">\n";
@@ -691,8 +694,6 @@ echo "<tr><td>\n";
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
 echo "<h2>". $lang['message'] .":</h2>\n";
-
-$tools = new TextAreaHTML("f_post");
 
 echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.73 2004-04-27 23:31:40 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.74 2004-04-28 12:24:03 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -361,50 +361,41 @@ function pm_get_user($mid)
     return $logon;
 }
 
-function pm_draw_to_dropdown_friends($default_uid)
+function pm_user_get_friends()
 {
-    $html = "<select name=\"t_to_uid\" style=\"width: 190px\" onchange=\"checkToRadio(0)\">\n";
-    $html.= "<option value=\"0\">&lt;select recipient&gt;</option>\n";
+    $db_user_get_relationships = db_connect();
 
-    $db_post_draw_to_dropdown = db_connect();
+    if (!$table_data = get_table_prefix()) return false;
 
     $uid = bh_session_get_value('UID');
 
-    if (!is_numeric($default_uid)) $default_uid = 0;
-
-    if ($default_uid != 0) {
-        if ($top_user = user_get($default_uid)) {
-            $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
-        }
-    }
-
-    if (!$table_data = get_table_prefix()) return "";
-
     $relationship = USER_FRIEND;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
-    $sql.= "AND USER.UID <> '$default_uid' ";
-    $sql.= "AND USER_PEER.RELATIONSHIP & $relationship = $relationship ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP & $relationship = $relationship ";
+    $sql.= "ORDER BY USER.LOGON ASC LIMIT 0, 20";
 
-    $result = db_query($sql, $db_post_draw_to_dropdown);
+    $result = db_query($sql, $db_user_get_relationships);
 
-    while ($row = db_fetch_array($result)) {
+    $user_get_peers_array['uid_array'] = 0;
+    $user_get_peers_array['logon_array'] = "&lt;select recipient&gt;";
 
-        $logon = (isset($row['LOGON'])) ? $row['LOGON'] : "";
-        $nickname =  (isset($row['NICKNAME'])) ? $row['NICKNAME'] : "";
-        $html.= "<option value=\"{$row['UID']}\">". format_user_name($logon, $nickname). "</option>\n";
+    if (db_num_rows($result) > 0) {
+
+        $user_get_peers_array = array();
+
+        while ($row = db_fetch_array($result)) {
+            $user_get_peers_array['uid_array'] = $row['UID'];
+            $user_get_peers_array['logon_array'] = format_user_name($row['LOGON'], $row['NICKNAME']);
+        }
+
+        return $user_get_peers_array;
+
+    }else {
+
+        return false;
     }
-
-    $html .= "</select>\n";
-    return $html;
 }
 
 function pm_single_get($mid, $folder, $uid = false)
@@ -572,14 +563,24 @@ function draw_pm_message($pm_elements_array)
         }
     }
 
-    if (isset($pm_elements_array['FOLDER']) && ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) && (isset($pm_elements_array['MID']))) {
-        echo "          </table>\n";
-        echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
-        echo "            <tr>\n";
-        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
-        echo "            </tr>\n";
+    echo "          </table>\n";
+    echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    echo "            <tr>\n";
+    echo "              <td align=\"center\">\n";
+
+    if (isset($pm_elements_array['FOLDER']) && (isset($pm_elements_array['MID']))) {
+
+        if ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
+            echo "<img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a>&nbsp;\n";
+        }
+
+    }else {
+
+        echo "&nbsp;";
     }
 
+    echo "              </td>\n";
+    echo "            </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
@@ -594,14 +595,14 @@ function draw_header_pm()
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";
     echo "function addRecipient() {\n\n";
-    echo "  newUser = prompt(\"{$lang['pleaseentermembername']}\", \"\");\n";
-    echo "  if (newUser != null) {\n";
-    echo "    if (document.f_post.t_recipient_list.value.length == 0) {\n";
-    echo "      document.f_post.t_recipient_list.value = newUser;\n";
-    echo "    }else {\n";
-    echo "      document.f_post.t_recipient_list.value+= '; ' + newUser;\n";
+    echo "    newUser = prompt(\"{$lang['pleaseentermembername']}\", \"\");\n";
+    echo "    if (newUser != null && newUser.length > 0) {\n";
+    echo "        if (document.f_post.t_recipient_list.value.length == 0) {\n";
+    echo "            document.f_post.t_recipient_list.value = newUser;\n";
+    echo "        }else {\n";
+    echo "            document.f_post.t_recipient_list.value+= '; ' + newUser;\n";
+    echo "        }\n";
     echo "    }\n";
-    echo "  }\n";
     echo "}\n";
     echo "//-->\n";
     echo "</script>\n";

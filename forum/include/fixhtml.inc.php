@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.79 2004-06-22 11:51:17 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.80 2004-06-22 13:20:23 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -621,7 +621,7 @@ function tidy_html ($html, $linebreaks = true)
 	}
 
 	// make <code>..</code> tag, and html_entity_decode
-	$html = preg_replace_callback("/<div class=\"quotetext\" id=\"code(-\w+)?\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback", $html);
+	$html = preg_replace_callback("/<div class=\"quotetext\" id=\"code(-[^\"]+)?\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback", $html);
 
 	// make <quote source=".." url="..">..</quote> tag
 	$html_left = "";

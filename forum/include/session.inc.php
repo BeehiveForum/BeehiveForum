@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.113 2004-04-29 16:53:56 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.114 2004-04-29 17:16:13 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -32,7 +32,7 @@ include_once("./include/user.inc.php");
 
 // Checks the session and returns it as an array.
 
-function bh_session_check()
+function bh_session_check($add_guest_sess = true)
 {
     ip_check();
 
@@ -158,35 +158,38 @@ function bh_session_check()
 	}
     }
 
-    // Guest user sessions are handled a bit differently.
+    if ($add_guest_sess) {
 
-    if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
+        // Guest user sessions are handled a bit differently.
 
-    $sql = "SELECT SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
-    $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress' ";
-    $sql.= "AND SESSIONS.FID = '{$table_data['FID']}'";
+        if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
 
-    $result = db_query($sql, $db_bh_session_check);
+        $sql = "SELECT SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+        $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
+        $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress' ";
+        $sql.= "AND SESSIONS.FID = '{$table_data['FID']}'";
 
-    if (db_num_rows($result) > 0) {
+        $result = db_query($sql, $db_bh_session_check);
 
-        $user_sess = db_fetch_array($result, MYSQL_ASSOC);
+        if (db_num_rows($result) > 0) {
 
-        if ($current_time - $user_sess['TIME'] > 300) {
+            $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
-            $sql = "UPDATE SESSIONS SET TIME = NOW(), FID = '{$table_data['FID']}' ";
-            $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
+            if ($current_time - $user_sess['TIME'] > 300) {
+
+                $sql = "UPDATE SESSIONS SET TIME = NOW(), FID = '{$table_data['FID']}' ";
+                $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
+
+                $result = db_query($sql, $db_bh_session_check);
+            }
+
+        }else {
+
+            $sql = "INSERT INTO SESSIONS (UID, FID, IPADDRESS, TIME) ";
+            $sql.= "VALUES (0, '{$table_data['FID']}', '$ipaddress', NOW())";
 
             $result = db_query($sql, $db_bh_session_check);
         }
-
-    }else {
-
-        $sql = "INSERT INTO SESSIONS (UID, FID, IPADDRESS, TIME) ";
-        $sql.= "VALUES (0, '{$table_data['FID']}', '$ipaddress', NOW())";
-
-        $result = db_query($sql, $db_bh_session_check);
     }
 
     return array('UID'              => 0,

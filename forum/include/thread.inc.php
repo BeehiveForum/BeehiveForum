@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -48,19 +48,36 @@ function thread_get_title($tid)
 function thread_get($tid)
 {
    global $HTTP_COOKIE_VARS;
+
    $db_thread_get = db_connect();
-   $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
-   $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST AS INTEREST, USER_THREAD.LAST_READ FROM ";
-   $sql.= forum_table("THREAD") . " THREAD LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
-   $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = ";
-   $sql.= $HTTP_COOKIE_VARS['bh_sess_uid'] . ") WHERE THREAD.TID = $tid";
+
+   $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+
+   $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
+   $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST, ";
+   $sql.= "USER_THREAD.LAST_READ, USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID ";
+   $sql.= "FROM ". forum_table("THREAD"). " THREAD ";
+   $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
+   $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)";
+   $sql.= "JOIN " . forum_table("USER") . " USER ";
+   $sql.= "JOIN " . forum_table("POST") . " POST ";
+   $sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
+   $sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
+   $sql.= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+   $sql.= "(AT.TID = THREAD.TID) ";
+   $sql.= "WHERE USER.UID = POST.FROM_UID ";
+   $sql.= "AND POST.TID = THREAD.TID ";
+   $sql.= "AND POST.PID = 1 ";
+   $sql.= "AND THREAD.TID = $tid ";
+   $sql.= "GROUP BY THREAD.tid ";
+
    $resource_id = db_query($sql, $db_thread_get);
    if(!db_num_rows($resource_id)){
      $threaddata = false;
    } else {
      $threaddata = db_fetch_array($resource_id);
    }
-   
+
    if(!isset($threaddata['INTEREST'])){
        $threaddata['INTEREST'] = 0;
    }
@@ -73,15 +90,15 @@ function thread_get($tid)
 function thread_get_author($tid)
 {
  	$db_thread_get_author = db_connect();
-	
+
 	$sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
 	$sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
-	
+
 	$result = db_query($sql, $db_thread_get_author);
 	$author = db_fetch_array($result);
-	
+
         return format_user_name($author['LOGON'], $author['NICKNAME']);
-	  
+
 }
 
 function thread_get_interest($tid)
@@ -99,19 +116,19 @@ function thread_get_interest($tid)
 function thread_set_interest($tid, $interest, $new = false)
 {
     global $HTTP_COOKIE_VARS;
-    
+
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    
+
     if($new){
-    
+
     	$sql = "insert into ". forum_table("USER_THREAD"). " (UID, TID, INTEREST) values ($uid, $tid, $interest)";
-    	
+
     } else {
-    
+
         $sql = "update low_priority ". forum_table("USER_THREAD"). " set INTEREST = $interest where UID = $uid and TID = $tid";
-        
+
     }
-    
+
     $db_thread_set_interest = db_connect();
     db_query($sql, $db_thread_set_interest);
 

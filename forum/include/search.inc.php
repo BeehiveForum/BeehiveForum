@@ -105,7 +105,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       $postcontent = "";
       foreach($keywords as $word) {
-        $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%' OR ";
+        $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">' OR ";
       }
 
       $threadtitle = substr($threadtitle, 0, -4);
@@ -129,7 +129,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
     }elseif ($argarray['method'] == 3) { // EXACT
 
       $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes($argarray['search_string']). "%' ";
-      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". _addslashes($argarray['search_string']). "%') ";
+      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". _addslashes($argarray['search_string']). "%<div class=\"sig\">') ";
       $searchsql.= $daterange;
 
       if ($argarray['me_only'] == 'Y') {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.5 2004-04-28 14:28:54 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.6 2004-04-30 15:48:42 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -55,7 +55,7 @@ $forum_location = "{$_SERVER['HTTP_HOST']}{$forum_location}";
 // Get the Forum Name and the current date.
 
 $forum_name = forum_get_setting('forum_name');
-$build_data = date("D, d M Y H:i:s  T");
+$build_data = gmdate("D, d M Y H:i:s");
 
 // echo out the rss feed
 
@@ -66,7 +66,7 @@ echo "\t<channel>\n";
 echo "\t\t<title>{$forum_name}</title>\n";
 echo "\t\t<link>http://{$forum_location}</link>\n";
 echo "\t\t<description>{$forum_name} - {$forum_location}</description>\n";
-echo "\t\t<lastBuildDate>{$build_data}</lastBuildDate>\n";
+echo "\t\t<lastBuildDate>{$build_data} UT</lastBuildDate>\n";
 echo "\t\t<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
 // Get the recent threads (10 of them)
@@ -81,7 +81,7 @@ if ($threads_array = threads_get_most_recent()) {
 
         $thread['TITLE'] = _stripslashes($thread['TITLE']);
 
-        $modified_date   = date("D, d M Y H:i:s  T", $thread['MODIFIED']);
+        $modified_date   = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
 
         $message_content = _stripslashes(message_get_content($thread['TID'], $thread['LENGTH']));
         $message_content = strip_tags(_htmlentities_decode($message_content));
@@ -90,7 +90,7 @@ if ($threads_array = threads_get_most_recent()) {
         echo "\t\t\t\t<guid isPermaLink=\"true\">\n";
         echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";
         echo "\t\t\t\t</guid>\n";
-        echo "\t\t\t\t<pubDate>{$modified_date}</pubDate>\n";
+        echo "\t\t\t\t<pubDate>{$modified_date} UT</pubDate>\n";
         echo "\t\t\t\t<title>{$thread['TITLE']}</title>\n";
         echo "\t\t\t\t<link>\n";
         echo "\t\t\t\t\thttp://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1\n";

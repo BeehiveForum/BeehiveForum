@@ -495,14 +495,25 @@ function poll_vote($tid, $vote)
 
     $db_poll_vote = db_connect();
     
-    $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, UID, VOTE, TSTAMP) ";
-    $sql.= "values ($tid, ". $HTTP_COOKIE_VARS['bh_sess_uid']. ", '". $vote. "', FROM_UNIXTIME(". mktime(). "))";
-    $result = db_query($sql, $db_poll_vote);
+    $uservote = poll_get_user_vote($tid);
     
-    $vote++;
+    if ((!isset($userpolldata['VOTE'])) && ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0)) {
     
-    $sql = "update ". forum_table("POLL"). " set O". $vote. "_VOTES = O". $vote. "_VOTES + 1 where TID = $tid";
-    $result = db_query($sql, $db_poll_vote);
+      $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, UID, VOTE, TSTAMP) ";
+      $sql.= "values ($tid, ". $HTTP_COOKIE_VARS['bh_sess_uid']. ", '". $vote. "', FROM_UNIXTIME(". mktime(). "))";
+      $result = db_query($sql, $db_poll_vote);
+      
+      $vote++;      
+      
+      $sql = "update ". forum_table("POLL"). " set O". $vote. "_VOTES = O". $vote. "_VOTES + 1 where TID = $tid";
+      $result = db_query($sql, $db_poll_vote);      
+      
+    }else if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+    
+      $sql = "update ". forum_table("POLL"). " set O". $vote. "_VOTES = O". $vote. "_VOTES + 1 where TID = $tid";
+      $result = db_query($sql, $db_poll_vote);
+      
+    }
     
 }
 

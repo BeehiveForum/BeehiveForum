@@ -39,11 +39,11 @@ function format_user_name($u_logon,$u_nickname)
 function format_url2link($html)
 {
 	// URL:
-    $html = preg_replace("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(\/[-\w\.%~]*)*((\?|#)\S*)?)\b/i",
+    $html = preg_replace("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(\/([-\w%~]+\.?)*)*((\?|#)[^\s;,.?\"'[\](){}<>]*)?)/i",
         "<a href=\"$1\" target=\"_blank\">$1</a>", $html);
 	// MAIL:
-	$html = preg_replace("/\b(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)*([a-z]{2,}|:\d+))/i",
-		"<a href=\"mailto:$2\">$2</a>", $html);
+	$html = preg_replace("/\b(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]{2,}|:\d+))/i",
+		"<a href=\"mailto:$2\">$1$2</a>", $html);
     return $html;
 }
 

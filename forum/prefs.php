@@ -71,60 +71,65 @@ if(isset($HTTP_POST_VARS['submit'])){
     }
 
     if($valid){
+    
         // Update basic settings in USER table
+        
         user_update($HTTP_COOKIE_VARS['bh_sess_uid'],
-                    $HTTP_POST_VARS['pw'], $HTTP_POST_VARS['nickname'],
+                    $HTTP_POST_VARS['pw'],
+                    $HTTP_POST_VARS['nickname'],
                     $HTTP_POST_VARS['email']);
 
         // Update or insert USER_PREFS
-        if($HTTP_POST_VARS['prefs_exist'] == "Y"){
+
+        if($HTTP_POST_VARS['prefs_exist'] == 'Y'){
+        
             user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
-                        $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
-                        $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
-                        $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
-                        $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
-                        $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
+                              $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
+                              $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
+                              $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
+                              $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
+                              $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
+                        
         } else {
+        
             user_insert_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
-                        $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
-                        $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
-                        $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
-                        $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
-                        $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
+                              $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
+                              $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
+                              $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
+                              $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
+                              $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
         }
 
         // Update or insert USER_SIG
-        if($HTTP_POST_VARS['sig_exists'] == "Y"){
+        
+        if($HTTP_POST_VARS['sig_exists'] == 'Y') {
+        
             user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
-                        $HTTP_POST_VARS['sig_content'], $HTTP_POST_VARS['sig_html']);
+                            $HTTP_POST_VARS['sig_content'],
+                            $HTTP_POST_VARS['sig_html']);
+                        
         } else {
+        
             user_insert_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
-                        $HTTP_POST_VARS['sig_content'], $HTTP_POST_VARS['sig_html']);
+                            $HTTP_POST_VARS['sig_content'],
+                            $HTTP_POST_VARS['sig_html']);
+                            
         }
-        $user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
-        $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-        $user_prefs_exist = (count($user_prefs) > 0);
-        user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$user_sig['CONTENT'],$user_sig['HTML']);
-        $user_sig_exist = (count($user_sig) > 0);
+        
     }
     
-}else {
-
-    if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-        $user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
-        $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
-        $user_prefs_exist = (count($user_prefs) > 0);
-        user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$user_sig['CONTENT'],$user_sig['HTML']);
-        $user_sig_exists = (count($user_prefs) > 0);
-    }
 }
+
+$user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+$user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
+user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'], $user_sig['CONTENT'], $user_sig['HTML']);
 
 html_draw_top();
 
 echo "<h1>User Preferences</h1>";
-if(!empty($error_html)){
-    echo $error_html;
-}
+
+if(!empty($error_html)) echo $error_html;
+
 echo "<div class=\"postbody\">";
 echo "<form name=\"prefs\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
 echo "<table class=\"posthead\">";
@@ -161,24 +166,33 @@ echo "<td>".form_dropdown_array("posts_per_page",array(5,10,20),array(5,10,20),$
 echo "<tr><td>Font size:</td>";
 
 if ($user_prefs['FONT_SIZE'] == '') {
+
   echo "<td>".form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), "10pt")."</td></tr>";
+  
 }else{
+
   echo "<td>".form_dropdown_array("font_size", range(1,15), array('1pt', '2pt', '3pt', '4pt', '5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE'])."</td></tr>";
+  
 }
 
 echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
 echo "<tr><td class=\"subhead\" colspan=\"2\">Signature</td></tr>";
 echo "<tr><td colspan=\"2\">".form_textarea("sig_content",$user_sig['CONTENT'],4,60);
 echo "<tr><td>&nbsp;</td><td align=\"right\">";
-echo form_checkbox("sig_html","Y","Contains HTML",($user_sig['HTML'] == "Y"));
-echo "</td></tr></table>";
-if($user_prefs_exist){
-    echo form_field("prefs_exist","Y",0,0,"hidden");
+echo form_checkbox("sig_html","Y","Contains HTML", ($user_sig['HTML'] == "Y"));
+echo "</td></tr></table>\n";
+
+if(count($user_prefs) > 0){
+    echo form_field("prefs_exist", "Y", 0, 0, "hidden");
 }
-if($user_sig_exists){
-    echo form_field("sig_exists","Y",0,0,"hidden");
+
+if(count($user_sig) > 0){
+    echo form_field("sig_exists", "Y", 0, 0, "hidden");
 }
-echo form_submit("submit","Submit");
+
+echo form_submit("submit", "Submit");
 echo "</form>";
+
 html_draw_bottom();
+
 ?>

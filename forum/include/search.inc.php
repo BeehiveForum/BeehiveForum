@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.115 2005-03-24 20:29:19 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.116 2005-04-06 17:35:10 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -483,10 +483,13 @@ function search_draw_user_dropdown($name)
 
     if (!$table_data = get_table_prefix()) return "";
 
+    $forum_fid = $table_data['FID'];
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON ";
-    $sql.= "(USER.UID = VISITOR_LOG.UID) WHERE USER.UID <> '$uid' ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON ";
+    $sql.= "(USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
+    $sql.= "WHERE USER.UID <> '$uid' ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.159 2005-04-05 02:10:46 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.160 2005-04-06 17:35:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -599,7 +599,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     echo "</span>";
 }
 
-function html_get_path($path_only = false)
+function html_get_forum_uri($path_only = false)
 {
     $uri_array = array();
 
@@ -659,23 +659,18 @@ function html_get_path($path_only = false)
 
                 $path = parse_url($_SERVER['PHP_SELF']);
             }
+
+            $uri_array['path'] = $path['path'];
+            unset($path);
         }
     }
 
-    if ($path_only === true) {
-
-        $uri_array['path'] = dirname($uri_array['path']);
-        $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
-        $uri_array['path'] = preg_replace("/\/+/", "/", $uri_array['path']);
-        $uri_array['path'] = preg_replace("/^\/$/", "", $uri_array['path']);
-    }
+    $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);
 
     $server_uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
     $server_uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
     $server_uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
     $server_uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
-    $server_uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
-    $server_uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
 
     return $server_uri;
 }

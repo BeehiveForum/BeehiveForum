@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.41 2005-04-01 13:17:12 rowan_hill Exp $ */
+/* $Id: user_profile.inc.php,v 1.42 2005-04-06 17:35:13 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -73,7 +73,7 @@ function user_get_profile($uid)
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
     $sql.= "ON (VISITOR_LOG.UID = USER.UID) ";
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";

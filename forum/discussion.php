@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.77 2005-03-26 18:16:42 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.78 2005-04-06 17:34:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -85,7 +85,7 @@ if (!forum_check_access_level()) {
 $uid = bh_session_get_value('UID');
 $request_uri = get_request_uri();
 
-$dtdpath = html_get_path(true);
+$dtdpath = html_get_forum_uri();
 
 $stylesheet = html_get_style_sheet();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.67 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.68 2004-04-09 00:11:28 tribalonline Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -134,7 +134,13 @@ function make_html($text, $br_only = false)
     $html = _stripslashes($text);
     $html = _htmlentities($html);
     $html = format_url2link($html);
-    $html = emoticons_convert($html);
+
+	$h_s = preg_split("/(<a[^>]+>[^<]+<\/a>)/", $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+	for ($i=0; $i<count($h_s); $i+=2) {
+		$h_s[$i] = emoticons_convert($h_s[$i]);
+	}
+	$html = implode("", $h_s);
+
     $html = add_paragraphs($html, true, $br_only);
 
     return $html;

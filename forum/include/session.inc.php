@@ -71,78 +71,98 @@ function bh_session_init($uid)
 {
     global $HTTP_SERVER_VARS, $default_style;
 
-    $sql = "select USER.LOGON, USER.PASSWD, USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, ";
-    $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE ";
-    $sql.= "from " . forum_table("USER") . " USER left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
-    $sql.= "where USER.UID = $uid";
+    if ($uid == 0) {
 
-    $db_bh_session_init = db_connect();
-    $result = db_query($sql, $db_bh_session_init);
-
-    if(!db_num_rows($result)) {
-
+        $user_logon = "GUEST";
+	$user_passwd = md5("GUEST");
         $user_status = 0;
-        $user_ppp = 20;
+        $user_ppp = 5;
         $user_tz = 0;
         $user_dlsav = 0;
         $user_markread = 0;
+        $user_fontsize = 10;
+	$user_style = $default_style;
 
-    } else {
+    }else {
 
-        $fa = db_fetch_array($result);
+        $sql = "select USER.LOGON, USER.PASSWD, USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, ";
+        $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE ";
+        $sql.= "from " . forum_table("USER") . " USER left join " . forum_table("USER_PREFS") . " USER_PREFS on (USER.UID = USER_PREFS.UID) ";
+        $sql.= "where USER.UID = $uid";
 
-	if(isset($fa['LOGON'])){
-	    $user_logon = $fa['LOGON'];
-	}else {
-	    $user_logon = '';
-	}
+        $db_bh_session_init = db_connect();
+        $result = db_query($sql, $db_bh_session_init);
 
-	if(isset($fa['PASSWD'])){
-	    $user_passwd = $fa['PASSWD'];
-	}else {
-	    $user_passwd = '';
-	}
+        if(!db_num_rows($result)) {
 
-        if(isset($fa['STATUS'])){
-            $user_status = $fa['STATUS'];
-        } else {
+            $user_logon = "GUEST";
+	    $user_passwd = md5("GUEST");
             $user_status = 0;
-        }
-
-        if(isset($fa['POSTS_PER_PAGE']) && $fa['POSTS_PER_PAGE'] > 0) {
-            $user_ppp = $fa['POSTS_PER_PAGE'];
-        } else {
-            $user_ppp = 20;
-        }
-
-        if (isset($fa['TIMEZONE'])){
-            $user_tz = $fa['TIMEZONE'];
-        } else {
+            $user_ppp = 5;
             $user_tz = 0;
-        }
-
-        if (@$fa['DL_SAVING'] == "Y") {
-            $user_dlsav = 1;
-        } else {
             $user_dlsav = 0;
-        }
-
-        if (@$fa['MARK_AS_OF_INT'] == "Y") {
-            $user_markread = 1;
-        } else {
             $user_markread = 0;
-        }
-
-        if (isset($fa['FONT_SIZE'])) {
-            $user_fontsize = $fa['FONT_SIZE'];
-        } else {
             $user_fontsize = 10;
-        }
-	
-	if (isset($fa['STYLE'])) {
-            $user_style = $fa['STYLE'];
-        } else {
-            $user_style = $default_style;
+	    $user_style = $default_style;
+
+        }else {
+
+            $fa = db_fetch_array($result);
+
+            if(isset($fa['LOGON'])){
+                $user_logon = $fa['LOGON'];
+            }else {
+                $user_logon = '';
+            }
+
+            if(isset($fa['PASSWD'])){
+                $user_passwd = $fa['PASSWD'];
+            }else {
+                $user_passwd = '';
+            }
+
+            if(isset($fa['STATUS'])){
+                $user_status = $fa['STATUS'];
+            } else {
+                $user_status = 0;
+            }
+
+            if(isset($fa['POSTS_PER_PAGE']) && $fa['POSTS_PER_PAGE'] > 0) {
+                $user_ppp = $fa['POSTS_PER_PAGE'];
+            } else {
+                $user_ppp = 20;
+            }
+
+            if (isset($fa['TIMEZONE'])){
+                $user_tz = $fa['TIMEZONE'];
+            } else {
+                $user_tz = 0;
+            }
+
+            if (@$fa['DL_SAVING'] == "Y") {
+                $user_dlsav = 1;
+            } else {
+                $user_dlsav = 0;
+            }
+
+            if (@$fa['MARK_AS_OF_INT'] == "Y") {
+                $user_markread = 1;
+            } else {
+                $user_markread = 0;
+            }
+
+            if (isset($fa['FONT_SIZE'])) {
+                $user_fontsize = $fa['FONT_SIZE'];
+            } else {
+                $user_fontsize = 10;
+            }
+    
+            if (isset($fa['STYLE'])) {
+                $user_style = $fa['STYLE'];
+            } else {
+                $user_style = $default_style;
+            }
+
         }
 
     }

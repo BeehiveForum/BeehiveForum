@@ -50,36 +50,24 @@ if(bh_session_check()) {
     
 }
 
-if (isset($HTTP_POST_VARS['logon'])) {
+if (isset($HTTP_POST_VARS['submit'])) {
 
   if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
 
-    if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && ($HTTP_POST_VARS['submit'] == 'Logon')) {
+    $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
     
-      header("HTTP/1.0 500 Internal Server Error"); // Naughty naughty.
-      exit;
-      
-    }else {
-  
-      $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
-    
-    }
-         
     if ($luid > -1) {
     
-      // Reset Thread Mode      
       setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
     
-      if ($HTTP_POST_VARS['submit'] == 'Guest') {
+      if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
       
         bh_session_init(0); // Use UID 0 for guest account.
         
       }else {
     
         bh_session_init($luid);
-        
-        // Multiple usernames
-               
+                      
         if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
         
           if (is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {

@@ -63,13 +63,6 @@ A:hover 	{
 		font-weight: bold;
 		}
 
-.thread_list_aim{
-		background-color:#FFFFFF;
-		border-style:none;
-		height:40px;
-		vertical-align:top;
-		}
-
 .thread_list_folder{
 		background-color:#CCCCCC;
 		border-style:solid;
@@ -103,6 +96,7 @@ A:hover 	{
 
 .threadname {
           font-style: normal;
+          font-size: 10pt;
           background-color: #CCD0E3;
           margin-top: 4px;
           margin-right: 4px;
@@ -120,9 +114,26 @@ A:hover 	{
           border-left-width: 1px
 }
 
+.folderinfo {
+          font-size: 8pt;
+          text-align: right;
+          float: left;
+}
+
+.folderpostnew {
+          font-size: 8pt;
+          text-align: right;
+          float: right;
+}
+
+.folderxnewofy {
+          font-size: 8pt;
+          padding-left: 8px;
+}
+
 .foldername {
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: 14pt;
+          font-size: 12pt;
           font-style: normal;
           font-variant: small-caps;
           color: #000000;

@@ -121,6 +121,14 @@ function threads_display_list($thread_info, $folder_order) // Displays the threa
 	$folder_info = threads_get_folders();
 	if (!$folder_info) die ("Could not retrieve folder information");
 	
+	// Get total number of messages for each folder
+	$folder_msgs = threads_get_folder_msgs();
+	
+	// Work out if any folders have no messages - if so, they still need to be displayed, so add them to $folder_order
+	while (list($fid, $title) = each($folder_info)) {
+		if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+	}
+	
 	// Iterate through the information we've just got and display it in the right order
 	while (list($key1, $folder) = each($folder_order)) {
 		echo "<tr>\n";
@@ -131,6 +139,8 @@ function threads_display_list($thread_info, $folder_order) // Displays the threa
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td class=\"threadname\">\n";
+		echo "<span class=\"folderinfo\">".$folder_msgs[$folder]." msgs</span>\n";
+		echo "<span class=\"folderpostnew\">Post New</span><br />\n";
 		echo "<ul>\n";
 		while (list($key2, $thread) = each($thread_info)) {
 			if ($thread['fid'] == $folder) {
@@ -142,7 +152,8 @@ function threads_display_list($thread_info, $folder_order) // Displays the threa
 					$new_posts = $thread['length'] - $thread['last_read'];
 					$number = "[".$new_posts." new of ".$thread['length']."]";
 				}
-				echo "<li>".$thread['title']." $number</li>\n";
+				echo "<li>".$thread['title'];
+				echo "<span class=\"folderxnewofy\">$number</span></li>\n";
 			}
 		}
 		reset($thread_info);
@@ -165,5 +176,18 @@ function thread_get_title($tid)
    }
    db_disconnect($db);
    return $threadtitle;
+}
+
+function threads_get_folder_msgs()
+{
+	$db = db_connect();
+	$sql = "SELECT fid, COUNT(fid) AS total FROM THREAD GROUP BY FID";
+	$resource_id = db_query($sql, $db);
+	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
+		$folder = db_fetch_array($resource_id);
+		$folder_msgs[$folder['fid']] = $folder['total'];
+	}
+	db_disconnect($db);
+	return $folder_msgs;
 }
 ?>

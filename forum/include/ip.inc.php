@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.7 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.8 2003-07-28 20:41:46 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -87,6 +87,8 @@ function ip_is_banned($ipaddress)
 
 function get_ip_address()
 {
+    global $HTTP_SERVER_VARS;
+
     if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
       $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
     }else {

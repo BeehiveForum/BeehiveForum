@@ -23,55 +23,7 @@ USA
 
 // Emoticon filter file
 
-// --------------------------------------
-// Begin emoticons
-// --------------------------------------
-
-// Default emoticons
-$emoticon[':-)'] = "smile";
-$emoticon[':)'] = "smile";
-$emoticon[';-)'] = "wink";
-$emoticon[';)'] = "wink";
-$emoticon[':-('] = "sad";
-$emoticon[':('] = "sad";
-$emoticon[':\'-('] = "cry";
-$emoticon[':\'('] = "cry";
-$emoticon[':-P'] = "tongue";
-$emoticon[':P'] = "tongue";
-$emoticon[':-D'] = "grin";
-$emoticon[':D'] = "grin";
-$emoticon[':-S'] = "confused";
-$emoticon[':S'] = "confused";
-$emoticon[':-|'] = "plain";
-$emoticon[':|'] = "plain";
-$emoticon[':-/'] = "unsure";
-$emoticon[':/'] = "unsure";
-$emoticon[':-O'] = "shock";
-$emoticon[':O'] = "shock";
-$emoticon[':-@'] = "angry";
-$emoticon[':@'] = "angry";
-$emoticon[':-$'] = "embarrassed";
-$emoticon[':$'] = "embarrassed";
-$emoticon['(a)'] = "angel";
-$emoticon['(6)'] = "devil";
-$emoticon['B-)'] = "shades";
-$emoticon['B)'] = "shades";
-$emoticon['(h)'] = "shades";
-
-// Peter Boughton's emoticons
-$emoticon[':>'] = "cheeky";
-$emoticon[':->'] = "cheeky";
-$emoticon['}:>'] = "evil_cheeky";
-$emoticon['}:->'] = "evil_cheeky";
-$emoticon[':O)'] = "smile_big_nose";
-$emoticon['>.<'] = "cringe";
-$emoticon['^.^'] = "happy";
-
-
-
-// --------------------------------------
-// End emoticons
-// --------------------------------------
+include_once("./emoticons/emoticon_definitions.inc.php");
 
 krsort($emoticon);
 reset($emoticon);
@@ -186,16 +138,16 @@ function emoticons_set_exists ($set) {
 	return false;
 }
 
-function emoticons_preview ($set, $width=200, $height=100) {
+function emoticons_get_emoticons ($set) {
 	global $emoticon_text;
-	$html = "";
+	$str = "";
 
 	if (emoticons_set_exists($set)) {
 		$path = "./emoticons/$set";
 		$fp = fopen("$path/style.css", "r");
 		$style = fread($fp, filesize("$path/style.css"));
 
-		preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
+		preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']\.?\/?images\/([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 
 		for ($i=0; $i<count($matches[1]); $i++) {
 			if (isset($emoticon_text[$matches[1][$i]])) {
@@ -207,19 +159,43 @@ function emoticons_preview ($set, $width=200, $height=100) {
 
 		array_multisort($emot_match, $emot_text, $emot_image);
 
-		$html.= "<div style=\"width:".$width."px; height:".$height."px\" class=\"emoticon_preview\">";
+		$str.= "['$path/images/'";
 		for ($i=0; $i<count($emot_match); $i++) {
-			$tmp = " ";
-			for ($j=0; $j<count($emot_match[$i]); $j++) {
-				$tmp.= $emot_match[$i][$j]." ";
+			$tmp_t = "";
+			for ($j=1; $j<count($emot_match[$i]); $j++) {
+				$tmp_t.= " ".$emot_match[$i][$j];
 			}
-			$html.= "<a href=\"#\" onclick=\"emoticon('".urlencode($emot_match[$i][0])."');return false;\" target=\"_self\">";
-			$html.= "<img src=\"$path/".$emot_image[$i]."\" title=\"".$tmp."\" border=\"0\" / ></a> ";
+			$tmp_i = str_replace("'", "\\'", $emot_image[$i]);
+			$tmp_ts = str_replace("'", "\\'", $emot_match[$i][0]);
+			$tmp_t = str_replace("'", "\\'", $tmp_t);
+
+			$str.= ",['".$tmp_i."','".$tmp_ts."'";
+			if ($tmp_t != "") {
+				$str.= ",'".$tmp_t."'";
+			}
+			$str.= "]";
 		}
-		$html.= "</div>";
+		$str.= "]";
 	}
 
-	return $html;
+	return $str;
+}
+
+function emoticons_preview ($set, $width=190, $height=100) {
+	$set = emoticons_set_exists($set) ? $set : forum_get_setting('default_emoticons');
+	$str = "";
+
+	if ($set != 'none') {
+		$str.= "<div style=\"width:".$width."px; height:".$height."px; overflow:auto; background-color:#fff; padding:2px\" class=\"emoticon_preview\">\n";
+		$str.= "  <script language=\"Javascript\">\n";
+		$str.= "    <!--\n";
+		$str.= "      document.write(previewEmoticons(".emoticons_get_emoticons($set)."));";
+		$str.= "    //-->\n";
+		$str.= "  </script>\n";
+		$str.= "</div>";
+	}
+
+	return $str;
 }
 
 ?>

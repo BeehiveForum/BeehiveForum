@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.129 2003-09-09 03:51:45 tribalonline Exp $ */
+/* $Id: post.php,v 1.130 2003-09-09 16:42:10 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -360,7 +360,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 $t_content = make_html($t_content);
             }
 
-            if ($t_sig) {
+            if (isset($t_sig) && trim($t_sig) != "") {
 
                 if ($t_sig_html != "Y") $t_sig = make_html($t_sig);
                 $t_content.= "\n<div class=\"sig\">". $t_sig. "</div>";
@@ -493,7 +493,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     }
 
-    if (isset($t_sig)) {
+    if (isset($t_sig) && trim($t_sig) != "") {
 
         if ($t_sig_html != "Y") {
 
@@ -571,7 +571,6 @@ if ($newthread) {
     echo $lang['postreply'];
 }
 echo "</td></tr>\n";
-//echo "<tr><td valign=\"top\" colspan=\"3\"><span style=\"font-size: 4px\">&nbsp;</span></td></tr>\n";
 echo "<tr>\n";
 
 

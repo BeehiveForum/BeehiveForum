@@ -37,6 +37,12 @@ function checkToRadio(num) {
 	document.f_post.to_radio[num].checked=true;
 }
 
+function tools_feedback () {
+	if (document.f_post.t_post_html[0].checked == true) {
+		document.f_post.t_post_html[1].checked = true;
+	}
+}
+
 function activate_tools () {
 	show_hide('toolbar', 'block');
 	document.f_post.t_content.focus();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.74 2004-06-03 16:42:47 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.75 2004-06-13 20:02:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -248,7 +248,7 @@ if ($valid && isset($_POST['preview'])) {
 
         if (strlen(trim($answer_text)) > 0) {
 
-            $answer_tmp = new MessageText($ans_h, $answer_text);
+            $answer_tmp = new MessageText($ans_h, _stripslashes($answer_text));
             $poll_answers_array[$key] = $answer_tmp->getContent();
 
             srand((double)microtime()*1000000);
@@ -343,9 +343,9 @@ if ($valid && isset($_POST['preview'])) {
         $ans_h = 2;
     }
 
-    for ($i = 0; $i < sizeof($_POST['answers']); $i++) {
-        $answers[$i] = new MessageText($ans_h, $_POST['answers'][$i]);
-        $_POST['answers'][$i] = $answers[$i]->getContent();
+    foreach($_POST['answers'] as $key => $poll_answer) {
+        $answers[$key] = new MessageText($ans_h, _stripslashes($poll_answer));
+        $_POST['answers'][$key] = $answers[$key]->getContent();
     }
 
     if ($_POST['polltype'] == 2) {
@@ -546,7 +546,7 @@ for ($i = 0; $i < $answercount; $i++) {
 
         if (isset($pollresults['OPTION_NAME'][$i])) {
 
-	    $pollresults['OPTION_NAME'][$i] = clean_emoticons(_stripslashes($pollresults['OPTION_NAME'][$i]));
+	    $pollresults['OPTION_NAME'][$i] = clean_emoticons($pollresults['OPTION_NAME'][$i]);
 
             if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
 
@@ -706,6 +706,7 @@ echo "</form>\n";
 $threaddata = thread_get($tid);
 
 if ($valid) {
+
     echo "<h2>{$lang['messagepreview']}:</h2>";
     message_display($tid, $polldata, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
 }

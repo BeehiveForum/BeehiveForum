@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.57 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: pm.php,v 1.58 2004-06-13 20:02:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -268,7 +268,7 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid=".$message['MID']."\" target=\"_self\">", _stripslashes($message['SUBJECT']), "</a>";
+        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid=".$message['MID']."\" target=\"_self\">{$message['SUBJECT']}</a>";
 
         if (isset($message['AID'])) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";

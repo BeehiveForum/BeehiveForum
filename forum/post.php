@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.200 2004-06-03 09:02:33 decoyduck Exp $ */
+/* $Id: post.php,v 1.201 2004-06-13 20:02:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -242,7 +242,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim($_POST['t_content']);
+        $t_content = trim(_stripslashes($_POST['t_content']));
 
         if (strlen($t_content) >= 65535) {
             $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
@@ -263,7 +263,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim($_POST['t_sig']);
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
 
         if (strlen($t_sig) >= 65535) {
             $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";

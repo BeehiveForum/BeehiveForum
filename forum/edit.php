@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.130 2004-05-26 11:27:46 decoyduck Exp $ */
+/* $Id: edit.php,v 1.131 2004-06-13 20:02:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -269,7 +269,7 @@ $sig = new MessageText($sig_html);
 
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
 
-	$t_content = $_POST['t_content'];
+	$t_content = trim(_stripslashes($_POST['t_content']));
 
 	if ($post_html && attachment_embed_check($t_content)) {
 		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
@@ -286,7 +286,7 @@ if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
 }
 if (isset($_POST['t_sig']) && trim($_POST['t_sig']) != "") {
 
-	$t_sig = $_POST['t_sig'];
+	$t_sig = trim(_stripslashes($_POST['t_sig']));
 
 	if (attachment_embed_check($t_sig)) {
 		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
@@ -511,23 +511,24 @@ if (isset($_POST['preview'])) {
             }
         }
 
-		$t_content = _htmlentities_decode($t_content);
-		$post_html = 0;
-		$t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
+	$t_content = _htmlentities_decode($t_content);
+	$post_html = 0;
+	$t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
 
-		if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
-			$post_html = 2;
-		} else {
-			$t_content = strip_tags($t_content);
-		}
+	if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
+	    $post_html = 2;
+	} else {
+	    $t_content = strip_tags($t_content);
+	}
 
-		$post = new MessageText($post_html, $t_content);
-		$sig = new MessageText($sig_html, $t_sig);
+	$post = new MessageText($post_html, $t_content);
+	$sig = new MessageText($sig_html, $t_sig);
 
-		$t_content = $post->getContent();
-		$t_sig = $sig->getContent();
+	$t_content = $post->getContent();
+	$t_sig = $sig->getContent();
 
     }else{
+
         $valid = false;
         $error_html = "<h2>{$lang['message']} ". $_GET['msg']. " {$lang['wasnotfound']}</h2>";
     }

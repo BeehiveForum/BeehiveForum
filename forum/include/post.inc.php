@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.80 2004-04-29 14:03:11 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.81 2004-06-13 20:02:10 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -409,7 +409,7 @@ class MessageText {
 
 	function setContent ($text) {
 
-		$text = _stripslashes($text);
+		//$text = _stripslashes($text);
 
 		$this->original_text = $text;
 

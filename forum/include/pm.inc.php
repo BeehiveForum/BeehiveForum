@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.76 2004-05-01 22:23:51 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.77 2004-06-13 20:02:10 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -472,21 +472,27 @@ function draw_pm_message($pm_elements_array)
     echo "          <tr>\n";
 
     if (isset($pm_elements_array['FOLDER']) && $pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
+
         echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
         echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
         echo format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']), "</a>";
         echo "</span></td>\n";
+
     }else {
+
         echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
         echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
         if (is_array($pm_elements_array['TO_UID'])) {
+
             for ($i = 0; $i < sizeof($pm_elements_array['TO_UID']); $i++) {
                 echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
                 echo format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]), "</a>&nbsp;";
             }
+
         }else {
+
             echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
             echo format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']), "</a>";
         }
@@ -497,7 +503,7 @@ function draw_pm_message($pm_elements_array)
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", apply_wordfilter(_stripslashes($pm_elements_array['SUBJECT'])), "</span></td>\n";
+    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", apply_wordfilter($pm_elements_array['SUBJECT']), "</span></td>\n";
     echo "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_elements_array['CREATED']), "&nbsp;</span></td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
@@ -764,8 +770,10 @@ function pm_archive_message($mid)
     // his Sent Items folder.
     // ------------------------------------------------------------
 
-    $sql = "SELECT PM.TYPE FROM {$table_data['PREFIX']}PM PM WHERE PM.MID = '$mid'";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}PM WHERE MID = '$mid'";
+
     $result = db_query($sql, $db_pm_archive_message);
+
     $db_pm_archive_message_row = db_fetch_array($result);
 
     if (($db_pm_archive_message_row['TO_UID'] == $uid) && (($db_pm_archive_message_row['TYPE'] == PM_NEW) || ($db_pm_archive_message_row['TYPE'] == PM_UNREAD))) {

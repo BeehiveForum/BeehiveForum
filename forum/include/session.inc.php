@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.93 2004-04-09 12:42:56 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.94 2004-04-09 12:56:14 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -213,7 +213,7 @@ function bh_session_init($uid)
     $result = db_query($sql, $db_bh_session_init);
 
     $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-    $sql.= "WHERE FID = '{$table_data['FID']}' AND UID = '{$user_sess['UID']}'";
+    $sql.= "WHERE FID = '{$table_data['FID']}' AND UID = '$uid'";
 
     $result = db_query($sql, $db_bh_session_init);
 

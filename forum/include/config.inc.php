@@ -70,7 +70,7 @@ $attachments_enabled = true;
 // i.e. if your beehiveforum is installed in /forum/
 // the attachments path would be /forum/attachments/
 
-$attachment_dir = 'attachments';  
+$attachment_dir = 'attachments';
 
 // ---------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ $attachment_dir = 'attachments';
 
 $guest_account_enabled = true;  // Enable the use of forum guest account
                                 // Requires the creation of a GUEST user
-				                // with the password also set as GUEST.
+				// with the password also set as GUEST.
 
 // ---------------------------------------------------------------------
 

@@ -95,7 +95,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
 
         header("Content-Type: ". $attachmentdetails['MIMETYPE']);
         header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
-        header("Content-disposition:$attachment filename=\"". basename($attachmentdetails['FILENAME']). "\"");
+        header("Content-disposition: filename=\"". basename($attachmentdetails['FILENAME']). "\"");
 
         if ($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.64 2004-01-26 22:26:53 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.65 2004-01-31 21:53:12 decoyduck Exp $ */
 
 // International English language file
 
@@ -312,6 +312,7 @@ $lang['madethreadnonsticky'] = "Made Thread Non-sticky";
 
 $lang['aidnotspecified'] = "AID not specified.";
 $lang['upload'] = "Upload";
+$lang['uploadnewattachment'] = "Upload New Attachment";
 $lang['waitdotdot'] = "wait..";
 $lang['attachmentnospace'] = "Sorry, you do not have enough free attachment space. Please free some space and try again.";
 $lang['successfullyuploaded'] = "Successfully Uploaded";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.19 2004-01-26 22:26:53 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.20 2004-01-31 21:53:12 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -306,6 +306,7 @@ $lang['madethreadnonsticky'] = "Le Fil fait Non-Collant";
 
 $lang['aidnotspecified'] = "AID pas spécifié.";
 $lang['upload'] = "Télécharger";
+$lang['uploadnewattachment'] = "Nouvel Attachement De Téléchargement";
 $lang['waitdotdot'] = "attente..";
 $lang['attachmentnospace'] = "Désolé, vous n'avez pas l'espace assez d'attachement libre. S'il vous plaît libérer quelque espace et essaie encore.";
 $lang['successfullyuploaded'] = "Avec succès Téléchargé";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.20 2004-01-26 22:26:53 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.21 2004-01-31 21:53:12 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -313,6 +313,7 @@ $lang['madethreadnonsticky'] = "Clean that shizit up";
 
 $lang['aidnotspecified'] = "muthafuckin' AID not spizecified.";
 $lang['upload'] = "Uplizoad";
+$lang['uploadnewattachment'] = "Uplizoad New Attachment";
 $lang['waitdotdot'] = "Aight, hold up muthafucka...";
 $lang['attachmentnospace'] = "Fuck that shit, homes. Yo ass needs mo' space fo' fiziles";
 $lang['successfullyuploaded'] = "Hell yeah, that shit gone up good";

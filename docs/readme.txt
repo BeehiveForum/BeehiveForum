@@ -1,4 +1,4 @@
-Beehive Forum ReadMe
+Beehive Forum Readme
 
 Version 0.3 / 11th February 2003
 

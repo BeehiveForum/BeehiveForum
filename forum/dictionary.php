@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.15 2005-02-06 00:38:46 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.16 2005-02-25 14:18:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -144,9 +144,15 @@ if (isset($_POST['current_word']) && is_numeric($_POST['current_word'])) {
     $current_word = -1;
 }
 
+if (isset($_POST['offset_match']) && is_numeric($_POST['offset_match'])) {
+    $offset_match = $_POST['offset_match'];
+}else {
+    $offset_match = 0;
+}
+
 // Intialise the dictionary
 
-$dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_id);
+$dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_id, $offset_match);
 
 // Close the window
 
@@ -227,6 +233,12 @@ if (isset($_POST['ignoreall'])) {
 
     $dictionary->find_next_word();
 
+}elseif (isset($_POST['suggest'])) {
+
+    // Get more suggestions for the current word
+
+    $dictionary->get_more_suggestions();
+
 }else {
 
     // We're moving to the next word;
@@ -243,6 +255,8 @@ if ($dictionary->is_check_complete()) {
     echo "function check_complete() {\n\n";
     echo "    if (window.confirm('{$lang['spellcheckcomplete']}')) {\n";
     echo "        document.dictionary.current_word.value = -1;\n";
+    echo "        document.dictionary.offset_match.value = 0;\n";
+    echo "        document.dictionary.ignored_words.value = '';\n";
     echo "        document.dictionary.submit();\n";
     echo "    }\n";
     echo "}\n\n";
@@ -260,6 +274,7 @@ echo "  ", form_input_hidden('obj_id', _htmlentities($dictionary->get_obj_id()))
 echo "  ", form_input_hidden('ignored_words', _htmlentities($dictionary->get_ignored_words())), "\n";
 echo "  ", form_input_hidden('content', _htmlentities($dictionary->get_content())), "\n";
 echo "  ", form_input_hidden('current_word', _htmlentities($dictionary->get_current_word_index())), "\n";
+echo "  ", form_input_hidden('offset_match', _htmlentities($dictionary->get_offset_match())), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -328,6 +343,9 @@ echo "                        <td align=\"right\">", form_submit("changeall", $l
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"right\">", form_submit("add", $lang['add'], false, "dictionary_button"), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"right\">", form_submit("suggest", $lang['suggest'], false, "dictionary_button"), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

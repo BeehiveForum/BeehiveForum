@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.125 2003-09-03 17:20:27 decoyduck Exp $ */
+/* $Id: post.php,v 1.126 2003-09-04 15:53:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -111,10 +111,10 @@ if (isset($HTTP_POST_VARS['to_radio'])) {
 
         $t_to_uid_others = $HTTP_POST_VARS['t_to_uid_others'];
 
-        if ($touser = user_get_uid($t_to_uid_others)) {
+        if ($to_user = user_get_uid($t_to_uid_others)) {
 
-            $HTTP_POST_VARS['t_to_uid'] = $touser;
-            $t_to_uid = $touser;
+            $HTTP_POST_VARS['t_to_uid'] = $to_user['UID'];
+            $t_to_uid = $to_user['UID'];
 
         }else{
 

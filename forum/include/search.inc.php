@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.34 2003-08-30 16:46:03 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.35 2003-09-04 15:53:43 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -66,8 +66,8 @@ function search_execute($argarray, &$urlquery, &$error)
         $fromtouser = "AND POST.TO_UID = ". $argarray['to_uid'];
     }elseif (!empty($argarray['to_other'])) {
         $touid = user_get_uid($argarray['to_other']);
-        if ($touid > -1) {
-            $fromtouser = "AND POST.TO_UID = ". $touid;
+        if ($touid['UID'] > -1) {
+            $fromtouser = "AND POST.TO_UID = ". $touid['UID'];
         }else {
             $error = SEARCH_USER_NOT_FOUND;
             return false;
@@ -78,8 +78,8 @@ function search_execute($argarray, &$urlquery, &$error)
         $fromtouser.= " AND POST.FROM_UID = ". $argarray['from_uid'];
     }elseif (!empty($argarray['from_other'])) {
         $fromuid = user_get_uid($argarray['from_other']);
-        if ($fromuid > -1) {
-            $fromtouser.= " AND POST.FROM_UID = ". $fromuid;
+        if ($fromuid['UID'] > -1) {
+            $fromtouser.= " AND POST.FROM_UID = ". $fromuid['UID'];
         }else {
             $error = SEARCH_USER_NOT_FOUND;
             return false;

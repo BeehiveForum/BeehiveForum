@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.92 2003-09-04 14:39:45 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.93 2003-09-04 15:53:43 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -263,14 +263,13 @@ function user_get_uid($logon)
 
     $db_user_get_uid = db_connect();
 
-    $sql = "SELECT UID FROM ". forum_table("USER"). " WHERE LOGON = '$logon'";
+    $sql = "SELECT UID, LOGON, NICKNAME FROM ". forum_table("USER"). " WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
 
     if (!db_num_rows($result)) {
         return false;
     }else{
-        $fa = db_fetch_array($result);
-        return $fa['UID'];
+        return db_fetch_array($result);
     }
 
 }

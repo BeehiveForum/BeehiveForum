@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.34 2003-09-02 19:40:42 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.35 2003-09-04 15:53:43 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
@@ -31,14 +31,13 @@ require_once("./include/lang.inc.php");
 // create a <input type="text"> field
 function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text", $custom_html = "")
 {
-
     global $lang;
 
     $html = trim("<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" $custom_html");
     $html.= " value=\"$value\"";
 
-    if($width) $html.= " size=\"$width\"";
-    if($maxchars) $html.= " maxlength=\"$maxchars\"";
+    if ($width) $html.= " size=\"$width\"";
+    if ($maxchars) $html.= " maxlength=\"$maxchars\"";
 
     $html.= " dir=\"". $lang['_textdir']. "\"";
 

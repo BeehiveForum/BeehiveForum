@@ -20,22 +20,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.75 2004-04-26 11:21:12 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.76 2004-05-02 16:16:58 tribalonline Exp $ */
 
 include_once("./include/emoticons.inc.php");
 include_once("./include/html.inc.php");
+
+$fix_html_code_text = 'code:';
+$fix_html_quote_text = 'quote:';
 
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
 
 // "$bad_tags" is an array of tags to be filtered
-function pr($t) {
-	echo "<pre>";
-	print_r($t);
-	echo "</pre>";
-}
-function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
+
+function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
 {
+
+	global $fix_html_code_text;
+	global $fix_html_quote_text;
 
 	$ret_text = '';
 
@@ -98,7 +100,7 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 							array_splice($html_parts, $i+1, 0, array("", "/pre"));
 							$i += 2;
 						}
-						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "code:", "/b", "", "/div", ""));
+						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", $fix_html_code_text, "/b", "", "/div", ""));
 						$i += 8;
 
 					} else if ($tag == "quote" && $close == true) {
@@ -157,11 +159,11 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 								$source_name = $url_name;
 							}
 							$html_parts[$i] = "div class=\"quote\"";
-							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
+							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "$fix_html_quote_text ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
 							$i += 12;
 						} else {
 							$html_parts[$i] = "div class=\"quote\"";
-							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", $source_name, "/div", ""));
+							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "$fix_html_quote_text ", "/b", $source_name, "/div", ""));
 							$i += 8;
 						}
 					}
@@ -285,13 +287,18 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 
 					} else if(!in_array($tag, $single_tags)){
 						if(in_array($tag, array_keys($nest))) {
-							$tmptmptmp = 0;
-							if (in_array($nest[$tag][0], array_keys($opentags))) {
-								if ($opentags[$nest[$tag][0]] == 0) {
+							for ($nc=0; $nc<count($nest[$tag]); $nc++) {
+								if (in_array($nest[$tag][$nc], array_keys($opentags))) {
+									if ($opentags[$nest[$tag][$nc]] == 0) {
+										$tmptmptmp = 1;
+									} else {
+										$tmptmptmp = 0;
+										break;
+									}
+
+								} else {
 									$tmptmptmp = 1;
 								}
-							} else {
-								$tmptmptmp = 1;
 							}
 
 							if ($tmptmptmp == 1) {
@@ -438,7 +445,7 @@ function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "appl
 }
 
 // $tag being everything with the < and >, e.g. $tag = 'a href="file.html"';
-function clean_attributes($tag)
+function clean_attributes ($tag)
 {
 	$valid = array();
 	$valid["_global"] = array("style", "align", "class", "id", "title", "dir", "lang", "accesskey", "tabindex");
@@ -572,7 +579,8 @@ function clean_attributes($tag)
 	return $new_tag;
 }
 
-function tidy_html ($html, $linebreaks = true) {
+function tidy_html ($html, $linebreaks = true)
+{
 	// turn <br /> and <p>...</p> back into linebreaks
 	// only if auto-linebreaks is enabled
 	if ($linebreaks == true) {
@@ -581,14 +589,17 @@ function tidy_html ($html, $linebreaks = true) {
 		$html = preg_replace("/<\/p( [^>]*)?>/i", "\n\n", $html);
 	}
 
+	// make <code>..</code> tag, and html_entity_decode
+	$html = preg_replace_callback("/<div class=\"quotetext\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/i", "tidy_html_callback", $html);
+
 	// make <quote source=".." url="..">..</quote> tag
 	$html_left = "";
 	$html_right = $html;
-	while (($pos = strpos($html_right, "<div class=\"quotetext\"><b>quote: </b>")) > -1) {
+	while (($pos = strpos($html_right, "<div class=\"quotetext\"><b>")) > -1) {
 		$html_left .= substr($html_right, 0, $pos);
 		$matches = array();
 
-		if (preg_match("/^<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is",
+		if (preg_match("/^<div class=\"quotetext\"><b>.*?<\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is",
 						substr($html_right, $pos), $matches)) {
 			$html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
 
@@ -630,35 +641,30 @@ function tidy_html ($html, $linebreaks = true) {
 //						"<quote source=\"$3\" url=\"$2\">$4</quote>", $html);
 
 
-	// make <code>..</code> tag, and html_entity_decode
-	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/ie", "regex_output('$1')", $html);
-
-
 	// convert smileys back to plain text
 	$html = clean_emoticons($html);
 
 	return $html;
 }
 
-function regex_output($text) {
-    $text = _htmlentities_decode($text);
-    // accounts for stripslashes 'bug' when using /e modifier
-    // see comments at:
-    // http://uk2.php.net/manual/en/function.preg-replace.php
-    $text = str_replace('\"', '"', $text);
-    return "<code>$text</code>";
+function tidy_html_callback ($matches)
+{
+    return "<code>"._htmlentities_decode($matches[1])."</code>";
 }
 
-function clean_emoticons($html) {
+function clean_emoticons($html)
+{
 	return preg_replace("/<span class=\"e_[^>]*\" title=\"[^>]*\"><span>([^<]*)<\/span><\/span>/i", "$1", $html);
 }
 
-function clean_styles ($style) {
+function clean_styles ($style)
+{
 	$style = preg_replace("/position\s*:\s*absolute\s*;?/", "", $style);
 	return $style;
 }
 
-function add_paragraphs ($html, $base = true, $br_only = true) {
+function add_paragraphs ($html, $base = true, $br_only = true)
+{
 	$html = str_replace("\r", "", $html);
 
 	$tags = array("table", "div", "pre", "ul", "ol", "object", "font");
@@ -876,7 +882,7 @@ function add_paragraphs ($html, $base = true, $br_only = true) {
 	return $return;
 }
 
-function make_html($html, $br_only = false)
+function make_html ($html, $br_only = false)
 {
     $html = _htmlentities($html);
     $html = format_url2link($html);
@@ -890,15 +896,6 @@ function make_html($html, $br_only = false)
     $html = add_paragraphs($html, true, $br_only);
 
     return $html;
-}
-
-// $text to be filtered
-// $regex expression, e.g. "(word1|word2)", to be unimaginative
-// $join is the replacement text, e.g. "<font color=\"white\">\\0</font>"
-function preg_filter($text, $regex, $join)
-{
-	$ret_text = preg_replace("/".$regex."/i", $join, $text);
-	return $ret_text;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.9 2004-12-12 12:40:28 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.10 2004-12-18 19:36:53 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -294,6 +294,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  TITLE varchar(64) DEFAULT NULL,";
         $sql.= "  LENGTH mediumint(8) unsigned DEFAULT NULL,";
         $sql.= "  POLL_FLAG char(1) DEFAULT NULL,";
+        $sql.= "  CREATED datetime DEFAULT NULL,";
         $sql.= "  MODIFIED datetime DEFAULT NULL,";
         $sql.= "  CLOSED datetime DEFAULT NULL,";
         $sql.= "  STICKY char(1) DEFAULT NULL,";
@@ -311,13 +312,15 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "INSERT INTO {$forum_webtag}_THREAD_NEW (TID, FID, BY_UID, TITLE, LENGTH, ";
-        $sql.= "POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-        $sql.= "SELECT THREAD.TID, THREAD.FID, POST.FROM_UID, THREAD.TITLE, ";
-        $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.MODIFIED, THREAD.CLOSED, ";
-        $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, NULL ";
-        $sql.= "FROM {$forum_webtag}_THREAD THREAD LEFT JOIN {$forum_webtag}_POST POST ";
-        $sql.= "ON (POST.TID = THREAD.TID AND POST.PID = 1)";
+        $sql = "INSERT INTO {$forum_webtag}_THREAD_NEW (TID, FID, ";
+        $sql.= "BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, ";
+        $sql.= "CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) SELECT THREAD.TID, ";
+        $sql.= "THREAD.FID, POST.FROM_UID, THREAD.TITLE, THREAD.LENGTH, ";
+        $sql.= "THREAD.POLL_FLAG, POST.CREATED, THREAD.MODIFIED, ";
+        $sql.= "THREAD.CLOSED, THREAD.STICKY, THREAD.STICKY_UNTIL, ";
+        $sql.= "THREAD.ADMIN_LOCK FROM {$forum_webtag}_THREAD THREAD ";
+        $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON ";
+        $sql.= "(POST.TID = THREAD.TID AND POST.PID = 1)";
 
         if (!$result = db_query($sql, $db_install)) {
 

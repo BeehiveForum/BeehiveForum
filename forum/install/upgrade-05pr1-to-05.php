@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.10 2004-12-12 12:40:28 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.11 2004-12-18 19:36:53 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -248,6 +248,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  TITLE varchar(64) default NULL,";
     $sql.= "  LENGTH mediumint(8) unsigned default NULL,";
     $sql.= "  POLL_FLAG char(1) default NULL,";
+    $sql.= "  CREATED datetime DEFAULT NULL,";
     $sql.= "  MODIFIED datetime default NULL,";
     $sql.= "  CLOSED datetime default NULL,";
     $sql.= "  STICKY char(1) default NULL,";
@@ -269,12 +270,12 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // of the POST table as the BY_UID column.
 
     $sql = "INSERT INTO {$forum_webtag}_THREAD_NEW (TID, FID, ";
-    $sql.= "BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, ";
-    $sql.= "STICKY, STICKY_UNTIL, ADMIN_LOCK) SELECT THREAD.TID, ";
+    $sql.= "BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, ";
+    $sql.= "CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) SELECT THREAD.TID, ";
     $sql.= "THREAD.FID, POST.FROM_UID, THREAD.TITLE, THREAD.LENGTH, ";
-    $sql.= "THREAD.POLL_FLAG, THREAD.MODIFIED, THREAD.CLOSED, ";
-    $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK ";
-    $sql.= "FROM {$forum_webtag}_THREAD THREAD ";
+    $sql.= "THREAD.POLL_FLAG, POST.CREATED, THREAD.MODIFIED, ";
+    $sql.= "THREAD.CLOSED, THREAD.STICKY, THREAD.STICKY_UNTIL, ";
+    $sql.= "THREAD.ADMIN_LOCK FROM {$forum_webtag}_THREAD THREAD ";
     $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON ";
     $sql.= "(POST.TID = THREAD.TID AND POST.PID = 1)";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.99 2004-12-11 14:37:29 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.100 2004-12-18 19:36:51 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -124,8 +124,8 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     if (!$table_data = get_table_prefix()) return -1;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}THREAD " ;
-    $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, MODIFIED, CLOSED) ";
-    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', NOW(), $closed)";
+    $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, STICKY, CREATED, MODIFIED, CLOSED) ";
+    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', '$sticky', NOW(), NOW(), $closed)";
 
     $result = db_query($sql, $db_post_create_thread);
 

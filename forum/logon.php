@@ -145,7 +145,9 @@ echo "</form></div>\n";
 echo "<div align=\"center\">\n";
 echo "<p class=\"smalltext\">\nDon't have an account? ";
 echo "<a href=\"register.php?final_uri=" . urlencode($final_uri);
-echo "\" target=\"_self\">Register now.</a></p>";
+echo "\" target=\"_self\">Register now.</a></p>\n";
+echo "<p class=\"smalltext\">";
+echo "<a href=\"forgot_pw.php\" target=\"_self\">Forgotten your password?</a></p>\n";
 echo "</div>\n";
 
 html_draw_bottom();

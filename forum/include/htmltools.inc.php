@@ -91,6 +91,7 @@ class TextAreaHTML {
         $str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);");
         $str.= $this->_tb_img($lang['image'], "add_image();");
         $str.= $this->_tb_img($lang['hyperlink'], "add_link();");
+        $str.= $this->_tb_img($lang['spellcheck'], "openSpellCheck('$webtag');");
         $str.= $this->_tb_img($lang['noemoticons'], "add_tag('noemots', null, null, true);");
 
         if ($emoticons == true) {

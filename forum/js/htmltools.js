@@ -625,20 +625,21 @@ function add_image () {
 	return;
 }
 
+// Spell-check popup
+function openSpellCheck(webtag) {
+    window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + active_field.id + '&content=' + _escape(active_field.value), 'spellcheck','width=450, height=550, scrollbars=1');
+}
+
 // Emoticon preview popup
 function openEmoticons(pack, webtag) {
 	window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons','width=500, height=400, scrollbars=1');
-}
-
-function emoticon(val) {
-	add_text(unescape(val));
 }
 
 // Used in auto-list-thing
 function parse_list (a, num) {
 	var nl = a.split(/[\n\r]+/);
 	var ab = "abcdefghijklmnopqrstuvwxyz";
-	var funcs = ["parseInt", "alpha", "roman"];
+	var funcs = ["parseInt", "pl_alpha", "pl_roman"];
 
 	var re = new RegExp("^[^0-9a-z]*([0-9]+|[a-z]+)([^0-9a-z])[ ]*", "i");
 	var result = re.exec(nl[0]);
@@ -658,7 +659,7 @@ function parse_list (a, num) {
 				}
 				
 				if (n.length == 1) {
-					if (roman(re.exec(nl[1])[1]) == roman(n) + 1) {
+					if (pl_roman(re.exec(nl[1])[1]) == pl_roman(n) + 1) {
 						type = 2;
 					} else {
 						type = 1;
@@ -720,7 +721,7 @@ function parse_list (a, num) {
 
 	return str;
 }
-function roman (b) {
+function pl_roman (b) {
 	var a = b.toLowerCase();
 
 	var numerals = new Array();
@@ -747,9 +748,19 @@ function roman (b) {
 	}
 	return n;
 }
-function alpha (b) {
+function pl_alpha (b) {
 	var ab = "abcdefghijklmnopqrstuvwxyz";
 	return (ab.indexOf(b.toLowerCase()) + 1);
+}
+
+function _escape(a) {
+	a = escape(a);
+	a = a.replace(/\//g,"%2F");
+	a = a.replace(/\?/g,"%3F");
+	a = a.replace(/=/g,"%3D");
+	a = a.replace(/&/g,"%26");
+	a = a.replace(/@/g,"%40");
+	return a;
 }
 // ------------------------------------
 

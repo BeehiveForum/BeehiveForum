@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.22 2003-11-17 16:01:42 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.23 2003-11-27 16:06:39 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -80,7 +80,7 @@ if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
 
 if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
     $aid = $HTTP_GET_VARS['aid'];
-}elseif (isset($HTTP_POST_VARS['aid'])) {
+}elseif (isset($HTTP_POST_VARS['aid']) && is_md5($HTTP_POST_VARS['aid'])) {
     $aid = $HTTP_POST_VARS['aid'];
 }
 
@@ -164,9 +164,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "\">";
 
       if (strlen($attachments[$i]['filename']) > 16) {
-        echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+          echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
       }else{
-        echo $attachments[$i]['filename']. "</a></td>\n";
+          echo $attachments[$i]['filename']. "</a></td>\n";
+      }
+
+      if (!isset($aid)) {
+          echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
       }
 
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";

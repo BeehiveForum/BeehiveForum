@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.29 2003-11-27 12:00:31 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.30 2003-11-27 16:06:39 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -54,7 +54,10 @@ function get_attachments($uid, $aid)
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
                                        "downloads" => $row['DOWNLOADS']);
-        }
+        }else {
+
+	    delete_attachment($uid, $row['AID'], $row['FILENAME']);
+	}
     }
 
     return $userattachments;
@@ -86,7 +89,10 @@ function get_all_attachments($uid, $aid)
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
                                        "downloads" => $row['DOWNLOADS']);
-        }
+        }else {
+
+	    delete_attachment($uid, $row['AID'], $row['FILENAME']);
+	}
     }
 
     return $userattachments;
@@ -102,17 +108,11 @@ function get_users_attachments($uid)
 
     $uid = addslashes($uid);
 
-    $sql = "SELECT PAI.TID, PAI.PID, PAF.AID, PAF.FILENAME, PAF.MIMETYPE, ";
-    $sql.= "PAF.HASH, PAF.DOWNLOADS, PMI.MID, PMI.AID FROM ";
-    $sql.= forum_table("POST_ATTACHMENT_FILES"). " PAF ";
-    $sql.= "LEFT JOIN ". forum_table("POST_ATTACHMENT_IDS"). " PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " PMI ON (PMI.AID = PAF.AID) ";
-    $sql.= "WHERE PAF.UID = '$uid'";
-
+    $sql = "SELECT * FROM ". forum_table("POST_ATTACHMENT_FILES"). " WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);
 
     while($row = db_fetch_array($result)) {
-
+        
         if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
 
             if (!is_array($userattachments)) $userattachments = array();
@@ -123,7 +123,10 @@ function get_users_attachments($uid)
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
                                        "downloads" => $row['DOWNLOADS']);
-        }
+        }else {
+
+	    delete_attachment($uid, $row['AID'], $row['FILENAME']);
+	}
     }
 
     return $userattachments;
@@ -164,7 +167,7 @@ function delete_attachment($uid, $aid, $filename)
 
     $result = db_query($sql, $db_delete_attachment);
 
-    if (db_affected_row($result) > 0) {
+    if (db_affected_rows($db_delete_attachment) > 0) {
 
         $sql = "SELECT * FROM ". forum_table("POST_ATTACHMENT_FILES"). " WHERE AID = '$aid'";
         $result = db_query($sql, $db_delete_attachment);
@@ -202,7 +205,9 @@ function get_free_attachment_space($uid)
 
         if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
             $used_attachment_space += filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])));
-        }
+        }else {
+	    delete_attachment($uid, $row['AID'], $row['FILENAME']);
+	}
     }
 
     return MAX_ATTACHMENT_SIZE - $used_attachment_space;

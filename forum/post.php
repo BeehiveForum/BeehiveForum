@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.243 2005-03-14 13:27:21 decoyduck Exp $ */
+/* $Id: post.php,v 1.244 2005-03-18 23:58:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -578,7 +578,14 @@ if ($valid && isset($_POST['submit'])) {
 
             }
 
-            $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
+            if ($newthread) {
+
+                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+
+            }else {
+
+                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+            }
 
             if ($high_interest) thread_set_high_interest($t_tid, 1, $newthread);
 

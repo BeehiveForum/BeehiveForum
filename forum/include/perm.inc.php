@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.62 2005-03-09 23:37:41 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.63 2005-03-18 23:58:40 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -380,10 +380,11 @@ function perm_is_group($gid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM GROUPS WHERE GID = '$gid' AND AUTO_GROUP = 0";
+    $sql = "SELECT COUNT(*) FROM GROUPS WHERE GID = '$gid' AND AUTO_GROUP = 0";
     $result = db_query($sql, $db_perm_is_group);
 
-    return (db_num_rows($result) > 0);
+    list($group_count) = db_fetch_array($result, DB_RESULT_NUM);
+    return ($group_count > 0);
 }
 
 function perm_user_in_group($uid, $gid)
@@ -395,12 +396,11 @@ function perm_user_in_group($uid, $gid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM GROUP_USERS ";
-    $sql.= "WHERE UID = '$uid' AND GID = '$gid'";
-
+    $sql = "SELECT COUNT(*) FROM GROUP_USERS WHERE UID = '$uid' AND GID = '$gid'";
     $result = db_query($sql, $db_perm_user_in_group);
 
-    return (db_num_rows($result) > 0);
+    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    return ($user_count > 0);
 }
 
 function perm_get_global_permissions()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.39 2005-03-15 21:29:47 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.40 2005-03-18 23:58:40 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
@@ -46,7 +46,10 @@ function bh_check_gzip()
     // browsers that aren't coming via a proxy server.
 
     if (isset($_SERVER['HTTP_VIA'])) return false;
-    if (strpos($_SERVER['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
+
+    if (isset($_SERVER['SERVER_PROTOCOL'])) {
+        if (strpos($_SERVER['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
+    }
 
     // determine which gzip encoding the client asked for
     // (x-gzip = IE; gzip = everything else).

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.106 2005-03-14 13:27:22 decoyduck Exp $ */
+/* $Id: search.php,v 1.107 2005-03-18 23:58:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -103,15 +103,6 @@ if (!$folder_dropdown = folder_search_dropdown()) {
     exit;
 }
 
-if (!$forum_dropdown = forum_search_dropdown()) {
-
-    html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['couldnotretrieveforuminformation']}</h2>\n";
-    html_draw_bottom();
-    exit;
-}
-
 html_draw_top("robots=noindex,nofollow");
 
 if (isset($_POST['search_string'])) {
@@ -189,10 +180,6 @@ if (isset($_POST['search_string'])) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_radio("user_include", 4, $lang['poststoandfrommeonly'], false), "&nbsp;", "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
@@ -217,10 +204,6 @@ if (isset($_POST['search_string'])) {
     echo "                  <td colspan=\"2\" class=\"subhead\">&nbsp;{$lang['additionalcriteria']}:</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"40%\">&nbsp;{$lang['forumbrackets_s']}:</td>\n";
-    echo "                  <td>", $forum_dropdown, "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
     echo "                  <td width=\"40%\">&nbsp;{$lang['folderbrackets_s']}:</td>\n";
     echo "                  <td>", $folder_dropdown, "&nbsp;</td>\n";
     echo "                </tr>\n";
@@ -234,7 +217,7 @@ if (isset($_POST['search_string'])) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['orderby']}:</td>\n";
-    echo "                  <td>", form_dropdown_array("order_by", range(1, 3), array($lang['relevance'], $lang['newestfirst'], $lang['oldestfirst']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                  <td>", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['groupbythread']}:</td>\n";

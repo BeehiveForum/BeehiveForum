@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.112 2005-03-15 21:30:05 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.113 2005-03-18 23:58:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 
-function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
+function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content)
 {
     $db_post_create = db_connect();
 
@@ -77,7 +77,7 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
 
             $result = db_query($sql, $db_post_create);
 
-            search_index_post($tid, $new_pid, $post_content);
+            search_index_post($fid, $tid, $new_pid, $by_uid, $fuid, $tuid, $post_content);
 
         }else {
 

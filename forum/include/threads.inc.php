@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.165 2005-03-15 21:30:07 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.166 2005-03-18 23:58:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -804,19 +804,22 @@ function threads_get_folder_msgs()
 
 function threads_any_unread()
 {
+    $db_threads_any_unread = db_connect();
+
     $uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}THREAD T LEFT JOIN {$table_data['PREFIX']}USER_THREAD UT ";
+    $sql = "SELECT COUNT(*) FROM {$table_data['PREFIX']}THREAD T ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD UT ";
     $sql.= "ON (T.TID = UT.TID AND UT.UID = '$uid') ";
     $sql.= "WHERE T.LENGTH > UT.LAST_READ ";
     $sql.= "LIMIT 0,1";
 
-    $db_threads_any_unread = db_connect();
     $result = db_query($sql, $db_threads_any_unread);
 
-    return (db_num_rows($result) > 0);
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    return ($thread_count > 0);
 }
 
 function threads_mark_all_read()

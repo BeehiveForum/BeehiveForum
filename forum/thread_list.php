@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.186 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.187 2004-04-04 08:37:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -94,26 +94,26 @@ $user_wordfilter = load_wordfilter();
 // Check that required variables are set
 if (bh_session_get_value('UID') == 0) {
 
-    $user = 0; // default to UID 0 if no other UID specified
+    $uid = 0; // default to UID 0 if no other UID specified
 
-    if (!isset($HTTP_GET_VARS['mode'])) {
-        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
-            $mode = 0;
-        }else{
-            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
-        }
-    } else {
+    if (isset($HTTP_GET_VARS['mode']) && is_numeric($HTTP_GET_VARS['mode'])) {
         // non-logged in users can only display "All" threads or those in the past x days, since the other options would be impossible
         if ($HTTP_GET_VARS['mode'] == 0 || $HTTP_GET_VARS['mode'] == 3 || $HTTP_GET_VARS['mode'] == 4 || $HTTP_GET_VARS['mode'] == 5) {
             $mode = $HTTP_GET_VARS['mode'];
-        } else {
+        }else {
+            $mode = 0;
+        }
+    }else {
+        if (isset($HTTP_COOKIE_VARS['bh_thread_mode']) && is_numeric($HTTP_COOKIE_VARS['bh_thread_mode']) && !isset($HTTP_GET_VARS['msg'])) {
+            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        }else{
             $mode = 0;
         }
     }
 
-} else {
+}else {
 
-    $user = bh_session_get_value('UID');
+    $uid = bh_session_get_value('UID');
 
     if (isset($HTTP_GET_VARS['markread'])) {
        
@@ -126,18 +126,18 @@ if (bh_session_get_value('UID') == 0) {
         }
     }
 
-    if (!isset($HTTP_GET_VARS['mode'])) {
-        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
+    if (isset($HTTP_GET_VARS['mode']) && is_numeric($HTTP_GET_VARS['mode'])) {
+        $mode = $HTTP_GET_VARS['mode'];
+    }else {
+        if (isset($HTTP_COOKIE_VARS['bh_thread_mode']) && is_numeric($HTTP_COOKIE_VARS['bh_thread_mode']) && !isset($HTTP_GET_VARS['msg'])) {
+            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        }else{
             if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
                 $mode = 1;
-            } else {
+            }else {
                 $mode = 0;
             }
-        }else {
-            $mode = (is_numeric($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
         }
-    } else {
-        $mode = (is_numeric($HTTP_GET_VARS['mode'])) ? $HTTP_GET_VARS['mode'] : 0;
     }
 }
 
@@ -216,57 +216,60 @@ echo "  </tr>\n";
 // The tricky bit - displaying the right threads for whatever mode is selected
 
 if (isset($folder)) {
-    list($thread_info, $folder_order) = threads_get_folder($user, $folder, $start_from);
+    list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
 } else {
     switch ($mode) {
         case 0: // All discussions
-            list($thread_info, $folder_order) = threads_get_all($user, $start_from);
+            list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
             break;
         case 1; // Unread discussions
-            list($thread_info, $folder_order) = threads_get_unread($user);
+            list($thread_info, $folder_order) = threads_get_unread($uid);
             break;
         case 2; // Unread discussions To: Me
-            list($thread_info, $folder_order) = threads_get_unread_to_me($user);
+            list($thread_info, $folder_order) = threads_get_unread_to_me($uid);
             break;
         case 3; // Today's discussions
-            list($thread_info, $folder_order) = threads_get_by_days($user, 1);
+            list($thread_info, $folder_order) = threads_get_by_days($uid, 1);
             break;
         case 4; // 2 days back
-            list($thread_info, $folder_order) = threads_get_by_days($user, 2);
+            list($thread_info, $folder_order) = threads_get_by_days($uid, 2);
             break;
         case 5; // 7 days back
-            list($thread_info, $folder_order) = threads_get_by_days($user, 7);
+            list($thread_info, $folder_order) = threads_get_by_days($uid, 7);
             break;
         case 6; // High interest
-            list($thread_info, $folder_order) = threads_get_by_interest($user, 1);
+            list($thread_info, $folder_order) = threads_get_by_interest($uid, 1);
             break;
         case 7; // Unread high interest
-            list($thread_info, $folder_order) = threads_get_unread_by_interest($user, 1);
+            list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, 1);
             break;
         case 8; // Recently seen
-            list($thread_info, $folder_order) = threads_get_recently_viewed($user);
+            list($thread_info, $folder_order) = threads_get_recently_viewed($uid);
             break;
         case 9; // Ignored
-            list($thread_info, $folder_order) = threads_get_by_interest($user, -1);
+            list($thread_info, $folder_order) = threads_get_by_interest($uid, -1);
             break;
         case 10; // Subscribed to
-            list($thread_info, $folder_order) = threads_get_by_interest($user, 2);
+            list($thread_info, $folder_order) = threads_get_by_interest($uid, 2);
             break;
         case 11: // Started by friend
-            list($thread_info, $folder_order) = threads_get_by_relationship($user, USER_FRIEND);
+            list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_FRIEND);
             break;
         case 12: // Unread started by friend
-            list($thread_info, $folder_order) = threads_get_unread_by_relationship($user, USER_FRIEND);
+            list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, USER_FRIEND);
             break;
         case 13: // Polls
-            list($thread_info, $folder_order) = threads_get_polls($user);
+            list($thread_info, $folder_order) = threads_get_polls($uid);
             break;
         case 14: // Sticky threads
-            list($thread_info, $folder_order) = threads_get_sticky($user);
+            list($thread_info, $folder_order) = threads_get_sticky($uid);
             break;
         case 15: // Most unread posts
-            list($thread_info, $folder_order) = threads_get_longest_unread($user);
+            list($thread_info, $folder_order) = threads_get_longest_unread($uid);
             break;
+	default: // Default to all threads
+	    list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
+	    break;
     }
 }
 

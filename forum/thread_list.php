@@ -144,6 +144,7 @@ while (list($key1, $folder) = each($folder_order)) {
 				echo "</p>\n";
 			}
 		}
+		
 	}else{
 		echo "<tr>\n";
 		echo "<td class=\"threads\">\n";
@@ -153,7 +154,7 @@ while (list($key1, $folder) = each($folder_order)) {
 		echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
 	}
 	echo "</td></tr>\n";
-	if (is_array($thread_info)) reset($thread_info);
+	$thread_info = "";
 }
 
 echo "</table>";

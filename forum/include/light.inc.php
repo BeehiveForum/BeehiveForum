@@ -23,6 +23,8 @@ USA
 
 // Functions for the very stripped-down "light" version of Beehive
 
+define("BEEHIVEMODE_LIGHT", true);
+
 function light_html_draw_top ($title = false)
 {
 
@@ -318,7 +320,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 
-    echo "<p><b>From: " . format_user_name($message['FLOGON'], $message['FNICK'])."</b>";
+    echo "<p><b>From: " . format_user_name($message['FLOGON'], $message['FNICK'])."</b><br />";
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
@@ -353,7 +355,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
             echo "&nbsp;(Ignored user)";
         }
 
-        if($message['VIEWED'] > 0) {
+        if(isset($message['VIEWED']) && $message['VIEWED'] > 0) {
             echo "&nbsp;".format_time($message['VIEWED'], 1);
         } else {
             echo "&nbsp;unread";
@@ -364,8 +366,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     echo "</p>\n";
 
-
-    if(!$in_list) echo "<p><i>Message ".$message['PID'] . " of " . $msg_count."</i></p>\n";
+    if (!$in_list && isset($message['PID'])) echo "<p><i>Message ".$message['PID'] . " of " . $msg_count."</i></p>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
             $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
@@ -458,13 +459,16 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
         $html .= " <a href=\"lmessages.php?msg=$tid.1\">All</a>\n";
     }
 
-    for($i=0;$i<=$max;$i++){
-        // Only display first, last and those within 3 of the current section
-        //echo "$i : $max\n";
-        if((abs($c - $i) < 4) || $i == 0 || $i == $max){
-            $html .= "\n&nbsp;" . $navbits[$i];
-        } else if(abs($c - $i) == 4){
-            $html .= "\n&nbsp;...";
+    for($i=0;$i<=$max;$i++) {
+
+        if (isset($navbits[$i])) {
+
+            if((abs($c - $i) < 4) || $i == 0 || $i == $max){
+                $html .= "\n&nbsp;" . $navbits[$i];
+            } else if(abs($c - $i) == 4){
+                $html .= "\n&nbsp;...";
+            }
+
         }
     }
 

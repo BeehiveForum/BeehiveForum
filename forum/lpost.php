@@ -72,9 +72,11 @@ $valid = true;
 
 $newthread = false;
 
-$t_post_html = @$HTTP_POST_VARS['t_post_html'];
+if (isset($HTTP_POST_VARS['t_post_html'])) {
+    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+}
 
-if(substr(@$HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
+if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
 
   $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
 
@@ -149,7 +151,7 @@ if(isset($HTTP_POST_VARS['t_newthread'])) {
 
 if($valid) {
 
-    if($t_post_html == "Y") {
+    if (isset($t_post_html) && $t_post_html == "Y") {
         $t_content = fix_html($t_content);
     }
 
@@ -161,7 +163,7 @@ if($valid) {
 
 }else {
 
-    if($t_post_html == "Y") {
+    if(isset($t_post_html) && $t_post_html == "Y") {
         $t_content = _stripslashes($t_content);
     }
 
@@ -211,12 +213,12 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if($t_tid > 0) {
 
-            if($t_post_html != "Y") $t_content = make_html($t_content);
+            if(isset($t_post_html) && $t_post_html != "Y") $t_content = make_html($t_content);
 
             if($t_sig) {
 
                 if($t_sig_html != "Y") $t_sig = make_html($t_sig);
-                $t_content .= "\n<div class=\"sig\">". $t_sig. "</div>";
+                $t_content = _stripslashes($t_content. "\n<div class=\"sig\">". $t_sig. "</div>");
 
             }
 
@@ -246,8 +248,6 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
     }
 
     if($new_pid > -1) {
-
-        if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);
 
         if ($t_tid > 0 && $t_rpid > 0) {
 
@@ -301,7 +301,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-    if($t_post_html != "Y") {
+    if(isset($t_post_html) && $t_post_html != "Y") {
 
       $preview_message['CONTENT'] = make_html($t_content);
 
@@ -430,17 +430,17 @@ if($newthread) {
 
 }
 
-if($t_post_html != "Y") $t_content = isset($t_content) ? _stripslashes($t_content) : "";
-if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
+if(isset($t_post_html) && $t_post_html != "Y") {
+    $t_content = isset($t_content) ? _stripslashes($t_content) : "";
+}
 
 if(!isset($t_to_uid)) $t_to_uid = -1;
 
-
 echo "<p>To: ". post_draw_to_dropdown($t_to_uid) . form_submit("submit","Post") ."</p>\n";
-echo "<p>".light_form_textarea("t_content", htmlspecialchars($t_content), 15, 85). "</p>\n";
+echo "<p>".light_form_textarea("t_content", isset($t_content) ? htmlspecialchars($t_content) : "", 15, 85). "</p>\n";
 
 echo "<p>Signature:<br />".light_form_textarea("t_sig", htmlspecialchars($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
-echo "<p>".light_form_checkbox("t_post_html","Y","Contains HTML (not including signature)",($t_post_html == "Y"))."</p>\n";
+echo "<p>".light_form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
 echo "<p>".light_form_submit("submit","Post");
 echo "&nbsp;".light_form_submit("preview","Preview");
 echo "&nbsp;".light_form_submit("cancel", "Cancel");

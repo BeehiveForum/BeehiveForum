@@ -370,4 +370,16 @@ function user_get_post_count($uid)
         return $post_count['COUNT'];
 }
 
+function user_get_last_logon_time($uid)
+{
+         $db_user_get_last_logon_time = db_connect();
+         
+         $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM " . forum_table("USER") . " WHERE UID = $uid";
+         
+         $result = db_query($sql, $db_user_get_last_logon_time);
+         
+         $last_logon = db_fetch_array($result);
+         
+         return $last_logon['LAST_LOGON'];
+}
 ?>

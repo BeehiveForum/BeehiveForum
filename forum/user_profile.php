@@ -64,14 +64,19 @@ if($row_count == 0){
     exit;
 }
 
+if ($uid != $your_uid) $relationship = user_rel_get($your_uid, $uid);
+
 if (isset($HTTP_GET_VARS['setrel']) && ($uid != $your_uid)) { // user has chosen to modify their relationship
-    $relationship = user_rel_get($your_uid, $uid);
     $relationship = ($relationship & (~ (USER_FRIEND | USER_IGNORED)) | $HTTP_GET_VARS['setrel']);
     user_rel_update($your_uid,$uid,$relationship);
 }
 
-echo "<table width=\"100%\" class=\"subhead\" border=\"0\"><tr>\n";
-echo "<tr><td colspan=\"4\">Total number of posts: <b>" . user_get_post_count($uid). "</td></tr>";
+echo "<h2>" . format_user_name($user['LOGON'], $user['NICKNAME']);
+if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Friend\" />";
+if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"Ignored user\" />";
+echo "</h2><table width=\"100%\" class=\"subhead\" border=\"0\"><tr>\n";
+echo "<tr><td colspan=\"2\" align=\"right\">Last logon time:</td><td colspan=\"2\" align=\"right\"><b>" . format_time(user_get_last_logon_time($uid), 1) . "</b></td></tr>\n";
+echo "<tr><td colspan=\"2\" align=\"right\">Total number of posts:</td><td colspan=\"2\" align=\"right\"><b>" . user_get_post_count($uid). "</td></tr>\n";
 echo "<tr>";
 
 for ($i = 0; $i < $row_count; $i++) {
@@ -119,8 +124,6 @@ echo "<td valign=\"top\"><table width=\"100%\" class=\"subhead\">";
 echo "<tr><td><a href=\"email.php?uid=$uid\">Send email</a></td></tr>\n";
 
 if ($uid != $your_uid) {
-    $relationship = user_rel_get($your_uid, $uid);
-    
     if ($relationship & USER_FRIEND) {
         $setrel = 0;
         $text = "Remove from friends";

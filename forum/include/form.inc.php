@@ -138,6 +138,12 @@ function form_submit($name = "submit", $value = "Submit", $class = "button")
     return "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"$class\" />";
 }
 
+// create a button with custom HTML, for onclick methods, etc.
+function form_button($name, $value, $customhtml, $class="button")
+{
+    return "<input type=\"button\" name=\"$name\" value=\"$value\" class=\"$class\" $customhtml />";
+}
+
 // create a form just to be a link button
 function form_quick_button($href,$label,$var = 0,$value = 0,$target = "_self")
 {

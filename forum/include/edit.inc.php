@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.39 2004-03-22 12:51:02 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.40 2004-03-22 13:04:20 decoyduck Exp $ */
 
 function post_update($tid, $pid, $content)
 {
@@ -36,7 +36,7 @@ function post_update($tid, $pid, $content)
     $sql = "UPDATE {$webtag['PREFIX']}POST_CONTENT SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-    return false; //return db_query($sql, $db_post_update);
+    return db_query($sql, $db_post_update);
 }
 
 function post_add_edit_text($tid, $pid)

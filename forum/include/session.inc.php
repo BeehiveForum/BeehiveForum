@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.65 2003-11-30 18:52:03 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.66 2003-11-30 19:26:00 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -122,8 +122,10 @@ function bh_session_get_value($session_key)
 
         $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
 
-        $sql = "SELECT USER_PREFS.*, SESSIONS.UID FROM ". forum_table("SESSIONS"). " ";
-        $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+        $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER.STATUS, SESSIONS.UID ";
+        $sql.= "FROM ". forum_table("SESSIONS"). " SESSIONS ";
+	$sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
+        $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
         $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
         $result = db_query($sql, $db_bh_session_get_value);

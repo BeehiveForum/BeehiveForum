@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.111 2003-08-15 13:30:53 decoyduck Exp $ */
+/* $Id: post.php,v 1.112 2003-08-24 17:34:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -362,7 +362,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
 }
 
-html_draw_top_post_script();
+html_draw_top("onload=document.f_post.t_content.focus()");
 
 if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = md5(uniqid(rand()));

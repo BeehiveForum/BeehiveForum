@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.23 2005-03-04 20:26:45 decoyduck Exp $ */
+/* $Id: install.php,v 1.24 2005-03-05 22:16:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -232,7 +232,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
                     if ($config_saved) {
 
-                        echo "<form method=\"get\" action=\"./install.php\">\n";
+                        echo "<form method=\"post\" action=\"./install.php\">\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td width=\"500\">\n";
@@ -473,13 +473,13 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "</table>\n";
-            echo "<form method=\"get\" action=\"./index.php\">\n";
+            echo "<form method=\"post\" action=\"./install.php\">\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "    <tr>\n";
             echo "      <td width=\"500\">&nbsp;</td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
-            echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Continue\" class=\"button\" /></td>\n";
+            echo "      <td align=\"center\"><input type=\"submit\" name=\"finish_install\" value=\"Continue\" class=\"button\" /></td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
             echo "</form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.160 2005-03-05 21:09:55 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.161 2005-03-05 22:16:19 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -230,7 +230,7 @@ function bh_session_check($show_session_fail = true)
             if (($current_time - $user_sess['TIME']) > 300) {
 
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
-                $sql.= "FID = '$fid' WHERE UID = 0 ";
+                $sql.= "FID = '$forum_fid' WHERE UID = 0 ";
                 $sql.= "AND IPADDRESS = '$ipaddress'";
 
                 $result = db_query($sql, $db_bh_session_check);
@@ -239,7 +239,7 @@ function bh_session_check($show_session_fail = true)
         }else {
 
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-            $sql.= "VALUES ('', 0, '$fid', '$ipaddress', NOW())";
+            $sql.= "VALUES ('', 0, '$forum_fid', '$ipaddress', NOW())";
 
             $result = db_query($sql, $db_bh_session_check);
         }
@@ -380,7 +380,7 @@ function bh_session_init($uid, $update_visitor_log = true)
 
             $sql = "UPDATE SESSIONS SET HASH = '$user_hash' ";
             $sql.= "WHERE UID = '$uid' AND IPADDRESS = '$ipaddress' ";
-            $sql.= "AND FID = '$fid'";
+            $sql.= "AND FID = '$forum_fid'";
 
             $result = db_query($sql, $db_bh_session_init);
         }
@@ -390,7 +390,7 @@ function bh_session_init($uid, $update_visitor_log = true)
         $user_hash = md5(uniqid($ipaddress));
 
         $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-        $sql.= "VALUES ('$user_hash', '$uid', '$fid', ";
+        $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";
         $sql.= "'$ipaddress', NOW())";
 
         $result = db_query($sql, $db_bh_session_init);

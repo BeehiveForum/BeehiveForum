@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.123 2003-09-02 01:12:44 tribalonline Exp $ */
+/* $Id: post.php,v 1.124 2003-09-03 15:31:34 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -709,7 +709,9 @@ echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClic
 
 if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
 
-    echo "<p>".form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
+    echo "<h2>".$lang['admin'].":</h2>\n";
+
+    echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
     echo "<br />".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
     echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
     echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");

@@ -33,13 +33,16 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 {
 
 	$ret_text = '';
-	$html = preg_replace("/<!--[^>]*>/", "", $html);
+//	$html = preg_replace("/<(!--[^>]*)>/", "&lt;$1&gt;", $html);
 
 	if (!empty($html)) {
         $html = _stripslashes($html);
 		$html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
 		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
+
+		$htmltags = array_diff($htmltags, $bad_tags);
+		$bad_tags = array();
 
 		for ($i=0;$i<count($html_parts);$i++) {
 			if ($i%2) {
@@ -531,25 +534,49 @@ function clean_attributes($tag)
 	return $new_tag;
 }
 
+function tidy_html ($html, $linebreaks = true) {
+	// turn <br /> and <p>...</p> back into linebreaks
+	// only if auto-linebreaks is enabled
+	if ($linebreaks == true) {
+		$html = preg_replace("/<br( [^>]*)?>(\n)?/i", "\n", $html);
+		$html = preg_replace("/<p( [^>]*)?>/i", "\n\n", $html);
+		$html = preg_replace("/<\/p( [^>]*)?>/i", "\n\n", $html);
+	}
+
+	// make <quote source=".." url="..">..</quote> tag
+	$html = preg_replace("/<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">([^<]*)?<\/a>)?<\/div>[^\"]+\"quote\">((.|\s)*)<\/div>/i",
+						"<quote source=\"$3\" url=\"$2\">$4</quote>", $html);
+	// make <code>..</code> tag, and html_entity_decode 
+	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>[^\"]+\"code\">((.|\s)*)<\/pre>/ie",
+						"'<code>'.html_entity_decode('$1').'</code>'", $html);
+
+	return $html;
+}
 
 function clean_styles ($style) {
 	$style = preg_replace("/position\s*:\s*absolute\s*;?/", "", $style);
 	return $style;
 }
 
-function add_paragraphs ($html, $base = true, $br_only = false) {
+function add_paragraphs ($html, $base = true, $br_only = true) {
 	$html = str_replace("\r", "", $html);
 
 	$tags = array("table", "div", "pre", "ul", "ol", "object", "font");
 
 	$tags_nest = array();
+	// = array of nested tags which contain content, or
+	// = array (a, b)
+	//      a == true when you want linebreaks added (default false)
+	//      b == true when tag is inline (default false)
 	$tags_nest["table"] = array("td", "th");
 	$tags_nest["ul"] = array("li");
 	$tags_nest["ol"] = array("li");
-	$tags_nest["div"] = true;
-	$tags_nest["pre"] = false;
-	$tags_nest["object"] = false;
-	$tags_nest["font"] = true;
+	$tags_nest["div"] = array(true);
+	$tags_nest["pre"] = array(false);
+	$tags_nest["object"] = array(false);
+	$tags_nest["font"] = array(true, true);
+	$tags_nest["a"] = array(true, true);
+	$tags_nest["span"] = array(true, true);
 
 	$cur_tag = "";
 
@@ -594,20 +621,21 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 		$html_a[$html_p+2] = substr($html_a[$html_p], $close);
 		$html_a[$html_p] = substr($html_a[$html_p], 0, $cur_pos);
 
-		$html_a[$html_p] = preg_replace("/\n$/", "", $html_a[$html_p]);
-		$html_a[$html_p+2] = preg_replace("/^\n{1,2}/", "", $html_a[$html_p+2]);
+//		$html_a[$html_p] = preg_replace("/\n$/", "", $html_a[$html_p]);
+//		$html_a[$html_p+2] = preg_replace("/^\n{1,2}/", "", $html_a[$html_p+2]);
 
 		$html_p += 2;
 	}
 
 	$return = "";
+	$p_open = false;
 
 	for ($i=0; $i<count($html_a); $i++) {
 		if ($i%2) {
 			$tag = array();
 			preg_match("/^<(\w+)(\b[^<>]*)>/i", $html_a[$i], $tag);
 
-			if (isset($tags_nest[$tag[1]][0])) {
+			if (!is_bool($tags_nest[$tag[1]][0])) {
 				$nest = $tags_nest[$tag[1]];
 				for ($j=0; $j<count($nest); $j++) {
 					$offset = 0;
@@ -645,7 +673,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 						$html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
 					}
 				}
-			} else if ($tags_nest[$tag[1]] == true) {
+			} else if ($tags_nest[$tag[1]][0] == true) {
 				$cur_pos = strpos($html_a[$i], ">")+1;
 				$close = strrpos($html_a[$i], "<");
 
@@ -659,10 +687,14 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 				$html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
 			}
 
-			if (trim($html_a[$i+1]) == "") {
-				$return .= $html_a[$i]."\n";
+			if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true) {
+				if (trim($html_a[$i+1]) == "") {
+					$return .= $html_a[$i]."\n";
+				} else {
+					$return .= $html_a[$i]."\n\n";
+				}
 			} else {
-				$return .= $html_a[$i]."\n\n";
+				$return .= $html_a[$i];
 			}
 
 		} else if ($br_only == false) {
@@ -670,12 +702,12 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 			$html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/i", "$1\n\n$2", $html_a[$i]);
 			$html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/i", "</p>\n\n$3", $html_a[$i]);
 
-			$p_open = false;
+//			$p_open = false;
 
 			$tmp = split("\n", $html_a[$i]);
-			if (count($tmp) > 0) {
+			if (count($tmp) > 1) {
 				$p_open = true;
-				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0]) && trim($tmp[0]) != "") {
+				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0])) {
 					$tmp[0] = "<p>".$tmp[0];
 				}
 //				if (!preg_match("/<\/p>$/i", $tmp[count($tmp)-1])) {
@@ -725,9 +757,16 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 			$html_a[$i] = implode("\n", $tmp);
 			$html_a[$i] = preg_replace("/(<p( [^>]*)?>)\s*<\/p>/i", "$1&nbsp;</p>", $html_a[$i]);
 
-			if (trim($html_a[$i]) != "") {
-				$return .= $html_a[$i]."\n\n";
+
+			$tag = array();
+			if (isset($html_a[$i+1])) {
+				preg_match("/^<(\w+)(\b[^<>]*)>/i", $html_a[$i+1], $tag);
+				if ($tags_nest[$tag[1]][1] != true && trim($html_a[$i]) != "") {
+					$html_a[$i] .= "\n\n";
+				}
 			}
+			$return .= $html_a[$i];
+
 		} else {
 			$html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/i", "$1\n$3", $html_a[$i]);
 			$html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/i", "$1\n\n$2", $html_a[$i]);

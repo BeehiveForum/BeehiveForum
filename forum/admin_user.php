@@ -89,6 +89,13 @@ if(isset($HTTP_POST_VARS['submit'])){
     if($new_status & USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
     user_update_status($uid,$new_status);
     $user['STATUS'] = $new_status;
+    
+    // Private folder permissions
+    for($i=0; $i<$HTTP_POST_VARS['t_fcount']; $i++){
+        $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
+        $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
+    }
+    user_update_folders($uid,$uf);
 }
 
 // Draw the form
@@ -96,10 +103,10 @@ echo "<h1>Manage User</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 
-echo "<form name=\"f_folders\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
+echo "<form name=\"f_user\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
 echo "<table width=\"50%\"><tr><td class=\"box\">";
 echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
-echo "<td class=\"subhead\">User: ".$user['LOGON']."</td></tr>\n";
+echo "<td class=\"subhead\">User Status: ".$user['LOGON']."</td></tr>\n";
 
 if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
     echo "<tr><td>".form_checkbox("t_soldier",USER_PERM_SOLDIER,"Soldier",($user['STATUS'] & USER_PERM_SOLDIER))."</td></tr>\n";
@@ -109,8 +116,28 @@ echo "<tr><td>".form_checkbox("t_worker",USER_PERM_WORKER,"Worker",($user['STATU
 echo "<tr><td>".form_checkbox("t_worm",USER_PERM_WORM,"Worm",($user['STATUS'] & USER_PERM_WORM))."</td></tr>\n";
 echo "<tr><td>".form_checkbox("t_wasp",USER_PERM_WASP,"Wasp",($user['STATUS'] & USER_PERM_WASP))."</td></tr>\n";
 echo "<tr><td>".form_checkbox("t_splat",USER_PERM_SPLAT,"Splat",($user['STATUS'] & USER_PERM_SPLAT))."</td></tr>\n";
+echo "<tr><td>&nbsp;</td></tr>\n";
+
+echo "<tr><td class=\"subhead\">Folder Access:</td></tr>\n";
+
+$sql = "select F.FID, F.TITLE, UF.ALLOWED from ".forum_table("FOLDER")." F ";
+$sql.= "left join ".forum_table("USER_FOLDER")." UF on (UF.UID = $uid and UF.FID = F.FID) ";
+$sql.= "where F.ACCESS_LEVEL = 1"; // Restricted folders
+
+$db = db_connect();
+$result = db_query($sql,$db);
+
+for($i=0;$row = db_fetch_array($result);$i++){
+    echo "<tr><td>".form_checkbox("t_fallow_$i",1,$row['TITLE'],($row['ALLOWED'] > 0));
+    echo form_input_hidden("t_fid_$i",$row['FID'])."</td></tr>\n";
+}
+
+if($i==0){
+    echo "<tr><td>No restricted folders</td></tr>\n";
+}
 
 echo "</table>\n";
+echo form_input_hidden("t_fcount",$i);
 echo form_input_hidden("t_uid",$uid);
 echo "</td></tr></table>\n";
 echo form_submit();

@@ -1,6 +1,6 @@
 Beehive Forum Release Notes
 
-What's new in 0.4 (TBD, released ??th November 2003)
+What's new in 0.4 ("In The Flesh", released 10th December 2003)
 =================
 
 - Brand new features

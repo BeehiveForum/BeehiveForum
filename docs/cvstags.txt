@@ -4,3 +4,4 @@ NB: No tags exist before the release of 0.3 - oops :)
 
 TAG           DESCRIPTION
 rel0-3        0.3 release
+rel0-4        0.4 release

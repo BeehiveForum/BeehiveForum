@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.51 2004-08-10 21:43:11 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.52 2004-08-15 01:10:35 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,6 +116,14 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
+// Get the user's post page preferences.
+
+$page_prefs = bh_session_get_value('POST_PAGE');
+
+if ($page_prefs == 0) {
+        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
+}
+
 // Get the Message ID (MID)
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -139,18 +147,53 @@ if (isset($_POST['cancel'])) {
 $valid = true;
 
 $t_content = "";
+
+if (isset($_POST['t_post_emots'])) {
+        if ($_POST['t_post_emots'] == "disabled") {
+                $emots_enabled = false;
+        } else {
+                $emots_enabled = true;
+        }
+} else {
+		$emots_enabled = true;
+}
+if (isset($_POST['t_post_links'])) {
+        if ($_POST['t_post_links'] == "enabled") {
+                $links_enabled = true;
+        } else {
+                $links_enabled = false;
+        }
+} else {
+		$links_enabled = false;
+}
+
 $post_html = 0;
 
 if (isset($_POST['t_post_html'])) {
+
     $t_post_html = $_POST['t_post_html'];
+
     if ($t_post_html == "enabled_auto") {
-                $post_html = 1;
-    } else if ($t_post_html == "enabled") {
-                $post_html = 2;
+        $post_html = 1;
+    }else if ($t_post_html == "enabled") {
+        $post_html = 2;
     }
+
+} else {
+
+	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+		$post_html = 1;
+	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+		$post_html = 2;
+	} else {
+		$post_html = 0;
+	}
+
+	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+	$links_enabled = ($page_prefs & POST_AUTO_LINKS);
 }
 
-$post = new MessageText($post_html);
+$post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
@@ -224,7 +267,34 @@ if ($valid && isset($_POST['preview'])) {
         exit;
     }
 
-}else {
+} else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
+    if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
+        $t_subject = _htmlentities(trim(_stripslashes($_POST['t_subject'])));
+    }
+    if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+        $t_content = trim(_stripslashes($_POST['t_content']));
+        $post->setContent($t_content);
+        $t_content = $post->getContent();
+    }
+    if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
+        $to_radio = $_POST['to_radio'];
+    }else {
+        $to_radio = 1;
+    }
+    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+        $t_to_uid = $_POST['t_to_uid'];
+    }else {
+        $t_to_uid = 0;
+    }
+    if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
+		$t_recipient_list = $_POST['t_recipient_list'];
+	}
+
+	$page_prefs ^= POST_EMOTICONS_DISPLAY;
+
+	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+
+} else {
 
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX)) {
 
@@ -235,22 +305,19 @@ if ($valid && isset($_POST['preview'])) {
             exit;
         }
 
-        $t_content = pm_get_content($mid);
-        $t_content = clean_emoticons($t_content);
-        $t_subject = $pm_elements_array['SUBJECT'];
+        $parsed_message = new MessageTextParse(pm_get_content($mid), $emots_enabled, $links_enabled);
 
-        $t_content = _htmlentities_decode($t_content);
-        $post_html = 0;
-        $t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
+		$emots_enabled = $parsed_message->getEmoticons();
+		$links_enabled = $parsed_message->getLinks();
+		$t_content = $parsed_message->getMessage();
+		$post_html = $parsed_message->getMessageHTML();
 
-        if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
-            $post_html = 2;
-        } else {
-            $t_content = strip_tags($t_content);
-        }
+        $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
 
-        $post = new MessageText($post_html, $t_content);
+		$post->diff = false;
+
         $t_content = $post->getContent();
+        $t_subject = $pm_elements_array['SUBJECT'];
 
     }else {
 
@@ -267,7 +334,7 @@ draw_header_pm();
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['editpm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
@@ -323,6 +390,38 @@ echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])), "</a></td>\n";
 echo "        </tr>\n";
+
+$emot_user = bh_session_get_value('EMOTICONS');
+$emot_prev = emoticons_preview($emot_user);
+
+if ($emot_prev != "") {
+		echo "        <tr>\n";
+		echo "          <td>&nbsp;</td>\n";
+		echo "        </tr>\n";
+		echo "        <tr>\n";
+        echo "          <td><table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+        echo "            <tr>\n";
+        echo "              <td class=\"subhead\">\n";
+        echo "                <div style=\"float:left\">&nbsp;{$lang['emoticons']}:</div>\n";
+
+        if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
+                echo "                <div style=\"float:right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "</div>\n";
+                echo "              </td>\n";
+                echo "            </tr>\n";
+
+                echo "            <tr>\n";
+                echo "              <td colspan=\"2\">\n";
+                echo $emot_prev;
+        } else {
+                echo "                <div style=\"float:right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "</div>\n";
+        }
+
+        echo "              </td>\n";
+        echo "            </tr>\n";
+        echo "          </table></td>\n";
+		echo "        </tr>\n";
+}
+
 echo "      </table>\n";
 echo "    </td>\n";
 echo "    <td width=\"500\">\n";
@@ -363,6 +462,10 @@ echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
 
+echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
+
+echo "<br />\n";
 echo form_submit('submit', $lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');

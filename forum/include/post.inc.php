@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.89 2004-08-15 00:35:29 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.90 2004-08-15 01:10:30 tribalonline Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -486,7 +486,7 @@ class MessageTextParse {
 		var $sig = "";
 		var $original = "";
 
-		function MessageTextParse ($message, $emots_default = true) {
+		function MessageTextParse ($message, $emots_default = true, $links_enabled = true) {
 
 				$this->original = $message;
 
@@ -537,7 +537,7 @@ class MessageTextParse {
 				if ($message_temp != $message) {
 						$links = true;
 				} else {
-						$links = false;
+						$links = $links_enabled;
 				}
 				$message = $message_temp;
 

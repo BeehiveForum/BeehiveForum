@@ -1,6 +1,6 @@
 Beehive Forum Readme
 
-Version 0.4.1 / 17th March 2004
+Version 0.5 / 12th September 2004
 
 A list of changes since previous Beehive versions can be found in release.txt.
 
@@ -12,8 +12,8 @@ A list of changes since previous Beehive versions can be found in release.txt.
   1.2    Instructions
     1.2.1    Archive Extraction
     1.2.2    Database setup
-    1.2.3    Configuring the forum
-    1.2.4    Upload
+    1.2.3    Upload
+    1.2.4    Installing the forum
     1.2.5    First use
     1.2.6    Adminning
     1.2.7    What to do if it doesn't work
@@ -22,14 +22,18 @@ A list of changes since previous Beehive versions can be found in release.txt.
     1.3.1    Stylesheet
     1.3.2    Images
     1.3.3    The top frame
-  1.4    Upgrading 0.4 to 0.4.1
+  1.4    Upgrading 0.4.1 to 0.5
     1.4.1    Make a back up of your database
-    1.4.2    Update the database
-    1.4.3    Update the config file
-  1.5    Upgrading from 0.3 to 0.4
-  1.6    Upgrading from 0.2 to 0.3
-  1.7    Upgrading from 0.1 / 0.1.1 to 0.2
-  1.8    Upgrading from 0.1 or 0.2 to 0.4
+    1.4.2    Back up your files
+    1.4.3    Upload new forum files
+    1.4.4    Run the upgrade script
+  1.5    Upgrading 0.4 to 0.4.1
+    1.5.1    Update the database
+    1.5.2    Update the config file
+  1.6    Upgrading from 0.3 to 0.4
+  1.7    Upgrading from 0.2 to 0.3
+  1.8    Upgrading from 0.1 / 0.1.1 to 0.2
+  1.9    Upgrading from 0.1 or 0.2 to 0.4
 
 2.    Known Issues
 
@@ -72,14 +76,69 @@ presented with a directory that looks a bit like this:
 |  |
 |  |- forum
 |  |  |- attachments
+|  |  |- beautifier
+|  |  |  |- Beautifier
+|  |  |  |  |- Context.php
+|  |  |  |  |- ...
+|  |  |  |
+|  |  |  |- HFile
+|  |  |  |  |- HFile_javascript.php
+|  |  |  |  |- ...
+|  |  |  |
+|  |  |  |- Output
+|  |  |  |  |- Output_css.php
+|  |  |  |  |- Output_HTML.php
+|  |  |  |
+|  |  |  |- COPYING
+|  |  |  |- ...
+|  |  | 
+|  |  |  |- emoticons
+|  |  |  |  |- boughton
+|  |  |  |  |  |- images
+|  |  |  |  |  |  |- angry.png
+|  |  |  |  |  |  |- ...
+|  |  |  |  |  |
+|  |  |  |  |  |- desc.txt
+|  |  |  |  |  |- style.css
+|  |  |  |  |
+|  |  |  |  |- default
+|  |  |  |  |  |- images
+|  |  |  |  |  |  |- alien.png
+|  |  |  |  |  |  |- ...
+|  |  |  |  |  |
+|  |  |  |  |  |- desc.txt
+|  |  |  |  |  |- style.css
+|  |  |  |  |
+|  |  |  |  |- none
+|  |  |  |  |  |- desc.txt
+|  |  |  |  |  |- style.css
+|  |  |  |  |
+|  |  |  |  |- text
+|  |  |  |  |  |- desc.txt
+|  |  |  |  |
+|  |  |  |  |- emoticon_definitions.inc.php
+|  |  |
+|  |  |- forums
+|  |  |  |- default
+|  |  |  |  |- styles
+|  |  |  |  |  |- put_per_forum_custom_styles_in_here
+|  |  |  |  |
+|  |  |  |  |- start_main.php
+|  |  |  |  |- ...
+|  |  |  
 |  |  |- images
+|  |  |  |- admin_locked.png
 |  |  |  |- admintool.png
-|  |  |  |- align_center_button.png
 |  |  |  |- ...
 |  |  |
 |  |  |- include
 |  |  |  |- admin.inc.php
 |  |  |  |- attachments.inc.php
+|  |  |  |- ...
+|  |  |
+|  |  |- install
+|  |  |  |- config.inc.php
+|  |  |  |- install.php
 |  |  |  |- ...
 |  |  |
 |  |  |- js
@@ -102,76 +161,50 @@ folders with relevant files in them. If they are not extracted in the right plac
 subsequently uploading them to your server in this incorrect order will result in
 Beehive working incorrectly or not at all.
 
+
 1.2.2 Database setup
 ====================
 
 To set up the database, use something like phpMyAdmin (get it from
-https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you
-have the "skillz", to run the /docs/schema.sql file from the download.
+https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you have the
+"skillz", to create a database for your forum to live in. Take note of the
+database name, as you will need it when you run the install script.
 
 (Beehive would prefer its very own database, but if you can't provide that, it
 should work in an existing one.)
 
-If you're feeling saucy, you can edit the insert statements to alter the thread
-title and content of the default first post, but if you don't know SQL, it's
-probably best to leave well alone.
 
-
-1.2.3 Configuring the forum
-===========================
-
-OK, now you need to make some simple changes to one of the files. Don't
-worry, it's easy.
-
-Look in the forum/include folder, and open the file called "config.inc.php".
-
-In here are some variables you need to set so that Beehive Forum can find your
-database:
-
-$db_server   = "localhost";     // the address of your MySQL server
-$db_username = "user";          // your MySQL username
-$db_password = "password";      // your MySQL password
-$db_database = "beehivedbs";    // the name of your MySQL database
-
-You need to change those values in quotes to the correct details for your MySQL
-setup. You should be able to get the information from your hosting provider if
-you're not running your own server.
-
-Save your changes.
-
-IMPORTANT: As of BeehiveForum 0.4.1 the additional settings in config.inc.php have
-           been moved to a database table. If you are upgrading to 0.4.1 any
-           settings you have in your config.inc.php file will be ignored and you
-           will need to log into your forum and visit the Admin section to restore
-           them to their old values.
-
-1.2.4 Upload
+1.2.3 Upload
 ============
 
-Once you have configured that file, you can upload the forum onto your web space.
-We recommend that you simply upload the "forum" folder directly, either into the
-root of your web space or into another folder of your choosing.
+You should now upload the forum onto your web space. We recommend that you simply
+upload the "forum" folder directly, either into the root of your web space or 
+into another folder of your choosing.
+
+
+1.2.4 Installing the forum
+===========================
+
+Once everything's uploaded, you will need to run the forum's install script. This
+is located in the /install subdirectory of your forum. To access it, you will need
+to load the file in your browser from the webspace you just uploaded to, e.g.:
+
+http://www.mysite.com/forum/install/install.php
+
+This will then walk you through the creation of your new forum. Note that you will
+need your MySQL database's host address, username and password for this stage, as
+well as the name of the database from step 1.2.2.  You should be able to get the 
+information from your hosting provider if you're not running your own server.
 
 
 1.2.5 First use
 ===============
 
-When it's uploaded, open it in your browser, using the address like:
-
-http://www.mysite.com/forum/
-
-but pointing to wherever you've put it. If all has gone well, you should be
-faced with a logon screen.
-
-The setup created the administrator login for you, which is as follows:
-
-Logon:    ADMIN
-Password: honey
-
-That gives you access to everything, so you can create folders, set user
-permissions and so forth. The first thing you should do after logging in is
-change that password to something only you know, to stop someone else staging a
-coup, and stuff.
+If all went well, you should now have a working forum! After deleting the /install
+subdirectory (as is described by the install script) you can then log in to your
+newly created administrator account, using the details you specified at install.
+This account gives you access to everything, so you can create folders, set user
+permissions and so forth.
 
 
 1.2.6 Adminning
@@ -180,15 +213,22 @@ coup, and stuff.
 Now you're ready to create some folders, so click the admin link near the top of
 the page, then choose folders from the menu on the left, and set them up.
 
+You may also wish to change the access permissions of your forum. In the admin 
+section, under 'Manage Forums' you can set your forum access to 'Restricted' (so
+that each user account need be given permission) or 'Passworded' (so that each
+user needs to know a password you specify to gain entry).
+
 The other links on the left let you set up profile sections and items, where
 your members can provide information about themselves if they like, and do stuff
-to users, like ban them, gag them or promote them. It's all explained in there.
+to users, like ban them, gag them or promote them. You can also edit the forum
+'start' page, change the forum style, add forum word filters and so forth. It's 
+all explained in there.
 
 
 1.2.7 What to do if it doesn't work
 ===================================
 
-Don't panic. Pop over to http://beehiveforum.net/forum and ask us
+Don't panic. Pop over to http://www.tehforum.net/forum/ and ask us
 for help, but remember, we don't get paid for this, so be nice.
 
 It's helpful if you can tell us your setup when you've got a problem, such as
@@ -229,22 +269,37 @@ Additionally you can also create random styles by using the forum styles tool in
 admin section of the forum. Unfortunately this tool does not allow you to specify
 different multiple colours to use, rather it rather cunningly chooses some for you
 that are mathematically determined to be suitable based on your first choice. Watch
-this space for a fully fledged style edited.
+this space for a fully fledged style editor.
+
+Note: Due to the new multi-forum capabilities of Beehive 0.5+, there are now two 
+locations where stylesheets/images etc. are held. For styles which you wish to be
+globally available to all forums on your server, add/change the styles in the /styles
+subdirectory. For forum-specific styles, you will need to add/change the styles in
+the /forums/FORUM_WEBTAG/styles directory, where 'FORUM_WEBTAG' is the webtag of your
+forum that you chose on forum-creation. See /forums/default as an example.
+
+Note: Styles created using the admin styles creator will be saved as forum-specific
+styles. If you wish for a style you create through it to be global, you will need to
+manually copy the style into the global /styles directory through your FTP program.
+
+Note: start_main.php, style.css and top.html can also be present in the 
+/forums/FORUM_WEBTAG directory, which allows for per-forum start pages, default forum 
+styles, and top frames.
 
 
 1.3.1 Stylesheet
 ================
 
 If you know how to do CSS, you can edit the style.css file in the
-forum/styles/[stylename] folder to change colours, fonts and things like that.
+/styles/[stylename] folder to change colours, fonts and things like that.
 We recommend taking a backup first, though, in case you make a mess of it.
 
 
 1.3.2 Images
 ============
 
-Feel free to edit the images in the forum/styles/[stylename]/images folder too,
-as long as the sizes remain the same. Again, you might want to take backups.
+Feel free to edit the images in the /styles/[stylename]/images folder too,
+as long as the dimensions remain the same. Again, you might want to take backups.
 
 
 1.3.3 The top frame
@@ -257,11 +312,12 @@ inducing adverts for stuff, it's entirely up to you.
 Just keep it 60 pixels high or under.
 
 
-1.4 Upgrading from 0.4 to 0.4.1
-===============================
+1.4 Upgrading from 0.4 to 0.5
+=============================
 
-If you are already using 0.4 of Beehive Forum, you will need to update your
-database.
+0.5's install script will upgrade your 0.4 database, but it is HIGHLY recommended
+that you perform a database and file backup before you attempt this.
+
 
 1.4.1 Make a back up of your database
 ======================================
@@ -287,14 +343,54 @@ created on your HD so make sure you have adequate disc space in order to do this
 It will also be harder to restore the backup this way.
 
 
-1.4.2 Update the database
+1.4.2 Back up your files
+========================
+
+A list of files/directories you will potentially need to backup is as follows:
+
+|- /attachments
+|- /styles
+|- start_main.php
+|- top.html
+
+
+1.4.3 Upload new forum files
+============================
+
+This step is similar to 1.2.3, though you may wish to upload to a temporary
+directory (e.g. if your forum is currently installed in a subdirectory 'forum',
+you may wish to upload the new files to a subdirectory 'forumtemp'. If uploading
+to a seperate directory, remember to also upload the files you backed-up in 1.4.2.
+
+
+1.4.4 Run the upgrade script
+============================
+
+Once you've backed up your database/files and uploaded the new files, you will
+need to run the upgrade script, located as /install/install.php in your forum
+directory:
+
+http://www.mysite.com/forumtemp/install/install.php
+
+Make sure you select 'Upgrade' from the installation method drop-down list, and
+then follow the instructions.
+
+
+1.5 Upgrading from 0.4 to 0.4.1
+===============================
+
+If you are already using 0.4 of Beehive Forum, you will need to update your
+database. You can do this by following the steps in 1.4.1.
+
+
+1.5.1 Update the database
 =========================
 
 Simply run the /docs/update-04-to-041.sql script against the database using phpMyAdmin or
 MySQL directly.
 
 
-1.4.3 Update the config file
+1.5.2 Update the config file
 ============================
 
 Probably the easiest way to do this is to edit the config.inc.php in the 0.4 download
@@ -306,21 +402,22 @@ IMPORTANT: As of BeehiveForum 0.4.1 the additional settings in config.inc.php ha
            will need to log into your forum and visit the Admin section to restore
            them to their old values.
 
-1.5 Upgrading from 0.2 to 0.3
+
+1.6 Upgrading from 0.2 to 0.3
 =============================
 
 Follow the same procedure as detailed above, but you must run /docs/upgrade-02-to-03.sql
 beforehand.
 
 
-1.6 Upgrading from 0.1 / 0.1.1 to 0.2
+1.7 Upgrading from 0.1 / 0.1.1 to 0.2
 =====================================
 
 Follow the same procedure as detailed above, but you must run /docs/upgrade-01-to-02.sql
 beforehand
 
 
-1.7 Upgrading from 0.1 or 0.2 to 0.4.1
+1.8 Upgrading from 0.1 or 0.2 to 0.4.1
 ======================================
 
 No direct route exists for 0.1 or 0.2 to be upgraded to 0.4.1. To upgrade either of these
@@ -368,14 +465,11 @@ any questions or queries you have and we'll do our best to answer them.
 3.2 General questions and help
 ==============================
 
-You can also try dropping in to http://beehiveforum.net/forum or on
-http://www.tehforum.net/forum/, which are both test beds for the software
+As above, you can try dropping in to http://www.tehforum.net/forum/, 
 where you can ask for help or check on the progress of the next version and
 see and test previews of the new features. If you need help don't think twice
-about posting on either forum (posting on Teh Forum, rather than on 
-beehiveforum.net is more likely to get someones attention) In either case you
-should find a bugs folder / Beehive Development folder where you can post about
-problems you're having. It should be noted that we prefer using this system
+about posting, although please keep Beehive-related enquires to the 'Beehive 
+Development' folder. It should be noted that we prefer using this system
 over the SF bug reporting tool.
 
 
@@ -409,7 +503,7 @@ Current available languages are as follows:
 English (UK)
 X-Hacker
 
-Also avaulable, but incomplete (includes some English phrases still):
+Also avaulable, but incomplete (includes some/many English phrases still):
 
 French
 X-Gangsta
@@ -418,11 +512,12 @@ X-Gangsta
 4 Credits
 =========
 
+
 4.1 Coding
 ==========
 
-Matt Beale, Andy Black, Chris Hodcroft, Mark Rendle, Peter Kelly,
-Mike Franklin, Ben Sekulowicz, Andrew Holgate, Rowan Hill
+Matt Beale, Andy Black, Chris Hodcroft, Mark Rendle, Rowan Hill, 
+Andrew Holgate, Peter Kelly, Mike Franklin, Ben Sekulowicz
 
 
 4.2 Design/CSS

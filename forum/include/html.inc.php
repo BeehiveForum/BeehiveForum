@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.55 2003-08-24 21:17:26 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.56 2003-08-29 00:09:31 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -212,6 +212,23 @@ function style_image($img)
     } else {
         return "./images/$img";
     }
+}
+
+function bh_setcookie($name, $value, $expires = 0)
+{
+    global $HTTP_SERVER_VARS, $cookie_domain;
+
+    if (isset($cookie_domain) && !empty($cookie_domain) && strstr($HTTP_SERVER_VARS['HTTP_HOST'], $cookie_domain)) {
+        if (substr($cookie_domain, 0, 1) != ".") {
+            $hostname = ".$cookie_domain";
+        }else {
+            $hostname = $cookie_domain;
+        }
+    }else {
+        $hostname = "";
+    }
+
+    setcookie($name, $value, $expires, '', $hostname);
 }
 
 ?>

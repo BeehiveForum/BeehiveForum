@@ -21,13 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.41 2003-08-24 21:17:26 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.42 2003-08-29 00:09:31 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/ip.inc.php");
+require_once("./include/html.inc.php");
 
 // Checks the session
 
@@ -73,7 +74,7 @@ function bh_session_get_value($session_key)
 
 function bh_session_init($uid)
 {
-    global $HTTP_SERVER_VARS, $default_style, $default_language;
+    global $HTTP_SERVER_VARS, $HTTP_SERVER_VARS, $default_style, $default_language;
 
     $sql = "select USER.UID, USER.LOGON, USER.PASSWD, USER.STATUS, USER_PREFS.POSTS_PER_PAGE, USER_PREFS.TIMEZONE, ";
     $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, ";
@@ -109,8 +110,8 @@ function bh_session_init($uid)
 
     $check = md5(serialize($user_sess));
 
-    setcookie("bh_sess_data", serialize($user_sess));
-    setcookie("bh_sess_check", $check);
+    bh_setcookie("bh_sess_data", serialize($user_sess), 0);
+    bh_setcookie("bh_sess_check", $check, 0);
 
 }
 
@@ -118,14 +119,16 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
+    global $HTTP_SERVER_VARS;
+
     // Session cookies
 
-    setcookie("bh_sess_data", "", time() - 3600);
-    setcookie("bh_sess_check", md5(uniqid(rand())), time() - 3600);
+    bh_setcookie("bh_sess_data", "", time() - 3600, '', str_replace('www', '', strtolower($HTTP_SERVER_VARS['HTTP_HOST'])));
+    bh_setcookie("bh_sess_check", md5(uniqid(rand())), time() - 3600, '', str_replace('www', '', strtolower($HTTP_SERVER_VARS['HTTP_HOST'])));
 
     // Other cookies set by Beehive
 
-    setcookie("bh_thread_mode", "", time() - 3600);
+    bh_setcookie("bh_thread_mode", "", time() - 3600, '', str_replace('www', '', strtolower($HTTP_SERVER_VARS['HTTP_HOST'])));
 
 }
 

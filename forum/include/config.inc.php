@@ -32,7 +32,6 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 
 // ---------------------------------------------------------------------
 
-
 // Forum-specific ------------------------------------------------------
 
 $forum_name    = "A Beehive Forum"; // the name of your forum
@@ -41,6 +40,29 @@ $default_style = "default"; // the default forum style directory name
 $default_language = "en"; // default language for the forum
 
 // ---------------------------------------------------------------------
+
+// Forum Cookies -------------------------------------------------------
+
+$cookie_domain = ""; // Specify a domain for the cookie. Useful for
+                     // situations where there is more than one access
+                     // point on a single domain for your forum.
+                     //
+                     // For example:
+                     //
+                     // Say the following URIs are both valid for your
+                     // forum:
+                     //
+                     // http://www.mybeehiveforum.com/forum/
+                     // http://forum.mybeehiveforum.com/
+                     //
+                     // with $cookie_domain set to "mybeehiveforum.com"
+                     // users would be able to use both of the above
+                     // URIs without having to login at URI.
+                     //
+                     // WARNING: if you DO NOT understand what this is
+                     //          for then leave it blank. If you
+                     //          set this value incorrectly nobody will
+                     //          be able to login to your forum.
 
 // Forum options -------------------------------------------------------
 

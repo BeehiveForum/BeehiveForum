@@ -28,13 +28,13 @@
 	display: none;
 }
 
-.e_sad { /* :'( :'-( */
+.e_cry { /* :'( :'-( */
 	padding-left: 15px;
     height: 13px;
-    background-image: url("./images/sad.png");
+    background-image: url("./images/cry.png");
     background-repeat: no-repeat;
 }
-.e_sad span {
+.e_cry span {
 	display: none;
 }
 

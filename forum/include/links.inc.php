@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.32 2004-04-05 21:12:31 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.33 2004-04-08 07:49:09 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
@@ -115,7 +115,9 @@ function links_add_folder($fid, $name, $visible = false)
 
 function links_display_folder_path($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
 {
-    global $HTTP_SERVER_VARS, $webtag;
+    global $HTTP_SERVER_VARS;
+
+    $table_data = get_table_prefix();
 
     $tree_fid = $fid;
     $tree     = '';
@@ -127,7 +129,7 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
           $tree_fid = $folders[$tree_fid]['PARENT_FID'];
     }
 
-    $link_base = $link_base ? $link_base : "./links.php?webtag=$webtag";
+    $link_base = $link_base ? $link_base : "./links.php?webtag={$table_data['WEBTAG']}";
     
     if (strstr($link_base, "?")) {
         $html = $links ? "<a href=\"$link_base&fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];

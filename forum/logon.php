@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -43,11 +43,13 @@ if (strstr($final_uri, 'logout.php')) {
 if(bh_session_check()) {
 
     html_draw_top();
-    echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>";
-    echo "<p><a href=\"./index.php?". $final_uri. "\">Continue</a></p>";
+    echo "<div align=\"center\">\n";
+    echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
+    echo form_quick_button("./index.php?$final_uri", "Continue", 0, 0, "_top");
+    echo "</div>\n";
     html_draw_bottom();
     exit;
-    
+
 }
 
 if (isset($HTTP_POST_VARS['submit'])) {
@@ -55,78 +57,93 @@ if (isset($HTTP_POST_VARS['submit'])) {
   if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
 
     $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
-    
+
     if ($luid > -1) {
-    
+
       setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-    
+
       if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
-      
+
         bh_session_init(0); // Use UID 0 for guest account.
-        
+
       }else {
-    
+
         bh_session_init($luid);
-                      
+
         if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
-        
+
           if (is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
-        
+
             $usernames = $HTTP_COOKIE_VARS['bh_remember_user'];
             $passwords = $HTTP_COOKIE_VARS['bh_remember_password'];
-          
+
           }else {
-        
+
             $usernames = array(0 => $HTTP_COOKIE_VARS['bh_remember_user']);
             $passwords = array(0 => $HTTP_COOKIE_VARS['bh_remember_password']);
-            
+
           }
-          
+
         }else {
-        
+
           $usernames = array();
           $passwords = array();
-          
-        }
-        
-        if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
-          $usernames[] = $HTTP_POST_VARS['logon'];
-          $passwords[] = $HTTP_POST_VARS['password'];
-        }
-        
-        if (($key = array_search($HTTP_POST_VARS['logon'], $usernames) !== false)) {
-          $passwords[$key] = $HTTP_POST_VARS['password'];
-        }
-               
-        for ($i = 0; $i < sizeof($usernames); $i++) {
-        
-          setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
 
-          if(@$HTTP_POST_VARS['remember_user'] == "Y") {
-            setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
-          }else {
-            setcookie("bh_remember_password[$i]", str_repeat(chr(255), 4), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
-          }
-          
         }
-        
+
+        if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
+
+          array_unshift($usernames, $HTTP_POST_VARS['logon']);
+
+	  if(isset($HTTP_POST_VARS['remember_user'])) {
+	    array_unshift($passwords, $HTTP_POST_VARS['password']);
+	  }else {
+	    array_unshift($passwords, str_repeat(chr(255), 4));
+	  }
+
+        }else {
+
+	  if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
+
+	    array_splice($usernames, $key, 1);
+	    array_splice($passwords, $key, 1);
+
+            array_unshift($usernames, $HTTP_POST_VARS['logon']);
+
+            if(isset($HTTP_POST_VARS['remember_user'])) {
+	      array_unshift($passwords, $HTTP_POST_VARS['password']);
+	    }else {
+	      array_unshift($passwords, str_repeat(chr(255), 4));
+	    }
+
+	  }
+
+	}
+
+        for ($i = 0; $i < sizeof($usernames); $i++) {
+
+          setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
+          setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/logon.php');
+
+        }
+
       }
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
-     
+
           header_redirect("./index.php?final_uri=". urlencode($final_uri));
-          
+
       }else { // IIS bug prevents redirect at same time as setting cookies.
-      
+
           html_draw_top();
-          
+
           // Try a Javascript redirect
           echo "<script language=\"javascript\" type=\"text/javascript\">\n";
           echo "<!--\n";
           echo "document.location.href = './index.php?final_uri=". urlencode($final_uri). "';\n";
           echo "//-->\n";
           echo "</script>";
-          
+
           // If they're still here, Javascript's not working. Give up, give a link.
           echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
           echo "<p>You logged in successfully.</p>";
@@ -134,28 +151,31 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
           html_draw_bottom();
           exit;
-          
+
       }
-      
+
     }else if($luid == -2){ // User is banned - everybody hide
-    
+
         header("HTTP/1.0 500 Internal Server Error");
         exit;
-        
+
     }else {
 
       html_draw_top();
-      echo "<h2>Invalid login. <a href=\"index.php\"> Go Back</a>.</h2>";
+      echo "<div align=\"center\">\n";
+      echo "<h2>The username or password you supplied is not valid.</h2>\n";
+      echo form_quick_button("./index.php", "Back", 0, 0, "_top");
+      echo "</div>\n";
       html_draw_bottom();
       exit;
 
     }
-    
+
   }else {
-  
+
     $error_html = "<h2>A username and password is required</h2>";
   }
-  
+
 }
 
 html_draw_top();
@@ -177,7 +197,7 @@ echo "}\n\n";
 echo "var has_clicked = false;\n\n";
 echo "//-->\n";
 echo "</script>\n";
-  
+
 if (isset($error_html)) echo $error_html;
 
 if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
@@ -191,9 +211,9 @@ if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
 if (isset($HTTP_GET_VARS['other'])) {
   $otherlogon = true;
 }else {
-  $otherlogon = false;  
+  $otherlogon = false;
 }
-   
+
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
@@ -217,7 +237,7 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
   echo "              <td align=\"right\">Password:</td>\n";
   echo "              <td>". form_input_password("password", ($HTTP_COOKIE_VARS['bh_remember_password'] != str_repeat(chr(255), 4) ? $HTTP_COOKIE_VARS['bh_remember_password'] : "")). "</td>\n";
   echo "            </tr>\n";
-  
+
 }else {
 
   if ((sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) && $otherlogon == false) {
@@ -231,10 +251,10 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
     foreach ($userkeys as $key) {
       $usernames[$key] = _stripslashes($HTTP_COOKIE_VARS['bh_remember_user'][$key]);
     }
-    
-    echo form_dropdown_array('logonarray', $usernames, $usernames, "", "onchange='changepassword()'");
+
+    echo form_dropdown_array('logonarray', $usernames, $usernames, "", "onchange='changepassword()' style=\"width: 135px\"");
     echo form_input_hidden('logon', _stripslashes($HTTP_COOKIE_VARS['bh_remember_user'][0]));
-  
+
     for ($i = 0; $i < sizeof($HTTP_COOKIE_VARS['bh_remember_user']); $i++) {
       if (isset($HTTP_COOKIE_VARS['bh_remember_password'][$i])) {
         echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
@@ -242,17 +262,17 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
         echo form_input_hidden('password'. $i, str_repeat(chr(255), 4));
       }
     }
-    
+
     echo "&nbsp;". form_button("other", "Other", "onclick=\"self.location.href='". get_request_uri(). "&other=true';\""). "</td>\n";
-    
+
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td align=\"right\">Password:</td>\n";
     echo "            <td>".form_input_password("password", ($HTTP_COOKIE_VARS['bh_remember_password'][0] != str_repeat(chr(255), 4) ? $HTTP_COOKIE_VARS['bh_remember_password'][0] : ""))."</td>\n";
     echo "          </tr>\n";
-    
+
   }else {
-  
+
     echo "          <tr>\n";
     echo "            <td align=\"right\">User Name:</td>\n";
     echo "            <td>". form_input_text("logon", _stripslashes($HTTP_COOKIE_VARS['bh_remember_user'][0])). "</td>\n";
@@ -261,16 +281,16 @@ if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
     echo "            <td align=\"right\">Password:</td>\n";
     echo "            <td>". form_input_password("password", ($HTTP_COOKIE_VARS['bh_remember_password'][0] != str_repeat(chr(255), 4) ? $HTTP_COOKIE_VARS['bh_remember_password'][0] : "")). "</td>\n";
     echo "          </tr>\n";
-    
+
   }
-    
+
 }
 
 echo "            <tr>\n";
 echo "              <td>&nbsp;</td>\n";
 echo "              <td>";
 
-echo form_checkbox("remember_user", "Y", "Remember password", ($HTTP_COOKIE_VARS['bh_remember_password'][0] != str_repeat(chr(255), 4)) && strlen($HTTP_COOKIE_VARS['bh_remember_password'][0]) > 0);
+echo form_checkbox("remember_user", "Y", "Remember passwords", ($HTTP_COOKIE_VARS['bh_remember_password'][0] != str_repeat(chr(255), 4)) && strlen($HTTP_COOKIE_VARS['bh_remember_password'][0]) > 0);
 
 echo "</td>\n";
 echo "            </tr>\n";

@@ -248,28 +248,48 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
             <td><h2>Possible Answers</h2></td>
           </tr>
           <tr>
-            <td>Enter up to five answers for your poll question.. If your poll is a "yes/no" question, simply enter "Yes" for Answer 1 and "No" for Answer 2.</td>
+            <td>Enter the answers for your poll question.. If your poll is a "yes/no" question, simply enter "Yes" for Answer 1 and "No" for Answer 2.</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
           </tr>
           <tr>
-            <td>1. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][0])), 40, 64); ?></td>
-          </tr>
-          <tr>
-            <td>2. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][1])), 40, 64); ?></td>
-          </tr>
-          <tr>
-            <td>3. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][2])), 40, 64); ?></td>
-          </tr>
-          <tr>
-            <td>4. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][3])), 40, 64); ?></td>
-          </tr>
-          <tr>
-            <td>5. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][4])), 40, 64); ?></td>
-          </tr>
-          <tr>
-            <td><?php echo form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", ($HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+            <td>
+              <table class="posthead" cellpadding="0" cellspacing="0" width="500">
+	        <tr>
+		  <td>&nbsp;</td>
+                  <td>No. Answers: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), isset($HTTP_POST_VARS['answercount']) ? $HTTP_POST_VARS['answercount'] : 0), " ", form_submit("changecount", "Change")  ?></td>
+	        </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <?php
+
+	          $available_answers = array(5, 10, 15, 20);
+
+	          if (isset($HTTP_POST_VARS['answercount'])) {
+	            $answercount = $available_answers[$HTTP_POST_VARS['answercount']];
+	          }else {
+	            $answercount = 5;
+	          }
+
+	          for ($i = 0; $i < $answercount; $i++) {
+
+		    echo "<tr>\n";
+                    echo "  <td>", $i + 1, ". </td>\n";
+                    echo "  <td>", form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 64), "</td>\n";
+		    echo "</tr>\n";
+
+		  }
+
+		?>
+		<tr>
+                  <td>&nbsp;</td>
+		  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", ($HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+                </tr>
+	      </table>
+	    </td>
           </tr>
           <tr>
             <td>&nbsp;</td>

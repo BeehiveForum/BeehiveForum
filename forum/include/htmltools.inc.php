@@ -40,9 +40,16 @@ echo '</form>'; */
 
 class TextAreaHTML {
 
-    private $form;                    // name of the form the textareas will belong to
-    private $tas = array();            // array of all the html-enabled textarea's names
-    private $tbs = 0;                // count of all the generated toolbars
+    // Note: PHP/5.0 introduces new public, private and protected
+    // modifiers whilst removing the var modifier. However it only
+    // causes problems if PHP/5.0's new STRICT error reporting
+    // is also enabled, hence we're (for the mean while) going to
+    // stick with PHP/4.x's old var modifiers, because for now
+    // it is going to be more compatible with our 'audience'
+
+    var $form;                    // name of the form the textareas will belong to
+    var $tas = array();            // array of all the html-enabled textarea's names
+    var $tbs = 0;                // count of all the generated toolbars
 
     function TextAreaHTML ($form) {
         $this->form = $form;
@@ -149,17 +156,17 @@ class TextAreaHTML {
 
     // ----------------------------------------------------
     // Preloads the images needed by the toolbars
-	// CALL THIS FUNCTION TOWARDS THE BEGINNING OF THE PAGE
-	// ----------------------------------------------------
+        // CALL THIS FUNCTION TOWARDS THE BEGINNING OF THE PAGE
+        // ----------------------------------------------------
 
     function preload () {
 
         $str = "<script language=\"Javascript\">\n";
         $str.= "  <!--\n";
-		$str.= "    _tb_image_main = new Image();\n";
-		$str.= "    _tb_image_main.src = \"./images/html_toolbar.png\";\n";
-		$str.= "    _tb_image_blank = new Image();\n";
-		$str.= "    _tb_image_blank.src = \"./images/blank.png\";\n";
+                $str.= "    _tb_image_main = new Image();\n";
+                $str.= "    _tb_image_main.src = \"./images/html_toolbar.png\";\n";
+                $str.= "    _tb_image_blank = new Image();\n";
+                $str.= "    _tb_image_blank.src = \"./images/blank.png\";\n";
         $str.= "  //-->\n";
         $str.= "</script>\n";
 

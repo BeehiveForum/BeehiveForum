@@ -501,7 +501,7 @@ if(!$newthread) {
 
     if ($threaddata['POLL_FLAG'] == 'Y') {
     
-      poll_display($reply_to_tid, false, false);
+      poll_display($reply_to_tid,$reply_message,0,0,false,false,false);
       
     }else {
 

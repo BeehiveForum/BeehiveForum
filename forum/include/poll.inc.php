@@ -52,7 +52,7 @@ function poll_create($tid, $answers, $closes, $change_vote, $poll_type, $show_re
 function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
 {
 
-    global $HTTP_COOKIE_VARS;
+    global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
     if(!$uid) $uid = 0;
 
@@ -60,7 +60,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     
     $sql = "select POLL.TID, POLL.O1, POLL.O2, POLL.O3, POLL.O4, POLL.O5, ";
     $sql.= "POLL.O1_VOTES, POLL.O2_VOTES, POLL.O3_VOTES, POLL.O4_VOTES, POLL.O5_VOTES, ";
-    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, UNIX_TIMESTAMP(CLOSES) AS CLOSES, ";
+    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, ";
     $sql.= "POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";    
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
     $sql.= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
@@ -69,12 +69,16 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $sql.= "left join ". forum_table("USER"). " FUSER on (POST.from_uid = FUSER.uid) ";
     $sql.= "left join ". forum_table("USER"). " TUSER on (POST.to_uid = TUSER.uid) ";
     $sql.= "left join ". forum_table("USER_PEER") . " USER_PEER ";
-    $sql.= "on (USER_PEER.uid = '$uid' and USER_PEER.PEER_UID = POST.FROM_UID) ";    
-    $sql.= "where POLL.TID = $tid and POST.TID = POLL.TID AND POST.PID = 1 order by POLL.O1_VOTES, POLL.O2_VOTES, ";
-    $sql.= "POLL.O3_VOTES, POLL.O4_VOTES, POLL.O5_VOTES desc";
+    $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";    
+    $sql.= "where POLL.TID = $tid and POST.TID = POLL.TID ";
+    $sql.= "and POST.PID = 1";
     
     $result = db_query($sql, $db_poll_display);
     $polldata = db_fetch_array($result);
+    
+    $sql = "select VOTE, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from POLL_VOTES where UID = $uid and TID = $tid";
+    $result = db_query($sql, $db_poll_display);
+    $userpolldata = db_fetch_array($result);
     
     $totalvotes = $polldata['O1_VOTES'] + $polldata['O2_VOTES'];
     $totalvotes+= $polldata['O3_VOTES'] + $polldata['O4_VOTES'];
@@ -84,45 +88,125 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
     $polldata['CONTENT'].= "  <tr>\n";
     $polldata['CONTENT'].= "    <td>\n";
-    $polldata['CONTENT'].= "      <table width=\"100%\" class=\"posthead\">\n";  
+    
+    if (!isset($userpolldata['VOTE']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+    
+      $polldata['CONTENT'].= "      <form method=\"post\" action=\"poll.php\" target=\"_self\">\n      ";
+      $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
+      
+    }
+    
+    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";  
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td colspan=\"2\"><h2>". thread_get_title($tid). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>\n";
-    $polldata['CONTENT'].= "        </tr>\n";
+    $polldata['CONTENT'].= "          <td>\n";
+    $polldata['CONTENT'].= "            <table width=\"100%\" align=\"center\">\n";
+    
+    $max_value = 0;
     
     for ($i = 1; $i < 6; $i++) {
     
-      if (!empty($polldata['O'. $i])) {
+      if ($polldata['O'. $i. '_VOTES'] > $max_value) $max_value = $polldata['O'. $i. '_VOTES'];
+      
+    }
     
-        $polldata['CONTENT'].= "    <tr>\n";
-        $polldata['CONTENT'].= "      <td width=\"100\">". $polldata['O'. $i]. "</td>\n";
-        $polldata['CONTENT'].= "      <td>". $polldata['O'. $i. '_VOTES']. "</td>\n";
-        $polldata['CONTENT'].= "    </tr>\n";
+    if ($max_value > 0) $bar_width = (300 / $max_value);
+    
+    for ($i = 1; $i < 6; $i++) {
+
+      if (!empty($polldata['O'. $i])) {
+     
+        $polldata['CONTENT'].= "          <tr>\n";
+        $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">";
+        
+        if ($in_list) {
+        
+          if (!isset($userpolldata['VOTE']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+        
+            $polldata['CONTENT'].= form_radio("POLLVOTE", 'O'. $i, '', false);
+            $polldata['CONTENT'].= "&nbsp;". $polldata['O'. $i]. "</td>\n";
+          
+          }else {
+        
+            $polldata['CONTENT'].= $polldata['O'. $i]. "</td>\n";
+            $polldata['CONTENT'].= "            <td class=\"postbody\">";
+            $polldata['CONTENT'].= "<img src=\"./images/pollbar". $i. ".png\" height=\"20\" width=\"". $bar_width * $polldata['O'. $i. '_VOTES']. "\" alt=\"\">";
+            $polldata['CONTENT'].= "</td>\n";
+          
+          }
+          
+        }else {
+        
+          $polldata['CONTENT'].= $polldata['O'. $i]. "</td>\n";
+          
+        }
+        
+        $polldata['CONTENT'].= "          </tr>\n";
         
       }
       
     }
     
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>\n";
-    $polldata['CONTENT'].= "        </tr>\n";    
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td colspan=\"2\">0 people have voted so far.</td>\n";
-    $polldata['CONTENT'].= "        </tr>\n";
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td colspan=\"2\">&nbsp;</td>\n";
-    $polldata['CONTENT'].= "        </tr>\n";    
-    $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td colspan=\"2\">Your vote was 'Yes' on 5th Never.</td>\n";
-    $polldata['CONTENT'].= "        </tr>\n";
-    $polldata['CONTENT'].= "      </table>\n";
+    $polldata['CONTENT'].= "            </table>\n";
+    $polldata['CONTENT'].= "          </td>\n";    
+    
+    if ($in_list) {    
+    
+      $polldata['CONTENT'].= "        <tr>\n";
+      $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
+      $polldata['CONTENT'].= "        </tr>\n";    
+      $polldata['CONTENT'].= "        <tr>\n";
+      $polldata['CONTENT'].= "          <td class=\"postbody\">". $totalvotes. " people have voted so far.</td>\n";
+      $polldata['CONTENT'].= "        </tr>\n";
+      $polldata['CONTENT'].= "        <tr>\n";
+      $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
+      $polldata['CONTENT'].= "        </tr>\n";
+    
+      if (isset($userpolldata['VOTE'])) {
+    
+        $polldata['CONTENT'].= "        <tr>\n";
+        $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $userpolldata['VOTE']. "' on ". format_time($userpolldata['TSTAMP'], 1). ".</td>\n";
+        $polldata['CONTENT'].= "        </tr>\n";
+      
+      }elseif ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+    
+        $polldata['CONTENT'].= "        <tr>\n";
+        $polldata['CONTENT'].= "          <td align=\"center\">";
+        $polldata['CONTENT'].= form_submit('submit', 'Vote');      
+        $polldata['CONTENT'].= "</td>\n";
+        $polldata['CONTENT'].= "        </tr>\n";    
+        $polldata['CONTENT'].= "        <tr>\n";
+        $polldata['CONTENT'].= "          <td align=\"center\">";
+        $polldata['CONTENT'].= form_button("results", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    
+        if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
+      
+          $polldata['CONTENT'].= "&nbsp;". form_submit('endpoll', 'End Poll');
+        
+        }
+    
+        $polldata['CONTENT'].= "</td>\n";
+        $polldata['CONTENT'].= "        </tr>\n";
+      
+      }
+      
+    }
+    
+    $polldata['CONTENT'].= "      </table>\n";    
+    
+    if (!isset($userpolldata['VOTE']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
+    
+      $polldata['CONTENT'].= "      </form>\n";
+      
+    }
+    
     $polldata['CONTENT'].= "    </td>\n"; 
     $polldata['CONTENT'].= "  </tr>\n";
     $polldata['CONTENT'].= "</table>\n";
-    $polldata['CONTENT'].= "<br>\n";
-    
+    $polldata['CONTENT'].= "<br><br>\n";
+
     message_display($tid, $polldata, $msg_count, $first_msg, $in_list, $closed, $limit_text);
     
 }

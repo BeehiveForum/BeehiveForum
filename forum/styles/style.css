@@ -7,6 +7,13 @@ BODY		{
 		font-family: Verdana, Arial, Helvetica, sans-serif;
                 font-size: 10pt;
 		}
+
+
+frameset        {
+                border-style: none;
+                margin:0;
+                padding:0;
+                }
 		
 .navpage        {
                 font-size: 10px;

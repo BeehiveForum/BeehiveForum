@@ -23,6 +23,7 @@ USA
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
+require_once("./include/constants.inc.php");
 
 function user_exists($logon)
 {
@@ -112,7 +113,7 @@ function user_logon($logon, $password)
 {
     $md5pass = md5($password);
 
-    $sql = "SELECT uid FROM ". forum_table("USER"). " WHERE logon = '$logon' AND passwd = '$md5pass'";
+    $sql = "SELECT uid, status FROM ". forum_table("USER"). " WHERE logon = '$logon' AND passwd = '$md5pass'";
 
     $db_user_logon = db_connect();
     $result = db_query($sql, $db_user_logon);
@@ -122,6 +123,9 @@ function user_logon($logon, $password)
     } else {
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
+        if($fa['status'] & USER_PERM_SPLAT){ // User is banned
+            $uid = -2;
+        }
         db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid", $db_user_logon);
     }
 

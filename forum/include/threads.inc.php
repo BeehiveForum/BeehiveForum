@@ -27,10 +27,13 @@ require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/thread.inc.php");
+require_once("./include/folder.inc.php");
 
 function threads_get_available_folders()
 {
-    global $HTTP_COOKIE_VARS;
+    return folder_get_available();
+    
+    /*global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
     $db_threads_get_available_folders = db_connect();
 
@@ -52,7 +55,7 @@ function threads_get_available_folders()
         }
     }
 
-    return $return;
+    return $return;*/
 }
 
 function threads_get_folders()

@@ -430,12 +430,16 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
 function messages_get_most_recent($uid)
 {
     $return = "1.1";
+    
+    $fidlist = folder_get_available();
 
     $db_messages_get_most_recent = db_connect();
 
     $sql = "select THREAD.TID, THREAD.MODIFIED, USER_THREAD.LAST_READ ";
     $sql .= "from " . forum_table("THREAD") . " THREAD ";
     $sql .= "left join " . forum_table("USER_THREAD") . " USER_THREAD on (USER_THREAD.TID = THREAD.TID and USER_THREAD.UID = $uid) ";
+    $sql .= "where THREAD.FID in ($fidlist) ";
+    $sql .= "and (USER_THREAD.INTEREST >= 0 or USER_THREAD.INTEREST is null) ";
     $sql .= "order by THREAD.MODIFIED DESC LIMIT 0,1";
 
     $result = db_query($sql, $db_messages_get_most_recent);

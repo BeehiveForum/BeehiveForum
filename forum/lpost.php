@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.40 2004-04-17 17:39:27 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.41 2004-04-17 18:41:01 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -69,10 +69,6 @@ if (!$user_sess = bh_session_check()) {
 if (!$webtag = get_webtag()) {
     header_redirect("./lforums.php");
 }
-
-// Load the wordfilter for the current user
-
-$user_wordfilter = load_wordfilter();
 
 if (bh_session_get_value('UID') == 0) {
         light_html_guest_error();

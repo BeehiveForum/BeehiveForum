@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.13 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.14 2004-04-17 18:41:02 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -44,7 +44,7 @@ function load_wordfilter()
     
     // Should we include the admin filters?
     
-    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_settings('admin_force_word_filter', 'Y', false)) {
+    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('admin_force_word_filter', 'Y', false)) {
 
         $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
         $result = db_query($sql, $db_load_wordfilter);
@@ -98,17 +98,18 @@ function load_wordfilter()
 
 function apply_wordfilter($content)
 {
-    global $user_wordfilter;
+    if ($user_wordfilter = load_wordfilter()) {
 
-    if (!is_array($user_wordfilter)) return $content;
-    if (!isset($user_wordfilter['pattern_array'])) return $content;
-    if (!isset($user_wordfilter['replace_array'])) return $content;
+        if (!is_array($user_wordfilter)) return $content;
+        if (!isset($user_wordfilter['pattern_array'])) return $content;
+        if (!isset($user_wordfilter['replace_array'])) return $content;
     
-    $pattern_array = $user_wordfilter['pattern_array'];
-    $replace_array = $user_wordfilter['replace_array'];
+        $pattern_array = $user_wordfilter['pattern_array'];
+        $replace_array = $user_wordfilter['replace_array'];
     
-    if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
-        return $new_content;
+        if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
+            return $new_content;
+        }
     }
         
     return $content;

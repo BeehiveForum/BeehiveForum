@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.149 2004-02-02 23:21:39 decoyduck Exp $ */
+/* $Id: post.php,v 1.150 2004-02-09 01:26:56 tribalonline Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -703,6 +703,15 @@ if (!isset($t_to_uid)) $t_to_uid = -1;
 echo "<h2>". $lang['message'] .":</h2>\n";
 
 tools_html(form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+
+if (isset($t_content)) {
+	if (isset($HTTP_POST_VARS['preview']) && isset($HTTP_POST_VARS['t_post_html']) && $t_post_html) {
+		$t_content = tidy_html($t_content, $auto_linebreaks);
+	}
+	$t_content = _htmlentities($t_content);
+} else {
+	$t_content = "";
+}
 
 echo tools_junk()."\n";
 echo form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";

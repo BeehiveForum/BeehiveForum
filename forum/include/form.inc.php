@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.64 2004-12-27 14:52:18 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.65 2004-12-27 22:04:36 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -51,6 +51,13 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 
     $html.= "dir=\"{$lang['_textdir']}\" />";
     return $html;
+}
+
+// Generate unique form id
+
+function form_unique_id()
+{
+    return preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
 }
 
 // Creates a text input field
@@ -143,7 +150,7 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 
 function form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $id = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $id = form_unique_id();
 
     $html = "<span class=\"bhinputcheckbox\">";
     $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\"";
@@ -163,7 +170,7 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
 
 function form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $id = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    $id = form_unique_id();
 
     $html = "<span class=\"bhinputradio\">";
     $html.= "<input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\"";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.27 2004-04-10 21:45:32 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.28 2004-04-11 19:47:07 decoyduck Exp $ */
 
 // Beehive Constants
 
@@ -69,12 +69,19 @@ define("PM_SAVED_IN", 16);  // Saved Received PM
 define("PM_SAVED_OUT", 32); // Saved Sent PM
 define("PM_PREVIEW", 64);   // Previewed Message (pm_write.php)
 
-// PM Folders - defines what can be stored in each folder
+// PM Folders - defines each folder type
 
-define("PM_FOLDER_INBOX",  PM_NEW|PM_UNREAD|PM_READ); // Inbox
-define("PM_FOLDER_SENT",   PM_SENT); // Sent Items
-define("PM_FOLDER_OUTBOX", PM_NEW|PM_UNREAD); // Outbox
-define("PM_FOLDER_SAVED",  PM_SAVED_IN|PM_SAVED_OUT); // Saved Items
+define("PM_FOLDER_INBOX",  1);
+define("PM_FOLDER_SENT",   2);
+define("PM_FOLDER_OUTBOX", 3);
+define("PM_FOLDER_SAVED",  4);
+
+// PM Item types - defines different types of messages
+
+define("PM_INBOX_ITEMS",  PM_NEW|PM_UNREAD|PM_READ); // Inbox
+define("PM_SENT_ITEMS",   PM_SENT); // Sent Items
+define("PM_OUTBOX_ITEMS", PM_NEW|PM_UNREAD); // Outbox
+define("PM_SAVED_ITEMS",  PM_SAVED_IN|PM_SAVED_OUT); // Saved Items
 
 // Allowed thread types in folders
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.59 2004-04-10 23:52:28 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.60 2004-04-11 19:47:08 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -122,21 +122,25 @@ function pm_add_sentitem($mid)
     }
 }
 
-function pm_list_get($folder, $offset = 0)
+function pm_get_inbox($offset)
 {
-    $pms = array();
-
-    $db_pm_list_get = db_connect();
-    $uid = bh_session_get_value('UID');
-
-    if (!is_numeric($folder)) return false;
     if (!is_numeric($offset)) $offset = 0;
 
-    // ------------------------------------------------------------
-    // Get a list of messages in the specified folder
-    // ------------------------------------------------------------
-    
+    $db_pm_get_inbox = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    $pm_get_inbox_array = array();
+
     if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "WHERE TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid'";
+
+    $result = db_query($sql, $db_pm_get_inbox);
+
+    $result_array  = db_fetch_array($result);
+    $message_count = $result_array['MESSAGE_COUNT'];
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
@@ -146,26 +150,158 @@ function pm_list_get($folder, $offset = 0)
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
-
-    if (($folder == PM_FOLDER_INBOX)) {
-        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = '$uid' ";
-    }elseif (($folder == PM_FOLDER_SENT) || ($folder == PM_FOLDER_OUTBOX)) {
-        $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = '$uid' ";
-    }elseif ($folder == PM_FOLDER_SAVED) {
-        $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
-        $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
-    }
-
+    $sql.= "PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid' ";
     $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
     $sql.= "LIMIT $offset, 10";
 
-    $result = db_query($sql, $db_pm_list_get);
+    $result = db_query($sql, $db_pm_get_inbox);
 
-    while ($row = db_fetch_array($result)) {
-        $pms[] = $row;
+    if (db_num_rows($result)) {
+
+        while ($result_array = db_fetch_array($result)) {
+            $pm_get_inbox_array[] = $result_array;
+        }
     }
 
-    return $pms;
+    return array('message_count' => $message_count,
+	         'message_array' => $pm_get_inbox_array);
+}
+
+function pm_get_outbox($offset)
+{
+    if (!is_numeric($offset)) $offset = 0;
+
+    $db_pm_get_outbox = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    $pm_get_outbox_array = array();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "WHERE TYPE = TYPE & ". PM_OUTBOX_ITEMS. " AND FROM_UID = '$uid' ";
+
+    $result = db_query($sql, $db_pm_get_outbox);
+
+    $result_array  = db_fetch_array($result);
+    $message_count = $result_array['MESSAGE_COUNT'];
+
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+    $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
+    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid' ";
+    $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
+    $sql.= "LIMIT $offset, 10";
+
+    $result = db_query($sql, $db_pm_get_outbox);
+
+    if (db_num_rows($result)) {
+
+        while ($result_array = db_fetch_array($result)) {
+            $pm_get_outbox_array[] = $result_array;
+        }
+    }
+
+    return array('message_count' => $message_count,
+	         'message_array' => $pm_get_outbox_array);
+}
+
+function pm_get_sent($offset)
+{
+    if (!is_numeric($offset)) $offset = 0;
+
+    $db_pm_get_outbox = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    $pm_get_outbox_array = array();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "WHERE TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid' ";
+
+    $result = db_query($sql, $db_pm_get_outbox);
+
+    $result_array  = db_fetch_array($result);
+    $message_count = $result_array['MESSAGE_COUNT'];
+
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+    $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
+    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid' ";
+    $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
+    $sql.= "LIMIT $offset, 10";
+
+    $result = db_query($sql, $db_pm_get_outbox);
+
+    if (db_num_rows($result)) {
+
+        while ($result_array = db_fetch_array($result)) {
+            $pm_get_outbox_array[] = $result_array;
+        }
+    }
+
+    return array('message_count' => $message_count,
+	         'message_array' => $pm_get_outbox_array);
+}
+
+function pm_get_saveditems($offset)
+{
+    if (!is_numeric($offset)) $offset = 0;
+
+    $db_pm_get_saveditems = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    $pm_get_saveditems_array = array();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "WHERE (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') OR ";
+    $sql.= "(TYPE = ". PM_SAVED_IN. " AND TO_UID = '$uid')";
+
+    $result = db_query($sql, $db_pm_get_saveditems);
+
+    $result_array  = db_fetch_array($result);
+    $message_count = $result_array['MESSAGE_COUNT'];
+
+    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
+    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
+    $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
+    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
+    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "(PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
+    $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
+    $sql.= "GROUP BY PM.MID ORDER BY CREATED DESC ";
+    $sql.= "LIMIT $offset, 10";
+
+    $result = db_query($sql, $db_pm_get_saveditems);
+
+    if (db_num_rows($result)) {
+
+        while ($result_array = db_fetch_array($result)) {
+            $pm_get_saveditems_array[] = $result_array;
+        }
+    }
+
+    return array('message_count' => $message_count,
+	         'message_array' => $pm_get_saveditems_array);
 }
 
 function pm_get_user($mid)
@@ -253,10 +389,12 @@ function pm_single_get($mid, $folder, $uid = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' ";
 
-    if (($folder == PM_FOLDER_INBOX)) {
-        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = '$uid' ";
-    }elseif (($folder == PM_FOLDER_SENT) || ($folder == PM_FOLDER_OUTBOX)) {
-        $sql.= "AND PM.TYPE = PM.TYPE & $folder AND PM.FROM_UID = '$uid' ";
+    if ($folder == PM_FOLDER_INBOX) {
+        $sql.= "AND PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid' ";
+    }elseif ($folder == PM_FOLDER_SENT) {
+        $sql.= "AND PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid' ";
+    }elseif ($folder == PM_FOLDER_OUTBOX) {
+        $sql.= "AND PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid' ";
     }elseif ($folder == PM_FOLDER_SAVED) {
         $sql.= " AND ((PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') OR ";
         $sql.= "(PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')) ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.50 2004-08-15 11:40:36 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.51 2004-08-17 23:46:32 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -160,10 +160,10 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['LANGUAGE'] = false;
     }
 
-    if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "Y") {
-        $user_prefs['VIEW_SIGS'] = "Y";
-    }else {
+    if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "N") {
         $user_prefs['VIEW_SIGS'] = "N";
+    }else {
+        $user_prefs['VIEW_SIGS'] = "Y";
     }
 
     if (isset($_POST['view_sigs_global'])) {
@@ -448,7 +448,7 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['display']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td>", form_checkbox("view_sigs", "N", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("view_sigs_global","Y",$lang['setforallforums'],$user_prefs['VIEW_SIGS_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

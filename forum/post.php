@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.216 2004-08-16 22:07:13 decoyduck Exp $ */
+/* $Id: post.php,v 1.217 2004-08-17 23:46:33 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -149,7 +149,7 @@ if (isset($_POST['replyto'])) {
 
 // Check if the user is viewing signatures.
 
-$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Get the user's post page preferences.
 

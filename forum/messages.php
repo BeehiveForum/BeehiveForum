@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.154 2004-08-14 23:16:00 rowan_hill Exp $ */
+/* $Id: messages.php,v 1.155 2004-08-17 23:46:33 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -223,7 +223,7 @@ if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 
 $foldertitle = folder_get_title($threaddata['FID']);
 
-$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 $msg_count = count($messages);
 

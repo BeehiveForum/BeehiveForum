@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.143 2004-08-15 00:35:28 tribalonline Exp $ */
+/* $Id: edit.php,v 1.144 2004-08-17 23:46:32 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -233,7 +233,7 @@ if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_
 }
 
 // Check if the user is viewing signatures.
-$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 
 // Get the user's post page preferences.

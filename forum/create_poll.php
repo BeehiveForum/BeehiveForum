@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.123 2004-08-08 23:47:10 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.124 2004-08-17 23:46:31 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -134,17 +134,45 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
 }
 
 // Check if the user is viewing signatures.
-$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Get the user's post page preferences.
 
 $page_prefs = bh_session_get_value('POST_PAGE');
 
 if ($page_prefs == 0) {
-	$page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+	$page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
 }
 
 $valid = true;
+
+if (isset($_POST['t_post_emots'])) {
+	if ($_POST['t_post_emots'] == "disabled") {
+		$emots_enabled = false;
+	} else {
+		$emots_enabled = true;
+	}
+} else {
+	$emots_enabled = true;
+}
+if (isset($_POST['t_post_links'])) {
+	if ($_POST['t_post_links'] == "enabled") {
+		$links_enabled = true;
+	} else {
+		$links_enabled = false;
+	}
+} else {
+	$links_enabled = false;
+}
+if (isset($_POST['t_post_interest'])) {
+	if ($_POST['t_post_interest'] == "high") {
+		$high_interest = true;
+	} else {
+		$high_interest = false;
+	}
+} else {
+	$high_interest = false;
+}
 
 if (isset($_POST['t_message_html'])) {
 
@@ -152,9 +180,24 @@ if (isset($_POST['t_message_html'])) {
 
     if ($t_message_html == "enabled_auto") {
         $post_html = 1;
-    }else if ($t_message_html == "enabled") {
+    } else if ($t_message_html == "enabled") {
         $post_html = 2;
-    }
+    } else {
+		$post_html = 0;
+	}
+
+} else {
+	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+		$post_html = 1;
+	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+		$post_html = 2;
+	} else {
+		$post_html = 0;
+	}
+
+	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+	$links_enabled = ($page_prefs & POST_AUTO_LINKS);
+	$high_interest = bh_session_get_value('MARK_AS_OF_INT');
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -186,33 +229,13 @@ if (isset($_POST['t_sig_html'])) {
 	$fetched_sig = true;
 }
 
-if (isset($_POST['t_post_emots'])) {
-	if ($_POST['t_post_emots'] == "enabled") {
-		$emots_enabled = true;
-	} else {
-		$emots_enabled = false;
-	}
-}
-
 if (!isset($_POST['aid'])) {
     $aid = md5(uniqid(rand()));
 }else{
     $aid = $_POST['aid'];
 }
 
-if (!isset($post_html)) {
-	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-		$post_html = 1;
-	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
-}
-
 if (!isset($sig_html)) $sig_html = 0;
-
-if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
 
 
 if (isset($_POST['cancel'])) {
@@ -334,7 +357,7 @@ if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)
 if (!isset($t_message_text)) $t_message_text = "";
 if (!isset($t_sig)) $t_sig = "";
 
-$post = new MessageText($allow_html ? $post_html : false, $t_message_text, $emots_enabled);
+$post = new MessageText($allow_html ? $post_html : false, $t_message_text, $emots_enabled, $links_enabled);
 $sig = new MessageText($allow_html ? $sig_html : false, $t_sig);
 
 $t_message_text = $post->getContent();
@@ -406,7 +429,7 @@ if ($valid && isset($_POST['submit'])) {
             post_create($t_tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
         }
 
-        if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, true);
+        if ($high_interest) thread_set_interest($t_tid, 1, true);
     }
 
     if (isset($t_tid) && $t_tid > 0) {
@@ -798,13 +821,13 @@ if ($allow_html == true) {
 	echo form_input_hidden("t_message_html", "disabled");
 }
 
-echo "<h2>". $lang['emoticonsinmessage'] .":</h2>\n";
+echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 
-echo form_radio("t_post_emots", "enabled", $lang['enabled'], $emots_enabled)." \n";
-echo form_radio("t_post_emots", "disabled", $lang['disabled'], !$emots_enabled)." \n";
+echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
+echo form_checkbox("t_post_interest", "high", $lang['setthreadtohighinterest'], $high_interest)."<br />\n";
 
-echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
-
+echo "<br />\n";
 echo form_submit("submit", $lang['post']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y', false)) {

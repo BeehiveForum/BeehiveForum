@@ -29,7 +29,7 @@ function draw_beehive_bar()
 ?>
 <div align="center"><table width="96%" class="posthead"><tr>
 <td width="60%" class="smalltext">
-Beehive Forum 0.3
+Beehive Forum 0.4-dev
 &nbsp;|&nbsp;
 <a href="http://beehiveforum.net/faq" target="_blank">FAQ</a>
 &nbsp;|&nbsp;
@@ -37,7 +37,7 @@ Beehive Forum 0.3
 &nbsp;|&nbsp;
 <a href="http://sourceforge.net/tracker/?group_id=50772&atid=460926" target="_blank">Support</a>
 </td>
-<td width="40%" align="right" class="smalltext">&copy;2002
+<td width="40%" align="right" class="smalltext">&copy;2003
 <a href="http://beehiveforum.net/" target="_blank">Project BeehiveForum</a>
 </td></tr></table></div>
 <?php

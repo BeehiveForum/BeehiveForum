@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.35 2003-08-31 18:15:10 decoyduck Exp $ */
+/* $Id: delete.php,v 1.36 2003-09-15 18:34:45 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -77,7 +77,7 @@ if (isset($HTTP_POST_VARS['msg'])) {
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<h2{$lang['nomessagespecifiedfordel']}</h2>";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -123,7 +123,7 @@ if ($valid) {
             echo "<p>{$lang['postdelsuccessfully']}</p>";
             echo form_quick_button("discussion.php", $lang['back'], "msg", $HTTP_POST_VARS['msg']);
             echo "</div>";
-            html_draw_bottom();
+            // html_draw_bottom();
             exit;
 
         }else {
@@ -176,6 +176,6 @@ echo "    <p>", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("ca
 echo "  </form>\n";
 echo "</div>\n";
 
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.21 2003-08-30 16:46:01 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.22 2003-09-15 18:34:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -47,7 +47,7 @@ if(!bh_session_check()){
 if (!$show_links) {
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -99,7 +99,7 @@ if (isset($HTTP_GET_VARS['action'])) {
 if (!isset($HTTP_GET_VARS['lid']) && !isset($lid)) {
     html_draw_top();
     echo "<h2>{$lang['mustprovidelinkID']}</h2>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 } elseif (!isset($lid)) {
     $lid = $HTTP_GET_VARS['lid'];
@@ -109,7 +109,7 @@ $link = links_get_single($lid);
 if (!$link) {
     html_draw_top();
     echo "<h2>{$lang['invalidlinkID']}</h2>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 $link['TITLE'] = _stripslashes($link['TITLE']);
@@ -210,6 +210,6 @@ if (perm_is_moderator() || $link['UID'] == bh_session_get_value('UID')) {
     echo "</td></tr></table\n";
     echo "</form>\n";
 }
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.9 2003-08-01 23:52:52 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.10 2003-09-15 18:34:45 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -56,7 +56,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 		echo "</div>\n";
 
-                html_draw_bottom();
+                // html_draw_bottom();
                 exit;
 
             }else {
@@ -82,7 +82,7 @@ if (isset($HTTP_GET_VARS['u']) && isset($HTTP_GET_VARS['h'])) {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['requiredinformationnotfound']}</h2>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -92,7 +92,7 @@ if ($user = user_get($uid, $key)) {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -139,6 +139,6 @@ echo "    </table>\n";
 echo "  </form>\n";
 echo "</div>\n";
 
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.20 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: links.php,v 1.21 2003-09-15 18:34:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -49,7 +49,7 @@ if(!bh_session_check()){
 if (!$show_links) {
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}</h2>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -250,5 +250,5 @@ if (bh_session_get_value('UID') && $viewmode == 0) {
 }
 
 echo "</table>\n";
-html_draw_bottom();
+// html_draw_bottom();
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.62 2003-09-15 17:41:47 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.63 2003-09-15 18:34:48 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -211,21 +211,20 @@ function html_draw_top()
 
 function html_draw_bottom ()
 {
-    global $HTTP_SERVER_VARS, $show_page_info;
+    global $HTTP_SERVER_VARS, $show_page_info, $bh_query_count, $bh_script_time, $bh_gz_status;
 
-    /* -- Removed due to problems
+    $html = "";
 
     if (basename($HTTP_SERVER_VARS['PHP_SELF']) != "nav.php" && $show_page_info) {
-        echo "<p class=\"info-text\">[&nbsp;Script Execution time:&nbsp;<!-- bh_script_time //-->&nbsp;]   ";
-        echo "[&nbsp;<!-- bh_query_count //-->&nbsp;queries&nbsp;used&nbsp;]  ";
-        echo "[&nbsp;<!-- bh_content_encoding //-->&nbsp;]</p>\n";
-        echo "<p class=\"info-text\"><!-- bh_query_strs //--></p>\n";
+        $html.= "<p class=\"info-text\">[&nbsp;Script Execution time:&nbsp;$bh_script_time&nbsp;]   ";
+        $html.= "[&nbsp;$bh_query_count&nbsp;queries&nbsp;used&nbsp;]  ";
+        $html.= "[&nbsp;$bh_gz_status&nbsp;]</p>\n";
     }
 
-    */
+    $html.= "</body>\n";
+    $html.= "</html>\n";
 
-    echo "</body>\n";
-    echo "</html>\n";
+    return $html;
 }
 
 function style_image($img)
@@ -252,8 +251,10 @@ function bh_setcookie($name, $value = "", $expires = 0)
         }else {
             $hostname = $cookie_domain;
         }
-    }else {
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
         $hostname = str_replace("www", "", $HTTP_SERVER_VARS['HTTP_HOST']);
+    }else {
+        $hostname = "";
     }
 
     setcookie($name, $value, $expires, '/', $hostname, 0);

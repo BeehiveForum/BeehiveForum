@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.19 2003-09-10 17:03:48 decoyduck Exp $ */
+/* $Id: display.php,v 1.20 2003-09-15 18:34:45 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -66,7 +66,7 @@ if (!is_numeric($tid)) $tid = 1;
 if (!thread_can_view($tid, bh_session_get_value('UID'))) {
     html_draw_top();
     echo "<h2>You are not authorised to view this thread!</h2>\n";
-    html_draw_bottom();
+    // html_draw_bottom();
     exit;
 }
 
@@ -125,6 +125,6 @@ echo form_button("print", $lang['print'], "onclick=\"window.print()\"");
 echo "</form>\n";
 echo "</td></tr></table>\n";
 
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

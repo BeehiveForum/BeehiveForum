@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.130 2003-09-09 16:42:10 tribalonline Exp $ */
+/* $Id: post.php,v 1.131 2003-09-15 18:34:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -301,7 +301,7 @@ if (!$newthread) {
         echo "</td></tr>\n";
         echo "</table></form>\n";
 
-        html_draw_bottom();
+        // html_draw_bottom();
         exit;
 
     }
@@ -453,7 +453,7 @@ if (!$newthread) {
             echo "</td></tr>\n";
             echo "</table></form>\n";
 
-            html_draw_bottom();
+            // html_draw_bottom();
             exit;
         }
     }
@@ -759,6 +759,6 @@ if (!$newthread) {
 
 echo "</form>\n";
 
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_logout.php,v 1.11 2003-08-02 23:37:34 decoyduck Exp $ */
+/* $Id: user_logout.php,v 1.12 2003-09-15 18:34:48 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -65,6 +65,6 @@ echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
 echo "</form></div>\n";
 
-html_draw_bottom();
+// html_draw_bottom();
 
 ?>

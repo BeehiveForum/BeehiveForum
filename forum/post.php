@@ -214,9 +214,12 @@ if($valid){
             } else {
 				$preview_sig = $t_sig;
 			}
-            $preview_message['CONTENT'] = stripslashes($preview_message['CONTENT'] . "<div class=\"sig\">$preview_sig</div>");
-        }
-        message_display(0,$preview_message,0,0,false);
+            $preview_message['CONTENT'] = $preview_message['CONTENT'] . "<div class=\"sig\">$preview_sig</div>";
+        } else {
+			$t_sig = " ";
+		}
+		$preview_message['CONTENT'] = stripslashes($preview_message['CONTENT']);
+        message_display(0,$preview_message,0,0,false,false,false);
         echo "<br />\n";
     }
 }
@@ -308,7 +311,7 @@ echo "</form>\n";
 if(!$newthread){
     echo "<p>In reply to:</p>\n";
     $reply_message = messages_get($reply_to_tid,$reply_to_pid);
-    message_display(0,$reply_message[0],0,0,false);
+    message_display(0,$reply_message[0],0,0,false,false,false);
     echo "<p>&nbsp;&nbsp;</p>\n";
 }
 html_draw_bottom();

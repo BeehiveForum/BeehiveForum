@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.256 2005-04-03 17:38:11 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.257 2005-04-04 00:59:28 decoyduck Exp $ */
 
 // International English language file
 
@@ -451,10 +451,15 @@ $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
 
 $lang['newuserregistrations'] = "New User Registrations";
-$lang['preventuseofduplicateemailaddresses'] = "Prevent use of duplicate email addresses";
+$lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
 $lang['requireemailconfirmation'] = "Require email confirmation";
 $lang['usetextcaptcha'] = "Use Text Captcha";
+$lang['textcaptchadir'] = "Text captcha directory";
+$lang['textcaptchakey'] = "Text captcha key";
+
+$lang['textcaptchadirsnotwritable'] = "Text captcha directory must be writable by webserver / PHP process!";
+$lang['textcaptchadirblank'] = "Text captcha directory is blank!";
 
 $lang['newuserpreferences'] = "New User Preferences";
 
@@ -586,7 +591,7 @@ $lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['unknownlanguage'] = "Unknown language";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
-$lang['attachmentdirnotwritable'] = "Choosen attachment directory and it's parent directory must be writable by PHP";
+$lang['attachmentdirnotwritable'] = "Attachment directory must be writable by the webserver / PHP process!";
 $lang['attachmentdirblank'] = "You must supply a directory to save attachments in";
 $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";
@@ -692,6 +697,8 @@ $lang['forum_settings_help_41'] = "The above options change the default values f
 $lang['forum_settings_help_42'] = "<b>Prevent use of duplicate email addresses</b> forces Beehive to check the user accounts against the email address the user is registering with and prompts them to use another if it is already in use.";
 $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enabled will send an email to each new user with a link that can be used to confirm their email address. Until they confirm their email address they will not be able to post unless their user permissions are changed manually by an admin.";
 $lang['forum_settings_help_44'] = "<b>Use Text Captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
+$lang['forum_settings_help_45'] = "<b>Text Captcha directory</b> specifies the location that Beehive will store it's text captcha images and fonts in. This directory must be writable by the webserver / PHP process and must be accessible via HTTP. After you have enabled text captcha you must upload some true type fonts into the fonts sub-directory of your main text captcha directory otherwise Beehive will skip the text captcha during user registration.";
+$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1344,6 +1351,11 @@ $lang['itemsmarkedwithaasterixarerequired'] = "Items marked with a * are require
 $lang['confirmpassword'] = "Confirm Password";
 $lang['invalidemailaddressformat'] = "Invalid email address format";
 $lang['moreoptionsavailable'] = "More Profile and Preference options are available once you register";
+$lang['textcaptchaconfirmation'] = "Confirmation";
+$lang['textcaptchaexplain'] = "To the right is a text-captcha image. Please type the code you can see in the image into the input field below it.";
+$lang['textcaptchaimgtip'] = "This is a captcha-picture. It is used to prevent automatic registration";
+$lang['textcaptchamissingkey'] = "A confirmation code is required.";
+$lang['textcaptchaverificationfailed'] = "Text captcha verification code was incorrect. Please reenter it.";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 
@@ -1588,5 +1600,8 @@ $lang['signatureallowed'] = "Signature allowed";
 $lang['guestaccessallowed'] = "Guest access allowed";
 $lang['postapprovalrequired'] = "Post approval required";
 
+// text_captcha.inc.php ------------------------------------------------
+
+$lang['textcaptchanofonts'] = "No fonts available for text captcha. Please upload some truetype fonts into the fonts sub-directory on your server";
 
 ?>

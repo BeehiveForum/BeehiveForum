@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.66 2005-04-03 17:38:11 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.67 2005-04-04 00:59:28 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -234,7 +234,7 @@ if (isset($peer_uid)) {
     echo "                  <td width=\"400\">: {$lang['normal_exp']}</td>\n";
     echo "                </tr>\n";
 
-    if ((($user_peer_perms & USER_PERM_FOLDER_MODERATE) && ($user_perms & USER_PERM_CAN_IGNORE_ADMIN)) || !($user_peer_perms & USER_PERM_FOLDER_MODERATE) ||) {
+    if (($user_peer_perms & USER_PERM_FOLDER_MODERATE) && ($user_perms & USER_PERM_CAN_IGNORE_ADMIN)) || !($user_peer_perms & USER_PERM_FOLDER_MODERATE)) {
 
         echo "                <tr>\n";
         echo "                  <td width=\"200\">", form_radio("rel", "2", $lang['ignored'], $rel & USER_IGNORED ? true : false), "</td>\n";

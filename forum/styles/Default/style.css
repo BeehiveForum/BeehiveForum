@@ -529,7 +529,7 @@ a {
 .post_folder_dropdown,.thread_title, .post_to_others,
 .post_content, .signature_content, .to_uid_dropdown,
 .recipient_dropdown, .recent_user_dropdown,
-.user_in_thread_dropdown {
+.user_in_thread_dropdown, .text_captcha_input {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -832,5 +832,9 @@ a {
     border-bottom-width: 1px;
     border-left-width: 0px;
     border-style: dashed;
+}
+
+.text_captcha_input {
+    width: 180px;
 }
 

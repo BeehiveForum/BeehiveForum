@@ -87,9 +87,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
       }
 
     }
-    
+
     if (!isset($luid)) {
-    
+
       $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
 
     }
@@ -183,7 +183,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
-          header_redirect("./index.php?final_uri=". urlencode($final_uri));
+          header_redirect("./index.php". (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''));
 
       }else { // IIS bug prevents redirect at same time as setting cookies.
 
@@ -318,19 +318,19 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
   echo "          <tr>\n";
   echo "            <td align=\"right\">Password:</td>\n";
   echo "            <td>";
-  
+
   if ($password_array[0] == $passhash_array[0]) {
-  
+
     echo form_input_password('password', '');
     echo form_input_hidden('savepass', false);
-    
+
   }else {
-  
+
     echo form_input_password('password', $password_array[0]);
     echo form_input_hidden('savepass', true);
 
   }
-  
+
   echo "</td>\n";
   echo "          </tr>\n";
 
@@ -392,7 +392,7 @@ echo "        </td>\n";
 echo "      </tr>\n";
 echo "    </table>\n";
 
-if (user_guest_enabled() && $guest_account_enabled) { 
+if (user_guest_enabled() && $guest_account_enabled) {
 
   echo "  </form>\n";
   echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";

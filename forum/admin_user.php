@@ -96,23 +96,8 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
   }else {
 
-    $new_status = $user['STATUS'];
-
-    if (isset($HTTP_POST_VARS['t_worker'])) {
-      $new_status = $HTTP_POST_VARS['t_worker'];
-    }
-
-    if (isset($HTTP_POST_VARS['t_worm'])) {
-      $new_status = $new_status | $HTTP_POST_VARS['t_worm'];
-    }
-    
-    if (isset($HTTP_POST_VARS['t_wasp'])) {
-      $new_status = $new_status | $HTTP_POST_VARS['t_wasp'];
-    }
-
-    if (isset($HTTP_POST_VARS['t_splat'])) {
-      $new_status = $new_status | $HTTP_POST_VARS['t_splat'];
-    }
+    $new_status = @$HTTP_POST_VARS['t_worker'] | @$HTTP_POST_VARS['t_worm'];
+    $new_status = $new_status | @$HTTP_POST_VARS['t_wasp'] | @$HTTP_POST_VARS['t_splat'];
 
     if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
         $new_status = $new_status | $HTTP_POST_VARS['t_soldier'];
@@ -152,10 +137,10 @@ if(isset($HTTP_POST_VARS['submit'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
-    
+
       $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
       $result = db_query($sql, $db);
-      
+
       while (list($tid, $pid) = db_fetch_array($result)) {
 
         post_delete($tid, $pid);
@@ -243,7 +228,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
   echo "<tr><td>&nbsp;</td></tr>\n";
   echo "<tr><td class=\"subhead\">Possible Aliases";
-  
+
   if (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
     echo "(IP: ", $user['LOGON_FROM'], ") ";
   }
@@ -294,37 +279,37 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   $attachments = get_users_attachments($uid);
 
   if (is_array($attachments)) {
-  
+
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
       echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" title=\"";
-      
+
       if (strlen($attachments[$i]['filename']) > 16) {
         echo "Filename: ". $attachments[$i]['filename']. ", ";
-      }      
-      
+      }
+
       if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
         echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
       }
-                        
+
       echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
       echo "Downloaded: ". $attachments[$i]['downloads'];
-                        
+
       if ($attachments[$i]['downloads'] == 1) {
         echo " time";
       }else {
         echo " times";
       }
-      
+
       echo "\">";
-      
+
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
       }else{
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
-      
+
       echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
@@ -333,13 +318,13 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
       echo "      ". form_submit('submit', 'Del'). "\n";
       echo "    </td>\n";
       echo "  </tr>\n";
-    
+
       $total_attachment_size += $attachments[$i]['filesize'];
-      
+
     }
-    
+
   }else {
-  
+
     echo "  <tr>\n";
     echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">No attachments for this user</td>\n";
     echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
@@ -350,7 +335,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "    <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
     echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
-    
+
   }
 
   echo "</table></td></tr>\n";

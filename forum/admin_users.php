@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.33 2003-08-18 13:44:01 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.34 2003-08-18 14:38:22 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -95,10 +95,14 @@ if (isset($HTTP_GET_VARS['page'])) {
     $start = 0;
 }
 
-if (isset($HTTP_GET_VARS['usersearch']) && strlen($HTTP_GET_VARS['usersearch']) > 0) {
+if (isset($HTTP_GET_VARS['usersearch']) && trim($HTTP_GET_VARS['usersearch']) != "") {
     $usersearch = $HTTP_GET_VARS['usersearch'];
 }else {
-    $usersearch = '';
+    $usersearch = "";
+}
+
+if (isset($HTTP_GET_VARS['reset'])) {
+    $usersearch = "";
 }
 
 // Draw the form
@@ -145,9 +149,9 @@ if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
 echo "        </tr>\n";
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
-    $user_array = user_search($usersearch);
+    $user_array = user_search($usersearch, $sort_by, $sort_dir, $start);
 }else {
-    $user_array = user_get_all($start);
+    $user_array = user_get_all($sort_by, $sort_dir, $start);
 }
 
 if (sizeof($user_array) > 0) {
@@ -156,7 +160,7 @@ if (sizeof($user_array) > 0) {
 
         echo "        <tr>\n";
         echo "          <td class=\"posthead\" align=\"left\">", $user['UID'], "</td>\n";
-        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $user['UID'], "\">", $user['LOGON'], "</a></td>\n";
+        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $user['UID'], "\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
         echo "          <td class=\"posthead\" align=\"left\">";
 
         if (isset($user['STATUS']) && $user['STATUS'] > 0) {
@@ -210,16 +214,16 @@ echo "</table>\n";
 
 if (sizeof($user_array) == 20) {
     if ($start < 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
     }elseif ($start >= 20) {
         echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
     }
 }else {
     if ($start >= 20) {
         echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
+        echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"admin_users.php?page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
     }else {
         echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
     }
@@ -235,7 +239,7 @@ echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
 echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
-echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_reset('reset', $lang['clear']), "\n";
+echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
 echo "              ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
 echo "            </form>\n";
 echo "          </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.83 2003-08-17 17:59:10 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.84 2003-08-18 14:38:29 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -483,13 +483,14 @@ function user_get_forthcoming_birthdays()
     return $birthdays;
 }
 
-function user_search($usersearch)
+function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $offset = 0)
 {
     $db_user_search = db_connect();
 
     $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM, STATUS ";
     $sql.= "FROM " . forum_table("USER") . " WHERE LOGON LIKE '%$usersearch%' ";
-    $sql.= "OR NICKNAME LIKE '%$usersearch%' LIMIT 0, 20";
+    $sql.= "OR NICKNAME LIKE '%$usersearch%' ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_search);
 
@@ -504,13 +505,13 @@ function user_search($usersearch)
     }
 }
 
-function user_get_all($offset = 0)
+function user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
 {
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
     $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM, STATUS ";
-    $sql.= "FROM ". forum_table("USER"). " ORDER BY LAST_LOGON DESC LIMIT $offset, 20";
+    $sql.= "FROM ". forum_table("USER"). " ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_get_all);
 

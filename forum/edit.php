@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.146 2004-09-07 01:50:48 tribalonline Exp $ */
+/* $Id: edit.php,v 1.147 2004-09-07 23:03:09 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -493,7 +493,9 @@ if (isset($_POST['preview'])) {
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
 
-            admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
+			if ($preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+	            admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
+			}
 
             echo "<script language=\"Javascript\">\n";
             echo "  <!--\n";

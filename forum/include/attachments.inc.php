@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.57 2004-04-13 14:04:03 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.58 2004-04-13 14:16:45 decoyduck Exp $ */
 
+include_once("./include/edit.inc.php");
 include_once("./include/perm.inc.php");
 
 function get_attachments($uid, $aid)
@@ -172,13 +173,29 @@ function delete_attachment($uid, $hash)
     $hash = addslashes($hash);
     
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
+    if (perm_is_moderator()) {
     
-    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE HASH = '$hash' AND UID = '$uid'";
+        $sql = "SELECT PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
+        $sql.= "ON (PAI.AID = PAF.AID) WHERE PAF.HASH = '$hash'";
+    
+    }else {
+
+        $sql = "SELECT PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
+        $sql.= "ON (PAI.AID = PAF.AID) WHERE PAF.HASH = '$hash' AND PAF.UID = '$uid'";
+    }
     
     $result = db_query($sql, $db_delete_attachment);
     
-    if ((db_num_rows($result) > 0) || perm_is_moderator()) {
+    if (db_num_rows($result) > 0) {
+
+        $row = db_fetch_array($result);
+
+	if (isset($row['TID']) && isset($row['PID'])) {
+	    post_add_edit_text($row['TID'], $row['PID']);
+	}
 
         $sql = "UPDATE {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
 	$sql.= "SET DELETED = 1 WHERE HASH = '$hash'";

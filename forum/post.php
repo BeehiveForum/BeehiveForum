@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.114 2003-08-30 00:34:27 decoyduck Exp $ */
+/* $Id: post.php,v 1.115 2003-08-31 00:28:52 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -645,7 +645,7 @@ if (isset($HTTP_POST_VARS['t_post_html'])) {
 		$tph_radio = 3;
 	}
 }
-echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1)." \n";
+echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"5\"")." \n";
 echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
 echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
 
@@ -662,7 +662,7 @@ echo "<td valign=\"top\">\n";
 echo "<h2>". $lang['signature'] .":</h2>\n";
 
 echo tools_junk()."\n";
-echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "style=\"width: 400px\" ".tools_textfield_js())."\n";
+echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"6\" style=\"width: 400px\" ".tools_textfield_js())."\n";
 echo tools_junk()."\n";
 echo form_input_hidden("t_sig_html", $t_sig_html)."\n";
 echo "</td></tr>\n";
@@ -683,13 +683,13 @@ echo "<tr><td valign=\"top\" width=\"160\">&nbsp;</td>\n";
 echo "<td valign=\"top\" width=\"10\">&nbsp;</td>\n";
 echo "<td valign=\"top\">\n";
 
-echo form_submit('submit',$lang['post'], 'onclick="closeAttachWin(); clearFocus()"');
-echo "&nbsp;".form_submit('preview', $lang['preview'], 'onClick="clearFocus()"');
-echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'onclick="closeAttachWin(); clearFocus()"');
+echo form_submit('submit',$lang['post'], 'tabindex="1" onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="2" onClick="clearFocus()"');
+echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="3" onclick="closeAttachWin(); clearFocus()"');
 
 if ($attachments_enabled) {
 
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('".$aid."')\"");
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "tabindex=\"4\" onclick=\"launchAttachWin('".$aid."')\"");
     echo form_input_hidden("aid", $aid);
 
 }

@@ -609,8 +609,16 @@ function tidy_html ($html, $linebreaks = true) {
 			return preg_replace('/&#(\d+);/me', "chr('\\1')",$ret);
 		}
 	}
+	function regex_output($text) {
+		$text = html_entity_decode($text);
+		// accounts for stripslashes 'bug' when using /e modifier
+		// see comments at:
+		// http://uk2.php.net/manual/en/function.preg-replace.php
+		$text = str_replace('\"', '"', $text);
+		return "<code>$text</code>";
+	}
 	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/ie",
-						"'<code>'.html_entity_decode('$1').'</code>'", $html);
+						"regex_output('$1')", $html);
 
 	return $html;
 }

@@ -137,6 +137,12 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           bh_session_init($new_uid);
           
+          $usernames = $HTTP_COOKIE_VARS['bh_remember_user'];
+          $passwords = $HTTP_COOKIE_VARS['bh_remember_password'];
+        
+          if (!is_array($usernames)) $usernames = array();
+          if (!is_array($passwords)) $passwords = array();           
+           
           $usernames[] = $HTTP_POST_VARS['logon'];
           $passwords[] = $HTTP_POST_VARS['password'];
 
@@ -160,7 +166,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
           echo "<div align=\"center\">\n";
           echo "<p>Huzzah! Your user record has been created successfully!</p>\n";
-          echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>\n";
+          echo form_quick_button($final_uri, "Continue");
           echo "</div>\n";
 
           html_draw_bottom();

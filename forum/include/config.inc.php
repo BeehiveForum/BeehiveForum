@@ -25,10 +25,10 @@ USA
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "localhost";	// the address of your MySQL server
-$db_username = "beehiveforum";	// your MySQL username
-$db_password = "password";	// your MySQL password
-$db_database = "beehiveforum";	// the name of your MySQL database
+$db_server   = "localhost";     // the address of your MySQL server
+$db_username = "beehiveforum";  // your MySQL username
+$db_password = "password";      // your MySQL password
+$db_database = "beehiveforum";  // the name of your MySQL database
 
 // ---------------------------------------------------------------------
 
@@ -49,12 +49,22 @@ $show_links = true; // Show the links section
 
 // Post stuff ----------------------------------------------------------
 
-$maximum_post_length = 6226;	// maximum character-length of posts
+$maximum_post_length = 6226;    // maximum character-length of posts
 $allow_post_editing = true;     // allow users to edit their posts
 $post_edit_time = 0;            // time that users can edit posts for in
                                 // hours after posting, 0 = infinite
 
 // ---------------------------------------------------------------------
+
+// Search stuff --------------------------------------------------------
+
+$search_min_word_length = 3;    // Minimum word length that is allowed to
+                                // to be searched for in AND and OR based
+                                // searches. Words smaller than the value
+                                // specified will be removed from the
+                                // query automatically. Exact phrase
+                                // searches are not effected by this
+                                // setting.
 
 
 // Attachment stuff ----------------------------------------------------
@@ -79,7 +89,7 @@ $attachment_dir = 'attachments';
 
 $guest_account_enabled = true;  // Enable the use of forum guest account
                                 // Requires the creation of a GUEST user
-				// with the password also set as GUEST.
+                                // with the password also set as GUEST.
 
 // ---------------------------------------------------------------------
 

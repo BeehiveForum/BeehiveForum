@@ -46,6 +46,7 @@ require_once("./include/thread.inc.php");
 require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/poll.inc.php");
+require_once("./include/config.inc.php");
 
 // Check that required variables are set
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
@@ -232,6 +233,10 @@ if (isset($searchsql)) {
   <tr>
     <td>&nbsp;</td>
     <td><?php echo form_dropdown_array("method", range(1,3), array("Containing all of the words", "Containing any of the words", "Containing the exact phrase"), 1). "&nbsp;". form_input_text("search_string", "", 20). "&nbsp;". form_submit("submit", "Find"); ?></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="postbody">Words shorter than <?php echo $search_min_word_length; ?> characters will not be included.</td>
   </tr>
   <tr>
     <td class="postbody" colspan="2">&nbsp;</td>

@@ -27,11 +27,12 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/user.inc.php");
+require_once("./include/config.inc.php");
 
 function search_construct_query($argarray, &$searchsql, &$urlquery)
 {
 
-  global $HTTP_COOKIE_VARS;
+  global $HTTP_COOKIE_VARS, $search_min_word_length;
 
   if ($argarray['fid'] > 0) {
       $folders = "THREAD.FID = ". $argarray['fid'];
@@ -68,14 +69,14 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       $threadtitle = "";
       foreach($keywords as $word) {
-          if (strlen($word) > 3) {
+          if (strlen($word) >= $search_min_word_length) {
               $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%<div class=\"sig\">%' AND ";
           }
       }
 
       $postcontent = "";
       foreach($keywords as $word) {
-          if (strlen($word) > 3) {
+          if (strlen($word) >= $search_min_word_length) {
               $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">%' AND ";
           }
       }
@@ -119,14 +120,14 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       $threadtitle = "";
       foreach($keywords as $word) {
-          if (strlen($word) > 3) {
+          if (strlen($word) >= $search_min_word_length) {
               $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%<div class=\"sig\">%' OR ";
           }
       }
 
       $postcontent = "";
       foreach($keywords as $word) {
-          if (strlen($word) > 3) {
+          if (strlen($word) >= $search_min_word_length) {
               $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%<div class=\"sig\">%' OR ";
           }
       }
@@ -167,7 +168,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
     }elseif ($argarray['method'] == 3) { // EXACT
 
       $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes(trim($argarray['search_string'])). "%'";
-      $searchsql.= " OR POST_CONTENT.CONTENT LIKE '%". _addslashes(trim($argarray['search_string'])). "%')";
+      $searchsql.= " OR POST_CONTENT.CONTENT LIKE '%". _addslashes(trim($argarray['search_string'])). "%<div class=\"sig\">%')";
       $searchsql.= $daterange;
 
       if ($argarray['me_only'] == 'Y') {

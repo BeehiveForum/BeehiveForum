@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.10 2004-12-17 16:13:03 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.11 2004-12-18 19:36:53 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -606,8 +606,8 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_THREAD ";
-$sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-$sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);";
+$sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+$sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL);";
 
 if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.60 2004-12-06 02:00:38 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.61 2004-12-18 19:36:52 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -58,22 +58,18 @@ function thread_get($tid)
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, ";
     $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, ";
     $sql.= "THREAD.ADMIN_LOCK, USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
     $sql.= "USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "JOIN USER USER ";
-    $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER UP ON ";
-    $sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
+    $sql.= "(UP.UID = '$uid' AND UP.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON ";
     $sql.= "(FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE USER.UID = POST.FROM_UID ";
-    $sql.= "AND POST.TID = THREAD.TID ";
-    $sql.= "AND POST.PID = 1 ";
-    $sql.= "AND THREAD.TID = $tid ";
+    $sql.= "WHERE THREAD.TID = $tid ";
     $sql.= "GROUP BY THREAD.tid";
 
     $result = db_query($sql, $db_thread_get);
@@ -204,11 +200,14 @@ function thread_set_interest($tid, $interest, $new = false)
     if (!$table_data = get_table_prefix()) return false;
 
     if ($new) {
-        $sql = "insert into {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
-        $sql.= "values ($uid, $tid, $interest)";
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
+        $sql.= "VALUES ($uid, $tid, $interest)";
+
     }else {
-        $sql = "update low_priority {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "set INTEREST = $interest where UID = $uid and TID = $tid";
+
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "SET INTEREST = $interest WHERE UID = $uid AND TID = $tid";
     }
 
     $db_thread_set_interest = db_connect();

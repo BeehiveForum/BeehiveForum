@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.149 2004-04-05 20:54:48 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.150 2004-04-05 20:57:33 decoyduck Exp $ */
 
 function user_count()
 {
@@ -522,7 +522,7 @@ function user_get_last_logon_time($uid, $verbose = true)
 
     $db_user_get_last_logon_time = db_connect();
     
-    if ($table_data = get_table_prefix()) return $lang['unknown';
+    if ($table_data = get_table_prefix()) return $lang['unknown'];
 
     $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER USER ";
@@ -871,7 +871,7 @@ function user_get_word_filter($incadminfilter = false)
 {
     $db_user_get_word_filter = db_connect();
     
-    if ($table_data = get_table_prefix()) return array;
+    if ($table_data = get_table_prefix()) return array();
     
     $uid = bh_session_get_value('UID');    
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.17 2004-06-19 11:30:34 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.18 2004-10-22 14:06:23 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -145,7 +145,7 @@ function perform_logon($logon_main)
                 echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
             }
 
-	    exit;
+            exit;
         }
     }
 
@@ -212,7 +212,7 @@ function draw_logon_form($logon_main)
         echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
 
         foreach($_POST as $key => $value) {
-	    echo "    ", form_input_hidden($key, _htmlentities(_stripslashes($value))), "\n";
+            echo "    ", form_input_hidden($key, _htmlentities(_stripslashes($value))), "\n";
         }
     }
 

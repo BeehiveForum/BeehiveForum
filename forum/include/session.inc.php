@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.138 2004-10-21 21:28:19 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.139 2004-10-22 14:06:23 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -74,7 +74,6 @@ function bh_session_check($add_guest_sess = true)
             $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
             $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
             $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
-            $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress' ";
             $sql.= "GROUP BY USER.UID";
 
         }else {
@@ -84,7 +83,6 @@ function bh_session_check($add_guest_sess = true)
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
             $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
             $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
-            $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress'";
         }
 
         $result = db_query($sql, $db_bh_session_check);
@@ -121,8 +119,8 @@ function bh_session_check($add_guest_sess = true)
 
             if ((isset($fid) && is_numeric($fid)) && ($user_sess['FID'] != $fid)) {
 
-                $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$fid' ";
-                $sql.= "WHERE HASH = '$user_hash'";
+                $sql = "UPDATE LOW_PRIORITY SESSIONS SET FID = '$fid', ";
+                $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
 
@@ -136,8 +134,8 @@ function bh_session_check($add_guest_sess = true)
 
                 // Update the session for the current forum
 
-                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW() ";
-                $sql.= "WHERE HASH = '$user_hash'";
+                $sql = "UPDATE LOW_PRIORITY SESSIONS SET TIME = NOW(), ";
+                $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
 
@@ -203,6 +201,10 @@ function bh_session_check($add_guest_sess = true)
             $result = db_query($sql, $db_bh_session_check);
         }
     }
+
+    // Delete expired sessions
+
+    bh_remove_stale_sessions();
 
     return array('UID'              => 0,
                  'LOGON'            => 'GUEST',

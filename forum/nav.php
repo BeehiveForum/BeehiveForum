@@ -59,11 +59,11 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && ($HTTP_COOKIE_VARS['bh_sess_us
 }
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-  echo "<a href=\"logout.php\" target=\"_top\">Login</a>";
+  echo "<a href=\"logout.php\" target=\"_top\">Login</a>\n";
 } else {
-  echo "<a href=\"logout.php\" target=\"main\">Logout</a>";
+  echo "<a href=\"logout.php\" target=\"main\">Logout</a>\n";
 }
 
+html_draw_bottom();
+
 ?>
-    </body>
-</html>

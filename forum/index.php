@@ -32,7 +32,8 @@ require_once("./include/config.inc.php");
 
 header_no_cache();
 
-$top_html = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/top.html";
+$top_html   = "./styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/top.html";
+$stylesheet = "./styles/". (isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style). "/style.css"; 
 
 if (!file_exists($top_html)) {
 	$top_html = "./top.html";
@@ -44,7 +45,7 @@ if (!file_exists($top_html)) {
 <head>
 <title><?php echo $forum_name; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link rel="stylesheet" href="styles.php?<?php echo md5(uniqid(rand())); ?>" type="text/css">
+<link rel="stylesheet" href="<?php echo $stylesheet; ?>" type="text/css">
 </head>
 <?php
 

@@ -84,7 +84,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     @unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
     delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
 
-  }elseif ($HTTP_POST_VARS['submit'] == 'Upload' || $HTTP_POST_VARS['submit'] == 'wait..') {
+  }elseif ($HTTP_POST_VARS['submit'] == 'Upload' || $HTTP_POST_VARS['submit'] == 'Please Wait..') {
 
     if ($HTTP_POST_FILES['userfile']['size'] > 0) {
 
@@ -139,7 +139,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody">2. Now press <?php echo form_submit('submit', 'Upload', 'onclick="this.value = \'wait..\'"'); ?></td>
+    <td class="postbody">2. Now press <?php echo form_submit('submit', 'Upload', 'onclick="this.value = \'Please Wait..\'"'); ?></td>
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.128 2004-06-03 08:54:45 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.129 2004-06-03 10:24:46 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -43,7 +43,7 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
@@ -69,7 +69,7 @@ function threads_get_folders($access_allowed = USER_PERM_POST_READ)
 
             }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
-                $status = $row['FOLDER_STATUS'];
+                $status = $row['FOLDER_PERMS'];
 
             }else {
 

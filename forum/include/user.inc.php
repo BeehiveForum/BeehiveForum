@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.179 2004-06-03 08:54:45 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.180 2004-06-03 10:24:47 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -182,18 +182,19 @@ function user_logon($logon, $password, $md5hash = false)
 
     if ($table_data = get_table_prefix()) {
 
-        $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM USER ";
+        $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, ";
+        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-        $sql.= "ON (GROUP_USERS.GID = USER.UID) ";
+        $sql.= "ON (GROUP_USERS.UID = USER.UID) ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-        $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
-        $sql.= "WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
+        $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
+        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$md5pass' ";
         $sql.= "GROUP BY USER.UID";
 
     }else {
 
-        $sql = "SELECT USER.UID, 0 AS STATUS FROM USER ";
-        $sql.= "WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
+        $sql = "SELECT USER.UID, 0 AS STATUS FROM USER USER ";
+        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$md5pass'";
     }
 
     $result = db_query($sql, $db_user_logon);
@@ -205,12 +206,12 @@ function user_logon($logon, $password, $md5hash = false)
         $fa = db_fetch_array($result);
         $uid = $fa['UID'];
 
-        if (isset($fa['STATUS']) && $fa['STATUS'] & USER_PERM_BANNED) { // User is banned
-            $uid = -2;
-        }
+        // Check to see if the user is banned.
 
-        if (!$ipaddress = get_ip_address()) {
-            $ipaddress = "";
+        if ($fa['USER_PERM_COUNT'] > 0) {
+            if (isset($fa['USER_PERMS']) && $fa['USER_PERMS'] & USER_PERM_BANNED) {
+                $uid = -2;
+            }
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.36 2004-06-03 08:54:45 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.37 2004-06-03 10:24:45 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -96,7 +96,7 @@ function perm_check_folder_permissions($fid, $access_level)
 
     $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
@@ -115,7 +115,7 @@ function perm_check_folder_permissions($fid, $access_level)
 
     }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
-        return ($row['FOLDER_STATUS'] & $access_level) == $access_level;
+        return ($row['FOLDER_PERMS'] & $access_level) == $access_level;
     }
 
     return true;
@@ -463,7 +463,7 @@ function perm_get_user_folder_perms($uid, $fid)
 
     $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
@@ -486,7 +486,7 @@ function perm_get_user_folder_perms($uid, $fid)
 
     }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
-        return array('STATUS' => $row['FOLDER_STATUS']);
+        return array('STATUS' => $row['FOLDER_PERMS']);
     }
 
     return false;

@@ -81,13 +81,16 @@ function emoticons_convert ($content) {
 	if (!is_array($emoticon)) return $content;
 
 	foreach ($emoticon as $k => $v) {
-		$pattern_array[] = "/(\s|^)(". preg_quote($k, "/"). ")(\s|$)/i";
 		$k2 = _htmlentities($k);
-		$replace_array[] = "\\1<span class=\"e_$v\" title=\"$v\"><span>$k2</span></span>\\3";
+
+		$front = (preg_match("/^\w/", $k2)) ? '\b' : '\B';
+
+		$pattern_array[] = "/".$front."(". preg_quote($k, "/"). ")(\s|$)/i";
+		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>\\2";
 
 		if ($k2 != $k) {
-			$pattern_array[] = "/(\s|^)(". preg_quote($k2, "/"). ")(\s|$)/i";
-			$replace_array[] = "\\1<span class=\"e_$v\" title=\"$v\"><span>$k2</span></span>\\3";
+			$pattern_array[] = "/".$front."(". preg_quote($k2, "/"). ")(\s|$)/i";
+			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
 		}
 	}
 

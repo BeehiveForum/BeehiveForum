@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.55 2004-03-04 20:50:27 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.56 2004-03-04 20:57:14 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -135,9 +135,6 @@ if (isset($HTTP_POST_VARS['upload'])) {
                     
                     $filehash = md5("{$aid}{$uniqfileid}{$filename}");
                     $filepath = "$attachment_dir/$filehash";
-                    
-                    echo "<p>$tempfile</p>\n";
-                    echo "<p>$filepath</p>\n";
 
                     if (@move_uploaded_file($tempfile, $filepath)) {
 

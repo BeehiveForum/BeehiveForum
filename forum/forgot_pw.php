@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.35 2004-05-31 12:31:54 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.36 2004-06-03 08:54:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,6 +50,14 @@ include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/user.inc.php");
 
+// Load language file
+
+$lang = load_language_file();
+
+// Make sure we have a webtag
+
+$webtag = get_webtag($webtag_search);
+
 if (isset($_POST['submit'])) {
 
     if (isset($_POST['logon'])) {
@@ -57,10 +65,6 @@ if (isset($_POST['submit'])) {
         $logon = strtoupper($_POST['logon']);
 
 	if (email_send_pw_reminder($logon)) {
-
-            // Load language file
-
-            $lang = load_language_file();
 
             html_draw_top();
 
@@ -84,14 +88,6 @@ if (isset($_POST['submit'])) {
         $error_html = "<h2>{$lang['validusernamerequired']}</h2>\n";
     }
 }
-
-// Load language file
-
-$lang = load_language_file();
-
-// Make sure we have a webtag
-
-$webtag = get_webtag($webtag_search);
 
 html_draw_top();
 

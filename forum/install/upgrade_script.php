@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.3 2004-05-25 11:51:17 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.4 2004-06-03 08:54:45 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -33,7 +33,7 @@ if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
 $sql = "SHOW TABLES LIKE 'FORUMS'";
 
-if(!$result = mysql_query($sql, $db_install)) {
+if (!$result = mysql_query($sql, $db_install)) {
     return mysql_error();
 }
 
@@ -55,175 +55,175 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     $sql = "ALTER TABLE ADMIN_LOG RENAME {$forum_webtag}_ADMIN_LOG";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE BANNED_IP RENAME {$forum_webtag}_BANNED_IP";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE DEDUPE RENAME {$forum_webtag}_DEDUPE";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE FILTER_LIST RENAME {$forum_webtag}_FILTER_LIST";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE FOLDER RENAME {$forum_webtag}_FOLDER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE LINKS RENAME {$forum_webtag}_LINKS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE LINKS_COMMENT RENAME {$forum_webtag}_LINKS_COMMENT";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE LINKS_FOLDERS RENAME {$forum_webtag}_LINKS_FOLDERS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE LINKS_VOTE RENAME {$forum_webtag}_LINKS_VOTE";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE PM RENAME {$forum_webtag}_PM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE PM_ATTACHMENT_IDS RENAME {$forum_webtag}_PM_ATTACHMENT_IDS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE PM_CONTENT RENAME {$forum_webtag}_PM_CONTENT";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE POLL RENAME {$forum_webtag}_POLL";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE POLL_VOTES RENAME {$forum_webtag}_POLL_VOTES";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE POST RENAME {$forum_webtag}_POST";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE POST_ATTACHMENT_FILES RENAME {$forum_webtag}_POST_ATTACHMENT_FILES";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE POST_ATTACHMENT_IDS RENAME {$forum_webtag}_POST_ATTACHMENT_IDS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE POST_CONTENT RENAME {$forum_webtag}_POST_CONTENT";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE PROFILE_ITEM RENAME {$forum_webtag}_PROFILE_ITEM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE PROFILE_SECTION RENAME {$forum_webtag}_PROFILE_SECTION";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE STATS RENAME {$forum_webtag}_STATS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE THREAD RENAME {$forum_webtag}_THREAD";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER_FOLDER RENAME {$forum_webtag}_USER_FOLDER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER_PEER RENAME {$forum_webtag}_USER_PEER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER_POLL_VOTES RENAME {$forum_webtag}_USER_POLL_VOTES";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER_PROFILE RENAME {$forum_webtag}_USER_PROFILE";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER_PREFS RENAME {$forum_webtag}_USER_PREFS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER_SIG RENAME {$forum_webtag}_USER_SIG";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER_THREAD RENAME {$forum_webtag}_USER_THREAD";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -232,25 +232,25 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (IP)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO {$forum_webtag}_BANNED_IP_NEW (IP) SELECT DISTINCT IP FROM {$forum_webtag}_BANNED_IP";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_BANNED_IP";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_BANNED_IP_NEW RENAME {$forum_webtag}_BANNED_IP";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -262,26 +262,26 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (LID, UID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO {$forum_webtag}_LINKS_VOTE_NEW (LID, UID, RATING, TSTAMP)";
     $sql.= "SELECT DISTINCT LID, UID, RATING, TSTAMP FROM {$forum_webtag}_LINKS_VOTE GROUP BY LID, UID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_LINKS_VOTE";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_LINKS_VOTE_NEW RENAME {$forum_webtag}_LINKS_VOTE";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -293,26 +293,26 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  KEY AID (AID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO {$forum_webtag}_POST_ATTACHMENT_IDS_NEW (TID, PID, AID)";
     $sql.= "SELECT DISTINCT TID, PID, AID FROM {$forum_webtag}_POST_ATTACHMENT_IDS GROUP BY TID, PID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_POST_ATTACHMENT_IDS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_IDS_NEW RENAME {$forum_webtag}_POST_ATTACHMENT_IDS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -325,7 +325,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (ID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -333,19 +333,19 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "SELECT DISTINCT MOST_USERS_DATE, MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT";
     $sql.= "FROM {$forum_webtag}_STATS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_STATS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_STATS_NEW RENAME {$forum_webtag}_STATS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -357,7 +357,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (UID,FID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -365,19 +365,19 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "SELECT DISTINCT UID, FID, INTEREST, ALLOWED FROM {$forum_webtag}_USER_FOLDER";
     $sql.= "GROUP BY UID, FID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_USER_FOLDER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_FOLDER_NEW RENAME {$forum_webtag}_USER_FOLDER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -388,7 +388,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -396,20 +396,20 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "SELECT DISTINCT UID, PEER_UID, RELATIONSHIP FROM {$forum_webtag}_USER_PEER";
     $sql.= "GROUP BY UID, PEER_UID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_USER_PEER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER_NEW RENAME {$forum_webtag}_USER_PEER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -444,7 +444,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY (UID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -456,19 +456,19 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY,";
     $sql.= "ANON_LOGON, SHOW_STATS FROM {$forum_webtag}_USER_PREFS GROUP BY UID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_USER_PREFS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS_NEW RENAME {$forum_webtag}_USER_PREFS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -479,7 +479,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (UID,PIID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -487,19 +487,19 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "SELECT DISTINCT UID, PIID, ENTRY FROM {$forum_webtag}_USER_PROFILE";
     $sql.= "GROUP BY UID, PIID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_USER_PROFILE";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PROFILE_NEW RENAME {$forum_webtag}_USER_PROFILE";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -510,7 +510,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (UID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -518,19 +518,19 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "SELECT DISTINCT UID, CONTENT, HTML FROM {$forum_webtag}_USER_SIG";
     $sql.= "GROUP BY UID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_USER_SIG";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_SIG_NEW RENAME {$forum_webtag}_USER_SIG";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -543,51 +543,51 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY (UID, TID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO {$forum_webtag}_USER_THREAD_NEW (UID, TID, LAST_READ, LAST_READ_AT, INTEREST)";
     $sql.= "SELECT DISTINCT UID, TID, LAST_READ, LAST_READ_AT, INTEREST FROM {$forum_webtag}_USER_THREAD GROUP BY UID, TID";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_USER_THREAD";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD_NEW RENAME {$forum_webtag}_USER_THREAD";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD ADMIN_LOCK DATETIME DEFAULT NULL";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_PM ADD NOTIFIED TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "UPDATE {$forum_webtag}_PM SET NOTIFIED = 1 WHERE TYPE > 1";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
 
     $sql = "ALTER TABLE {$forum_webtag}_POLL_VOTES DROP VOTES";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -600,44 +600,44 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (ID, UID)";
     $sql.= ") TYPE=MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO {$forum_webtag}_FILTER_LIST_NEW (ID, UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION)";
     $sql.= "SELECT DISTINCT ID, 0, FILTER, REPEAT('*', LENGTH(FILTER)), 1 FROM {$forum_webtag}_FILTER_LIST";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DROP TABLE {$forum_webtag}_FILTER_LIST";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_FILTER_LIST_NEW RENAME {$forum_webtag}_FILTER_LIST";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE SESSIONS ADD FID MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE SESSIONS ADD INDEX (FID)";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE SESSIONS ADD INDEX (UID)";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -649,13 +649,13 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY  (FID)";
     $sql.= ") TYPE=MyISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUMS (WEBTAG, {$forum_webtag}_FORUM) VALUES('DEFAULT', 1)";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -667,139 +667,139 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  INDEX (SID, FID)";
     $sql.= ") TYPE=MyISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_name', 'A Beehive Forum')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_email', 'admin@abeehiveforum.net')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, '{$forum_webtag}_style', 'default')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, '{$forum_webtag}_emoticon', 'default')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, '{$forum_webtag}_language', 'en')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_stats', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_links', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'auto_logon', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_pms', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'pm_allow_attachments', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'maximum_post_length', '6226')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'allow_post_editing', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'post_edit_time', '0')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'allow_polls', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'search_min_word_length', '3')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_enabled', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_dir', 'attachments')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_allow_embed', 'N')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'attachments_use_old_method', 'N')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'guest_account_active', 'Y')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'session_cutoff', '86400')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'active_session_cutoff', '900')";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -810,31 +810,31 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY (UID, FID)";
     $sql.= ") TYPE=MyISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) SELECT UID, 1, LAST_LOGON FROM USER";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER DROP LAST_LOGON";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE USER DROP LOGON_FROM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_FILES ADD DELETED TINYINT UNSIGNED DEFAULT '0' NOT NULL";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
     $sql = "CREATE TABLE USER_FORUM (";
@@ -845,13 +845,13 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PRIMARY KEY (UID, FID)";
     $sql.= ") TYPE = MYISAM";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
     $sql = "DELETE FROM USER WHERE LOGON = 'GUEST' AND (PASSWD = MD5('GUEST') OR PASSWD = MD5('guest'))";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         return mysql_error();
     }
 
@@ -861,10 +861,10 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
     $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (GID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
-    if(!$result = mysql_query($sql, $db_install)) {
-        die(mysql_error());
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_GROUP_PERMS (";
@@ -872,40 +872,48 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (GID,FID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
-    if(!$result = mysql_query($sql, $db_install)) {
-        die(mysql_error());
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_GROUP_USERS (";
     $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (GID,UID)";
-    $sql.= ") TYPE=MYISAM";
+    $sql.= ")";
 
-    if(!$result = mysql_query($sql, $db_install)) {
-        die(mysql_error());
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
     }
 
     // User Permissions
 
     $sql = "SELECT UID, STATUS FROM USER WHERE STATUS IS NOT NULL AND STATUS > 0";
-    $result = mysql_query($sql, $db_install) or die(mysql_error());
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
+    }
 
     while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 
         $new_status = 0;
 
         $sql = "INSERT INTO {$forum_webtag}_GROUPS (AUTO_GROUP) VALUES (1)";
-        $result_gid = mysql_query($sql, $db_install);
+
+        if (!$result_gid = mysql_query($sql, $db_install)) {
+            die(mysql_error());
+        }
 
         $gid = mysql_insert_id($db_install);
 
         $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS (GID, UID) ";
         $sql.= "VALUES ('$gid', '{$row['UID']}')";
 
-        $result_uid = mysql_query($sql, $db_install);
+        if (!$result_uid = mysql_query($sql, $db_install)) {
+            die(mysql_error());
+        }
 
         if (($row['STATUS'] & 32) > 0) $new_status = (double)$new_status | 1024;
         if (($row['STATUS'] & 16) > 0) $new_status = (double)$new_status | 512;
@@ -915,68 +923,97 @@ foreach($forum_webtag_array as $forum_webtag) {
         $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
         $sql.= "VALUES ('$gid', '0', '$new_status')";
 
-        $result_perm = mysql_query($sql, $db_install);
+        if (!$result_perm = mysql_query($sql, $db_install)) {
+            die(mysql_error());
+        }
     }
 
     // Default Folder Permissions
 
     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
     $sql.= "SELECT 0, FID, 0 FROM {$forum_webtag}_FOLDER WHERE ";
-    $sql.= "ACCESS_LEVEL = 0";
+    $sql.= "ACCESS_LEVEL = -1 OR ACCESS_LEVEL = 1";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        die(mysql_error());
+    }
 
     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
     $sql.= "SELECT 0, FID, 252 FROM {$forum_webtag}_FOLDER WHERE ";
-    $sql.= "ACCESS_LEVEL = 1";
+    $sql.= "ACCESS_LEVEL = 0";
 
-    $sql = "ALTER TABLE {$forum_webtag}_FOLDER DROP ACCESS_LEVEL";
+    if (!$result = mysql_query($sql, $db_install)) {
+        die(mysql_error());
+    }
 
     // User Folder Permissions
 
     $sql = "SELECT UID, FID FROM {$forum_webtag}_USER_FOLDER WHERE ALLOWED = 1";
-    $result = mysql_query($sql, $db_install) or die(mysql_error());
+
+    if ($result = mysql_query($sql, $db_install)) {
+        die(mysql_error());
+    }
 
     while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 
         $sql = "SELECT GID FROM {$forum_webtag}_GROUP_USERS WHERE UID = '{$row['UID']}'";
-        $result_gid = mysql_query($sql, $db_install);
+
+        if (!$result_gid = mysql_query($sql, $db_install)) {
+            die(mysql_error());
+        }
 
         if (mysql_num_rows($result_gid) > 0) {
 
-            list($gid) = mysql_fetch_array($result_gid, MYSQL_ASSOC);
+            list($gid) = mysql_fetch_array($result_gid, MYSQL_NUM);
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
             $sql.= "VALUES ('$gid', '{$row['FID']}', '252')";
 
-            $result_perm = mysql_query($sql, $db_install);
+            if (!$result_perm = mysql_query($sql, $db_install)) {
+                die(mysql_error());
+            }
 
         }else {
 
             $sql = "INSERT INTO {$forum_webtag}_GROUPS (AUTO_GROUP) VALUES (1)";
-            $result_gid = mysql_query($sql, $db_install);
+
+            if (!$result_gid = mysql_query($sql, $db_install)) {
+                die(mysql_error());
+            }
 
             $gid = mysql_insert_id($db_install);
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$gid', '{$row['UID']}')";
 
-            $result_uid = mysql_query($sql, $db_install);
+            if (!$result_uid = mysql_query($sql, $db_install)) {
+                die(mysql_error());
+            }
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
             $sql.= "VALUES ('$gid', '{$row['FID']}', '252')";
 
-            $result_perm = mysql_query($sql, $db_install);
+            if (!$result_perm = mysql_query($sql, $db_install)) {
+                die(mysql_error());
+            }
         }
     }
 
     $sql = "ALTER TABLE USER DROP STATUS";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
         die(mysql_error());
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_FOLDER DROP ALLOWED";
 
-    if(!$result = mysql_query($sql, $db_install)) {
+    if (!$result = mysql_query($sql, $db_install)) {
+        die(mysql_error());
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_FOLDER DROP ACCESS_LEVEL";
+
+    if (!$result = mysql_query($sql, $db_install)) {
         die(mysql_error());
     }
 }

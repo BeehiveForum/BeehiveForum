@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.74 2004-05-26 13:19:53 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.75 2004-06-03 08:54:45 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -217,24 +217,42 @@ function folder_get_available()
     $access_allowed = USER_PERM_POST_READ;
 
     $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "FOLDER.ALLOWED_TYPES, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 AND GROUP_PERMS.PERM IS NOT NULL) ";
-    $sql.= "OR (FOLDER.PERM & $access_allowed > 0 AND FOLDER.PERM IS NOT NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "OR (FOLDER.PERM IS NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "GROUP BY GROUP_PERMS.PERM, FOLDER.PERM, FOLDER.FID ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_folder_get_available);
 
     if (db_num_rows($result)) {
+
         $folder_list = array();
+
         while($row = db_fetch_array($result)){
-            $folder_list[] = $row['FID'];
+
+            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
+
+                $folder_list[] = $row['FID'];
+
+            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_STATUS'] & $access_allowed) == $access_allowed)) {
+
+                $folder_list[] = $row['FID'];
+
+            }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+
+                $folder_list[] = $row['FID'];
+            }
         }
+
         return implode(',', $folder_list);
     }
 

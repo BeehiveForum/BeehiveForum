@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.4 2004-04-28 18:36:15 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.5 2004-04-29 14:03:10 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -635,6 +635,7 @@ $lang['enterasa'] = "Bone out as a";
 $lang['donthaveanaccount'] = "Ain't got no account, G?";
 $lang['problemsloggingon'] = "Yo got problems?";
 $lang['deletecookies'] = "Delete yo Cookies";
+$lang['cookiessuccessfullydeleted'] = "Ain't got no cookies, homez";
 $lang['forgottenpasswd'] = "Forgotten yo password, foo'?";
 $lang['usingaPDA'] = "Yo ass a high roller?";
 $lang['lightHTMLversion'] = "Wack ass version";

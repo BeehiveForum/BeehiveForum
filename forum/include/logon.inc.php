@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.10 2004-04-29 12:45:58 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.11 2004-04-29 14:03:10 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -60,6 +60,12 @@ function perform_logon($logon_main)
 
     if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
+        if (strtoupper($_POST['user_logon']) == 'GUEST' && strtoupper($_POST['user_password']) == 'GUEST') {
+
+            bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+            return true;
+        }
+
         if (preg_match("/^ +$/", _stripslashes($_POST['user_password']))) {
 
             if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
@@ -84,59 +90,49 @@ function perform_logon($logon_main)
 
             bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
-            if ((strtoupper($_POST['user_logon']) == "GUEST") && (strtoupper($_POST['user_password']) == "GUEST")) {
+            bh_session_init($luid);
 
-                if (user_guest_enabled()) {
+            if (($key = _array_search($logon, $username_array)) !== false) {
 
-                    bh_session_init(0); // Use UID 0 for guest account.
-                }
+                unset($username_array[$key]);
+                unset($password_array[$key]);
+                unset($passhash_array[$key]);
+            }
+
+            array_unshift($username_array, $logon);
+
+            if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
+
+                array_unshift($password_array, $passw);
+                array_unshift($passhash_array, $passh);
 
             }else {
 
-                bh_session_init($luid);
+                array_unshift($password_array, "");
+                array_unshift($passhash_array, "");
+            }
 
-                if (($key = _array_search($logon, $username_array)) !== false) {
+            // set / update the username and password cookies
 
-                    unset($username_array[$key]);
-                    unset($password_array[$key]);
-                    unset($passhash_array[$key]);
-                }
+            for ($i = 0; $i < sizeof($username_array); $i++) {
 
-                array_unshift($username_array, $logon);
+                bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
 
-                if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
+                if (isset($password_array[$i]) && isset($passhash_array[$i])) {
 
-                    array_unshift($password_array, $passw);
-                    array_unshift($passhash_array, $passh);
+                    bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
+                    bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
 
                 }else {
 
-                    array_unshift($password_array, "");
-                    array_unshift($passhash_array, "");
-                }
-
-                // set / update the username and password cookies
-
-                for ($i = 0; $i < sizeof($username_array); $i++) {
-
-                    bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
-
-                    if (isset($password_array[$i]) && isset($passhash_array[$i])) {
-
-                        bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
-                        bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
-
-                    }else {
-
-                        bh_setcookie("bh_remember_password[$i]", "", time() + YEAR_IN_SECONDS);
-                        bh_setcookie("bh_remember_passhash[$i]", "", time() + YEAR_IN_SECONDS);
-                    }
+                    bh_setcookie("bh_remember_password[$i]", "", time() + YEAR_IN_SECONDS);
+                    bh_setcookie("bh_remember_passhash[$i]", "", time() + YEAR_IN_SECONDS);
                 }
             }
 
             return true;
 
-        }else if (isset($luid) && $luid == -2) { // User is banned - everybody hide
+        }else if (isset($luid) && $luid == -2) {
 
             if (!strstr(php_sapi_name(), 'cgi')) {
                 header("HTTP/1.0 500 Internal Server Error");
@@ -238,10 +234,11 @@ function draw_logon_form($logon_main)
         echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
 
         foreach($_POST as $key => $value) {
-	    form_input_hidden($key, _htmlentities(_stripslashes($value)));
+	    echo "    ", form_input_hidden($key, _htmlentities(_stripslashes($value))), "\n";
         }
     }
 
+    echo "    ", form_input_hidden('webtag', $webtag), "\n";
     echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "      <tr>\n";
     echo "        <td>\n";

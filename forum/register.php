@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.74 2004-03-19 11:58:42 decoyduck Exp $ */
+/* $Id: register.php,v 1.75 2004-03-19 23:06:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -259,18 +259,17 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
           // Prepare Form Data
          
-          $logon = _stripslashes($HTTP_POST_VARS['logon']);
-          $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['pw'])));
-          $passh = md5(_stripslashes($HTTP_POST_VARS['pw']));          
+          $passw = str_repeat(chr(32), strlen($t_pw));
+          $passh = md5(_stripslashes($t_pw));          
 
-          if (($key = _array_search($logon, $username_array)) !== false) {
+          if (($key = _array_search($t_logon, $username_array)) !== false) {
 
               unset($username_array[$key]);
               unset($password_array[$key]);
               unset($passhash_array[$key]);
           }
 
-          array_unshift($username_array, $logon);
+          array_unshift($username_array, $t_logon);
         
           if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
         

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.20 2004-03-19 13:53:08 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.21 2004-03-19 23:06:52 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -60,12 +60,29 @@ function get_webtag()
             
         return $forum_data;
     }
-        
-    html_draw_top();
-    echo "<div align=\"center\">\n";
-    echo "<h2>Unknown Forum Tag.</h2>\n";
-    form_quick_button("./index.php", $lang['continue'], 0, 0, "_top");
-    echo "</div>\n";
+    
+    html_draw_top();    
+    
+    $sql = "SELECT COUNT(FID) AS FID_COUNT FROM FORUMS";
+    $result = db_query($sql, $db_get_table_prefix);
+    
+    $forum_data = db_fetch_array($result);
+    
+    if ($forum_data['FID_COUNT'] > 0) {
+
+        echo "<div align=\"center\">\n";
+        echo "<h2>Unknown Forum Tag.</h2>\n";
+        form_quick_button("./index.php", $lang['continue'], 0, 0, "_top");
+        echo "</div>\n";
+
+    }else {
+    
+        echo "<div align=\"center\">\n";
+        echo "<h2>You do not have any forums setup.</h2>\n";
+        form_quick_button("./index.php", $lang['continue'], 0, 0, "_top");
+        echo "</div>\n";
+    }
+    
     html_draw_bottom();
     exit;
 }
@@ -151,14 +168,14 @@ function draw_start_page()
         }else {
         
             html_draw_top();
-            echo "<h1>{$lang['editstartpage']}</h1>\n";
+            echo "<h1>{$lang['editstartpage_help']}</h1>\n";
             html_draw_bottom();
         }
 
     }else {
     
         html_draw_top();
-        echo "<h1>{$lang['editstartpage']}</h1>\n";
+        echo "<h1>{$lang['editstartpage_help']}</h1>\n";
         html_draw_bottom();
     }
 }

@@ -21,10 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.51 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.52 2004-03-19 23:06:52 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
+    if (!check_mail_variables()) return false;
+
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
 
     global $HTTP_SERVER_VARS, $forum_settings;
@@ -56,6 +58,11 @@ function email_sendnotification($tuid, $msg, $fuid)
 
              // get the right language for the email
             $lang = email_get_language($tuid);
+            
+            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+            
+            $subject = "{$lang['msgnotification_subject']} $forum_name";                    
 
             $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
             $message.= " {$lang['msgnotificationemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
@@ -73,19 +80,18 @@ function email_sendnotification($tuid, $msg, $fuid)
             $message.= "{$lang['msgnotificationemail_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['msgnotificationemail_6']}\n";
             $message.= "{$lang['msgnotificationemail_7']}\n";
 
-            $header = "From: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
-            $header.= "Reply-To: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
+            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
-            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
+            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0 && !server_os_mswin()) {
                 $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
             }else {
                 $recipient = $mailto['EMAIL'];
             }
 
-            @mail($recipient, "{$lang['msgnotification_subject']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "", $message, $header);
-
+            mail($recipient, $subject, $message, $header);
         }
     }
 
@@ -94,8 +100,10 @@ function email_sendnotification($tuid, $msg, $fuid)
 
 function email_sendsubscription($tuid, $msg, $fuid)
 {
+    if (!check_mail_variables()) return false;
+    
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
-
+    
     global $HTTP_SERVER_VARS, $forum_settings;
 
     $db_email_sendsubscription = db_connect();
@@ -127,6 +135,11 @@ function email_sendsubscription($tuid, $msg, $fuid)
         // get the right language for the email
         $lang = email_get_language($tuid);
 
+        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+        
+        $subject = "{$lang['subnotification_subject']} $forum_name";        
+
         $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
         $message.= " {$lang['subnotification_1']}\n";
         $message.= "{$lang['subnotification_2']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
@@ -144,27 +157,27 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $message.= "{$lang['subnotification_6']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";
         $message.= "{$lang['subnotification_7']}\n";
 
-        $header = "From: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
-        $header.= "Reply-To: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
+        $header = "From: \"$forum_name\" <$forum_email>\n";
+        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
-        $header.= "X-Mailer: PHP/". phpversion(). "\n";
+        $header.= "X-Mailer: PHP/". phpversion();
 
-        if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
+        if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0 && !server_os_mswin()) {
             $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
         }else {
             $recipient = $mailto['EMAIL'];
         }
 
-        @mail($recipient, "{$lang['subnotification_subject']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "", $message, $header);
-
+        mail($recipient, $subject, $message, $header);
     }
 
     return true;
-
 }
 
 function email_send_pm_notification($tuid, $mid, $fuid)
 {
+    if (!check_mail_variables()) return false;
+
     if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
 
     global $HTTP_SERVER_VARS, $forum_settings;
@@ -193,6 +206,11 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
              // get the right language for the email
             $lang = email_get_language($tuid);
+            
+            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+            
+            $subject = "{$lang['pmnotification_subject']} $forum_name";
 
             $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
             $message.= " {$lang['pmnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
@@ -210,30 +228,30 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $message.= "{$lang['pmnotification_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['pmnotification_6']}\n";
             $message.= "{$lang['pmnotification_7']}\n";
 
-            $header = "From: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
-            $header.= "Reply-To: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
+            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
-            $header.= "X-Mailer: PHP/". phpversion(). "\n";
+            $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
+            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0 && !server_os_mswin()) {
                 $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
             }else {
                 $recipient = $mailto['EMAIL'];
             }
 
-            @mail($recipient, "{$lang['pmnotification_subject']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "", $message, $header);
-
+            mail($recipient, $subject, $message, $header);
         }
     }
 
     return true;
-
 }
 
 // Sends a password reminder email. Returns true on success, false on fail.
 
 function email_send_pw_reminder($logon)
 {
+    if (!check_mail_variables()) return false;
+
     global $HTTP_SERVER_VARS, $forum_settings;
     
     $db_email_send_pw_reminder = db_connect();
@@ -252,8 +270,13 @@ function email_send_pw_reminder($logon)
 
             // get the right language for the email
             $lang = email_get_language($mailto['UID']);
+            
+            $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+            $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+            
+            $subject = "{$lang['passwdresetrequest']} - $forum_name";
 
-	    $message = "{$lang['forgotpwemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). " {$lang['forgotpwemail_2']}\n\n";
+	    $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
             $message.= "{$lang['forgotpwemail_3']}:\n\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
@@ -263,18 +286,18 @@ function email_send_pw_reminder($logon)
 
             $message.= "/change_pw.php?webtag={$webtag['WEBTAG']}&u={$mailto['UID']}&h={$mailto['PASSWD']}";
 
-            $header = "From: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
-            $header.= "Reply-To: \"". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\" <". forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'). ">\n";
+            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0) {
+            if (isset($mailto['NICKNAME']) && strlen(trim($mailto['NICKNAME'])) > 0 && !server_os_mswin()) {
                 $recipient = "\"{$mailto['NICKNAME']}\" <{$mailto['EMAIL']}>";
             }else {
                 $recipient = $mailto['EMAIL'];
             }
 
-            if (@mail($recipient, "{$lang['passwdresetrequest']} - ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "", $message, $header)) return true;
+            if (mail($recipient, $subject, $message, $header)) return true;
 	}
     }
 
@@ -304,6 +327,30 @@ function email_get_language($to_uid)
          require("./include/languages/". forum_get_setting('default_language', false, 'en'). ".inc.php");
          return $lang;
     }
+}
+
+function server_os_mswin()
+{
+    if (defined('PHP_OS')) {
+        if (stristr(PHP_OS, 'WIN') && !stristr(PHP_OS, 'DARWIN')) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+function check_mail_variables()
+{
+    if (defined('PHP_OS')) {
+        if (stristr(PHP_OS, 'WIN') && !stristr(PHP_OS, 'DARWIN')) {
+            if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
+        }else {
+            if (!(bool)ini_get('sendmail_path')) return false;
+        }
+    }
+    
+    return true;
 }
 
 ?>

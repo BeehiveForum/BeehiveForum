@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.141 2004-03-19 15:27:31 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.142 2004-03-19 23:06:52 decoyduck Exp $ */
 
 function user_count()
 {
@@ -141,10 +141,14 @@ function user_update_status($uid, $status)
     $webtag = get_webtag();
 
     if (!is_numeric($uid)) return false;
+    if (!is_numeric($status)) return false;
+    
+    $sql = "DELETE FROM USER_STATUS WHERE UID = $uid AND FID = '{$webtag['FID']}'";
+    $result = db_query($sql, $db_user_update_status);
 
-    $sql = "UPDATE USER_STATUS SET STATUS = $status ";
-    $sql.= "WHERE UID = $uid AND FID = '{$webtag['FID']}'";
-
+    $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) ";
+    $sql.= "VALUES ('$uid', '{$webtag['FID']}', '$status')";
+    
     $result = db_query($sql, $db_user_update_status);
 
     return $result;
@@ -273,7 +277,9 @@ function user_get($uid, $hash = false)
     
     $webtag = get_webtag();
 
-    $sql = "SELECT * FROM USER WHERE UID = $uid ";
+    $sql = "SELECT USER.*, USER_STATUS.STATUS FROM USER USER ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID) ";
+    $sql.= "WHERE USER.UID = $uid ";
 
     if ($hash) {
         $hash = addslashes($hash);

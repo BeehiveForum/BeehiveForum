@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.14 2003-12-09 22:26:54 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.15 2004-01-01 12:36:07 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -255,6 +255,8 @@ $lang['banneduser'] = "CRACKA ALERT";
 $lang['unbanneduser'] = "Refizormed cracka";
 $lang['ipaddress'] = "IP addrizess";
 $lang['ip'] = "IP";
+$lang['logged'] = "Logged";
+$lang['notlogged'] = "Not Logged";
 $lang['deleteduser'] = "CRACKA ALERT";
 $lang['changedtitleaccessfolder'] = "Chizanged some wack-ass Fo'da shit";
 $lang['movedthreads'] = "Hauled thizreads to fo'da";

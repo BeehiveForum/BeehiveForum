@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.210 2003-12-29 20:07:26 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.211 2004-01-01 12:36:07 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -101,7 +101,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
             $messages[$i]['CREATED'] = $message['CREATED'];
             $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
 	    $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
-	    $messages[$i]['EDIT_LOGON'] = $message['EDIT_LOGON'];
+	    $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
 	    $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
             $messages[$i]['CONTENT'] = '';
             $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
@@ -493,8 +493,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
 	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+		}else {
+		    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
 		}
-	    }
+
+	    }else {
+                echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['logged']}&nbsp;</span>";
+            }
 
             echo "</td>\n";
             echo "</tr>";

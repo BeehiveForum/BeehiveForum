@@ -91,7 +91,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
 }
 
-function threads_get_unread_to_me($uid) // get unread messages for $uid
+function threads_get_unread_to_me($uid) // get unread messages to $uid
 {
 	$db = db_connect();
 
@@ -117,7 +117,7 @@ function threads_get_unread_to_me($uid) // get unread messages for $uid
 
 }
 
-function threads_get_by_days($uid,$days = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function threads_get_by_days($uid,$days = 1) // get threads from the last $days days
 {
 	$db = db_connect();
 
@@ -141,7 +141,7 @@ function threads_get_by_days($uid,$days = 1) // get "all" threads (i.e. most rec
 
 }
 
-function threads_get_by_interest($uid,$interest = 1) // get unread messages for $uid (default High Interest)
+function threads_get_by_interest($uid,$interest = 1) // get messages for $uid by interest (default High Interest)
 {
 	$db = db_connect();
 
@@ -163,7 +163,7 @@ function threads_get_by_interest($uid,$interest = 1) // get unread messages for 
 
 }
 
-function threads_get_unread_by_interest($uid,$interest = 1) // get unread messages for $uid (default High Interest)
+function threads_get_unread_by_interest($uid,$interest = 1) // get unread messages for $uid by interest (default High Interest)
 {
 	$db = db_connect();
 
@@ -186,7 +186,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
 
 }
 
-function threads_get_recently_viewed($uid) // get unread messages for $uid (default High Interest)
+function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 {
 	$db = db_connect();
 
@@ -197,7 +197,7 @@ function threads_get_recently_viewed($uid) // get unread messages for $uid (defa
 	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
 	$sql .= "WHERE THREAD.fid = FOLDER.fid ";
 	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
-	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT <= 1 ";
+	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
 	$sql .= "AND USER_THREAD.INTEREST != -1 ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT 0, 50";
@@ -241,57 +241,6 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 		
 	}
 	return array($lst, $folder_order); // $lst is the array with thread information, $folder_order is a list of FIDs in the order in which the folders should be displayed
-}
-
-function threads_display_list($thread_info, $folder_order) // Displays the thread list when given an array of thread information and an array containing the desired order of folders
-{
-	// Get folder FIDs and titles
-	$folder_info = threads_get_folders();
-	if (!$folder_info) die ("Could not retrieve folder information");
-
-	// Get total number of messages for each folder
-	$folder_msgs = threads_get_folder_msgs();
-
-	// Work out if any folders have no messages - if so, they still need to be displayed, so add them to $folder_order
-	while (list($fid, $title) = each($folder_info)) {
-		if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
-	}
-
-	// Iterate through the information we've just got and display it in the right order
-	while (list($key1, $folder) = each($folder_order)) {
-		echo "<tr>\n";
-		echo "<td class=\"foldername\">\n";
-		echo "<img src=\"./images/folder.png\" alt=\"folder\" />\n";
-		echo $folder_info[$folder];
-		echo "</td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td class=\"threadname\">\n";
-		echo "<span class=\"folderinfo\">".$folder_msgs[$folder]." msgs</span>\n";
-		echo "<span class=\"folderpostnew\"><a href=\"post.php?fid=$folder\" target=\"right\">Post New</a></span><br />\n";
-		echo "<ul>\n";
-		while (list($key2, $thread) = each($thread_info)) {
-			if ($thread['fid'] == $folder) {
-				if ($thread['length'] == $thread['last_read']) {
-					$number = "[".$thread['length']."]";
-					$latest_post = 1;
-				} elseif ($thread['last_read'] == 0) {
-					$number = "[".$thread['length']." new]";
-					$latest_post = 1;
-				} else {
-					$new_posts = $thread['length'] - $thread['last_read'];
-					$number = "[".$new_posts." new of ".$thread['length']."]";
-					$latest_post = $thread['last_read'] + 1;
-				}
-				echo "<li><a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\">".$thread['title']."</a>";
-				echo "<span class=\"folderxnewofy\">$number</span></li>\n";
-			}
-		}
-		reset($thread_info);
-		echo "</ul>\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-	}
 }
 
 function thread_get_title($tid)

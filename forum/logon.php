@@ -113,7 +113,7 @@ if(!$valid){
     echo "</tr><tr><td align=\"right\">Password</td>\n";
     echo "<td>".form_input_password("password",$password)."</td>\n";
     echo "</tr><tr><td>&nbsp;</td><td align=\"right\">\n";
-    echo form_checkbox("remember_user","Y","Remember me",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || $HTTP_POST_VARS['remember_user'] == "Y"));
+    echo form_checkbox("remember_user","Y","Remember me",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")));
     echo "</td></tr>\n";
     echo "</table>\n";
     echo "<table class=\"posthead\" width=\"100%\">\n";

@@ -167,7 +167,7 @@ function change_current_thread (thread_id) {
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
-if($folder){
+if(isset($folder)){
 	list($thread_info, $folder_order) = threads_get_folder($user,$folder);
 } else {
     switch ($mode) {

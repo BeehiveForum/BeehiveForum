@@ -123,7 +123,11 @@ function form_radio($name, $value, $text, $checked = false)
 function form_radio_array($name, $value, $text, $checked = -1)
 {
     for($i=0;$i<count($value);$i++){
-        $html .= form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]));
+        if(isset($html)) {
+          $html .= form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]));
+        } else {
+          $html = form_radio($name, $value[$i], $text[$i], ($checked == $value[$i]));
+        }
     }
     return $html;
 }

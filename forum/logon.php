@@ -67,6 +67,12 @@ if (bh_session_check()) {
 
 }
 
+// Remove the cookie that makes this page show.
+
+if (!isset($HTTP_COOKIE_VARS['bh_remember_username'])) {
+    setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
+}
+
 // Retrieve existing cookie data if any
 
 // Username array
@@ -105,11 +111,12 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
   }
 
+  setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
   bh_session_end();
 
-  if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
+  if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-    header_redirect("./logon.php". (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''));
+    header_redirect("./index.php". (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''));
 
   }else {
 
@@ -227,7 +234,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
           }
         }
 
-        // Set the cookies
+        // set / update the username and password cookies
 
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
@@ -237,25 +244,20 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         }
 
-        /*// Get Start Page
+        // set / update the cookie that remembers if the user
+        // has any logon form data.
 
-        $user_prefs = user_get_prefs($luid);
-
-        if (!isset($final_uri)) {
-          if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
-            $final_uri = "./discussion.php";
-          }else {
-            $final_uri = "./start.php";
-          }
-        }*/
+        setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
 
       }
 
-      if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
+      // IIS bug prevents redirect at same time as setting cookies.
+
+      if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
           header_redirect("./index.php". (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''));
 
-      }else { // IIS bug prevents redirect at same time as setting cookies.
+      }else {
 
           html_draw_top();
 
@@ -492,7 +494,7 @@ if (user_guest_enabled() && $guest_account_enabled) {
 echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Register now.</a></p>\n";
 echo "  <hr width=\"350\" />\n";
 echo "  <h2>Problems logging on?</h2>\n";
-echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Delete Cookies</a></p>\n";
+echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_top\">Delete Cookies</a></p>\n";
 echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Forgotten your password?</a></p>\n";
 echo "  <hr width=\"350\" />\n";
 echo "  <h2>Using a PDA?</h2>\n";

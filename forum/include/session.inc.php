@@ -38,13 +38,13 @@ function bh_session_check()
     if (isset($HTTP_COOKIE_VARS['bh_sess_data']) && isset($HTTP_COOKIE_VARS['bh_sess_check'])) {
 
         $user_sess = _stripslashes($HTTP_COOKIE_VARS['bh_sess_data']);
-	$user_hash = $HTTP_COOKIE_VARS['bh_sess_check'];
+        $user_hash = $HTTP_COOKIE_VARS['bh_sess_check'];
 
         if (md5($user_sess) == $user_hash) {
-	    if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
-	        return true;
+            if (user_check_logon($user_sess['UID'], $user_sess['LOGON'], $user_sess['PASSWD'])) {
+                return true;
             }
-	}
+        }
     }
 
     return false;
@@ -53,7 +53,7 @@ function bh_session_check()
 
 // Fetches a value from the session
 
-function bh_session_get_value($session_key) 
+function bh_session_get_value($session_key)
 {
     global $HTTP_COOKIE_VARS;
 
@@ -63,7 +63,7 @@ function bh_session_get_value($session_key)
             return $user_sess[$session_key];
         }
     }
-    
+
     return false;
 }
 
@@ -91,14 +91,14 @@ function bh_session_init($uid)
                            'LOGON'          => 'GUEST',
                            'PASSWD'         => md5('GUEST'),
                            'STATUS'         => 0,
-	                   'POSTS_PER_PAGE' => 5,
-	                   'TIMEZONE'       => 0,
-			   'DL_SAVING'      => 0,
-			   'MARK_AS_OF_INT' => 0,
-			   'FONT_SIZE'      => 10,
-			   'STYLE'          => $default_style,
-			   'VIEW_SIGS'      => 0,
-			   'START_PAGE'     => 0);
+                           'POSTS_PER_PAGE' => 5,
+                           'TIMEZONE'       => 0,
+                           'DL_SAVING'      => 0,
+                           'MARK_AS_OF_INT' => 0,
+                           'FONT_SIZE'      => 10,
+                           'STYLE'          => $default_style,
+                           'VIEW_SIGS'      => 0,
+                           'START_PAGE'     => 0);
 
     }
 
@@ -113,8 +113,14 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
+    // Session cookies
+
     setcookie("bh_sess_data", "", time() - 3600);
     setcookie("bh_sess_check", md5(uniqid(rand())), time() - 3600);
+
+    // Other cookies set by Beehive
+
+    setcookie("bh_thread_mode", "", time() - 3600);
 
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.21 2004-02-02 18:51:45 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.22 2004-02-02 20:47:05 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -219,7 +219,9 @@ $lang['postssuccessfullydeleted'] = "Les postes ont été effacées avec succès.";
 $lang['folderaccess'] = "Accès de dossier";
 $lang['norestrictedfolders'] = "Les dossiers non limités";
 $lang['possiblealiases'] = "Aliases possible";
+$lang['usersettingsupdated'] = "Arrangements D'Utilisateur Avec succès Mis à jour";
 $lang['nomatches'] = "Aucunes allumettes";
+$lang['tobananIPaddress'] = "To ban an IP Address tick the checkbox next to the alias and click the Submit button below";
 $lang['cannotipbansoldiers'] = "Vous ne pouvez pas l'interdiction de IP les autres Soldats. Plus bas leur Statut premièrement.";
 $lang['banthisipaddress'] = "Interdire cette adresse de IP";
 $lang['noipaddress'] = "Il n'y a pas l'adresse de IP pour ce compte. L'utilisateur ne peut pas être interdit par l'adresse de IP.";

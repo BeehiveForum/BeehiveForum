@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.21 2004-01-31 21:53:12 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.22 2004-02-02 20:47:05 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -37,6 +37,8 @@ $lang['_textdir'] = "ltr";   // ltr or rtl; left to right or vice versa
 $lang['locked'] = "Locked";
 $lang['add'] = "Izadd";
 $lang['advanced'] = "Advanced";
+$lang['active'] = "Active";
+$lang['kick'] = "Kick";
 $lang['remove'] = "Remizove";
 $lang['style'] = "Style";
 $lang['go'] = "Gizo";
@@ -224,6 +226,8 @@ $lang['folderaccess'] = "Fizo'da Accizess";
 $lang['norestrictedfolders'] = "All tha fo'daz are opizen to yo punk ass";
 $lang['possiblealiases'] = "Pizossible Aliziasizes";
 $lang['nomatches'] = "Ain't no mizatches";
+$lang['usersettingsupdated'] = "User Settings Successfully Updated";
+$lang['tobananIPaddress'] = "To ban an IP Address tick the checkbox next to the alias and click the Submit button below";
 $lang['cannotipbansoldiers'] = "Yo ain't gonna IP bizan other Ballers. What tha fuck yo thinkin' about? Lizower their punk-ass Stizatus fizirst.";
 $lang['banthisipaddress'] = "Bizan this crackas IP";
 $lang['noipaddress'] = "Thizere ain't no IP address fo' this crackas accizount. Yo ain't gonna beat this foo' dizown.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.55 2004-02-02 19:44:38 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.56 2004-02-02 20:47:05 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -93,6 +93,9 @@ if (!isset($user['STATUS'])) {
   $user['STATUS'] = 0;
 }
 
+// Draw the form
+echo "<h1>{$lang['manageuser']}</h1>\n";
+
 // Do updates
 
 if (isset($HTTP_POST_VARS['submit'])) {
@@ -161,28 +164,51 @@ if (isset($HTTP_POST_VARS['submit'])) {
         user_update_folders($uid, $uf);
         admin_addlog($uid, 0, 0, 0, 0, 0, 2);
 
-        // IP Address banning / unbanning
+        // IP Addresses to be banned
 
-        if (isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
-
-            // Prevent the Queen / Soldiers from banning their own IP address
-
-            if ($ipaddress = get_ip_address()) {
-                if (($HTTP_POST_VARS['t_ip_address'] != $ipaddress) && !($user['STATUS'] & PERM_CHECK_SOLDIER)) {
-                    ban_ip($HTTP_POST_VARS['t_ip_address']);
-                    admin_addlog($uid, 0, 0, 0, 0, 0, 4);
+        if (isset($HTTP_POST_VARS['t_ban_ipaddress']) && is_array($HTTP_POST_VARS['t_ban_ipaddress'])) {
+            $t_ban_ipaddress = $HTTP_POST_VARS['t_ban_ipaddress'];
+        }else {
+            $t_ban_ipaddress = array();
+        }
+        
+        // Already banned IPs for the selected user.
+        
+        if (isset($HTTP_POST_VARS['t_ip_banned']) && is_array($HTTP_POST_VARS['t_ip_banned'])) {
+            $t_ip_banned = $HTTP_POST_VARS['t_ip_banned'];
+        }else {
+            $t_ip_banned = array();
+        }
+        
+        // Get the current user's IP. So we don't ban ourselves.
+            
+        if ($ipaddress = get_ip_address()) {
+            
+            // Unban the unselected IP adddresses first.
+            
+            foreach($t_ip_banned as $banned_ip_address) {
+                if (!in_array($banned_ip_address, $t_ban_ipaddress)) {
+                    unban_ip($banned_ip_address);
+                    admin_addlog($uid, 0, 0, 0, 0, 0, 5);
                 }
             }
-
-        }elseif (isset($HTTP_POST_VARS['t_ip_banned']) && !isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
-            unban_ip($HTTP_POST_VARS['t_ip_address']);
-            admin_addlog($uid, 0, 0, 0, 0, 0, 5);
+            
+            // Ban the selected IP Addresses
+            
+            foreach($t_ban_ipaddress as $ban_ip_address) {
+                if (!ip_is_banned($ban_ip_address)) {
+                    if (($t_ban_ipaddress != $ipaddress) && !($user['STATUS'] & PERM_CHECK_SOLDIER)) {
+                        ban_ip($ban_ip_address);
+                        admin_addlog($uid, 0, 0, 0, 0, 0, 4);
+                    }
+                }
+            }
         }
     }
+    
+    echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
 }
 
-// Draw the form
-echo "<h1>{$lang['manageuser']}</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 
@@ -290,51 +316,64 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "        <tr>\n";
     echo "          <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}:</td>\n";
     echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>&nbsp;</td>\n";
+    echo "        </tr>\n";    
+    echo "        <tr>\n";
+    echo "          <td>\n";
+    echo "            <table class=\"box\" align=\"center\" width=\"80%\">\n";
+    echo "              <tr>\n";
+    echo "                <td>\n";
+    echo "                  <table class=\"posthead\" width=\"100%\">\n";
+    echo "                    <tr>\n";
+    echo "                      <td class=\"subhead\">&nbsp;</td>\n";
+    echo "                      <td class=\"subhead\" width=\"150\">&nbsp;LOGON</td>\n";
+    echo "                      <td class=\"subhead\">&nbsp;IP Address</td>\n";
+    echo "                    </tr>\n";
 
     if ($user_alias_array = user_get_aliases($user['UID'])) {
 
         foreach ($user_alias_array as $user_alias) {
-            echo "        <tr>\n";
-            echo "          <td align=\"left\"><a href=\"admin_user.php?uid=", $user_alias['UID'], "\">", $user_alias['LOGON'], "</a></td>\n";
-            echo "        </tr>\n";
+            echo "                    <tr>\n";
+            echo "                      <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
+            echo "                      <td align=\"left\">&nbsp;<a href=\"admin_user.php?uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+            echo "                      <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
+            
+            if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
+
+            echo "</td>\n";            
+            echo "                    </tr>\n";
         }
 
-    }else {
-        echo "        <tr>\n";
-        echo "          <td align=\"left\">{$lang['nomatches']}</td>\n";
-        echo "        </tr>\n";
     }
+    
+    echo "                    <tr>\n";
+    echo "                      <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user['LOGON_FROM'], "", ip_is_banned($user['LOGON_FROM'])), "</td>\n";
+    echo "                      <td align=\"left\">&nbsp;{$user['LOGON']}</td>\n";
+    echo "                      <td align=\"left\">&nbsp;{$user['LOGON_FROM']}";
+            
+    if (ip_is_banned($user['LOGON_FROM'])) echo form_input_hidden("t_ip_banned[]", $user['LOGON_FROM']); 
 
+    echo "</td>\n";            
+    echo "                    </tr>\n";
+    echo "                  </table>\n";    
+    echo "                </td>\n";    
+    echo "              </tr>\n";
+    echo "            </table>\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td align=\"left\">&nbsp;</td>\n";
     echo "        </tr>\n";
-
-    if ($user['STATUS'] & PERM_CHECK_SOLDIER) {
-
-        echo "        <tr>\n";
-        echo "          <td class=\"smalltext\" align=\"left\">{$lang['cannotipbansoldiers']}</td>\n";
-        echo "        </tr>\n";
-
-    }elseif (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
-
-        echo "        <tr>\n";
-        echo "          <td align=\"left\">", form_checkbox("t_ban_ipaddress", 1, $lang['banthisipaddress'], ip_is_banned($user['LOGON_FROM'])), form_input_hidden("t_ip_address", $user['LOGON_FROM']);
-
-        if (ip_is_banned($user['LOGON_FROM'])) {
-            echo form_input_hidden("t_ip_banned", 1);
-        }
-
-        echo "</td>\n";
-        echo "        </tr>\n";
-
-    }else {
-
-        echo "        <tr>\n";
-        echo "          <td class=\"smalltext\" align=\"left\">{$lang['noipaddress']}</td>\n";
-        echo "        </tr>\n";
-
-    }
-
+    echo "        <tr>\n";
+    echo "          <td>\n";
+    echo "            <table width=\"80%\" align=\"center\">\n";
+    echo "              <tr>\n";
+    echo "                <td class=\"smalltext\" align=\"left\">{$lang['tobananIPaddress']}</td>\n";
+    echo "              </tr>\n";
+    echo "            </table>\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td>&nbsp;</td>\n";
     echo "        </tr>\n";

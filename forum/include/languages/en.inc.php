@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.203 2005-01-16 00:11:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.204 2005-01-17 17:12:28 decoyduck Exp $ */
 
 // International English language file
 
@@ -1021,6 +1021,7 @@ $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
 $lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";
 $lang['nomultivotetabulars'] = "Tabular format polls cannot be multi-vote";
+$lang['nomultivotepublic'] = "Public ballots cannot be multi-vote";
 $lang['cannotcreatemultivotepublicballot'] = "You cannot create multi-vote public ballots. Public ballots require the use of vote logging to work.";
 $lang['abletochangevote'] = "You will be able to change your vote.";
 $lang['abletovotemultiple'] = "You will be able to vote multiple times.";

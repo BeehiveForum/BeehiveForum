@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.140 2004-12-27 14:52:18 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.141 2005-01-17 17:12:30 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -223,7 +223,7 @@ function poll_get_votes($tid)
         $option_names[]  = $row['OPTION_NAME'];
         $option_groups[] = $row['GROUP_ID'];
 
-        $sql = "SELECT COUNT(ID) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+        $sql = "SELECT COUNT(*) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
         $sql.= "WHERE OPTION_ID = '{$row['OPTION_ID']}' ";
         $sql.= "AND TID = '$tid'";
 
@@ -265,7 +265,8 @@ function poll_get_user_votes($tid, $viewstyle)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UP.UID, UP.OPTION_ID FROM {$table_data['PREFIX']}USER_POLL_VOTES UP ";
+    $sql = "SELECT UP.UID, UP.OPTION_ID, UNIX_TIMESTAMP(UP.TSTAMP) AS TSTAMP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES UP ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (UP.TID = POLL.TID) ";
     $sql.= "WHERE UP.TID = '$tid' AND POLL.VOTETYPE = 1";
 
@@ -274,6 +275,7 @@ function poll_get_user_votes($tid, $viewstyle)
     $poll_get_user_votes = array();
 
     while($row = db_fetch_array($result)) {
+
         if ($viewstyle == 0) {
             $poll_get_user_votes[$row['OPTION_ID']][] = $row['UID'];
         }else {
@@ -286,33 +288,30 @@ function poll_get_user_votes($tid, $viewstyle)
 
 function poll_get_user_vote($tid)
 {
-    $uid = bh_session_get_value('UID');
-
     if (!is_numeric($tid)) return false;
-
-    $polldata = poll_get($tid);
-
-    if ($polldata['CHANGEVOTE'] == 2) return false;
 
     $db_poll_get_user_vote = db_connect();
 
+    $uid = bh_session_get_value('UID');
+
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE UID = $uid ORDER BY ID";
+    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP ";
+    $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "WHERE UID = $uid AND TID = $tid";
 
     $result = db_query($sql, $db_poll_get_user_vote);
 
     if (db_num_rows($result) > 0) {
 
-        $userpolldata = array();
+        $user_poll_data = array();
 
         while($row = db_fetch_array($result)) {
 
-            $userpolldata[] = $row;
+            $user_poll_data[] = $row;
         }
 
-        return $userpolldata;
+        return $user_poll_data;
     }
 
     return false;
@@ -334,7 +333,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
-    $userpolldata = poll_get_user_vote($tid);
+    $user_poll_data = poll_get_user_vote($tid);
 
     $totalvotes  = 0;
     $optioncount = 0;
@@ -365,7 +364,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     if ($in_list) {
 
-        if ((!is_array($userpolldata) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime()) && !$is_preview) {
+        if (((!is_array($user_poll_data) || $polldata['CHANGEVOTE'] == 2) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime()) && !$is_preview) {
 
             $polldata['CONTENT'].= "          <tr>\n";
             $polldata['CONTENT'].= "            <td>\n";
@@ -594,7 +593,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                 $polldata['CONTENT'].= "                </tr>\n";
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">";
-                $polldata['CONTENT'].= "                        ". form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+                $polldata['CONTENT'].= "                      ". form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
                 $polldata['CONTENT'].= "                    </td>\n";
                 $polldata['CONTENT'].= "                </tr>\n";
                 $polldata['CONTENT'].= "                <tr>\n";
@@ -602,64 +601,78 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                 $polldata['CONTENT'].= "                </tr>\n";
             }
 
-            if (is_array($userpolldata)) {
+            if (is_array($user_poll_data) && isset($user_poll_data[0]['TSTAMP'])) {
 
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" class=\"postbody\">";
 
-                $userpollvotes_array = array();
+                $user_poll_votes_array = array();
 
-                for ($i = 0; $i < sizeof($userpolldata); $i++) {
+                for ($i = 0; $i < sizeof($user_poll_data); $i++) {
 
                     for ($j = 0; $j < sizeof($pollresults['OPTION_ID']); $j++) {
 
-                        if ($userpolldata[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
+                        if ($user_poll_data[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
 
                             if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
-                                $userpollvotes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
+
+                                $user_poll_votes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
+
                             }else {
-                                $userpollvotes_array[] = "Option {$userpolldata[$i]['OPTION_ID']}";
+
+                                $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
                             }
                         }
                     }
                 }
 
-                $polldata['CONTENT'].= "{$lang['youvotedfor']}: ". implode(" & ", $userpollvotes_array);
-                $polldata['CONTENT'].=    " {$lang['on']} ". gmdate("jS M Y", $userpolldata[0]['TSTAMP']). ". </td>\n";
+                $polldata['CONTENT'].= "{$lang['youvotedfor']}: ". implode(" & ", $user_poll_votes_array);
+                $polldata['CONTENT'].=    " {$lang['on']} ". gmdate("jS M Y", $user_poll_data[0]['TSTAMP']). ". </td>\n";
                 $polldata['CONTENT'].= "                </tr>\n";
 
             }
 
         }else {
 
-            if (is_array($userpolldata)) {
+            if (is_array($user_poll_data) && isset($user_poll_data[0]['TSTAMP'])) {
 
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" class=\"postbody\">";
 
-                $userpollvotes_array = array();
+                $user_poll_votes_array = array();
 
-                for ($i = 0; $i < sizeof($userpolldata); $i++) {
+                for ($i = 0; $i < sizeof($user_poll_data); $i++) {
 
                     for ($j = 0; $j < sizeof($pollresults['OPTION_ID']); $j++) {
 
-                        if ($userpolldata[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
+                        if ($user_poll_data[$i]['OPTION_ID'] == $pollresults['OPTION_ID'][$j]) {
 
                             if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
-                                $userpollvotes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
+
+                                $user_poll_votes_array[] = "'{$pollresults['OPTION_NAME'][$j]}'";
+
                             }else {
-                                $userpollvotes_array[] = "Option {$userpolldata[$i]['OPTION_ID']}";
+
+                                $user_poll_votes_array[] = "Option {$user_poll_data[$i]['OPTION_ID']}";
                             }
                         }
                     }
                 }
 
-                $polldata['CONTENT'].= "{$lang['youvotedfor']}: ". implode(" & ", $userpollvotes_array);
-                $polldata['CONTENT'].=    " {$lang['on']} ". gmdate("jS M Y", $userpolldata[0]['TSTAMP']). ". </td>\n";
+                $polldata['CONTENT'].= "{$lang['youvotedfor']}: ". implode(" & ", $user_poll_votes_array);
+                $polldata['CONTENT'].=    " {$lang['on']} ". gmdate("jS M Y", $user_poll_data[0]['TSTAMP']). ". </td>\n";
                 $polldata['CONTENT'].= "                </tr>\n";
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\">&nbsp;</td>\n";
                 $polldata['CONTENT'].= "                </tr>\n";
+
+                if ($polldata['CHANGEVOTE'] == 2) {
+
+                    $polldata['CONTENT'].= "                <tr>\n";
+                    $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
+                    $polldata['CONTENT'].= "                </tr>\n";
+                }
+
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">";
 
@@ -1752,7 +1765,7 @@ function poll_vote($tid, $vote_array)
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
 
-    if (!poll_get_user_vote($tid)) {
+    if (!poll_get_user_vote($tid) || $polldata['CHANGEVOTE'] == 2) {
 
         foreach ($vote_array as $user_vote) {
 

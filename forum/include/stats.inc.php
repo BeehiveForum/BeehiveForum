@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.41 2004-12-27 00:20:51 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.42 2005-01-17 17:12:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -110,7 +110,7 @@ function get_active_users()
 
     // Current active users
 
-    $sql = "SELECT SESSIONS.UID, SESSIONS.TIME, USER.LOGON, USER.NICKNAME, ";
+    $sql = "SELECT SESSIONS.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, ";
     $sql.= "USER_PREFS.ANON_LOGON FROM SESSIONS SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.30 2003-11-27 16:06:39 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.31 2004-01-21 21:38:27 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -209,7 +209,8 @@ function get_free_attachment_space($uid)
 	    delete_attachment($uid, $row['AID'], $row['FILENAME']);
 	}
     }
-
+    
+    if ((MAX_ATTACHMENT_SIZE - $used_attachment_space) < 0) return 0;
     return MAX_ATTACHMENT_SIZE - $used_attachment_space;
 }
 

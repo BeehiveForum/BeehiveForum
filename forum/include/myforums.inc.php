@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.21 2004-04-12 19:44:43 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.22 2004-04-12 21:18:15 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
@@ -154,7 +154,7 @@ function get_my_forums()
 	    $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
             $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
-            $sql.= "AND (USER_THREAD.LAST_READ < POST.PID OR USER_THREAD.LAST_READ IS NULL) ";
+            $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
 
             $result_post_count = db_query($sql, $db_get_my_forums);
 

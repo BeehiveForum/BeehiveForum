@@ -209,7 +209,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
       }
     }
 
-    if(!isset($message['FROM_RELATIONSHIP'])) {
+    if (!isset($message['FROM_RELATIONSHIP'])) {
         $message['FROM_RELATIONSHIP'] = 0;
     }
 
@@ -271,7 +271,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
         echo "<b>Ignored message</b>";
     } else {
         if($in_list) {
@@ -312,7 +312,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td>\n";
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list) {
+    if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
         echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
     }else if($in_list && $msg_count > 0) {

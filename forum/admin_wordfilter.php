@@ -70,6 +70,9 @@ if (isset($HTTP_POST_VARS['save'])) {
     if (isset($HTTP_POST_VARS['wordlist']) && strlen($HTTP_POST_VARS['wordlist']) > 0) {
         $filter_array = explode("\n", $HTTP_POST_VARS['wordlist']);
         for ($i = 0; $i < sizeof($filter_array); $i++) {
+           if (substr($filter_array[$i], 0, 1) == '/' && substr($filter_array[$i], -1) == '/') {
+               $filter_array[$i] = substr($filter_array[$i], 1, -1);
+           }
            $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (FILTER) ";
            $sql.= "VALUES ('". $filter_array[$i]. "')";
            $result = db_query($sql, $db);
@@ -99,7 +102,8 @@ echo "<h1>Edit Word Filter</h1>\n";
 
 if (isset($status_text)) echo $status_text;
 
-echo "<p>Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line. PCRE Regular Expressions can also be used to match words if you know how.</p>\n";
+echo "<p>Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.</p>\n";
+echo "<p>PCRE Regular Expressions can also be used to match words if you know how</p>\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";

@@ -24,12 +24,6 @@ USA
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
 
-// Alter user's interest in a thread
-// DOES NOT DISPLAY ANYTHING
-
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
@@ -70,7 +64,7 @@ if(isset($HTTP_POST_VARS['move'])){
 
 } else if(isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid'])){
         $tid = $HTTP_POST_VARS['t_tid'];
-        $name = addslashes(htmlspecialchars(_stripslashes($HTTP_POST_VARS['t_name'])));
+        $name = mysql_escape_string(htmlspecialchars($HTTP_POST_VARS['t_name']));
 
         $db = db_connect();
         $sql = "update ".forum_table("THREAD")." set TITLE = \"$name\" where TID = $tid";

@@ -52,8 +52,12 @@ function post_delete($tid, $pid)
     
     $db_post_delete = db_connect();
   
-    $sql = "update " . forum_table("THREAD") . " set POLL_FLAG = 'N' where TID = $tid";
-    $result = db_query($sql, $db_post_delete);
+    if (thread_is_poll($tid) && $pid == 1) {
+  
+      $sql = "update " . forum_table("THREAD") . " set POLL_FLAG = 'N' where TID = $tid";
+      $result = db_query($sql, $db_post_delete);
+
+    }
       
     $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = NULL ";
     $sql .= "where TID = $tid and PID = $pid";
@@ -64,15 +68,15 @@ function post_delete($tid, $pid)
     return $return;
 }
 
-function edit_refuse()
+function edit_refuse($tid, $pid)
 {
-    html_draw_top();
+
     echo "<div align=\"center\">";
     echo "<h1>Denied</h1>";
-    echo "<p>You are not permitted to edit this message, naughty person!</p>";
-    echo "<p><a href=\"discussion.php?msg=" . $msg_bits[0]. "." .$msg_bits[1];
-    echo "\">Return to messages</a></p>";
+    echo "<p>You are not permitted to edit this message.</p>";
+    echo form_quick_button("discussion.php", "Back", "msg", "$tid.$pid");
     echo "</div>";
+
 }
 
 ?>

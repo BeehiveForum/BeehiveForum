@@ -115,8 +115,7 @@ if ($valid) {
             echo "<p>&nbsp;</p>";
             echo "<div align=\"center\">";
             echo "<p>Post deleted successfully</p>";
-            echo "<p><a href=\"discussion.php?msg=" . $HTTP_POST_VARS['t_back'];
-            echo "\" target=\"_self\">Return to messages</a></p>";
+            echo form_quick_button("discussion.php", "Back", "msg", $HTTP_POST_VARS['t_back']);
             echo "</div>";
             
             html_draw_bottom();

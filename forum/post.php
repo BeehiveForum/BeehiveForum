@@ -56,6 +56,7 @@ require_once("./include/email.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
+require_once("./include/config.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
@@ -228,23 +229,24 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
     }
 
     if($new_pid > -1) {
-//		html_draw_top();
+
+        //html_draw_top();
         
-		// Check to see if any attachments were uploaded.
+        // Check to see if any attachments were uploaded.
         if (get_num_attachments($aid) > 0) { 
-			post_save_attachment_id($t_tid, $new_pid, $aid);
-		}
+            post_save_attachment_id($t_tid, $new_pid, $aid);
+        }
 
-		if($newthread){
-			$t_rpid = 1;
-		}
+        if($newthread){
+            $t_rpid = 1;
+        }
 
-		$uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-		$uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-		$uri.= "/discussion.php?msg=$t_tid.$t_rpid";
-	    header_redirect($uri);
+        $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+        $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+        $uri.= "/discussion.php?msg=$t_tid.$t_rpid";
+        header_redirect($uri);
         
-/*        echo "<p>&nbsp;</p>";
+        /*echo "<p>&nbsp;</p>";
         echo "<p>&nbsp;</p>";
         echo "<div align=\"center\"><p>\n";
         echo "Message posted successfully\n";
@@ -464,8 +466,13 @@ echo "</table>\n";
 echo form_submit("submit","Post");
 echo "&nbsp;".form_submit("preview","Preview");
 echo "&nbsp;".form_submit("cancel", "Cancel");
-echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
-echo form_input_hidden("aid", $aid);
+
+if ($attachments_enabled) {
+
+    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo form_input_hidden("aid", $aid);
+    
+}
 
 if(isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
@@ -484,4 +491,5 @@ if(!$newthread) {
 }
 
 html_draw_bottom();
+
 ?>

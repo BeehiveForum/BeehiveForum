@@ -50,20 +50,18 @@ $maximum_post_length = 6226;	// maximum character-length of posts
 
 // Attachment stuff ----------------------------------------------------
 
-// Hopefully won't need this from now on, as the attachments now use a
-// relative path rather than the DOCUMENT_ROOT / SCRIPT_FILENAME;
+// Enable attachments. If you have limited webspace you
+// may wish to disable attachments.
 
-/*if(isset($HTTP_SERVER_VARS['PATH_TRANSLATED'])){
-    $path = dirname($HTTP_SERVER_VARS['PATH_TRANSLATED']);
-} else if(isset($HTTP_SERVER_VARS['SCRIPT_FILENAME'])){
-    $path = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']);
-} else if(isset($HTTP_ENV_VARS['PATH_TRANSLATED'])){
-    $path = dirname($HTTP_ENV_VARS['PATH_TRANSLATED']);
-} else {
-    $path = ".";
-} */
+$attachments_enabled = true;
 
-$attachment_dir = 'attachments';
+// Where to store the attachments on
+// your server. This should be a sub-folder
+// to your beehiveforum installation folder
+// i.e. if your beehiveforum is installed in /forum/
+// the attachments path would be /forum/attachments/
+
+$attachment_dir = 'attachments';  
 
 // ---------------------------------------------------------------------
 

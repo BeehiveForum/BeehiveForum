@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.55 2004-08-04 23:46:35 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.56 2004-08-22 15:58:57 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -137,11 +137,15 @@ if (isset($_POST['submit'])) {
     $rel = isset($_POST['rel']) ? $_POST['rel'] : 0;
     $rel+= isset($_POST['sig']) ? $_POST['sig'] : 0;
 
-    $sig_global = isset($_POST['sig_global']) ? $_POST['sig_global'] : '';
+    $view_sigs = isset($_POST['view_sigs']) ? $_POST['view_sigs'] : '';
+	$view_sigs_global = false;
+	if (isset($_POST['view_sigs_global'])) {
+		$view_sigs_global = ($_POST['view_sigs_global'] == "Y") ? true : false;
+	}
 
     user_rel_update($my_uid, $_POST['uid'], $rel);
 
-    user_update_global_sig($my_uid, $sig_global);
+    user_update_global_sig($my_uid, $view_sigs, $view_sigs_global);
 
     // Update the User's Session to save them having to logout and back in
     bh_session_init(bh_session_get_value('UID'));
@@ -177,6 +181,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 html_draw_top("openprofile.js");
 
 $rel = user_rel_get($my_uid, $uid);
+
+$user_prefs = user_get_prefs($my_uid);
 
 echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 echo "<br />\n";
@@ -247,8 +253,8 @@ if (isset($uid)) {
 }
 
 echo "                <tr>\n";
-echo "                  <td width=\"130\">", form_checkbox("sig_global", "Y", $lang['globallyignored'], user_get_global_sig(bh_session_get_value('UID')) == "Y"), "</td>\n";
-echo "                  <td width=\"370\">: {$lang['globallyignoredsig_exp']}</td>\n";
+echo "                  <td width=\"130\" valign=\"top\">", form_checkbox("view_sigs", "N", $lang['globallyignored'], $user_prefs['VIEW_SIGS'] == 'N'), "</td>\n";
+echo "                  <td width=\"370\">: {$lang['globallyignoredsig_exp']}<br />&nbsp;(", form_checkbox("view_sigs_global","Y",$lang['setforallforums'],$user_prefs['VIEW_SIGS_GLOBAL']) ,")</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

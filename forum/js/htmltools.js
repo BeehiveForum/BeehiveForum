@@ -65,9 +65,47 @@ function get_selection_start () {
 		var u = s.text;
 		var i = 0;
 		var last_s;
+		var tmp_s;
 		var count = 0;
+		var no_sel = false;
 
-		while(t.indexOf(s.text) > -1) {
+		var gap = Math.ceil(t.length/2);
+		if (u.length == 0) {
+			no_sel = true;
+			gap = 1;
+		}
+		while(true) {
+			if (++i > t.length * 5) { // something's gone wrong
+				break;
+			}
+			last_s = s.duplicate();
+			tmp_s = s.duplicate();
+
+			tmp_s.moveStart("character", -gap);
+
+			if (t.indexOf(tmp_s.text) > -1) {
+				s.moveStart("character", -gap);
+
+				// yet another IE bug - if there is no selection, just a placed cursor,
+				// then moveStart will ignore any combinations of \r\n until it hits a 
+				// non-linebreak character. "Argh".
+				if (no_sel == true) {
+					if (last_s.text == s.text) {
+						count++;
+					} else {
+						no_sel = 0;
+						gap = Math.ceil(t.length/2);
+					}
+				}
+			} else if (gap > 1) {
+				gap = Math.ceil(gap/2);
+			} else {
+				break;
+			}
+		}
+
+		// oldskool method - a lotlot slower than ^that, but it works, the above is "experimental"
+		/*while(t.indexOf(s.text) > -1) {
 			last_s = s.duplicate();
 			s.moveStart("character", -1);
 
@@ -82,9 +120,10 @@ function get_selection_start () {
 			if (++i > t.length * 2) { // something's gone wrong
 				break;
 			}
-		}
-		if (u.length == 0) {
-			count = (count-1) * 2;
+		}*/
+
+		if (no_sel == 0) {
+			count *= 2;
 		}
 
 		// Remove 'junk' characters before the textfield

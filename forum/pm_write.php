@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.108 2005-03-20 12:37:33 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.109 2005-03-22 21:47:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -552,7 +552,7 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['CONTENT'] = $t_content;
 
     echo "  <tr>\n";
-    echo "    <td><br />", draw_pm_message($pm_preview_array, true), "</td>\n";
+    echo "    <td><br />", pm_display($pm_preview_array, true), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td>&nbsp;</td>\n";
@@ -765,7 +765,7 @@ if (isset($pm_data) && is_array($pm_data)) {
     echo "    <td class=\"subhead\">{$lang['inreplyto']}</td>\n";
     echo "  </tr>";
     echo "  <tr>\n";
-    echo "    <td><br />", draw_pm_message($pm_data), "</td>\n";
+    echo "    <td><br />", pm_display($pm_data), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"2\">&nbsp;</td>\n";

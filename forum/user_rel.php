@@ -82,7 +82,7 @@ html_draw_top_script();
 
 $rel = user_rel_get($my_uid, $uid);
 
-echo "<h1>User Relationship: $uname - $rel</h1>\n";
+echo "<h1>User Relationship: $uname</h1>\n";
 ?>
 
 <div class="postbody">

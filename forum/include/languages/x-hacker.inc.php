@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.134 2004-09-14 17:45:36 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.135 2004-09-16 12:00:01 tribalonline Exp $ */
 
 // International English language file
 
@@ -1185,6 +1185,7 @@ $lang['highinterest'] = "h19h InteReSt";
 $lang['unreadhighinterest'] = "UNRe@D hIgH 1NT3RE\$T";
 $lang['iverecentlyseen'] = "1'Ve R3C3N+LY Seen";
 $lang['iveignored'] = "1'Ve I9N0ReD";
+$lang['byignoredusers'] = "8Y 1GN0r3D u53rS";
 $lang['ivesubscribedto'] = "I'v3 SU85CR18Ed To";
 $lang['startedbyfriend'] = "5+@R+3d By Fr13nD";
 $lang['unreadstartedbyfriend'] = "unR34d \$+d By Fr1ENd";

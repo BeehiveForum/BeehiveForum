@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.43 2004-09-14 17:45:36 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.44 2004-09-16 12:00:01 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -1179,6 +1179,7 @@ $lang['highinterest'] = "Shit I's down wit";
 $lang['unreadhighinterest'] = "Unread shit I's down wit";
 $lang['iverecentlyseen'] = "Shit I been lookin' at";
 $lang['iveignored'] = "Shit I ain't down wit";
+$lang['byignoredusers'] = "By foo's I ain't got time fo'";
 $lang['ivesubscribedto'] = "I've subscribed to";
 $lang['startedbyfriend'] = "Started by a homie";
 $lang['unreadstartedbyfriend'] = "Unread std by a homie";

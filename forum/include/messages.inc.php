@@ -189,4 +189,27 @@ function message_get_user($tid,$pid)
 
     return $uid;
 }
+
+function messages_update_read($tid,$pid,$uid)
+{
+    $db = db_connect();
+    
+    $sql = "select LAST_READ from USER_THREAD where UID = $uid and TID = $tid";
+
+    $result = db_query($sql,$db);
+    
+    if(db_num_rows($result)){
+        $fa = db_fetch_array($result);
+        if($pid > $fa['LAST_READ']){
+            $sql = "update USER_THREAD set LAST_READ = $pid  where UID = $uid and TID = $tid";
+            echo "<p>$sql</p>";
+            db_query($sql,$db);
+        }
+    } else {
+        $sql = "insert into USER_THREAD (UID,TID,LAST_READ,INTEREST) ";
+        $sql .= "values ($uid, $tid, $pid, 0)";
+        db_query($sql,$db);
+    }
+    db_disconnect($db);
+}
 ?>

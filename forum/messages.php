@@ -50,23 +50,32 @@ html_draw_top();
 
 $messages = messages_get($tid,$pid,20);
 $threaddata = thread_get($tid);
-if(!$threaddata){
+
+/* if(!$threaddata){
     echo "<h1>Fuck up</h1>";
 } else {
     foreach ($threaddata as $var => $value) {
         echo "<p>$var : $value</p>";
     }
-}
+} */
 
 
 messages_top($threaddata['TITLE']);
 
-foreach($messages as $message) {
-    message_display($tid,$message);
+$n = count($messages);
+
+if($n>0){
+    foreach($messages as $message) {
+        message_display($tid,$message);
+    }
 }
 
 messages_nav_strip($tid,$pid,$threaddata['LENGTH']);
 messages_bottom();
 html_draw_bottom();
+
+if($n > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+    messages_update_read($tid,$pid+$n-1,$HTTP_COOKIE_VARS['bh_sess_uid']);
+}
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.105 2004-03-02 23:25:25 decoyduck Exp $ */
+/* $Id: logon.php,v 1.106 2004-03-05 21:06:01 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -285,7 +285,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 form_quick_button("./index.php", $lang['back'], "final_uri", urlencode($final_uri), "_top");
             }else {
                 form_quick_button("./index.php", $lang['back'], "", "", "_top");
-            }     
+            }
+            
+            echo "<p>&nbsp;</p>\n";
+            echo "<h2>{$lang['problemsloggingon']}</h2>\n";
+            echo "<p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+	    echo "<p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
 
             html_draw_bottom();
             exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.47 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.48 2004-04-17 19:35:59 decoyduck Exp $ */
 
 // Create a form field
 
@@ -309,13 +309,19 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
     $birthday_years = range(1900, date('Y', mktime()));
 
     if ($show_blank) {
+    
         $birthday_days_values = range(0, 31);
-        $birthday_days = array_merge(' ', $birthday_days);
+        array_unshift($birthday_days, ' ');
+        
         $birthday_months_values = range(0, 12);
-        $birthday_months = array_merge(' ', $birthday_months);
-        $birthday_years_values = array_merge(0, $birthday_years);
-        $birthday_years = array_merge(' ', $birthday_years);
+        array_unshift($birthday_months, ' ');
+        
+        $birthday_years_values = $birthday_years;
+        array_unshift($birthday_years_values, 0);
+        array_unshift($birthday_years, ' ');
+        
     }else {
+    
         $birthday_days_values = range(1, 31);
         $birthday_months_values = range(1, 12);
         $birthday_years_values = $birthday_years;
@@ -361,7 +367,9 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
 {
     global $lang;
 
-    $days   = array_merge(" ", range(1,31));
+    $days = range(1,31);
+    array_unshift($days, " ");
+    
     $months = array(" ", $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'],
                     $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'],
                     $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
@@ -369,8 +377,11 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently
 
-    $years  = array_merge(" ", range(date('Y'), 2037));
-    $years_values = array_merge(0, range(date('Y'), 2037));
+    $years = range(date('Y'), 2037);
+    array_unshift($years, " ");
+    
+    $years_values = range(date('Y'), 2037);
+    array_unshift($years_values, " ");
 
     $output = form_dropdown_array("{$prefix}day", range(0,31), $days, $day);
     $output.= "&nbsp;";

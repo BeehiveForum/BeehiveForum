@@ -57,7 +57,7 @@ function thread_get($tid)
    return $threaddata;
 }
 
-function thread_get_author($tid, $nickonly = false)
+function thread_get_author($tid)
 {
  	$db_thread_get_author = db_connect();
 	
@@ -67,15 +67,8 @@ function thread_get_author($tid, $nickonly = false)
 	$result = db_query($sql, $db_thread_get_author);
 	$author = db_fetch_array($result);
 	
-	if ($nickonly) {
-	
-	  return $author['NICKNAME'];
+        return format_user_name($author['LOGON'], $author['NICKNAME']);
 	  
-	}else{
-	
-	  return format_user_name($author['LOGON'], $author['NICKNAME']);
-	  
-	}
 }
 
 function thread_get_interest($tid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.27 2004-11-01 23:58:42 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.28 2004-11-03 20:14:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,9 +155,9 @@ if ($pack != "user") {
 
         foreach ($emot_sets as $k => $v) {
                 if ($pack != $k) {
-                        echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=".$k."\" target=\"_self\">".$v."</a></p>\n";
+                        echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=$k\" target=\"_self\">{$v}</a></p>\n";
                 } else {
-                        echo "                  <h2>".$v."</h2>\n";
+                        echo "                  <h2>{$v}</h2>\n";
                 }
         }
 
@@ -211,7 +211,7 @@ for ($i = 0; $i < count($emot_match); $i++) {
 
         echo "                    <tr onclick=\"insertEmoticon(' ", rawurlencode(str_replace("'", "\\'", $tmp_ts)), " ');\">\n";
         echo "                      <td width=\"100\"><img src=\"$path/{$emot_image[$i]}\" alt=\"{$emot_text[$i]}\" title=\"{$emot_text[$i]}\" /></td>\n";
-        echo "                      <td>", rawurlencode($emot_match[$i]), "</td>\n";
+        echo "                      <td>{$emot_match[$i]}</td>\n";
         echo "                    </tr>\n";
 }
 

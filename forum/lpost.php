@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.58 2004-10-24 13:25:57 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.59 2004-11-03 20:14:25 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -308,6 +308,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
 
         $t_fid = $_POST['t_fid'];
+
+    }else {
+
+        $t_fid = 1;
     }
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {

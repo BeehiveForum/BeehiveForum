@@ -21,13 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.62 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.63 2004-04-08 16:47:15 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
 
-// Fetch the forum webtag and settings
-$webtag = get_webtag();
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?final_uri=$request_uri");
+}
+
+// We got this far we should now read the forum settings
+
 $forum_settings = get_forum_settings();
 
 // Enable the error handler

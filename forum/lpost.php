@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.36 2004-04-04 21:03:39 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.37 2004-04-08 16:47:15 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -37,8 +37,15 @@ include_once("./include/errorhandler.inc.php");
 // Multiple forum support
 include_once("./include/forum.inc.php");
 
-// Fetch the forum webtag and settings
-$webtag = get_webtag();
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?final_uri=$request_uri");
+}
+
+// We got this far we should now read the forum settings
+
 $forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.41 2004-04-04 21:03:38 decoyduck Exp $ */
+/* $Id: admin.php,v 1.42 2004-04-08 16:47:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -32,8 +32,15 @@ include_once("./include/errorhandler.inc.php");
 // Multiple forum support
 include_once("./include/forum.inc.php");
 
-// Fetch the forum webtag and settings
-$webtag = get_webtag();
+// Check we have a webtag
+
+if (!$webtag = get_webtag()) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?final_uri=$request_uri");
+}
+
+// We got this far we should now read the forum settings
+
 $forum_settings = get_forum_settings();
 
 include_once("./include/constants.inc.php");

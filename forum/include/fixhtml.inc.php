@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.80 2004-06-22 13:20:23 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.81 2004-07-07 19:07:55 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -89,9 +89,9 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 									if ($open_code == 1) {
 										$html_parts[$j] = "/pre";
 
-										if (isset($beaut_highlighter[$lang])) {
+										if (isset($beaut_highlighter[strtolower($lang)])) {
 											set_error_handler("fix_html_error_handler");
-											$tmpcode = $beaut_highlighter[$lang]->highlight_text($tmpcode);
+											$tmpcode = $beaut_highlighter[strtolower($lang)]->highlight_text($tmpcode);
 											restore_error_handler();
 
 					//						$tmpcode = str_replace("        ", "\t", $tmpcode);

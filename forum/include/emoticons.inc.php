@@ -60,7 +60,9 @@ $emoticon['(h)'] = "shades";
 
 // Peter Boughton's emoticons
 $emoticon[':>'] = "cheeky";
+$emoticon[':->'] = "cheeky";
 $emoticon['}:>'] = "evil_cheeky";
+$emoticon['}:->'] = "evil_cheeky";
 $emoticon[':O)'] = "smile_big_nose";
 $emoticon['>.<'] = "cringe";
 $emoticon['^.^'] = "happy";
@@ -78,28 +80,67 @@ foreach ($emoticon as $k => $v) {
 	$emoticon_text[$v][] = $k;
 }
 
+$pattern_array_2 = array();
+$replace_array_2 = array();
+
+$e_keys = array_keys($emoticon);
+for ($i=0; $i<count($e_keys); $i++) {
+	for ($j=0; $j<count($e_keys); $j++) {
+		if ($i != $j) {
+			$pos = strpos(strtolower($e_keys[$j]), strtolower($e_keys[$i]));
+			if (is_int($pos)) {
+				$a = $e_keys[$j];
+				$b = $e_keys[$i];
+				$v = $emoticon[$a];
+				$a2 = urlencode($a);
+
+				$a_f = preg_quote(substr($a, 0, $pos), "/");
+				$a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
+				$a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
+
+				$pattern_array_2[] = "/". $a_f."<span class=[^>]+><span>".$a_m."<\/span><\/span>".$a_e ."/i";
+				$replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span>$a2</span></span>";
+			}
+		}
+	}
+}
+
 function emoticons_convert ($content) {
-	global $emoticon;
+	$content = _htmlentities_decode($content);
+
+	global $emoticon, $pattern_array_2, $replace_array_2;
 
 	if (!is_array($emoticon)) return $content;
 
 	foreach ($emoticon as $k => $v) {
-		$k2 = _htmlentities($k);
+		$k2 = urlencode(_htmlentities($k));
 
-		$front = (preg_match("/^\w/", $k2)) ? '\b' : '\B';
-		$end = (preg_match("/\w$/", $k2)) ? '\b' : '\B';
+		//$front = ""; //'(?<!<span|title=\")';// "(?<!<span)((>|^)[^<]*?)";
+		//$end = ""; //"(?!<\/span><\/span>)";
 
-		$pattern_array[] = "/(?<=\s|^)".preg_quote($k, "/")."(?=\s|$)/i";
-		$replace_array[] = " <span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span> ";
-
-		if ($k2 != $k) {
-			$pattern_array[] = "/(?<=\s|^)".preg_quote($k2, "/")."(?=\s|$)/i";
-			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
-		}
+		$pattern_array[] = "/". preg_quote($k, "/") ."/i";
+		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
 	}
 
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
-		return $new_content;
+		$content = $new_content;
 	}
+
+	if (@$new_content = preg_replace($pattern_array_2, $replace_array_2, $content)) {
+		$content = $new_content;
+	}
+
+	$content = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span>[^<]+<\/span>)/ie", "emot_regex_output('\\1')", $content);
+
+	return $content;
+}
+
+function emot_regex_output($text) {
+    $text = urldecode($text);
+    // accounts for stripslashes 'bug' when using /e modifier
+    // see comments at:
+    // http://uk2.php.net/manual/en/function.preg-replace.php
+    $text = str_replace('\"', '"', $text);
+    return $text;
 }
 ?>

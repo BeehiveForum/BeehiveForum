@@ -31,7 +31,7 @@ function pr($t) {
 	print_r($t);
 	echo "</pre>";
 }
-function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
+function fix_html($html, $emoticons = true, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea", "xmp"))
 {
 
 	$ret_text = '';
@@ -393,7 +393,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 					$ret_text .= "<".$html_parts[$i].">";
 				}
 			} else {
-				if ($tag != "pre class=\"code\"") {
+				if ($emoticons == true && $tag != "pre class=\"code\"") {
 					$html_parts[$i] = emoticons_convert($html_parts[$i]);
 				}
 				$ret_text .= $html_parts[$i];
@@ -608,16 +608,6 @@ function tidy_html ($html, $linebreaks = true) {
 
 
 	// make <code>..</code> tag, and html_entity_decode 
-	
-	if (!function_exists("html_entity_decode")) {
-		function html_entity_decode ($string)  {
-			$trans_tbl = get_html_translation_table (HTML_ENTITIES);
-			$trans_tbl = array_flip ($trans_tbl);
-			$ret = strtr ($string, $trans_tbl);
-			return preg_replace('/&#(\d+);/me', "chr('\\1')",$ret);
-		}
-	}
-
 	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/ie", "regex_output('$1')", $html);
 
 
@@ -628,7 +618,7 @@ function tidy_html ($html, $linebreaks = true) {
 }
 
 function regex_output($text) {
-    $text = html_entity_decode($text);
+    $text = _htmlentities_decode($text);
     // accounts for stripslashes 'bug' when using /e modifier
     // see comments at:
     // http://uk2.php.net/manual/en/function.preg-replace.php

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.88 2004-03-20 19:21:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.89 2004-03-21 18:58:24 tribalonline Exp $ */
 
 // International English language file
 
@@ -335,7 +335,9 @@ $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expres
 $lang['mustsupplyforumname'] = "You must supply a forum name";
 $lang['mustsupplyforumemail'] = "You must supply a forum email address";
 $lang['mustchoosedefaultstyle'] = "You must choose a default forum style";
+$lang['mustchoosedefaultemoticons'] = "You must choose default forum emoticons";
 $lang['unknownstylename'] = "Unknown style name";
+$lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['unknownlanguage'] = "Unknown language";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
@@ -345,6 +347,7 @@ $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";
 $lang['forumemail'] = "Forum Email";
 $lang['defaultstyle'] = "Default Style";
+$lang['defaultemoticons'] = "Default Emoticons";
 $lang['defaultlanguage'] = "Default Language";
 $lang['errorhandler'] = "Error Handler";
 $lang['showfriendlyerrors'] = "Show Friendly Error Messages";
@@ -782,6 +785,7 @@ $lang['timezonefromGMT'] = "Timezone";
 $lang['postsperpage'] = "Posts per page";
 $lang['fontsize'] = "Font size";
 $lang['forumstyle'] = "Forum style";
+$lang['forumemoticons'] = "Forum emoticons";
 $lang['startpage'] = "Start page";
 $lang['containsHTML'] = "Contains HTML";
 $lang['preferredlang'] = "Preferred language";

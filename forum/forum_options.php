@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.17 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.18 2004-03-21 18:58:24 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -102,6 +102,31 @@ if ($dir = @opendir('styles')) {
 
 array_multisort($style_names, $available_styles);
 
+
+$available_emots = array();
+$emot_names = array();
+
+if ($dir = @opendir('emoticons')) {
+    while (($file = readdir($dir)) !== false) {
+        if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
+            if (@file_exists("./emoticons/$file/desc.txt")) {
+                if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
+                    $available_emots[] = $file;
+                    $emot_names[] = _htmlentities(fread($fp, filesize("emoticons/$file/desc.txt")));
+                    fclose($fp);
+                }else {
+                    $available_emots[] = $file;
+                    $emot_names[] = $file;
+                }
+            }
+        }
+    }
+    closedir($dir);
+}
+
+array_multisort($emot_names, $available_emots);
+
+
 if (isset($HTTP_POST_VARS['submit'])) {
 
     // Optional fields
@@ -176,6 +201,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $user_prefs['STYLE'] = _stripslashes(trim($HTTP_POST_VARS['style']));
     }else {
         $user_prefs['STYLE'] = forum_get_setting('default_style');
+    }
+
+    if (isset($HTTP_POST_VARS['emoticons'])) {
+        $user_prefs['EMOTICONS'] = _stripslashes(trim($HTTP_POST_VARS['emoticons']));
+    }else {
+        $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons');
     }
 
     if (isset($HTTP_POST_VARS['start_page'])) {
@@ -419,6 +450,30 @@ if (isset($key)) {
     echo "                  <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]), "</td>\n";
 }else {
     echo "                  <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]), "</td>\n";
+}
+
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"250\">{$lang['forumemoticons']}:</td>\n";
+
+if (_in_array($user_prefs['EMOTICONS'], $available_emots)) {
+    $selected_emot = $user_prefs['EMOTICONS'];
+}else {
+    $selected_emot = forum_get_setting('default_emoticons');
+}
+      
+foreach ($available_emots as $key => $emot) {
+    if (strtolower($emot) == strtolower($selected_emot)) {
+        break;
+    }
+}
+      
+reset($available_emots);
+      
+if (isset($key)) {
+    echo "                  <td>", form_dropdown_array("emoticons", $available_emots, $emot_names, $available_emots[$key]), "</td>\n";
+}else {
+    echo "                  <td>", form_dropdown_array("emoticons", $available_emots, $emot_names, $available_emots[0]), "</td>\n";
 }
 
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.7 2004-03-20 19:21:29 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.8 2004-03-21 18:58:24 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -96,6 +96,31 @@ if ($dir = @opendir('styles')) {
 
 array_multisort($style_names, $available_styles);
 
+
+$available_emots = array();
+$emot_names = array();
+
+if ($dir = @opendir('emoticons')) {
+    while (($file = readdir($dir)) !== false) {
+        if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
+            if (@file_exists("./emoticons/$file/desc.txt")) {
+                if ($fp = fopen("./emoticons/$file/desc.txt", "r")) {
+                    $available_emots[] = $file;
+                    $emot_names[] = _htmlentities(fread($fp, filesize("emoticons/$file/desc.txt")));
+                    fclose($fp);
+                }else {
+                    $available_emots[] = $file;
+                    $emot_names[] = $file;
+                }
+            }
+        }
+    }
+    closedir($dir);
+}
+
+array_multisort($emot_names, $available_emots);
+
+
 if (isset($HTTP_POST_VARS['submit'])) {
 
     $valid = true;
@@ -126,6 +151,21 @@ if (isset($HTTP_POST_VARS['submit'])) {
         
     }else {
         $error_html = "<h2>{$lang['mustchoosedefaultstyle']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($HTTP_POST_VARS['default_emoticons']) && strlen(trim($HTTP_POST_VARS['default_emoticons'])) > 0) {
+
+        $new_forum_settings['default_emoticons'] = trim($HTTP_POST_VARS['default_emoticons']);
+        
+        if (!_in_array($new_forum_settings['default_emoticons'], $available_emots)) {
+        
+            $error_html = "<h2>{$lang['unknownemoticonsname']}</h2>\n";
+            $valid = false;
+        }
+        
+    }else {
+        $error_html = "<h2>{$lang['mustchoosedefaultemoticons']}</h2>\n";
         $valid = false;
     }
     
@@ -384,6 +424,17 @@ foreach ($available_styles as $key => $style) {
 }
       
 echo "                  <td>", form_dropdown_array("default_style", $available_styles, $style_names, $available_styles[$key]), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"200\">{$lang['defaultemoticons']}:</td>\n";
+      
+foreach ($available_emots as $key => $emots) {
+    if (strtolower($emots) == strtolower(forum_get_setting('default_emoticons'))) {
+        break;
+    }
+}
+      
+echo "                  <td>", form_dropdown_array("default_emoticons", $available_emots, $emot_names, $available_emots[$key]), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['defaultlanguage']}:</td>\n";

@@ -358,12 +358,11 @@ function threads_get_folder_msgs()
 
 function thread_get_author($tid)
 {
-	$conn_id = db_connect();
+	$db = db_connect();
 	$sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
 	$sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
-	$resource_id = db_query($sql, $conn_id);
+	$resource_id = db_query($sql, $db);
 	$author = db_fetch_array($resource_id);
-	db_disconnect($conn_id);
 	return format_user_name($author['LOGON'], $author['NICKNAME']);
 }
 

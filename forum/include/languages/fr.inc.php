@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.130 2004-12-12 12:50:43 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.131 2004-12-19 13:20:32 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -419,6 +419,24 @@ $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow search engines to spider post content";
 
+$lang['top10postersforthismonth'] = "Top 10 posters for this month";
+$lang['top10postersforthisweek'] = "Top 10 posters for this week";
+$lang['top10postersfortoday'] = "Top 10 posters for today";
+$lang['top10postersforthishour'] = "Top 10 posters for this hour";
+
+$lang['postingstats'] = "Posting Stats";
+$lang['nodata'] = "No data";
+$lang['totalposts'] = "Total posts";
+
+$lang['percentofthismonthsposts'] = "Percent of this months posts";
+$lang['percentofthisweeksposts'] = "Percent of this weeks posts";
+$lang['percentoftodaysposts'] = "Percent of todays posts";
+$lang['percentofthishoursposts'] = "Percent of this hours posts";
+
+$lang['totalpoststhismonth'] = "Total posts this month";
+$lang['totalpoststhisweek'] = "Total posts this week";
+$lang['totalpoststoday'] = "Total posts today";
+$lang['totalpoststhishour'] = "Total posts this hour";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

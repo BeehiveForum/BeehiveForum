@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.227 2004-12-06 19:09:16 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.228 2004-12-19 13:20:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -453,8 +453,8 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                 $visible_threads = false;
 
-                foreach (array_keys($thread_info) as $thread_info_key) {
-                    if ($thread_info[$thread_info_key]['fid'] == $folder_number) $visible_threads = true;
+                foreach ($thread_info as $thread_info_key => $thread_info_array) {
+                    if (isset($thread_info[$thread_info_key]['fid']) && $thread_info[$thread_info_key]['fid'] == $folder_number) $visible_threads = true;
                 }
 
                 echo "  <tr>\n";

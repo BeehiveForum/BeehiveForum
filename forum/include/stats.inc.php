@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.39 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.40 2004-12-19 13:20:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -300,100 +300,126 @@ function get_month_post_tallys()
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $post_tallys = array('user_stats' => array(), 'post_count' => 0);
+
+    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') ";
+
+    $result = db_query($sql, $db_get_month_post_tallys);
+    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') ";
-    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC ";
+    $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_get_month_post_tallys);
 
     if (db_num_rows($result) > 0) {
 
-        $post_tallys = array();
-
         while ($row = db_fetch_array($result)) {
-            $post_tallys[] = $row;
+            $post_tallys['user_stats'][] = $row;
         }
-
-        return $post_tallys;
     }
 
-    return false;
+    return $post_tallys;
 }
 
 function get_week_post_tallys()
 {
     $db_get_week_post_tallys = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
+    $post_tallys = array('user_stats' => array(), 'post_count' => 0);
+
+    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%U-%Y') = DATE_FORMAT(NOW(), '%U-%Y') ";
+
+    $result = db_query($sql, $db_get_week_post_tallys);
+    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%U-%Y') = DATE_FORMAT(NOW(), '%U-%Y') ";
-    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC ";
+    $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_get_week_post_tallys);
 
     if (db_num_rows($result) > 0) {
 
-        $post_tallys = array();
-
         while ($row = db_fetch_array($result)) {
-            $post_tallys[] = $row;
+            $post_tallys['user_stats'][] = $row;
         }
-
-        return $post_tallys;
     }
 
-    return false;
+    return $post_tallys;
 }
 
 function get_day_post_tallys()
 {
     $db_get_day_post_tallys = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
+    $post_tallys = array('user_stats' => array(), 'post_count' => 0);
+
+    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') ";
+
+    $result = db_query($sql, $db_get_day_post_tallys);
+    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') ";
-    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC ";
+    $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_get_day_post_tallys);
 
     if (db_num_rows($result) > 0) {
 
-        $post_tallys = array();
-
         while ($row = db_fetch_array($result)) {
-            $post_tallys[] = $row;
+            $post_tallys['user_stats'][] = $row;
         }
-
-        return $post_tallys;
     }
 
-    return false;
+    return $post_tallys;
 }
 
 function get_hour_post_tallys()
 {
     $db_get_hour_post_tallys = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
+    $post_tallys = array('user_stats' => array(), 'post_count' => 0);
+
+    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m-%d-%H') = DATE_FORMAT(NOW(), '%Y-%m-%d-%H') ";
+
+    $result = db_query($sql, $db_get_hour_post_tallys);
+    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m-%d-%H') = DATE_FORMAT(NOW(), '%Y-%m-%d-%H') ";
-    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC ";
+    $sql.= "LIMIT 0, 10";
 
     $result = db_query($sql, $db_get_hour_post_tallys);
 
     if (db_num_rows($result) > 0) {
 
-        $post_tallys = array();
-
         while ($row = db_fetch_array($result)) {
-            $post_tallys[] = $row;
+            $post_tallys['user_stats'][] = $row;
         }
-
-        return $post_tallys;
     }
 
-    return false;
+    return $post_tallys;
 }
 
 ?>

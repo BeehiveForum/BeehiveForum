@@ -203,7 +203,7 @@ if($msg_count > 0) {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, true, false, $highlight);
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, false, true, true, false, $highlight);
             $last_pid = $message['PID'];
 
           }else {

@@ -62,6 +62,18 @@ if (isset($HTTP_GET_VARS['hash'])) {
 
     if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
 
+      // Internet Explorer and Netscape / Mozilla both respond
+      // differently to the Content-Disposition header.
+      // IE _WILL NOT_ use the filename specified by the header
+      // if the attachment method _IS_ used, while NN/Moz won't use
+      // the filename _UNLESS_ the attachment method is used.
+
+      if (strstr($HTTP_SERVER_VARS['HTTP_USER_AGENT'], 'MSIE')) {
+        $attachment="";
+      }else {
+        $attachment=" attachment;";
+      }
+
       // IIS seems to trip up over certain Content-Type headers.
       // Until a proper fix can be found, we'll single out IIS
       // and force it to send the attachment as a download, so
@@ -71,7 +83,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
 
         header("Content-Type: application/x-ms-download");
         header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
-        header("Content-disposition: filename=". $attachmentdetails['FILENAME']);
+        header("Content-disposition:$attachment filename=\"". basename($attachmentdetails['FILENAME']). "\"");
         header("Content-Transfer-Encoding: binary");
 
         readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
@@ -83,7 +95,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
 
         header("Content-Type: ". $attachmentdetails['MIMETYPE']);
         header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
-        header("Content-disposition: filename=". $attachmentdetails['FILENAME']);
+        header("Content-disposition:$attachment filename=\"". basename($attachmentdetails['FILENAME']). "\"");
 
         if ($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.48 2004-06-13 20:30:49 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.49 2004-07-22 19:41:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -137,9 +137,9 @@ $post_html = 0;
 if (isset($_POST['t_post_html'])) {
     $t_post_html = $_POST['t_post_html'];
     if ($t_post_html == "enabled_auto") {
-		$post_html = 1;
+                $post_html = 1;
     } else if ($t_post_html == "enabled") {
-		$post_html = 2;
+                $post_html = 2;
     }
 }
 
@@ -158,13 +158,13 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
         $t_content = trim(_stripslashes($_POST['t_content']));
 
-	$post->setContent($t_content);
-	$t_content = $post->getContent();
+        $post->setContent($t_content);
+        $t_content = $post->getContent();
 
-	if (strlen($t_content) >= 65535) {
-	    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-	    $valid = false;
-	}
+        if (strlen($t_content) >= 65535) {
+            $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+            $valid = false;
+        }
 
     }else {
 
@@ -220,7 +220,7 @@ if ($valid && isset($_POST['preview'])) {
 
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
 
-        if ($pm_elements_array['TYPE'] <> PM_NEW) {
+        if ($pm_elements_array['TYPE'] != PM_UNREAD) {
             html_draw_top();
             pm_edit_refuse();
             html_draw_bottom();
@@ -230,18 +230,18 @@ if ($valid && isset($_POST['preview'])) {
         $t_content = clean_emoticons($pm_elements_array['CONTENT']);
         $t_subject = $pm_elements_array['SUBJECT'];
 
-	$t_content = _htmlentities_decode($t_content);
-	$post_html = 0;
-	$t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
+        $t_content = _htmlentities_decode($t_content);
+        $post_html = 0;
+        $t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
 
-	if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
-	    $post_html = 2;
+        if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
+            $post_html = 2;
         } else {
-	    $t_content = strip_tags($t_content);
+            $t_content = strip_tags($t_content);
         }
 
-	$post = new MessageText($post_html, $t_content);
-	$t_content = $post->getContent();
+        $post = new MessageText($post_html, $t_content);
+        $t_content = $post->getContent();
 
     }else {
 

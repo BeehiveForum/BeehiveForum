@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.32 2004-06-13 11:49:07 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.33 2004-07-22 19:41:56 decoyduck Exp $ */
 
 // Beehive Version
 
@@ -74,7 +74,6 @@ define("POLL_MULTIVOTE", 2);
 
 // PM Constants
 
-define("PM_NEW", 1);        // New PM
 define("PM_UNREAD", 2);     // Unread PM
 define("PM_READ", 4);       // Read PM
 define("PM_SENT", 8);       // Sent PM
@@ -91,9 +90,9 @@ define("PM_FOLDER_SAVED",  4);
 
 // PM Item types - defines different types of messages
 
-define("PM_INBOX_ITEMS",  PM_NEW|PM_UNREAD|PM_READ); // Inbox
+define("PM_INBOX_ITEMS",  PM_UNREAD|PM_READ); // Inbox
 define("PM_SENT_ITEMS",   PM_SENT); // Sent Items
-define("PM_OUTBOX_ITEMS", PM_NEW|PM_UNREAD); // Outbox
+define("PM_OUTBOX_ITEMS", PM_UNREAD); // Outbox
 define("PM_SAVED_ITEMS",  PM_SAVED_IN|PM_SAVED_OUT); // Saved Items
 
 // Allowed thread types in folders

@@ -44,35 +44,60 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 $valid = true;
 
 if(isset($HTTP_POST_VARS['logon'])){
-    $logon = $HTTP_POST_VARS['logon'];
+    if (htmlentities($HTTP_POST_VARS['logon']) != $HTTP_POST_VARS['logon']) {
+      $logon = "";
+      $valid = false;
+    }else {
+      $logon = $HTTP_POST_VARS['logon'];
+    }
 } else {
     $logon = "";
     $valid = false;
 }
 
 if(isset($HTTP_POST_VARS['pw'])){
-    $password = $HTTP_POST_VARS['pw'];
+    if (htmlentities($HTTP_POST_VARS['pw']) != $HTTP_POST_VARS['pw']) {
+      $password = "";
+      $valid = false;
+    }else {
+      $password = $HTTP_POST_VARS['pw'];
+    }
 } else {
     $password = "";
     $valid = false;
 }
 
 if(isset($HTTP_POST_VARS['cpw'])){
-    $cpassword = $HTTP_POST_VARS['cpw'];
+    if (htmlentities($HTTP_POST_VARS['cpw']) != $HTTP_POST_VARS['cpw']) {
+      $cpassword = "";
+      $valid = false;
+    }else {
+      $cpassword = $HTTP_POST_VARS['cpw'];
+    }
 } else {
     $cpassword = "";
     $valid = false;
 }
 
 if(isset($HTTP_POST_VARS['nickname'])){
-    $nickname = $HTTP_POST_VARS['nickname'];
+    if (htmlentities($HTTP_POST_VARS['nickname']) != $HTTP_POST_VARS['nickname']) {
+      $nickname = "";
+      $valid = false;
+    }else {
+      $nickname = $HTTP_POST_VARS['nickname'];
+    }
 } else {
     $nickname = "";
     $valid = false;
 }
 
 if(isset($HTTP_POST_VARS['email'])){
-    $email = $HTTP_POST_VARS['email'];
+    if (htmlentities($HTTP_POST_VARS['email']) != $HTTP_POST_VARS['email']) {
+      $email = "";
+      $valid = false;
+    }else {
+      $email = $HTTP_POST_VARS['email'];
+    }
 } else {
     $email = "";
     $valid = false;

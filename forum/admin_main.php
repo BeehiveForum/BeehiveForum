@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.41 2004-04-29 16:53:53 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.42 2004-04-29 16:56:58 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,7 +92,7 @@ $webtag = get_webtag($webtag_search);
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
+if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -102,8 +102,13 @@ if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
 echo "<h1>{$lang['forumadmin']}</h1>\n";
 echo "<p>{$lang['adminexp_1']}</p>\n";
 echo "<p>{$lang['adminexp_2']}</p>\n";
-echo "<p>{$lang['adminexp_3']}</p>\n";
-echo "<p>{$lang['adminexp_4']}</p>\n";
+
+if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+
+    echo "<p>{$lang['adminexp_3']}</p>\n";
+    echo "<p>{$lang['adminexp_4']}</p>\n";
+}
+
 echo "<p>{$lang['adminexp_5']}</p>\n";
 echo "<p>{$lang['adminexp_6']}</p>\n";
 echo "<p>{$lang['adminexp_7']}</p>\n";

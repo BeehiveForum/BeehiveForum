@@ -400,7 +400,7 @@ if(!isset($t_threadtitle)){
 $reply_message = messages_get($reply_to_tid, $reply_to_pid);
 $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
-if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+if((!isset($message['CONTENT']) || $message['CONTENT'] == "") && $newthread) {
     echo "<h2>Message has been deleted.</h2>\n";
     html_draw_bottom();
     exit;

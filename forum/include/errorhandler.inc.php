@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.63 2005-02-17 22:58:12 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.64 2005-02-19 16:10:31 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -61,28 +61,32 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
     if (error_reporting()) {
 
-        if ($show_friendly_errors === false) {
+        if (isset($show_friendly_errors) && $show_friendly_errors === false) {
 
             switch ($errstr) {
 
                 case DB_ER_NO_EXTENSION:
 
-                    trigger_error("No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.", $errno);
+                    echo "<p>No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.</p>\n";
+                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
                 case DB_ER_NO_SUCH_HOST:
 
-                    trigger_error("Cannot connect to database. Please check settings in config.inc.php", $errno);
+                    echo "<p>Cannot connect to database. Please check settings in config.inc.php</p>\n";
+                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
                 case DB_ER_NO_SUCH_DBASE:
 
-                    trigger_error("Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct", $errno);
+                    echo "<p>Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct.</p>\n";
+                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
 
                 case DB_ER_NO_SUCH_TABLE:
 
-                    trigger_error("Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct", $errno);
+                    echo "<p>Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct</p>\n";
+                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
             }
 
@@ -337,10 +341,6 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
     }
 }
 
-// Should we enable our error handler?
-
-if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
-    set_error_handler("bh_error_handler");
-}
+set_error_handler("bh_error_handler");
 
 ?>

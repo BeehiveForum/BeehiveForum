@@ -17,27 +17,22 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
+// Compresses the output of the PHP scripts to save bandwidth.
 
-require_once("./include/constants.inc.php");
+require_once("./include/config.inc.php");
 
-// Included functions for checking user permissions
-
-function perm_is_moderator()
-{
-    global $HTTP_COOKIE_VARS;
-    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER);
-}
-
-function perm_is_soldier()
-{
-    global $HTTP_COOKIE_VARS;
-    return ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_SOLDIER);
+if ($gzip_compress_output) {
+    if (strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+        ob_start("ob_gzhandler");
+    }else{
+        ob_start();
+    }
+}else {
+    ob_start();
 }
 
 ?>

@@ -24,6 +24,9 @@ USA
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");

@@ -23,6 +23,9 @@ USA
 
 ======================================================================*/
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 //Check logged in status
 
 require_once("./include/session.inc.php");

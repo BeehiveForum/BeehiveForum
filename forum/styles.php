@@ -23,10 +23,12 @@ USA
 
 // style.php : handles site styles with user preferences
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
 
-header_no_cache();
 header("Content-Type: text/css");
 
 if (empty($HTTP_GET_VARS['fontsize'])) {

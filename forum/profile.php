@@ -26,9 +26,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
 
-// Frameset for thread list and messages
-
+// Frameset for thread list and messages  
 
 //Check logged in status
 require_once("./include/session.inc.php");

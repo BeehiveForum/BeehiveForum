@@ -28,6 +28,9 @@ USA
 
 // Connects to the database and returns the connection ID
 
+// Compress the output
+require_once("./include/gzipenc.inc.php");
+
 require_once('./include/html.inc.php');
 require_once('./include/form.inc.php');
 require_once('./include/format.inc.php');

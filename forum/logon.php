@@ -88,8 +88,10 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       }
 
-    }else {
-
+    }
+    
+    if (!isset($luid)) {
+    
       $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
 
     }

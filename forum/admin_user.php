@@ -131,11 +131,21 @@ if(isset($HTTP_POST_VARS['submit'])) {
     if (isset($HTTP_POST_VARS['t_fcount'])) {
 
       for($i = 0; $i < $HTTP_POST_VARS['t_fcount']; $i++){
-        $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
-        $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
+
+        if (isset($HTTP_POST_VARS['t_fallow_'.$i])) {
+
+          $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
+          $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
+
+	}
+
       }
 
-      user_update_folders($uid, $uf);
+      if (isset($uf)) {
+
+        user_update_folders($uid, $uf);
+
+      }
 
     }
 

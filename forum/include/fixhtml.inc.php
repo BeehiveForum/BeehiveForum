@@ -558,7 +558,7 @@ function tidy_html ($html, $linebreaks = true) {
 		$html_left .= substr($html_right, 0, $pos);
 		$matches = array();
 
-		if (preg_match("/^<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">)?([^<]*)?(<\/a>)?<\/div>\s*<div class=\"quote\">((.|\s)*)<\/div>/i", 
+		if (preg_match("/^<div class=\"quotetext\"><b>quote: <\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is", 
 						substr($html_right, $pos), $matches)) {
 			$html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
 

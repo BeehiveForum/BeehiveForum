@@ -141,7 +141,7 @@ while (list($key1, $folder) = each($folder_order)) {
 
 				if ($thread['last_read'] < $thread['length']) {
 					$new_posts = $thread['length'] - $thread['last_read'];
-					$number = "[".$new_posts." new of ".$thread['length']."]";
+					$number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
 					$latest_post = $thread['last_read'] + 1;
 
 					if(!isset($first_thread)){
@@ -152,7 +152,7 @@ while (list($key1, $folder) = each($folder_order)) {
 					}
 
 				} else if ($thread['last_read'] == 0) {
-					$number = "[".$thread['length']." new]";
+					$number = "[".$thread['length']."&nbsp;new]";
 					$latest_post = 1;
 
 					if(!isset($first_thread)){

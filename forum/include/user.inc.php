@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.116 2004-02-03 18:08:51 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.117 2004-02-03 18:54:34 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -665,7 +665,7 @@ function user_get_aliases($uid)
     
     if (db_num_rows($result)) {
         while($user_get_aliases_row = db_fetch_array($result)) {
-            $user_get_aliases_array[] = $user_get_aliases_row;
+            $user_get_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
         }
     }
     
@@ -682,7 +682,7 @@ function user_get_aliases($uid)
     
     if (db_num_rows($result)) {
         while($user_get_aliases_row = db_fetch_array($result)) {
-            $user_get_aliases_array[] = $user_get_aliases_row;
+            $user_get_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
         }
     }
     

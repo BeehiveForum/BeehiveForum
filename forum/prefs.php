@@ -32,14 +32,14 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/html.inc.php");
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
-	html_guest_error();
-	exit;
+        html_guest_error();
+        exit;
 }
 
 require_once("./include/user.inc.php");
@@ -57,10 +57,10 @@ if ($dir = @opendir('styles')) {
   while (($file = readdir($dir)) !== false) {
     if (is_dir("styles/$file") && $file != '.' && $file != '..') {
       if (file_exists("styles/$file/desc.txt")) {
-	if ($fp = fopen("styles/$file/desc.txt", "r")) {
-	  $available_styles[] = $file;
-	  $style_names[] = htmlspecialchars(fread($fp, filesize("styles/$file/desc.txt")));
-	  fclose($fp);
+        if ($fp = fopen("styles/$file/desc.txt", "r")) {
+          $available_styles[] = $file;
+          $style_names[] = htmlspecialchars(fread($fp, filesize("styles/$file/desc.txt")));
+          fclose($fp);
         }
       }
     }
@@ -73,7 +73,7 @@ array_multisort($style_names, $available_styles);
 if(isset($HTTP_POST_VARS['submit'])){
 
     $valid = true;
-    
+
     if(isset($HTTP_POST_VARS['pw'])){
         if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']){
             $error_html = "<h2>Passwords do not match</h2>";
@@ -94,13 +94,15 @@ if(isset($HTTP_POST_VARS['submit'])){
     if($valid){
         if(@$HTTP_POST_VARS['sig_html'] == "Y"){
             $HTTP_POST_VARS['sig_content'] = fix_html($HTTP_POST_VARS['sig_content']);
+        }else {
+            $HTTP_POST_VARS['sig_content'] = _stripslashes($HTTP_POST_VARS['sig_content']);
         }
     }
 
     if($valid){
-    
+
         // Update basic settings in USER table
-        
+
         user_update($HTTP_COOKIE_VARS['bh_sess_uid'],
                     $HTTP_POST_VARS['pw'],
                     $HTTP_POST_VARS['nickname'],
@@ -116,21 +118,21 @@ if(isset($HTTP_POST_VARS['submit'])){
                           $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size'],
                           $HTTP_POST_VARS['style'], @$HTTP_POST_VARS['view_sigs'],
                           $HTTP_POST_VARS['start_page']);
-                        
+
         // Update USER_SIG
-        
+
         user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
                         $HTTP_POST_VARS['sig_content'],
                         @$HTTP_POST_VARS['sig_html']);
-                        
+
         // Update the User's Session to save them having to logout and back in
-        
+
         bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
-        
+
         header_redirect("prefs.php?updated=true");
-                        
+
     }
-    
+
 }
 
 $user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
@@ -144,18 +146,18 @@ echo "<h1>User Preferences</h1>\n";
 if(!empty($error_html)) {
     echo $error_html;
 }elseif (isset($HTTP_GET_VARS['updated'])) {
-    
+
     echo "<h2>Preferences were successfully updated.</h2>\n";
 
-	$top_html = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/top.html";
-	if (!file_exists($top_html)) {
-		$top_html = "./top.html";
-	}
-	echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-	echo "<!--\n";
-	echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
-	echo "-->\n";
-	echo "</script>";
+        $top_html = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/top.html";
+        if (!file_exists($top_html)) {
+                $top_html = "./top.html";
+        }
+        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n";
+        echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
+        echo "-->\n";
+        echo "</script>";
 }
 
 ?>
@@ -180,7 +182,7 @@ if(!empty($error_html)) {
       <tr>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
-      </tr>      
+      </tr>
       <tr>
         <td>Nickname</td>
         <td>: <?php echo form_field("nickname", $user['NICKNAME'], 37, 32); ?></td>
@@ -265,34 +267,34 @@ if(!empty($error_html)) {
       <tr>
         <td>Forum Style</td>
         <td>
-          <?php 
-          
+          <?php
+
             if (isset($HTTP_COOKIE_VARS['bh_sess_style'])) {
               $selected_style = $HTTP_COOKIE_VARS['bh_sess_style'];
             }else {
               $selected_style = $default_style;
             }
 
-	    foreach ($available_styles as $key => $style) {
-	      if (strtolower($style) == strtolower($selected_style)) {
-	        break;
-	      }
-	    }
+            foreach ($available_styles as $key => $style) {
+              if (strtolower($style) == strtolower($selected_style)) {
+                break;
+              }
+            }
 
-	    reset($available_styles);
-            
+            reset($available_styles);
+
             if (isset($key)) {
               echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]);
             }else {
               echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]);
             }
-                        
+
           ?>
         </td>
       </tr>
       <tr>
         <td>Start Page</td>
-	<td><?php echo form_dropdown_array("start_page", array(0, 1), array('Start', 'Messages'), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
+        <td><?php echo form_dropdown_array("start_page", array(0, 1), array('Start', 'Messages'), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

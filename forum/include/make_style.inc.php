@@ -119,22 +119,50 @@ function randSort()
 
 }
 
-// chooses between white and black for the font colour
-// based on the luminance of the supplied background colour.
+// calculates the luminance, saturation and hue of a supplied
+// background colour and uses the data to chooses between white
+// or black for the font colour of the supplied.
 
-function contrastFont($hex, $lum_level = 0.6) {
+function contrastFont($hex) {
 
     list ($r, $g, $b) = hexToDec($hex);
-    $rgb = array($r / 255, $g / 255, $b / 255);
-
+    $rgb = array((double)$r / 255, (double)$g / 255, (double)$b / 255);
     sort($rgb);
 
-    $luminance = ($rgb[2] + $rgb[0]) / 2;
+    $lum = ($rgb[2] + $rgb[0]) / 2;
 
-    if ($luminance < $lum_level) {
-        $text_colour = "FFFFFF";
+    if ($rgb[2] == $rgb[0]) {
+        $sat = 0;
+        $hue = 0;
     }else {
+
+        if ($lum < 0.5) {
+            $sat = ($rgb[2] - $rgb[0]) / ($rgb[2] + $rgb[0]);
+        }else {
+            $sat = ($rgb[2] - $rgb[0]) / (2 - $rgb[2] - $rgb[0]);
+        }
+
+        if ($rgb[2] == $r) {
+            $hue = ($g - $b) / ($rgb[2] - $rgb[0]);
+        }elseif ($rgb[2] == $g) {
+            $hue = 2 + ($b - $r) / ($rgb[2] - $rgb[0]);
+        }else {
+            $hue = 4 + ($r - $g) / ($rgb[2] - $rgb[0]);
+        }
+
+        $hue /= 6;
+        if ($hue < 0) $hue+=1;
+
+    }
+
+    if ($sat > 0.5) {
+      $text_colour = "000000";
+    }else {
+      if ($lum < 0.5) {
+        $text_colour = "FFFFFF";
+      }else {
         $text_colour = "000000";
+      }
     }
 
     return $text_colour;

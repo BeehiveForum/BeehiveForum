@@ -165,7 +165,7 @@ if($valid) {
         $t_content = _stripslashes($t_content);
     }
 
-    if(isset($t_sig)) {
+    if (isset($t_sig)) {
         if($t_sig_html == "Y") {
             $t_sig = _stripslashes($t_sig);
         }
@@ -315,7 +315,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
 
     }
 
-    if($t_sig) {
+    if (isset($t_sig)) {
 
       if($t_sig_html != "Y") {
 
@@ -387,7 +387,7 @@ if(!$newthread) {
 
 }
 
-if(!isset($t_sig) || !$t_sig) {
+if (!isset($t_sig) || !$t_sig) {
     $has_sig = user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'],$t_sig,$t_sig_html);
 }else{
     $has_sig = true;
@@ -466,8 +466,8 @@ if($newthread) {
 
 }
 
-if($t_post_html != "Y") $t_content = isset($t_content) ? _stripslashes($t_content) : "";
-if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
+if ($t_post_html != "Y") $t_content = isset($t_content) ? _stripslashes($t_content) : "";
+//if ($t_sig_html != "Y") $t_sig = isset($t_sig) ? _stripslashes($t_sig) : "";
 
 if(!isset($t_to_uid)) $t_to_uid = -1;
 

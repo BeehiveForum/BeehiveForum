@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.100 2004-03-22 12:33:09 tribalonline Exp $ */
+/* $Id: edit.php,v 1.101 2004-03-22 12:58:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -411,41 +411,42 @@ if (isset($HTTP_POST_VARS['preview'])) {
             exit;
 
         }else{
+        
             $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
 
-			$t_content_temp = $t_content;
-			$t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
+            $t_content_temp = $t_content;
+            $t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
 
-			if (count($t_content_temp) > 1) {
+            if (count($t_content_temp) > 1) {
 
-				$t_sig_temp = array_pop($t_content_temp);
-				$t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
+                $t_sig_temp = array_pop($t_content_temp);
+                $t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
 
-				$t_sig = "";
+                $t_sig = "";
 
-				for ($i = 0; $i < count($t_sig_temp) - 1; $i++) {
-					$t_sig.= $t_sig_temp[$i];
-					if ($i < count($t_sig_temp) - 2 ) {
-						$t_sig.= "</div>";
-					}
-				}
+                for ($i = 0; $i < count($t_sig_temp) - 1; $i++) {
+                    $t_sig.= $t_sig_temp[$i];
+                    if ($i < count($t_sig_temp) - 2 ) {
+                        $t_sig.= "</div>";
+                    }
+                }
 
-			}else {
-				$t_sig = "";
-			}
+            }else {
+                $t_sig = "";
+            }
 
-			$t_content = "";
+            $t_content = "";
 
-			for ($i = 0; $i < count($t_content_temp); $i++) {
-				$t_content.= $t_content_temp[$i];
-				if ($i < count($t_content_temp) - 1) {
-					$t_content.= "<div class=\"sig\">";
-				}
-			}
+            for ($i = 0; $i < count($t_content_temp); $i++) {
+                $t_content.= $t_content_temp[$i];
+                if ($i < count($t_content_temp) - 1) {
+                    $t_content.= "<div class=\"sig\">";
+                }
+            }
 
-			if (!isset($HTTP_POST_VARS['b_edit_html'])) {
-				$t_content = strip_tags($t_content);
-			}
+            if (!isset($HTTP_POST_VARS['b_edit_html'])) {
+                $t_content = strip_tags($t_content);
+            }
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.68 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.69 2004-03-22 12:58:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -255,7 +255,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
             if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                 echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
             }            
 
             if (strlen($attachments[$i]['filename']) > 16) {
@@ -348,7 +348,7 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
             if ($attachment_use_old_method) {
                 echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
             }else {
-                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
+                echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag={$webtag['WEBTAG']}\" title=\"";
             }            
 
             if (strlen($attachments[$i]['filename']) > 16) {
